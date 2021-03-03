@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Python测试开发," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="测试开发进阶(二十六)欢迎关注我的公众号「测试游记」 序列化器 序列化器中定义的类属性字段，往往与模型类字段一一对应 label选项相当于verbose_name; 定义的序列化器字段，默认既可以进行序列化输出，也可以进行反序列化输入  通用参数 read_only &#x3D; True 指定该字段只能进行序列化输出 write_only &#x3D; True 指定该字段只进行反序列化输入，但不进行序列化输出 r">
+<meta property="og:type" content="article">
+<meta property="og:title" content="测试开发进阶(二十六)">
+<meta property="og:url" content="http://example.com/2021/03/03/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6(%E4%BA%8C%E5%8D%81%E5%85%AD)/index.html">
+<meta property="og:site_name" content="测试游记">
+<meta property="og:description" content="测试开发进阶(二十六)欢迎关注我的公众号「测试游记」 序列化器 序列化器中定义的类属性字段，往往与模型类字段一一对应 label选项相当于verbose_name; 定义的序列化器字段，默认既可以进行序列化输出，也可以进行反序列化输入  通用参数 read_only &#x3D; True 指定该字段只能进行序列化输出 write_only &#x3D; True 指定该字段只进行反序列化输入，但不进行序列化输出 r">
+<meta property="og:locale">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g80binslxij30ks0cutaf.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g80bjfd1opj316y0u048p.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g80bk2c8jsj316y0u0wp4.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g80bs2zwkuj316y0u07eu.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g80btfshr0j316y0u0n7f.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g80bz0ljxtj31e60u07bk.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g80c0s6uasj311i0myq9z.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g80c3u7csrj316y0u0tj9.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g80c6ctdebj316y0u04a3.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g80df362lzj31r60p8gs5.jpg">
+<meta property="article:published_time" content="2021-03-03T12:10:33.000Z">
+<meta property="article:modified_time" content="2021-03-03T12:11:05.526Z">
+<meta property="article:author" content="测试游记">
+<meta property="article:tag" content="Python测试开发">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g80binslxij30ks0cutaf.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/03/03/测试开发进阶(二十六)/"/>
+
+
+
+
+
+  <title>测试开发进阶(二十六) | 测试游记</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?41fc030db57d5570dd22f78997dc4a7e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">测试游记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/03/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6(%E4%BA%8C%E5%8D%81%E5%85%AD)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="测试游记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">测试开发进阶(二十六)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-03-03T20:10:33+08:00">
+                2021-03-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2021/03/03/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6(%E4%BA%8C%E5%8D%81%E5%85%AD)/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2021/03/03/测试开发进阶(二十六)/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="测试开发进阶-二十六"><a href="#测试开发进阶-二十六" class="headerlink" title="测试开发进阶(二十六)"></a>测试开发进阶(二十六)</h1><p>欢迎关注我的公众号「测试游记」</p>
+<h2 id="序列化器"><a href="#序列化器" class="headerlink" title="序列化器"></a>序列化器</h2><ol>
+<li>序列化器中定义的类属性字段，往往与模型类字段一一对应</li>
+<li>label选项相当于<code>verbose_name</code>;</li>
+<li>定义的序列化器字段，默认既可以进行序列化输出，也可以进行反序列化输入</li>
+</ol>
+<h3 id="通用参数"><a href="#通用参数" class="headerlink" title="通用参数"></a>通用参数</h3><ul>
+<li><code>read_only = True</code> 指定该字段只能进行序列化输出</li>
+<li><code>write_only = True</code> 指定该字段只进行反序列化输入，但不进行序列化输出</li>
+<li><code>required</code>该字段在反序列化时必须传入，默认为True</li>
+<li><code>default</code>反序列化时使用的默认值</li>
+<li><code>allow_null</code>该字段是否允许传入None，默认False</li>
+<li><code>validators</code>该字段使用的校验器</li>
+<li><code>error_messages</code>包含错误key与错误信息的字典（下面有例子）</li>
+<li><code>label</code>用于HTML展示API页面时，显示的字段名称</li>
+</ul>
+<h3 id="选项参数"><a href="#选项参数" class="headerlink" title="选项参数"></a>选项参数</h3><ul>
+<li><code>max_length</code>最大长度</li>
+<li><code>min_length</code>最小长度</li>
+<li><code>allow_blank</code>是否允许为空</li>
+<li><code>trim_whitespace</code>是否截断空白字符</li>
+<li><code>max_value</code>最小值</li>
+<li><code>min_value</code>最大值</li>
+</ul>
+<h2 id="校验"><a href="#校验" class="headerlink" title="校验"></a>校验</h2><ol>
+<li>调用序列化器对象的<code>is_valid</code>方法，才开始校验前端参数</li>
+<li>如果校验成功，则返回<code>True</code>，校验失败返回<code>False</code></li>
+<li><code>raise_exception=True</code>，校验失败后会抛出异常</li>
+<li>当调用<code>is_valid</code>方法之后，才可以调用<code>errors</code>属性「校验的错误提示(字典)」</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    serializer.is_valid(raise_exception=<span class="literal">True</span>)</span><br><span class="line"><span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">    <span class="keyword">return</span> JsonResponse(serializer.errors)</span><br></pre></td></tr></table></figure>
+
+<p>在序列化器中增加<code>validators</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> rest_framework.validators <span class="keyword">import</span> UniqueValidator</span><br><span class="line"><span class="keyword">from</span> projects.models <span class="keyword">import</span> Projects</span><br><span class="line"></span><br><span class="line">name = serializers.CharField(</span><br><span class="line">        label=<span class="string">&#x27;项目名称&#x27;</span>,</span><br><span class="line">        max_length=<span class="number">200</span>,</span><br><span class="line">        help_text=<span class="string">&#x27;项目名称&#x27;</span>,</span><br><span class="line">        validators=[</span><br><span class="line">            UniqueValidator(</span><br><span class="line">                queryset=Projects.objects.<span class="built_in">all</span>(),</span><br><span class="line">                message=<span class="string">&#x27;项目名不能重复&#x27;</span></span><br><span class="line">            )</span><br><span class="line">        ]</span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+<p>编写一份创建项目的json<br><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g80binslxij30ks0cutaf.jpg" alt="创建项目json"></p>
+<p>发送一个创建请求</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> http POST :8000/project/ &lt; projects.json</span> </span><br><span class="line">zhongxindeMacBook-Pro:apitest zhongxin$ http POST :8000/project/ &lt; projects.json </span><br><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Content-Length: 56</span><br><span class="line">Content-Type: application/json</span><br><span class="line">Date: Wed, 16 Oct 2019 12:34:16 GMT</span><br><span class="line">Server: WSGIServer/0.2 CPython/3.7.1</span><br><span class="line">Vary: Origin</span><br><span class="line">X-Frame-Options: SAMEORIGIN</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    &quot;name&quot;: [</span><br><span class="line">        &quot;项目名不能重复&quot;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g80bjfd1opj316y0u048p.jpg" alt="请求结果"></p>
+<h3 id="自定义校验"><a href="#自定义校验" class="headerlink" title="自定义校验"></a>自定义校验</h3><p>自己编写一个校验器</p>
+<p>需求：项目名称中必须包含<code>项目</code>关键字</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">is_unique_project_name</span>(<span class="params">name</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    项目名称中需要包含「项目」关键字</span></span><br><span class="line"><span class="string">    :param name:前端传递给我的项目名称</span></span><br><span class="line"><span class="string">    :return:</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> <span class="string">&#x27;项目&#x27;</span> <span class="keyword">not</span> <span class="keyword">in</span> name:</span><br><span class="line">        <span class="keyword">raise</span> serializers.ValidationError(detail=<span class="string">&#x27;项目名称中必须包含「项目」&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">name = serializers.CharField(</span><br><span class="line">    label=<span class="string">&#x27;项目名称&#x27;</span>,</span><br><span class="line">    max_length=<span class="number">200</span>,</span><br><span class="line">    help_text=<span class="string">&#x27;项目名称&#x27;</span>,</span><br><span class="line">    validators=[</span><br><span class="line">        UniqueValidator(</span><br><span class="line">            queryset=Projects.objects.<span class="built_in">all</span>(),</span><br><span class="line">            message=<span class="string">&#x27;项目名不能重复&#x27;</span></span><br><span class="line">        ), is_unique_project_name</span><br><span class="line">    ]</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g80bk2c8jsj316y0u0wp4.jpg" alt="请求结果"></p>
+<h3 id="单字段校验"><a href="#单字段校验" class="headerlink" title="单字段校验"></a>单字段校验</h3><p>在序列化器内部增加<code>def validate_name(self, value):</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 单字段的校验</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">validate_name</span>(<span class="params">self, value</span>):</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> value.endswith(<span class="string">&#x27;项目&#x27;</span>):</span><br><span class="line">        <span class="keyword">raise</span> serializers.ValidationError(<span class="string">&#x27;项目名称必须以「项目」结尾&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># projects.json</span><br><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;测试游记1&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;leader&quot;</span>: <span class="string">&quot;zhongxin&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;tester&quot;</span>: <span class="string">&quot;zhongxin&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;programer&quot;</span>: <span class="string">&quot;zhong3&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;publish_app&quot;</span>: <span class="string">&quot;公众号&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;desc&quot;</span>: <span class="string">&quot;无&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g80bs2zwkuj316y0u07eu.jpg" alt="校验"></p>
+<p>修改<code>projects.json</code></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># projects.json</span><br><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;测试游记项目1&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;leader&quot;</span>: <span class="string">&quot;zhongxin&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;tester&quot;</span>: <span class="string">&quot;zhongxin&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;programer&quot;</span>: <span class="string">&quot;zhong3&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;publish_app&quot;</span>: <span class="string">&quot;公众号&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;desc&quot;</span>: <span class="string">&quot;无&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g80btfshr0j316y0u0n7f.jpg" alt="测试2"></p>
+<h3 id="多字段校验"><a href="#多字段校验" class="headerlink" title="多字段校验"></a>多字段校验</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">validate</span>(<span class="params">self, attrs</span>):</span></span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g80bz0ljxtj31e60u07bk.jpg" alt="多字段"></p>
+<p>这里<code>name</code>为<code>None</code>是因为上面单字段校验没有返回value</p>
+<p>修改后再次测试</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">validate_name</span>(<span class="params">self, value</span>):</span></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> value.endswith(<span class="string">&#x27;项目&#x27;</span>):</span><br><span class="line">        <span class="keyword">raise</span> serializers.ValidationError(<span class="string">&#x27;项目名称必须以「项目」结尾&#x27;</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> value</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g80c0s6uasj311i0myq9z.jpg" alt="测试2"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">validate</span>(<span class="params">self, attrs</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    多字段联合校验</span></span><br><span class="line"><span class="string">    需求：tester和leader中有「icon」</span></span><br><span class="line"><span class="string">    :param attrs:</span></span><br><span class="line"><span class="string">    :return:</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">if</span> <span class="string">&#x27;icon&#x27;</span> <span class="keyword">not</span> <span class="keyword">in</span> attrs[<span class="string">&#x27;tester&#x27;</span>] <span class="keyword">and</span> <span class="string">&#x27;icon&#x27;</span> <span class="keyword">not</span> <span class="keyword">in</span> attrs[<span class="string">&#x27;leader&#x27;</span>]:</span><br><span class="line">        <span class="keyword">raise</span> serializers.ValidationError(<span class="string">&#x27;「icon」必须是项目负责人或者在项目的测试人员&#x27;</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="keyword">return</span> attrs</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g80c3u7csrj316y0u0tj9.jpg" alt="测试"></p>
+<p>修改<code>projects.json</code></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># projects.json</span><br><span class="line">&#123;</span><br><span class="line">  <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;测试游记项目&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;leader&quot;</span>: <span class="string">&quot;icon&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;tester&quot;</span>: <span class="string">&quot;zhongxin&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;programer&quot;</span>: <span class="string">&quot;zhong3&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;publish_app&quot;</span>: <span class="string">&quot;公众号&quot;</span>,</span><br><span class="line">  <span class="attr">&quot;desc&quot;</span>: <span class="string">&quot;无&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g80c6ctdebj316y0u04a3.jpg" alt="正确测试"></p>
+<h3 id="校验器的顺序"><a href="#校验器的顺序" class="headerlink" title="校验器的顺序"></a>校验器的顺序</h3><ol>
+<li>字段定义时的限制，包含<code>validators</code>列表条目从左到右进行校验</li>
+<li>单字段「<code>validate_字段名</code>」的校验</li>
+<li>多字段联合校验「<code>validate</code>方法」</li>
+</ol>
+<h2 id="优化视图内代码"><a href="#优化视图内代码" class="headerlink" title="优化视图内代码"></a>优化视图内代码</h2><blockquote>
+<ul>
+<li><p>如果在创建序列化器对象时候，只给data传参，那么调用save()方法实际调用的就是序列化器对象的<code>create()</code>方法</p>
+</li>
+<li><p>在创建序列化器对象时，同时给instance和data传参,那么调用save()方法实际调用的就是序列化器对象的<code>update()</code>方法</p>
+</li>
+</ul>
+</blockquote>
+<p>序列化器类<code>ProjectSerializer</code>中增加<code>create</code>和<code>update</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create</span>(<span class="params">self, validated_data</span>):</span></span><br><span class="line">    <span class="keyword">return</span> Projects.objects.create(**validated_data)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">update</span>(<span class="params">self, instance, validated_data</span>):</span></span><br><span class="line">    instance.name = validated_data[<span class="string">&#x27;name&#x27;</span>]</span><br><span class="line">    instance.leader = validated_data[<span class="string">&#x27;leader&#x27;</span>]</span><br><span class="line">    instance.tester = validated_data[<span class="string">&#x27;tester&#x27;</span>]</span><br><span class="line">    instance.programer = validated_data[<span class="string">&#x27;programer&#x27;</span>]</span><br><span class="line">    instance.publish_app = validated_data[<span class="string">&#x27;publish_app&#x27;</span>]</span><br><span class="line">    instance.desc = validated_data[<span class="string">&#x27;desc&#x27;</span>]</span><br><span class="line">    instance.save()</span><br><span class="line">    <span class="keyword">return</span> instance</span><br></pre></td></tr></table></figure>
+
+<h3 id="修改post请求"><a href="#修改post请求" class="headerlink" title="修改post请求"></a>修改post请求</h3><p>从</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">post</span>(<span class="params">self, request</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    新建项目</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    json_data = request.body.decode(<span class="string">&#x27;utf8&#x27;</span>)</span><br><span class="line">    python_data = json.loads(json_data, encoding=<span class="string">&#x27;utf8&#x27;</span>)</span><br><span class="line">    serializer = ProjectSerializer(data=python_data)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        serializer.is_valid(raise_exception=<span class="literal">True</span>)</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        <span class="keyword">return</span> JsonResponse(serializer.errors)</span><br><span class="line">    project = Projects.objects.create(**serializer.validated_data)</span><br><span class="line">    serializer = ProjectSerializer(instance=project)</span><br><span class="line">    <span class="keyword">return</span> JsonResponse(serializer.data, status=<span class="number">201</span>)</span><br></pre></td></tr></table></figure>
+
+<p>改为</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">post</span>(<span class="params">self, request</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    新建项目</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    json_data = request.body.decode(<span class="string">&#x27;utf8&#x27;</span>)</span><br><span class="line">    python_data = json.loads(json_data, encoding=<span class="string">&#x27;utf8&#x27;</span>)</span><br><span class="line">    serializer = ProjectSerializer(data=python_data)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        serializer.is_valid(raise_exception=<span class="literal">True</span>)</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        <span class="keyword">return</span> JsonResponse(serializer.errors)</span><br><span class="line">    serializer.save()</span><br><span class="line">    <span class="keyword">return</span> JsonResponse(serializer.data, status=<span class="number">201</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="修改put请求"><a href="#修改put请求" class="headerlink" title="修改put请求"></a>修改put请求</h3><p>从</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">put</span>(<span class="params">self, request, pk</span>):</span></span><br><span class="line">    project = self.get_object(pk)</span><br><span class="line">    json_data = request.body.decode(<span class="string">&#x27;utf8&#x27;</span>)</span><br><span class="line">    python_data = json.loads(json_data, encoding=<span class="string">&#x27;utf8&#x27;</span>)</span><br><span class="line">    serializer = ProjectSerializer(data=python_data)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        serializer.is_valid(raise_exception=<span class="literal">True</span>)</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        <span class="keyword">return</span> JsonResponse(serializer.errors)</span><br><span class="line">    project.name = serializer.validated_data[<span class="string">&#x27;name&#x27;</span>]</span><br><span class="line">    project.leader = serializer.validated_data[<span class="string">&#x27;leader&#x27;</span>]</span><br><span class="line">    project.tester = serializer.validated_data[<span class="string">&#x27;tester&#x27;</span>]</span><br><span class="line">    project.programer = serializer.validated_data[<span class="string">&#x27;programer&#x27;</span>]</span><br><span class="line">    project.publish_app = serializer.validated_data[<span class="string">&#x27;publish_app&#x27;</span>]</span><br><span class="line">    project.desc = serializer.validated_data[<span class="string">&#x27;desc&#x27;</span>]</span><br><span class="line">    project.save()</span><br><span class="line"></span><br><span class="line">    serializer = ProjectSerializer(instance=project)</span><br><span class="line">    <span class="keyword">return</span> JsonResponse(serializer.data, status=<span class="number">201</span>)</span><br></pre></td></tr></table></figure>
+
+<p>改为</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">put</span>(<span class="params">self, request, pk</span>):</span></span><br><span class="line">    project = self.get_object(pk)</span><br><span class="line">    json_data = request.body.decode(<span class="string">&#x27;utf8&#x27;</span>)</span><br><span class="line">    python_data = json.loads(json_data, encoding=<span class="string">&#x27;utf8&#x27;</span>)</span><br><span class="line">    serializer = ProjectSerializer(instance=project, data=python_data)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        serializer.is_valid(raise_exception=<span class="literal">True</span>)</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        <span class="keyword">return</span> JsonResponse(serializer.errors)</span><br><span class="line">    serializer.save()</span><br><span class="line">    <span class="keyword">return</span> JsonResponse(serializer.data, status=<span class="number">201</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="优化序列化器"><a href="#优化序列化器" class="headerlink" title="优化序列化器"></a>优化序列化器</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> rest_framework <span class="keyword">import</span> serializers</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ProjectModelSerializer</span>(<span class="params">serializers.ModelSerializer</span>):</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        <span class="comment"># 指定参考哪一个模型类来创建</span></span><br><span class="line">        model = Projects</span><br><span class="line">        <span class="comment"># 指定为模型类的哪些字段，来生成序列化器</span></span><br><span class="line">        fields = <span class="string">&#x27;__all__&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">In[2]:from projects import serializer</span><br><span class="line">In[3]:serializer.ProjectModelSerializer()</span><br><span class="line">Out[3]: </span><br><span class="line">ProjectModelSerializer():</span><br><span class="line">    id = IntegerField(label=&#x27;ID&#x27;, read_only=True)</span><br><span class="line">    name = CharField(help_text=&#x27;项目名称&#x27;, label=&#x27;项目名称&#x27;, max_length=200, validators=[&lt;UniqueValidator(queryset=Projects.objects.all())&gt;])</span><br><span class="line">    leader = CharField(help_text=&#x27;负责人&#x27;, label=&#x27;负责人&#x27;, max_length=50)</span><br><span class="line">    tester = CharField(help_text=&#x27;测试人员&#x27;, label=&#x27;测试人员&#x27;, max_length=50)</span><br><span class="line">    programer = CharField(help_text=&#x27;开发人员&#x27;, label=&#x27;开发人员&#x27;, max_length=50)</span><br><span class="line">    publish_app = CharField(help_text=&#x27;发布应用&#x27;, label=&#x27;发布应用&#x27;, max_length=50)</span><br><span class="line">    desc = CharField(allow_blank=True, allow_null=True, help_text=&#x27;简要描述&#x27;, label=&#x27;简要描述&#x27;, required=False, style=&#123;&#x27;base_template&#x27;: &#x27;textarea.html&#x27;&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g80df362lzj31r60p8gs5.jpg" alt="简化序列化器"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">fields = (<span class="string">&#x27;id&#x27;</span>, <span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;leader&#x27;</span>, <span class="string">&#x27;tester&#x27;</span>, <span class="string">&#x27;programer&#x27;</span>, <span class="string">&#x27;publish_app&#x27;</span>)</span><br><span class="line">exclude = (<span class="string">&#x27;publish_app&#x27;</span>)</span><br><span class="line">read_only_fields = (<span class="string">&#x27;leader&#x27;</span>,<span class="string">&#x27;tester&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><code>fields</code>:指定显示哪些</p>
+</li>
+<li><p><code>exclude</code>:指定排除哪些</p>
+</li>
+<li><p><code>read_only_fields</code>:指定<code>read_only=True</code>的字段</p>
+</li>
+</ul>
+<p>如果需要修改<code>name</code>的校验，自定义一个<code>name</code>字段</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ProjectModelSerializer</span>(<span class="params">serializers.ModelSerializer</span>):</span></span><br><span class="line">    name = serializers.CharField(</span><br><span class="line">        label=<span class="string">&#x27;项目名称&#x27;</span>,</span><br><span class="line">        max_length=<span class="number">200</span>,</span><br><span class="line">        help_text=<span class="string">&#x27;项目名称&#x27;</span>,</span><br><span class="line">        validators=[</span><br><span class="line">            UniqueValidator(</span><br><span class="line">                queryset=Projects.objects.<span class="built_in">all</span>(),</span><br><span class="line">                message=<span class="string">&#x27;项目名不能重复&#x27;</span></span><br><span class="line">            ), is_unique_project_name</span><br><span class="line">        ],</span><br><span class="line">        error_messages=&#123;<span class="string">&#x27;max_length&#x27;</span>: <span class="string">&#x27;长度不能超过200个字节&#x27;</span>&#125;</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        model = Projects</span><br><span class="line">        fields = <span class="string">&#x27;__all__&#x27;</span></span><br><span class="line">        read_only_fields = (<span class="string">&#x27;leader&#x27;</span>, <span class="string">&#x27;tester&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>也可以增加<code>extra_kwargs</code>增加其他内容</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">    <span class="comment"># 指定参考哪一个模型类来创建</span></span><br><span class="line">    model = Projects</span><br><span class="line">    <span class="comment"># 指定为模型类的哪些字段，来生成序列化器</span></span><br><span class="line">    fields = <span class="string">&#x27;__all__&#x27;</span></span><br><span class="line">    extra_kwargs = &#123;</span><br><span class="line">        <span class="string">&#x27;leader&#x27;</span>: &#123;</span><br><span class="line">            <span class="string">&#x27;write_only&#x27;</span>: <span class="literal">True</span>,</span><br><span class="line">            <span class="string">&#x27;error_messages&#x27;</span>: &#123;<span class="string">&#x27;max_length&#x27;</span>: <span class="string">&#x27;长度不能超过50个字节&#x27;</span>&#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试一下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Out[3]: </span><br><span class="line">ProjectModelSerializer():</span><br><span class="line">    id = IntegerField(label=&#x27;ID&#x27;, read_only=True)</span><br><span class="line">    name = CharField(error_messages=&#123;&#x27;max_length&#x27;: &#x27;长度不能超过200个字节&#x27;&#125;, help_text=&#x27;项目名称&#x27;, label=&#x27;项目名称&#x27;, max_length=200, validators=[&lt;UniqueValidator(queryset=&lt;QuerySet [&lt;Projects: 测试游记&gt;, &lt;Projects: 测试游记1&gt;, &lt;Projects: 「测试游记」-创建&gt;, &lt;Projects: 1015项目&gt;, &lt;Projects: 测试游记项目&gt;]&gt;)&gt;, &lt;function is_unique_project_name&gt;])</span><br><span class="line">    leader = CharField(error_messages=&#123;&#x27;max_length&#x27;: &#x27;长度不能超过50个字节&#x27;&#125;, help_text=&#x27;负责人&#x27;, label=&#x27;负责人&#x27;, max_length=50, write_only=True)</span><br><span class="line">    tester = CharField(help_text=&#x27;测试人员&#x27;, label=&#x27;测试人员&#x27;, max_length=50)</span><br><span class="line">    programer = CharField(help_text=&#x27;开发人员&#x27;, label=&#x27;开发人员&#x27;, max_length=50)</span><br><span class="line">    publish_app = CharField(help_text=&#x27;发布应用&#x27;, label=&#x27;发布应用&#x27;, max_length=50)</span><br><span class="line">    desc = CharField(allow_blank=True, allow_null=True, help_text=&#x27;简要描述&#x27;, label=&#x27;简要描述&#x27;, required=False, style=&#123;&#x27;base_template&#x27;: &#x27;textarea.html&#x27;&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt=" wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt=" 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt=" 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/" rel="tag"># Python测试开发</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/03/03/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6(%E4%BA%94)/" rel="next" title="测试开发进阶(五)">
+                <i class="fa fa-chevron-left"></i> 测试开发进阶(五)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2021/03/03/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6(%E4%BA%8C%E5%8D%81%E5%85%AB)/" rel="prev" title="测试开发进阶(二十八)">
+                测试开发进阶(二十八) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpeg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">51</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zx490336534" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6-%E4%BA%8C%E5%8D%81%E5%85%AD"><span class="nav-number">1.</span> <span class="nav-text">测试开发进阶(二十六)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BA%8F%E5%88%97%E5%8C%96%E5%99%A8"><span class="nav-number">1.1.</span> <span class="nav-text">序列化器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E7%94%A8%E5%8F%82%E6%95%B0"><span class="nav-number">1.1.1.</span> <span class="nav-text">通用参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%89%E9%A1%B9%E5%8F%82%E6%95%B0"><span class="nav-number">1.1.2.</span> <span class="nav-text">选项参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%A1%E9%AA%8C"><span class="nav-number">1.2.</span> <span class="nav-text">校验</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%A1%E9%AA%8C"><span class="nav-number">1.2.1.</span> <span class="nav-text">自定义校验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E5%AD%97%E6%AE%B5%E6%A0%A1%E9%AA%8C"><span class="nav-number">1.2.2.</span> <span class="nav-text">单字段校验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E5%AD%97%E6%AE%B5%E6%A0%A1%E9%AA%8C"><span class="nav-number">1.2.3.</span> <span class="nav-text">多字段校验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%A1%E9%AA%8C%E5%99%A8%E7%9A%84%E9%A1%BA%E5%BA%8F"><span class="nav-number">1.2.4.</span> <span class="nav-text">校验器的顺序</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E8%A7%86%E5%9B%BE%E5%86%85%E4%BB%A3%E7%A0%81"><span class="nav-number">1.3.</span> <span class="nav-text">优化视图内代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9post%E8%AF%B7%E6%B1%82"><span class="nav-number">1.3.1.</span> <span class="nav-text">修改post请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9put%E8%AF%B7%E6%B1%82"><span class="nav-number">1.3.2.</span> <span class="nav-text">修改put请求</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E5%BA%8F%E5%88%97%E5%8C%96%E5%99%A8"><span class="nav-number">1.4.</span> <span class="nav-text">优化序列化器</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">测试游记</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://example.com/2021/03/03/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6(%E4%BA%8C%E5%8D%81%E5%85%AD)/';
+          this.page.identifier = '2021/03/03/测试开发进阶(二十六)/';
+          this.page.title = '测试开发进阶(二十六)';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
