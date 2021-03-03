@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Jenkins,测试开发," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Jenkins(六)Python隔离环境搭建 安装Pyenv Pipeline插件 在Jenkins机器上安装python，pip，virtualenv  ⚠️由于使用虚拟环境搭建，所以没有第三方的库，如果需要使用请使用pip来进行安装">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Jenkins(六)">
+<meta property="og:url" content="http://zx490336534.github.io/2019/07/13/6-Jenkins/index.html">
+<meta property="og:site_name" content="测试游记">
+<meta property="og:description" content="Jenkins(六)Python隔离环境搭建 安装Pyenv Pipeline插件 在Jenkins机器上安装python，pip，virtualenv  ⚠️由于使用虚拟环境搭建，所以没有第三方的库，如果需要使用请使用pip来进行安装">
+<meta property="og:locale">
+<meta property="og:image" content="http://ww3.sinaimg.cn/large/006tNc79ly1g4y9bsdmxbj31l20u0nc6.jpg">
+<meta property="og:image" content="http://ww4.sinaimg.cn/large/006tNc79ly1g4y64ggh6gj31b30u0ne7.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/006tNc79ly1g4y76gf0ojj315c0u011k.jpg">
+<meta property="og:image" content="http://ww3.sinaimg.cn/large/006tNc79ly1g4y6lzj4hmj31b30u0wv9.jpg">
+<meta property="og:image" content="http://ww2.sinaimg.cn/large/006tNc79ly1g4y6uodklzj31b30u0h3c.jpg">
+<meta property="og:image" content="http://ww3.sinaimg.cn/large/006tNc79ly1g4y6wjr85cj31b30u04ji.jpg">
+<meta property="og:image" content="http://ww3.sinaimg.cn/large/006tNc79ly1g4y90n6cjyj31b30u04qp.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/006tNc79ly1g4y924tqp9j31b30u07ql.jpg">
+<meta property="og:image" content="http://ww2.sinaimg.cn/large/006tNc79ly1g4y92v9h80j31b30u04q1.jpg">
+<meta property="og:image" content="http://ww3.sinaimg.cn/large/006tNc79ly1g4y9303nx4j31b30u0k99.jpg">
+<meta property="article:published_time" content="2019-07-13T05:52:00.000Z">
+<meta property="article:modified_time" content="2021-03-03T14:03:02.074Z">
+<meta property="article:author" content="测试游记">
+<meta property="article:tag" content="Jenkins">
+<meta property="article:tag" content="测试开发">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://ww3.sinaimg.cn/large/006tNc79ly1g4y9bsdmxbj31l20u0nc6.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://zx490336534.github.io/2019/07/13/6-Jenkins/"/>
+
+
+
+
+
+  <title>Jenkins(六) | 测试游记</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?41fc030db57d5570dd22f78997dc4a7e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">测试游记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/2019/07/13/6-Jenkins/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="测试游记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Jenkins(六)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-13T13:52:00+08:00">
+                2019-07-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Jenkins/" itemprop="url" rel="index">
+                    <span itemprop="name">Jenkins</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/07/13/6-Jenkins/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/07/13/6-Jenkins/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Jenkins-六"><a href="#Jenkins-六" class="headerlink" title="Jenkins(六)"></a>Jenkins(六)</h1><h2 id="Python隔离环境搭建"><a href="#Python隔离环境搭建" class="headerlink" title="Python隔离环境搭建"></a>Python隔离环境搭建</h2><ol>
+<li>安装Pyenv Pipeline插件</li>
+<li>在Jenkins机器上安装python，pip，virtualenv</li>
+</ol>
+<p>⚠️由于使用虚拟环境搭建，所以没有第三方的库，如果需要使用请使用pip来进行安装</p>
+<span id="more"></span>
+<blockquote>
+<p>导出现在环境的第三方库</p>
+<p>pip freeze &gt; 「xxxx.txt」</p>
+<p>批量安装第三方库：</p>
+<p>pip install -r 「xxxx.txt」</p>
+</blockquote>
+<p><img src="http://ww3.sinaimg.cn/large/006tNc79ly1g4y9bsdmxbj31l20u0nc6.jpg" alt="第三方库"></p>
+<p><img src="http://ww4.sinaimg.cn/large/006tNc79ly1g4y64ggh6gj31b30u0ne7.jpg" alt="插件安装"></p>
+<p>在流水线中使用Pyenv Pipeline插件提供的<code>withPythonEnv</code>方法</p>
+<p>小括号内为可执行python路径。流水线会在当前工作空间下创建一个virtualenv环境</p>
+<p>大括号内的内容就执行在新建的virtualenv环境下</p>
+<p><img src="http://ww1.sinaimg.cn/large/006tNc79ly1g4y76gf0ojj315c0u011k.jpg" alt="python3路径"></p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">withPythonEnv(<span class="string">&#x27;/usr/lib/python3&#x27;</span>)&#123;</span><br><span class="line">   sh <span class="string">&#x27;python --version&#x27;</span> <span class="comment">//查看python版本</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Allure报告"><a href="#Allure报告" class="headerlink" title="Allure报告"></a>Allure报告</h2><ol>
+<li>安装Allure Jenkins插件</li>
+<li>配置Allure自动安装</li>
+<li>编写pytest脚本</li>
+<li>执行</li>
+<li>查看结果</li>
+</ol>
+<p><img src="http://ww3.sinaimg.cn/large/006tNc79ly1g4y6lzj4hmj31b30u0wv9.jpg" alt="安装插件"></p>
+<p><img src="http://ww2.sinaimg.cn/large/006tNc79ly1g4y6uodklzj31b30u0h3c.jpg" alt="image-20190713142000087"></p>
+<p>使用片段生成器辅助步骤的生成</p>
+<p><img src="http://ww3.sinaimg.cn/large/006tNc79ly1g4y6wjr85cj31b30u04ji.jpg" alt="自动生成"></p>
+<p>下面是流水线部分</p>
+<p>由于只编写了简单的测试脚本，所以只需要安装<code>pytest</code>和<code>allure-pytest</code>两个第三方库就可以了</p>
+<p>最后使用post-always来进行allure报告的展示</p>
+<p>报告的链接图标会展示在该任务中</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">pipeline&#123;</span><br><span class="line">   agent any</span><br><span class="line">   stages&#123;</span><br><span class="line">      stage(<span class="string">&#x27;Example&#x27;</span>)&#123;</span><br><span class="line">         steps&#123;</span><br><span class="line">            withPythonEnv(<span class="string">&#x27;/usr/bin/python&#x27;</span>)&#123;</span><br><span class="line">               sh <span class="string">&#x27;python -m pip install pytest &#x27;</span></span><br><span class="line">               sh <span class="string">&#x27;python -m pip install allure-pytest&#x27;</span></span><br><span class="line">               sh <span class="string">&#x27;python -m pytest -v test_allure.py --alluredir=allure-results&#x27;</span></span><br><span class="line">            &#125;</span><br><span class="line">            exit <span class="number">0</span></span><br><span class="line">         &#125;</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   post&#123;</span><br><span class="line">      always&#123;</span><br><span class="line">         allure <span class="attr">includeProperties:</span> <span class="literal">false</span>, <span class="attr">jdk:</span> <span class="string">&#x27;&#x27;</span>, <span class="attr">results:</span> [[<span class="attr">path:</span> <span class="string">&#x27;allure-results&#x27;</span>]]</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>pytest脚本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pytest</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_success</span>():</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;this test succeeds&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">assert</span> <span class="literal">True</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_failure</span>():</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;this test fails&quot;&quot;&quot;</span></span><br><span class="line">    <span class="keyword">assert</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_skip</span>():</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;this test is skipped&quot;&quot;&quot;</span></span><br><span class="line">    pytest.skip(<span class="string">&#x27;for a reason!&#x27;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_broken</span>():</span></span><br><span class="line">    <span class="keyword">raise</span> Exception(<span class="string">&#x27;oops&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>虚拟环境中正在安装第三方库</p>
+<p><img src="http://ww3.sinaimg.cn/large/006tNc79ly1g4y90n6cjyj31b30u04qp.jpg" alt="环境部分"></p>
+<p>使用pytest进行测试，并输出报告至allure-results</p>
+<p><img src="http://ww1.sinaimg.cn/large/006tNc79ly1g4y924tqp9j31b30u07ql.jpg" alt="测试部分"></p>
+<p>报告的链接图标⬇️⬇️⬇️</p>
+<p><img src="http://ww2.sinaimg.cn/large/006tNc79ly1g4y92v9h80j31b30u04q1.jpg" alt="测试结果"></p>
+<p>具体的报告⬇️</p>
+<p><img src="http://ww3.sinaimg.cn/large/006tNc79ly1g4y9303nx4j31b30u0k99.jpg" alt="Allure报告"></p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>综上，</p>
+<p>在执行的设备上搭建了python，pip，virtualenv环境</p>
+<p>在Jenkins上配置了自动安装Allure</p>
+<p>完成了<strong>环境隔离</strong>，<strong>测试执行</strong>，<strong>报告展示</strong></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt=" wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt=" 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt=" 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Jenkins/" rel="tag"># Jenkins</a>
+          
+            <a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/" rel="tag"># 测试开发</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/13/5-Jenkins/" rel="next" title="Jenkins(五)">
+                <i class="fa fa-chevron-left"></i> Jenkins(五)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/13/7-Jenkins/" rel="prev" title="Jenkins(七)">
+                Jenkins(七) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpeg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zx490336534" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Jenkins-%E5%85%AD"><span class="nav-number">1.</span> <span class="nav-text">Jenkins(六)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Python%E9%9A%94%E7%A6%BB%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="nav-number">1.1.</span> <span class="nav-text">Python隔离环境搭建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Allure%E6%8A%A5%E5%91%8A"><span class="nav-number">1.2.</span> <span class="nav-text">Allure报告</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">1.3.</span> <span class="nav-text">小结</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">测试游记</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://zx490336534.github.io/2019/07/13/6-Jenkins/';
+          this.page.identifier = '2019/07/13/6-Jenkins/';
+          this.page.title = 'Jenkins(六)';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
