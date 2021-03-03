@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Python,测试开发," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Flask(从wsgi开始 一) 运行Flask&#x3D;开启一个服务  web应用处理请求的具体流程 用户操作操作浏览器发送请求； 请求转发至对应的web服务器 web服务器将请求转交给web应用程序，web应用程序处理请求 web应用将请求结果返回给web服务器，由web服务器返回用户响应结果 浏览器收到响应，向用户展示">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flask(从wsgi开始 一)">
+<meta property="og:url" content="http://zx490336534.github.io/2020/06/13/Flask/Flask(%E4%BB%8Ewsgi%E5%BC%80%E5%A7%8B%20%E4%B8%80)/index.html">
+<meta property="og:site_name" content="测试游记">
+<meta property="og:description" content="Flask(从wsgi开始 一) 运行Flask&#x3D;开启一个服务  web应用处理请求的具体流程 用户操作操作浏览器发送请求； 请求转发至对应的web服务器 web服务器将请求转交给web应用程序，web应用程序处理请求 web应用将请求结果返回给web服务器，由web服务器返回用户响应结果 浏览器收到响应，向用户展示">
+<meta property="og:locale">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/007S8ZIlly1gfqf64earnj30n809sjs8.jpg">
+<meta property="article:published_time" content="2020-06-13T00:43:00.000Z">
+<meta property="article:modified_time" content="2021-03-03T14:19:35.999Z">
+<meta property="article:author" content="测试游记">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="测试开发">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tva1.sinaimg.cn/large/007S8ZIlly1gfqf64earnj30n809sjs8.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://zx490336534.github.io/2020/06/13/Flask/Flask(从wsgi开始 一)/"/>
+
+
+
+
+
+  <title>Flask(从wsgi开始 一) | 测试游记</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?41fc030db57d5570dd22f78997dc4a7e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">测试游记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/2020/06/13/Flask/Flask(%E4%BB%8Ewsgi%E5%BC%80%E5%A7%8B%20%E4%B8%80)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="测试游记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Flask(从wsgi开始 一)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-06-13T08:43:00+08:00">
+                2020-06-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/" itemprop="url" rel="index">
+                    <span itemprop="name">Python测试开发进阶</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/06/13/Flask/Flask(%E4%BB%8Ewsgi%E5%BC%80%E5%A7%8B%20%E4%B8%80)/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/06/13/Flask/Flask(从wsgi开始 一)/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Flask-从wsgi开始-一"><a href="#Flask-从wsgi开始-一" class="headerlink" title="Flask(从wsgi开始 一)"></a>Flask(从wsgi开始 一)</h1><blockquote>
+<p>运行Flask=开启一个服务</p>
+</blockquote>
+<h2 id="web应用处理请求的具体流程"><a href="#web应用处理请求的具体流程" class="headerlink" title="web应用处理请求的具体流程"></a>web应用处理请求的具体流程</h2><ol>
+<li>用户操作操作浏览器发送请求；</li>
+<li>请求转发至对应的web服务器</li>
+<li>web服务器将请求转交给web应用程序，web应用程序处理请求</li>
+<li>web应用将请求结果返回给web服务器，由web服务器返回用户响应结果</li>
+<li>浏览器收到响应，向用户展示<span id="more"></span>
+<h2 id="一个wsgi服务"><a href="#一个wsgi服务" class="headerlink" title="一个wsgi服务"></a>一个<code>wsgi</code>服务</h2></li>
+</ol>
+<blockquote>
+<p>全称Python Web Server Gateway Interface，指定了web服务器和Python web应用或web框架之间的标准接口，以提高web应用在一系列web服务器间的移植性。 具体可查看 <a href="https://link.zhihu.com/?target=https://www.python.org/dev/peps/pep-0333/">官方文档</a>:<a target="_blank" rel="noopener" href="https://www.python.org/dev/peps/pep-0333/">https://www.python.org/dev/peps/pep-0333/</a></p>
+</blockquote>
+<ol>
+<li>WSGI是一套接口标准协议/规范；</li>
+<li>通信（作用）区间是Web服务器和Python Web应用程序之间；</li>
+<li>目的是制定标准，以保证不同Web服务器可以和不同的Python程序之间相互通信</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> wsgiref.simple_server <span class="keyword">import</span> make_server</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">app</span>(<span class="params">env, start_response</span>):</span></span><br><span class="line">    <span class="comment"># env 获取请求相关数据</span></span><br><span class="line">    <span class="comment"># start_response</span></span><br><span class="line">    start_response(<span class="string">&#x27;200 OK&#x27;</span>,[(<span class="string">&#x27;content-type&#x27;</span>,<span class="string">&#x27;text/plain&#x27;</span>),])</span><br><span class="line">    <span class="keyword">return</span> [<span class="string">b&quot;hello&quot;</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">server = make_server(<span class="string">&quot;&quot;</span>, <span class="number">6001</span>, app)</span><br><span class="line">server.serve_forever()  <span class="comment"># poll_interval轮询时间</span></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>env：字典，包含请求的所有信息</li>
+<li>start_response：在可调用对象中调用的函数，用来发起响应，参数包括状态码，headers等</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gfqf64earnj30n809sjs8.jpg" alt="访问"></p>
+<h2 id="拓展1（面向过程）"><a href="#拓展1（面向过程）" class="headerlink" title="拓展1（面向过程）"></a>拓展1（面向过程）</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> wsgiref.simple_server <span class="keyword">import</span> make_server</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">app</span>(<span class="params">env, start_response</span>):</span></span><br><span class="line">    <span class="comment"># env 获取请求相关数据</span></span><br><span class="line">    <span class="comment"># start_response</span></span><br><span class="line">    url = env[<span class="string">&#x27;PATH_INFO&#x27;</span>]</span><br><span class="line">    <span class="keyword">if</span> url == <span class="string">&#x27;/hi&#x27;</span>:</span><br><span class="line">        start_response(<span class="string">&#x27;200 OK&#x27;</span>, [(<span class="string">&#x27;content-type&#x27;</span>, <span class="string">&#x27;text/plain&#x27;</span>), ])</span><br><span class="line">        <span class="keyword">return</span> [<span class="string">b&quot;hello&quot;</span>]</span><br><span class="line">    <span class="keyword">elif</span> url == <span class="string">&#x27;/&#x27;</span>:</span><br><span class="line">        start_response(<span class="string">&#x27;200 OK&#x27;</span>, [(<span class="string">&#x27;content-type&#x27;</span>, <span class="string">&#x27;text/plain&#x27;</span>), ])</span><br><span class="line">        <span class="keyword">return</span> [<span class="string">b&quot;welcom&quot;</span>]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        start_response(<span class="string">&#x27;404 not fount&#x27;</span>, [(<span class="string">&#x27;content-type&#x27;</span>, <span class="string">&#x27;text/plain&#x27;</span>), ])</span><br><span class="line">        <span class="keyword">return</span> [<span class="string">b&quot;not fount&quot;</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">server = make_server(<span class="string">&quot;&quot;</span>, <span class="number">6001</span>, app)</span><br><span class="line">server.serve_forever()  <span class="comment"># poll_interval轮询时间</span></span><br></pre></td></tr></table></figure>
+
+<p>这样可以访问</p>
+<ul>
+<li><code>/hi</code></li>
+<li><code>/</code></li>
+<li>其他路由返回not found</li>
+</ul>
+<h2 id="拓展2（字典路由）"><a href="#拓展2（字典路由）" class="headerlink" title="拓展2（字典路由）"></a>拓展2（字典路由）</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- encoding: utf-8 -*-</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">@File    : day0_1.py</span></span><br><span class="line"><span class="string">@Time    : 2020/6/13 9:40 上午</span></span><br><span class="line"><span class="string">@Author  : zhongxin</span></span><br><span class="line"><span class="string">@Email   : 490336534@qq.com</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="keyword">from</span> wsgiref.simple_server <span class="keyword">import</span> make_server</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">home</span>():</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;welcome&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hi</span>():</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;hi&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">router = &#123;</span><br><span class="line">    <span class="string">&quot;/&quot;</span>: home,</span><br><span class="line">    <span class="string">&#x27;hi&#x27;</span>: hi</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">app</span>(<span class="params">env, start_response</span>):</span></span><br><span class="line">    url = env.get(<span class="string">&quot;PATH_INFO&quot;</span>)</span><br><span class="line">    resp = router.get(url)</span><br><span class="line">    <span class="keyword">if</span> url <span class="keyword">is</span> <span class="literal">None</span> <span class="keyword">or</span> resp <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        start_response(<span class="string">&#x27;404 not fount&#x27;</span>, [(<span class="string">&#x27;content-type&#x27;</span>, <span class="string">&#x27;text/plain&#x27;</span>), ])</span><br><span class="line">        <span class="keyword">return</span> [<span class="string">b&quot;not fount&quot;</span>]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        start_response(<span class="string">&#x27;200 OK&#x27;</span>, [(<span class="string">&#x27;content-type&#x27;</span>, <span class="string">&#x27;text/plain&#x27;</span>), ])</span><br><span class="line">    <span class="keyword">return</span> [resp().encode()]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">server = make_server(<span class="string">&quot;&quot;</span>, <span class="number">6001</span>, app)</span><br><span class="line">server.serve_forever()  <span class="comment"># poll_interval轮询时间</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="使用装饰器拓展"><a href="#使用装饰器拓展" class="headerlink" title="使用装饰器拓展"></a>使用装饰器拓展</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- encoding: utf-8 -*-</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">@File    : day0_1.py</span></span><br><span class="line"><span class="string">@Time    : 2020/6/13 9:40 上午</span></span><br><span class="line"><span class="string">@Author  : zhongxin</span></span><br><span class="line"><span class="string">@Email   : 490336534@qq.com</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="keyword">from</span> wsgiref.simple_server <span class="keyword">import</span> make_server</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Route</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.url = &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">route</span>(<span class="params">self, path</span>):</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">decorator</span>(<span class="params">func</span>):</span></span><br><span class="line">            self.url[path] = func</span><br><span class="line">            func()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> decorator</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span>(<span class="params">self, env, start_response</span>):</span></span><br><span class="line">        path = env[<span class="string">&quot;PATH_INFO&quot;</span>]</span><br><span class="line">        <span class="keyword">if</span> path <span class="keyword">in</span> self.url:</span><br><span class="line">            status = <span class="string">&#x27;200 OK&#x27;</span></span><br><span class="line">            response_header = [(<span class="string">&#x27;content-type&#x27;</span>, <span class="string">&#x27;text/html&#x27;</span>)]</span><br><span class="line">            start_response(status, response_header)</span><br><span class="line">            <span class="keyword">return</span> self.url[path]()</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            status = <span class="string">&#x27;404 Not Found&#x27;</span></span><br><span class="line">            response_header = [(<span class="string">&#x27;content-type&#x27;</span>, <span class="string">&#x27;text/html&#x27;</span>)]</span><br><span class="line">            start_response(status, response_header)</span><br><span class="line">            <span class="keyword">return</span> [<span class="string">b&quot;404 not found&quot;</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">app = Route()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/&#x27;</span></span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span>():</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="string">b&#x27;welcome&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&#x27;/hi&#x27;</span></span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hi</span>():</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="string">b&#x27;hello&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">server = make_server(<span class="string">&quot;&quot;</span>, <span class="number">6001</span>, app)</span><br><span class="line">server.serve_forever()  <span class="comment"># poll_interval轮询时间</span></span><br></pre></td></tr></table></figure>
+
+<p>一本<code>函数式编程</code>的书：《The Little Schemer》</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt=" wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt=" 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt=" 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python/" rel="tag"># Python</a>
+          
+            <a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/" rel="tag"># 测试开发</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/06/12/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/mac%E5%AE%89%E8%A3%85tomcat/" rel="next" title="mac安装tomcat">
+                <i class="fa fa-chevron-left"></i> mac安装tomcat
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/06/13/Flask/Flask(%E5%88%9D%E6%AD%A5%E5%85%A5%E9%97%A8%20%E4%BA%8C)/" rel="prev" title="Flask(初步入门 二)">
+                Flask(初步入门 二) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpeg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">107</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zx490336534" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Flask-%E4%BB%8Ewsgi%E5%BC%80%E5%A7%8B-%E4%B8%80"><span class="nav-number">1.</span> <span class="nav-text">Flask(从wsgi开始 一)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#web%E5%BA%94%E7%94%A8%E5%A4%84%E7%90%86%E8%AF%B7%E6%B1%82%E7%9A%84%E5%85%B7%E4%BD%93%E6%B5%81%E7%A8%8B"><span class="nav-number">1.1.</span> <span class="nav-text">web应用处理请求的具体流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%B8%AAwsgi%E6%9C%8D%E5%8A%A1"><span class="nav-number">1.2.</span> <span class="nav-text">一个wsgi服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8B%93%E5%B1%951%EF%BC%88%E9%9D%A2%E5%90%91%E8%BF%87%E7%A8%8B%EF%BC%89"><span class="nav-number">1.3.</span> <span class="nav-text">拓展1（面向过程）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8B%93%E5%B1%952%EF%BC%88%E5%AD%97%E5%85%B8%E8%B7%AF%E7%94%B1%EF%BC%89"><span class="nav-number">1.4.</span> <span class="nav-text">拓展2（字典路由）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E8%A3%85%E9%A5%B0%E5%99%A8%E6%8B%93%E5%B1%95"><span class="nav-number">1.5.</span> <span class="nav-text">使用装饰器拓展</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">测试游记</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://zx490336534.github.io/2020/06/13/Flask/Flask(%E4%BB%8Ewsgi%E5%BC%80%E5%A7%8B%20%E4%B8%80)/';
+          this.page.identifier = '2020/06/13/Flask/Flask(从wsgi开始 一)/';
+          this.page.title = 'Flask(从wsgi开始 一)';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

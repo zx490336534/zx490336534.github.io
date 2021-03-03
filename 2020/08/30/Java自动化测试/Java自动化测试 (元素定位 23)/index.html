@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java,自动化测试," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Java自动化测试 (元素定位 23)基础定位方式id根据id来获取元素，id唯一性 name根据元素name熟悉来获取元素，会存在不唯一的情况 tagName根据元素的标签名来获取元素，一般不建议使用 className根据元素的样式名来获取元素，会存在不唯一性，注意复合类名的问题 linkText">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java自动化测试 (元素定位 23)">
+<meta property="og:url" content="http://zx490336534.github.io/2020/08/30/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%20(%E5%85%83%E7%B4%A0%E5%AE%9A%E4%BD%8D%2023)/index.html">
+<meta property="og:site_name" content="测试游记">
+<meta property="og:description" content="Java自动化测试 (元素定位 23)基础定位方式id根据id来获取元素，id唯一性 name根据元素name熟悉来获取元素，会存在不唯一的情况 tagName根据元素的标签名来获取元素，一般不建议使用 className根据元素的样式名来获取元素，会存在不唯一性，注意复合类名的问题 linkText">
+<meta property="og:locale">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/007S8ZIlly1gi8hupqk7lj32140twk1a.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/006tNc79ly1g481x1mrsuj327w09a42a.jpg">
+<meta property="og:image" content="http://ww2.sinaimg.cn/large/006tNc79ly1g482366a4qj31b30u0b29.jpg">
+<meta property="og:image" content="http://ww3.sinaimg.cn/large/006tNc79ly1g4824mj1bbj30wa0lqnhp.jpg">
+<meta property="og:image" content="http://ww3.sinaimg.cn/large/006tNc79ly1g482a9ttgtj31b30u01kx.jpg">
+<meta property="og:image" content="http://ww3.sinaimg.cn/large/006tNc79ly1g482bedv5sj30vs06gdge.jpg">
+<meta property="article:published_time" content="2020-08-29T23:30:57.999Z">
+<meta property="article:modified_time" content="2021-03-03T14:29:02.816Z">
+<meta property="article:author" content="测试游记">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="自动化测试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tva1.sinaimg.cn/large/007S8ZIlly1gi8hupqk7lj32140twk1a.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://zx490336534.github.io/2020/08/30/Java自动化测试/Java自动化测试 (元素定位 23)/"/>
+
+
+
+
+
+  <title>Java自动化测试 (元素定位 23) | 测试游记</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?41fc030db57d5570dd22f78997dc4a7e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">测试游记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/2020/08/30/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%20(%E5%85%83%E7%B4%A0%E5%AE%9A%E4%BD%8D%2023)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="测试游记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java自动化测试 (元素定位 23)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-30T07:30:57+08:00">
+                2020-08-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index">
+                    <span itemprop="name">Java自动化测试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/08/30/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%20(%E5%85%83%E7%B4%A0%E5%AE%9A%E4%BD%8D%2023)/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/08/30/Java自动化测试/Java自动化测试 (元素定位 23)/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Java自动化测试-元素定位-23"><a href="#Java自动化测试-元素定位-23" class="headerlink" title="Java自动化测试 (元素定位 23)"></a>Java自动化测试 (元素定位 23)</h1><h2 id="基础定位方式"><a href="#基础定位方式" class="headerlink" title="基础定位方式"></a>基础定位方式</h2><h3 id="id"><a href="#id" class="headerlink" title="id"></a>id</h3><p>根据id来获取元素，id唯一性</p>
+<h3 id="name"><a href="#name" class="headerlink" title="name"></a>name</h3><p>根据元素name熟悉来获取元素，会存在不唯一的情况</p>
+<h3 id="tagName"><a href="#tagName" class="headerlink" title="tagName"></a>tagName</h3><p>根据元素的标签名来获取元素，一般不建议使用</p>
+<h3 id="className"><a href="#className" class="headerlink" title="className"></a>className</h3><p>根据元素的样式名来获取元素，会存在不唯一性，注意复合类名的问题</p>
+<h3 id="linkText"><a href="#linkText" class="headerlink" title="linkText"></a>linkText</h3><span id="more"></span>
+<p>根据超链接的全部文本值来获取元素</p>
+<h3 id="partialLinkText"><a href="#partialLinkText" class="headerlink" title="partialLinkText"></a>partialLinkText</h3><p>根据超链接的部分文本值来获取元素（模糊匹配）</p>
+<h2 id="代码封装"><a href="#代码封装" class="headerlink" title="代码封装"></a>代码封装</h2><p>之后的例子都会使用到<code>open</code>和<code>close</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.zhongxin.day02;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.openqa.selenium.By;</span><br><span class="line"><span class="keyword">import</span> org.openqa.selenium.WebDriver;</span><br><span class="line"><span class="keyword">import</span> org.openqa.selenium.WebElement;</span><br><span class="line"><span class="keyword">import</span> org.openqa.selenium.chrome.ChromeDriver;</span><br><span class="line"><span class="keyword">import</span> org.openqa.selenium.firefox.FirefoxDriver;</span><br><span class="line"><span class="keyword">import</span> org.openqa.selenium.ie.InternetExplorerDriver;</span><br><span class="line"><span class="keyword">import</span> org.openqa.selenium.remote.DesiredCapabilities;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebLocateApI</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        WebDriver driver = open(<span class="string">&quot;chrome&quot;</span>);</span><br><span class="line">        driver.get(<span class="string">&quot;https://www.baidu.com&quot;</span>);</span><br><span class="line">        </span><br><span class="line">        close(driver);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">(WebDriver driver)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        Thread.sleep(<span class="number">3000</span>);</span><br><span class="line">        driver.quit();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> WebDriver <span class="title">open</span><span class="params">(String type)</span> </span>&#123;</span><br><span class="line">        WebDriver driver = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">if</span> (<span class="string">&quot;chrome&quot;</span>.equalsIgnoreCase(type)) &#123;</span><br><span class="line">            System.setProperty(<span class="string">&quot;webdriver.chrome.driver&quot;</span>, <span class="string">&quot;src/test/resources/chromedriver&quot;</span>);</span><br><span class="line">            driver = <span class="keyword">new</span> ChromeDriver();</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">&quot;ie&quot;</span>.equalsIgnoreCase(type)) &#123;</span><br><span class="line">            <span class="comment">// 设置ie启动项</span></span><br><span class="line">            DesiredCapabilities capabilities = <span class="keyword">new</span> DesiredCapabilities();</span><br><span class="line">            <span class="comment">// 忽略缩放</span></span><br><span class="line">            capabilities.setCapability(InternetExplorerDriver.IGNORE_ZOOM_SETTING, <span class="keyword">true</span>);</span><br><span class="line">            <span class="comment">// 忽略保护模式</span></span><br><span class="line">            capabilities.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, <span class="keyword">true</span>);</span><br><span class="line">            <span class="comment">// 设置初始化浏览器地址</span></span><br><span class="line">            capabilities.setCapability(InternetExplorerDriver.INITIAL_BROWSER_URL, <span class="string">&quot;https://www.baidu.com&quot;</span>);</span><br><span class="line">            <span class="comment">// 配置ie驱动位置</span></span><br><span class="line">            System.setProperty(<span class="string">&quot;webdriver.ie.driver&quot;</span>, <span class="string">&quot;src/test/resources/IEDriverServer.exe&quot;</span>);</span><br><span class="line">            <span class="comment">// 创建ie驱动对象</span></span><br><span class="line">            driver = <span class="keyword">new</span> InternetExplorerDriver();</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">&quot;firefox&quot;</span>.equalsIgnoreCase(type)) &#123;</span><br><span class="line">            System.setProperty(<span class="string">&quot;webdriver.firefox.bin&quot;</span>, <span class="string">&quot;D:\\Mozilla Firefox\\firefox.exe&quot;</span>);</span><br><span class="line">            System.setProperty(<span class="string">&quot;webdriver.firefox.driver&quot;</span>, <span class="string">&quot;src/test/resources/geckodriver.exe&quot;</span>);</span><br><span class="line">            driver = <span class="keyword">new</span> FirefoxDriver();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> driver;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="定位相关代码"><a href="#定位相关代码" class="headerlink" title="定位相关代码"></a>定位相关代码</h2><h3 id="通过ID来定位"><a href="#通过ID来定位" class="headerlink" title="通过ID来定位"></a>通过ID来定位</h3><p>推荐！</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">WebElement kw = driver.findElement(By.id(<span class="string">&quot;kw&quot;</span>));</span><br><span class="line">kw.clear();</span><br><span class="line">kw.sendKeys(<span class="string">&quot;Java&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gi8hupqk7lj32140twk1a.jpg" alt="id定位"></p>
+<h3 id="通过name来定位"><a href="#通过name来定位" class="headerlink" title="通过name来定位"></a>通过name来定位</h3><p>推荐！</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">WebElement wd = driver.findElement(By.name(<span class="string">&quot;wd&quot;</span>));</span><br><span class="line">wd.clear();</span><br><span class="line">wd.sendKeys(<span class="string">&quot;Java1&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="通过tagName来定位"><a href="#通过tagName来定位" class="headerlink" title="通过tagName来定位"></a>通过tagName来定位</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">WebElement input = driver.findElement(By.tagName(<span class="string">&quot;input&quot;</span>));</span><br><span class="line">input.clear();</span><br><span class="line">input.sendKeys(<span class="string">&quot;Java2&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="通过className来定位"><a href="#通过className来定位" class="headerlink" title="通过className来定位"></a>通过className来定位</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">WebElement s_ipt = driver.findElement(By.className(<span class="string">&quot;s_ipt&quot;</span>));</span><br><span class="line">s_ipt.clear();</span><br><span class="line">s_ipt.sendKeys(<span class="string">&quot;Java3&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="通过linkText来定位"><a href="#通过linkText来定位" class="headerlink" title="通过linkText来定位"></a>通过linkText来定位</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">WebElement hao123 = driver.findElement(By.linkText(<span class="string">&quot;hao123&quot;</span>));</span><br><span class="line">hao123.click();</span><br></pre></td></tr></table></figure>
+
+<h3 id="通过partialLinkText来定位"><a href="#通过partialLinkText来定位" class="headerlink" title="通过partialLinkText来定位"></a>通过partialLinkText来定位</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">WebElement hao12 = driver.findElement(By.partialLinkText(<span class="string">&quot;hao12&quot;</span>));</span><br><span class="line">hao12.click();</span><br></pre></td></tr></table></figure>
+
+<h2 id="cssSelector元素定位"><a href="#cssSelector元素定位" class="headerlink" title="cssSelector元素定位"></a>cssSelector元素定位</h2><h3 id="根据tagName"><a href="#根据tagName" class="headerlink" title="根据tagName"></a>根据tagName</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">By.cssSelector(<span class="string">&quot;input&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="根据ID"><a href="#根据ID" class="headerlink" title="根据ID"></a>根据ID</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">By.cssSelector(<span class="string">&quot;input#id&quot;</span>); <span class="comment">// html标签拼上#id</span></span><br><span class="line">By.cssSelector(<span class="string">&quot;#id&quot;</span>);      <span class="comment">// 仅使用#id</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">By.cssSelector(<span class="string">&quot;#kw&quot;</span>);   </span><br></pre></td></tr></table></figure>
+
+<h3 id="根据className-样式名"><a href="#根据className-样式名" class="headerlink" title="根据className(样式名)"></a>根据className(样式名)</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">By.cssSelector(<span class="string">&quot;.className&quot;</span>);</span><br><span class="line">By.cssSelector(<span class="string">&quot;input.className&quot;</span>); <span class="comment">//标签拼上样式</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">By.cssSelector(<span class="string">&quot;.s_ipt&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="根据元素属性，属性名-属性值，ID，class"><a href="#根据元素属性，属性名-属性值，ID，class" class="headerlink" title="根据元素属性，属性名=属性值，ID，class"></a>根据元素属性，属性名=属性值，ID，class</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">By.cssSelector(<span class="string">&quot;标签名[属性名=&#x27;属性值&#x27;]&quot;</span>);</span><br><span class="line">By.cssSelector(<span class="string">&quot;标签名[属性名1=&#x27;属性值&#x27;][属性2=&#x27;属性值&#x27;]&quot;</span>);</span><br><span class="line">By.cssSelector(<span class="string">&quot;input[name=&#x27;xxx&#x27;]&quot;</span>); </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">By.cssSelector(<span class="string">&quot;input[id=&#x27;kw&#x27;]&quot;</span>); </span><br><span class="line">By.cssSelector(<span class="string">&quot;a[href=&#x27;https://www.hao123.com&#x27;][&#x27;target=&#x27;_blank]&quot;</span>); </span><br></pre></td></tr></table></figure>
+
+<h2 id="Xpath定位"><a href="#Xpath定位" class="headerlink" title="Xpath定位"></a>Xpath定位</h2><h3 id="插件"><a href="#插件" class="headerlink" title="插件"></a>插件</h3><h4 id="Xpath-Helper"><a href="#Xpath-Helper" class="headerlink" title="Xpath Helper"></a>Xpath Helper</h4><p><img src="http://ww1.sinaimg.cn/large/006tNc79ly1g481x1mrsuj327w09a42a.jpg" alt="Xpath定位"></p>
+<p>Xpath定位有很多的优势</p>
+<ol>
+<li>没有id可以进行定位</li>
+<li>需要定位多个符合要求的元素</li>
+</ol>
+<p>使用脚本断点调试定位是否正确是一个方法，当时在我的实际工作中，元素定位代码的封装较深，所以修改查询元素的内容较麻烦，所以直接使用Xpath Helper可以方便的进行开发前的测试。不管是爬虫爬去页面内容还是自动化测试都很实用。</p>
+<p>下面是使用它的方法：</p>
+<h4 id="元素定位"><a href="#元素定位" class="headerlink" title="元素定位"></a>元素定位</h4><p>使用浏览器自带的定位工具进行元素的定位</p>
+<p><img src="http://ww2.sinaimg.cn/large/006tNc79ly1g482366a4qj31b30u0b29.jpg" alt="元素定位"></p>
+<h4 id="初步获取Xpath"><a href="#初步获取Xpath" class="headerlink" title="初步获取Xpath"></a>初步获取Xpath</h4><p><img src="http://ww3.sinaimg.cn/large/006tNc79ly1g4824mj1bbj30wa0lqnhp.jpg" alt="获取Xpath"></p>
+<p>获取到的Xpath为：</p>
+<p><code>//*[@id=&quot;dashboard&quot;]/div/div[3]/div[2]/div/div/div/div[2]/div/div[1]/a</code></p>
+<p>这个路径为绝对路径，假如我们需要获取的是一个元素的列表，那就可以进行删减</p>
+<p>将它删减为：<code>//*[@id=&quot;dashboard&quot;]/div/div[3]/div//a</code>可以发现页面中标黄的都是定位到的部分内容，「RESULTS(156)」中也可以看到相关结果</p>
+<p><img src="http://ww3.sinaimg.cn/large/006tNc79ly1g482a9ttgtj31b30u01kx.jpg" alt="定位元素列表"></p>
+<p><img src="http://ww3.sinaimg.cn/large/006tNc79ly1g482bedv5sj30vs06gdge.jpg" alt="RESULTS"></p>
+<p>xpath其实就是一个path(路径),根据元素的路径进行定位</p>
+<h3 id="xpath绝对定位"><a href="#xpath绝对定位" class="headerlink" title="xpath绝对定位"></a>xpath绝对定位</h3><p>从根开始找 <code>/(根目录)</code></p>
+<p><code>/html/body/div/div[3]/a</code></p>
+<h4 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h4><p>一旦页面结构发生变化，该路径也随之失效，不推荐</p>
+<h2 id="xpath相对定位"><a href="#xpath相对定位" class="headerlink" title="xpath相对定位"></a>xpath相对定位</h2><p><code>//*[@id=&quot;kw&quot;]</code></p>
+<p>相对路径以<code>//</code>表示，让xpath从文档的任意符合的元素节点开始进行解析</p>
+<p>路径解析：</p>
+<ul>
+<li><code>//</code>匹配指定节点，不考虑它们位置</li>
+<li><code>*</code>通配符，匹配任意元素节点</li>
+<li><code>@</code>选取属性</li>
+<li><code>[]</code>属性判断条件表达式</li>
+</ul>
+<h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><p>灵活，方便，耦合性低</p>
+<h3 id="通过元素名定位"><a href="#通过元素名定位" class="headerlink" title="通过元素名定位"></a>通过元素名定位</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">By.xpath(<span class="string">&quot;//input&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="通过元素名-索引定位"><a href="#通过元素名-索引定位" class="headerlink" title="通过元素名+索引定位"></a>通过元素名+索引定位</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">By.xpath(<span class="string">&quot;//form/div[1]/input&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="通过元素名-属性定位"><a href="#通过元素名-属性定位" class="headerlink" title="通过元素名+属性定位"></a>通过元素名+属性定位</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">By.xpath(<span class="string">&quot;//*[@name=&#x27;phone&#x27;]&quot;</span>);</span><br><span class="line">By.xpath(<span class="string">&quot;//*[contains(@name,&#x27;one&#x27;)]&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="通过元素名-元素的文本内容"><a href="#通过元素名-元素的文本内容" class="headerlink" title="通过元素名+元素的文本内容"></a>通过元素名+元素的文本内容</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">By.xpath(<span class="string">&quot;//*[text()=&#x27;忘记密码?&#x27;]&quot;</span>);				 <span class="comment">// 全匹配</span></span><br><span class="line">By.xpath(<span class="string">&quot;//*[contains(text(),&#x27;忘记密码&#x27;)]&quot;</span>);<span class="comment">// 模糊匹配</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Xpath-轴定位"><a href="#Xpath-轴定位" class="headerlink" title="Xpath 轴定位"></a>Xpath 轴定位</h2><p>当某个元素的各个属性及其组合都不足以定位时，那么可以利用其兄弟节点或父节点等各种可以定位的元素进行定位。</p>
+<ul>
+<li>ancestor：选择当前节点的所有祖先节点</li>
+<li>parent：选取当前节点的父节点</li>
+<li>preceding：选取当前节点之前的所有节点</li>
+<li>preceding-sibling：选取当前节点之前的所有兄弟节点</li>
+<li>following：选取当前节点之后的所有节点</li>
+<li>following-sibling：选取当前节点之后的所有兄弟节点</li>
+</ul>
+<h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/轴名称::节点名称[@属性=值]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">By.xpath(<span class="string">&quot;//div/table//td//preceding::td&quot;</span>);	</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt=" wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt=" 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt=" 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/" rel="tag"># 自动化测试</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/08/27/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(selenium%2022)/" rel="next" title="Java自动化测试(selenium 22)">
+                <i class="fa fa-chevron-left"></i> Java自动化测试(selenium 22)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/09/01/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(webdriver%E5%B8%B8%E7%94%A8API%2024)/" rel="prev" title="Java自动化测试(webdriver常用API 24)">
+                Java自动化测试(webdriver常用API 24) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpeg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">107</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zx490336534" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95-%E5%85%83%E7%B4%A0%E5%AE%9A%E4%BD%8D-23"><span class="nav-number">1.</span> <span class="nav-text">Java自动化测试 (元素定位 23)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E5%AE%9A%E4%BD%8D%E6%96%B9%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">基础定位方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#id"><span class="nav-number">1.1.1.</span> <span class="nav-text">id</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#name"><span class="nav-number">1.1.2.</span> <span class="nav-text">name</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tagName"><span class="nav-number">1.1.3.</span> <span class="nav-text">tagName</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#className"><span class="nav-number">1.1.4.</span> <span class="nav-text">className</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#linkText"><span class="nav-number">1.1.5.</span> <span class="nav-text">linkText</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#partialLinkText"><span class="nav-number">1.1.6.</span> <span class="nav-text">partialLinkText</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%B0%81%E8%A3%85"><span class="nav-number">1.2.</span> <span class="nav-text">代码封装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9A%E4%BD%8D%E7%9B%B8%E5%85%B3%E4%BB%A3%E7%A0%81"><span class="nav-number">1.3.</span> <span class="nav-text">定位相关代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E8%BF%87ID%E6%9D%A5%E5%AE%9A%E4%BD%8D"><span class="nav-number">1.3.1.</span> <span class="nav-text">通过ID来定位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E8%BF%87name%E6%9D%A5%E5%AE%9A%E4%BD%8D"><span class="nav-number">1.3.2.</span> <span class="nav-text">通过name来定位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E8%BF%87tagName%E6%9D%A5%E5%AE%9A%E4%BD%8D"><span class="nav-number">1.3.3.</span> <span class="nav-text">通过tagName来定位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E8%BF%87className%E6%9D%A5%E5%AE%9A%E4%BD%8D"><span class="nav-number">1.3.4.</span> <span class="nav-text">通过className来定位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E8%BF%87linkText%E6%9D%A5%E5%AE%9A%E4%BD%8D"><span class="nav-number">1.3.5.</span> <span class="nav-text">通过linkText来定位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E8%BF%87partialLinkText%E6%9D%A5%E5%AE%9A%E4%BD%8D"><span class="nav-number">1.3.6.</span> <span class="nav-text">通过partialLinkText来定位</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cssSelector%E5%85%83%E7%B4%A0%E5%AE%9A%E4%BD%8D"><span class="nav-number">1.4.</span> <span class="nav-text">cssSelector元素定位</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B9%E6%8D%AEtagName"><span class="nav-number">1.4.1.</span> <span class="nav-text">根据tagName</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B9%E6%8D%AEID"><span class="nav-number">1.4.2.</span> <span class="nav-text">根据ID</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B9%E6%8D%AEclassName-%E6%A0%B7%E5%BC%8F%E5%90%8D"><span class="nav-number">1.4.3.</span> <span class="nav-text">根据className(样式名)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B9%E6%8D%AE%E5%85%83%E7%B4%A0%E5%B1%9E%E6%80%A7%EF%BC%8C%E5%B1%9E%E6%80%A7%E5%90%8D-%E5%B1%9E%E6%80%A7%E5%80%BC%EF%BC%8CID%EF%BC%8Cclass"><span class="nav-number">1.4.4.</span> <span class="nav-text">根据元素属性，属性名&#x3D;属性值，ID，class</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Xpath%E5%AE%9A%E4%BD%8D"><span class="nav-number">1.5.</span> <span class="nav-text">Xpath定位</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E4%BB%B6"><span class="nav-number">1.5.1.</span> <span class="nav-text">插件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Xpath-Helper"><span class="nav-number">1.5.1.1.</span> <span class="nav-text">Xpath Helper</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%83%E7%B4%A0%E5%AE%9A%E4%BD%8D"><span class="nav-number">1.5.1.2.</span> <span class="nav-text">元素定位</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9D%E6%AD%A5%E8%8E%B7%E5%8F%96Xpath"><span class="nav-number">1.5.1.3.</span> <span class="nav-text">初步获取Xpath</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#xpath%E7%BB%9D%E5%AF%B9%E5%AE%9A%E4%BD%8D"><span class="nav-number">1.5.2.</span> <span class="nav-text">xpath绝对定位</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%BA%E7%82%B9"><span class="nav-number">1.5.2.1.</span> <span class="nav-text">缺点</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#xpath%E7%9B%B8%E5%AF%B9%E5%AE%9A%E4%BD%8D"><span class="nav-number">1.6.</span> <span class="nav-text">xpath相对定位</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%98%E7%82%B9"><span class="nav-number">1.6.0.1.</span> <span class="nav-text">优点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E8%BF%87%E5%85%83%E7%B4%A0%E5%90%8D%E5%AE%9A%E4%BD%8D"><span class="nav-number">1.6.1.</span> <span class="nav-text">通过元素名定位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E8%BF%87%E5%85%83%E7%B4%A0%E5%90%8D-%E7%B4%A2%E5%BC%95%E5%AE%9A%E4%BD%8D"><span class="nav-number">1.6.2.</span> <span class="nav-text">通过元素名+索引定位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E8%BF%87%E5%85%83%E7%B4%A0%E5%90%8D-%E5%B1%9E%E6%80%A7%E5%AE%9A%E4%BD%8D"><span class="nav-number">1.6.3.</span> <span class="nav-text">通过元素名+属性定位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E8%BF%87%E5%85%83%E7%B4%A0%E5%90%8D-%E5%85%83%E7%B4%A0%E7%9A%84%E6%96%87%E6%9C%AC%E5%86%85%E5%AE%B9"><span class="nav-number">1.6.4.</span> <span class="nav-text">通过元素名+元素的文本内容</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Xpath-%E8%BD%B4%E5%AE%9A%E4%BD%8D"><span class="nav-number">1.7.</span> <span class="nav-text">Xpath 轴定位</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95"><span class="nav-number">1.7.1.</span> <span class="nav-text">语法</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">测试游记</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://zx490336534.github.io/2020/08/30/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%20(%E5%85%83%E7%B4%A0%E5%AE%9A%E4%BD%8D%2023)/';
+          this.page.identifier = '2020/08/30/Java自动化测试/Java自动化测试 (元素定位 23)/';
+          this.page.title = 'Java自动化测试 (元素定位 23)';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

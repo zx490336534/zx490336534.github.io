@@ -261,7 +261,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/2019/11/28/41-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">
+    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/2020/09/03/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(%E7%89%B9%E6%AE%8A%E5%85%83%E7%B4%A0%E5%A4%84%E7%90%86%2025)/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -280,7 +280,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/11/28/41-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/" itemprop="url">测试开发进阶(四十一)</a></h1>
+                <a class="post-title-link" href="/2020/09/03/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(%E7%89%B9%E6%AE%8A%E5%85%83%E7%B4%A0%E5%A4%84%E7%90%86%2025)/" itemprop="url">Java自动化测试(特殊元素处理 25)</a></h1>
         
 
         <div class="post-meta">
@@ -292,8 +292,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-28T17:51:39+08:00">
-                2019-11-28
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-03T06:56:29+08:00">
+                2020-09-03
               </time>
             
 
@@ -315,8 +315,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/" itemprop="url" rel="index">
-                    <span itemprop="name">Python测试开发进阶</span>
+                  <a href="/categories/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index">
+                    <span itemprop="name">Java自动化测试</span>
                   </a>
                 </span>
 
@@ -333,9 +333,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/11/28/41-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/#comments" itemprop="discussionUrl">
+                <a href="/2020/09/03/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(%E7%89%B9%E6%AE%8A%E5%85%83%E7%B4%A0%E5%A4%84%E7%90%86%2025)/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2019/11/28/41-测试开发进阶/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2020/09/03/Java自动化测试/Java自动化测试(特殊元素处理 25)/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -364,14 +364,982 @@
 
       
         
-          <h1 id="测试开发进阶-四十一"><a href="#测试开发进阶-四十一" class="headerlink" title="测试开发进阶(四十一)"></a>测试开发进阶(四十一)</h1><h2 id="校验Shell格式"><a href="#校验Shell格式" class="headerlink" title="校验Shell格式"></a>校验Shell格式</h2><p><a target="_blank" rel="noopener" href="https://www.shellcheck.net/">https://www.shellcheck.net/</a></p>
-<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g9e4yt9j2zj31910u043p.jpg" alt="shellcheck"></p>
-<h2 id="流程控制"><a href="#流程控制" class="headerlink" title="流程控制"></a>流程控制</h2><h3 id="while"><a href="#while" class="headerlink" title="while"></a>while</h3><blockquote>
-<p>只要满足条件，就一直循环</p>
+          <h1 id="Java自动化测试-特殊元素处理-25"><a href="#Java自动化测试-特殊元素处理-25" class="headerlink" title="Java自动化测试(特殊元素处理 25)"></a>Java自动化测试(特殊元素处理 25)</h1><h2 id="下拉框"><a href="#下拉框" class="headerlink" title="下拉框"></a>下拉框</h2><ol>
+<li>找到下拉框所在元素</li>
+<li>导入<code>import org.openqa.selenium.support.ui.Select;</code></li>
+<li>新建<code>Select</code>对象</li>
+<li>通过<code>getOptions</code>拿到全部选项内容</li>
+<li>通过<code>selectByIndex</code>或者<code>selectByValue</code>或者<code>selectByVisibleText</code>分别以<code>index</code>,<code>value</code>,<code>text</code>来选择</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">WebElement selectElement = driver.findElement(By.id(<span class="string">&quot;modules&quot;</span>));</span><br><span class="line">Select select = <span class="keyword">new</span> Select(selectElement);</span><br><span class="line">List&lt;WebElement&gt; options = select.getOptions();</span><br><span class="line">System.out.println(options);</span><br><span class="line">System.out.println(select.isMultiple());</span><br><span class="line">select.selectByIndex(<span class="number">1</span>);</span><br><span class="line">Thread.sleep(<span class="number">200</span>);</span><br><span class="line">select.selectByValue(<span class="string">&quot;20&quot;</span>);</span><br><span class="line">Thread.sleep(<span class="number">2000</span>);</span><br><span class="line">select.selectByVisibleText(<span class="string">&quot;switch&quot;</span>);</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/09/03/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(%E7%89%B9%E6%AE%8A%E5%85%83%E7%B4%A0%E5%A4%84%E7%90%86%2025)/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/2020/09/01/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(webdriver%E5%B8%B8%E7%94%A8API%2024)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="测试游记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/09/01/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(webdriver%E5%B8%B8%E7%94%A8API%2024)/" itemprop="url">Java自动化测试(webdriver常用API 24)</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-01T07:06:13+08:00">
+                2020-09-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index">
+                    <span itemprop="name">Java自动化测试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/09/01/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(webdriver%E5%B8%B8%E7%94%A8API%2024)/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/09/01/Java自动化测试/Java自动化测试(webdriver常用API 24)/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="Java自动化测试-webdriver常用API-24"><a href="#Java自动化测试-webdriver常用API-24" class="headerlink" title="Java自动化测试(webdriver常用API 24)"></a>Java自动化测试(webdriver常用API 24)</h1><h2 id="元素基本API"><a href="#元素基本API" class="headerlink" title="元素基本API"></a>元素基本API</h2><h3 id="click"><a href="#click" class="headerlink" title="click"></a>click</h3><p>触发当前元素的点击事件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">driver.get(<span class="string">&quot;https://www.ketangpai.com/&quot;</span>);</span><br><span class="line">WebElement element = driver.findElement(By.xpath(<span class="string">&quot;//a[text()=&#x27;教师培训&#x27;]&quot;</span>));</span><br><span class="line">element.click();</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/09/01/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(webdriver%E5%B8%B8%E7%94%A8API%2024)/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/2020/08/30/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%20(%E5%85%83%E7%B4%A0%E5%AE%9A%E4%BD%8D%2023)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="测试游记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/08/30/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%20(%E5%85%83%E7%B4%A0%E5%AE%9A%E4%BD%8D%2023)/" itemprop="url">Java自动化测试 (元素定位 23)</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-30T07:30:57+08:00">
+                2020-08-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index">
+                    <span itemprop="name">Java自动化测试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/08/30/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%20(%E5%85%83%E7%B4%A0%E5%AE%9A%E4%BD%8D%2023)/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/08/30/Java自动化测试/Java自动化测试 (元素定位 23)/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="Java自动化测试-元素定位-23"><a href="#Java自动化测试-元素定位-23" class="headerlink" title="Java自动化测试 (元素定位 23)"></a>Java自动化测试 (元素定位 23)</h1><h2 id="基础定位方式"><a href="#基础定位方式" class="headerlink" title="基础定位方式"></a>基础定位方式</h2><h3 id="id"><a href="#id" class="headerlink" title="id"></a>id</h3><p>根据id来获取元素，id唯一性</p>
+<h3 id="name"><a href="#name" class="headerlink" title="name"></a>name</h3><p>根据元素name熟悉来获取元素，会存在不唯一的情况</p>
+<h3 id="tagName"><a href="#tagName" class="headerlink" title="tagName"></a>tagName</h3><p>根据元素的标签名来获取元素，一般不建议使用</p>
+<h3 id="className"><a href="#className" class="headerlink" title="className"></a>className</h3><p>根据元素的样式名来获取元素，会存在不唯一性，注意复合类名的问题</p>
+<h3 id="linkText"><a href="#linkText" class="headerlink" title="linkText"></a>linkText</h3>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/08/30/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%20(%E5%85%83%E7%B4%A0%E5%AE%9A%E4%BD%8D%2023)/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/2020/08/27/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(selenium%2022)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="测试游记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/08/27/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(selenium%2022)/" itemprop="url">Java自动化测试(selenium 22)</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-27T06:39:10+08:00">
+                2020-08-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index">
+                    <span itemprop="name">Java自动化测试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/08/27/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(selenium%2022)/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/08/27/Java自动化测试/Java自动化测试(selenium 22)/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="Java自动化测试-selenium-22"><a href="#Java自动化测试-selenium-22" class="headerlink" title="Java自动化测试(selenium 22)"></a>Java自动化测试(selenium 22)</h1><h2 id="selenium-IDE"><a href="#selenium-IDE" class="headerlink" title="selenium IDE"></a>selenium IDE</h2><p>selenium IDE是一个Firefox/Chrome插件，用于记录和回放用户与浏览器的交互。使用它来创建简单的脚本或协助进行探索性测试。</p>
+<h3 id="下载selenium-IDE"><a href="#下载selenium-IDE" class="headerlink" title="下载selenium IDE"></a>下载selenium IDE</h3><p>下载地址：<a target="_blank" rel="noopener" href="https://www.selenium.dev/downloads/">https://www.selenium.dev/downloads/</a></p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gi4zbe1saij324i0ggmzu.jpg" alt="官网"></p>
+<p>可翻墙的使用chrome浏览器，不可以翻墙的用firefox浏览器</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gi51funq5lj31k90u01fe.jpg" alt="chrome商店"></p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/08/27/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(selenium%2022)/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/2020/08/18/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(jenkins%2021)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="测试游记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/08/18/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(jenkins%2021)/" itemprop="url">Java自动化测试(jenkins 21)</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-18T06:46:28+08:00">
+                2020-08-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index">
+                    <span itemprop="name">Java自动化测试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/08/18/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(jenkins%2021)/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/08/18/Java自动化测试/Java自动化测试(jenkins 21)/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="Java自动化测试-jenkins-21"><a href="#Java自动化测试-jenkins-21" class="headerlink" title="Java自动化测试(jenkins 21)"></a>Java自动化测试(jenkins 21)</h1><h2 id="安装jenkins"><a href="#安装jenkins" class="headerlink" title="安装jenkins"></a>安装jenkins</h2><blockquote>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&amp;album_id=1375914177998733312&amp;__biz=MzU5NTI3NDcxOA==#wechat_redirect">https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&amp;album_id=1375914177998733312&amp;__biz=MzU5NTI3NDcxOA==#wechat_redirect</a></p>
+</blockquote>
+<h2 id="配置Global-Tool-Configuration"><a href="#配置Global-Tool-Configuration" class="headerlink" title="配置Global Tool Configuration"></a>配置Global Tool Configuration</h2>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/08/18/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(jenkins%2021)/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/2020/08/15/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(mock%2021)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="测试游记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/08/15/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(mock%2021)/" itemprop="url">Java自动化测试(mock 21)</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-15T09:41:22+08:00">
+                2020-08-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index">
+                    <span itemprop="name">Java自动化测试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/08/15/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(mock%2021)/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/08/15/Java自动化测试/Java自动化测试(mock 21)/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="Java自动化测试-mock-21"><a href="#Java自动化测试-mock-21" class="headerlink" title="Java自动化测试(mock 21)"></a>Java自动化测试(mock 21)</h1><blockquote>
+<p>mock测试就是在测试过程中，对于某些不容易构造或者不容易获取的对象，用一个虚拟的对象来创建以便测试的测试方法。</p>
+</blockquote>
+<h2 id="mock测试环境"><a href="#mock测试环境" class="headerlink" title="mock测试环境"></a>mock测试环境</h2><blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.easy-mock.com/login">https://www.easy-mock.com/login</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/easy-mock/easy-mock">https://github.com/easy-mock/easy-mock</a></p>
+</blockquote>
+<p>Easy Mock 是一个可视化，并且能快速生成<strong>模拟数据</strong>的持久化服务。</p>
+<h3 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h3>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/08/15/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(mock%2021)/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/2020/08/15/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(allure%2020)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="测试游记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/08/15/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(allure%2020)/" itemprop="url">Java自动化测试(allure 20)</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-15T09:01:34+08:00">
+                2020-08-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index">
+                    <span itemprop="name">Java自动化测试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/08/15/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(allure%2020)/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/08/15/Java自动化测试/Java自动化测试(allure 20)/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="Java自动化测试-allure-20"><a href="#Java自动化测试-allure-20" class="headerlink" title="Java自动化测试(allure 20)"></a>Java自动化测试(allure 20)</h1><p>allure官网：</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://docs.qameta.io/allure/">https://docs.qameta.io/allure/</a></p>
 </blockquote>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/11/28/41-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/#more" rel="contents">
+            <a class="btn" href="/2020/08/15/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(allure%2020)/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -422,7 +1390,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/2019/11/26/40-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">
+    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/2020/08/13/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(%E5%8F%82%E6%95%B0%E5%8C%96%2019)/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -441,7 +1409,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/11/26/40-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/" itemprop="url">测试开发进阶(四十)</a></h1>
+                <a class="post-title-link" href="/2020/08/13/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(%E5%8F%82%E6%95%B0%E5%8C%96%2019)/" itemprop="url">Java自动化测试(参数化 19)</a></h1>
         
 
         <div class="post-meta">
@@ -453,8 +1421,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-26T17:51:39+08:00">
-                2019-11-26
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-13T07:02:37+08:00">
+                2020-08-13
               </time>
             
 
@@ -476,8 +1444,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/" itemprop="url" rel="index">
-                    <span itemprop="name">Python测试开发进阶</span>
+                  <a href="/categories/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index">
+                    <span itemprop="name">Java自动化测试</span>
                   </a>
                 </span>
 
@@ -494,9 +1462,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/11/26/40-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/#comments" itemprop="discussionUrl">
+                <a href="/2020/08/13/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(%E5%8F%82%E6%95%B0%E5%8C%96%2019)/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2019/11/26/40-测试开发进阶/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2020/08/13/Java自动化测试/Java自动化测试(参数化 19)/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -525,12 +1493,11 @@
 
       
         
-          <h1 id="测试开发进阶-四十"><a href="#测试开发进阶-四十" class="headerlink" title="测试开发进阶(四十)"></a>测试开发进阶(四十)</h1><h2 id="运算"><a href="#运算" class="headerlink" title="运算"></a>运算</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> $((<span class="number">10</span> + <span class="number">20</span>))</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 30</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> one=25</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> two=12</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> $((one+two))</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 37</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g9btmw3tu7j30tq076jt7.jpg" alt="1"></p>
+          <h1 id="Java自动化测试-参数化-19"><a href="#Java自动化测试-参数化-19" class="headerlink" title="Java自动化测试(参数化 19)"></a>Java自动化测试(参数化 19)</h1><h2 id="测试数据修改"><a href="#测试数据修改" class="headerlink" title="测试数据修改"></a>测试数据修改</h2><p>使用占位符来替代参数，可以在代码中动态修改它的值。</p>
+<p>修改前测试参数：</p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/11/26/40-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/#more" rel="contents">
+            <a class="btn" href="/2020/08/13/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(%E5%8F%82%E6%95%B0%E5%8C%96%2019)/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -581,7 +1548,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/2019/11/17/39-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">
+    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/2020/08/11/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(%E6%95%B0%E6%8D%AE%E5%BA%93%E6%96%AD%E8%A8%80%2018)/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -600,7 +1567,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/11/17/39-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/" itemprop="url">测试开发进阶(三十九)</a></h1>
+                <a class="post-title-link" href="/2020/08/11/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(%E6%95%B0%E6%8D%AE%E5%BA%93%E6%96%AD%E8%A8%80%2018)/" itemprop="url">Java自动化测试(数据库断言 18)</a></h1>
         
 
         <div class="post-meta">
@@ -612,8 +1579,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-17T18:02:45+08:00">
-                2019-11-17
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-11T07:35:27+08:00">
+                2020-08-11
               </time>
             
 
@@ -635,8 +1602,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/" itemprop="url" rel="index">
-                    <span itemprop="name">Python测试开发进阶</span>
+                  <a href="/categories/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index">
+                    <span itemprop="name">Java自动化测试</span>
                   </a>
                 </span>
 
@@ -653,9 +1620,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/11/17/39-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/#comments" itemprop="discussionUrl">
+                <a href="/2020/08/11/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(%E6%95%B0%E6%8D%AE%E5%BA%93%E6%96%AD%E8%A8%80%2018)/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2019/11/17/39-测试开发进阶/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2020/08/11/Java自动化测试/Java自动化测试(数据库断言 18)/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -684,15 +1651,11 @@
 
       
         
-          <h1 id="测试开发进阶-三十九"><a href="#测试开发进阶-三十九" class="headerlink" title="测试开发进阶(三十九)"></a>测试开发进阶(三十九)</h1><h2 id="首页"><a href="#首页" class="headerlink" title="首页"></a>首页</h2><p>使用一个简单的get函数返回需要的内容</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">statistics = &#123;</span><br><span class="line">    <span class="string">&#x27;projects_count&#x27;</span>: projects_count,</span><br><span class="line">    <span class="string">&#x27;interfaces_count&#x27;</span>: interfaces_count,</span><br><span class="line">    <span class="string">&#x27;testcases_count&#x27;</span>: testcases_count,</span><br><span class="line">    <span class="string">&#x27;testsuits_count&#x27;</span>: testsuits_count,</span><br><span class="line">    <span class="string">&#x27;configures_count&#x27;</span>: configures_count,</span><br><span class="line">    <span class="string">&#x27;envs_count&#x27;</span>: envs_count,</span><br><span class="line">    <span class="string">&#x27;debug_talks_count&#x27;</span>: debug_talks_count,</span><br><span class="line">    <span class="string">&#x27;reports_count&#x27;</span>: reports_count,</span><br><span class="line">    <span class="string">&#x27;success_rate&#x27;</span>: success_rate,</span><br><span class="line">    <span class="string">&#x27;fail_rate&#x27;</span>: fail_rate,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>他们都是从数据库中计算并统计出来的</p>
-<p>需要有权限才能访问</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">permission_classes = [permissions.IsAuthenticated]</span><br></pre></td></tr></table></figure>
+          <h1 id="Java自动化测试-数据库断言-18"><a href="#Java自动化测试-数据库断言-18" class="headerlink" title="Java自动化测试(数据库断言 18)"></a>Java自动化测试(数据库断言 18)</h1><h2 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h2><p>数据库，简而言之可视为电子化的文件柜——存储电子文件的处所，用户可以对文件中的数据进行新增、截取、更新、删除等操作。<br>所谓“数据库”是以一定方式储存在一起、能与多个用户共享、具有尽可能小的冗余度、与应用程序彼此独立的数据集合。</p>
+<h2 id="JDBC-驱动程序"><a href="#JDBC-驱动程序" class="headerlink" title="JDBC 驱动程序"></a>JDBC 驱动程序</h2><p>JDBC(java database connectivity)驱动程序是对 JDBC 规范完整的实现，它的存在在 Java 程序与数据库系统之间建立了一条通信的渠道。</p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/11/17/39-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/#more" rel="contents">
+            <a class="btn" href="/2020/08/11/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(%E6%95%B0%E6%8D%AE%E5%BA%93%E6%96%AD%E8%A8%80%2018)/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -743,7 +1706,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/2019/11/15/38-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">
+    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/2020/08/09/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(%E5%9B%9E%E5%86%99%E4%B8%8E%E6%96%AD%E8%A8%80%2017)/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -762,7 +1725,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/11/15/38-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/" itemprop="url">测试开发进阶(三十八)</a></h1>
+                <a class="post-title-link" href="/2020/08/09/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(%E5%9B%9E%E5%86%99%E4%B8%8E%E6%96%AD%E8%A8%80%2017)/" itemprop="url">Java自动化测试(回写与断言 17)</a></h1>
         
 
         <div class="post-meta">
@@ -774,8 +1737,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-15T17:51:38+08:00">
-                2019-11-15
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-09T07:33:27+08:00">
+                2020-08-09
               </time>
             
 
@@ -797,8 +1760,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/" itemprop="url" rel="index">
-                    <span itemprop="name">Python测试开发进阶</span>
+                  <a href="/categories/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index">
+                    <span itemprop="name">Java自动化测试</span>
                   </a>
                 </span>
 
@@ -815,9 +1778,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/11/15/38-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/#comments" itemprop="discussionUrl">
+                <a href="/2020/08/09/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(%E5%9B%9E%E5%86%99%E4%B8%8E%E6%96%AD%E8%A8%80%2017)/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2019/11/15/38-测试开发进阶/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2020/08/09/Java自动化测试/Java自动化测试(回写与断言 17)/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -846,978 +1809,11 @@
 
       
         
-          <h1 id="测试开发进阶-三十八"><a href="#测试开发进阶-三十八" class="headerlink" title="测试开发进阶(三十八)"></a>测试开发进阶(三十八)</h1><h2 id="用例模块"><a href="#用例模块" class="headerlink" title="用例模块"></a>用例模块</h2><p>需要使用httprunner来进行用例的执行与报告的生成</p>
-<p>所以我们需要生成一个yaml用例文件，再执行它</p>
+          <h1 id="Java自动化测试-回写与断言-17"><a href="#Java自动化测试-回写与断言-17" class="headerlink" title="Java自动化测试(回写与断言 17)"></a>Java自动化测试(回写与断言 17)</h1><h2 id="回写"><a href="#回写" class="headerlink" title="回写"></a>回写</h2><p>将测试结果写回到Excel中</p>
+<h3 id="定义回写数据对象"><a href="#定义回写数据对象" class="headerlink" title="定义回写数据对象"></a>定义回写数据对象</h3>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/11/15/38-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/2019/11/12/37-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="测试游记">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/11/12/37-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/" itemprop="url">测试开发进阶(三十七)</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-12T17:51:39+08:00">
-                2019-11-12
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/" itemprop="url" rel="index">
-                    <span itemprop="name">Python测试开发进阶</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/11/12/37-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2019/11/12/37-测试开发进阶/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="测试开发进阶-三十七"><a href="#测试开发进阶-三十七" class="headerlink" title="测试开发进阶(三十七)"></a>测试开发进阶(三十七)</h1><h2 id="报告模块"><a href="#报告模块" class="headerlink" title="报告模块"></a>报告模块</h2><h3 id="报告下载-中文文件"><a href="#报告下载-中文文件" class="headerlink" title="报告下载-中文文件"></a>报告下载-中文文件</h3><p>下载时候如果报告名中有中文，则可能出现乱码</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.utils.encoding <span class="keyword">import</span> escape_uri_path</span><br><span class="line">report_path_final = escape_uri_path(report_filename)  <span class="comment"># 中文乱码的解决办法</span></span><br></pre></td></tr></table></figure>
-
-<p>使用<code>escape_uri_path</code>可以解决</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/11/12/37-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/2019/11/08/36-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="测试游记">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/11/08/36-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/" itemprop="url">测试开发进阶(三十六)</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-08T17:51:39+08:00">
-                2019-11-08
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/" itemprop="url" rel="index">
-                    <span itemprop="name">Python测试开发进阶</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/11/08/36-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2019/11/08/36-测试开发进阶/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="测试开发进阶-三十六"><a href="#测试开发进阶-三十六" class="headerlink" title="测试开发进阶(三十六)"></a>测试开发进阶(三十六)</h1><h2 id="项目模块"><a href="#项目模块" class="headerlink" title="项目模块"></a>项目模块</h2><h3 id="list优化"><a href="#list优化" class="headerlink" title="list优化"></a>list优化</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">list</span>(<span class="params">self, request, *args, **kwargs</span>):</span></span><br><span class="line">    queryset = self.filter_queryset(self.get_queryset())</span><br><span class="line"></span><br><span class="line">    page = self.paginate_queryset(queryset)</span><br><span class="line">    <span class="keyword">if</span> page <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">        serializer = self.get_serializer(page, many=<span class="literal">True</span>)</span><br><span class="line">        datas = serializer.data</span><br><span class="line">        datas = get_count_by_project(datas)</span><br><span class="line">        <span class="keyword">return</span> self.get_paginated_response(datas)</span><br><span class="line"></span><br><span class="line">    serializer = self.get_serializer(queryset, many=<span class="literal">True</span>)</span><br><span class="line">    datas = serializer.data</span><br><span class="line">    datas = get_count_by_project(datas)</span><br><span class="line">    <span class="keyword">return</span> Response(datas)</span><br></pre></td></tr></table></figure>
-
-<p>这个<code>list</code>其实就是拷贝了父类中的<code>list</code>方法</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/11/08/36-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/2019/11/07/35-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="测试游记">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/11/07/35-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/" itemprop="url">测试开发进阶(三十五)</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-07T17:51:38+08:00">
-                2019-11-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/" itemprop="url" rel="index">
-                    <span itemprop="name">Python测试开发进阶</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/11/07/35-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2019/11/07/35-测试开发进阶/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="测试开发进阶-三十五"><a href="#测试开发进阶-三十五" class="headerlink" title="测试开发进阶(三十五)"></a>测试开发进阶(三十五)</h1><h2 id="导入测试数据"><a href="#导入测试数据" class="headerlink" title="导入测试数据"></a>导入测试数据</h2><h3 id="在Pycharm中连接数据库"><a href="#在Pycharm中连接数据库" class="headerlink" title="在Pycharm中连接数据库"></a>在Pycharm中连接数据库</h3><p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g8ptunalkij30h00u8n08.jpg" alt="Pycharm连接数据库"></p>
-<h3 id="执行sql"><a href="#执行sql" class="headerlink" title="执行sql"></a>执行sql</h3><p>测试数据在：<code>https://github.com/zx490336534/ApiTest/tree/master/test</code>按照顺序执行</p>
-<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g8ptt4ftkcj30k60wwgr2.jpg" alt="执行sql"></p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/11/07/35-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/2019/11/05/34-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="测试游记">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/11/05/34-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/" itemprop="url">测试开发进阶(三十四)</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-05T17:51:38+08:00">
-                2019-11-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/" itemprop="url" rel="index">
-                    <span itemprop="name">Python测试开发进阶</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/11/05/34-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2019/11/05/34-测试开发进阶/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="测试开发进阶-三十四"><a href="#测试开发进阶-三十四" class="headerlink" title="测试开发进阶(三十四)"></a>测试开发进阶(三十四)</h1><h2 id="数据库模型图"><a href="#数据库模型图" class="headerlink" title="数据库模型图"></a>数据库模型图</h2><p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g8nkdchqsbj30ya0u07cd.jpg" alt="数据库模型图"></p>
-<h2 id="创建app"><a href="#创建app" class="headerlink" title="创建app"></a>创建app</h2><p>根据上面的数据库设计，创建9个app</p>
-<ul>
-<li>configures</li>
-<li>debugtalks</li>
-<li>envs</li>
-<li>interfaces</li>
-<li>projects</li>
-<li>reports</li>
-<li>testsuits</li>
-<li>testcases</li>
-<li>user
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/11/05/34-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/2019/11/01/33-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="测试游记">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/11/01/33-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/" itemprop="url">测试开发进阶(三十三)</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-01T17:51:38+08:00">
-                2019-11-01
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/" itemprop="url" rel="index">
-                    <span itemprop="name">Python测试开发进阶</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/11/01/33-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2019/11/01/33-测试开发进阶/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="测试开发进阶-三十三"><a href="#测试开发进阶-三十三" class="headerlink" title="测试开发进阶(三十三)"></a>测试开发进阶(三十三)</h1><h2 id="局部变量"><a href="#局部变量" class="headerlink" title="局部变量"></a>局部变量</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">登录接口</span></span><br><span class="line"><span class="attr">variables:</span></span><br><span class="line">    <span class="attr">username:</span> <span class="string">$&#123;ENV(USERNAME)&#125;</span></span><br><span class="line">    <span class="attr">password:</span> <span class="string">$&#123;ENV(PASSWORD)&#125;</span></span><br><span class="line"><span class="attr">request:</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">http://127.0.0.1:8000/user/login/</span></span><br><span class="line">    <span class="attr">method:</span> <span class="string">POST</span></span><br><span class="line">    <span class="attr">headers:</span></span><br><span class="line">        <span class="attr">Content-Type:</span> <span class="string">&quot;application/json&quot;</span></span><br><span class="line">    <span class="attr">json:</span></span><br><span class="line">        <span class="attr">username:</span> <span class="string">$username</span></span><br><span class="line">        <span class="attr">password:</span> <span class="string">$password</span></span><br><span class="line"><span class="attr">validate:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">eq:</span> [<span class="string">&quot;status_code&quot;</span>, <span class="number">200</span>]</span><br><span class="line"><span class="attr">extract:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">uname:</span> <span class="string">content.username</span></span><br></pre></td></tr></table></figure>
-
-<p>可以修改<code>variables</code>定义变量，导入环境变量作为值</p>
-<p><code>request</code>中可以使用<code>$变量名</code>来获取<code>variables</code>区域下的变量</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/11/01/33-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/2019/10/31/32-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="测试游记">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/10/31/32-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/" itemprop="url">测试开发进阶(三十二)</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-31T17:51:38+08:00">
-                2019-10-31
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/" itemprop="url" rel="index">
-                    <span itemprop="name">Python测试开发进阶</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/10/31/32-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2019/10/31/32-测试开发进阶/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="测试开发进阶-三十二"><a href="#测试开发进阶-三十二" class="headerlink" title="测试开发进阶(三十二)"></a>测试开发进阶(三十二)</h1><h2 id="开启跨域"><a href="#开启跨域" class="headerlink" title="开启跨域"></a>开启跨域</h2><p>安装<code>django-cors-headers</code></p>
-<ol>
-<li>添加应用</li>
-</ol>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">INSTALLED_APPS = [</span><br><span class="line">    <span class="string">&#x27;django.contrib.admin&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.contrib.auth&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.contrib.contenttypes&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.contrib.sessions&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.contrib.messages&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.contrib.staticfiles&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;rest_framework&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;corsheaders&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;user.apps.UserConfig&#x27;</span>,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/10/31/32-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/#more" rel="contents">
+            <a class="btn" href="/2020/08/09/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(%E5%9B%9E%E5%86%99%E4%B8%8E%E6%96%AD%E8%A8%80%2017)/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1859,7 +1855,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/">&lt;</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/3/">&gt;</a>
+    <a class="extend prev" rel="prev" href="/">&lt;</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/3/">&gt;</a>
   </nav>
 
 
@@ -1909,7 +1905,7 @@
               
                 <a href="/archives%7C%7C%20archive">
               
-                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-count">107</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1920,7 +1916,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1931,7 +1927,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

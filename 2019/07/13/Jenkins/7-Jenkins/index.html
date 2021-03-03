@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="测试开发,Jenkins," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Jenkins(七)触发流水线执行可以分为：  时间触发 事件触发  时间触发定义一个时间，时间到了就触发pipeline。 在Jenkins pipeline中使用trigger指令来定义时间触发">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Jenkins(七)">
+<meta property="og:url" content="http://zx490336534.github.io/2019/07/13/Jenkins/7-Jenkins/index.html">
+<meta property="og:site_name" content="测试游记">
+<meta property="og:description" content="Jenkins(七)触发流水线执行可以分为：  时间触发 事件触发  时间触发定义一个时间，时间到了就触发pipeline。 在Jenkins pipeline中使用trigger指令来定义时间触发">
+<meta property="og:locale">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/006tNc79ly1g4yk5ci9coj31b30u0tv1.jpg">
+<meta property="og:image" content="http://ww2.sinaimg.cn/large/006tNc79ly1g4ykcoj41jj31b30u07qd.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/006tNc79ly1g4ykix7qfwj315c0u0qi5.jpg">
+<meta property="og:image" content="http://ww2.sinaimg.cn/large/006tNc79ly1g4ykm7m2ifj31b30u0atp.jpg">
+<meta property="og:image" content="http://ww2.sinaimg.cn/large/006tNc79ly1g4ykn87embj31b30u0dxl.jpg">
+<meta property="og:image" content="http://ww3.sinaimg.cn/large/006tNc79ly1g4ykq0k8kjj31b30u01cf.jpg">
+<meta property="og:image" content="http://ww3.sinaimg.cn/large/006tNc79ly1g4ykrgu6etj31b30u0dzd.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/006tNc79ly1g4ykt1kwxkj31b30u0ax5.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/006tNc79ly1g4yl5l5fsrj31b30u0qqq.jpg">
+<meta property="og:image" content="http://ww2.sinaimg.cn/large/006tNc79ly1g4yl5wnwi7j31b30u0wwm.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/006tNc79ly1g4yl6fqi69j31b30u01ch.jpg">
+<meta property="article:published_time" content="2019-07-13T07:53:00.000Z">
+<meta property="article:modified_time" content="2021-03-03T14:03:02.068Z">
+<meta property="article:author" content="测试游记">
+<meta property="article:tag" content="测试开发">
+<meta property="article:tag" content="Jenkins">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://ww1.sinaimg.cn/large/006tNc79ly1g4yk5ci9coj31b30u0tv1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://zx490336534.github.io/2019/07/13/Jenkins/7-Jenkins/"/>
+
+
+
+
+
+  <title>Jenkins(七) | 测试游记</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?41fc030db57d5570dd22f78997dc4a7e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">测试游记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/2019/07/13/Jenkins/7-Jenkins/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="测试游记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Jenkins(七)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-13T15:53:00+08:00">
+                2019-07-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Jenkins/" itemprop="url" rel="index">
+                    <span itemprop="name">Jenkins</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/07/13/Jenkins/7-Jenkins/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/07/13/Jenkins/7-Jenkins/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Jenkins-七"><a href="#Jenkins-七" class="headerlink" title="Jenkins(七)"></a>Jenkins(七)</h1><p>触发流水线执行可以分为：</p>
+<ul>
+<li>时间触发</li>
+<li>事件触发</li>
+</ul>
+<h2 id="时间触发"><a href="#时间触发" class="headerlink" title="时间触发"></a>时间触发</h2><p>定义一个时间，时间到了就触发pipeline。</p>
+<p>在Jenkins pipeline中使用<code>trigger</code>指令来定义时间触发</p>
+<span id="more"></span>
+<h3 id="定时执行：cron"><a href="#定时执行：cron" class="headerlink" title="定时执行：cron"></a>定时执行：cron</h3><blockquote>
+<p>Jenkins trigger cron语法采用UNIX cron语法。一条cron包含五个字段，使用空格分隔。</p>
+</blockquote>
+<p>格式：MINUTE HOUR DOM MONTH DOW</p>
+<ul>
+<li>MINUTE：分钟 0～59</li>
+<li>HOUR：小时 0～23</li>
+<li>DOM：一个月中的某天 1～31</li>
+<li>MONTH：月份 1～12</li>
+<li>DOW：星期几 0～7，0和7代表星期天</li>
+</ul>
+<p>使用特殊字符，指定多个值</p>
+<ul>
+<li><code>*</code>：匹配所有值</li>
+<li><code>M-N</code>：匹配M-N之间的值</li>
+<li><code>M-N|X</code> or <code>*|x</code>：指定M到N以X为步长的值</li>
+<li><code>A，B，C……Z</code>：多个值</li>
+</ul>
+<blockquote>
+<p>为了解决在同一时刻执行定时任务可能出现的负载不均衡问题。在Jenkins trigger cron语法中使用<code>H</code>字符来解决这个问题。<code>H</code>代表hash</p>
+<p><code>H 0 * * *</code> 代表在0点0分至0点59分任意一个时间点执行。</p>
+</blockquote>
+<p>几个例子：</p>
+<ul>
+<li><code>H/5 * * * *</code>:每隔5分钟构建一次</li>
+<li><code>H H/2 * * *</code>:每两小时构建一次</li>
+<li><code>0 12 * * *</code>:每天12点定时构建一次</li>
+<li><code>H(0-29)/10 * * * *</code>:前半小时的每隔10分钟</li>
+<li><code>45 9-16/2 * * 1-5</code>:周一到周五的9点45到16点45的每隔两个小时构建一次</li>
+</ul>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">pipeline &#123;</span><br><span class="line">    agent any</span><br><span class="line">    triggers &#123;</span><br><span class="line">        cron (<span class="string">&#x27;0 0 * * *&#x27;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    stages &#123;</span><br><span class="line">        stage (<span class="string">&#x27;Nightly build&#x27;</span>) &#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">                echo <span class="string">&#x27;明天凌晨执行&#x27;</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="轮询代码仓库：pollSCM"><a href="#轮询代码仓库：pollSCM" class="headerlink" title="轮询代码仓库：pollSCM"></a>轮询代码仓库：pollSCM</h3><p>定期到代码仓库询问代码是否有变化，如果代码仓库有变化，就执行</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">pipeline &#123;</span><br><span class="line">    agent any</span><br><span class="line">    triggers &#123;</span><br><span class="line">        pollSCM (<span class="string">&#x27;H/1 * * * *&#x27;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    stages &#123;</span><br><span class="line">        stage (<span class="string">&#x27;build&#x27;</span>) &#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">                echo <span class="string">&#x27;轮询执行&#x27;</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="事件触发"><a href="#事件触发" class="headerlink" title="事件触发"></a>事件触发</h2><ul>
+<li>手动在界面上触发</li>
+<li>其他job触发</li>
+<li>HTTP API Webhook触发</li>
+</ul>
+<h3 id="由上游任务出发：upstream"><a href="#由上游任务出发：upstream" class="headerlink" title="由上游任务出发：upstream"></a>由上游任务出发：upstream</h3><p>当B任务的执行依赖A任务的执行结果，A就是B的上游任务。</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">triggers &#123;</span><br><span class="line">   upstream(<span class="attr">upstreamProjects:</span> <span class="string">&#x27;job1,job2&#x27;</span>,<span class="attr">threshold:</span>hudson.model.Result.SUCCESS)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>job1和job2是任务名</li>
+<li>threshold判断上游任务是什么状态的时候触发</li>
+<li>hudson.model.Result包含了<code>ABORTED</code>，<code>FAILURE</code>，<code>SUCCESS</code>，<code>UNSTSBLE</code>，<code>NOT_BUILT</code></li>
+</ul>
+<p>其中它们分别表示：</p>
+<ul>
+<li>ABORTED：任务被手动中止</li>
+<li>FAILURE：构建失败</li>
+<li>SUCCESS：构建成功</li>
+<li>UNSTSBLE：存在一些错误，但不至于构建失败</li>
+<li>NOT_BUILT：在多阶段构建时，前面阶段的问题导致后面阶段无法执行</li>
+</ul>
+<h3 id="Gitlab通知触发"><a href="#Gitlab通知触发" class="headerlink" title="Gitlab通知触发"></a>Gitlab通知触发</h3><ol>
+<li>安装Gitlab插件</li>
+<li>安装git插件(应该已经安装了)</li>
+</ol>
+<p><img src="http://ww1.sinaimg.cn/large/006tNc79ly1g4yk5ci9coj31b30u0tv1.jpg" alt="image-20190713215959418"></p>
+<ol start="3">
+<li>在Gitlab上创建一个项目</li>
+</ol>
+<p><img src="http://ww2.sinaimg.cn/large/006tNc79ly1g4ykcoj41jj31b30u07qd.jpg" alt="创建项目"></p>
+<ol start="4">
+<li>将代码上库</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> http://123.56.13.233:9000/zhongxin/hello-world-pipeline.git</span></span><br><span class="line">正克隆到 &#x27;hello-world-pipeline&#x27;...</span><br><span class="line">warning: 您似乎克隆了一个空仓库。</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> hello-world-pipeline</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> touch 1.py</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> git add 1.py</span> </span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> git commit -m <span class="string">&quot;add 1.py&quot;</span></span></span><br><span class="line"></span><br><span class="line">[master（根提交） e815882] add 1.py</span><br><span class="line"> 1 file changed, 0 insertions(+), 0 deletions(-)</span><br><span class="line"> create mode 100644 1.py</span><br><span class="line"> </span><br><span class="line"><span class="meta">$</span><span class="bash"> git push -u origin master</span></span><br><span class="line">remote: You are not allowed to push code to this project.</span><br><span class="line">fatal: unable to access &#x27;http://123.56.13.233:9000/zhongxin/hello-world-pipeline.git/&#x27;: The requested URL returned error: 403</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> git push -u origin master</span></span><br><span class="line">分支 &#x27;master&#x27; 设置为跟踪来自 &#x27;origin&#x27; 的远程分支 &#x27;master&#x27;。</span><br><span class="line">Everything up-to-date</span><br></pre></td></tr></table></figure>
+
+<p>PS:如果遇到403问题请将<code>.git/config</code>中的url修改为：<code>https://用户名:密码@123.56.13.233:9000/zhongxin/hello-world-pipeline.git/</code></p>
+<p><img src="http://ww1.sinaimg.cn/large/006tNc79ly1g4ykix7qfwj315c0u0qi5.jpg" alt="代码上库"></p>
+<p><img src="http://ww2.sinaimg.cn/large/006tNc79ly1g4ykm7m2ifj31b30u0atp.jpg" alt="查看"></p>
+<p>再同之前GitHub一样，添加一个凭证</p>
+<p><img src="http://ww2.sinaimg.cn/large/006tNc79ly1g4ykn87embj31b30u0dxl.jpg" alt="添加凭证"></p>
+<p><img src="http://ww3.sinaimg.cn/large/006tNc79ly1g4ykq0k8kjj31b30u01cf.jpg" alt="触发器"></p>
+<p>为了保障安全，需要生成一个<code>Secret toekn</code></p>
+<p><code>c342352fc4cf45e01c0f783a7fdf38b7</code>就是一个<code>Secret toekn</code></p>
+<p><img src="http://ww3.sinaimg.cn/large/006tNc79ly1g4ykrgu6etj31b30u0dzd.jpg" alt="生成Secret toekn"></p>
+<p><img src="http://ww1.sinaimg.cn/large/006tNc79ly1g4ykt1kwxkj31b30u0ax5.jpg" alt="配置Gitlab"></p>
+<p>额，到这里遇到一个比较尴尬的问题。我的gitlab服务器在公网，Jenkins服务器在局域网内</p>
+<p>如果，如果成功了的话就可以在下方<code>Project services</code>处看到新增的<code>Webhooks</code></p>
+<h4 id="Jenkinsfile中编写Gitlab-trigger"><a href="#Jenkinsfile中编写Gitlab-trigger" class="headerlink" title="Jenkinsfile中编写Gitlab trigger"></a>Jenkinsfile中编写Gitlab trigger</h4><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">pipeline &#123;</span><br><span class="line">    agent any</span><br><span class="line">    triggers &#123;</span><br><span class="line">        gitlab(<span class="attr">triggerOnPush:</span> <span class="literal">true</span>, </span><br><span class="line">               <span class="symbol">triggerOnMergeRequest:</span> <span class="literal">true</span>,</span><br><span class="line">               <span class="symbol">branchFilterType:</span> <span class="string">&#x27;All&#x27;</span>,</span><br><span class="line">               <span class="symbol">secretToken:</span> <span class="string">&#x27;c342352fc4cf45e01c0f783a7fdf38b7&#x27;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    stages &#123;</span><br><span class="line">        stage(<span class="string">&#x27;build&#x27;</span>) &#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">                echo <span class="string">&quot;Hello wolrd&quot;</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>triggerOnPush：当Gitlab触发push事件，是否执行构建</li>
+<li>triggerOnMergeRequest：当Gitlab触发mergeRequest事件时，是否执行构建</li>
+<li>branchFilterType：只有符合条件的分支才会触发，<strong>必选</strong></li>
+</ul>
+<h3 id="将构建信息推送到GitLab"><a href="#将构建信息推送到GitLab" class="headerlink" title="将构建信息推送到GitLab"></a>将构建信息推送到GitLab</h3><p><img src="http://ww1.sinaimg.cn/large/006tNc79ly1g4yl5l5fsrj31b30u0qqq.jpg" alt="创建API token"></p>
+<p><img src="http://ww2.sinaimg.cn/large/006tNc79ly1g4yl5wnwi7j31b30u0wwm.jpg" alt="添加凭证"></p>
+<p><img src="http://ww1.sinaimg.cn/large/006tNc79ly1g4yl6fqi69j31b30u01ch.jpg" alt="设置"></p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">pipeline &#123;</span><br><span class="line">    agent any</span><br><span class="line">    triggers &#123;</span><br><span class="line">        gitlab(<span class="attr">triggerOnPush:</span> <span class="literal">true</span>,</span><br><span class="line">               <span class="symbol">triggerOnMergeRequest:</span> <span class="literal">true</span>,</span><br><span class="line">               <span class="symbol">branchFilterType:</span> <span class="string">&#x27;All&#x27;</span>,</span><br><span class="line">               <span class="symbol">secretToken:</span> <span class="string">&#x27;c342352fc4cf45e01c0f783a7fdf38b7&#x27;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    stages &#123;</span><br><span class="line">        stage(<span class="string">&#x27;build&#x27;</span>) &#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">                echo <span class="string">&quot;Hello wolrd&quot;</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    post &#123;</span><br><span class="line">        failure &#123;</span><br><span class="line">            updateGitlabCommitStatus <span class="attr">name:</span><span class="string">&#x27;build&#x27;</span>,<span class="attr">state:</span><span class="string">&#x27;failed&#x27;</span></span><br><span class="line">        &#125;</span><br><span class="line">        success &#123;</span><br><span class="line">            updateGitlabCommitStatus <span class="attr">name:</span><span class="string">&#x27;build&#x27;</span>,<span class="attr">state:</span><span class="string">&#x27;success&#x27;</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    options &#123;</span><br><span class="line">        gitLabConnecton(<span class="string">&#x27;gitlab&#x27;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="其他系统触发Webhook"><a href="#其他系统触发Webhook" class="headerlink" title="其他系统触发Webhook"></a>其他系统触发Webhook</h3><p>使用<code>Generic Webhook Trigger</code>插件，具体内容不展开</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt=" wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt=" 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt=" 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/" rel="tag"># 测试开发</a>
+          
+            <a href="/tags/Jenkins/" rel="tag"># Jenkins</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/13/Jenkins/6-Jenkins/" rel="next" title="Jenkins(六)">
+                <i class="fa fa-chevron-left"></i> Jenkins(六)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/13/Jenkins/8-Jenkins/" rel="prev" title="Jenkins(八)">
+                Jenkins(八) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpeg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">107</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zx490336534" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Jenkins-%E4%B8%83"><span class="nav-number">1.</span> <span class="nav-text">Jenkins(七)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%B6%E9%97%B4%E8%A7%A6%E5%8F%91"><span class="nav-number">1.1.</span> <span class="nav-text">时间触发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E6%97%B6%E6%89%A7%E8%A1%8C%EF%BC%9Acron"><span class="nav-number">1.1.1.</span> <span class="nav-text">定时执行：cron</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AE%E8%AF%A2%E4%BB%A3%E7%A0%81%E4%BB%93%E5%BA%93%EF%BC%9ApollSCM"><span class="nav-number">1.1.2.</span> <span class="nav-text">轮询代码仓库：pollSCM</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E4%BB%B6%E8%A7%A6%E5%8F%91"><span class="nav-number">1.2.</span> <span class="nav-text">事件触发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%B1%E4%B8%8A%E6%B8%B8%E4%BB%BB%E5%8A%A1%E5%87%BA%E5%8F%91%EF%BC%9Aupstream"><span class="nav-number">1.2.1.</span> <span class="nav-text">由上游任务出发：upstream</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Gitlab%E9%80%9A%E7%9F%A5%E8%A7%A6%E5%8F%91"><span class="nav-number">1.2.2.</span> <span class="nav-text">Gitlab通知触发</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Jenkinsfile%E4%B8%AD%E7%BC%96%E5%86%99Gitlab-trigger"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">Jenkinsfile中编写Gitlab trigger</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%86%E6%9E%84%E5%BB%BA%E4%BF%A1%E6%81%AF%E6%8E%A8%E9%80%81%E5%88%B0GitLab"><span class="nav-number">1.2.3.</span> <span class="nav-text">将构建信息推送到GitLab</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E7%B3%BB%E7%BB%9F%E8%A7%A6%E5%8F%91Webhook"><span class="nav-number">1.2.4.</span> <span class="nav-text">其他系统触发Webhook</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">测试游记</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://zx490336534.github.io/2019/07/13/Jenkins/7-Jenkins/';
+          this.page.identifier = '2019/07/13/Jenkins/7-Jenkins/';
+          this.page.title = 'Jenkins(七)';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

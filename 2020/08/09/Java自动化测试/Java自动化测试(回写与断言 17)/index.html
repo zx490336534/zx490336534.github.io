@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java,自动化测试," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Java自动化测试(回写与断言 17)回写将测试结果写回到Excel中 定义回写数据对象">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java自动化测试(回写与断言 17)">
+<meta property="og:url" content="http://zx490336534.github.io/2020/08/09/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(%E5%9B%9E%E5%86%99%E4%B8%8E%E6%96%AD%E8%A8%80%2017)/index.html">
+<meta property="og:site_name" content="测试游记">
+<meta property="og:description" content="Java自动化测试(回写与断言 17)回写将测试结果写回到Excel中 定义回写数据对象">
+<meta property="og:locale">
+<meta property="article:published_time" content="2020-08-08T23:33:27.651Z">
+<meta property="article:modified_time" content="2021-03-03T14:29:02.786Z">
+<meta property="article:author" content="测试游记">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="自动化测试">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://zx490336534.github.io/2020/08/09/Java自动化测试/Java自动化测试(回写与断言 17)/"/>
+
+
+
+
+
+  <title>Java自动化测试(回写与断言 17) | 测试游记</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?41fc030db57d5570dd22f78997dc4a7e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">测试游记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/2020/08/09/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(%E5%9B%9E%E5%86%99%E4%B8%8E%E6%96%AD%E8%A8%80%2017)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="测试游记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java自动化测试(回写与断言 17)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-09T07:33:27+08:00">
+                2020-08-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index">
+                    <span itemprop="name">Java自动化测试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/08/09/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(%E5%9B%9E%E5%86%99%E4%B8%8E%E6%96%AD%E8%A8%80%2017)/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/08/09/Java自动化测试/Java自动化测试(回写与断言 17)/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Java自动化测试-回写与断言-17"><a href="#Java自动化测试-回写与断言-17" class="headerlink" title="Java自动化测试(回写与断言 17)"></a>Java自动化测试(回写与断言 17)</h1><h2 id="回写"><a href="#回写" class="headerlink" title="回写"></a>回写</h2><p>将测试结果写回到Excel中</p>
+<h3 id="定义回写数据对象"><a href="#定义回写数据对象" class="headerlink" title="定义回写数据对象"></a>定义回写数据对象</h3><span id="more"></span>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.zhongxin.pojo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WriteBackData</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> sheetIndex;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> rowNum;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> cellNum;</span><br><span class="line">    <span class="keyword">private</span> String content;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">WriteBackData</span><span class="params">(<span class="keyword">int</span> sheetIndex, <span class="keyword">int</span> rowNum, <span class="keyword">int</span> cellNum, String content)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.sheetIndex = sheetIndex;</span><br><span class="line">        <span class="keyword">this</span>.rowNum = rowNum;</span><br><span class="line">        <span class="keyword">this</span>.cellNum = cellNum;</span><br><span class="line">        <span class="keyword">this</span>.content = content;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">WriteBackData</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;WriteBackData&#123;&quot;</span> +</span><br><span class="line">                <span class="string">&quot;sheetIndex=&quot;</span> + sheetIndex +</span><br><span class="line">                <span class="string">&quot;, rowNum=&quot;</span> + rowNum +</span><br><span class="line">                <span class="string">&quot;, cellNum=&quot;</span> + cellNum +</span><br><span class="line">                <span class="string">&quot;, content=&#x27;&quot;</span> + content + <span class="string">&#x27;\&#x27;&#x27;</span> +</span><br><span class="line">                <span class="string">&#x27;&#125;&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getSheetIndex</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> sheetIndex;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSheetIndex</span><span class="params">(<span class="keyword">int</span> sheetIndex)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.sheetIndex = sheetIndex;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getRowNum</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> rowNum;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setRowNum</span><span class="params">(<span class="keyword">int</span> rowNum)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.rowNum = rowNum;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getCellNum</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> cellNum;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setCellNum</span><span class="params">(<span class="keyword">int</span> cellNum)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.cellNum = cellNum;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getContent</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> content;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setContent</span><span class="params">(String content)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.content = content;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="批量回写操作代码"><a href="#批量回写操作代码" class="headerlink" title="批量回写操作代码"></a>批量回写操作代码</h3><p>使用到类似之前Excel到写入操作代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">batchWrite</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="comment">//回写的逻辑：遍历wdbList集合，取出sheetIndex,rowNum,cellNum,content</span></span><br><span class="line">    FileInputStream fis = <span class="keyword">new</span> FileInputStream(<span class="string">&quot;src/test/resources/cases_v3.xlsx&quot;</span>);</span><br><span class="line">    Workbook sheets = WorkbookFactory.create(fis);</span><br><span class="line">    <span class="keyword">for</span> (WriteBackData wdb : wdbList) &#123;</span><br><span class="line">        <span class="keyword">int</span> sheetIndex = wdb.getSheetIndex();</span><br><span class="line">        <span class="keyword">int</span> rowNum = wdb.getRowNum();</span><br><span class="line">        <span class="keyword">int</span> cellNum = wdb.getCellNum();</span><br><span class="line">        String content = wdb.getContent();</span><br><span class="line"></span><br><span class="line">        Sheet sheet = sheets.getSheetAt(sheetIndex);</span><br><span class="line">        Row row = sheet.getRow(rowNum);</span><br><span class="line">        Cell cell = row.getCell(cellNum, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);</span><br><span class="line">        cell.setCellValue(content);</span><br><span class="line">    &#125;</span><br><span class="line">    FileOutputStream fos = <span class="keyword">new</span> FileOutputStream(<span class="string">&quot;src/test/resources/cases_v3.xlsx&quot;</span>);</span><br><span class="line">    sheets.write(fos);</span><br><span class="line">    fis.close();</span><br><span class="line">    fos.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>com.zhongxin.utils.ExcelUtils</code>中需要增加一个<code>wdbList</code>，用于存储运行测试时候每次产生的结果</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;WriteBackData&gt; wdbList = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br></pre></td></tr></table></figure>
+
+<h3 id="case中新增写入测试结果"><a href="#case中新增写入测试结果" class="headerlink" title="case中新增写入测试结果"></a>case中新增写入测试结果</h3><p>每个case执行的最后阶段增加</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">WriteBackData wdb = <span class="keyword">new</span> WriteBackData(sheetIndex, caseInfo.getId(), <span class="number">8</span>, responseBody);</span><br><span class="line">ExcelUtils.wdbList.add(wdb);</span><br></pre></td></tr></table></figure>
+
+<h3 id="全部测试完成后批量写入结果"><a href="#全部测试完成后批量写入结果" class="headerlink" title="全部测试完成后批量写入结果"></a>全部测试完成后批量写入结果</h3><p>使用注解<code>AfterSuite</code>在全部测试结束后将结果写入Excel</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@AfterSuite</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">finish</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    ExcelUtils.batchWrite();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="提取父类"><a href="#提取父类" class="headerlink" title="提取父类"></a>提取父类</h2><p>将共性代码放到父类<code>BaseCase</code>中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.zhongxin.cases;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.zhongxin.pojo.WriteBackData;</span><br><span class="line"><span class="keyword">import</span> com.zhongxin.utils.ExcelUtils;</span><br><span class="line"><span class="keyword">import</span> org.testng.annotations.AfterSuite;</span><br><span class="line"><span class="keyword">import</span> org.testng.annotations.BeforeClass;</span><br><span class="line"><span class="keyword">import</span> org.testng.annotations.Parameters;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseCase</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span> sheetIndex;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@BeforeClass</span></span><br><span class="line">    <span class="meta">@Parameters(&#123;&quot;sheetIndex&quot;&#125;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">beforeClass</span><span class="params">(<span class="keyword">int</span> sheetIndex)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.sheetIndex = sheetIndex;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 添加回写对象到回写集合中</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addWriteBackData</span><span class="params">(<span class="keyword">int</span> sheetIndex, <span class="keyword">int</span> rowNum, <span class="keyword">int</span> cellNum, String content)</span> </span>&#123;</span><br><span class="line">        WriteBackData wdb = <span class="keyword">new</span> WriteBackData(sheetIndex, rowNum, cellNum, content);</span><br><span class="line">        ExcelUtils.wdbList.add(wdb);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@AfterSuite</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">finish</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        ExcelUtils.batchWrite();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="提取responseBody参数到UserData中的封装"><a href="#提取responseBody参数到UserData中的封装" class="headerlink" title="提取responseBody参数到UserData中的封装"></a>提取responseBody参数到UserData中的封装</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 从responseBody 通过Jsonpath取出对应参数，存到UserData中</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getParams</span><span class="params">(String responseBody, String jsonPathExpression, String userDataKey)</span> </span>&#123;</span><br><span class="line">    Object token = JSONPath.read(responseBody, jsonPathExpression);</span><br><span class="line">    <span class="keyword">if</span> (token != <span class="keyword">null</span>) &#123;</span><br><span class="line">        UserData.VARS.put(userDataKey, token);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="提取返回鉴权头"><a href="#提取返回鉴权头" class="headerlink" title="提取返回鉴权头"></a>提取返回鉴权头</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> HashMap&lt;String, String&gt; <span class="title">getAuthorizationHeader</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Object token = UserData.VARS.get(<span class="string">&quot;$&#123;token&#125;&quot;</span>);</span><br><span class="line">    HashMap&lt;String, String&gt; headers = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    headers.put(<span class="string">&quot;Authorization&quot;</span>, <span class="string">&quot;Bearer &quot;</span> + token);</span><br><span class="line">    headers.putAll(UserData.DEFAULT_HEADERS);</span><br><span class="line">    <span class="keyword">return</span> headers;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="断言"><a href="#断言" class="headerlink" title="断言"></a>断言</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 接口响应断言</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> expectedResult 断言的期望值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> responseBody   接口响应内容</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> 接口响应断言结果</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">responseAssert</span><span class="params">(String expectedResult, String responseBody)</span> </span>&#123;</span><br><span class="line">    Map&lt;String, Object&gt; map = JSONObject.parseObject(expectedResult, Map.class);</span><br><span class="line">    Set&lt;String&gt; keySet = map.keySet();</span><br><span class="line">    <span class="keyword">boolean</span> reponseAssertFlag = <span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">for</span> (String actualExpression : keySet) &#123;</span><br><span class="line">        Object expectedValue = map.get(actualExpression);</span><br><span class="line">        Object actualValue = JSONPath.read(responseBody, actualExpression);</span><br><span class="line">        <span class="keyword">if</span> (!expectedValue.equals(actualValue)) &#123;</span><br><span class="line">            reponseAssertFlag = <span class="keyword">false</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    System.out.println(<span class="string">&quot;断言结果:&quot;</span> + reponseAssertFlag);</span><br><span class="line">    <span class="keyword">return</span> reponseAssertFlag;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt=" wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt=" 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt=" 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/" rel="tag"># 自动化测试</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/08/06/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(%E6%8E%A5%E5%8F%A3%E9%89%B4%E6%9D%83%2016)/" rel="next" title="Java自动化测试(接口鉴权 16)">
+                <i class="fa fa-chevron-left"></i> Java自动化测试(接口鉴权 16)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/08/11/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(%E6%95%B0%E6%8D%AE%E5%BA%93%E6%96%AD%E8%A8%80%2018)/" rel="prev" title="Java自动化测试(数据库断言 18)">
+                Java自动化测试(数据库断言 18) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpeg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">107</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zx490336534" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95-%E5%9B%9E%E5%86%99%E4%B8%8E%E6%96%AD%E8%A8%80-17"><span class="nav-number">1.</span> <span class="nav-text">Java自动化测试(回写与断言 17)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9E%E5%86%99"><span class="nav-number">1.1.</span> <span class="nav-text">回写</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E5%9B%9E%E5%86%99%E6%95%B0%E6%8D%AE%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.1.1.</span> <span class="nav-text">定义回写数据对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%B9%E9%87%8F%E5%9B%9E%E5%86%99%E6%93%8D%E4%BD%9C%E4%BB%A3%E7%A0%81"><span class="nav-number">1.1.2.</span> <span class="nav-text">批量回写操作代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#case%E4%B8%AD%E6%96%B0%E5%A2%9E%E5%86%99%E5%85%A5%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C"><span class="nav-number">1.1.3.</span> <span class="nav-text">case中新增写入测试结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%A8%E9%83%A8%E6%B5%8B%E8%AF%95%E5%AE%8C%E6%88%90%E5%90%8E%E6%89%B9%E9%87%8F%E5%86%99%E5%85%A5%E7%BB%93%E6%9E%9C"><span class="nav-number">1.1.4.</span> <span class="nav-text">全部测试完成后批量写入结果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%90%E5%8F%96%E7%88%B6%E7%B1%BB"><span class="nav-number">1.2.</span> <span class="nav-text">提取父类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%90%E5%8F%96responseBody%E5%8F%82%E6%95%B0%E5%88%B0UserData%E4%B8%AD%E7%9A%84%E5%B0%81%E8%A3%85"><span class="nav-number">1.3.</span> <span class="nav-text">提取responseBody参数到UserData中的封装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%90%E5%8F%96%E8%BF%94%E5%9B%9E%E9%89%B4%E6%9D%83%E5%A4%B4"><span class="nav-number">1.4.</span> <span class="nav-text">提取返回鉴权头</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%AD%E8%A8%80"><span class="nav-number">1.5.</span> <span class="nav-text">断言</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">测试游记</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://zx490336534.github.io/2020/08/09/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(%E5%9B%9E%E5%86%99%E4%B8%8E%E6%96%AD%E8%A8%80%2017)/';
+          this.page.identifier = '2020/08/09/Java自动化测试/Java自动化测试(回写与断言 17)/';
+          this.page.title = 'Java自动化测试(回写与断言 17)';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

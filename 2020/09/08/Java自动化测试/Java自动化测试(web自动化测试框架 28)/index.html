@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java,自动化测试," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Java自动化测试(web自动化测试框架 28)测试数据测试地址http:&#x2F;&#x2F;120.78.128.25:8765&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java自动化测试(web自动化测试框架 28)">
+<meta property="og:url" content="http://zx490336534.github.io/2020/09/08/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(web%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6%2028)/index.html">
+<meta property="og:site_name" content="测试游记">
+<meta property="og:description" content="Java自动化测试(web自动化测试框架 28)测试数据测试地址http:&#x2F;&#x2F;120.78.128.25:8765&#x2F;">
+<meta property="og:locale">
+<meta property="article:published_time" content="2020-09-07T22:59:47.134Z">
+<meta property="article:modified_time" content="2021-03-03T14:29:02.865Z">
+<meta property="article:author" content="测试游记">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="自动化测试">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://zx490336534.github.io/2020/09/08/Java自动化测试/Java自动化测试(web自动化测试框架 28)/"/>
+
+
+
+
+
+  <title>Java自动化测试(web自动化测试框架 28) | 测试游记</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?41fc030db57d5570dd22f78997dc4a7e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">测试游记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/2020/09/08/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(web%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6%2028)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="测试游记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java自动化测试(web自动化测试框架 28)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-08T06:59:47+08:00">
+                2020-09-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index">
+                    <span itemprop="name">Java自动化测试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/09/08/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(web%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6%2028)/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/09/08/Java自动化测试/Java自动化测试(web自动化测试框架 28)/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Java自动化测试-web自动化测试框架-28"><a href="#Java自动化测试-web自动化测试框架-28" class="headerlink" title="Java自动化测试(web自动化测试框架 28)"></a>Java自动化测试(web自动化测试框架 28)</h1><h2 id="测试数据"><a href="#测试数据" class="headerlink" title="测试数据"></a>测试数据</h2><h3 id="测试地址"><a href="#测试地址" class="headerlink" title="测试地址"></a>测试地址</h3><p><a target="_blank" rel="noopener" href="http://120.78.128.25:8765/">http://120.78.128.25:8765/</a></p>
+<span id="more"></span>
+<h3 id="投资人"><a href="#投资人" class="headerlink" title="投资人"></a>投资人</h3><p>13323234545</p>
+<p>lemon123456</p>
+<h3 id="借款人"><a href="#借款人" class="headerlink" title="借款人"></a>借款人</h3><p>13323234444</p>
+<p>lemonbest</p>
+<h3 id="后台地址"><a href="#后台地址" class="headerlink" title="后台地址"></a>后台地址</h3><p><a target="_blank" rel="noopener" href="http://120.78.128.25:8765/Admin/Index/login.html">http://120.78.128.25:8765/Admin/Index/login.html</a></p>
+<p>lemon7</p>
+<p>lemonbest</p>
+<h2 id="Page-Object"><a href="#Page-Object" class="headerlink" title="Page Object"></a>Page Object</h2><h3 id="PO简介"><a href="#PO简介" class="headerlink" title="PO简介"></a>PO简介</h3><blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.selenium.dev/documentation/en/guidelines_and_recommendations/page_object_models/">https://www.selenium.dev/documentation/en/guidelines_and_recommendations/page_object_models/</a></p>
+</blockquote>
+<p><strong>Page Object</strong> 是 Selenium 自动化测试项目开发实践的最佳设计模式之一，Page Object 的主要体现于<strong>对界面交互细节的封装</strong>，这样可以使测试案例更关注与业务而非界面细节，提高测试案例的可读性。</p>
+<p><strong>Page Object 设计模式的优点如下：</strong></p>
+<ul>
+<li>减少代码的重复；</li>
+<li>提高测试用例的可读性；</li>
+<li>提高测试用例的可维护性，特别是针对 UI 频繁变化的项目；</li>
+</ul>
+<p><strong>Paget Object 使用注意：</strong></p>
+<ul>
+<li>public方法代表Page提供的功能</li>
+<li>尽量不要暴露Page的内部细节</li>
+<li>不要assertion</li>
+<li>方法可以返回其他Page Objects</li>
+<li>Page Objects不用代表整个页面，可以是任意一个部分</li>
+<li>一样的操作，不同的结果应该分开（正确登录，错误登录）</li>
+</ul>
+<p>使用po是对页面进行抽象或者说建模的过程，需要把页面当作一个对象。</p>
+<p>面向对象编程语言中，进行面向对象编程需要考虑以下两点：</p>
+<ol>
+<li>对象的属性「全局变量」 == web页面的元素「定位方法，定位值」</li>
+<li>对象的行为「方法」 == web页面的元素的操作</li>
+</ol>
+<h2 id="编写页面操作基类"><a href="#编写页面操作基类" class="headerlink" title="编写页面操作基类"></a>编写页面操作基类</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.zhongxin.pages;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.openqa.selenium.By;</span><br><span class="line"><span class="keyword">import</span> org.openqa.selenium.WebDriver;</span><br><span class="line"><span class="keyword">import</span> org.openqa.selenium.WebElement;</span><br><span class="line"><span class="keyword">import</span> org.openqa.selenium.support.ui.ExpectedConditions;</span><br><span class="line"><span class="keyword">import</span> org.openqa.selenium.support.ui.WebDriverWait;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BasePage</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> WebDriver driver;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">BasePage</span><span class="params">(WebDriver driver)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.driver = driver;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 封装显式等待</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> by 元素定位信息</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 元素对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> WebElement <span class="title">waitElementBisibility</span><span class="params">(By by)</span> </span>&#123;</span><br><span class="line">        WebElement element = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">//5秒元素可见显式等待</span></span><br><span class="line">            WebDriverWait wait = <span class="keyword">new</span> WebDriverWait(driver, <span class="number">5</span>);</span><br><span class="line">            element = wait.until(ExpectedConditions.visibilityOfElementLocated(by));</span><br><span class="line">            <span class="keyword">return</span> element;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;元素定位异常&quot;</span> + e.getMessage());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="登陆页面封装"><a href="#登陆页面封装" class="headerlink" title="登陆页面封装"></a>登陆页面封装</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.zhongxin.pages;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.openqa.selenium.By;</span><br><span class="line"><span class="keyword">import</span> org.openqa.selenium.WebDriver;</span><br><span class="line"><span class="keyword">import</span> org.openqa.selenium.WebElement;</span><br><span class="line"><span class="keyword">import</span> org.openqa.selenium.support.ui.ExpectedConditions;</span><br><span class="line"><span class="keyword">import</span> org.openqa.selenium.support.ui.WebDriverWait;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoginPage</span> <span class="keyword">extends</span> <span class="title">BasePage</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> WebDriver driver;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// phone元素定位信息</span></span><br><span class="line">    <span class="keyword">private</span> By phoneBy = By.name(<span class="string">&quot;phone&quot;</span>);</span><br><span class="line">    <span class="comment">//password元素定位信息</span></span><br><span class="line">    <span class="keyword">private</span> By passwordBy = By.name(<span class="string">&quot;password&quot;</span>);</span><br><span class="line">    <span class="comment">//登陆按钮元素定位信息</span></span><br><span class="line">    <span class="keyword">private</span> By loginBtnBy = By.xpath(<span class="string">&quot;//button[@class=&#x27;btn btn-special&#x27;]&quot;</span>);</span><br><span class="line">    <span class="comment">//页面中央错误提示</span></span><br><span class="line">    <span class="keyword">private</span> By centerErrorBy = By.className(<span class="string">&quot;layui-layer-content&quot;</span>);</span><br><span class="line">    <span class="comment">//页面手机红色错误提示</span></span><br><span class="line">    <span class="keyword">private</span> By phoneformErrorBy = By.xpath(<span class="string">&quot;//input[@name=&#x27;phone&#x27;]//following-sibling::div&quot;</span>);</span><br><span class="line">    <span class="comment">//页面密码红色错误提示</span></span><br><span class="line">    <span class="keyword">private</span> By passwordformErrorBy = By.xpath(<span class="string">&quot;//input[@name=&#x27;password&#x27;]//following-sibling::div&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LoginPage</span><span class="params">(WebDriver driver)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(driver);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">//对手机框进行输入</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">inputPhone</span><span class="params">(String phone)</span> </span>&#123;</span><br><span class="line">        WebElement element = waitElementBisibility(phoneBy);</span><br><span class="line">        <span class="keyword">if</span> (element != <span class="keyword">null</span>) &#123;</span><br><span class="line">            element.clear();</span><br><span class="line">            element.sendKeys(phone);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//对密码框进行输入</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">inputPassword</span><span class="params">(String password)</span> </span>&#123;</span><br><span class="line">        WebElement element = waitElementBisibility(passwordBy);</span><br><span class="line">        <span class="keyword">if</span> (element != <span class="keyword">null</span>) &#123;</span><br><span class="line">            element.clear();</span><br><span class="line">            element.sendKeys(password);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//点击登陆按钮</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clickLoginBtn</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        WebElement element = waitElementBisibility(loginBtnBy);</span><br><span class="line">        <span class="keyword">if</span> (element != <span class="keyword">null</span>) &#123;</span><br><span class="line">            element.click();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//获取页面中央错误提示文本</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getCenterErrorText</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        WebElement element = waitElementBisibility(centerErrorBy);</span><br><span class="line">        <span class="keyword">if</span> (element != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> element.getText();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//获取页面手机红色错误提示</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getPhoneFormErrorText</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        WebElement element = waitElementBisibility(phoneformErrorBy);</span><br><span class="line">        <span class="keyword">if</span> (element != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> element.getText();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//获取页面手机红色错误提示</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getPasswordFormErrorText</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        WebElement element = waitElementBisibility(passwordformErrorBy);</span><br><span class="line">        <span class="keyword">if</span> (element != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> element.getText();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="首页封装"><a href="#首页封装" class="headerlink" title="首页封装"></a>首页封装</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.zhongxin.pages;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.openqa.selenium.By;</span><br><span class="line"><span class="keyword">import</span> org.openqa.selenium.WebDriver;</span><br><span class="line"><span class="keyword">import</span> org.openqa.selenium.WebElement;</span><br><span class="line"><span class="keyword">import</span> org.openqa.selenium.support.ui.WebDriverWait;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IndexPage</span> <span class="keyword">extends</span> <span class="title">BasePage</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> WebDriver driver;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//昵称</span></span><br><span class="line">    <span class="keyword">private</span> By nicknameBy = By.xpath(<span class="string">&quot;//a[contains(text(),&#x27;我的帐户[自动化测试帐号1]&#x27;)]&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">IndexPage</span><span class="params">(WebDriver driver)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(driver);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 昵称是否可见</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">nicknameIsVisibility</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        WebElement element = waitElementBisibility(nicknameBy);</span><br><span class="line">        <span class="keyword">if</span> (element != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> element.isDisplayed();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="测试代码"><a href="#测试代码" class="headerlink" title="测试代码"></a>测试代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.zhongxin.cases;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.zhongxin.pages.IndexPage;</span><br><span class="line"><span class="keyword">import</span> com.zhongxin.pages.LoginPage;</span><br><span class="line"><span class="keyword">import</span> okio.Timeout;</span><br><span class="line"><span class="keyword">import</span> org.openqa.selenium.*;</span><br><span class="line"><span class="keyword">import</span> org.openqa.selenium.chrome.ChromeDriver;</span><br><span class="line"><span class="keyword">import</span> org.openqa.selenium.firefox.FirefoxDriver;</span><br><span class="line"><span class="keyword">import</span> org.openqa.selenium.ie.InternetExplorerDriver;</span><br><span class="line"><span class="keyword">import</span> org.openqa.selenium.remote.DesiredCapabilities;</span><br><span class="line"><span class="keyword">import</span> org.openqa.selenium.support.ui.ExpectedConditions;</span><br><span class="line"><span class="keyword">import</span> org.openqa.selenium.support.ui.WebDriverWait;</span><br><span class="line"><span class="keyword">import</span> org.testng.Assert;</span><br><span class="line"><span class="keyword">import</span> org.testng.annotations.AfterClass;</span><br><span class="line"><span class="keyword">import</span> org.testng.annotations.BeforeClass;</span><br><span class="line"><span class="keyword">import</span> org.testng.annotations.DataProvider;</span><br><span class="line"><span class="keyword">import</span> org.testng.annotations.Test;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoginCase</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> WebDriver driver;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@BeforeClass</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setUp</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">//打开浏览器</span></span><br><span class="line">        driver = open(<span class="string">&quot;chrome&quot;</span>);</span><br><span class="line">        <span class="comment">//访问登陆页面</span></span><br><span class="line">        driver.get(<span class="string">&quot;http://120.78.128.25:8765/Index/login.html&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testFailed01</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        LoginPage loginpage = <span class="keyword">new</span> LoginPage(driver);</span><br><span class="line">        loginpage.inputPhone(<span class="string">&quot;13212312312&quot;</span>);</span><br><span class="line">        loginpage.inputPassword(<span class="string">&quot;123123123&quot;</span>);</span><br><span class="line">        loginpage.clickLoginBtn();</span><br><span class="line">        String actual = loginpage.getCenterErrorText();</span><br><span class="line">        String expected = <span class="string">&quot;此账号没有经过授权，请联系管理员!&quot;</span>;</span><br><span class="line">        Assert.assertEquals(actual, expected);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testFailed02</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        LoginPage loginpage = <span class="keyword">new</span> LoginPage(driver);</span><br><span class="line">        loginpage.inputPhone(<span class="string">&quot;&quot;</span>);</span><br><span class="line">        loginpage.inputPassword(<span class="string">&quot;123123123&quot;</span>);</span><br><span class="line">        loginpage.clickLoginBtn();</span><br><span class="line">        String actual = loginpage.getPhoneFormErrorText();</span><br><span class="line">        String expected = <span class="string">&quot;请输入手机号&quot;</span>;</span><br><span class="line">        Assert.assertEquals(actual, expected);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test(dataProvider = &quot;datas&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testFailed03</span><span class="params">(String phone, String password, String expected)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        LoginPage loginpage = <span class="keyword">new</span> LoginPage(driver);</span><br><span class="line">        loginpage.inputPhone(phone);</span><br><span class="line">        loginpage.inputPassword(password);</span><br><span class="line">        loginpage.clickLoginBtn();</span><br><span class="line">        String actual = loginpage.getPhoneFormErrorText();</span><br><span class="line">        Assert.assertEquals(actual, expected);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testFailed04</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        LoginPage loginpage = <span class="keyword">new</span> LoginPage(driver);</span><br><span class="line">        loginpage.inputPhone(<span class="string">&quot;15859019251&quot;</span>);</span><br><span class="line">        loginpage.inputPassword(<span class="string">&quot;&quot;</span>);</span><br><span class="line">        loginpage.clickLoginBtn();</span><br><span class="line">        String actual = loginpage.getPasswordFormErrorText();</span><br><span class="line">        Assert.assertEquals(actual, <span class="string">&quot;请输入密码&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testFailed05</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        LoginPage loginpage = <span class="keyword">new</span> LoginPage(driver);</span><br><span class="line">        loginpage.inputPhone(<span class="string">&quot;13323234545&quot;</span>);</span><br><span class="line">        loginpage.inputPassword(<span class="string">&quot;123123123&quot;</span>);</span><br><span class="line">        loginpage.clickLoginBtn();</span><br><span class="line">        String actual = loginpage.getCenterErrorText();</span><br><span class="line">        Assert.assertEquals(actual, <span class="string">&quot;帐号或密码错误!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testSuccess</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        LoginPage loginpage = <span class="keyword">new</span> LoginPage(driver);</span><br><span class="line">        loginpage.inputPhone(<span class="string">&quot;13323234545&quot;</span>);</span><br><span class="line">        loginpage.inputPassword(<span class="string">&quot;lemon123456&quot;</span>);</span><br><span class="line">        loginpage.clickLoginBtn();</span><br><span class="line">        Thread.sleep(<span class="number">2000</span>);</span><br><span class="line">        IndexPage indexPage = <span class="keyword">new</span> IndexPage(driver);</span><br><span class="line">        <span class="keyword">boolean</span> flag = indexPage.nicknameIsVisibility();</span><br><span class="line">        Assert.assertTrue(flag);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@DataProvider</span></span><br><span class="line">    <span class="keyword">public</span> Object[][] datas() &#123;</span><br><span class="line">        Object[][] datas = &#123;</span><br><span class="line">                &#123;<span class="string">&quot;&quot;</span>, <span class="string">&quot;123123123&quot;</span>, <span class="string">&quot;请输入手机号&quot;</span>&#125;,</span><br><span class="line">                &#123;<span class="string">&quot;1585901925&quot;</span>, <span class="string">&quot;123123123&quot;</span>, <span class="string">&quot;请输入正确的手机号&quot;</span>&#125;,</span><br><span class="line">                &#123;<span class="string">&quot;158590192534&quot;</span>, <span class="string">&quot;123123123&quot;</span>, <span class="string">&quot;请输入正确的手机号&quot;</span>&#125;,</span><br><span class="line">                &#123;<span class="string">&quot;1585901925%&quot;</span>, <span class="string">&quot;123123123&quot;</span>, <span class="string">&quot;请输入正确的手机号&quot;</span>&#125;,</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="keyword">return</span> datas;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@AfterClass</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">tearDown</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        Thread.sleep(<span class="number">2000</span>);</span><br><span class="line">        <span class="comment">//关闭浏览器</span></span><br><span class="line">        close(driver);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">close</span><span class="params">(WebDriver driver)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        Thread.sleep(<span class="number">3000</span>);</span><br><span class="line">        driver.quit();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> WebDriver <span class="title">open</span><span class="params">(String type)</span> </span>&#123;</span><br><span class="line">        WebDriver driver = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">if</span> (<span class="string">&quot;chrome&quot;</span>.equalsIgnoreCase(type)) &#123;</span><br><span class="line">            System.setProperty(<span class="string">&quot;webdriver.chrome.driver&quot;</span>, <span class="string">&quot;src/test/resources/chromedriver&quot;</span>);</span><br><span class="line">            driver = <span class="keyword">new</span> ChromeDriver();</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">&quot;ie&quot;</span>.equalsIgnoreCase(type)) &#123;</span><br><span class="line">            <span class="comment">// 设置ie启动项</span></span><br><span class="line">            DesiredCapabilities capabilities = <span class="keyword">new</span> DesiredCapabilities();</span><br><span class="line">            <span class="comment">// 忽略缩放</span></span><br><span class="line">            capabilities.setCapability(InternetExplorerDriver.IGNORE_ZOOM_SETTING, <span class="keyword">true</span>);</span><br><span class="line">            <span class="comment">// 忽略保护模式</span></span><br><span class="line">            capabilities.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, <span class="keyword">true</span>);</span><br><span class="line">            <span class="comment">// 设置初始化浏览器地址</span></span><br><span class="line">            capabilities.setCapability(InternetExplorerDriver.INITIAL_BROWSER_URL, <span class="string">&quot;https://www.baidu.com&quot;</span>);</span><br><span class="line">            <span class="comment">// 配置ie驱动位置</span></span><br><span class="line">            System.setProperty(<span class="string">&quot;webdriver.ie.driver&quot;</span>, <span class="string">&quot;src/test/resources/IEDriverServer.exe&quot;</span>);</span><br><span class="line">            <span class="comment">// 创建ie驱动对象</span></span><br><span class="line">            driver = <span class="keyword">new</span> InternetExplorerDriver();</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">&quot;firefox&quot;</span>.equalsIgnoreCase(type)) &#123;</span><br><span class="line">            System.setProperty(<span class="string">&quot;webdriver.firefox.bin&quot;</span>, <span class="string">&quot;D:\\Mozilla Firefox\\firefox.exe&quot;</span>);</span><br><span class="line">            System.setProperty(<span class="string">&quot;webdriver.firefox.driver&quot;</span>, <span class="string">&quot;src/test/resources/geckodriver.exe&quot;</span>);</span><br><span class="line">            driver = <span class="keyword">new</span> FirefoxDriver();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> driver;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt=" wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt=" 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt=" 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/" rel="tag"># 自动化测试</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/09/08/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E8%83%8C%E6%99%AF%E4%B8%8E%E6%B5%81%E7%A8%8B%2027)/" rel="next" title="Java自动化测试(自动化测试背景与流程 27)">
+                <i class="fa fa-chevron-left"></i> Java自动化测试(自动化测试背景与流程 27)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/09/17/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(web%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B62%2029)/" rel="prev" title="Java自动化测试(web自动化测试框架2 29)">
+                Java自动化测试(web自动化测试框架2 29) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpeg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">107</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zx490336534" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95-web%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6-28"><span class="nav-number">1.</span> <span class="nav-text">Java自动化测试(web自动化测试框架 28)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE"><span class="nav-number">1.1.</span> <span class="nav-text">测试数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E5%9C%B0%E5%9D%80"><span class="nav-number">1.1.1.</span> <span class="nav-text">测试地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%95%E8%B5%84%E4%BA%BA"><span class="nav-number">1.1.2.</span> <span class="nav-text">投资人</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%80%9F%E6%AC%BE%E4%BA%BA"><span class="nav-number">1.1.3.</span> <span class="nav-text">借款人</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8E%E5%8F%B0%E5%9C%B0%E5%9D%80"><span class="nav-number">1.1.4.</span> <span class="nav-text">后台地址</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Page-Object"><span class="nav-number">1.2.</span> <span class="nav-text">Page Object</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#PO%E7%AE%80%E4%BB%8B"><span class="nav-number">1.2.1.</span> <span class="nav-text">PO简介</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E5%86%99%E9%A1%B5%E9%9D%A2%E6%93%8D%E4%BD%9C%E5%9F%BA%E7%B1%BB"><span class="nav-number">1.3.</span> <span class="nav-text">编写页面操作基类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%99%BB%E9%99%86%E9%A1%B5%E9%9D%A2%E5%B0%81%E8%A3%85"><span class="nav-number">1.4.</span> <span class="nav-text">登陆页面封装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A6%96%E9%A1%B5%E5%B0%81%E8%A3%85"><span class="nav-number">1.5.</span> <span class="nav-text">首页封装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E4%BB%A3%E7%A0%81"><span class="nav-number">1.6.</span> <span class="nav-text">测试代码</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">测试游记</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://zx490336534.github.io/2020/09/08/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95(web%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6%2028)/';
+          this.page.identifier = '2020/09/08/Java自动化测试/Java自动化测试(web自动化测试框架 28)/';
+          this.page.title = 'Java自动化测试(web自动化测试框架 28)';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
