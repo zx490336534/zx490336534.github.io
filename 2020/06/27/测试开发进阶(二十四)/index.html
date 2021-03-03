@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Python测试开发," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="测试开发进阶(二十四)欢迎关注我的公众号「测试游记」 REST API官方文档：https:&#x2F;&#x2F;restfulapi.net&#x2F; 一种开发理念「是设计风格 而不是标准」  REST is acronym for REpresentational State Transfer.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="测试开发进阶(二十四)">
+<meta property="og:url" content="http://example.com/2020/06/27/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6(%E4%BA%8C%E5%8D%81%E5%9B%9B)/index.html">
+<meta property="og:site_name" content="测试游记">
+<meta property="og:description" content="测试开发进阶(二十四)欢迎关注我的公众号「测试游记」 REST API官方文档：https:&#x2F;&#x2F;restfulapi.net&#x2F; 一种开发理念「是设计风格 而不是标准」  REST is acronym for REpresentational State Transfer.">
+<meta property="og:locale">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ukbsl2w4j31bi0u0tta.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ul4ap73uj316y0u0wru.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ul5344iqj31b30u0twb.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ulfci6qvj316y0u0gws.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ulqyc5pqj316y0u07gt.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ulrh5hzfj31b30u0h9v.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7um1bvffwj316y0u0gxr.jpg">
+<meta property="article:published_time" content="2020-06-27T10:16:17.000Z">
+<meta property="article:modified_time" content="2021-03-03T12:45:59.715Z">
+<meta property="article:author" content="测试游记">
+<meta property="article:tag" content="Python测试开发">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ukbsl2w4j31bi0u0tta.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2020/06/27/测试开发进阶(二十四)/"/>
+
+
+
+
+
+  <title>测试开发进阶(二十四) | 测试游记</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?41fc030db57d5570dd22f78997dc4a7e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">测试游记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/06/27/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6(%E4%BA%8C%E5%8D%81%E5%9B%9B)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="测试游记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">测试开发进阶(二十四)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-06-27T18:16:17+08:00">
+                2020-06-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/06/27/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6(%E4%BA%8C%E5%8D%81%E5%9B%9B)/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/06/27/测试开发进阶(二十四)/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="测试开发进阶-二十四"><a href="#测试开发进阶-二十四" class="headerlink" title="测试开发进阶(二十四)"></a>测试开发进阶(二十四)</h1><p>欢迎关注我的公众号「测试游记」</p>
+<h2 id="REST-API"><a href="#REST-API" class="headerlink" title="REST API"></a>REST API</h2><p>官方文档：<a target="_blank" rel="noopener" href="https://restfulapi.net/">https://restfulapi.net/</a></p>
+<p>一种开发理念「是设计风格 而不是标准」</p>
+<blockquote>
+<p>REST is acronym for <strong>RE</strong>presentational <strong>S</strong>tate <strong>T</strong>ransfer.</p>
+</blockquote>
+<span id="more"></span>
+<p>每一个URL代表一种「<strong>资源</strong>」</p>
+<p>具体要对资源做什么操作，要体现在请求方式上，而不是URL上</p>
+<ul>
+<li>json格式数据</li>
+<li>text文本</li>
+<li>图片，视频等</li>
+</ul>
+<p>客户端和服务器之间，传递这种资源的某种表现形式</p>
+<ul>
+<li>通过请求头中的<code>Content-Type</code>来指明传给服务端的参数类型</li>
+</ul>
+<blockquote>
+<p>text/plain</p>
+<p>application/xml</p>
+<p>text/html</p>
+<p>application/json</p>
+<p>image/gif</p>
+<p>image/jpeg</p>
+<p>Application/x-www-form-urlencoded</p>
+</blockquote>
+<ul>
+<li>通过请求头中<code>Accept</code>来指明希望接受服务端的数据类型</li>
+</ul>
+<blockquote>
+<p><code>Accept:application/json,application/xml;q=0.9,*/*;q=0.8</code></p>
+</blockquote>
+<ul>
+<li>POST：创建「create」</li>
+<li>GET：获取「read」</li>
+<li>PUT：更新，替换「update/replace」</li>
+<li>PATCH：部分更新「Partial update/modify」</li>
+<li>DELETE：删除「delete」</li>
+</ul>
+<h3 id="设计规则"><a href="#设计规则" class="headerlink" title="设计规则"></a>设计规则</h3><h4 id="命名"><a href="#命名" class="headerlink" title="命名"></a>命名</h4><ul>
+<li>尽量使用名词复数形式</li>
+<li>往往与数据库的表名对应</li>
+</ul>
+<h4 id="过滤条件"><a href="#过滤条件" class="headerlink" title="过滤条件"></a>过滤条件</h4><p>一般记录数量较多，服务器不可能将所有数据都返回给前端</p>
+<p>例如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">?page=2&amp;size=10 指定页数，条数</span><br><span class="line">?sort=name		 指定排序</span><br></pre></td></tr></table></figure>
+
+<h4 id="域名"><a href="#域名" class="headerlink" title="域名"></a>域名</h4><p>尽量使用专用域名</p>
+<p>前后端分离之后，前后端都有一个域名</p>
+<p>例如<code>http://api.xxx.xxx</code></p>
+<h4 id="版本"><a href="#版本" class="headerlink" title="版本"></a>版本</h4><ul>
+<li>在url中呈现版本号</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://api.xxx.xxx/app/0.1</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>在请求头中呈现</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Accept: application/vnd.example.v0.2+json</span><br><span class="line">Accept: application/vnd.example+json;version=1.1</span><br></pre></td></tr></table></figure>
+
+<h4 id="常见请求含义"><a href="#常见请求含义" class="headerlink" title="常见请求含义"></a>常见请求含义</h4><ul>
+<li>GET(SELECT):从服务器获取资源(一项或多项)</li>
+<li>POST(CREATE):从服务器新建一个资源</li>
+<li>PUT(UPDATE):从服务器更新资源(客户端提供改变后的完整资源)</li>
+<li>DELETE(DELETE):从服务器删除资源</li>
+<li>PATCH(UPDATE WHERE):在服务器部分更新资源(客户端提供改变的属性)</li>
+<li>HEAD:获取资源的元数据</li>
+<li>OPTIONS:获取关于资源的哪些属性是客户端可以改变的信息</li>
+</ul>
+<h4 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h4><ul>
+<li>200:OK</li>
+</ul>
+<p>「GET」服务器成功返回用户请求的数据</p>
+<ul>
+<li>201:CREATED</li>
+</ul>
+<p>「POST/PUT/PATCH」用户新建或修改数据成功</p>
+<ul>
+<li>204:NO CONTENT</li>
+</ul>
+<p>「DELETE」用户删除数据成功</p>
+<ul>
+<li>400:INVALID REQUEST</li>
+</ul>
+<p>「POST/PUT/PATCH」用户请求有误（请求参数有误）</p>
+<ul>
+<li>401:Unauthorized</li>
+</ul>
+<p>「*」用户没有权限（令牌，用户名，密码错误）</p>
+<ul>
+<li>403:Forbidden</li>
+</ul>
+<p>「*」表示用户得到授权（与401错误相对），但是访问是被禁止的</p>
+<ul>
+<li>404:NOT FOUND</li>
+</ul>
+<p>「*」用户请求路径不存在</p>
+<ul>
+<li>500:INTERNAL SERVER ERROR</li>
+</ul>
+<p>「*」服务器发生错误</p>
+<h2 id="接口设计"><a href="#接口设计" class="headerlink" title="接口设计"></a>接口设计</h2><h3 id="最原始设计"><a href="#最原始设计" class="headerlink" title="最原始设计"></a>最原始设计</h3><h4 id="GET"><a href="#GET" class="headerlink" title="GET"></a>GET</h4><ol>
+<li>从数据库中获取所有的项目信息</li>
+<li>将数据库模型实例转化为字典类型「Json数组」「嵌套字典的列表」</li>
+<li><strong>注意</strong>：JsonResponse第一个参数默认只能为dict字典，如果要设为其他类型，需要将safe设为False</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># LearnDjango/projects/views.py</span></span><br><span class="line"><span class="keyword">from</span> django.http <span class="keyword">import</span> JsonResponse</span><br><span class="line"><span class="keyword">from</span> projects.models <span class="keyword">import</span> Projects</span><br><span class="line"><span class="keyword">from</span> django.views <span class="keyword">import</span> View</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ProjectsList</span>(<span class="params">View</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span>(<span class="params">self, reuqest</span>):</span></span><br><span class="line">        <span class="comment"># 1.从数据库中获取所有的项目信息</span></span><br><span class="line">        project_qs = Projects.objects.<span class="built_in">all</span>()</span><br><span class="line">        <span class="comment"># 2.将数据库模型实例转化为字典类型「Json数组」「嵌套字典的列表」</span></span><br><span class="line">        project_list = []</span><br><span class="line">        <span class="keyword">for</span> project <span class="keyword">in</span> project_qs:</span><br><span class="line">            project_list.append(</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="string">&#x27;name&#x27;</span>: project.name,</span><br><span class="line">                    <span class="string">&#x27;leader&#x27;</span>: project.leader,</span><br><span class="line">                    <span class="string">&#x27;tester&#x27;</span>: project.tester,</span><br><span class="line">                    <span class="string">&#x27;programer&#x27;</span>: project.programer,</span><br><span class="line">                    <span class="string">&#x27;publish_app&#x27;</span>: project.publish_app,</span><br><span class="line">                    <span class="string">&#x27;desc&#x27;</span>: project.desc</span><br><span class="line">                &#125;</span><br><span class="line">            )</span><br><span class="line">        <span class="comment"># JsonResponse第一个参数默认只能为dict字典，如果要设为其他类型，需要将safe设为False</span></span><br><span class="line">        <span class="keyword">return</span> JsonResponse(project_list, safe=<span class="literal">False</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># LearnDjango/projects/urls.py</span></span><br><span class="line"><span class="keyword">from</span> django.urls <span class="keyword">import</span> path</span><br><span class="line"><span class="keyword">from</span> projects <span class="keyword">import</span> views</span><br><span class="line"></span><br><span class="line">urlpatterns = [</span><br><span class="line">    path(<span class="string">&#x27;project/&#x27;</span>, views.ProjectsList.as_view()),</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># LearnDjango/urls.py</span></span><br><span class="line"><span class="keyword">from</span> django.contrib <span class="keyword">import</span> admin</span><br><span class="line"><span class="keyword">from</span> django.urls <span class="keyword">import</span> path, include, re_path</span><br><span class="line"></span><br><span class="line">urlpatterns = [</span><br><span class="line">    path(<span class="string">&#x27;admin/&#x27;</span>, admin.site.urls),</span><br><span class="line">    path(<span class="string">&#x27;&#x27;</span>, include(<span class="string">&#x27;projects.urls&#x27;</span>))</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> http http://127.0.0.1:8000/project/</span></span><br><span class="line">zhongxindeMacBook-Pro:~ zhongxin$ http http://127.0.0.1:8000/project/</span><br><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Content-Length: 650</span><br><span class="line">Content-Type: application/json</span><br><span class="line">Date: Fri, 11 Oct 2019 13:02:56 GMT</span><br><span class="line">Server: WSGIServer/0.2 CPython/3.7.1</span><br><span class="line">Vary: Origin</span><br><span class="line">X-Frame-Options: SAMEORIGIN</span><br><span class="line"></span><br><span class="line">[</span><br><span class="line">    &#123;</span><br><span class="line">        &quot;desc&quot;: &quot;666&quot;,</span><br><span class="line">        &quot;leader&quot;: &quot;zx_94&quot;,</span><br><span class="line">        &quot;name&quot;: &quot;测试游记&quot;,</span><br><span class="line">        &quot;programer&quot;: &quot;zhong&quot;,</span><br><span class="line">        &quot;publish_app&quot;: &quot;公众号&quot;,</span><br><span class="line">        &quot;tester&quot;: &quot;zx&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        &quot;desc&quot;: &quot;6666&quot;,</span><br><span class="line">        &quot;leader&quot;: &quot;zx_94_1&quot;,</span><br><span class="line">        &quot;name&quot;: &quot;测试游记1&quot;,</span><br><span class="line">        &quot;programer&quot;: &quot;zhong1&quot;,</span><br><span class="line">        &quot;publish_app&quot;: &quot;公众号1&quot;,</span><br><span class="line">        &quot;tester&quot;: &quot;zx1&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        &quot;desc&quot;: &quot;666&quot;,</span><br><span class="line">        &quot;leader&quot;: &quot;zx_94&quot;,</span><br><span class="line">        &quot;name&quot;: &quot;「测试游记」-创建&quot;,</span><br><span class="line">        &quot;programer&quot;: &quot;zx&quot;,</span><br><span class="line">        &quot;publish_app&quot;: &quot;公众号&quot;,</span><br><span class="line">        &quot;tester&quot;: &quot;zx&quot;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">        &quot;desc&quot;: &quot;666&quot;,</span><br><span class="line">        &quot;leader&quot;: &quot;钟鑫&quot;,</span><br><span class="line">        &quot;name&quot;: &quot;10月1日作业&quot;,</span><br><span class="line">        &quot;programer&quot;: &quot;钟鑫&quot;,</span><br><span class="line">        &quot;publish_app&quot;: &quot;国庆作业&quot;,</span><br><span class="line">        &quot;tester&quot;: &quot;钟鑫&quot;</span><br><span class="line">    &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ukbsl2w4j31bi0u0tta.jpg" alt="GET"></p>
+<h4 id="POST"><a href="#POST" class="headerlink" title="POST"></a>POST</h4><ol>
+<li>从前端获取json格式的数据，转化为Python中的类型</li>
+</ol>
+<blockquote>
+<p>为了严谨性，这里需要做各种复杂的校验</p>
+<p>比如：是否为json,传递的项目数据是否符合要求,有些必传参数是否携带</p>
+</blockquote>
+<ol start="2">
+<li>向数据库中新增项目</li>
+<li>将模型类转化为字典，然后返回</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">post</span>(<span class="params">self, request</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    新建项目</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    <span class="comment"># 1.从前端获取json格式的数据，转化为Python中的类型</span></span><br><span class="line">    <span class="comment"># 为了严谨性，这里需要做各种复杂的校验</span></span><br><span class="line">    <span class="comment"># 比如：是否为json,传递的项目数据是否符合要求,有些必传参数是否携带</span></span><br><span class="line">    json_data = request.body.decode(<span class="string">&#x27;utf8&#x27;</span>)</span><br><span class="line">    python_data = json.loads(json_data, encoding=<span class="string">&#x27;utf8&#x27;</span>)</span><br><span class="line">    <span class="comment"># 2.向数据库中新增项目</span></span><br><span class="line">    project = Projects.objects.create(**python_data)</span><br><span class="line">    <span class="comment"># 3.将模型类转化为字典，然后返回</span></span><br><span class="line">    one_dict = &#123;</span><br><span class="line">        <span class="string">&#x27;name&#x27;</span>: project.name,</span><br><span class="line">        <span class="string">&#x27;leader&#x27;</span>: project.leader,</span><br><span class="line">        <span class="string">&#x27;tester&#x27;</span>: project.tester,</span><br><span class="line">        <span class="string">&#x27;programer&#x27;</span>: project.programer,</span><br><span class="line">        <span class="string">&#x27;publish_app&#x27;</span>: project.publish_app,</span><br><span class="line">        <span class="string">&#x27;desc&#x27;</span>: project.desc</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> JsonResponse(one_dict)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> http POST http://127.0.0.1:8000/project/ name=10月11日「测试游记」 leader=zx tester=zx programer=zx publish_app=10月11日内容 desc=测试post请求</span></span><br><span class="line">zhongxindeMacBook-Pro:~ zhongxin$ http POST http://127.0.0.1:8000/project/ name=10月11日「测试游记」 leader=zx tester=zx programer=zx publish_app=10月11日内容 desc=测试post请求</span><br><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Content-Length: 202</span><br><span class="line">Content-Type: application/json</span><br><span class="line">Date: Fri, 11 Oct 2019 13:31:46 GMT</span><br><span class="line">Server: WSGIServer/0.2 CPython/3.7.1</span><br><span class="line">Vary: Origin</span><br><span class="line">X-Frame-Options: SAMEORIGIN</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    &quot;desc&quot;: &quot;测试post请求&quot;,</span><br><span class="line">    &quot;leader&quot;: &quot;zx&quot;,</span><br><span class="line">    &quot;name&quot;: &quot;10月11日「测试游记」&quot;,</span><br><span class="line">    &quot;programer&quot;: &quot;zx&quot;,</span><br><span class="line">    &quot;publish_app&quot;: &quot;10月11日内容&quot;,</span><br><span class="line">    &quot;tester&quot;: &quot;zx&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ul4ap73uj316y0u0wru.jpg" alt="POST"></p>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ul5344iqj31b30u0twb.jpg" alt="查看数据库"></p>
+<h4 id="GET具体内容"><a href="#GET具体内容" class="headerlink" title="GET具体内容"></a>GET具体内容</h4><ol>
+<li>校验前端传递的pk(项目ID)值,类型是否正确(正整数),在数据库中是否存在等「先省略」</li>
+<li>获取指定pk值的项目</li>
+<li>将模型类转化为字典，然后返回</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># projects/views.py</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ProjectDetail</span>(<span class="params">View</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span>(<span class="params">self, request, pk</span>):</span></span><br><span class="line">        <span class="comment"># 1.校验前端传递的pk(项目ID)值,类型是否正确(正整数),在数据库中是否存在等「先省略」</span></span><br><span class="line">        <span class="comment"># 2.获取指定pk值的项目</span></span><br><span class="line">        project = Projects.objects.get(<span class="built_in">id</span>=pk)</span><br><span class="line">        <span class="comment"># 3.将模型类转化为字典，然后返回</span></span><br><span class="line">        one_dict = &#123;</span><br><span class="line">            <span class="string">&#x27;name&#x27;</span>: project.name,</span><br><span class="line">            <span class="string">&#x27;leader&#x27;</span>: project.leader,</span><br><span class="line">            <span class="string">&#x27;tester&#x27;</span>: project.tester,</span><br><span class="line">            <span class="string">&#x27;programer&#x27;</span>: project.programer,</span><br><span class="line">            <span class="string">&#x27;publish_app&#x27;</span>: project.publish_app,</span><br><span class="line">            <span class="string">&#x27;desc&#x27;</span>: project.desc</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> JsonResponse(one_dict)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># projects/urls.py</span></span><br><span class="line"><span class="keyword">from</span> django.urls <span class="keyword">import</span> path</span><br><span class="line"><span class="keyword">from</span> projects <span class="keyword">import</span> views</span><br><span class="line"></span><br><span class="line">urlpatterns = [</span><br><span class="line">    path(<span class="string">&#x27;project/&#x27;</span>, views.ProjectsList.as_view()),</span><br><span class="line">    path(<span class="string">&#x27;project/&lt;int:pk&gt;/&#x27;</span>, views.ProjectDetail.as_view()),</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> http :8000/project/1/</span></span><br><span class="line">zhongxindeMacBook-Pro:~ zhongxin$ http :8000/project/1/</span><br><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Content-Length: 145</span><br><span class="line">Content-Type: application/json</span><br><span class="line">Date: Fri, 11 Oct 2019 13:42:44 GMT</span><br><span class="line">Server: WSGIServer/0.2 CPython/3.7.1</span><br><span class="line">Vary: Origin</span><br><span class="line">X-Frame-Options: SAMEORIGIN</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    &quot;desc&quot;: &quot;666&quot;,</span><br><span class="line">    &quot;leader&quot;: &quot;zx_94&quot;,</span><br><span class="line">    &quot;name&quot;: &quot;测试游记&quot;,</span><br><span class="line">    &quot;programer&quot;: &quot;zhong&quot;,</span><br><span class="line">    &quot;publish_app&quot;: &quot;公众号&quot;,</span><br><span class="line">    &quot;tester&quot;: &quot;zx&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ulfci6qvj316y0u0gws.jpg" alt="GET具体内容"></p>
+<h4 id="PUT具体内容"><a href="#PUT具体内容" class="headerlink" title="PUT具体内容"></a>PUT具体内容</h4><ol>
+<li>校验前端传递的pk(项目ID)值,类型是否正确(正整数),在数据库中是否存在等「先省略」</li>
+<li>获取指定pk值的项目</li>
+<li>从前端获取json格式的数据，转化为Python中的类型</li>
+</ol>
+<blockquote>
+<p>为了严谨性，这里需要做各种复杂的校验</p>
+<p>比如：是否为json,传递的项目数据是否符合要求,有些必传参数是否携带</p>
+</blockquote>
+<ol start="4">
+<li>更新项目</li>
+<li>将模型类转化为字典，然后返回</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">put</span>(<span class="params">self, request, pk</span>):</span></span><br><span class="line">    <span class="comment"># 1.校验前端传递的pk(项目ID)值,类型是否正确(正整数),在数据库中是否存在等「先省略」</span></span><br><span class="line">    <span class="comment"># 2.获取指定pk值的项目</span></span><br><span class="line">    project = Projects.objects.get(<span class="built_in">id</span>=pk)</span><br><span class="line">    <span class="comment"># 3.从前端获取json格式的数据，转化为Python中的类型</span></span><br><span class="line">    <span class="comment"># 为了严谨性，这里需要做各种复杂的校验</span></span><br><span class="line">    <span class="comment"># 比如：是否为json,传递的项目数据是否符合要求,有些必传参数是否携带</span></span><br><span class="line">    json_data = request.body.decode(<span class="string">&#x27;utf8&#x27;</span>)</span><br><span class="line">    python_data = json.loads(json_data, encoding=<span class="string">&#x27;utf8&#x27;</span>)</span><br><span class="line">    <span class="comment"># 4.更新项目</span></span><br><span class="line">    project.name = python_data[<span class="string">&#x27;name&#x27;</span>]</span><br><span class="line">    project.leader = python_data[<span class="string">&#x27;leader&#x27;</span>]</span><br><span class="line">    project.tester = python_data[<span class="string">&#x27;tester&#x27;</span>]</span><br><span class="line">    project.programer = python_data[<span class="string">&#x27;programer&#x27;</span>]</span><br><span class="line">    project.publish_app = python_data[<span class="string">&#x27;publish_app&#x27;</span>]</span><br><span class="line">    project.desc = python_data[<span class="string">&#x27;desc&#x27;</span>]</span><br><span class="line">    project.save()</span><br><span class="line">    <span class="comment"># 5.将模型类转化为字典，然后返回</span></span><br><span class="line">    one_dict = &#123;</span><br><span class="line">        <span class="string">&#x27;name&#x27;</span>: project.name,</span><br><span class="line">        <span class="string">&#x27;leader&#x27;</span>: project.leader,</span><br><span class="line">        <span class="string">&#x27;tester&#x27;</span>: project.tester,</span><br><span class="line">        <span class="string">&#x27;programer&#x27;</span>: project.programer,</span><br><span class="line">        <span class="string">&#x27;publish_app&#x27;</span>: project.publish_app,</span><br><span class="line">        <span class="string">&#x27;desc&#x27;</span>: project.desc</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> JsonResponse(one_dict, status=<span class="number">201</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> http PUT :8000/project/5/ name=10月11日「测试游记」 leader=zhongxin tester=zx programer=zx publish_app=10月11日内容 desc=测试post请求</span></span><br><span class="line">zhongxindeMacBook-Pro:~ zhongxin$ http PUT :8000/project/5/ name=10月11日「测试游记」 leader=zhongxin tester=zx programer=zx publish_app=10月11日内容 desc=测试post请求</span><br><span class="line">HTTP/1.1 201 Created</span><br><span class="line">Content-Length: 208</span><br><span class="line">Content-Type: application/json</span><br><span class="line">Date: Fri, 11 Oct 2019 13:53:49 GMT</span><br><span class="line">Server: WSGIServer/0.2 CPython/3.7.1</span><br><span class="line">Vary: Origin</span><br><span class="line">X-Frame-Options: SAMEORIGIN</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    &quot;desc&quot;: &quot;测试post请求&quot;,</span><br><span class="line">    &quot;leader&quot;: &quot;zhongxin&quot;,</span><br><span class="line">    &quot;name&quot;: &quot;10月11日「测试游记」&quot;,</span><br><span class="line">    &quot;programer&quot;: &quot;zx&quot;,</span><br><span class="line">    &quot;publish_app&quot;: &quot;10月11日内容&quot;,</span><br><span class="line">    &quot;tester&quot;: &quot;zx&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ulqyc5pqj316y0u07gt.jpg" alt="PUT"></p>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ulrh5hzfj31b30u0h9v.jpg" alt="修改后"></p>
+<h4 id="DELETE"><a href="#DELETE" class="headerlink" title="DELETE"></a>DELETE</h4><ol>
+<li>校验前端传递的pk(项目ID)值,类型是否正确(正整数),在数据库中是否存在等「先省略」</li>
+<li>获取指定pk值的项目</li>
+<li>删除</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">delete</span>(<span class="params">self, request, pk</span>):</span></span><br><span class="line">    <span class="comment"># 1.校验前端传递的pk(项目ID)值,类型是否正确(正整数),在数据库中是否存在等「先省略」</span></span><br><span class="line">    <span class="comment"># 2.获取指定pk值的项目</span></span><br><span class="line">    project = Projects.objects.get(<span class="built_in">id</span>=pk)</span><br><span class="line">    project.delete()</span><br><span class="line">    <span class="keyword">return</span> JsonResponse(&#123;&#125;, safe=<span class="literal">True</span>, status=<span class="number">204</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> http DELETE :8000/project/6/</span></span><br><span class="line">zhongxindeMacBook-Pro:~ zhongxin$ http DELETE :8000/project/6/</span><br><span class="line">HTTP/1.1 204 No Content</span><br><span class="line">Content-Length: 2</span><br><span class="line">Content-Type: application/json</span><br><span class="line">Date: Fri, 11 Oct 2019 14:03:45 GMT</span><br><span class="line">Server: WSGIServer/0.2 CPython/3.7.1</span><br><span class="line">Vary: Origin</span><br><span class="line">X-Frame-Options: SAMEORIGIN</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7um1bvffwj316y0u0gxr.jpg" alt="DELETE"></p>
+<h3 id="原始设计小结"><a href="#原始设计小结" class="headerlink" title="原始设计小结"></a>原始设计小结</h3><p><strong>创建接口的任务</strong></p>
+<ol>
+<li>校验用户数据</li>
+<li>将请求的数据(如json格式)转换为模型类对象</li>
+</ol>
+<blockquote>
+<h1 id="反序列化"><a href="#反序列化" class="headerlink" title="反序列化"></a>反序列化</h1><ul>
+<li>将其他格式（json,xml等）转换为程序中的数据类型</li>
+<li>将json格式的字符串转换为Django中的模型类对象</li>
+</ul>
+</blockquote>
+<ol start="3">
+<li>操作数据库</li>
+<li>将模型类对象转换为响应的数据（如json格式）</li>
+</ol>
+<blockquote>
+<h1 id="序列化"><a href="#序列化" class="headerlink" title="序列化"></a>序列化</h1><ul>
+<li>将程序中的数据类型转换为其他格式（json，xml等）</li>
+<li>例如将Django中的模型类对象转换为json字符串</li>
+</ul>
+</blockquote>
+<h3 id="数据增删改查流程"><a href="#数据增删改查流程" class="headerlink" title="数据增删改查流程"></a>数据增删改查流程</h3><ul>
+<li>增</li>
+</ul>
+<blockquote>
+<p>校验请求参数 -&gt; 反序列化 -&gt; 保存数据 -&gt; 将保存的对象序列化并返回</p>
+</blockquote>
+<ul>
+<li>删</li>
+</ul>
+<blockquote>
+<p>判断要删除的数据是否存在 -&gt; 执行数据删除</p>
+</blockquote>
+<ul>
+<li>改</li>
+</ul>
+<blockquote>
+<p>判断要修改的数据是否存在 -&gt; 校验请求参数 -&gt; 反序列化 -&gt; 保存数据 -&gt; 将保存的数据序列号并返回</p>
+</blockquote>
+<ul>
+<li>查</li>
+</ul>
+<blockquote>
+<p>查询数据库 -&gt; 将数据序列化并返回</p>
+</blockquote>
+<h3 id="原始设计代码"><a href="#原始设计代码" class="headerlink" title="原始设计代码"></a>原始设计代码</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">from</span> django.http <span class="keyword">import</span> JsonResponse</span><br><span class="line"><span class="keyword">from</span> projects.models <span class="keyword">import</span> Projects</span><br><span class="line"><span class="keyword">from</span> django.views <span class="keyword">import</span> View</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ProjectsList</span>(<span class="params">View</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span>(<span class="params">self, reuqest</span>):</span></span><br><span class="line">        <span class="comment"># 1.从数据库中获取所有的项目信息</span></span><br><span class="line">        project_qs = Projects.objects.<span class="built_in">all</span>()</span><br><span class="line">        <span class="comment"># 2.将数据库模型实例转化为字典类型「Json数组」「嵌套字典的列表」</span></span><br><span class="line">        project_list = []</span><br><span class="line">        <span class="keyword">for</span> project <span class="keyword">in</span> project_qs:</span><br><span class="line">            project_list.append(</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="string">&#x27;name&#x27;</span>: project.name,</span><br><span class="line">                    <span class="string">&#x27;leader&#x27;</span>: project.leader,</span><br><span class="line">                    <span class="string">&#x27;tester&#x27;</span>: project.tester,</span><br><span class="line">                    <span class="string">&#x27;programer&#x27;</span>: project.programer,</span><br><span class="line">                    <span class="string">&#x27;publish_app&#x27;</span>: project.publish_app,</span><br><span class="line">                    <span class="string">&#x27;desc&#x27;</span>: project.desc</span><br><span class="line">                &#125;</span><br><span class="line">            )</span><br><span class="line">        <span class="comment"># JsonResponse第一个参数默认只能为dict字典，如果要设为其他类型，需要将safe设为False</span></span><br><span class="line">        <span class="keyword">return</span> JsonResponse(project_list, safe=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">post</span>(<span class="params">self, request</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        新建项目</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="comment"># 1.从前端获取json格式的数据，转化为Python中的类型</span></span><br><span class="line">        <span class="comment"># 为了严谨性，这里需要做各种复杂的校验</span></span><br><span class="line">        <span class="comment"># 比如：是否为json,传递的项目数据是否符合要求,有些必传参数是否携带</span></span><br><span class="line">        json_data = request.body.decode(<span class="string">&#x27;utf8&#x27;</span>)</span><br><span class="line">        python_data = json.loads(json_data, encoding=<span class="string">&#x27;utf8&#x27;</span>)</span><br><span class="line">        <span class="comment"># 2.向数据库中新增项目</span></span><br><span class="line">        project = Projects.objects.create(**python_data)</span><br><span class="line">        <span class="comment"># 3.将模型类转化为字典，然后返回</span></span><br><span class="line">        one_dict = &#123;</span><br><span class="line">            <span class="string">&#x27;name&#x27;</span>: project.name,</span><br><span class="line">            <span class="string">&#x27;leader&#x27;</span>: project.leader,</span><br><span class="line">            <span class="string">&#x27;tester&#x27;</span>: project.tester,</span><br><span class="line">            <span class="string">&#x27;programer&#x27;</span>: project.programer,</span><br><span class="line">            <span class="string">&#x27;publish_app&#x27;</span>: project.publish_app,</span><br><span class="line">            <span class="string">&#x27;desc&#x27;</span>: project.desc</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> JsonResponse(one_dict)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ProjectDetail</span>(<span class="params">View</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span>(<span class="params">self, request, pk</span>):</span></span><br><span class="line">        <span class="comment"># 1.校验前端传递的pk(项目ID)值,类型是否正确(正整数),在数据库中是否存在等「先省略」</span></span><br><span class="line">        <span class="comment"># 2.获取指定pk值的项目</span></span><br><span class="line">        project = Projects.objects.get(<span class="built_in">id</span>=pk)</span><br><span class="line">        <span class="comment"># 3.将模型类转化为字典，然后返回</span></span><br><span class="line">        one_dict = &#123;</span><br><span class="line">            <span class="string">&#x27;name&#x27;</span>: project.name,</span><br><span class="line">            <span class="string">&#x27;leader&#x27;</span>: project.leader,</span><br><span class="line">            <span class="string">&#x27;tester&#x27;</span>: project.tester,</span><br><span class="line">            <span class="string">&#x27;programer&#x27;</span>: project.programer,</span><br><span class="line">            <span class="string">&#x27;publish_app&#x27;</span>: project.publish_app,</span><br><span class="line">            <span class="string">&#x27;desc&#x27;</span>: project.desc</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> JsonResponse(one_dict)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">put</span>(<span class="params">self, request, pk</span>):</span></span><br><span class="line">        <span class="comment"># 1.校验前端传递的pk(项目ID)值,类型是否正确(正整数),在数据库中是否存在等「先省略」</span></span><br><span class="line">        <span class="comment"># 2.获取指定pk值的项目</span></span><br><span class="line">        project = Projects.objects.get(<span class="built_in">id</span>=pk)</span><br><span class="line">        <span class="comment"># 3.从前端获取json格式的数据，转化为Python中的类型</span></span><br><span class="line">        <span class="comment"># 为了严谨性，这里需要做各种复杂的校验</span></span><br><span class="line">        <span class="comment"># 比如：是否为json,传递的项目数据是否符合要求,有些必传参数是否携带</span></span><br><span class="line">        json_data = request.body.decode(<span class="string">&#x27;utf8&#x27;</span>)</span><br><span class="line">        python_data = json.loads(json_data, encoding=<span class="string">&#x27;utf8&#x27;</span>)</span><br><span class="line">        <span class="comment"># 4.更新项目</span></span><br><span class="line">        project.name = python_data[<span class="string">&#x27;name&#x27;</span>]</span><br><span class="line">        project.leader = python_data[<span class="string">&#x27;leader&#x27;</span>]</span><br><span class="line">        project.tester = python_data[<span class="string">&#x27;tester&#x27;</span>]</span><br><span class="line">        project.programer = python_data[<span class="string">&#x27;programer&#x27;</span>]</span><br><span class="line">        project.publish_app = python_data[<span class="string">&#x27;publish_app&#x27;</span>]</span><br><span class="line">        project.desc = python_data[<span class="string">&#x27;desc&#x27;</span>]</span><br><span class="line">        project.save()</span><br><span class="line">        <span class="comment"># 5.将模型类转化为字典，然后返回</span></span><br><span class="line">        one_dict = &#123;</span><br><span class="line">            <span class="string">&#x27;name&#x27;</span>: project.name,</span><br><span class="line">            <span class="string">&#x27;leader&#x27;</span>: project.leader,</span><br><span class="line">            <span class="string">&#x27;tester&#x27;</span>: project.tester,</span><br><span class="line">            <span class="string">&#x27;programer&#x27;</span>: project.programer,</span><br><span class="line">            <span class="string">&#x27;publish_app&#x27;</span>: project.publish_app,</span><br><span class="line">            <span class="string">&#x27;desc&#x27;</span>: project.desc</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> JsonResponse(one_dict, status=<span class="number">201</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">delete</span>(<span class="params">self, request, pk</span>):</span></span><br><span class="line">        <span class="comment"># 1.校验前端传递的pk(项目ID)值,类型是否正确(正整数),在数据库中是否存在等「先省略」</span></span><br><span class="line">        <span class="comment"># 2.获取指定pk值的项目</span></span><br><span class="line">        project = Projects.objects.get(<span class="built_in">id</span>=pk)</span><br><span class="line">        project.delete()</span><br><span class="line">        <span class="keyword">return</span> JsonResponse(&#123;&#125;, safe=<span class="literal">True</span>, status=<span class="number">204</span>)</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt=" wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt=" 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt=" 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/" rel="tag"># Python测试开发</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/06/27/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6(%E4%BA%8C%E5%8D%81%E4%B8%80)/" rel="next" title="测试开发进阶(二十一)">
+                <i class="fa fa-chevron-left"></i> 测试开发进阶(二十一)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/06/27/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6(%E5%8D%81%E5%85%AB)/" rel="prev" title="测试开发进阶(十八)">
+                测试开发进阶(十八) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpeg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">49</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zx490336534" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6-%E4%BA%8C%E5%8D%81%E5%9B%9B"><span class="nav-number">1.</span> <span class="nav-text">测试开发进阶(二十四)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#REST-API"><span class="nav-number">1.1.</span> <span class="nav-text">REST API</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E8%A7%84%E5%88%99"><span class="nav-number">1.1.1.</span> <span class="nav-text">设计规则</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%91%BD%E5%90%8D"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">命名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%87%E6%BB%A4%E6%9D%A1%E4%BB%B6"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">过滤条件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%9F%E5%90%8D"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">域名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%88%E6%9C%AC"><span class="nav-number">1.1.1.4.</span> <span class="nav-text">版本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E8%AF%B7%E6%B1%82%E5%90%AB%E4%B9%89"><span class="nav-number">1.1.1.5.</span> <span class="nav-text">常见请求含义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%8A%B6%E6%80%81%E7%A0%81"><span class="nav-number">1.1.1.6.</span> <span class="nav-text">状态码</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A5%E5%8F%A3%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.2.</span> <span class="nav-text">接口设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E5%8E%9F%E5%A7%8B%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.2.1.</span> <span class="nav-text">最原始设计</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#GET"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">GET</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#POST"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">POST</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GET%E5%85%B7%E4%BD%93%E5%86%85%E5%AE%B9"><span class="nav-number">1.2.1.3.</span> <span class="nav-text">GET具体内容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PUT%E5%85%B7%E4%BD%93%E5%86%85%E5%AE%B9"><span class="nav-number">1.2.1.4.</span> <span class="nav-text">PUT具体内容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DELETE"><span class="nav-number">1.2.1.5.</span> <span class="nav-text">DELETE</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E5%A7%8B%E8%AE%BE%E8%AE%A1%E5%B0%8F%E7%BB%93"><span class="nav-number">1.2.2.</span> <span class="nav-text">原始设计小结</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">2.</span> <span class="nav-text">反序列化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BA%8F%E5%88%97%E5%8C%96"><span class="nav-number">3.</span> <span class="nav-text">序列化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%88%A0%E6%94%B9%E6%9F%A5%E6%B5%81%E7%A8%8B"><span class="nav-number">3.0.1.</span> <span class="nav-text">数据增删改查流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E5%A7%8B%E8%AE%BE%E8%AE%A1%E4%BB%A3%E7%A0%81"><span class="nav-number">3.0.2.</span> <span class="nav-text">原始设计代码</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">测试游记</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://example.com/2020/06/27/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6(%E4%BA%8C%E5%8D%81%E5%9B%9B)/';
+          this.page.identifier = '2020/06/27/测试开发进阶(二十四)/';
+          this.page.title = '测试开发进阶(二十四)';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

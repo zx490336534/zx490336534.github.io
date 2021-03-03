@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Python测试开发," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="测试开发进阶(二十二)欢迎关注我的公众号「测试游记」 在projects&#x2F;models.py中编写 123456789from django.db import modelsclass Person(models.Model):    &quot;&quot;&quot;    创建Person类    &quot;&quot;&quot;    first_name &#x3D; models.CharF">
+<meta property="og:type" content="article">
+<meta property="og:title" content="测试开发进阶(二十二)">
+<meta property="og:url" content="http://example.com/2020/06/27/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6(%E4%BA%8C%E5%8D%81%E4%BA%8C)/index.html">
+<meta property="og:site_name" content="测试游记">
+<meta property="og:description" content="测试开发进阶(二十二)欢迎关注我的公众号「测试游记」 在projects&#x2F;models.py中编写 123456789from django.db import modelsclass Person(models.Model):    &quot;&quot;&quot;    创建Person类    &quot;&quot;&quot;    first_name &#x3D; models.CharF">
+<meta property="og:locale">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ecjj16lbj31eu0rue0t.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ecnrqkg0j30ww0rgjx3.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ecq8w762j30g20le14o.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ecpfywwcj31b30u0h8e.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ecv9pexmj31b30u0k7y.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7eczu57mwj31b30u0wwm.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ed166b0qj31cu0eydia.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ed3bwhfcj30h80m6acl.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ed41c6ddj30he0qcq5k.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ee73f419j319z0u049m.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ee7f7h4tj30hc0pg0v7.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ee8k5dz4j31b30u0tmo.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ee9kkfc3j31sg0nc0z1.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ee9zdl4aj30o20i2mxp.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7eeaqldy5j31160s8dk2.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7eed1hfx9j31360tqtd8.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7eefc9xn9j31b30u0qjn.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7eefw7rg0j31b30u04kj.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7eeih60n6j30ly0m0dgu.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7eeji8i93j30pq0rsn0p.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7eetaa7sxj327y0qmn6f.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ed9zijdgj31u20hc429.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7eewgt4obj326s0sgwmd.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ef9ejx8uj31pa0aumzx.jpg">
+<meta property="article:published_time" content="2020-06-27T09:51:39.000Z">
+<meta property="article:modified_time" content="2021-03-03T12:45:59.731Z">
+<meta property="article:author" content="测试游记">
+<meta property="article:tag" content="Python测试开发">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ecjj16lbj31eu0rue0t.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2020/06/27/测试开发进阶(二十二)/"/>
+
+
+
+
+
+  <title>测试开发进阶(二十二) | 测试游记</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?41fc030db57d5570dd22f78997dc4a7e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">测试游记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/06/27/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6(%E4%BA%8C%E5%8D%81%E4%BA%8C)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="测试游记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">测试开发进阶(二十二)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-06-27T17:51:39+08:00">
+                2020-06-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/06/27/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6(%E4%BA%8C%E5%8D%81%E4%BA%8C)/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/06/27/测试开发进阶(二十二)/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="测试开发进阶-二十二"><a href="#测试开发进阶-二十二" class="headerlink" title="测试开发进阶(二十二)"></a>测试开发进阶(二十二)</h1><p><strong>欢迎关注我的公众号「测试游记」</strong></p>
+<p>在<code>projects/models.py</code>中编写</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.db <span class="keyword">import</span> models</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span>(<span class="params">models.Model</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    创建Person类</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    first_name = models.CharField(max_length=<span class="number">30</span>)</span><br><span class="line">    last_name = models.CharField(max_length=<span class="number">30</span>)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<ol>
+<li>每个应用下的数据库模型类，需要在当前应用下的models.py文件中定义</li>
+<li>一个数据库模型类相当于一个数据表(Table)</li>
+<li>一个数据库模型类需要基础Model或者其子类</li>
+<li>定义的一个类属性，就相当于数据库表中的一个字段(<code>first_name</code>,<code>last_name</code>)</li>
+<li>默认会创建一个自动递增的id主键</li>
+<li>默认创建的数据库名为：应用名小写_数据库模型类小写</li>
+</ol>
+</blockquote>
+<span id="more"></span>
+<h2 id="修改数据库远程连接权限"><a href="#修改数据库远程连接权限" class="headerlink" title="修改数据库远程连接权限"></a>修改数据库远程连接权限</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GRANT</span> <span class="keyword">ALL</span> PRIVILEGES <span class="keyword">ON</span> <span class="operator">*</span> . <span class="operator">*</span> <span class="keyword">TO</span> <span class="string">&#x27;你的用户名&#x27;</span>@<span class="string">&#x27;%&#x27;</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">&#x27;你的密码&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>我这边使用</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GRANT</span> <span class="keyword">ALL</span> PRIVILEGES <span class="keyword">ON</span> <span class="operator">*</span> . <span class="operator">*</span> <span class="keyword">TO</span> <span class="string">&#x27;my_django&#x27;</span>@<span class="string">&#x27;%&#x27;</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">&#x27;123456&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>刷新数据库</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ecjj16lbj31eu0rue0t.jpg" alt="连接数据库"></p>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ecnrqkg0j30ww0rgjx3.jpg" alt="修改权限"></p>
+<h2 id="迁移"><a href="#迁移" class="headerlink" title="迁移"></a>迁移</h2><p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ecq8w762j30g20le14o.jpg" alt="打开manage"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> makemigrations projects</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> migrate projects</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ecpfywwcj31b30u0h8e.jpg" alt="数据库迁移"></p>
+<p>迁移结果查看</p>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ecv9pexmj31b30u0k7y.jpg" alt="结果查看"></p>
+<h2 id="字段"><a href="#字段" class="headerlink" title="字段"></a>字段</h2><ul>
+<li><code>max_length</code> 最大长度</li>
+<li><code>unique</code> 设置当前参数唯一</li>
+<li><code>verbose_name</code> 设置人性化的字段名</li>
+<li><code>help_text</code> 用于API文档中的中文名</li>
+<li><code>null</code> 允许为空</li>
+<li><code>black</code> 设置前端可以不传递</li>
+<li><code>default</code> 设置默认值</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Projects</span>(<span class="params">models.Model</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    创建Projects模型类</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    name = models.CharField(verbose_name=<span class="string">&#x27;项目名称&#x27;</span>, max_length=<span class="number">200</span>, unique=<span class="literal">True</span>, help_text=<span class="string">&#x27;项目名称&#x27;</span>)</span><br><span class="line">    leader = models.CharField(verbose_name=<span class="string">&#x27;负责人&#x27;</span>, max_length=<span class="number">50</span>, help_text=<span class="string">&#x27;负责人&#x27;</span>)</span><br><span class="line">    tester = models.CharField(verbose_name=<span class="string">&#x27;测试人员&#x27;</span>, max_length=<span class="number">50</span>, help_text=<span class="string">&#x27;测试人员&#x27;</span>)</span><br><span class="line">    programer = models.CharField(verbose_name=<span class="string">&#x27;开发人员&#x27;</span>, max_length=<span class="number">50</span>, help_text=<span class="string">&#x27;开发人员&#x27;</span>)</span><br><span class="line">    publish_app = models.CharField(verbose_name=<span class="string">&#x27;发布应用&#x27;</span>, max_length=<span class="number">50</span>, help_text=<span class="string">&#x27;发布应用&#x27;</span>)</span><br><span class="line">    desc = models.TextField(verbose_name=<span class="string">&#x27;简要描述&#x27;</span>, help_text=<span class="string">&#x27;简要描述&#x27;</span>, blank=<span class="literal">True</span>, default=<span class="string">&#x27;&#x27;</span>, null=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="查看新表"><a href="#查看新表" class="headerlink" title="查看新表"></a>查看新表</h3><p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7eczu57mwj31b30u0wwm.jpg" alt="新表"></p>
+<h3 id="查看表设计"><a href="#查看表设计" class="headerlink" title="查看表设计"></a>查看表设计</h3><p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ed166b0qj31cu0eydia.jpg" alt="查看表设计"></p>
+<h2 id="修改数据表名称"><a href="#修改数据表名称" class="headerlink" title="修改数据表名称"></a>修改数据表名称</h2><p>在<code>Projects</code>类中添加</p>
+<ul>
+<li><code>db_table</code>表名</li>
+<li><code>verbose_name</code>:在admin站点中人性化展示</li>
+<li><code>verbose_name_plural</code>:复数显示(对照英文在单词后面+s)</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">    db_table = <span class="string">&#x27;tb_projects&#x27;</span></span><br><span class="line">    verbose_name = <span class="string">&#x27;项目&#x27;</span></span><br><span class="line">    verbose_name_plural = <span class="string">&#x27;项目&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>再次迁移</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> makemigrations projects</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> migrate projects</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="迁移前："><a href="#迁移前：" class="headerlink" title="迁移前："></a>迁移前：</h3><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ed3bwhfcj30h80m6acl.jpg" alt="迁移前" style="zoom:50%;" />
+
+<h3 id="迁移后-点击刷新-："><a href="#迁移后-点击刷新-：" class="headerlink" title="迁移后(点击刷新)："></a>迁移后(<strong>点击刷新</strong>)：</h3><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ed41c6ddj30he0qcq5k.jpg" alt="迁移后" style="zoom:50%;" />
+
+<h3 id="后台站点"><a href="#后台站点" class="headerlink" title="后台站点"></a>后台站点</h3><p>注册站点</p>
+<p><code>projects/admin.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.contrib <span class="keyword">import</span> admin</span><br><span class="line"><span class="keyword">from</span> .models <span class="keyword">import</span> Projects, Person</span><br><span class="line"></span><br><span class="line">admin.site.register(Projects)</span><br><span class="line">admin.site.register(Person)</span><br></pre></td></tr></table></figure>
+
+<p>全部迁移</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> makemigrations</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> migrate</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ee73f419j319z0u049m.jpg" alt="全部迁移"></p>
+<img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ee7f7h4tj30hc0pg0v7.jpg" alt="迁移后" style="zoom:50%;" />
+
+<h4 id="访问admin"><a href="#访问admin" class="headerlink" title="访问admin"></a>访问admin</h4><p><code>http://127.0.0.1:8000/admin</code></p>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ee8k5dz4j31b30u0tmo.jpg" alt="访问admin"></p>
+<h4 id="创建管理员账户"><a href="#创建管理员账户" class="headerlink" title="创建管理员账户"></a>创建管理员账户</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> createsuperuser</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ee9kkfc3j31sg0nc0z1.jpg" alt="image-20190927212624337"></p>
+<img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ee9zdl4aj30o20i2mxp.jpg" alt="登录" style="zoom:50%;" />
+
+<img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7eeaqldy5j31160s8dk2.jpg" alt="后台内容" style="zoom:50%;" />
+
+<p>让图中的<code>Persons</code>变为中文：修改<code>projects.models.Person</code>保存后刷新页面</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span>(<span class="params">models.Model</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    创建Person类</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    first_name = models.CharField(max_length=<span class="number">30</span>)</span><br><span class="line">    last_name = models.CharField(max_length=<span class="number">30</span>)</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        verbose_name = <span class="string">&#x27;人&#x27;</span></span><br><span class="line">        verbose_name_plural = <span class="string">&#x27;人们&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7eed1hfx9j31360tqtd8.jpg" alt="修改名称" style="zoom:50%;" />
+
+<p>添加一个项目：</p>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7eefc9xn9j31b30u0qjn.jpg" alt="添加项目"></p>
+<p>查看数据表</p>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7eefw7rg0j31b30u04kj.jpg" alt="数据表"></p>
+<img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7eeih60n6j30ly0m0dgu.jpg" alt="显示" style="zoom:50%;" />
+
+<p>为了让他显示的更人性化在<code>projects.models.Projects</code>中添加：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__str__</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="keyword">return</span> self.name</span><br></pre></td></tr></table></figure>
+
+<img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7eeji8i93j30pq0rsn0p.jpg" alt="显示" style="zoom:50%;" />
+
+<h4 id="修改展示的部分"><a href="#修改展示的部分" class="headerlink" title="修改展示的部分"></a>修改展示的部分</h4><ul>
+<li><code>fields</code> 指定在修改「新增」中需要显示的字段</li>
+<li><code>list_display</code> 指定要列出的字段</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.contrib <span class="keyword">import</span> admin</span><br><span class="line"><span class="keyword">from</span> .models <span class="keyword">import</span> Projects, Person</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ProjectsAdmin</span>(<span class="params">admin.ModelAdmin</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    定制后台管理站点类</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    fields = (<span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;leader&#x27;</span>, <span class="string">&#x27;tester&#x27;</span>, <span class="string">&#x27;programer&#x27;</span>, <span class="string">&#x27;publish_app&#x27;</span>, <span class="string">&#x27;desc&#x27;</span>)</span><br><span class="line">    list_display = [<span class="string">&#x27;id&#x27;</span>, <span class="string">&#x27;name&#x27;</span>, <span class="string">&#x27;leader&#x27;</span>, <span class="string">&#x27;tester&#x27;</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">admin.site.register(Projects, ProjectsAdmin)</span><br><span class="line">admin.site.register(Person)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7eetaa7sxj327y0qmn6f.jpg" alt="修改后展示"></p>
+<h2 id="表关联"><a href="#表关联" class="headerlink" title="表关联"></a>表关联</h2><h3 id="创建一个应用"><a href="#创建一个应用" class="headerlink" title="创建一个应用"></a>创建一个应用</h3><p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ed9zijdgj31u20hc429.jpg" alt="image-20190927205211913"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> startapp interfaces</span></span><br></pre></td></tr></table></figure>
+<h3 id="注册子应用"><a href="#注册子应用" class="headerlink" title="注册子应用"></a>注册子应用</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">INSTALLED_APPS = [</span><br><span class="line">    <span class="string">&#x27;django.contrib.admin&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.contrib.auth&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.contrib.contenttypes&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.contrib.sessions&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.contrib.messages&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;django.contrib.staticfiles&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;projects.apps.ProjectsConfig&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;interfaces.apps.InterfacesConfig&#x27;</span>,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>在<code>interfaces/models.py</code>中编写</p>
+<p>**一个项目中有多个接口 那么需要在「多」的一侧创建外键 **</p>
+<p><strong>项目表为父表「一」，接口表为「多」子表</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Interfaces</span>(<span class="params">models.Model</span>):</span></span><br><span class="line">    name = models.CharField(verbose_name=<span class="string">&#x27;项目名称&#x27;</span>, max_length=<span class="number">200</span>, unique=<span class="literal">True</span>, help_text=<span class="string">&#x27;项目名称&#x27;</span>)</span><br><span class="line">    tester = models.CharField(verbose_name=<span class="string">&#x27;测试人员&#x27;</span>, max_length=<span class="number">50</span>, help_text=<span class="string">&#x27;测试人员&#x27;</span>)</span><br><span class="line">    desc = models.TextField(verbose_name=<span class="string">&#x27;简要描述&#x27;</span>, help_text=<span class="string">&#x27;简要描述&#x27;</span>, blank=<span class="literal">True</span>, default=<span class="string">&#x27;&#x27;</span>, null=<span class="literal">True</span>)</span><br><span class="line">    project = models.ForeignKey(<span class="string">&#x27;projects.Projects&#x27;</span>, on_delete=models.CASCADE, verbose_name=<span class="string">&#x27;所属项目&#x27;</span>, help_text=<span class="string">&#x27;所属项目&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>():</span></span><br><span class="line">        verbose_name = <span class="string">&#x27;a&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>对于：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">project = models.ForeignKey(<span class="string">&#x27;projects.Projects&#x27;</span>, on_delete=models.CASCADE, verbose_name=<span class="string">&#x27;所属项目&#x27;</span>, help_text=<span class="string">&#x27;所属项目&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="第一个参数"><a href="#第一个参数" class="headerlink" title="第一个参数"></a>第一个参数</h3><ol>
+<li><code>字符串</code>：关联的模型路径或者模型类「应用名.模型类」 -&gt; ‘projects.Projects’</li>
+<li><code>对象</code>：import导入from projects.models import Projects -&gt; Projects</li>
+</ol>
+<h3 id="第二个参数"><a href="#第二个参数" class="headerlink" title="第二个参数"></a>第二个参数</h3><p>设置的是：当父表删除之后，该字段的处理方式</p>
+<ul>
+<li><code>models.CASCADE</code>:子表也会被删除</li>
+<li><code>models.SET_NULL</code>:当前外键会被设置为None</li>
+<li><code>models.PROTECT</code>:会报错</li>
+<li><code>models.SET_DEFAULT</code>:设置默认值,同时需要指定默认值,null=True</li>
+</ul>
+<h2 id="数据库操作"><a href="#数据库操作" class="headerlink" title="数据库操作"></a>数据库操作</h2><p>使用Pycharm自带的<code>Python Console</code>就可以进入Django的shell模式</p>
+<p>使用<code>python manage.py shell</code>也可以进入</p>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7eewgt4obj326s0sgwmd.jpg" alt="shell"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> projects.models <span class="keyword">import</span> Projects</span><br><span class="line">Projects.objects.<span class="built_in">all</span>()</span><br><span class="line">Out[<span class="number">3</span>]: &lt;QuerySet [&lt;Projects: 测试游记&gt;, &lt;Projects: 测试游记<span class="number">1</span>&gt;]&gt;</span><br><span class="line">Projects.objects.get(<span class="built_in">id</span>=<span class="number">1</span>)</span><br><span class="line">Out[<span class="number">4</span>]: &lt;Projects: 测试游记&gt;</span><br><span class="line">Projects.objects.get(<span class="built_in">id</span>=<span class="number">1</span>).name</span><br><span class="line">Out[<span class="number">5</span>]: <span class="string">&#x27;测试游记&#x27;</span></span><br><span class="line">Projects.objects.get(<span class="built_in">id</span>=<span class="number">1</span>).tester</span><br><span class="line">Out[<span class="number">6</span>]: <span class="string">&#x27;zx&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="查看数据库操作记录"><a href="#查看数据库操作记录" class="headerlink" title="查看数据库操作记录"></a>查看数据库操作记录</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.db <span class="keyword">import</span> connection</span><br><span class="line">print(connection.queries)</span><br></pre></td></tr></table></figure>
+
+<h3 id="增"><a href="#增" class="headerlink" title="增"></a>增</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">one_obj = Projects(name=<span class="string">&#x27;「测试游记」-创建&#x27;</span>, leader=<span class="string">&#x27;zx_94&#x27;</span>, tester=<span class="string">&#x27;zx&#x27;</span>, programer=<span class="string">&#x27;zx&#x27;</span>, publish_app=<span class="string">&#x27;公众号&#x27;</span>, desc=<span class="string">&#x27;666&#x27;</span>)</span><br><span class="line"></span><br><span class="line">one_obj.save()</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g7ef9ejx8uj31pa0aumzx.jpg" alt="查看结果"></p>
+<p>数据库操作记录</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">print(connection.queries[-<span class="number">1</span>])</span><br><span class="line">&#123;<span class="string">&#x27;sql&#x27;</span>: <span class="string">&quot;INSERT INTO `tb_projects` (`name`, `leader`, `tester`, `programer`, `publish_app`, `desc`) VALUES (&#x27;「测试游记」-创建&#x27;, &#x27;zx_94&#x27;, &#x27;zx&#x27;, &#x27;zx&#x27;, &#x27;公众号&#x27;, &#x27;666&#x27;)&quot;</span>, <span class="string">&#x27;time&#x27;</span>: <span class="string">&#x27;0.003&#x27;</span>&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt=" wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt=" 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt=" 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/" rel="tag"># Python测试开发</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/06/27/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6(%E5%9B%9B%E5%8D%81)/" rel="next" title="测试开发进阶(四十)">
+                <i class="fa fa-chevron-left"></i> 测试开发进阶(四十)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/06/27/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6(%E4%B8%89%E5%8D%81%E5%85%AD)/" rel="prev" title="测试开发进阶(三十六)">
+                测试开发进阶(三十六) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpeg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">49</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zx490336534" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6-%E4%BA%8C%E5%8D%81%E4%BA%8C"><span class="nav-number">1.</span> <span class="nav-text">测试开发进阶(二十二)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5%E6%9D%83%E9%99%90"><span class="nav-number">1.1.</span> <span class="nav-text">修改数据库远程连接权限</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%81%E7%A7%BB"><span class="nav-number">1.2.</span> <span class="nav-text">迁移</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E6%AE%B5"><span class="nav-number">1.3.</span> <span class="nav-text">字段</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%96%B0%E8%A1%A8"><span class="nav-number">1.3.1.</span> <span class="nav-text">查看新表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E8%A1%A8%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.3.2.</span> <span class="nav-text">查看表设计</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E6%95%B0%E6%8D%AE%E8%A1%A8%E5%90%8D%E7%A7%B0"><span class="nav-number">1.4.</span> <span class="nav-text">修改数据表名称</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%81%E7%A7%BB%E5%89%8D%EF%BC%9A"><span class="nav-number">1.4.1.</span> <span class="nav-text">迁移前：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%81%E7%A7%BB%E5%90%8E-%E7%82%B9%E5%87%BB%E5%88%B7%E6%96%B0-%EF%BC%9A"><span class="nav-number">1.4.2.</span> <span class="nav-text">迁移后(点击刷新)：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8E%E5%8F%B0%E7%AB%99%E7%82%B9"><span class="nav-number">1.4.3.</span> <span class="nav-text">后台站点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BF%E9%97%AEadmin"><span class="nav-number">1.4.3.1.</span> <span class="nav-text">访问admin</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E7%AE%A1%E7%90%86%E5%91%98%E8%B4%A6%E6%88%B7"><span class="nav-number">1.4.3.2.</span> <span class="nav-text">创建管理员账户</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E5%B1%95%E7%A4%BA%E7%9A%84%E9%83%A8%E5%88%86"><span class="nav-number">1.4.3.3.</span> <span class="nav-text">修改展示的部分</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A8%E5%85%B3%E8%81%94"><span class="nav-number">1.5.</span> <span class="nav-text">表关联</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%BA%94%E7%94%A8"><span class="nav-number">1.5.1.</span> <span class="nav-text">创建一个应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C%E5%AD%90%E5%BA%94%E7%94%A8"><span class="nav-number">1.5.2.</span> <span class="nav-text">注册子应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%8F%82%E6%95%B0"><span class="nav-number">1.5.3.</span> <span class="nav-text">第一个参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E4%B8%AA%E5%8F%82%E6%95%B0"><span class="nav-number">1.5.4.</span> <span class="nav-text">第二个参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E6%93%8D%E4%BD%9C"><span class="nav-number">1.6.</span> <span class="nav-text">数据库操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E6%93%8D%E4%BD%9C%E8%AE%B0%E5%BD%95"><span class="nav-number">1.6.1.</span> <span class="nav-text">查看数据库操作记录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A2%9E"><span class="nav-number">1.6.2.</span> <span class="nav-text">增</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">测试游记</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://example.com/2020/06/27/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6(%E4%BA%8C%E5%8D%81%E4%BA%8C)/';
+          this.page.identifier = '2020/06/27/测试开发进阶(二十二)/';
+          this.page.title = '测试开发进阶(二十二)';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
