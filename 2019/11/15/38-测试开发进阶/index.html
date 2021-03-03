@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Python测试开发," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="测试开发进阶(三十八)用例模块需要使用httprunner来进行用例的执行与报告的生成 所以我们需要生成一个yaml用例文件，再执行它">
+<meta property="og:type" content="article">
+<meta property="og:title" content="测试开发进阶(三十八)">
+<meta property="og:url" content="http://example.com/2019/11/15/38-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/index.html">
+<meta property="og:site_name" content="测试游记">
+<meta property="og:description" content="测试开发进阶(三十八)用例模块需要使用httprunner来进行用例的执行与报告的生成 所以我们需要生成一个yaml用例文件，再执行它">
+<meta property="og:locale">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g8z26iap8lj30wk0u044w.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g8z28dxvesj31b30u04ln.jpg">
+<meta property="article:published_time" content="2019-11-15T09:51:38.000Z">
+<meta property="article:modified_time" content="2021-03-03T13:17:09.310Z">
+<meta property="article:author" content="测试游记">
+<meta property="article:tag" content="Python测试开发">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g8z26iap8lj30wk0u044w.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2019/11/15/38-测试开发进阶/"/>
+
+
+
+
+
+  <title>测试开发进阶(三十八) | 测试游记</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?41fc030db57d5570dd22f78997dc4a7e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">测试游记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/11/15/38-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="测试游记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">测试开发进阶(三十八)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-15T17:51:38+08:00">
+                2019-11-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/11/15/38-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/11/15/38-测试开发进阶/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="测试开发进阶-三十八"><a href="#测试开发进阶-三十八" class="headerlink" title="测试开发进阶(三十八)"></a>测试开发进阶(三十八)</h1><h2 id="用例模块"><a href="#用例模块" class="headerlink" title="用例模块"></a>用例模块</h2><p>需要使用httprunner来进行用例的执行与报告的生成</p>
+<p>所以我们需要生成一个yaml用例文件，再执行它</p>
+<span id="more"></span>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@action(<span class="params">methods=[<span class="string">&#x27;post&#x27;</span>], detail=<span class="literal">True</span></span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">run</span>(<span class="params">self, request, *args, **kwargs</span>):</span></span><br><span class="line">    instance = self.get_object()</span><br><span class="line">    serializer = self.get_serializer(instance, data=request.data)</span><br><span class="line">    serializer.is_valid(raise_exception=<span class="literal">True</span>)</span><br><span class="line">    datas = serializer.validated_data</span><br><span class="line">    env_id = datas.get(<span class="string">&#x27;env_id&#x27;</span>)</span><br><span class="line">    testcase_dir_path = os.path.join(settings.SUITES_DIR, datetime.strftime(datetime.now(), <span class="string">&#x27;%Y%m%d%H%M%S%f&#x27;</span>))</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(testcase_dir_path):</span><br><span class="line">        os.mkdir(testcase_dir_path)</span><br><span class="line">    env = Envs.objects.<span class="built_in">filter</span>(<span class="built_in">id</span>=env_id, is_delete=<span class="literal">False</span>).first()</span><br><span class="line">    <span class="comment"># 生成yaml用例文件</span></span><br><span class="line">    common.generate_testcase_files(instance, env, testcase_dir_path)</span><br><span class="line">    <span class="comment"># 运行用例</span></span><br><span class="line">    <span class="keyword">return</span> common.run_testcase(instance, testcase_dir_path)</span><br></pre></td></tr></table></figure>
+
+<h3 id="生成yaml用例"><a href="#生成yaml用例" class="headerlink" title="生成yaml用例"></a>生成yaml用例</h3><p>官方文档有一个例子：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">config:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">testcase</span> <span class="string">description</span></span><br><span class="line">    <span class="attr">variables:</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> <span class="attr">test:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">/api/get-token</span></span><br><span class="line">    <span class="attr">request:</span></span><br><span class="line">        <span class="attr">headers:</span></span><br><span class="line">            <span class="attr">Content-Type:</span> <span class="string">application/json</span></span><br><span class="line">            <span class="attr">User-Agent:</span> <span class="string">python-requests/2.18.4</span></span><br><span class="line">            <span class="attr">app_version:</span> <span class="number">2.8</span><span class="number">.6</span></span><br><span class="line">            <span class="attr">device_sn:</span> <span class="string">FwgRiO7CNA50DSU</span></span><br><span class="line">            <span class="attr">os_platform:</span> <span class="string">ios</span></span><br><span class="line">        <span class="attr">json:</span></span><br><span class="line">            <span class="attr">sign:</span> <span class="string">9c0c7e51c91ae963c833a4ccbab8d683c4a90c98</span></span><br><span class="line">        <span class="attr">method:</span> <span class="string">POST</span></span><br><span class="line">        <span class="attr">url:</span> <span class="string">http://127.0.0.1:5000/api/get-token</span></span><br><span class="line">    <span class="attr">extract:</span></span><br><span class="line">        <span class="attr">token:</span> <span class="string">content.token</span></span><br><span class="line">    <span class="attr">validate:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">eq:</span> [<span class="string">status_code</span>, <span class="number">200</span>]</span><br><span class="line">        <span class="bullet">-</span> <span class="attr">eq:</span> [<span class="string">headers.Content-Type</span>, <span class="string">application/json</span>]</span><br><span class="line">        <span class="bullet">-</span> <span class="attr">eq:</span> [<span class="string">content.success</span>, <span class="literal">true</span>]</span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> <span class="attr">test:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">/api/users/1000</span></span><br><span class="line">    <span class="attr">request:</span></span><br><span class="line">        <span class="attr">headers:</span></span><br><span class="line">            <span class="attr">Content-Type:</span> <span class="string">application/json</span></span><br><span class="line">            <span class="attr">User-Agent:</span> <span class="string">python-requests/2.18.4</span></span><br><span class="line">            <span class="attr">device_sn:</span> <span class="string">FwgRiO7CNA50DSU</span></span><br><span class="line">            <span class="attr">token:</span> <span class="string">$token</span></span><br><span class="line">        <span class="attr">json:</span></span><br><span class="line">            <span class="attr">name:</span> <span class="string">user1</span></span><br><span class="line">            <span class="attr">password:</span> <span class="string">&#x27;123456&#x27;</span></span><br><span class="line">        <span class="attr">method:</span> <span class="string">POST</span></span><br><span class="line">        <span class="attr">url:</span> <span class="string">http://127.0.0.1:5000/api/users/1000</span></span><br><span class="line">    <span class="attr">validate:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">eq:</span> [<span class="string">status_code</span>, <span class="number">201</span>]</span><br><span class="line">        <span class="bullet">-</span> <span class="attr">eq:</span> [<span class="string">headers.Content-Type</span>, <span class="string">application/json</span>]</span><br><span class="line">        <span class="bullet">-</span> <span class="attr">eq:</span> [<span class="string">content.success</span>, <span class="literal">true</span>]</span><br><span class="line">        <span class="bullet">-</span> <span class="attr">eq:</span> [<span class="string">content.msg</span>, <span class="string">user</span> <span class="string">created</span> <span class="string">successfully.</span>]</span><br></pre></td></tr></table></figure>
+
+<p>上述一个yaml对应的json格式为：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">&quot;config&quot;</span>: &#123;</span><br><span class="line">      <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;testcase description&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;request&quot;</span>: &#123;</span><br><span class="line">        <span class="attr">&quot;base_url&quot;</span>: <span class="string">&quot;&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;headers&quot;</span>: &#123;</span><br><span class="line">          <span class="attr">&quot;User-Agent&quot;</span>: <span class="string">&quot;python-requests/2.18.4&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="attr">&quot;variables&quot;</span>: [],</span><br><span class="line">      <span class="attr">&quot;output&quot;</span>: [<span class="string">&quot;token&quot;</span>],</span><br><span class="line">      <span class="attr">&quot;path&quot;</span>: <span class="string">&quot;/abs-path/to/demo-quickstart-2.yml&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;refs&quot;</span>: &#123;</span><br><span class="line">        <span class="attr">&quot;env&quot;</span>: &#123;&#125;,</span><br><span class="line">        <span class="attr">&quot;debugtalk&quot;</span>: &#123;</span><br><span class="line">          <span class="attr">&quot;variables&quot;</span>: &#123;</span><br><span class="line">            <span class="attr">&quot;SECRET_KEY&quot;</span>: <span class="string">&quot;DebugTalk&quot;</span></span><br><span class="line">          &#125;,</span><br><span class="line">          <span class="attr">&quot;functions&quot;</span>: &#123;</span><br><span class="line">            <span class="attr">&quot;gen_random_string&quot;</span>: &lt;function gen_random_string at <span class="number">0x108596268</span>&gt;,</span><br><span class="line">            <span class="attr">&quot;get_sign&quot;</span>: &lt;function get_sign at <span class="number">0x1085962f0</span>&gt;,</span><br><span class="line">            <span class="attr">&quot;get_user_id&quot;</span>: &lt;function get_user_id at <span class="number">0x108596378</span>&gt;,</span><br><span class="line">            <span class="attr">&quot;get_account&quot;</span>: &lt;function get_account at <span class="number">0x108596400</span>&gt;,</span><br><span class="line">            <span class="attr">&quot;get_os_platform&quot;</span>: &lt;function get_os_platform at <span class="number">0x108596488</span>&gt;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">&quot;def-api&quot;</span>: &#123;&#125;,</span><br><span class="line">        <span class="attr">&quot;def-testcase&quot;</span>: &#123;&#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">&quot;teststeps&quot;</span>: [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;/api/get-token&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;request&quot;</span>: &#123;</span><br><span class="line">          <span class="attr">&quot;url&quot;</span>: <span class="string">&quot;http://127.0.0.1:5000/api/get-token&quot;</span>,</span><br><span class="line">          <span class="attr">&quot;method&quot;</span>: <span class="string">&quot;POST&quot;</span>,</span><br><span class="line">          <span class="attr">&quot;headers&quot;</span>: &#123;<span class="attr">&quot;Content-Type&quot;</span>: <span class="string">&quot;application/json&quot;</span>, <span class="attr">&quot;app_version&quot;</span>: <span class="string">&quot;2.8.6&quot;</span>, <span class="attr">&quot;device_sn&quot;</span>: <span class="string">&quot;FwgRiO7CNA50DSU&quot;</span>, <span class="attr">&quot;os_platform&quot;</span>: <span class="string">&quot;ios&quot;</span>, <span class="attr">&quot;user_agent&quot;</span>: <span class="string">&quot;iOS/10.3&quot;</span>&#125;,</span><br><span class="line">          <span class="attr">&quot;json&quot;</span>: &#123;<span class="attr">&quot;sign&quot;</span>: <span class="string">&quot;9c0c7e51c91ae963c833a4ccbab8d683c4a90c98&quot;</span>&#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">&quot;extract&quot;</span>: [</span><br><span class="line">          &#123;<span class="attr">&quot;token&quot;</span>: <span class="string">&quot;content.token&quot;</span>&#125;</span><br><span class="line">        ],</span><br><span class="line">        <span class="attr">&quot;validate&quot;</span>: [</span><br><span class="line">          &#123;<span class="attr">&quot;eq&quot;</span>: [<span class="string">&quot;status_code&quot;</span>, <span class="number">200</span>]&#125;,</span><br><span class="line">          &#123;<span class="attr">&quot;eq&quot;</span>: [<span class="string">&quot;headers.Content-Type&quot;</span>, <span class="string">&quot;application/json&quot;</span>]&#125;,</span><br><span class="line">          &#123;<span class="attr">&quot;eq&quot;</span>: [<span class="string">&quot;content.success&quot;</span>, <span class="literal">true</span>]&#125;</span><br><span class="line">        ]</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;/api/users/1000&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;request&quot;</span>: &#123;<span class="attr">&quot;url&quot;</span>: <span class="string">&quot;http://127.0.0.1:5000/api/users/1000&quot;</span>, <span class="attr">&quot;method&quot;</span>: <span class="string">&quot;POST&quot;</span>, <span class="attr">&quot;headers&quot;</span>: &#123;<span class="attr">&quot;Content-Type&quot;</span>: <span class="string">&quot;application/json&quot;</span>, <span class="attr">&quot;device_sn&quot;</span>: <span class="string">&quot;FwgRiO7CNA50DSU&quot;</span>, <span class="attr">&quot;token&quot;</span>: <span class="string">&quot;$token&quot;</span>&#125;,</span><br><span class="line">        <span class="attr">&quot;json&quot;</span>: &#123;<span class="attr">&quot;name&quot;</span>: <span class="string">&quot;user1&quot;</span>, <span class="attr">&quot;password&quot;</span>: <span class="string">&quot;123456&quot;</span>&#125;&#125;,</span><br><span class="line">        <span class="attr">&quot;validate&quot;</span>: [</span><br><span class="line">          &#123;<span class="attr">&quot;eq&quot;</span>: [<span class="string">&quot;status_code&quot;</span>, <span class="number">201</span>]&#125;,</span><br><span class="line">          &#123;<span class="attr">&quot;eq&quot;</span>: [<span class="string">&quot;headers.Content-Type&quot;</span>, <span class="string">&quot;application/json&quot;</span>]&#125;,</span><br><span class="line">          &#123;<span class="attr">&quot;eq&quot;</span>: [<span class="string">&quot;content.success&quot;</span>, <span class="literal">true</span>]&#125;,</span><br><span class="line">          &#123;<span class="attr">&quot;eq&quot;</span>: [<span class="string">&quot;content.msg&quot;</span>, <span class="string">&quot;user created successfully.&quot;</span>]&#125;</span><br><span class="line">        ]</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;...&#125; # another testcase</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>所以我们需要通过一个函数将已有的接口，环境，配置写入一份yaml中</p>
+<p>将对应的<code>debugtalk.py</code>存放在yaml文件附近</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">generate_testcase_files</span>(<span class="params">instance, env, testcase_dir_path</span>):</span></span><br><span class="line">    testcase_list = []</span><br><span class="line">    config = &#123;</span><br><span class="line">        <span class="string">&#x27;config&#x27;</span>: &#123;</span><br><span class="line">            <span class="string">&#x27;name&#x27;</span>: instance.name,</span><br><span class="line">            <span class="string">&#x27;request&#x27;</span>: &#123;</span><br><span class="line">                <span class="string">&#x27;base_url&#x27;</span>: env.base_url <span class="keyword">if</span> env <span class="keyword">else</span> <span class="string">&#x27;&#x27;</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    testcase_list.append(config)</span><br><span class="line"></span><br><span class="line">    include = json.loads(instance.include, encoding=<span class="string">&#x27;utf8&#x27;</span>)</span><br><span class="line">    request = json.loads(instance.request, encoding=<span class="string">&#x27;utf8&#x27;</span>)</span><br><span class="line">    interface_name = instance.interface.name</span><br><span class="line">    project_name = instance.interface.project.name</span><br><span class="line">    testcase_dir_path = os.path.join(testcase_dir_path, project_name)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(testcase_dir_path):</span><br><span class="line">        os.mkdir(testcase_dir_path)</span><br><span class="line">        debugtalk_obj = DebugTalks.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>, project__name=project_name).first()</span><br><span class="line">        <span class="keyword">if</span> debugtalk_obj:</span><br><span class="line">            debugtalk = debugtalk_obj.debugtalk</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            debugtalk = <span class="string">&#x27;&#x27;</span></span><br><span class="line">        <span class="keyword">with</span> <span class="built_in">open</span>(os.path.join(testcase_dir_path, <span class="string">&#x27;debugtalk.py&#x27;</span>),</span><br><span class="line">                  mode=<span class="string">&#x27;w&#x27;</span>, encoding=<span class="string">&#x27;utf8&#x27;</span>) <span class="keyword">as</span> one_file:</span><br><span class="line">            one_file.write(debugtalk)</span><br><span class="line">        testcase_dir_path = os.path.join(testcase_dir_path, interface_name)</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(testcase_dir_path):</span><br><span class="line">            os.mkdir(testcase_dir_path)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> <span class="string">&#x27;config&#x27;</span> <span class="keyword">in</span> include:</span><br><span class="line">            config_id = include.get(<span class="string">&#x27;config&#x27;</span>)</span><br><span class="line">            config_obj = Configures.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>, <span class="built_in">id</span>=config_id).first()</span><br><span class="line">            <span class="keyword">if</span> config_obj:</span><br><span class="line">                config_request = json.loads(config_obj.request, encoding=<span class="string">&#x27;utf8&#x27;</span>)</span><br><span class="line">                config_request.get(<span class="string">&#x27;config&#x27;</span>).get(<span class="string">&#x27;request&#x27;</span>).setdefault(<span class="string">&#x27;base_url&#x27;</span>, env.base_url)</span><br><span class="line">                config_request[<span class="string">&#x27;config&#x27;</span>][<span class="string">&#x27;name&#x27;</span>] = instance.name</span><br><span class="line">                testcase_list[<span class="number">0</span>] = config_request</span><br><span class="line">            <span class="keyword">if</span> <span class="string">&#x27;testcases&#x27;</span> <span class="keyword">in</span> include:</span><br><span class="line">                <span class="keyword">for</span> t_id <span class="keyword">in</span> include.get(<span class="string">&#x27;testcases&#x27;</span>):</span><br><span class="line">                    testcase_obj = Testcases.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>, <span class="built_in">id</span>=t_id).first()</span><br><span class="line">                    <span class="keyword">if</span> testcase_obj:</span><br><span class="line">                        <span class="keyword">try</span>:</span><br><span class="line">                            testcase_request = json.loads(testcase_obj.request, encoding=<span class="string">&#x27;utf8&#x27;</span>)</span><br><span class="line">                        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">                            testcase_request = <span class="string">&#x27;&#x27;</span></span><br><span class="line">                    <span class="keyword">else</span>:</span><br><span class="line">                        testcase_list.append(testcase_request)</span><br><span class="line">    testcase_list.append(request)</span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(os.path.join(testcase_dir_path, instance.name + <span class="string">&#x27;.yml&#x27;</span>), <span class="string">&#x27;w&#x27;</span>, encoding=<span class="string">&#x27;utf8&#x27;</span>) <span class="keyword">as</span> one_file:</span><br><span class="line">        yaml.dump(testcase_list, one_file, allow_unicode=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="执行yaml文件"><a href="#执行yaml文件" class="headerlink" title="执行yaml文件"></a>执行yaml文件</h3><p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g8z26iap8lj30wk0u044w.jpg" alt="https://cn.httprunner.org/development/dev-api/"></p>
+<p>从<a target="_blank" rel="noopener" href="https://cn.httprunner.org/development/dev-api/%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%87%BA%EF%BC%8C%E6%88%91%E4%BB%AC%E5%8F%AF%E4%BB%A5%E9%80%9A%E8%BF%87%E4%BC%A0%E5%85%A5yaml%E8%B7%AF%E5%BE%84%E6%9D%A5%E6%89%A7%E8%A1%8C%E6%B5%8B%E8%AF%95">https://cn.httprunner.org/development/dev-api/可以看出，我们可以通过传入yaml路径来执行测试</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">run_testcase</span>(<span class="params">instance, testcase_dir_path</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    运行用例</span></span><br><span class="line"><span class="string">    :return:</span></span><br><span class="line"><span class="string">    :param instance: 实例</span></span><br><span class="line"><span class="string">    :param testcase_dir_path: 用例根目录路径</span></span><br><span class="line"><span class="string">    :return dict</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    runner = HttpRunner()</span><br><span class="line">    <span class="comment"># runner.run(testcase_dir_path)</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        runner.run(testcase_dir_path)</span><br><span class="line">    <span class="keyword">except</span> ParamsError:</span><br><span class="line">        logger.error(<span class="string">&quot;用例参数有误&quot;</span>)</span><br><span class="line">        data = &#123;</span><br><span class="line">            <span class="string">&quot;msg&quot;</span>: <span class="string">&quot;用例参数有误&quot;</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> Response(data, status=<span class="number">400</span>)</span><br><span class="line"></span><br><span class="line">    runner.summary = timestamp_to_datetime(runner.summary, <span class="built_in">type</span>=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        report_name = instance.name</span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">        report_name = <span class="string">&#x27;被遗弃的报告&#x27;</span> + <span class="string">&#x27;-&#x27;</span> + datetime.strftime(datetime.now(), <span class="string">&#x27;%Y%m%d%H%M%S&#x27;</span>)</span><br><span class="line"></span><br><span class="line">    report_id = create_report(runner, report_name=report_name)</span><br><span class="line">    data_dict = &#123;</span><br><span class="line">        <span class="string">&quot;id&quot;</span>: report_id</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> Response(data_dict, status=status.HTTP_201_CREATED)</span><br></pre></td></tr></table></figure>
+
+<p>报告中的时间格式需要进行调整</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_report</span>(<span class="params">runner, report_name=<span class="literal">None</span></span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    创建测试报告</span></span><br><span class="line"><span class="string">    :param runner:</span></span><br><span class="line"><span class="string">    :param report_name:</span></span><br><span class="line"><span class="string">    :return:</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    time_stamp = <span class="built_in">int</span>(runner.summary[<span class="string">&quot;time&quot;</span>][<span class="string">&quot;start_at&quot;</span>])</span><br><span class="line">    start_datetime = datetime.fromtimestamp(time_stamp).strftime(<span class="string">&#x27;%Y-%m-%d %H:%M:%S&#x27;</span>)</span><br><span class="line">    runner.summary[<span class="string">&#x27;time&#x27;</span>][<span class="string">&#x27;start_datetime&#x27;</span>] = start_datetime</span><br><span class="line">    <span class="comment"># duration保留3位小数</span></span><br><span class="line">    runner.summary[<span class="string">&#x27;time&#x27;</span>][<span class="string">&#x27;duration&#x27;</span>] = <span class="built_in">round</span>(runner.summary[<span class="string">&#x27;time&#x27;</span>][<span class="string">&#x27;duration&#x27;</span>], <span class="number">3</span>)</span><br><span class="line">    report_name = report_name <span class="keyword">if</span> report_name <span class="keyword">else</span> start_datetime</span><br><span class="line">    runner.summary[<span class="string">&#x27;html_report_name&#x27;</span>] = report_name</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> item <span class="keyword">in</span> runner.summary[<span class="string">&#x27;details&#x27;</span>]:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            <span class="keyword">for</span> record <span class="keyword">in</span> item[<span class="string">&#x27;records&#x27;</span>]:</span><br><span class="line">                record[<span class="string">&#x27;meta_data&#x27;</span>][<span class="string">&#x27;response&#x27;</span>][<span class="string">&#x27;content&#x27;</span>] = record[<span class="string">&#x27;meta_data&#x27;</span>][<span class="string">&#x27;response&#x27;</span>][<span class="string">&#x27;content&#x27;</span>]. \</span><br><span class="line">                    decode(<span class="string">&#x27;utf-8&#x27;</span>)</span><br><span class="line">                record[<span class="string">&#x27;meta_data&#x27;</span>][<span class="string">&#x27;response&#x27;</span>][<span class="string">&#x27;cookies&#x27;</span>] = <span class="built_in">dict</span>(record[<span class="string">&#x27;meta_data&#x27;</span>][<span class="string">&#x27;response&#x27;</span>][<span class="string">&#x27;cookies&#x27;</span>])</span><br><span class="line"></span><br><span class="line">                request_body = record[<span class="string">&#x27;meta_data&#x27;</span>][<span class="string">&#x27;request&#x27;</span>][<span class="string">&#x27;body&#x27;</span>]</span><br><span class="line">                <span class="keyword">if</span> <span class="built_in">isinstance</span>(request_body, <span class="built_in">bytes</span>):</span><br><span class="line">                    record[<span class="string">&#x27;meta_data&#x27;</span>][<span class="string">&#x27;request&#x27;</span>][<span class="string">&#x27;body&#x27;</span>] = request_body.decode(<span class="string">&#x27;utf-8&#x27;</span>)</span><br><span class="line">        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">    summary = json.dumps(runner.summary, ensure_ascii=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line">    report_name = report_name + <span class="string">&#x27;_&#x27;</span> + datetime.strftime(datetime.now(), <span class="string">&#x27;%Y%m%d%H%M%S&#x27;</span>)</span><br><span class="line">    report_path = runner.gen_html_report(html_report_name=report_name)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(report_path, encoding=<span class="string">&#x27;utf-8&#x27;</span>) <span class="keyword">as</span> stream:</span><br><span class="line">        reports = stream.read()</span><br><span class="line"></span><br><span class="line">    test_report = &#123;</span><br><span class="line">        <span class="string">&#x27;name&#x27;</span>: report_name,</span><br><span class="line">        <span class="string">&#x27;result&#x27;</span>: runner.summary.get(<span class="string">&#x27;success&#x27;</span>),</span><br><span class="line">        <span class="string">&#x27;success&#x27;</span>: runner.summary.get(<span class="string">&#x27;stat&#x27;</span>).get(<span class="string">&#x27;successes&#x27;</span>),</span><br><span class="line">        <span class="string">&#x27;count&#x27;</span>: runner.summary.get(<span class="string">&#x27;stat&#x27;</span>).get(<span class="string">&#x27;testsRun&#x27;</span>),</span><br><span class="line">        <span class="string">&#x27;html&#x27;</span>: reports,</span><br><span class="line">        <span class="string">&#x27;summary&#x27;</span>: summary</span><br><span class="line">    &#125;</span><br><span class="line">    report_obj = Reports.objects.create(**test_report)</span><br><span class="line">    <span class="keyword">return</span> report_obj.<span class="built_in">id</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g8z28dxvesj31b30u04ln.jpg" alt="结果"></p>
+<p>其他模块的执行与报告展示也调用了这两个函数</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/zx490336534/ApiTest">https://github.com/zx490336534/ApiTest</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt=" wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt=" 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt=" 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/" rel="tag"># Python测试开发</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/11/12/37-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/" rel="next" title="测试开发进阶(三十七)">
+                <i class="fa fa-chevron-left"></i> 测试开发进阶(三十七)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/11/17/39-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/" rel="prev" title="测试开发进阶(三十九)">
+                测试开发进阶(三十九) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpeg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">48</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zx490336534" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6-%E4%B8%89%E5%8D%81%E5%85%AB"><span class="nav-number">1.</span> <span class="nav-text">测试开发进阶(三十八)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E4%BE%8B%E6%A8%A1%E5%9D%97"><span class="nav-number">1.1.</span> <span class="nav-text">用例模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E6%88%90yaml%E7%94%A8%E4%BE%8B"><span class="nav-number">1.1.1.</span> <span class="nav-text">生成yaml用例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A7%E8%A1%8Cyaml%E6%96%87%E4%BB%B6"><span class="nav-number">1.1.2.</span> <span class="nav-text">执行yaml文件</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">测试游记</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://example.com/2019/11/15/38-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/';
+          this.page.identifier = '2019/11/15/38-测试开发进阶/';
+          this.page.title = '测试开发进阶(三十八)';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

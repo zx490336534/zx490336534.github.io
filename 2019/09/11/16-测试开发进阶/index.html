@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Python测试开发," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="测试开发进阶(十六)欢迎关注我呀～「测试游记」「zx94_11」 后续部分到底什么是测试开发 一定不仅是测试    非常敏锐的开发视角 极其强大的开发能力    一定不是开发    无需严谨的校验 无需完美的用户体验">
+<meta property="og:type" content="article">
+<meta property="og:title" content="测试开发进阶(十六)">
+<meta property="og:url" content="http://example.com/2019/09/11/16-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/index.html">
+<meta property="og:site_name" content="测试游记">
+<meta property="og:description" content="测试开发进阶(十六)欢迎关注我呀～「测试游记」「zx94_11」 后续部分到底什么是测试开发 一定不仅是测试    非常敏锐的开发视角 极其强大的开发能力    一定不是开发    无需严谨的校验 无需完美的用户体验">
+<meta property="og:locale">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g6vv3ycdfgj30lq0act9l.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g6vv509tr2j30mq0vwq51.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g6vvjyo4m4j31320f40sm.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g6vvqb0qkcj316y0u0tgl.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g6vvurm7hhj316y0u0tro.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g6vw2qjefuj31bi0u01b1.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g6vw62m9vgj316y0u0123.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g6vw9qku3ij316y0u07gy.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g6vwimcpenj316y0u0do7.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g6vwiwx9i4j31b30u0tpu.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g6vx4ta6qzj31060u07dk.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g6vxhrwqgfj31060u0ajr.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g6vxjd5wz5j31060u0wo6.jpg">
+<meta property="article:published_time" content="2019-09-11T10:18:18.000Z">
+<meta property="article:modified_time" content="2021-03-03T13:13:56.417Z">
+<meta property="article:author" content="测试游记">
+<meta property="article:tag" content="Python测试开发">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g6vv3ycdfgj30lq0act9l.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2019/09/11/16-测试开发进阶/"/>
+
+
+
+
+
+  <title>测试开发进阶(十六) | 测试游记</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?41fc030db57d5570dd22f78997dc4a7e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">测试游记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/09/11/16-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="测试游记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">测试开发进阶(十六)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-11T18:18:18+08:00">
+                2019-09-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/09/11/16-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/09/11/16-测试开发进阶/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="测试开发进阶-十六"><a href="#测试开发进阶-十六" class="headerlink" title="测试开发进阶(十六)"></a>测试开发进阶(十六)</h1><p><strong>欢迎关注我呀～「测试游记」「zx94_11」</strong></p>
+<h2 id="后续部分"><a href="#后续部分" class="headerlink" title="后续部分"></a>后续部分</h2><h3 id="到底什么是测试开发"><a href="#到底什么是测试开发" class="headerlink" title="到底什么是测试开发"></a>到底什么是测试开发</h3><ul>
+<li>一定不仅是测试</li>
+</ul>
+<blockquote>
+<ol>
+<li>非常敏锐的开发视角</li>
+<li>极其强大的开发能力</li>
+</ol>
+</blockquote>
+<ul>
+<li>一定不是开发</li>
+</ul>
+<blockquote>
+<ol>
+<li>无需严谨的校验</li>
+<li>无需完美的用户体验</li>
+</ol>
+</blockquote>
+<span id="more"></span>
+<h3 id="测试开发平台是产品吗"><a href="#测试开发平台是产品吗" class="headerlink" title="测试开发平台是产品吗"></a>测试开发平台是产品吗</h3><p>对于一个<strong>不是产品</strong>的东西，我们测开（或者领导）对它的要求是什么？</p>
+<ul>
+<li>效率</li>
+</ul>
+<blockquote>
+<p>两周内开发出一个平台</p>
+</blockquote>
+<ul>
+<li>至少能实现基本自动化测试</li>
+<li>无需花里胡哨的功能</li>
+<li>无需严谨的校验</li>
+<li>能用轮子的尽量用轮子</li>
+<li>能少写的一段代码就少写一段</li>
+</ul>
+<h3 id="测试开发的价值，理念"><a href="#测试开发的价值，理念" class="headerlink" title="测试开发的价值，理念"></a>测试开发的价值，理念</h3><ul>
+<li>看得懂大神写的代码，也能从中获取启发</li>
+<li>能改大神的代码，去除糟粕，取其精华</li>
+</ul>
+<h3 id="测试开发课程到底学什么？"><a href="#测试开发课程到底学什么？" class="headerlink" title="测试开发课程到底学什么？"></a>测试开发课程到底学什么？</h3><ul>
+<li>编程思维重于一切</li>
+<li>轮子</li>
+<li>快速开发的理念「敏捷开发」</li>
+</ul>
+<h2 id="Vue框架"><a href="#Vue框架" class="headerlink" title="Vue框架"></a>Vue框架</h2><ul>
+<li>前端三大主流框架之一</li>
+</ul>
+<blockquote>
+<p>Angular.js</p>
+<p>React.js</p>
+<p>Vue.js</p>
+</blockquote>
+<ul>
+<li>简单小巧</li>
+</ul>
+<blockquote>
+<p>使用gzip压缩后，只有20kb左右</p>
+<p>入门容易</p>
+</blockquote>
+<ul>
+<li>自动进行响应式更新</li>
+</ul>
+<blockquote>
+<p>只需关注前端业务逻辑，无需操作DOM</p>
+</blockquote>
+<ul>
+<li>高级特性</li>
+</ul>
+<blockquote>
+<p>解耦视图和数据</p>
+<p>可复用组建</p>
+<p>前端路由</p>
+<p>状态管理</p>
+<p>虚拟DOM</p>
+</blockquote>
+<h3 id="MVVM模式"><a href="#MVVM模式" class="headerlink" title="MVVM模式"></a>MVVM模式</h3><ul>
+<li>类似于MVC(Java)和Django(MVT)</li>
+</ul>
+<blockquote>
+<p>M</p>
+<ul>
+<li>模型</li>
+<li>从后端获取的数据</li>
+</ul>
+<p>V</p>
+<ul>
+<li>视图</li>
+<li>界面展示</li>
+</ul>
+<p>VM</p>
+<ul>
+<li>视图模型</li>
+<li>核心控制</li>
+</ul>
+</blockquote>
+<h2 id="Vue-demo"><a href="#Vue-demo" class="headerlink" title="Vue-demo"></a>Vue-demo</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>「测试游记」<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;https://cdn.jsdelivr.net/npm/vue&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;app&quot;</span>&gt;</span></span><br><span class="line">        &#123;&#123;msg&#125;&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">        <span class="keyword">let</span> vm = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line"><span class="javascript">            el:<span class="string">&#x27;#app&#x27;</span>,</span></span><br><span class="line">            data:&#123;</span><br><span class="line"><span class="javascript">                msg:<span class="string">&#x27;Hello Python&#x27;</span></span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">    <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g6vv3ycdfgj30lq0act9l.jpg" alt="展示" style="zoom:50%;" />
+
+<img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g6vv509tr2j30mq0vwq51.jpg" alt="相应式更新" style="zoom:50%;" />
+
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">    <span class="comment">// Vue实例创建,会控制id为app元素中的所有内容</span></span></span><br><span class="line"><span class="javascript">    <span class="comment">// Vue的实例 MVVM中的VM</span></span></span><br><span class="line"><span class="javascript">    <span class="keyword">let</span> vm = <span class="keyword">new</span> Vue(&#123;</span></span><br><span class="line"><span class="javascript">        el:<span class="string">&#x27;#app&#x27;</span>, <span class="comment">// 控制的区域</span></span></span><br><span class="line"><span class="javascript">        <span class="comment">// data代表数据 -&gt; MVVM中的M</span></span></span><br><span class="line">        data:&#123;</span><br><span class="line"><span class="javascript">            msg:<span class="string">&#x27;Hello Python&#x27;</span></span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--MVVM模式中的V--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;app&quot;</span>&gt;</span></span><br><span class="line">    &#123;&#123;msg&#125;&#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="组件化"><a href="#组件化" class="headerlink" title="组件化"></a>组件化</h2><p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g6vvjyo4m4j31320f40sm.jpg" alt="Component Tree"></p>
+<ul>
+<li>模块化</li>
+</ul>
+<blockquote>
+<p>以不同的组件，来划分不同的功能模块</p>
+</blockquote>
+<ul>
+<li>复用</li>
+<li>高效</li>
+<li>解耦</li>
+</ul>
+<h2 id="前端工程化，组件化"><a href="#前端工程化，组件化" class="headerlink" title="前端工程化，组件化"></a>前端工程化，组件化</h2><p>安装Node.js:<a target="_blank" rel="noopener" href="http://nodejs.cn/download/">http://nodejs.cn/download/</a></p>
+<p>查看版本</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> node -v</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> npm -v <span class="comment"># 相当于python中的pip</span></span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g6vvqb0qkcj316y0u0tgl.jpg" alt="查看版本"></p>
+<p>使用淘宝npm镜像:<a target="_blank" rel="noopener" href="http://npm.taobao.org/">http://npm.taobao.org/</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> npm install -g cnpm --registry=https://registry.npm.taobao.org</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="安装vue-cli脚手架"><a href="#安装vue-cli脚手架" class="headerlink" title="安装vue-cli脚手架"></a>安装vue-cli脚手架</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 注意Linux或Mac 可能需要使用sudo -i进入管理员模式</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cnpm install -g @vue/cli</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -g:全局</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g6vvurm7hhj316y0u0tro.jpg" alt="安装vue-cli脚手架"></p>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g6vw2qjefuj31bi0u01b1.jpg" alt="查看安装结果"></p>
+<h2 id="创建项目"><a href="#创建项目" class="headerlink" title="创建项目"></a>创建项目</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vue create 项目名</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 选择default</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g6vw62m9vgj316y0u0123.jpg" alt="image-20190911212004424"></p>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g6vw9qku3ij316y0u07gy.jpg" alt="创建"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> npm run serve <span class="comment">#开启项目</span></span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g6vwimcpenj316y0u0do7.jpg" alt="开启"></p>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g6vwiwx9i4j31b30u0tpu.jpg" alt="开启"></p>
+<p>node_modules：系统库</p>
+<p>public/：单界面</p>
+<p>src ：需要压缩的部分</p>
+<p>/src/assets:资源（字体，图片等）</p>
+<p>/src/components:组件</p>
+<p>main.js：相当于一个main函数，最先加载</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 导入Vue.js</span></span><br><span class="line"><span class="keyword">import</span> Vue <span class="keyword">from</span> <span class="string">&#x27;vue&#x27;</span></span><br><span class="line"><span class="comment">// 导入App.vue根组件</span></span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">&#x27;./App.vue&#x27;</span></span><br><span class="line"></span><br><span class="line">Vue.config.productionTip = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> Vue(&#123;</span><br><span class="line">    render: <span class="function"><span class="params">h</span> =&gt;</span> h(App), <span class="comment">//渲染App根组件</span></span><br><span class="line">&#125;).$mount(<span class="string">&#x27;#app&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>App.vue:</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--template用于展示给用户，相当于MVVM中的V--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;app&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">img</span> <span class="attr">alt</span>=<span class="string">&quot;Vue logo&quot;</span> <span class="attr">src</span>=<span class="string">&quot;./assets/logo.png&quot;</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--在父组件中给子组件传值--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">HelloWorld</span> <span class="attr">msg</span>=<span class="string">&quot;Welcome to Your Vue.js App&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">import</span> HelloWorld <span class="keyword">from</span> <span class="string">&#x27;./components/HelloWorld.vue&#x27;</span></span></span><br><span class="line"></span><br><span class="line"><span class="javascript">    <span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line"><span class="javascript">        <span class="comment">// 定义组件名称</span></span></span><br><span class="line"><span class="javascript">        name: <span class="string">&#x27;app&#x27;</span>,</span></span><br><span class="line"><span class="javascript">        components: &#123; <span class="comment">//声明子组件</span></span></span><br><span class="line">            HelloWorld</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>/src/components/HelloWorld.vue被当作子组件传入</p>
+<p>修改<code>App.vue</code>，<code>&lt;HelloWorld msg=&quot;「测试游记」&quot;/&gt;</code>把msg传入<code>HelloWorld.vue</code></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--template用于展示给用户，相当于MVVM中的V--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;app&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">img</span> <span class="attr">alt</span>=<span class="string">&quot;Vue logo&quot;</span> <span class="attr">src</span>=<span class="string">&quot;./assets/logo.png&quot;</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--在父组件中给子组件传值--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">HelloWorld</span> <span class="attr">msg</span>=<span class="string">&quot;「测试游记」&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>修改<code>HelloWorld.vue</code>中的内容</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;hello&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">h1</span>&gt;</span>&#123;&#123; msg &#125;&#125;<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>查看页面</p>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g6vx4ta6qzj31060u07dk.jpg" alt="页面展示"></p>
+<p><code>HelloWorld</code>组件里面的msg内容改变的原因：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line"><span class="javascript">        name: <span class="string">&#x27;HelloWorld&#x27;</span>,</span></span><br><span class="line"><span class="javascript">        props: &#123; <span class="comment">//从父组件获取msg</span></span></span><br><span class="line"><span class="javascript">            msg: <span class="built_in">String</span></span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="创建一个组件"><a href="#创建一个组件" class="headerlink" title="创建一个组件"></a>创建一个组件</h2><p>在<code>/src/components</code>新建一个<code>greeting.vue</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line"></span><br><span class="line">&lt;&#x2F;template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">    export default &#123;</span><br><span class="line">        name: &quot;greeting&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&lt;&#x2F;script&gt;</span><br><span class="line"></span><br><span class="line">&lt;style scoped&gt;</span><br><span class="line"></span><br><span class="line">&lt;&#x2F;style&gt;</span><br></pre></td></tr></table></figure>
+
+<p>填充</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;msg&quot;</span>&gt;</span></span><br><span class="line">        插值表达式：</span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>&#123;&#123;message&#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line"><span class="javascript">        name: <span class="string">&quot;greeting&quot;</span>,</span></span><br><span class="line"><span class="javascript">        <span class="comment">// &#123;&#125; -&gt; 对象</span></span></span><br><span class="line"><span class="javascript">        <span class="function"><span class="title">data</span>(<span class="params"></span>)</span> &#123;</span></span><br><span class="line"><span class="javascript">            <span class="keyword">return</span> &#123;</span></span><br><span class="line"><span class="javascript">                message: <span class="string">&#x27;Hello Python&#x27;</span></span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">scoped</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>在<code>App.vue</code>里面声明</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">    <span class="keyword">import</span> HelloWorld <span class="keyword">from</span> <span class="string">&#x27;./components/HelloWorld.vue&#x27;</span></span></span><br><span class="line"><span class="javascript">    <span class="keyword">import</span> greeting <span class="keyword">from</span> <span class="string">&#x27;./components/greeting.vue&#x27;</span></span></span><br><span class="line"></span><br><span class="line"><span class="javascript">    <span class="keyword">export</span> <span class="keyword">default</span> &#123;</span></span><br><span class="line"><span class="javascript">        <span class="comment">// 定义组件名称</span></span></span><br><span class="line"><span class="javascript">        name: <span class="string">&#x27;app&#x27;</span>,</span></span><br><span class="line"><span class="javascript">        components: &#123; <span class="comment">//声明子组件</span></span></span><br><span class="line">            HelloWorld,</span><br><span class="line">            greeting</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import greeting from &#x27;./components/greeting.vue&#x27;</span><br><span class="line">components: &#123; //声明子组件</span><br><span class="line">            HelloWorld,</span><br><span class="line">            greeting</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g6vxhrwqgfj31060u0ajr.jpg" alt="插值"></p>
+<p>修改颜色</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">scoped</span>&gt;</span></span><br><span class="line"><span class="css">    <span class="selector-class">.msg</span> <span class="selector-tag">p</span> &#123;</span></span><br><span class="line"><span class="css">        <span class="attribute">color</span>: red;</span></span><br><span class="line">    &#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g6vxjd5wz5j31060u0wo6.jpg" alt="修改颜色"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt=" wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt=" 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt=" 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/" rel="tag"># Python测试开发</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/06/15-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/" rel="next" title="测试开发进阶(十五)">
+                <i class="fa fa-chevron-left"></i> 测试开发进阶(十五)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/17/17-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/" rel="prev" title="测试开发进阶(十七)">
+                测试开发进阶(十七) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpeg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">48</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zx490336534" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6-%E5%8D%81%E5%85%AD"><span class="nav-number">1.</span> <span class="nav-text">测试开发进阶(十六)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8E%E7%BB%AD%E9%83%A8%E5%88%86"><span class="nav-number">1.1.</span> <span class="nav-text">后续部分</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%B0%E5%BA%95%E4%BB%80%E4%B9%88%E6%98%AF%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91"><span class="nav-number">1.1.1.</span> <span class="nav-text">到底什么是测试开发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E5%B9%B3%E5%8F%B0%E6%98%AF%E4%BA%A7%E5%93%81%E5%90%97"><span class="nav-number">1.1.2.</span> <span class="nav-text">测试开发平台是产品吗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E7%9A%84%E4%BB%B7%E5%80%BC%EF%BC%8C%E7%90%86%E5%BF%B5"><span class="nav-number">1.1.3.</span> <span class="nav-text">测试开发的价值，理念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%AF%BE%E7%A8%8B%E5%88%B0%E5%BA%95%E5%AD%A6%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">1.1.4.</span> <span class="nav-text">测试开发课程到底学什么？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Vue%E6%A1%86%E6%9E%B6"><span class="nav-number">1.2.</span> <span class="nav-text">Vue框架</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MVVM%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.2.1.</span> <span class="nav-text">MVVM模式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Vue-demo"><span class="nav-number">1.3.</span> <span class="nav-text">Vue-demo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%84%E4%BB%B6%E5%8C%96"><span class="nav-number">1.4.</span> <span class="nav-text">组件化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E7%AB%AF%E5%B7%A5%E7%A8%8B%E5%8C%96%EF%BC%8C%E7%BB%84%E4%BB%B6%E5%8C%96"><span class="nav-number">1.5.</span> <span class="nav-text">前端工程化，组件化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85vue-cli%E8%84%9A%E6%89%8B%E6%9E%B6"><span class="nav-number">1.6.</span> <span class="nav-text">安装vue-cli脚手架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE"><span class="nav-number">1.7.</span> <span class="nav-text">创建项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E7%BB%84%E4%BB%B6"><span class="nav-number">1.8.</span> <span class="nav-text">创建一个组件</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">测试游记</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://example.com/2019/09/11/16-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/';
+          this.page.identifier = '2019/09/11/16-测试开发进阶/';
+          this.page.title = '测试开发进阶(十六)';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Python测试开发," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="测试开发进阶(一)虚拟环境安装1234$ pip install virtualenv$ pip install virtualenvwrapper-win # windows下的管理工具$ pip install virtualenvwrapper$ pip install pipenv">
+<meta property="og:type" content="article">
+<meta property="og:title" content="测试开发进阶(一)">
+<meta property="og:url" content="http://example.com/2019/08/06/1-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/index.html">
+<meta property="og:site_name" content="测试游记">
+<meta property="og:description" content="测试开发进阶(一)虚拟环境安装1234$ pip install virtualenv$ pip install virtualenvwrapper-win # windows下的管理工具$ pip install virtualenvwrapper$ pip install pipenv">
+<meta property="og:locale">
+<meta property="article:published_time" content="2019-08-05T23:15:00.000Z">
+<meta property="article:modified_time" content="2021-03-03T13:10:55.834Z">
+<meta property="article:author" content="测试游记">
+<meta property="article:tag" content="Python测试开发">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2019/08/06/1-测试开发进阶/"/>
+
+
+
+
+
+  <title>测试开发进阶(一) | 测试游记</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?41fc030db57d5570dd22f78997dc4a7e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">测试游记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/08/06/1-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="测试游记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">测试开发进阶(一)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-06T07:15:00+08:00">
+                2019-08-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/08/06/1-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/08/06/1-测试开发进阶/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="测试开发进阶-一"><a href="#测试开发进阶-一" class="headerlink" title="测试开发进阶(一)"></a>测试开发进阶(一)</h1><h2 id="虚拟环境"><a href="#虚拟环境" class="headerlink" title="虚拟环境"></a>虚拟环境</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pip install virtualenv</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> pip install virtualenvwrapper-win <span class="comment"># windows下的管理工具</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> pip install virtualenvwrapper</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> pip install pipenv</span></span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<h3 id="查看已安装的虚拟环境"><a href="#查看已安装的虚拟环境" class="headerlink" title="查看已安装的虚拟环境"></a>查看已安装的虚拟环境</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> workon</span> </span><br></pre></td></tr></table></figure>
+
+<h3 id="Windows修改安装的位置"><a href="#Windows修改安装的位置" class="headerlink" title="Windows修改安装的位置"></a>Windows修改安装的位置</h3><p>新增环境变量</p>
+<ul>
+<li>变量名：<code>WORKON_HOME</code></li>
+<li>变量值：虚拟环境存放路径</li>
+</ul>
+<h3 id="Linux修改安装的位置"><a href="#Linux修改安装的位置" class="headerlink" title="Linux修改安装的位置"></a>Linux修改安装的位置</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> pip后建立软连接</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ln -s /usr/<span class="built_in">local</span>/python3/bin/virtualenv /usr/bin/virtualenv</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Linux配置虚拟环境路径</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vim ~/.bashrc</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> mac配置</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vim ~/.bash_profile</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 新增</span></span><br><span class="line">export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python</span><br><span class="line">export WORKON_HOME=$HOME/.virtualenvs</span><br><span class="line"></span><br><span class="line">source /usr/local/python3/bin/virtualenvwrapper.sh</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 执行命令，让配置生效</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Linux</span></span><br><span class="line">source ~/.bashrc</span><br><span class="line"><span class="meta">#</span><span class="bash"> mac</span></span><br><span class="line">source ~/.bash_profile</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建虚拟环境"><a href="#创建虚拟环境" class="headerlink" title="创建虚拟环境"></a>创建虚拟环境</h3><p><code>-p</code>指定解释器</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> mkvirtualenv -p python3 test_py3</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="进入虚拟环境"><a href="#进入虚拟环境" class="headerlink" title="进入虚拟环境"></a>进入虚拟环境</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> workon test_py3</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="退出虚拟环境"><a href="#退出虚拟环境" class="headerlink" title="退出虚拟环境"></a>退出虚拟环境</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> deactivate</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="删除虚拟环境"><a href="#删除虚拟环境" class="headerlink" title="删除虚拟环境"></a>删除虚拟环境</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> rmvirtualenv test_py3</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="导出虚拟环境中所有的模块和包"><a href="#导出虚拟环境中所有的模块和包" class="headerlink" title="导出虚拟环境中所有的模块和包"></a>导出虚拟环境中所有的模块和包</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pip frezz &gt;requirements.txt</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="安装requirements-txt中的包"><a href="#安装requirements-txt中的包" class="headerlink" title="安装requirements.txt中的包"></a>安装requirements.txt中的包</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pip install -r requirements.txt</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="virtualenv存在的问题"><a href="#virtualenv存在的问题" class="headerlink" title="virtualenv存在的问题"></a>virtualenv存在的问题</h3><p>virtualenv卸载一个包之后，相关依赖不会被同步卸载</p>
+<h2 id="pipenv"><a href="#pipenv" class="headerlink" title="pipenv"></a>pipenv</h2><p><strong>与项目绑定</strong></p>
+<h3 id="创建虚拟环境-1"><a href="#创建虚拟环境-1" class="headerlink" title="创建虚拟环境"></a>创建虚拟环境</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pipenv install</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="进入虚拟环境-1"><a href="#进入虚拟环境-1" class="headerlink" title="进入虚拟环境"></a>进入虚拟环境</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pipenv shell</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="退出虚拟环境-1"><a href="#退出虚拟环境-1" class="headerlink" title="退出虚拟环境"></a>退出虚拟环境</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exit</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装包"><a href="#安装包" class="headerlink" title="安装包"></a>安装包</h3><p>在哪个路径下操作，就安装到哪个环境</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pipenv install requests</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="查看依赖"><a href="#查看依赖" class="headerlink" title="查看依赖"></a>查看依赖</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pipenv graph</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="卸载包"><a href="#卸载包" class="headerlink" title="卸载包"></a>卸载包</h3><p>当前环境的依赖不会被卸载</p>
+<p>移植<code>Pipfile</code>和<code>Pipfile.lock</code>后重新生成不会携带</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pipenv uninstall requests</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="开发环境安装"><a href="#开发环境安装" class="headerlink" title="开发环境安装"></a>开发环境安装</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pipenv install --dev requests</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="导出包"><a href="#导出包" class="headerlink" title="导出包"></a>导出包</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pipenv lock -r &gt;requirements.txt</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="删除虚拟环境-1"><a href="#删除虚拟环境-1" class="headerlink" title="删除虚拟环境"></a>删除虚拟环境</h3><p><code>Pipfile</code>和<code>Pipfile.lock</code>不会被删除</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pipenv --rm</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="编码规范"><a href="#编码规范" class="headerlink" title="编码规范"></a>编码规范</h2><blockquote>
+<p>python之禅</p>
+</blockquote>
+<blockquote>
+<p>import this</p>
+<p>The Zen of Python, by Tim Peters</p>
+<p>Beautiful is better than ugly.</p>
+<p>Explicit is better than implicit.</p>
+<p>Simple is better than complex.</p>
+<p>Complex is better than complicated.</p>
+<p>Flat is better than nested.</p>
+<p>Sparse is better than dense.</p>
+<p>Readability counts.</p>
+<p>Special cases aren’t special enough to break the rules.</p>
+<p>Although practicality beats purity.</p>
+<p>Errors should never pass silently.</p>
+<p>Unless explicitly silenced.</p>
+<p>In the face of ambiguity, refuse the temptation to guess.</p>
+<p>There should be one– and preferably only one –obvious way to do it.</p>
+<p>Although that way may not be obvious at first unless you’re Dutch.</p>
+<p>Now is better than never.</p>
+<p>Although never is often better than <em>right</em> now.</p>
+<p>If the implementation is hard to explain, it’s a bad idea.</p>
+<p>If the implementation is easy to explain, it may be a good idea.</p>
+<p>Namespaces are one honking great idea – let’s do more of those!</p>
+</blockquote>
+<h3 id="缩进"><a href="#缩进" class="headerlink" title="缩进"></a>缩进</h3><ul>
+<li>每一级缩进使用4个空格</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 左对齐</span></span><br><span class="line">foo = long_function_name(var_one, var_two,</span><br><span class="line">                         var_three, var_four)</span><br><span class="line"><span class="comment"># 换行缩进</span></span><br><span class="line">foo = long_function_name(</span><br><span class="line">   var_one, var_two,</span><br><span class="line">   var_three, var_four)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 用更多的缩进来与其他行区分</span></span><br><span class="line">foo = long_function_name(</span><br><span class="line">   var_one, var_two, var_three,</span><br><span class="line">   var_four)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="行的最大长度"><a href="#行的最大长度" class="headerlink" title="行的最大长度"></a>行的最大长度</h3><ul>
+<li>最大79</li>
+<li>注释最大72</li>
+</ul>
+<h3 id="空行"><a href="#空行" class="headerlink" title="空行"></a>空行</h3><ul>
+<li>函数之间2个空行</li>
+<li>类的方法之间1个空行</li>
+</ul>
+<h3 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h3><ul>
+<li><p>块注释 </p>
+<blockquote>
+<p>与代码在同一行</p>
+</blockquote>
+</li>
+<li><p>行内注释</p>
+</li>
+<li><p>文档注释</p>
+<blockquote>
+<p>第一行：对函数/类整体功能说明</p>
+<p>参数说明</p>
+<p>:param var_one: 参数1 是干嘛的</p>
+<p>:type var_one:int</p>
+<p>返回值说明</p>
+<p>:return:</p>
+</blockquote>
+</li>
+</ul>
+<p>PEP257:<a target="_blank" rel="noopener" href="https://github.com/qiuxiang/pep/blob/master/peps/257.md">https://github.com/qiuxiang/pep/blob/master/peps/257.md</a></p>
+<h3 id="模块包导入"><a href="#模块包导入" class="headerlink" title="模块包导入"></a>模块包导入</h3><ul>
+<li>先导入python内置模块和包</li>
+<li>导入第三方的模块和包</li>
+<li>导入自定义的模块和包</li>
+</ul>
+<blockquote>
+<p><code>__all__=[]</code> 使用<code>*</code>导入时候只会导入all的[]中的的内容</p>
+</blockquote>
+<h2 id="结构化工程"><a href="#结构化工程" class="headerlink" title="结构化工程"></a>结构化工程</h2><p><a target="_blank" rel="noopener" href="https://pythonguidecn.readthedocs.io/zh/latest/writing/structure.html">https://pythonguidecn.readthedocs.io/zh/latest/writing/structure.html</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt=" wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt=" 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt=" 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/" rel="tag"># Python测试开发</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/08/07/2-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/" rel="prev" title="测试开发进阶(二)">
+                测试开发进阶(二) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpeg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">48</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zx490336534" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6-%E4%B8%80"><span class="nav-number">1.</span> <span class="nav-text">测试开发进阶(一)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83"><span class="nav-number">1.1.</span> <span class="nav-text">虚拟环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">1.1.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%B7%B2%E5%AE%89%E8%A3%85%E7%9A%84%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83"><span class="nav-number">1.1.2.</span> <span class="nav-text">查看已安装的虚拟环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Windows%E4%BF%AE%E6%94%B9%E5%AE%89%E8%A3%85%E7%9A%84%E4%BD%8D%E7%BD%AE"><span class="nav-number">1.1.3.</span> <span class="nav-text">Windows修改安装的位置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Linux%E4%BF%AE%E6%94%B9%E5%AE%89%E8%A3%85%E7%9A%84%E4%BD%8D%E7%BD%AE"><span class="nav-number">1.1.4.</span> <span class="nav-text">Linux修改安装的位置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83"><span class="nav-number">1.1.5.</span> <span class="nav-text">创建虚拟环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E5%85%A5%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83"><span class="nav-number">1.1.6.</span> <span class="nav-text">进入虚拟环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%80%E5%87%BA%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83"><span class="nav-number">1.1.7.</span> <span class="nav-text">退出虚拟环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83"><span class="nav-number">1.1.8.</span> <span class="nav-text">删除虚拟环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BC%E5%87%BA%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83%E4%B8%AD%E6%89%80%E6%9C%89%E7%9A%84%E6%A8%A1%E5%9D%97%E5%92%8C%E5%8C%85"><span class="nav-number">1.1.9.</span> <span class="nav-text">导出虚拟环境中所有的模块和包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85requirements-txt%E4%B8%AD%E7%9A%84%E5%8C%85"><span class="nav-number">1.1.10.</span> <span class="nav-text">安装requirements.txt中的包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#virtualenv%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">1.1.11.</span> <span class="nav-text">virtualenv存在的问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pipenv"><span class="nav-number">1.2.</span> <span class="nav-text">pipenv</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">创建虚拟环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9B%E5%85%A5%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83-1"><span class="nav-number">1.2.2.</span> <span class="nav-text">进入虚拟环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%80%E5%87%BA%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83-1"><span class="nav-number">1.2.3.</span> <span class="nav-text">退出虚拟环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E5%8C%85"><span class="nav-number">1.2.4.</span> <span class="nav-text">安装包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E4%BE%9D%E8%B5%96"><span class="nav-number">1.2.5.</span> <span class="nav-text">查看依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%B8%E8%BD%BD%E5%8C%85"><span class="nav-number">1.2.6.</span> <span class="nav-text">卸载包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85"><span class="nav-number">1.2.7.</span> <span class="nav-text">开发环境安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BC%E5%87%BA%E5%8C%85"><span class="nav-number">1.2.8.</span> <span class="nav-text">导出包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83-1"><span class="nav-number">1.2.9.</span> <span class="nav-text">删除虚拟环境</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83"><span class="nav-number">1.3.</span> <span class="nav-text">编码规范</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%A9%E8%BF%9B"><span class="nav-number">1.3.1.</span> <span class="nav-text">缩进</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%8C%E7%9A%84%E6%9C%80%E5%A4%A7%E9%95%BF%E5%BA%A6"><span class="nav-number">1.3.2.</span> <span class="nav-text">行的最大长度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A9%BA%E8%A1%8C"><span class="nav-number">1.3.3.</span> <span class="nav-text">空行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E9%87%8A"><span class="nav-number">1.3.4.</span> <span class="nav-text">注释</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9D%97%E5%8C%85%E5%AF%BC%E5%85%A5"><span class="nav-number">1.3.5.</span> <span class="nav-text">模块包导入</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E5%8C%96%E5%B7%A5%E7%A8%8B"><span class="nav-number">1.4.</span> <span class="nav-text">结构化工程</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">测试游记</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://example.com/2019/08/06/1-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/';
+          this.page.identifier = '2019/08/06/1-测试开发进阶/';
+          this.page.title = '测试开发进阶(一)';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Python测试开发," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="测试开发进阶(三十九)首页使用一个简单的get函数返回需要的内容 123456789101112statistics &#x3D; &amp;#123;    &amp;#x27;projects_count&amp;#x27;: projects_count,    &amp;#x27;interfaces_count&amp;#x27;: interfaces_count,    &amp;#x27;testcases_count&amp;#x27;: te">
+<meta property="og:type" content="article">
+<meta property="og:title" content="测试开发进阶(三十九)">
+<meta property="og:url" content="http://example.com/2019/11/17/39-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/index.html">
+<meta property="og:site_name" content="测试游记">
+<meta property="og:description" content="测试开发进阶(三十九)首页使用一个简单的get函数返回需要的内容 123456789101112statistics &#x3D; &amp;#123;    &amp;#x27;projects_count&amp;#x27;: projects_count,    &amp;#x27;interfaces_count&amp;#x27;: interfaces_count,    &amp;#x27;testcases_count&amp;#x27;: te">
+<meta property="og:locale">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g9950u4m13j30n60e0aaz.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g995cfyp7dj30xq0s4wky.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g995jh928hj30ha080my6.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g995lbu2hnj30fi032q37.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g995mbl9ubj30f003ajrn.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g995ocjvm5j30u00watff.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g995ouza78j30gk02kt8t.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g995ztf71aj30so0ao0uf.jpg">
+<meta property="article:published_time" content="2019-11-17T10:02:45.000Z">
+<meta property="article:modified_time" content="2021-03-03T13:17:09.284Z">
+<meta property="article:author" content="测试游记">
+<meta property="article:tag" content="Python测试开发">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g9950u4m13j30n60e0aaz.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2019/11/17/39-测试开发进阶/"/>
+
+
+
+
+
+  <title>测试开发进阶(三十九) | 测试游记</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?41fc030db57d5570dd22f78997dc4a7e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">测试游记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/11/17/39-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="测试游记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">测试开发进阶(三十九)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-11-17T18:02:45+08:00">
+                2019-11-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2019/11/17/39-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2019/11/17/39-测试开发进阶/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="测试开发进阶-三十九"><a href="#测试开发进阶-三十九" class="headerlink" title="测试开发进阶(三十九)"></a>测试开发进阶(三十九)</h1><h2 id="首页"><a href="#首页" class="headerlink" title="首页"></a>首页</h2><p>使用一个简单的get函数返回需要的内容</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">statistics = &#123;</span><br><span class="line">    <span class="string">&#x27;projects_count&#x27;</span>: projects_count,</span><br><span class="line">    <span class="string">&#x27;interfaces_count&#x27;</span>: interfaces_count,</span><br><span class="line">    <span class="string">&#x27;testcases_count&#x27;</span>: testcases_count,</span><br><span class="line">    <span class="string">&#x27;testsuits_count&#x27;</span>: testsuits_count,</span><br><span class="line">    <span class="string">&#x27;configures_count&#x27;</span>: configures_count,</span><br><span class="line">    <span class="string">&#x27;envs_count&#x27;</span>: envs_count,</span><br><span class="line">    <span class="string">&#x27;debug_talks_count&#x27;</span>: debug_talks_count,</span><br><span class="line">    <span class="string">&#x27;reports_count&#x27;</span>: reports_count,</span><br><span class="line">    <span class="string">&#x27;success_rate&#x27;</span>: success_rate,</span><br><span class="line">    <span class="string">&#x27;fail_rate&#x27;</span>: fail_rate,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>他们都是从数据库中计算并统计出来的</p>
+<p>需要有权限才能访问</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">permission_classes = [permissions.IsAuthenticated]</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<p>代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> rest_framework.views <span class="keyword">import</span> APIView</span><br><span class="line"><span class="keyword">from</span> rest_framework.response <span class="keyword">import</span> Response</span><br><span class="line"><span class="keyword">from</span> rest_framework <span class="keyword">import</span> permissions</span><br><span class="line"><span class="keyword">from</span> django.db.models <span class="keyword">import</span> Sum</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> projects.models <span class="keyword">import</span> Projects</span><br><span class="line"><span class="keyword">from</span> interfaces.models <span class="keyword">import</span> Interfaces</span><br><span class="line"><span class="keyword">from</span> testcases.models <span class="keyword">import</span> Testcases</span><br><span class="line"><span class="keyword">from</span> testsuits.models <span class="keyword">import</span> Testsuits</span><br><span class="line"><span class="keyword">from</span> configures.models <span class="keyword">import</span> Configures</span><br><span class="line"><span class="keyword">from</span> envs.models <span class="keyword">import</span> Envs</span><br><span class="line"><span class="keyword">from</span> debugtalks.models <span class="keyword">import</span> DebugTalks</span><br><span class="line"><span class="keyword">from</span> reports.models <span class="keyword">import</span> Reports</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SummaryAPIView</span>(<span class="params">APIView</span>):</span></span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    返回统计信息</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line">    permission_classes = [permissions.IsAuthenticated]</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span>(<span class="params">self, request</span>):</span></span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        获取统计信息</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        user = request.user</span><br><span class="line">        user_info = &#123;</span><br><span class="line">            <span class="string">&#x27;username&#x27;</span>: user.username,</span><br><span class="line">            <span class="string">&#x27;role&#x27;</span>: <span class="string">&#x27;管理员&#x27;</span> <span class="keyword">if</span> user.is_superuser <span class="keyword">else</span> <span class="string">&#x27;普通用户&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;date_joined&#x27;</span>: user.date_joined.strftime(<span class="string">&#x27;%Y-%m-%d %H:%M:%S&#x27;</span>) <span class="keyword">if</span> user.date_joined <span class="keyword">else</span> <span class="string">&#x27;&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;last_login&#x27;</span>: user.last_login.strftime(<span class="string">&#x27;%Y-%m-%d %H:%M:%S&#x27;</span>) <span class="keyword">if</span> user.last_login <span class="keyword">else</span> <span class="string">&#x27;&#x27;</span>,</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        projects_count = Projects.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>).count()</span><br><span class="line">        interfaces_count = Interfaces.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>).count()</span><br><span class="line">        testcases_count = Testcases.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>).count()</span><br><span class="line">        testsuits_count = Testsuits.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>).count()</span><br><span class="line">        configures_count = Configures.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>).count()</span><br><span class="line">        envs_count = Envs.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>).count()</span><br><span class="line">        debug_talks_count = DebugTalks.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>).count()</span><br><span class="line">        reports_count = Reports.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>).count()</span><br><span class="line"></span><br><span class="line">        run_testcases_success_count = Reports.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>).aggregate(Sum(<span class="string">&#x27;success&#x27;</span>))[</span><br><span class="line">                                          <span class="string">&#x27;success__sum&#x27;</span>] <span class="keyword">or</span> <span class="number">0</span></span><br><span class="line">        run_testcases_total_count = Reports.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>).aggregate(Sum(<span class="string">&#x27;count&#x27;</span>))[<span class="string">&#x27;count__sum&#x27;</span>] <span class="keyword">or</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> run_testcases_total_count:</span><br><span class="line">            success_rate = <span class="built_in">int</span>((run_testcases_success_count / run_testcases_total_count) * <span class="number">100</span>)</span><br><span class="line">            fail_rate = <span class="number">100</span> - success_rate</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            success_rate = <span class="number">0</span></span><br><span class="line">            fail_rate = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">        statistics = &#123;</span><br><span class="line">            <span class="string">&#x27;projects_count&#x27;</span>: projects_count,</span><br><span class="line">            <span class="string">&#x27;interfaces_count&#x27;</span>: interfaces_count,</span><br><span class="line">            <span class="string">&#x27;testcases_count&#x27;</span>: testcases_count,</span><br><span class="line">            <span class="string">&#x27;testsuits_count&#x27;</span>: testsuits_count,</span><br><span class="line">            <span class="string">&#x27;configures_count&#x27;</span>: configures_count,</span><br><span class="line">            <span class="string">&#x27;envs_count&#x27;</span>: envs_count,</span><br><span class="line">            <span class="string">&#x27;debug_talks_count&#x27;</span>: debug_talks_count,</span><br><span class="line">            <span class="string">&#x27;reports_count&#x27;</span>: reports_count,</span><br><span class="line">            <span class="string">&#x27;success_rate&#x27;</span>: success_rate,</span><br><span class="line">            <span class="string">&#x27;fail_rate&#x27;</span>: fail_rate,</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> Response(data=&#123;</span><br><span class="line">            <span class="string">&#x27;user&#x27;</span>: user_info,</span><br><span class="line">            <span class="string">&#x27;statistics&#x27;</span>: statistics</span><br><span class="line">        &#125;)</span><br></pre></td></tr></table></figure>
+
+<h2 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h2><ol>
+<li>项目管理-<strong>项目新增</strong></li>
+<li>维护<strong>内置函数</strong>debugtalk.py</li>
+<li>环境管理-<strong>环境新增</strong></li>
+<li>接口管理-<strong>接口新增</strong></li>
+<li>配置管理-<strong>配置新增</strong></li>
+<li>用例管理-<strong>用例新增</strong></li>
+</ol>
+<h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><h3 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h3><ol>
+<li>安装操作系统</li>
+<li>安装python</li>
+<li>mysql</li>
+<li>搭建Django环境–各种模块的安装</li>
+<li>nginx</li>
+<li>gunicorn</li>
+<li>docker</li>
+<li>docker-compose</li>
+<li>docker-swarm</li>
+</ol>
+<p>由于还没有学习<code>docker</code>暂时不继续，先行学习<code>docker</code></p>
+<h2 id="Shell"><a href="#Shell" class="headerlink" title="Shell"></a>Shell</h2><blockquote>
+<ol>
+<li>命令解释器</li>
+<li>shell就是在操作系统和应用程序之间的一个命令翻译工具</li>
+</ol>
+</blockquote>
+<h3 id="shell的分类"><a href="#shell的分类" class="headerlink" title="shell的分类"></a>shell的分类</h3><ul>
+<li>Winodws中</li>
+</ul>
+<blockquote>
+<p>cmd.exe命令提示字符</p>
+</blockquote>
+<ul>
+<li>linux中</li>
+</ul>
+<blockquote>
+<ul>
+<li><p>sh</p>
+</li>
+<li><p>bash</p>
+</li>
+<li><p>zsh</p>
+</li>
+</ul>
+</blockquote>
+<h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h3><ul>
+<li><p>head：默认获取文件前十行</p>
+</li>
+<li><p>tail：默认获取文件后十行</p>
+</li>
+</ul>
+<p>获取一个区间，第10～13行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> head -n13 xxx | tail -n4</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>cut：取出文本指定列</li>
+</ul>
+<blockquote>
+<p>-d:指定分割符</p>
+<p>-f:指定列</p>
+</blockquote>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Name Age Score</span><br><span class="line">a 25 90</span><br><span class="line">b 26 91</span><br><span class="line">c 27 92</span><br><span class="line">d 28 93</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> cut -d<span class="string">&quot; &quot;</span> -f1 learn_cut.txt</span> </span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g9950u4m13j30n60e0aaz.jpg" alt="1"></p>
+<ul>
+<li>uniq:去除重复项</li>
+</ul>
+<blockquote>
+<p>-d:仅打印有重复的元素</p>
+<p>-c:打印元素重复的个数</p>
+</blockquote>
+<ul>
+<li>sort:对文本的内容进行排序</li>
+</ul>
+<blockquote>
+<p>默认以字符串的ASCII码数值从小到大排序</p>
+<p>-n:以数值大小排序</p>
+<p>-r:倒序</p>
+<p>-t:指定分割符，默认为空格</p>
+<p>-knum:指定以某个字段来排序</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 以:分割的第三列的数值大小排列</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sort -t<span class="string">&quot;:&quot;</span> -k3 -n /etc/passwd</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g995cfyp7dj30xq0s4wky.jpg" alt="2"></p>
+<ul>
+<li>wc「word count」计算文本数量</li>
+</ul>
+<blockquote>
+<p>-l:打印行数</p>
+<p>-w:打印单词数</p>
+<p>-c:打印字节数</p>
+<p>-L:打印最长行的字节数</p>
+</blockquote>
+<h3 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h3><ul>
+<li>本地变量</li>
+<li>全局变量</li>
+<li>内置变量</li>
+</ul>
+<h4 id="定义变量"><a href="#定义变量" class="headerlink" title="定义变量"></a>定义变量</h4><blockquote>
+<p>等号前后不能有空格</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> username=<span class="string">&quot;89&quot;</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> username=a b <span class="comment"># 错误</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> username=<span class="string">&quot;a b&quot;</span> <span class="comment">#正确</span></span> </span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>单引号:所见即所得</li>
+</ul>
+<p>不能插值</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> p=python</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> u=<span class="string">&#x27;I love $p&#x27;</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> <span class="variable">$u</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> i=<span class="string">&quot;I love <span class="variable">$p</span>&quot;</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> <span class="variable">$i</span></span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g995jh928hj30ha080my6.jpg" alt="3"></p>
+<p><strong>将命令的结果返回给变量</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> o=$(ls)</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> p=`ls`</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g995lbu2hnj30fi032q37.jpg" alt="4"></p>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g995mbl9ubj30f003ajrn.jpg" alt="5"></p>
+<h4 id="（局部）全局变量"><a href="#（局部）全局变量" class="headerlink" title="（局部）全局变量"></a>（局部）全局变量</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> env</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g995ocjvm5j30u00watff.jpg" alt="6"></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> <span class="variable">$USER</span></span></span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g995ouza78j30gk02kt8t.jpg" alt="7"></p>
+<h5 id="定义全局变量"><a href="#定义全局变量" class="headerlink" title="定义全局变量"></a>定义全局变量</h5><ol>
+<li>export 变量</li>
+<li>export 变量=值</li>
+</ol>
+<p>在<code>～/.bashrc</code>中创建才是真正的全局变量</p>
+<h4 id="内置变量"><a href="#内置变量" class="headerlink" title="内置变量"></a>内置变量</h4><ul>
+<li><code>$0</code>:获取当前执行的shell脚本文件名，包括脚本路径</li>
+<li><code>$n</code>:当前shell脚本的第n个参数(n&gt;9需要使用<code>$&#123;10&#125;</code>)</li>
+<li><code>$#</code>:获取当前shell命令行中参数的总个数</li>
+<li><code>$?</code>:获取执行的上一个命令的返回值(0为成功，非0为失败)</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">echo &quot;参数的总个数:$#&quot;</span><br><span class="line">echo &quot;脚本名为:$0&quot;</span><br><span class="line">echo &quot;第二个参数:$2&quot;</span><br><span class="line">echo &quot;第十个参数:$&#123;10&#125;&quot;</span><br><span class="line">echo &quot;获取所有参数:$*&quot;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g995ztf71aj30so0ao0uf.jpg" alt="8"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt=" wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt=" 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt=" 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/" rel="tag"># Python测试开发</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/11/15/38-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/" rel="next" title="测试开发进阶(三十八)">
+                <i class="fa fa-chevron-left"></i> 测试开发进阶(三十八)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/11/26/40-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/" rel="prev" title="测试开发进阶(四十)">
+                测试开发进阶(四十) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpeg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">48</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zx490336534" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6-%E4%B8%89%E5%8D%81%E4%B9%9D"><span class="nav-number">1.</span> <span class="nav-text">测试开发进阶(三十九)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A6%96%E9%A1%B5"><span class="nav-number">1.1.</span> <span class="nav-text">首页</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8"><span class="nav-number">1.2.</span> <span class="nav-text">如何使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2"><span class="nav-number">1.3.</span> <span class="nav-text">部署</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B"><span class="nav-number">1.3.1.</span> <span class="nav-text">流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Shell"><span class="nav-number">1.4.</span> <span class="nav-text">Shell</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#shell%E7%9A%84%E5%88%86%E7%B1%BB"><span class="nav-number">1.4.1.</span> <span class="nav-text">shell的分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="nav-number">1.4.2.</span> <span class="nav-text">常用命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%98%E9%87%8F"><span class="nav-number">1.4.3.</span> <span class="nav-text">变量</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E5%8F%98%E9%87%8F"><span class="nav-number">1.4.3.1.</span> <span class="nav-text">定义变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%EF%BC%88%E5%B1%80%E9%83%A8%EF%BC%89%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F"><span class="nav-number">1.4.3.2.</span> <span class="nav-text">（局部）全局变量</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F"><span class="nav-number">1.4.3.2.1.</span> <span class="nav-text">定义全局变量</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%85%E7%BD%AE%E5%8F%98%E9%87%8F"><span class="nav-number">1.4.3.3.</span> <span class="nav-text">内置变量</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">测试游记</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://example.com/2019/11/17/39-%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/';
+          this.page.identifier = '2019/11/17/39-测试开发进阶/';
+          this.page.title = '测试开发进阶(三十九)';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
