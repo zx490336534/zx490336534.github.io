@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java,自动化测试," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="测试游记" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Java自动化测试(app自动化环境搭建 31)Appium 官网：http:&#x2F;&#x2F;appium.io&#x2F; github：https:&#x2F;&#x2F;github.com&#x2F;appium&#x2F;appium Appium is an open source test automation framework for use with native, hybrid and mobile web apps.It drives">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java自动化测试(app自动化环境搭建 31)">
+<meta property="og:url" content="http://zx490336534.github.io/2020/09/24/java-zi-dong-hua-ce-shi/java-zi-dong-hua-ce-shi-app-zi-dong-hua-huan-jing-da-jian-31/index.html">
+<meta property="og:site_name" content="测试游记">
+<meta property="og:description" content="Java自动化测试(app自动化环境搭建 31)Appium 官网：http:&#x2F;&#x2F;appium.io&#x2F; github：https:&#x2F;&#x2F;github.com&#x2F;appium&#x2F;appium Appium is an open source test automation framework for use with native, hybrid and mobile web apps.It drives">
+<meta property="og:locale">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/007S8ZIlly1gj1e0b8l2xj30w40u0akx.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/007S8ZIlly1gj1efk3daej311q0u0qpg.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/007S8ZIlly1gj1ekwvamqj30u01cke81.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/007S8ZIlly1gj1epl0irhj30w40u07f5.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/007S8ZIlly1gj1eq9gemij30w40u0gwm.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/007S8ZIlly1gj1f3ne2vhj311q0u01kx.jpg">
+<meta property="article:published_time" content="2020-09-23T23:18:46.273Z">
+<meta property="article:modified_time" content="2021-03-03T14:29:02.899Z">
+<meta property="article:author" content="测试游记">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="自动化测试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tva1.sinaimg.cn/large/007S8ZIlly1gj1e0b8l2xj30w40u0akx.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://zx490336534.github.io/2020/09/24/java-zi-dong-hua-ce-shi/java-zi-dong-hua-ce-shi-app-zi-dong-hua-huan-jing-da-jian-31/"/>
+
+
+
+
+
+  <title>Java自动化测试(app自动化环境搭建 31) | 测试游记</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?41fc030db57d5570dd22f78997dc4a7e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">测试游记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/2020/09/24/java-zi-dong-hua-ce-shi/java-zi-dong-hua-ce-shi-app-zi-dong-hua-huan-jing-da-jian-31/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="测试游记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java自动化测试(app自动化环境搭建 31)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-24T07:18:46+08:00">
+                2020-09-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index">
+                    <span itemprop="name">Java自动化测试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/09/24/java-zi-dong-hua-ce-shi/java-zi-dong-hua-ce-shi-app-zi-dong-hua-huan-jing-da-jian-31/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2020/09/24/java-zi-dong-hua-ce-shi/java-zi-dong-hua-ce-shi-app-zi-dong-hua-huan-jing-da-jian-31/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Java自动化测试-app自动化环境搭建-31"><a href="#Java自动化测试-app自动化环境搭建-31" class="headerlink" title="Java自动化测试(app自动化环境搭建 31)"></a>Java自动化测试(app自动化环境搭建 31)</h1><h2 id="Appium"><a href="#Appium" class="headerlink" title="Appium"></a>Appium</h2><blockquote>
+<p>官网：<a target="_blank" rel="noopener" href="http://appium.io/">http://appium.io/</a></p>
+<p>github：<a target="_blank" rel="noopener" href="https://github.com/appium/appium">https://github.com/appium/appium</a></p>
+<p>Appium is an open source test automation framework for use with native, <a target="_blank" rel="noopener" href="http://appium.io/docs/en/writing-running-appium/web/hybrid/">hybrid</a> and mobile web apps.<br>It drives iOS, Android, and Windows apps using the WebDriver protocol.</p>
+</blockquote>
+<p>第三方自动化工具，扩充了Selenium WebDriver协议，在原有的基础上添加了移动端测试API</p>
+<p>是一个开源的，跨平台的自动化测试工具，可以用于app的自动化测试</p>
+<p>支持<code>android</code>，<code>ios</code>，<code>firefox os</code>等操作系统下的app测试</p>
+<span id="more"></span>
+<h2 id="Appium组件"><a href="#Appium组件" class="headerlink" title="Appium组件"></a>Appium组件</h2><h3 id="Appium-Server"><a href="#Appium-Server" class="headerlink" title="Appium Server"></a>Appium Server</h3><p>Appium的核心，实质上是一个web接口服务器，使用node.js实现</p>
+<h3 id="Appium-GUI"><a href="#Appium-GUI" class="headerlink" title="Appium GUI"></a>Appium GUI</h3><p>Appium Desktop前身，已经停止维护，封装的Appium Server 是1.4.16</p>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gj1e0b8l2xj30w40u0akx.jpg" alt="Appium GUI"></p>
+<h3 id="Appium-Desktop"><a href="#Appium-Desktop" class="headerlink" title="Appium Desktop"></a>Appium Desktop</h3><p>内嵌了 Appium Server，提供GUI界面，还包括其他工具的整合（如Appium Inspector）</p>
+<h3 id="Appium-Client"><a href="#Appium-Client" class="headerlink" title="Appium Client"></a>Appium Client</h3><p>客户端向Appium Server发起请求，可以用不同语言来实现</p>
+<p>例如java：<a target="_blank" rel="noopener" href="https://github.com/appium/java-client">https://github.com/appium/java-client</a></p>
+<h2 id="App自动化测试环境搭建"><a href="#App自动化测试环境搭建" class="headerlink" title="App自动化测试环境搭建"></a>App自动化测试环境搭建</h2><p>配置Android sdk环境</p>
+<ol>
+<li>SDK：软件开发套件</li>
+<li>adb：是android sdk的一个工具，用来连接安卓手机和PC端端桥梁</li>
+</ol>
+<p>在mac上安装：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> brew cask install android-platform-tools</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> <span class="string">'export PATH=$PATH:~/.android-sdk-macosx/platform-tools/'</span> &gt;&gt; ~/.bash_profile</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">source</span> ~/.bash_profile</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>检查一下是否安装完成：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> adb version</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>  <img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gj1efk3daej311q0u0qpg.jpg" alt="检查环境"></p>
+<h2 id="模拟器下载"><a href="#模拟器下载" class="headerlink" title="模拟器下载"></a>模拟器下载</h2><blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.yeshen.com/">https://www.yeshen.com/</a></p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gj1ekwvamqj30u01cke81.jpg" alt="模拟器"></p>
+<h2 id="Appium-桌面版下载"><a href="#Appium-桌面版下载" class="headerlink" title="Appium 桌面版下载"></a>Appium 桌面版下载</h2><blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/appium/appium-desktop/releases/tag/v1.18.0-2">https://github.com/appium/appium-desktop/releases/tag/v1.18.0-2</a></p>
+</blockquote>
+<p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gj1epl0irhj30w40u07f5.jpg" alt="Appium 桌面版"></p>
+<h3 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h3><p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gj1eq9gemij30w40u0gwm.jpg" alt="启动"></p>
+<h2 id="编写代码"><a href="#编写代码" class="headerlink" title="编写代码"></a>编写代码</h2><h3 id="配置Maven"><a href="#配置Maven" class="headerlink" title="配置Maven"></a>配置Maven</h3><h4 id="下载-java-client"><a href="#下载-java-client" class="headerlink" title="下载 java-client"></a>下载 java-client</h4><blockquote>
+<p><a target="_blank" rel="noopener" href="https://mvnrepository.com/artifact/io.appium/java-client">https://mvnrepository.com/artifact/io.appium/java-client</a></p>
+</blockquote>
+<h3 id="配置设备信息"><a href="#配置设备信息" class="headerlink" title="配置设备信息"></a>配置设备信息</h3><ol>
+<li>设备平台</li>
+<li>设备名称</li>
+<li>APP包名</li>
+<li>App activity名称</li>
+</ol>
+<p>使用<code>adb connect 127.0.0.1:62001</code>连接设备</p>
+<p>其中<code>62001</code>是夜神模拟器的端口</p>
+<h4 id="连接设备"><a href="#连接设备" class="headerlink" title="连接设备"></a>连接设备</h4><p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gj1f3ne2vhj311q0u01kx.jpg" alt="连接设备"></p>
+<h4 id="查看包名"><a href="#查看包名" class="headerlink" title="查看包名"></a>查看包名</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> aapt dump badging xxxx</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> aapt dump badging /Users/zhongxin/Downloads/app自动化工具包/APK包/lemonban_release_v2.1.2_finally.apk</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> /Applications/NoxAppPlayer.app/Contents/MacOS/aapt dump badging /Users/zhongxin/Downloads/app自动化工具包/APK包/lemonban_release_v2.1.2_finally.apk</span></span><br><span class="line">package: name='com.lemon.lemonban' versionCode='20181113' versionName='2.1.2' platformBuildVersionName='7.1.1'</span><br><span class="line">sdkVersion:'15'</span><br><span class="line">targetSdkVersion:'25'</span><br><span class="line">uses-permission: name='android.permission.ACCESS_NETWORK_STATE'</span><br><span class="line">uses-permission: name='android.permission.INTERNET'</span><br><span class="line">uses-permission: name='android.permission.WRITE_EXTERNAL_STORAGE'</span><br><span class="line">uses-permission: name='android.permission.READ_EXTERNAL_STORAGE'</span><br><span class="line">uses-permission: name='android.permission.CAMERA'</span><br><span class="line">uses-permission: name='android.permission.INTERNET'</span><br><span class="line">uses-permission: name='android.permission.READ_PHONE_STATE'</span><br><span class="line">uses-permission: name='android.permission.ACCESS_NETWORK_STATE'</span><br><span class="line">uses-permission: name='android.permission.CHANGE_WIFI_STATE'</span><br><span class="line">uses-permission: name='android.permission.ACCESS_WIFI_STATE'</span><br><span class="line">uses-permission: name='android.permission.WAKE_LOCK'</span><br><span class="line">uses-permission: name='android.permission.RECEIVE_BOOT_COMPLETED'</span><br><span class="line">uses-permission: name='android.permission.WRITE_EXTERNAL_STORAGE'</span><br><span class="line">uses-permission: name='android.permission.VIBRATE'</span><br><span class="line">uses-permission: name='android.permission.GET_TASKS'</span><br><span class="line">uses-permission: name='android.permission.BLUETOOTH'</span><br><span class="line">uses-permission: name='android.permission.BLUETOOTH_ADMIN'</span><br><span class="line">uses-permission: name='android.permission.ACCESS_FINE_LOCATION'</span><br><span class="line">uses-permission: name='android.permission.ACCESS_COARSE_LOCATION'</span><br><span class="line">uses-permission: name='android.permission.SYSTEM_ALERT_WINDOW'</span><br><span class="line">uses-permission: name='getui.permission.GetuiService.com.lemon.lemonban'</span><br><span class="line">uses-permission: name='android.permission.MOUNT_UNMOUNT_FILESYSTEMS'</span><br><span class="line">application-label:'柠檬班'</span><br><span class="line">application-label-af:'柠檬班'</span><br><span class="line">application-label-am:'柠檬班'</span><br><span class="line">application-label-ar:'柠檬班'</span><br><span class="line">application-label-az-AZ:'柠檬班'</span><br><span class="line">application-label-be-BY:'柠檬班'</span><br><span class="line">application-label-bg:'柠檬班'</span><br><span class="line">application-label-bn-BD:'柠檬班'</span><br><span class="line">application-label-bs-BA:'柠檬班'</span><br><span class="line">application-label-ca:'柠檬班'</span><br><span class="line">application-label-cs:'柠檬班'</span><br><span class="line">application-label-da:'柠檬班'</span><br><span class="line">application-label-de:'柠檬班'</span><br><span class="line">application-label-el:'柠檬班'</span><br><span class="line">application-label-en-AU:'柠檬班'</span><br><span class="line">application-label-en-GB:'柠檬班'</span><br><span class="line">application-label-en-IN:'柠檬班'</span><br><span class="line">application-label-es:'柠檬班'</span><br><span class="line">application-label-es-US:'柠檬班'</span><br><span class="line">application-label-et-EE:'柠檬班'</span><br><span class="line">application-label-eu-ES:'柠檬班'</span><br><span class="line">application-label-fa:'柠檬班'</span><br><span class="line">application-label-fi:'柠檬班'</span><br><span class="line">application-label-fr:'柠檬班'</span><br><span class="line">application-label-fr-CA:'柠檬班'</span><br><span class="line">application-label-gl-ES:'柠檬班'</span><br><span class="line">application-label-gu-IN:'柠檬班'</span><br><span class="line">application-label-hi:'柠檬班'</span><br><span class="line">application-label-hr:'柠檬班'</span><br><span class="line">application-label-hu:'柠檬班'</span><br><span class="line">application-label-hy-AM:'柠檬班'</span><br><span class="line">application-label-in:'柠檬班'</span><br><span class="line">application-label-is-IS:'柠檬班'</span><br><span class="line">application-label-it:'柠檬班'</span><br><span class="line">application-label-iw:'柠檬班'</span><br><span class="line">application-label-ja:'柠檬班'</span><br><span class="line">application-label-ka-GE:'柠檬班'</span><br><span class="line">application-label-kk-KZ:'柠檬班'</span><br><span class="line">application-label-km-KH:'柠檬班'</span><br><span class="line">application-label-kn-IN:'柠檬班'</span><br><span class="line">application-label-ko:'柠檬班'</span><br><span class="line">application-label-ky-KG:'柠檬班'</span><br><span class="line">application-label-lo-LA:'柠檬班'</span><br><span class="line">application-label-lt:'柠檬班'</span><br><span class="line">application-label-lv:'柠檬班'</span><br><span class="line">application-label-mk-MK:'柠檬班'</span><br><span class="line">application-label-ml-IN:'柠檬班'</span><br><span class="line">application-label-mn-MN:'柠檬班'</span><br><span class="line">application-label-mr-IN:'柠檬班'</span><br><span class="line">application-label-ms-MY:'柠檬班'</span><br><span class="line">application-label-my-MM:'柠檬班'</span><br><span class="line">application-label-nb:'柠檬班'</span><br><span class="line">application-label-ne-NP:'柠檬班'</span><br><span class="line">application-label-nl:'柠檬班'</span><br><span class="line">application-label-pa-IN:'柠檬班'</span><br><span class="line">application-label-pl:'柠檬班'</span><br><span class="line">application-label-pt:'柠檬班'</span><br><span class="line">application-label-pt-BR:'柠檬班'</span><br><span class="line">application-label-pt-PT:'柠檬班'</span><br><span class="line">application-label-ro:'柠檬班'</span><br><span class="line">application-label-ru:'柠檬班'</span><br><span class="line">application-label-si-LK:'柠檬班'</span><br><span class="line">application-label-sk:'柠檬班'</span><br><span class="line">application-label-sl:'柠檬班'</span><br><span class="line">application-label-sq-AL:'柠檬班'</span><br><span class="line">application-label-sr:'柠檬班'</span><br><span class="line">application-label-sr-Latn:'柠檬班'</span><br><span class="line">application-label-sv:'柠檬班'</span><br><span class="line">application-label-sw:'柠檬班'</span><br><span class="line">application-label-ta-IN:'柠檬班'</span><br><span class="line">application-label-te-IN:'柠檬班'</span><br><span class="line">application-label-th:'柠檬班'</span><br><span class="line">application-label-tl:'柠檬班'</span><br><span class="line">application-label-tr:'柠檬班'</span><br><span class="line">application-label-uk:'柠檬班'</span><br><span class="line">application-label-ur-PK:'柠檬班'</span><br><span class="line">application-label-uz-UZ:'柠檬班'</span><br><span class="line">application-label-vi:'柠檬班'</span><br><span class="line">application-label-zh:'柠檬班'</span><br><span class="line">application-label-zh-CN:'柠檬班'</span><br><span class="line">application-label-zh-HK:'柠檬班'</span><br><span class="line">application-label-zh-TW:'柠檬班'</span><br><span class="line">application-label-zu:'柠檬班'</span><br><span class="line">application-icon-120:'res/mipmap-anydpi-v26/ic_launcher.xml'</span><br><span class="line">application-icon-160:'res/mipmap-anydpi-v26/ic_launcher.xml'</span><br><span class="line">application-icon-240:'res/mipmap-anydpi-v26/ic_launcher.xml'</span><br><span class="line">application-icon-320:'res/mipmap-anydpi-v26/ic_launcher.xml'</span><br><span class="line">application-icon-480:'res/mipmap-anydpi-v26/ic_launcher.xml'</span><br><span class="line">application-icon-640:'res/mipmap-anydpi-v26/ic_launcher.xml'</span><br><span class="line">application-icon-65534:'res/mipmap-anydpi-v26/ic_launcher.xml'</span><br><span class="line">application: label='柠檬班' icon='res/mipmap-anydpi-v26/ic_launcher.xml'</span><br><span class="line">launchable-activity: name='com.lemon.lemonban.activity.WelcomeActivity'  label='' icon=''</span><br><span class="line">feature-group: label=''</span><br><span class="line">  uses-feature: name='android.hardware.bluetooth'</span><br><span class="line">  uses-implied-feature: name='android.hardware.bluetooth' reason='requested android.permission.BLUETOOTH permission, requested android.permission.BLUETOOTH_ADMIN permission, and targetSdkVersion &gt; 4'</span><br><span class="line">  uses-feature: name='android.hardware.camera'</span><br><span class="line">  uses-implied-feature: name='android.hardware.camera' reason='requested android.permission.CAMERA permission'</span><br><span class="line">  uses-feature: name='android.hardware.faketouch'</span><br><span class="line">  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'</span><br><span class="line">  uses-feature: name='android.hardware.location'</span><br><span class="line">  uses-implied-feature: name='android.hardware.location' reason='requested android.permission.ACCESS_COARSE_LOCATION permission, and requested android.permission.ACCESS_FINE_LOCATION permission'</span><br><span class="line">  uses-feature: name='android.hardware.screen.portrait'</span><br><span class="line">  uses-implied-feature: name='android.hardware.screen.portrait' reason='one or more activities have specified a portrait orientation'</span><br><span class="line">  uses-feature: name='android.hardware.wifi'</span><br><span class="line">  uses-implied-feature: name='android.hardware.wifi' reason='requested android.permission.ACCESS_WIFI_STATE permission, and requested android.permission.CHANGE_WIFI_STATE permission'</span><br><span class="line">main</span><br><span class="line">other-activities</span><br><span class="line">other-receivers</span><br><span class="line">other-services</span><br><span class="line">supports-screens: 'small' 'normal' 'large' 'xlarge'</span><br><span class="line">supports-any-density: 'true'</span><br><span class="line">locales: '--_--' 'af' 'am' 'ar' 'az-AZ' 'be-BY' 'bg' 'bn-BD' 'bs-BA' 'ca' 'cs' 'da' 'de' 'el' 'en-AU' 'en-GB' 'en-IN' 'es' 'es-US' 'et-EE' 'eu-ES' 'fa' 'fi' 'fr' 'fr-CA' 'gl-ES' 'gu-IN' 'hi' 'hr' 'hu' 'hy-AM' 'in' 'is-IS' 'it' 'iw' 'ja' 'ka-GE' 'kk-KZ' 'km-KH' 'kn-IN' 'ko' 'ky-KG' 'lo-LA' 'lt' 'lv' 'mk-MK' 'ml-IN' 'mn-MN' 'mr-IN' 'ms-MY' 'my-MM' 'nb' 'ne-NP' 'nl' 'pa-IN' 'pl' 'pt' 'pt-BR' 'pt-PT' 'ro' 'ru' 'si-LK' 'sk' 'sl' 'sq-AL' 'sr' 'sr-Latn' 'sv' 'sw' 'ta-IN' 'te-IN' 'th' 'tl' 'tr' 'uk' 'ur-PK' 'uz-UZ' 'vi' 'zh' 'zh-CN' 'zh-HK' 'zh-TW' 'zu'</span><br><span class="line">densities: '120' '160' '240' '320' '480' '640' '65534'</span><br><span class="line">(base) zhongxindeMacBook-Pro:~ zhongxin$ </span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+<h2 id="代码上连接设备"><a href="#代码上连接设备" class="headerlink" title="代码上连接设备"></a>代码上连接设备</h2><figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.zhongxin.demo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.openqa.selenium.remote.DesiredCapabilities;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AppDemo</span> </span>{</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>{</span><br><span class="line">        <span class="comment">//配置设备信息</span></span><br><span class="line">        DesiredCapabilities capabilities = <span class="keyword">new</span> DesiredCapabilities();</span><br><span class="line">        <span class="comment">//1.设备平台</span></span><br><span class="line">        capabilities.setCapability(<span class="string">"platformName"</span>, <span class="string">"Android"</span>);</span><br><span class="line">        <span class="comment">//2.设备名称</span></span><br><span class="line">        capabilities.setCapability(<span class="string">"deviceName"</span>, <span class="string">"127.0.0.1:62001"</span>);</span><br><span class="line">        <span class="comment">//3.APP包名</span></span><br><span class="line">        capabilities.setCapability(<span class="string">"appPackage"</span>, <span class="string">"com.lemon.lemonban"</span>);</span><br><span class="line">        <span class="comment">//4.App activity名称</span></span><br><span class="line">        capabilities.setCapability(<span class="string">"appActivity"</span>, <span class="string">"com.lemon.lemonban.activity.WelcomeActivity"</span>);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt=" wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt=" 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt=" 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/" rel="tag"># 自动化测试</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/09/22/java-zi-dong-hua-ce-shi/java-zi-dong-hua-ce-shi-wu-tou-liu-lan-qi-30/" rel="next" title="Java自动化测试(无头浏览器 30)">
+                <i class="fa fa-chevron-left"></i> Java自动化测试(无头浏览器 30)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/09/26/java-zi-dong-hua-ce-shi/java-zi-dong-hua-ce-shi-adb-chang-yong-ming-ling-32/" rel="prev" title="Java自动化测试(adb常用命令 32)">
+                Java自动化测试(adb常用命令 32) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpeg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">107</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zx490336534" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/zhong-xin-97-8" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-angellist"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95-app%E8%87%AA%E5%8A%A8%E5%8C%96%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA-31"><span class="nav-number">1.</span> <span class="nav-text">Java自动化测试(app自动化环境搭建 31)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Appium"><span class="nav-number">1.1.</span> <span class="nav-text">Appium</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Appium%E7%BB%84%E4%BB%B6"><span class="nav-number">1.2.</span> <span class="nav-text">Appium组件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Appium-Server"><span class="nav-number">1.2.1.</span> <span class="nav-text">Appium Server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Appium-GUI"><span class="nav-number">1.2.2.</span> <span class="nav-text">Appium GUI</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Appium-Desktop"><span class="nav-number">1.2.3.</span> <span class="nav-text">Appium Desktop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Appium-Client"><span class="nav-number">1.2.4.</span> <span class="nav-text">Appium Client</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#App%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="nav-number">1.3.</span> <span class="nav-text">App自动化测试环境搭建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E6%8B%9F%E5%99%A8%E4%B8%8B%E8%BD%BD"><span class="nav-number">1.4.</span> <span class="nav-text">模拟器下载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Appium-%E6%A1%8C%E9%9D%A2%E7%89%88%E4%B8%8B%E8%BD%BD"><span class="nav-number">1.5.</span> <span class="nav-text">Appium 桌面版下载</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8"><span class="nav-number">1.5.1.</span> <span class="nav-text">启动</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E5%86%99%E4%BB%A3%E7%A0%81"><span class="nav-number">1.6.</span> <span class="nav-text">编写代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEMaven"><span class="nav-number">1.6.1.</span> <span class="nav-text">配置Maven</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD-java-client"><span class="nav-number">1.6.1.1.</span> <span class="nav-text">下载 java-client</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E8%AE%BE%E5%A4%87%E4%BF%A1%E6%81%AF"><span class="nav-number">1.6.2.</span> <span class="nav-text">配置设备信息</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E8%AE%BE%E5%A4%87"><span class="nav-number">1.6.2.1.</span> <span class="nav-text">连接设备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%8C%85%E5%90%8D"><span class="nav-number">1.6.2.2.</span> <span class="nav-text">查看包名</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E4%B8%8A%E8%BF%9E%E6%8E%A5%E8%AE%BE%E5%A4%87"><span class="nav-number">1.7.</span> <span class="nav-text">代码上连接设备</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">测试游记</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://zx490336534.github.io/2020/09/24/java-zi-dong-hua-ce-shi/java-zi-dong-hua-ce-shi-app-zi-dong-hua-huan-jing-da-jian-31/';
+          this.page.identifier = '2020/09/24/java-zi-dong-hua-ce-shi/java-zi-dong-hua-ce-shi-app-zi-dong-hua-huan-jing-da-jian-31/';
+          this.page.title = 'Java自动化测试(app自动化环境搭建 31)';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

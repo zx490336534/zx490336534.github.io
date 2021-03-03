@@ -68,11 +68,13 @@
 
 
 
-  <meta name="keywords" content="测试开发,Jenkins," />
+  <meta name="keywords" content="Jenkins,测试开发," />
 
 
 
 
+
+  <link rel="alternate" href="/atom.xml" title="测试游记" type="application/atom+xml" />
 
 
 
@@ -82,7 +84,7 @@
 <meta name="description" content="Jenkins(七)触发流水线执行可以分为：  时间触发 事件触发  时间触发定义一个时间，时间到了就触发pipeline。 在Jenkins pipeline中使用trigger指令来定义时间触发">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Jenkins(七)">
-<meta property="og:url" content="http://zx490336534.github.io/2019/07/13/Jenkins/7-Jenkins/index.html">
+<meta property="og:url" content="http://zx490336534.github.io/2019/07/13/jenkins/7-jenkins/index.html">
 <meta property="og:site_name" content="测试游记">
 <meta property="og:description" content="Jenkins(七)触发流水线执行可以分为：  时间触发 事件触发  时间触发定义一个时间，时间到了就触发pipeline。 在Jenkins pipeline中使用trigger指令来定义时间触发">
 <meta property="og:locale">
@@ -100,8 +102,8 @@
 <meta property="article:published_time" content="2019-07-13T07:53:00.000Z">
 <meta property="article:modified_time" content="2021-03-03T14:03:02.068Z">
 <meta property="article:author" content="测试游记">
-<meta property="article:tag" content="测试开发">
 <meta property="article:tag" content="Jenkins">
+<meta property="article:tag" content="测试开发">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://ww1.sinaimg.cn/large/006tNc79ly1g4yk5ci9coj31b30u0tv1.jpg">
 
@@ -133,7 +135,7 @@
 
 
 
-  <link rel="canonical" href="http://zx490336534.github.io/2019/07/13/Jenkins/7-Jenkins/"/>
+  <link rel="canonical" href="http://zx490336534.github.io/2019/07/13/jenkins/7-jenkins/"/>
 
 
 
@@ -159,7 +161,9 @@
 
 
 
-<meta name="generator" content="Hexo 5.4.0"></head>
+<meta name="generator" content="Hexo 5.4.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
 
@@ -210,6 +214,16 @@
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
             首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
           </a>
         </li>
       
@@ -276,7 +290,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/2019/07/13/Jenkins/7-Jenkins/">
+    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/2019/07/13/jenkins/7-jenkins/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -346,9 +360,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2019/07/13/Jenkins/7-Jenkins/#comments" itemprop="discussionUrl">
+                <a href="/2019/07/13/jenkins/7-jenkins/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2019/07/13/Jenkins/7-Jenkins/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2019/07/13/jenkins/7-jenkins/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -414,10 +428,10 @@
 <li><code>H(0-29)/10 * * * *</code>:前半小时的每隔10分钟</li>
 <li><code>45 9-16/2 * * 1-5</code>:周一到周五的9点45到16点45的每隔两个小时构建一次</li>
 </ul>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">pipeline &#123;</span><br><span class="line">    agent any</span><br><span class="line">    triggers &#123;</span><br><span class="line">        cron (<span class="string">&#x27;0 0 * * *&#x27;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    stages &#123;</span><br><span class="line">        stage (<span class="string">&#x27;Nightly build&#x27;</span>) &#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">                echo <span class="string">&#x27;明天凌晨执行&#x27;</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">pipeline {</span><br><span class="line">    agent any</span><br><span class="line">    triggers {</span><br><span class="line">        cron (<span class="string">'0 0 * * *'</span>)</span><br><span class="line">    }</span><br><span class="line">    stages {</span><br><span class="line">        stage (<span class="string">'Nightly build'</span>) {</span><br><span class="line">            steps {</span><br><span class="line">                echo <span class="string">'明天凌晨执行'</span></span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 
 <h3 id="轮询代码仓库：pollSCM"><a href="#轮询代码仓库：pollSCM" class="headerlink" title="轮询代码仓库：pollSCM"></a>轮询代码仓库：pollSCM</h3><p>定期到代码仓库询问代码是否有变化，如果代码仓库有变化，就执行</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">pipeline &#123;</span><br><span class="line">    agent any</span><br><span class="line">    triggers &#123;</span><br><span class="line">        pollSCM (<span class="string">&#x27;H/1 * * * *&#x27;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    stages &#123;</span><br><span class="line">        stage (<span class="string">&#x27;build&#x27;</span>) &#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">                echo <span class="string">&#x27;轮询执行&#x27;</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">pipeline {</span><br><span class="line">    agent any</span><br><span class="line">    triggers {</span><br><span class="line">        pollSCM (<span class="string">'H/1 * * * *'</span>)</span><br><span class="line">    }</span><br><span class="line">    stages {</span><br><span class="line">        stage (<span class="string">'build'</span>) {</span><br><span class="line">            steps {</span><br><span class="line">                echo <span class="string">'轮询执行'</span></span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 
 <h2 id="事件触发"><a href="#事件触发" class="headerlink" title="事件触发"></a>事件触发</h2><ul>
 <li>手动在界面上触发</li>
@@ -425,7 +439,7 @@
 <li>HTTP API Webhook触发</li>
 </ul>
 <h3 id="由上游任务出发：upstream"><a href="#由上游任务出发：upstream" class="headerlink" title="由上游任务出发：upstream"></a>由上游任务出发：upstream</h3><p>当B任务的执行依赖A任务的执行结果，A就是B的上游任务。</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">triggers &#123;</span><br><span class="line">   upstream(<span class="attr">upstreamProjects:</span> <span class="string">&#x27;job1,job2&#x27;</span>,<span class="attr">threshold:</span>hudson.model.Result.SUCCESS)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">triggers {</span><br><span class="line">   upstream(<span class="attr">upstreamProjects:</span> <span class="string">'job1,job2'</span>,<span class="attr">threshold:</span>hudson.model.Result.SUCCESS)</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 
 <ul>
 <li>job1和job2是任务名</li>
@@ -452,7 +466,7 @@
 <ol start="4">
 <li>将代码上库</li>
 </ol>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> http://123.56.13.233:9000/zhongxin/hello-world-pipeline.git</span></span><br><span class="line">正克隆到 &#x27;hello-world-pipeline&#x27;...</span><br><span class="line">warning: 您似乎克隆了一个空仓库。</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> hello-world-pipeline</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> touch 1.py</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> git add 1.py</span> </span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> git commit -m <span class="string">&quot;add 1.py&quot;</span></span></span><br><span class="line"></span><br><span class="line">[master（根提交） e815882] add 1.py</span><br><span class="line"> 1 file changed, 0 insertions(+), 0 deletions(-)</span><br><span class="line"> create mode 100644 1.py</span><br><span class="line"> </span><br><span class="line"><span class="meta">$</span><span class="bash"> git push -u origin master</span></span><br><span class="line">remote: You are not allowed to push code to this project.</span><br><span class="line">fatal: unable to access &#x27;http://123.56.13.233:9000/zhongxin/hello-world-pipeline.git/&#x27;: The requested URL returned error: 403</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> git push -u origin master</span></span><br><span class="line">分支 &#x27;master&#x27; 设置为跟踪来自 &#x27;origin&#x27; 的远程分支 &#x27;master&#x27;。</span><br><span class="line">Everything up-to-date</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> http://123.56.13.233:9000/zhongxin/hello-world-pipeline.git</span></span><br><span class="line">正克隆到 'hello-world-pipeline'...</span><br><span class="line">warning: 您似乎克隆了一个空仓库。</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> hello-world-pipeline</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> touch 1.py</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> git add 1.py</span> </span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> git commit -m <span class="string">"add 1.py"</span></span></span><br><span class="line"></span><br><span class="line">[master（根提交） e815882] add 1.py</span><br><span class="line"> 1 file changed, 0 insertions(+), 0 deletions(-)</span><br><span class="line"> create mode 100644 1.py</span><br><span class="line"> </span><br><span class="line"><span class="meta">$</span><span class="bash"> git push -u origin master</span></span><br><span class="line">remote: You are not allowed to push code to this project.</span><br><span class="line">fatal: unable to access 'http://123.56.13.233:9000/zhongxin/hello-world-pipeline.git/': The requested URL returned error: 403</span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> git push -u origin master</span></span><br><span class="line">分支 'master' 设置为跟踪来自 'origin' 的远程分支 'master'。</span><br><span class="line">Everything up-to-date</span><br></pre></td></tr></tbody></table></figure>
 
 <p>PS:如果遇到403问题请将<code>.git/config</code>中的url修改为：<code>https://用户名:密码@123.56.13.233:9000/zhongxin/hello-world-pipeline.git/</code></p>
 <p><img src="http://ww1.sinaimg.cn/large/006tNc79ly1g4ykix7qfwj315c0u0qi5.jpg" alt="代码上库"></p>
@@ -466,7 +480,7 @@
 <p><img src="http://ww1.sinaimg.cn/large/006tNc79ly1g4ykt1kwxkj31b30u0ax5.jpg" alt="配置Gitlab"></p>
 <p>额，到这里遇到一个比较尴尬的问题。我的gitlab服务器在公网，Jenkins服务器在局域网内</p>
 <p>如果，如果成功了的话就可以在下方<code>Project services</code>处看到新增的<code>Webhooks</code></p>
-<h4 id="Jenkinsfile中编写Gitlab-trigger"><a href="#Jenkinsfile中编写Gitlab-trigger" class="headerlink" title="Jenkinsfile中编写Gitlab trigger"></a>Jenkinsfile中编写Gitlab trigger</h4><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">pipeline &#123;</span><br><span class="line">    agent any</span><br><span class="line">    triggers &#123;</span><br><span class="line">        gitlab(<span class="attr">triggerOnPush:</span> <span class="literal">true</span>, </span><br><span class="line">               <span class="symbol">triggerOnMergeRequest:</span> <span class="literal">true</span>,</span><br><span class="line">               <span class="symbol">branchFilterType:</span> <span class="string">&#x27;All&#x27;</span>,</span><br><span class="line">               <span class="symbol">secretToken:</span> <span class="string">&#x27;c342352fc4cf45e01c0f783a7fdf38b7&#x27;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    stages &#123;</span><br><span class="line">        stage(<span class="string">&#x27;build&#x27;</span>) &#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">                echo <span class="string">&quot;Hello wolrd&quot;</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Jenkinsfile中编写Gitlab-trigger"><a href="#Jenkinsfile中编写Gitlab-trigger" class="headerlink" title="Jenkinsfile中编写Gitlab trigger"></a>Jenkinsfile中编写Gitlab trigger</h4><figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">pipeline {</span><br><span class="line">    agent any</span><br><span class="line">    triggers {</span><br><span class="line">        gitlab(<span class="attr">triggerOnPush:</span> <span class="literal">true</span>, </span><br><span class="line">               <span class="symbol">triggerOnMergeRequest:</span> <span class="literal">true</span>,</span><br><span class="line">               <span class="symbol">branchFilterType:</span> <span class="string">'All'</span>,</span><br><span class="line">               <span class="symbol">secretToken:</span> <span class="string">'c342352fc4cf45e01c0f783a7fdf38b7'</span>)</span><br><span class="line">    }</span><br><span class="line">    stages {</span><br><span class="line">        stage(<span class="string">'build'</span>) {</span><br><span class="line">            steps {</span><br><span class="line">                echo <span class="string">"Hello wolrd"</span></span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 
 <ul>
 <li>triggerOnPush：当Gitlab触发push事件，是否执行构建</li>
@@ -476,7 +490,7 @@
 <h3 id="将构建信息推送到GitLab"><a href="#将构建信息推送到GitLab" class="headerlink" title="将构建信息推送到GitLab"></a>将构建信息推送到GitLab</h3><p><img src="http://ww1.sinaimg.cn/large/006tNc79ly1g4yl5l5fsrj31b30u0qqq.jpg" alt="创建API token"></p>
 <p><img src="http://ww2.sinaimg.cn/large/006tNc79ly1g4yl5wnwi7j31b30u0wwm.jpg" alt="添加凭证"></p>
 <p><img src="http://ww1.sinaimg.cn/large/006tNc79ly1g4yl6fqi69j31b30u01ch.jpg" alt="设置"></p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">pipeline &#123;</span><br><span class="line">    agent any</span><br><span class="line">    triggers &#123;</span><br><span class="line">        gitlab(<span class="attr">triggerOnPush:</span> <span class="literal">true</span>,</span><br><span class="line">               <span class="symbol">triggerOnMergeRequest:</span> <span class="literal">true</span>,</span><br><span class="line">               <span class="symbol">branchFilterType:</span> <span class="string">&#x27;All&#x27;</span>,</span><br><span class="line">               <span class="symbol">secretToken:</span> <span class="string">&#x27;c342352fc4cf45e01c0f783a7fdf38b7&#x27;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    stages &#123;</span><br><span class="line">        stage(<span class="string">&#x27;build&#x27;</span>) &#123;</span><br><span class="line">            steps &#123;</span><br><span class="line">                echo <span class="string">&quot;Hello wolrd&quot;</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    post &#123;</span><br><span class="line">        failure &#123;</span><br><span class="line">            updateGitlabCommitStatus <span class="attr">name:</span><span class="string">&#x27;build&#x27;</span>,<span class="attr">state:</span><span class="string">&#x27;failed&#x27;</span></span><br><span class="line">        &#125;</span><br><span class="line">        success &#123;</span><br><span class="line">            updateGitlabCommitStatus <span class="attr">name:</span><span class="string">&#x27;build&#x27;</span>,<span class="attr">state:</span><span class="string">&#x27;success&#x27;</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    options &#123;</span><br><span class="line">        gitLabConnecton(<span class="string">&#x27;gitlab&#x27;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">pipeline {</span><br><span class="line">    agent any</span><br><span class="line">    triggers {</span><br><span class="line">        gitlab(<span class="attr">triggerOnPush:</span> <span class="literal">true</span>,</span><br><span class="line">               <span class="symbol">triggerOnMergeRequest:</span> <span class="literal">true</span>,</span><br><span class="line">               <span class="symbol">branchFilterType:</span> <span class="string">'All'</span>,</span><br><span class="line">               <span class="symbol">secretToken:</span> <span class="string">'c342352fc4cf45e01c0f783a7fdf38b7'</span>)</span><br><span class="line">    }</span><br><span class="line">    stages {</span><br><span class="line">        stage(<span class="string">'build'</span>) {</span><br><span class="line">            steps {</span><br><span class="line">                echo <span class="string">"Hello wolrd"</span></span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    post {</span><br><span class="line">        failure {</span><br><span class="line">            updateGitlabCommitStatus <span class="attr">name:</span><span class="string">'build'</span>,<span class="attr">state:</span><span class="string">'failed'</span></span><br><span class="line">        }</span><br><span class="line">        success {</span><br><span class="line">            updateGitlabCommitStatus <span class="attr">name:</span><span class="string">'build'</span>,<span class="attr">state:</span><span class="string">'success'</span></span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    options {</span><br><span class="line">        gitLabConnecton(<span class="string">'gitlab'</span>)</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
 
 <h3 id="其他系统触发Webhook"><a href="#其他系统触发Webhook" class="headerlink" title="其他系统触发Webhook"></a>其他系统触发Webhook</h3><p>使用<code>Generic Webhook Trigger</code>插件，具体内容不展开</p>
 
@@ -533,9 +547,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/" rel="tag"># 测试开发</a>
-          
             <a href="/tags/Jenkins/" rel="tag"># Jenkins</a>
+          
+            <a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/" rel="tag"># 测试开发</a>
           
         </div>
       
@@ -548,7 +562,7 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/07/13/Jenkins/6-Jenkins/" rel="next" title="Jenkins(六)">
+              <a href="/2019/07/13/jenkins/6-jenkins/" rel="next" title="Jenkins(六)">
                 <i class="fa fa-chevron-left"></i> Jenkins(六)
               </a>
             
@@ -558,7 +572,7 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/07/13/Jenkins/8-Jenkins/" rel="prev" title="Jenkins(八)">
+              <a href="/2019/07/13/jenkins/8-jenkins/" rel="prev" title="Jenkins(八)">
                 Jenkins(八) <i class="fa fa-chevron-right"></i>
               </a>
             
@@ -682,6 +696,13 @@
           </nav>
 
           
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
 
           
             <div class="links-of-author motion-element">
@@ -695,7 +716,7 @@
                   <span class="links-of-author-item">
                     <a href="https://www.zhihu.com/people/zhong-xin-97-8" target="_blank" title="知乎">
                       
-                        <i class="fa fa-fw fa-globe"></i>知乎</a>
+                        <i class="fa fa-fw fa-angellist"></i>知乎</a>
                   </span>
                 
             </div>
@@ -892,8 +913,8 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'http://zx490336534.github.io/2019/07/13/Jenkins/7-Jenkins/';
-          this.page.identifier = '2019/07/13/Jenkins/7-Jenkins/';
+          this.page.url = 'http://zx490336534.github.io/2019/07/13/jenkins/7-jenkins/';
+          this.page.identifier = '2019/07/13/jenkins/7-jenkins/';
           this.page.title = 'Jenkins(七)';
         };
         var d = document, s = d.createElement('script');
