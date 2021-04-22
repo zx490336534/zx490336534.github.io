@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java,自动化测试," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="测试游记" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Java自动化测试(自动化测试背景与流程 27)自动化测试背景什么是自动化测试机器代替手工测试，自动验证结果是否符合预期 自动化测试优点 替代大量重复手工测试 提升回归测试效率，适合敏捷开发 在非工作时间自动执行，工作时间查看测试报告 保证每次测试执行的一致性与正确性，避免人为错误  自动化测试劣势 一般用于回归测试，项目开发初期不适合使用自动化 不能全部取代手工测试，只能替代手工测试中机械化，重">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java自动化测试(自动化测试背景与流程 27)">
+<meta property="og:url" content="http://zx490336534.github.io/article/3d748498.html">
+<meta property="og:site_name" content="测试游记">
+<meta property="og:description" content="Java自动化测试(自动化测试背景与流程 27)自动化测试背景什么是自动化测试机器代替手工测试，自动验证结果是否符合预期 自动化测试优点 替代大量重复手工测试 提升回归测试效率，适合敏捷开发 在非工作时间自动执行，工作时间查看测试报告 保证每次测试执行的一致性与正确性，避免人为错误  自动化测试劣势 一般用于回归测试，项目开发初期不适合使用自动化 不能全部取代手工测试，只能替代手工测试中机械化，重">
+<meta property="og:locale">
+<meta property="article:published_time" content="2020-09-07T22:34:25.353Z">
+<meta property="article:modified_time" content="2021-03-03T14:29:02.822Z">
+<meta property="article:author" content="测试游记">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="自动化测试">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://zx490336534.github.io/article/3d748498.html"/>
+
+
+
+
+
+  <title>Java自动化测试(自动化测试背景与流程 27) | 测试游记</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?41fc030db57d5570dd22f78997dc4a7e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">测试游记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/article/3d748498.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="测试游记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java自动化测试(自动化测试背景与流程 27)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-08T06:34:25+08:00">
+                2020-09-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index">
+                    <span itemprop="name">Java自动化测试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/article/3d748498.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="article/3d748498.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Java自动化测试-自动化测试背景与流程-27"><a href="#Java自动化测试-自动化测试背景与流程-27" class="headerlink" title="Java自动化测试(自动化测试背景与流程 27)"></a>Java自动化测试(自动化测试背景与流程 27)</h1><h2 id="自动化测试背景"><a href="#自动化测试背景" class="headerlink" title="自动化测试背景"></a>自动化测试背景</h2><h3 id="什么是自动化测试"><a href="#什么是自动化测试" class="headerlink" title="什么是自动化测试"></a>什么是自动化测试</h3><p>机器代替手工测试，自动验证结果是否符合预期</p>
+<h3 id="自动化测试优点"><a href="#自动化测试优点" class="headerlink" title="自动化测试优点"></a>自动化测试优点</h3><ol>
+<li>替代大量重复手工测试</li>
+<li>提升回归测试效率，适合敏捷开发</li>
+<li>在非工作时间自动执行，工作时间查看测试报告</li>
+<li>保证每次测试执行的一致性与正确性，避免人为错误</li>
+</ol>
+<h3 id="自动化测试劣势"><a href="#自动化测试劣势" class="headerlink" title="自动化测试劣势"></a>自动化测试劣势</h3><ol>
+<li>一般用于回归测试，项目开发初期不适合使用自动化</li>
+<li>不能全部取代手工测试，只能替代手工测试中机械化，重复度高的操作，自动化测试极少能够达到100%覆盖率</li>
+<li>自动化测试非常脆弱，特别是UI自动化</li>
+<li>自动化测试工作量(框架设计+脚本开发)比单次手工测试大很多，当自动化多次执行时，性价比才会凸显<span id="more"></span>
+<h3 id="自动化测试实施流程"><a href="#自动化测试实施流程" class="headerlink" title="自动化测试实施流程"></a>自动化测试实施流程</h3></li>
+</ol>
+<h3 id="1-评估自动化测试实施可行性"><a href="#1-评估自动化测试实施可行性" class="headerlink" title="1.评估自动化测试实施可行性"></a>1.评估自动化测试实施可行性</h3><p>想要开展自动化测试，应该遵循以下几个前提条件：</p>
+<ol>
+<li>需求稳定，不会频繁变更</li>
+<li>研发和维护周期长，需要频繁执行回归测试</li>
+<li>项目资源足够「人力」</li>
+</ol>
+<h3 id="2-测试需求分析"><a href="#2-测试需求分析" class="headerlink" title="2.测试需求分析"></a>2.测试需求分析</h3><p>自动化测试到底要做到什么程度</p>
+<p>自动化测试覆盖范围：</p>
+<ul>
+<li>主业务流程</li>
+<li>历史BUG较多的模块</li>
+<li>基础重复的功能</li>
+<li>优先级</li>
+</ul>
+<h3 id="3-制定测试计划"><a href="#3-制定测试计划" class="headerlink" title="3.制定测试计划"></a>3.制定测试计划</h3><p>测试工具/框架选型</p>
+<ul>
+<li>接口自动化：TestNG+HttpClient+Maven+Allure+Log4j</li>
+<li>web自动化：TestNG+Selenium</li>
+</ul>
+<p>框架设计，自动化测试脚本开发时间计划表</p>
+<p>脚本执行的策略，冒烟测试/回归测试的频率</p>
+<p>定义自动化测试的输出，测试框架，测试脚本，测试数据，发现的缺陷，测试报告</p>
+<h4 id="测试数据生成"><a href="#测试数据生成" class="headerlink" title="测试数据生成"></a>测试数据生成</h4><ol>
+<li>UI方法：人工方式造数据</li>
+<li>接口方法：效率高 用的最多 有保证的</li>
+<li>数据库：效率高 添加数据影响到其他的数据表 不能确保正确性</li>
+</ol>
+<h3 id="4-搭建自动化测试环境，设计框架"><a href="#4-搭建自动化测试环境，设计框架" class="headerlink" title="4.搭建自动化测试环境，设计框架"></a>4.搭建自动化测试环境，设计框架</h3><h3 id="5-开发自动化测试脚本"><a href="#5-开发自动化测试脚本" class="headerlink" title="5.开发自动化测试脚本"></a>5.开发自动化测试脚本</h3><p>手工测试用例转自动化测试用例的过程</p>
+<h3 id="6-执行自动化测试"><a href="#6-执行自动化测试" class="headerlink" title="6.执行自动化测试"></a>6.执行自动化测试</h3><p>本地执行：IDE调试/执行</p>
+<p>持续集成平台：jenkins</p>
+<h3 id="7-分析自动化测试结果"><a href="#7-分析自动化测试结果" class="headerlink" title="7.分析自动化测试结果"></a>7.分析自动化测试结果</h3><p>自动化用例失败了</p>
+<ul>
+<li>BUG</li>
+<li>脚本设计/稳定性问题</li>
+</ul>
+<h3 id="8-框架-脚本维护"><a href="#8-框架-脚本维护" class="headerlink" title="8.框架/脚本维护"></a>8.框架/脚本维护</h3><p>周期最长</p>
+<ul>
+<li>框架优化</li>
+<li>需求变更</li>
+</ul>
+<h3 id="9-成功展示「落地」"><a href="#9-成功展示「落地」" class="headerlink" title="9.成功展示「落地」"></a>9.成功展示「落地」</h3><ul>
+<li><p>自动化测试用例覆盖，一般为20%的自动化测试，80%的手工测试</p>
+</li>
+<li><p>节省的时间成本：手工测试花费的时间-自动化测试所花的时间</p>
+</li>
+<li><p>自动化测试发现的缺陷数：保证质量，不能保证发现很多BUG</p>
+</li>
+<li><p>自动化测试的投入产出ROI「越高越好」</p>
+</li>
+</ul>
+<p>(手工测试的成本-自动化测试成本)/自动化测试脚本</p>
+<h2 id="自动化测试可以达到100-覆盖率吗"><a href="#自动化测试可以达到100-覆盖率吗" class="headerlink" title="自动化测试可以达到100%覆盖率吗"></a>自动化测试可以达到100%覆盖率吗</h2><p>有些用例场景无法被自动化</p>
+<p>一些验证易用性，友好性，美观的用例不适合做自动化</p>
+<p>有些边缘用例很少被重复执行，从ROI角度考虑不适合做自动化</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt=" wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt=" 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt=" 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/" rel="tag"># 自动化测试</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/article/e57525d6.html" rel="next" title="Java自动化测试(特殊元素处理 26)">
+                <i class="fa fa-chevron-left"></i> Java自动化测试(特殊元素处理 26)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/article/ea141f.html" rel="prev" title="Java自动化测试(web自动化测试框架 28)">
+                Java自动化测试(web自动化测试框架 28) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpeg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">107</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zx490336534" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/zhong-xin-97-8" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-angellist"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95-%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E8%83%8C%E6%99%AF%E4%B8%8E%E6%B5%81%E7%A8%8B-27"><span class="nav-number">1.</span> <span class="nav-text">Java自动化测试(自动化测试背景与流程 27)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E8%83%8C%E6%99%AF"><span class="nav-number">1.1.</span> <span class="nav-text">自动化测试背景</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95"><span class="nav-number">1.1.1.</span> <span class="nav-text">什么是自动化测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E4%BC%98%E7%82%B9"><span class="nav-number">1.1.2.</span> <span class="nav-text">自动化测试优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E5%8A%A3%E5%8A%BF"><span class="nav-number">1.1.3.</span> <span class="nav-text">自动化测试劣势</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E5%AE%9E%E6%96%BD%E6%B5%81%E7%A8%8B"><span class="nav-number">1.1.4.</span> <span class="nav-text">自动化测试实施流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%AF%84%E4%BC%B0%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E5%AE%9E%E6%96%BD%E5%8F%AF%E8%A1%8C%E6%80%A7"><span class="nav-number">1.1.5.</span> <span class="nav-text">1.评估自动化测试实施可行性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%B5%8B%E8%AF%95%E9%9C%80%E6%B1%82%E5%88%86%E6%9E%90"><span class="nav-number">1.1.6.</span> <span class="nav-text">2.测试需求分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%88%B6%E5%AE%9A%E6%B5%8B%E8%AF%95%E8%AE%A1%E5%88%92"><span class="nav-number">1.1.7.</span> <span class="nav-text">3.制定测试计划</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE%E7%94%9F%E6%88%90"><span class="nav-number">1.1.7.1.</span> <span class="nav-text">测试数据生成</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%90%AD%E5%BB%BA%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83%EF%BC%8C%E8%AE%BE%E8%AE%A1%E6%A1%86%E6%9E%B6"><span class="nav-number">1.1.8.</span> <span class="nav-text">4.搭建自动化测试环境，设计框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%BC%80%E5%8F%91%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E8%84%9A%E6%9C%AC"><span class="nav-number">1.1.9.</span> <span class="nav-text">5.开发自动化测试脚本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E6%89%A7%E8%A1%8C%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95"><span class="nav-number">1.1.10.</span> <span class="nav-text">6.执行自动化测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E5%88%86%E6%9E%90%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C"><span class="nav-number">1.1.11.</span> <span class="nav-text">7.分析自动化测试结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-%E6%A1%86%E6%9E%B6-%E8%84%9A%E6%9C%AC%E7%BB%B4%E6%8A%A4"><span class="nav-number">1.1.12.</span> <span class="nav-text">8.框架&#x2F;脚本维护</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-%E6%88%90%E5%8A%9F%E5%B1%95%E7%A4%BA%E3%80%8C%E8%90%BD%E5%9C%B0%E3%80%8D"><span class="nav-number">1.1.13.</span> <span class="nav-text">9.成功展示「落地」</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E5%8F%AF%E4%BB%A5%E8%BE%BE%E5%88%B0100-%E8%A6%86%E7%9B%96%E7%8E%87%E5%90%97"><span class="nav-number">1.2.</span> <span class="nav-text">自动化测试可以达到100%覆盖率吗</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">测试游记</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://zx490336534.github.io/article/3d748498.html';
+          this.page.identifier = 'article/3d748498.html';
+          this.page.title = 'Java自动化测试(自动化测试背景与流程 27)';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

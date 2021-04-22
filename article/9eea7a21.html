@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Python,测试开发," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="测试游记" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="测试开发进阶(二十七)外键PrimaryKeyRelatedFieldinterfaces&#x2F;serializer.py中创建序列化器 12345678from rest_framework import serializersfrom interfaces.models import Interfacesclass InterfaceModelSerializer(serializers.Mode">
+<meta property="og:type" content="article">
+<meta property="og:title" content="测试开发进阶(二十七)">
+<meta property="og:url" content="http://zx490336534.github.io/article/9eea7a21.html">
+<meta property="og:site_name" content="测试游记">
+<meta property="og:description" content="测试开发进阶(二十七)外键PrimaryKeyRelatedFieldinterfaces&#x2F;serializer.py中创建序列化器 12345678from rest_framework import serializersfrom interfaces.models import Interfacesclass InterfaceModelSerializer(serializers.Mode">
+<meta property="og:locale">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g82miheb2gj31eg0aa410.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g82mjiwi3dj313q08wabl.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g82molqip3j31j20boaco.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g82n1p6wodj31k408wq5e.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g82n3ikj73j31xm0gk0wh.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g82naxo90tj31t80gujvd.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g82nv4dgsaj313m0u0dxz.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g82nwubc28j31fq0u0k1h.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g82nzy5p6ij31fq0u0n83.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g82o03ht0cj31fq0u0dqs.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g82ojmzujrj316y0u0156.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g82oifeql5j31b30u0neu.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g82omty9k0j30u00wqai5.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g82pnfhomyj31b30u0h7f.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g82pnt3r3hj31b30u0aud.jpg">
+<meta property="article:published_time" content="2019-10-16T10:15:05.000Z">
+<meta property="article:modified_time" content="2021-03-03T13:53:09.734Z">
+<meta property="article:author" content="测试游记">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="测试开发">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tva1.sinaimg.cn/large/006y8mN6ly1g82miheb2gj31eg0aa410.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://zx490336534.github.io/article/9eea7a21.html"/>
+
+
+
+
+
+  <title>测试开发进阶(二十七) | 测试游记</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?41fc030db57d5570dd22f78997dc4a7e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">测试游记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/article/9eea7a21.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="测试游记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">测试开发进阶(二十七)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-16T18:15:05+08:00">
+                2019-10-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/" itemprop="url" rel="index">
+                    <span itemprop="name">Python测试开发进阶</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/article/9eea7a21.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="article/9eea7a21.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="测试开发进阶-二十七"><a href="#测试开发进阶-二十七" class="headerlink" title="测试开发进阶(二十七)"></a>测试开发进阶(二十七)</h1><h2 id="外键"><a href="#外键" class="headerlink" title="外键"></a>外键</h2><h3 id="PrimaryKeyRelatedField"><a href="#PrimaryKeyRelatedField" class="headerlink" title="PrimaryKeyRelatedField"></a>PrimaryKeyRelatedField</h3><p><code>interfaces/serializer.py</code>中创建序列化器</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> rest_framework <span class="keyword">import</span> serializers</span><br><span class="line"><span class="keyword">from</span> interfaces.models <span class="keyword">import</span> Interfaces</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">InterfaceModelSerializer</span>(<span class="params">serializers.ModelSerializer</span>):</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        model = Interfaces</span><br><span class="line">        fields = <span class="string">'__all__'</span></span><br></pre></td></tr></tbody></table></figure>
+<span id="more"></span>
+<p>测试</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">IN[2]: from interfaces.serializer import InterfaceModelSerializer</span><br><span class="line">IN[3]: InterfaceModelSerializer()</span><br><span class="line"></span><br><span class="line">Out[4]: </span><br><span class="line">InterfaceModelSerializer():</span><br><span class="line">    id = IntegerField(label='ID', read_only=True)</span><br><span class="line">    name = CharField(help_text='项目名称', label='项目名称', max_length=200, validators=[&lt;UniqueValidator(queryset=Interfaces.objects.all())&gt;])</span><br><span class="line">    tester = CharField(help_text='测试人员', label='测试人员', max_length=50)</span><br><span class="line">    desc = CharField(allow_blank=True, allow_null=True, help_text='简要描述', label='简要描述', required=False, style={'base_template': 'textarea.html'})</span><br><span class="line">    project = PrimaryKeyRelatedField(help_text='所属项目', label='所属项目', queryset=Projects.objects.all())</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<blockquote>
+<h4 id="数据库模型中的外键字段默认会生产PrimaryKeyRelatedField序列化器字段"><a href="#数据库模型中的外键字段默认会生产PrimaryKeyRelatedField序列化器字段" class="headerlink" title="数据库模型中的外键字段默认会生产PrimaryKeyRelatedField序列化器字段"></a>数据库模型中的外键字段默认会生产PrimaryKeyRelatedField序列化器字段</h4><h4 id="序列化输出的值为外键ID值"><a href="#序列化输出的值为外键ID值" class="headerlink" title="序列化输出的值为外键ID值"></a>序列化输出的值为外键ID值</h4></blockquote>
+<p>序列化输出</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">from interfaces.models import Interfaces</span><br><span class="line">one_interface = Interfaces.objects.get(id=1)</span><br><span class="line">one_interface</span><br><span class="line">Out[7]: &lt;Interfaces: Interfaces object (1)&gt;</span><br><span class="line">interface_serializer = InterfaceModelSerializer(one_interface)</span><br><span class="line">interface_serializer.data</span><br><span class="line">Out[9]: {'id': 1, 'name': '登录接口', 'tester': 'zx', 'desc': '66', 'project': 1}</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g82miheb2gj31eg0aa410.jpg" alt="序列化输出"></p>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g82mjiwi3dj313q08wabl.jpg" alt="数据库"></p>
+<h3 id="字符串关联字段StringRelatedField"><a href="#字符串关联字段StringRelatedField" class="headerlink" title="字符串关联字段StringRelatedField"></a>字符串关联字段StringRelatedField</h3><p>重写<code>project</code></p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">project = serializers.StringRelatedField(label=<span class="string">'所属项目'</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">from interfaces.models import Interfaces</span><br><span class="line">from interfaces.serializer import InterfaceModelSerializer</span><br><span class="line">one = Interfaces.objects.get(id=1)</span><br><span class="line">one_s = InterfaceModelSerializer(one)</span><br><span class="line">one_s.data</span><br><span class="line">Out[6]: {'id': 1, 'project': '测试游记', 'name': '登录接口', 'tester': 'zx', 'desc': '66'}</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g82molqip3j31j20boaco.jpg" alt="字符串关联字段"></p>
+<blockquote>
+<h4 id="StringRelatedField-此字段将被序列化为关联对象字符串表达形式-str-方法返回值"><a href="#StringRelatedField-此字段将被序列化为关联对象字符串表达形式-str-方法返回值" class="headerlink" title="StringRelatedField 此字段将被序列化为关联对象字符串表达形式(__str__方法返回值)"></a>StringRelatedField 此字段将被序列化为关联对象字符串表达形式(<code>__str__</code>方法返回值)</h4></blockquote>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">project = serializers.SlugRelatedField(slug_field=<span class="string">'tester'</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="指定字段数据SlugRelatedField"><a href="#指定字段数据SlugRelatedField" class="headerlink" title="指定字段数据SlugRelatedField"></a>指定字段数据SlugRelatedField</h3><blockquote>
+<p>SlugRelatedField 此字段被序列化为关联对象的指定字段数据</p>
+</blockquote>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">project = serializers.SlugRelatedField(slug_field=<span class="string">'name'</span>,read_only=<span class="literal">True</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">from interfaces.serializer import InterfaceModelSerializer</span><br><span class="line">from interfaces.models import Interfaces</span><br><span class="line">one = Interfaces.objects.get(id=1)</span><br><span class="line">one_s = InterfaceModelSerializer(one)</span><br><span class="line">one_s.data</span><br><span class="line">Out[6]: {'id': 1, 'project': '测试游记', 'name': '登录接口', 'tester': 'zx', 'desc': '66'}</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g82n1p6wodj31k408wq5e.jpg" alt="SlugRelatedField"></p>
+<h3 id="关联对象的序列化器"><a href="#关联对象的序列化器" class="headerlink" title="关联对象的序列化器"></a>关联对象的序列化器</h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> projects.serializer <span class="keyword">import</span> ProjectModelSerializer</span><br><span class="line">project = ProjectModelSerializer(label=<span class="string">'所属项目'</span>, read_only=<span class="literal">True</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">from interfaces.serializer import InterfaceModelSerializer</span><br><span class="line">from interfaces.models import Interfaces</span><br><span class="line">one = Interfaces.objects.get(id=1)</span><br><span class="line">one_s = InterfaceModelSerializer(one)</span><br><span class="line">one_s.data</span><br><span class="line">Out[6]: {'id': 1, 'project': OrderedDict([('id', 1), ('name', '测试游记'), ('tester', 'zx'), ('programer', 'zhong'), ('publish_app', '公众号'), ('desc', '666')]), 'name': '登录接口', 'tester': 'zx', 'desc': '66'}</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g82n3ikj73j31xm0gk0wh.jpg" alt="对象序列化器"></p>
+<h3 id="反向指定"><a href="#反向指定" class="headerlink" title="反向指定"></a>反向指定</h3><blockquote>
+<h3 id="父表中默认不会生产关联字段-从表-可以手动指定，字段名默认为子表模型类名「小写-set」"><a href="#父表中默认不会生产关联字段-从表-可以手动指定，字段名默认为子表模型类名「小写-set」" class="headerlink" title="父表中默认不会生产关联字段(从表),可以手动指定，字段名默认为子表模型类名「小写_set」"></a>父表中默认不会生产关联字段(从表),可以手动指定，字段名默认为子表模型类名「小写_set」</h3></blockquote>
+<p><code>projects.serializer.ProjectModelSerializer</code>中添加</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">interfaces_set = serializers.StringRelatedField(many=<span class="literal">True</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">from projects.serializer import ProjectModelSerializer</span><br><span class="line">from projects.models import Projects</span><br><span class="line">p = Projects.objects.get(id=1)</span><br><span class="line">ProjectModelSerializer(p).data</span><br><span class="line">Out[5]: {'id': 1, 'name': '测试游记', 'interfaces_set': ['Interfaces object (1)', 'Interfaces object (2)'], 'tester': 'zx', 'programer': 'zhong', 'publish_app': '公众号', 'desc': '666'}</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g82naxo90tj31t80gujvd.jpg" alt="反向指定"></p>
+<h2 id="优化视图-请求"><a href="#优化视图-请求" class="headerlink" title="优化视图-请求"></a>优化视图-请求</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> rest_framework.views <span class="keyword">import</span> APIView</span><br></pre></td></tr></tbody></table></figure>
+
+<p>当视图继承<code>APIView</code>之后，请求实例方法中的第二个参数<code>request</code>为<code>Request对象</code>，是对Django中的<code>HttpRequest对象</code>进行的拓展</p>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g82nv4dgsaj313m0u0dxz.jpg" alt="Request对象"></p>
+<h3 id="发送json"><a href="#发送json" class="headerlink" title="发送json"></a>发送json</h3><p><code>http :8000/project/ &lt; projects.json</code></p>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g82nwubc28j31fq0u0k1h.jpg" alt="request.data"></p>
+<h3 id="发送form表单"><a href="#发送form表单" class="headerlink" title="发送form表单"></a>发送form表单</h3><p><code>http -f :8000/project/ &lt; projects.form</code></p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">name=测试游记项目&amp;leader=icon&amp;tester=zhongxin&amp;programer=zhong3&amp;publish_app=公众号&amp;desc=无</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g82nzy5p6ij31fq0u0n83.jpg" alt="request.data"></p>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g82o03ht0cj31fq0u0dqs.jpg" alt="request.POST"></p>
+<h3 id="Request"><a href="#Request" class="headerlink" title="Request"></a>Request</h3><ul>
+<li>对Django中的HttpRequest进行拓展</li>
+</ul>
+<blockquote>
+<p>根据请求头中的Content-Type自动进行解析</p>
+<p>无论前端发送那种格式数据，都可以以相同的方式读取</p>
+</blockquote>
+<ul>
+<li>request.data</li>
+</ul>
+<blockquote>
+<p>类似于Django中的request.POST和request.FILES</p>
+<p>可以对POST，PUT，PATCH的请求体进行解析</p>
+<p>支持form表单传参，支持json格式传参</p>
+</blockquote>
+<ul>
+<li>request.query_params</li>
+</ul>
+<blockquote>
+<p>类似Django中的request.GET</p>
+<p>获取查询字符串参数</p>
+</blockquote>
+<ul>
+<li>支持Django.request中所有的对象和方法</li>
+</ul>
+<h2 id="优化视图-渲染"><a href="#优化视图-渲染" class="headerlink" title="优化视图-渲染"></a>优化视图-渲染</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> rest_framework.response <span class="keyword">import</span> Response</span><br></pre></td></tr></tbody></table></figure>
+
+<p><code>LearnDjango/settings.py</code>中添加：</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 指定默认渲染类</span></span><br><span class="line">REST_FRAMEWORK = {</span><br><span class="line">    <span class="string">"DEFAULT_RENDERER_CLASSES"</span>: (</span><br><span class="line">        <span class="comment"># json渲染器为第一优先级</span></span><br><span class="line">        <span class="string">"rest_framework.renderers.JSONRenderer"</span>,</span><br><span class="line">        <span class="comment"># 可浏览的API渲染为第二优先级</span></span><br><span class="line">        <span class="string">"rest_framework.renderers.BrowsableAPIRenderer"</span>,</span><br><span class="line">    )</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>修改<code>projects.views.ProjectDetail#get</code></p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get</span>(<span class="params">self, request, pk</span>):</span></span><br><span class="line">    project = self.get_object(pk)</span><br><span class="line">    serializer = ProjectSerializer(instance=project)</span><br><span class="line">    <span class="keyword">return</span> Response(serializer.data)</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="渲染1"><a href="#渲染1" class="headerlink" title="渲染1"></a>渲染1</h3><p><code> http :8000/project/1/</code></p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">(LearnDjango) zhongxindeMacBook-Pro:apitest zhongxin$ http :8000/project/1/</span><br><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Allow: GET, PUT, DELETE, HEAD, OPTIONS</span><br><span class="line">Content-Length: 120</span><br><span class="line">Content-Type: application/json</span><br><span class="line">Date: Fri, 18 Oct 2019 13:34:44 GMT</span><br><span class="line">Server: WSGIServer/0.2 CPython/3.7.1</span><br><span class="line">Vary: Accept, Origin, Cookie</span><br><span class="line">X-Frame-Options: SAMEORIGIN</span><br><span class="line"></span><br><span class="line">{</span><br><span class="line">    "desc": "666",</span><br><span class="line">    "id": 1,</span><br><span class="line">    "leader": "zx_94",</span><br><span class="line">    "name": "测试游记",</span><br><span class="line">    "programer": "zhong",</span><br><span class="line">    "publish_app": "公众号",</span><br><span class="line">    "tester": "zx"</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g82ojmzujrj316y0u0156.jpg" alt="返回json"></p>
+<h3 id="渲染2"><a href="#渲染2" class="headerlink" title="渲染2"></a>渲染2</h3><p>浏览器中输入：<code>http://127.0.0.1:8000/project/1/</code></p>
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g82oifeql5j31b30u0neu.jpg" alt="返回web界面"></p>
+<h3 id="Response"><a href="#Response" class="headerlink" title="Response"></a>Response</h3><p>参数</p>
+<ul>
+<li>data</li>
+</ul>
+<blockquote>
+<p>序列化处理后的数据</p>
+<p>一般为serializer.data「python基本数据类型：字典，嵌套字典的列表」</p>
+</blockquote>
+<ul>
+<li>status</li>
+</ul>
+<blockquote>
+<p>状态码，默认200</p>
+</blockquote>
+<ul>
+<li>template_name</li>
+</ul>
+<blockquote>
+<p>模版名称，使用HTMLRenderer渲染时需要指明</p>
+</blockquote>
+<ul>
+<li>headers</li>
+</ul>
+<blockquote>
+<p>用于存放响应头信息的字典</p>
+</blockquote>
+<ul>
+<li>content_type</li>
+</ul>
+<blockquote>
+<p>响应头中的Content-Type</p>
+<p>通常此参数无需设置，会自动根据前端所需类型数据来设置该参数</p>
+</blockquote>
+<h2 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> rest_framework <span class="keyword">import</span> status</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g82omty9k0j30u00wqai5.jpg" alt="状态码"></p>
+<p>修改<code>get</code></p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get</span>(<span class="params">self, request, pk</span>):</span></span><br><span class="line">    project = self.get_object(pk)</span><br><span class="line">    serializer = ProjectSerializer(instance=project)</span><br><span class="line">    <span class="keyword">return</span> Response(serializer.data, status=status.HTTP_200_OK)</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="支持分页，排序的父类GenericAPIView"><a href="#支持分页，排序的父类GenericAPIView" class="headerlink" title="支持分页，排序的父类GenericAPIView"></a>支持分页，排序的父类GenericAPIView</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> rest_framework.generics <span class="keyword">import</span> GenericAPIView</span><br></pre></td></tr></tbody></table></figure>
+
+<ol>
+<li>在视图类中指定过滤引擎</li>
+<li>指定需要排序的字段</li>
+<li>指定查询集</li>
+<li>指定模型序列化器</li>
+</ol>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ProjectsList</span>(<span class="params">GenericAPIView</span>):</span></span><br><span class="line">    <span class="comment"># 1.在视图类中指定过滤引擎</span></span><br><span class="line">    <span class="comment"># OrderingFilter排序</span></span><br><span class="line">    filter_backends = [filters.OrderingFilter]</span><br><span class="line">    <span class="comment"># 2.指定需要排序的字段</span></span><br><span class="line">    ordering_fields = [<span class="string">'name'</span>, <span class="string">'leader'</span>]</span><br><span class="line">    <span class="comment"># 3.指定查询集</span></span><br><span class="line">    queryset = Projects.objects.<span class="built_in">all</span>()</span><br><span class="line">    <span class="comment"># 4.指定模型序列化器</span></span><br><span class="line">    serializer_class = ProjectModelSerializer</span><br></pre></td></tr></tbody></table></figure>
+
+<p>查看<code>rest_framework.generics.GenericAPIView#get_queryset</code></p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_queryset</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Get the list of items for this view.</span></span><br><span class="line"><span class="string">    This must be an iterable, and may be a queryset.</span></span><br><span class="line"><span class="string">    Defaults to using `self.queryset`.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    This method should always be used rather than accessing `self.queryset`</span></span><br><span class="line"><span class="string">    directly, as `self.queryset` gets evaluated only once, and those results</span></span><br><span class="line"><span class="string">    are cached for all subsequent requests.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    You may want to override this if you need to provide different</span></span><br><span class="line"><span class="string">    querysets depending on the incoming request.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    (Eg. return a list of items that is specific to the user)</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="keyword">assert</span> self.queryset <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>, (</span><br><span class="line">        <span class="string">"'%s' should either include a `queryset` attribute, "</span></span><br><span class="line">        <span class="string">"or override the `get_queryset()` method."</span></span><br><span class="line">        % self.__class__.__name__</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    queryset = self.queryset</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">isinstance</span>(queryset, QuerySet):</span><br><span class="line">        <span class="comment"># Ensure queryset is re-evaluated on each request.</span></span><br><span class="line">        queryset = queryset.<span class="built_in">all</span>()</span><br><span class="line">    <span class="keyword">return</span> queryset</span><br></pre></td></tr></tbody></table></figure>
+
+<p>所以：<code>project_qs = Projects.objects.all()</code>和<code>project_qs = self.get_queryset()</code>一致</p>
+<p>查看<code>rest_framework.generics.GenericAPIView#get_serializer</code>和<code>rest_framework.generics.GenericAPIView#get_serializer_class</code></p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_serializer</span>(<span class="params">self, *args, **kwargs</span>):</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Return the serializer instance that should be used for validating and</span></span><br><span class="line"><span class="string">    deserializing input, and for serializing output.</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    serializer_class = self.get_serializer_class()</span><br><span class="line">    kwargs[<span class="string">'context'</span>] = self.get_serializer_context()</span><br><span class="line">    <span class="keyword">return</span> serializer_class(*args, **kwargs)</span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_serializer_class</span>(<span class="params">self</span>):</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    Return the class to use for the serializer.</span></span><br><span class="line"><span class="string">    Defaults to using `self.serializer_class`.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    You may want to override this if you need to provide different</span></span><br><span class="line"><span class="string">    serializations depending on the incoming request.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    (Eg. admins get full serialization, others get basic serialization)</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="keyword">assert</span> self.serializer_class <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>, (</span><br><span class="line">        <span class="string">"'%s' should either include a `serializer_class` attribute, "</span></span><br><span class="line">        <span class="string">"or override the `get_serializer_class()` method."</span></span><br><span class="line">        % self.__class__.__name__</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> self.serializer_class</span><br></pre></td></tr></tbody></table></figure>
+
+<p>所以：<code>serializer = ProjectSerializer(instance=project_qs, many=True)</code>和<code>serializer = self.get_serializer(instance=project_qs, many=True)</code>一致</p>
+<h2 id="本轮优化后的视图"><a href="#本轮优化后的视图" class="headerlink" title="本轮优化后的视图"></a>本轮优化后的视图</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.http <span class="keyword">import</span> Http404</span><br><span class="line"><span class="keyword">from</span> projects.models <span class="keyword">import</span> Projects</span><br><span class="line"><span class="keyword">from</span> projects.serializer <span class="keyword">import</span> ProjectSerializer, ProjectModelSerializer</span><br><span class="line"><span class="keyword">from</span> rest_framework.views <span class="keyword">import</span> APIView</span><br><span class="line"><span class="keyword">from</span> rest_framework.generics <span class="keyword">import</span> GenericAPIView</span><br><span class="line"><span class="keyword">from</span> rest_framework.response <span class="keyword">import</span> Response</span><br><span class="line"><span class="keyword">from</span> rest_framework <span class="keyword">import</span> status, filters</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ProjectsList</span>(<span class="params">GenericAPIView</span>):</span></span><br><span class="line">    <span class="comment"># 1.在视图类中指定过滤引擎</span></span><br><span class="line">    <span class="comment"># OrderingFilter排序</span></span><br><span class="line">    filter_backends = [filters.OrderingFilter]</span><br><span class="line">    <span class="comment"># 2.指定需要排序的字段</span></span><br><span class="line">    ordering_fields = [<span class="string">'name'</span>, <span class="string">'leader'</span>, <span class="string">'id'</span>]</span><br><span class="line">    <span class="comment"># 3.指定查询集</span></span><br><span class="line">    queryset = Projects.objects.<span class="built_in">all</span>()</span><br><span class="line">    <span class="comment"># 4.指定模型序列化器</span></span><br><span class="line">    serializer_class = ProjectModelSerializer</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span>(<span class="params">self, reuqest</span>):</span></span><br><span class="line">        project_qs = self.get_queryset()</span><br><span class="line">        project_qs = self.filter_queryset(project_qs)</span><br><span class="line">        serializer = self.get_serializer(instance=project_qs, many=<span class="literal">True</span>)</span><br><span class="line">        <span class="keyword">return</span> Response(serializer.data, status=status.HTTP_200_OK)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">post</span>(<span class="params">self, request</span>):</span></span><br><span class="line">        serializer = ProjectSerializer(data=request.data)</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            serializer.is_valid(raise_exception=<span class="literal">True</span>)</span><br><span class="line">        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">            <span class="keyword">return</span> Response(serializer.errors)</span><br><span class="line">        serializer.save()</span><br><span class="line">        <span class="keyword">return</span> Response(serializer.data, status=status.HTTP_201_CREATED)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ProjectDetail</span>(<span class="params">APIView</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_object</span>(<span class="params">self, pk</span>):</span></span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            <span class="keyword">return</span> Projects.objects.get(<span class="built_in">id</span>=pk)</span><br><span class="line">        <span class="keyword">except</span> Projects.DoesNotExist:</span><br><span class="line">            <span class="keyword">raise</span> Http404</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span>(<span class="params">self, request, pk</span>):</span></span><br><span class="line">        project = self.get_object(pk)</span><br><span class="line">        serializer = ProjectSerializer(instance=project)</span><br><span class="line">        <span class="keyword">return</span> Response(serializer.data, status=status.HTTP_200_OK)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">put</span>(<span class="params">self, request, pk</span>):</span></span><br><span class="line">        project = self.get_object(pk)</span><br><span class="line">        serializer = ProjectSerializer(instance=project, data=request.data)</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            serializer.is_valid(raise_exception=<span class="literal">True</span>)</span><br><span class="line">        <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">            <span class="keyword">return</span> Response(serializer.errors)</span><br><span class="line">        serializer.save()</span><br><span class="line">        <span class="keyword">return</span> Response(serializer.data, status=status.HTTP_201_CREATED)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">delete</span>(<span class="params">self, request, pk</span>):</span></span><br><span class="line">        project = self.get_object(pk)</span><br><span class="line">        project.delete()</span><br><span class="line">        <span class="keyword">return</span> Response({}, status=status.HTTP_204_NO_CONTENT)</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="正序"><a href="#正序" class="headerlink" title="正序"></a>正序</h3><p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g82pnfhomyj31b30u0h7f.jpg" alt="正排序"></p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">zhongxindeMacBook-Pro:~ zhongxin$ http :8000/project/?ordering=id</span><br><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Allow: GET, POST, HEAD, OPTIONS</span><br><span class="line">Content-Length: 711</span><br><span class="line">Content-Type: application/json</span><br><span class="line">Date: Fri, 18 Oct 2019 14:14:51 GMT</span><br><span class="line">Server: WSGIServer/0.2 CPython/3.7.1</span><br><span class="line">Vary: Accept, Origin, Cookie</span><br><span class="line">X-Frame-Options: SAMEORIGIN</span><br><span class="line"></span><br><span class="line">[</span><br><span class="line">    {</span><br><span class="line">        "desc": "666",</span><br><span class="line">        "id": 1,</span><br><span class="line">        "interfaces_set": [</span><br><span class="line">            "Interfaces object (1)",</span><br><span class="line">            "Interfaces object (2)"</span><br><span class="line">        ],</span><br><span class="line">        "name": "测试游记",</span><br><span class="line">        "programer": "zhong",</span><br><span class="line">        "publish_app": "公众号",</span><br><span class="line">        "tester": "zx"</span><br><span class="line">    },</span><br><span class="line">    {</span><br><span class="line">        "desc": "6666",</span><br><span class="line">        "id": 2,</span><br><span class="line">        "interfaces_set": [],</span><br><span class="line">        "name": "测试游记1",</span><br><span class="line">        "programer": "zhong1",</span><br><span class="line">        "publish_app": "公众号1",</span><br><span class="line">        "tester": "zx1"</span><br><span class="line">    },</span><br><span class="line">    {</span><br><span class="line">        "desc": "666",</span><br><span class="line">        "id": 3,</span><br><span class="line">        "interfaces_set": [],</span><br><span class="line">        "name": "「测试游记」-创建",</span><br><span class="line">        "programer": "zx",</span><br><span class="line">        "publish_app": "公众号",</span><br><span class="line">        "tester": "zx"</span><br><span class="line">    },</span><br><span class="line">    {</span><br><span class="line">        "desc": "「测试游记」",</span><br><span class="line">        "id": 7,</span><br><span class="line">        "interfaces_set": [],</span><br><span class="line">        "name": "1015项目",</span><br><span class="line">        "programer": "zhong2",</span><br><span class="line">        "publish_app": "公众号2",</span><br><span class="line">        "tester": "zx"</span><br><span class="line">    },</span><br><span class="line">    {</span><br><span class="line">        "desc": "无",</span><br><span class="line">        "id": 8,</span><br><span class="line">        "interfaces_set": [],</span><br><span class="line">        "name": "测试游记项目",</span><br><span class="line">        "programer": "zhong3",</span><br><span class="line">        "publish_app": "公众号",</span><br><span class="line">        "tester": "zhongxin"</span><br><span class="line">    }</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">zhongxindeMacBook-Pro:~ zhongxin$ </span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="倒序"><a href="#倒序" class="headerlink" title="倒序"></a>倒序</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">zhongxindeMacBook-Pro:~ zhongxin$ http :8000/project/?ordering=-id</span><br><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Allow: GET, POST, HEAD, OPTIONS</span><br><span class="line">Content-Length: 711</span><br><span class="line">Content-Type: application/json</span><br><span class="line">Date: Fri, 18 Oct 2019 14:15:51 GMT</span><br><span class="line">Server: WSGIServer/0.2 CPython/3.7.1</span><br><span class="line">Vary: Accept, Origin, Cookie</span><br><span class="line">X-Frame-Options: SAMEORIGIN</span><br><span class="line"></span><br><span class="line">[</span><br><span class="line">    {</span><br><span class="line">        "desc": "无",</span><br><span class="line">        "id": 8,</span><br><span class="line">        "interfaces_set": [],</span><br><span class="line">        "name": "测试游记项目",</span><br><span class="line">        "programer": "zhong3",</span><br><span class="line">        "publish_app": "公众号",</span><br><span class="line">        "tester": "zhongxin"</span><br><span class="line">    },</span><br><span class="line">    {</span><br><span class="line">        "desc": "「测试游记」",</span><br><span class="line">        "id": 7,</span><br><span class="line">        "interfaces_set": [],</span><br><span class="line">        "name": "1015项目",</span><br><span class="line">        "programer": "zhong2",</span><br><span class="line">        "publish_app": "公众号2",</span><br><span class="line">        "tester": "zx"</span><br><span class="line">    },</span><br><span class="line">    {</span><br><span class="line">        "desc": "666",</span><br><span class="line">        "id": 3,</span><br><span class="line">        "interfaces_set": [],</span><br><span class="line">        "name": "「测试游记」-创建",</span><br><span class="line">        "programer": "zx",</span><br><span class="line">        "publish_app": "公众号",</span><br><span class="line">        "tester": "zx"</span><br><span class="line">    },</span><br><span class="line">    {</span><br><span class="line">        "desc": "6666",</span><br><span class="line">        "id": 2,</span><br><span class="line">        "interfaces_set": [],</span><br><span class="line">        "name": "测试游记1",</span><br><span class="line">        "programer": "zhong1",</span><br><span class="line">        "publish_app": "公众号1",</span><br><span class="line">        "tester": "zx1"</span><br><span class="line">    },</span><br><span class="line">    {</span><br><span class="line">        "desc": "666",</span><br><span class="line">        "id": 1,</span><br><span class="line">        "interfaces_set": [</span><br><span class="line">            "Interfaces object (1)",</span><br><span class="line">            "Interfaces object (2)"</span><br><span class="line">        ],</span><br><span class="line">        "name": "测试游记",</span><br><span class="line">        "programer": "zhong",</span><br><span class="line">        "publish_app": "公众号",</span><br><span class="line">        "tester": "zx"</span><br><span class="line">    }</span><br><span class="line">]</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p><img src="https://tva1.sinaimg.cn/large/006y8mN6ly1g82pnt3r3hj31b30u0aud.jpg" alt="倒排序"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt=" wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt=" 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt=" 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python/" rel="tag"># Python</a>
+          
+            <a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/" rel="tag"># 测试开发</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/article/1e262ab.html" rel="next" title="测试开发进阶(二十六)">
+                <i class="fa fa-chevron-left"></i> 测试开发进阶(二十六)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/article/57b8c52d.html" rel="prev" title="测试开发进阶(二十八)">
+                测试开发进阶(二十八) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpeg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">107</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zx490336534" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/zhong-xin-97-8" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-angellist"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6-%E4%BA%8C%E5%8D%81%E4%B8%83"><span class="nav-number">1.</span> <span class="nav-text">测试开发进阶(二十七)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%96%E9%94%AE"><span class="nav-number">1.1.</span> <span class="nav-text">外键</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#PrimaryKeyRelatedField"><span class="nav-number">1.1.1.</span> <span class="nav-text">PrimaryKeyRelatedField</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E6%A8%A1%E5%9E%8B%E4%B8%AD%E7%9A%84%E5%A4%96%E9%94%AE%E5%AD%97%E6%AE%B5%E9%BB%98%E8%AE%A4%E4%BC%9A%E7%94%9F%E4%BA%A7PrimaryKeyRelatedField%E5%BA%8F%E5%88%97%E5%8C%96%E5%99%A8%E5%AD%97%E6%AE%B5"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">数据库模型中的外键字段默认会生产PrimaryKeyRelatedField序列化器字段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%8F%E5%88%97%E5%8C%96%E8%BE%93%E5%87%BA%E7%9A%84%E5%80%BC%E4%B8%BA%E5%A4%96%E9%94%AEID%E5%80%BC"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">序列化输出的值为外键ID值</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%85%B3%E8%81%94%E5%AD%97%E6%AE%B5StringRelatedField"><span class="nav-number">1.1.2.</span> <span class="nav-text">字符串关联字段StringRelatedField</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#StringRelatedField-%E6%AD%A4%E5%AD%97%E6%AE%B5%E5%B0%86%E8%A2%AB%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%BA%E5%85%B3%E8%81%94%E5%AF%B9%E8%B1%A1%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%A1%A8%E8%BE%BE%E5%BD%A2%E5%BC%8F-str-%E6%96%B9%E6%B3%95%E8%BF%94%E5%9B%9E%E5%80%BC"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">StringRelatedField 此字段将被序列化为关联对象字符串表达形式(__str__方法返回值)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E5%AE%9A%E5%AD%97%E6%AE%B5%E6%95%B0%E6%8D%AESlugRelatedField"><span class="nav-number">1.1.3.</span> <span class="nav-text">指定字段数据SlugRelatedField</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E8%81%94%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96%E5%99%A8"><span class="nav-number">1.1.4.</span> <span class="nav-text">关联对象的序列化器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8D%E5%90%91%E6%8C%87%E5%AE%9A"><span class="nav-number">1.1.5.</span> <span class="nav-text">反向指定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%88%B6%E8%A1%A8%E4%B8%AD%E9%BB%98%E8%AE%A4%E4%B8%8D%E4%BC%9A%E7%94%9F%E4%BA%A7%E5%85%B3%E8%81%94%E5%AD%97%E6%AE%B5-%E4%BB%8E%E8%A1%A8-%E5%8F%AF%E4%BB%A5%E6%89%8B%E5%8A%A8%E6%8C%87%E5%AE%9A%EF%BC%8C%E5%AD%97%E6%AE%B5%E5%90%8D%E9%BB%98%E8%AE%A4%E4%B8%BA%E5%AD%90%E8%A1%A8%E6%A8%A1%E5%9E%8B%E7%B1%BB%E5%90%8D%E3%80%8C%E5%B0%8F%E5%86%99-set%E3%80%8D"><span class="nav-number">1.1.6.</span> <span class="nav-text">父表中默认不会生产关联字段(从表),可以手动指定，字段名默认为子表模型类名「小写_set」</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E8%A7%86%E5%9B%BE-%E8%AF%B7%E6%B1%82"><span class="nav-number">1.2.</span> <span class="nav-text">优化视图-请求</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%91%E9%80%81json"><span class="nav-number">1.2.1.</span> <span class="nav-text">发送json</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%91%E9%80%81form%E8%A1%A8%E5%8D%95"><span class="nav-number">1.2.2.</span> <span class="nav-text">发送form表单</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Request"><span class="nav-number">1.2.3.</span> <span class="nav-text">Request</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%98%E5%8C%96%E8%A7%86%E5%9B%BE-%E6%B8%B2%E6%9F%93"><span class="nav-number">1.3.</span> <span class="nav-text">优化视图-渲染</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B8%B2%E6%9F%931"><span class="nav-number">1.3.1.</span> <span class="nav-text">渲染1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B8%B2%E6%9F%932"><span class="nav-number">1.3.2.</span> <span class="nav-text">渲染2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Response"><span class="nav-number">1.3.3.</span> <span class="nav-text">Response</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8A%B6%E6%80%81%E7%A0%81"><span class="nav-number">1.4.</span> <span class="nav-text">状态码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%AF%E6%8C%81%E5%88%86%E9%A1%B5%EF%BC%8C%E6%8E%92%E5%BA%8F%E7%9A%84%E7%88%B6%E7%B1%BBGenericAPIView"><span class="nav-number">1.5.</span> <span class="nav-text">支持分页，排序的父类GenericAPIView</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%AC%E8%BD%AE%E4%BC%98%E5%8C%96%E5%90%8E%E7%9A%84%E8%A7%86%E5%9B%BE"><span class="nav-number">1.6.</span> <span class="nav-text">本轮优化后的视图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A3%E5%BA%8F"><span class="nav-number">1.6.1.</span> <span class="nav-text">正序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%80%92%E5%BA%8F"><span class="nav-number">1.6.2.</span> <span class="nav-text">倒序</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">测试游记</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://zx490336534.github.io/article/9eea7a21.html';
+          this.page.identifier = 'article/9eea7a21.html';
+          this.page.title = '测试开发进阶(二十七)';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
