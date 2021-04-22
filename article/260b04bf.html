@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="测试开发,性能测试," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="测试游记" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="2-性能测试知识面性能测试指标响应时间RT（重要指标） RT是一个非常重要的性能指标  从发起请求的时间点，经过网络传输时间+服务器处理的时间+通过网络传输返回的时间 我们做性能测试时，尽可能的降低网络延迟时间，这样RT时间才会无限的接近我们的服务器处理时间  带宽加宽 局域网 在性能测试中，不要使用无线网络（排除专门的无线网络测试）  使用有线网络时要注意  网络传输的带宽 降低网络传输的节点与">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2-性能测试知识面">
+<meta property="og:url" content="http://zx490336534.github.io/article/260b04bf.html">
+<meta property="og:site_name" content="测试游记">
+<meta property="og:description" content="2-性能测试知识面性能测试指标响应时间RT（重要指标） RT是一个非常重要的性能指标  从发起请求的时间点，经过网络传输时间+服务器处理的时间+通过网络传输返回的时间 我们做性能测试时，尽可能的降低网络延迟时间，这样RT时间才会无限的接近我们的服务器处理时间  带宽加宽 局域网 在性能测试中，不要使用无线网络（排除专门的无线网络测试）  使用有线网络时要注意  网络传输的带宽 降低网络传输的节点与">
+<meta property="og:locale">
+<meta property="article:published_time" content="2021-03-25T23:48:00.000Z">
+<meta property="article:modified_time" content="2021-04-22T14:33:48.184Z">
+<meta property="article:author" content="测试游记">
+<meta property="article:tag" content="测试开发">
+<meta property="article:tag" content="性能测试">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://zx490336534.github.io/article/260b04bf.html"/>
+
+
+
+
+
+  <title>2-性能测试知识面 | 测试游记</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?41fc030db57d5570dd22f78997dc4a7e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">测试游记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/article/260b04bf.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="测试游记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">2-性能测试知识面</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-03-26T07:48:00+08:00">
+                2021-03-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index">
+                    <span itemprop="name">性能测试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/article/260b04bf.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="article/260b04bf.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="2-性能测试知识面"><a href="#2-性能测试知识面" class="headerlink" title="2-性能测试知识面"></a>2-性能测试知识面</h1><h2 id="性能测试指标"><a href="#性能测试指标" class="headerlink" title="性能测试指标"></a>性能测试指标</h2><h3 id="响应时间RT（重要指标）"><a href="#响应时间RT（重要指标）" class="headerlink" title="响应时间RT（重要指标）"></a>响应时间RT（重要指标）</h3><blockquote>
+<p>RT是一个非常重要的性能指标</p>
+</blockquote>
+<p>从发起请求的时间点，经过网络传输时间+服务器处理的时间+通过网络传输返回的时间</p>
+<p>我们做性能测试时，尽可能的降低网络延迟时间，这样RT时间才会无限的接近我们的服务器处理时间</p>
+<ul>
+<li>带宽加宽</li>
+<li>局域网</li>
+<li>在性能测试中，不要使用无线网络（排除专门的无线网络测试）</li>
+</ul>
+<p>使用有线网络时要注意</p>
+<ul>
+<li>网络传输的带宽</li>
+<li>降低网络传输的节点与距离（不能使用跳板机）</li>
+<li>独立网络环境<span id="more"></span>
+<h3 id="TPS-QPS（最主要指标）"><a href="#TPS-QPS（最主要指标）" class="headerlink" title="TPS/QPS（最主要指标）"></a>TPS/QPS（最主要指标）</h3></li>
+</ul>
+<h4 id="TPS-Transactions-per-Second"><a href="#TPS-Transactions-per-Second" class="headerlink" title="TPS(Transactions per Second)"></a>TPS(Transactions per Second)</h4><p><strong>服务器</strong>每秒处理事务数，衡量服务器处理能力的最主要指标</p>
+<h4 id="QPS-Queries-per-Second"><a href="#QPS-Queries-per-Second" class="headerlink" title="QPS(Queries per Second)"></a>QPS(Queries per Second)</h4><p>每秒查询率</p>
+<h4 id="差异"><a href="#差异" class="headerlink" title="差异"></a>差异</h4><p>一个TPS可能有多个QPS</p>
+<h4 id="HPS-Hit-per-Second"><a href="#HPS-Hit-per-Second" class="headerlink" title="HPS(Hit per Second)"></a>HPS(Hit per Second)</h4><p>每秒点击数（用户端）</p>
+<h4 id="RPS-request-per-Second"><a href="#RPS-request-per-Second" class="headerlink" title="RPS(request per Second)"></a>RPS(request per Second)</h4><p>每秒请求数</p>
+<h4 id="衡量主体角度"><a href="#衡量主体角度" class="headerlink" title="衡量主体角度"></a>衡量主体角度</h4><p>TPS：服务器处理能力。响应时间小、tps可以增大</p>
+<p>QPS：并发用户发起的查询 接口查询多+人多，qps可以增大</p>
+<p>RPS：并发用户发起请求 人多，rps可以增大</p>
+<h3 id="吞吐量"><a href="#吞吐量" class="headerlink" title="吞吐量"></a>吞吐量</h3><blockquote>
+<p>是衡量<strong>网络</strong>处理能力的</p>
+</blockquote>
+<p>单位时间内处理的请求数量（事务/s）</p>
+<p>在没有网络影响时，吞吐量=TPS</p>
+<h3 id="吞吐率"><a href="#吞吐率" class="headerlink" title="吞吐率"></a>吞吐率</h3><blockquote>
+<p>网络传输速率</p>
+</blockquote>
+<p>单位时间通过的数据的平均速率（kB/s）</p>
+<h3 id="点击率"><a href="#点击率" class="headerlink" title="点击率"></a>点击率</h3><p>每秒点击数</p>
+<h3 id="资源利用率"><a href="#资源利用率" class="headerlink" title="资源利用率"></a>资源利用率</h3><p>服务器资源的使用率</p>
+<ul>
+<li>cpu利用率</li>
+<li>内存利用率</li>
+<li>磁盘I/O</li>
+<li>网络带宽利用率</li>
+<li>一般都不要超过80%</li>
+</ul>
+<h2 id="性能测试环境"><a href="#性能测试环境" class="headerlink" title="性能测试环境"></a>性能测试环境</h2><p>性能测试是要自己独立搭建性能环境，网络环境</p>
+<ul>
+<li>绝对不能用生产环境</li>
+<li>不能用功能测试、自动化环境</li>
+<li>这个性能环境，包括应用服务器和数据库服务器</li>
+</ul>
+<h3 id="性能环境硬件资源怎么确定"><a href="#性能环境硬件资源怎么确定" class="headerlink" title="性能环境硬件资源怎么确定"></a>性能环境硬件资源怎么确定</h3><ol>
+<li><p>数量要和生产环境的数量一致吗？</p>
+<p>不用和生产一样那么多服务器的数量，通过逐步增加服务器数量来评估大致的性能瓶颈</p>
+<p>比如生产环境有8台服务器，性能测试从2台开始，增加到3台。可以大致评估增加数量提升的性能指标</p>
+</li>
+<li><p>每一台的硬件配置要和生产环境一致吗？</p>
+<p>要和生产环境的配置一致</p>
+<p>如果性能测试环境的硬件配置不如生产环境的硬件配置，性能测试结果得到的性能指标值，只能说 是否存在性能瓶颈，不能作为生产性能指标低的参考</p>
+</li>
+</ol>
+<h2 id="性能测试流程"><a href="#性能测试流程" class="headerlink" title="性能测试流程"></a>性能测试流程</h2><p>性能测试准备=&gt;搭建性能测试环境-&gt;性能测试脚本开发-&gt;性能测试脚本执行-&gt;结果分析与调优-&gt;测试报告与结果跟踪</p>
+<h3 id="性能测试准备"><a href="#性能测试准备" class="headerlink" title="性能测试准备"></a>性能测试准备</h3><ol>
+<li>理解需求、测试计划、测试模型、工作量评估</li>
+<li>了解架构(数据流)</li>
+<li>要明确需求的性能指标</li>
+</ol>
+<p>例如500w访问量的并发</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 按照每天8小时有人访问</span></span><br><span class="line">500w/<span class="number">8</span>/<span class="number">3600</span>=<span class="number">174</span></span><br><span class="line"><span class="comment"># 按照二八原则</span></span><br><span class="line">500w*<span class="number">0.8</span>/（<span class="number">24</span>*<span class="number">0.2</span>*<span class="number">3600</span>)=<span class="number">232</span></span><br><span class="line"><span class="comment"># 一般需要1.2~1.5倍的TPS</span></span><br><span class="line"><span class="number">232</span>*（<span class="number">1.2</span>~<span class="number">1.5</span>) = <span class="number">278</span>~<span class="number">348</span> </span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="性能测试脚本开发"><a href="#性能测试脚本开发" class="headerlink" title="性能测试脚本开发"></a>性能测试脚本开发</h3><ul>
+<li>选取协议</li>
+<li>制作脚本</li>
+<li>调试脚本</li>
+<li>验证脚本</li>
+</ul>
+<p>先对接测试环境，开发调试脚本完成，再对接性能环境</p>
+<h3 id="性能执行"><a href="#性能执行" class="headerlink" title="性能执行"></a>性能执行</h3><ul>
+<li>试运行</li>
+<li>场景执行</li>
+</ul>
+<h3 id="性能测试结果分析与调优"><a href="#性能测试结果分析与调优" class="headerlink" title="性能测试结果分析与调优"></a>性能测试结果分析与调优</h3><ul>
+<li>分析思路：服务器硬件&gt;网络&gt;操作系统软件层的配置&gt;应用的瓶颈</li>
+</ul>
+<h3 id="性能测试报告与结果跟踪"><a href="#性能测试报告与结果跟踪" class="headerlink" title="性能测试报告与结果跟踪"></a>性能测试报告与结果跟踪</h3><ul>
+<li>性能测试报告</li>
+<li>性能测试问题跟踪</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt=" wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt=" 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt=" 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/" rel="tag"># 测试开发</a>
+          
+            <a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/" rel="tag"># 性能测试</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/article/cbb71895.html" rel="next" title="1-性能测试入门">
+                <i class="fa fa-chevron-left"></i> 1-性能测试入门
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/article/bd78ee6b.html" rel="prev" title="3-性能测试知识面">
+                3-性能测试知识面 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpeg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">146</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zx490336534" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/zhong-xin-97-8" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-angellist"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E7%9F%A5%E8%AF%86%E9%9D%A2"><span class="nav-number">1.</span> <span class="nav-text">2-性能测试知识面</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E6%8C%87%E6%A0%87"><span class="nav-number">1.1.</span> <span class="nav-text">性能测试指标</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%93%8D%E5%BA%94%E6%97%B6%E9%97%B4RT%EF%BC%88%E9%87%8D%E8%A6%81%E6%8C%87%E6%A0%87%EF%BC%89"><span class="nav-number">1.1.1.</span> <span class="nav-text">响应时间RT（重要指标）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TPS-QPS%EF%BC%88%E6%9C%80%E4%B8%BB%E8%A6%81%E6%8C%87%E6%A0%87%EF%BC%89"><span class="nav-number">1.1.2.</span> <span class="nav-text">TPS&#x2F;QPS（最主要指标）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#TPS-Transactions-per-Second"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">TPS(Transactions per Second)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#QPS-Queries-per-Second"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">QPS(Queries per Second)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B7%AE%E5%BC%82"><span class="nav-number">1.1.2.3.</span> <span class="nav-text">差异</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#HPS-Hit-per-Second"><span class="nav-number">1.1.2.4.</span> <span class="nav-text">HPS(Hit per Second)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RPS-request-per-Second"><span class="nav-number">1.1.2.5.</span> <span class="nav-text">RPS(request per Second)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A1%A1%E9%87%8F%E4%B8%BB%E4%BD%93%E8%A7%92%E5%BA%A6"><span class="nav-number">1.1.2.6.</span> <span class="nav-text">衡量主体角度</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%9E%E5%90%90%E9%87%8F"><span class="nav-number">1.1.3.</span> <span class="nav-text">吞吐量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%9E%E5%90%90%E7%8E%87"><span class="nav-number">1.1.4.</span> <span class="nav-text">吞吐率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%82%B9%E5%87%BB%E7%8E%87"><span class="nav-number">1.1.5.</span> <span class="nav-text">点击率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B5%84%E6%BA%90%E5%88%A9%E7%94%A8%E7%8E%87"><span class="nav-number">1.1.6.</span> <span class="nav-text">资源利用率</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83"><span class="nav-number">1.2.</span> <span class="nav-text">性能测试环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E7%8E%AF%E5%A2%83%E7%A1%AC%E4%BB%B6%E8%B5%84%E6%BA%90%E6%80%8E%E4%B9%88%E7%A1%AE%E5%AE%9A"><span class="nav-number">1.2.1.</span> <span class="nav-text">性能环境硬件资源怎么确定</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E6%B5%81%E7%A8%8B"><span class="nav-number">1.3.</span> <span class="nav-text">性能测试流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E5%87%86%E5%A4%87"><span class="nav-number">1.3.1.</span> <span class="nav-text">性能测试准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E8%84%9A%E6%9C%AC%E5%BC%80%E5%8F%91"><span class="nav-number">1.3.2.</span> <span class="nav-text">性能测试脚本开发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E6%89%A7%E8%A1%8C"><span class="nav-number">1.3.3.</span> <span class="nav-text">性能执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C%E5%88%86%E6%9E%90%E4%B8%8E%E8%B0%83%E4%BC%98"><span class="nav-number">1.3.4.</span> <span class="nav-text">性能测试结果分析与调优</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E6%8A%A5%E5%91%8A%E4%B8%8E%E7%BB%93%E6%9E%9C%E8%B7%9F%E8%B8%AA"><span class="nav-number">1.3.5.</span> <span class="nav-text">性能测试报告与结果跟踪</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">测试游记</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://zx490336534.github.io/article/260b04bf.html';
+          this.page.identifier = 'article/260b04bf.html';
+          this.page.title = '2-性能测试知识面';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Git,测试开发," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="测试游记" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Git基础知识(五)分支都说Git的分支是它的必杀技特性，由于没有接触过太多的版本管理工具，就使用过的SVN来说，两者真的差别巨大。SVN创建一个分支，需要将内容复制一遍！这个时间真的是非常的漫长，而Git只需要几秒钟。所以Git鼓励在工作流中频繁的使用分支和合并。 Git保存数据的方式Git保存的不是文件的变化或者差异，而是不同时刻的文件快照。 Git每次进行提交操作的时候，会保存一个提交对象：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git基础知识（五）">
+<meta property="og:url" content="http://zx490336534.github.io/article/289a567d.html">
+<meta property="og:site_name" content="测试游记">
+<meta property="og:description" content="Git基础知识(五)分支都说Git的分支是它的必杀技特性，由于没有接触过太多的版本管理工具，就使用过的SVN来说，两者真的差别巨大。SVN创建一个分支，需要将内容复制一遍！这个时间真的是非常的漫长，而Git只需要几秒钟。所以Git鼓励在工作流中频繁的使用分支和合并。 Git保存数据的方式Git保存的不是文件的变化或者差异，而是不同时刻的文件快照。 Git每次进行提交操作的时候，会保存一个提交对象：">
+<meta property="og:locale">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79ly1g1qu65scegj31bu0bu41i.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79ly1g1qu9owah5j310q0bs76l.jpg">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79ly1g1quayt1byj30v60c2wgr.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79ly1g1que2ojbpj30jm0cv42b.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79ly1g1qugcl0jrj30qu050aas.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79ly1g1qumgi8x7j30zo062dgu.jpg">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79ly1g1quoo0cr8j31gm02maae.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1g1qupgpkqtj31fi07c75s.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1g1quq0c662j31fg03qwf2.jpg">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79ly1g1quqw5ej9j31hc08w765.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1g1qusiv7wkj31di068abo.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79ly1g1quy2np8xj31gm03yjs0.jpg">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79ly1g1quzs4nsdj30y60jo78u.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1g1qv0se9ysj30y00cszo3.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79ly1g1qv3b1ax6j31640gw0vw.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79ly1g1qv5jwd8wj316k0hy41x.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79ly1g1qv7zx3baj311k0u0wm8.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79ly1g1qv93sqthj31ba0hon17.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1g1qva81badj313i0tgtdx.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1g1qvbgraiaj311w0mg786.jpg">
+<meta property="article:published_time" content="2020-06-17T00:43:00.000Z">
+<meta property="article:modified_time" content="2021-04-22T14:19:12.041Z">
+<meta property="article:author" content="测试游记">
+<meta property="article:tag" content="Git">
+<meta property="article:tag" content="测试开发">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ws1.sinaimg.cn/large/006tNc79ly1g1qu65scegj31bu0bu41i.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://zx490336534.github.io/article/289a567d.html"/>
+
+
+
+
+
+  <title>Git基础知识（五） | 测试游记</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?41fc030db57d5570dd22f78997dc4a7e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">测试游记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/article/289a567d.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="测试游记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Git基础知识（五）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-06-17T08:43:00+08:00">
+                2020-06-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Git/" itemprop="url" rel="index">
+                    <span itemprop="name">Git</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/article/289a567d.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="article/289a567d.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Git基础知识-五"><a href="#Git基础知识-五" class="headerlink" title="Git基础知识(五)"></a>Git基础知识(五)</h1><h2 id="分支"><a href="#分支" class="headerlink" title="分支"></a>分支</h2><p>都说Git的分支是它的<code>必杀技特性</code>，由于没有接触过太多的版本管理工具，就使用过的SVN来说，两者真的差别巨大。SVN创建一个分支，需要将内容复制一遍！这个时间真的是非常的漫长，而Git只需要几秒钟。所以Git<strong>鼓励</strong>在工作流中频繁的使用分支和合并。</p>
+<h3 id="Git保存数据的方式"><a href="#Git保存数据的方式" class="headerlink" title="Git保存数据的方式"></a>Git保存数据的方式</h3><p>Git保存的不是文件的<code>变化</code>或者<code>差异</code>，而是不同时刻的<code>文件快照</code>。</p>
+<p>Git每次进行提交操作的时候，会保存一个<code>提交对象</code>：这个提交对象包含了一个指向暂存内容快照的指针，并且这个对象还包含了作者的<code>姓名</code>，<code>邮箱</code>，<code>提交信息</code>，<code>指向它的父对象的指针</code>。</p>
+<ul>
+<li>首次提交产生的提交对象<code>没有</code>父对象</li>
+<li>普通提交操作产生的提交对象<code>有一个</code>父对象</li>
+<li>多个分支合并产生的提交对象<code>有多个</code>父对象<span id="more"></span>
+举一个例子：</li>
+</ul>
+<p>在一个空的文件夹中创建Git仓库，新建三个文件并完成提交。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git add README test.rb LICENSE </span><br><span class="line">git commit -m 'The initial commit of my project'</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://ws1.sinaimg.cn/large/006tNc79ly1g1qu65scegj31bu0bu41i.jpg" alt="例子"></p>
+<p>首先先来查看一下当前的状态</p>
+<p>然后进入<code>cd .git/objects/</code>进到git<code>存放对象</code>的地方</p>
+<p><img src="https://ws1.sinaimg.cn/large/006tNc79ly1g1qu9owah5j310q0bs76l.jpg" alt="查看当前状态"></p>
+<p>使用<code>ls -al</code>可以看到这些个东西都是文件夹「d开头」</p>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1g1quayt1byj30v60c2wgr.jpg" alt="查看具体文件信息">感兴趣可以了解更多Linux文件属性的知识：</p>
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79ly1g1que2ojbpj30jm0cv42b.jpg" alt="Linux文件"></p>
+<p>刚才通过<code>git log</code>看到的哈希值为：<code>e011573e4a35dda973b7cdadd8ef5954cfa8314f</code>，所以进入<code>e0</code>这个文件夹，发现</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">e0文件夹</span><br><span class="line">内容：11573e4a35dda973b7cdadd8ef5954cfa8314f</span><br><span class="line">组合：e011573e4a35dda973b7cdadd8ef5954cfa8314f</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79ly1g1qugcl0jrj30qu050aas.jpg" alt="进入e0"></p>
+<p>所以这个对象就是提交对象。</p>
+<h3 id="查看Git的对象"><a href="#查看Git的对象" class="headerlink" title="查看Git的对象"></a>查看Git的对象</h3><p>由于这个提交也就是当前位置，所以可以直接使用拿到这一段内容</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> cat .git/HEAD</span></span><br><span class="line">ref: refs/heads/master</span><br><span class="line"><span class="meta">$</span><span class="bash"> cat .git/refs/heads/master</span></span><br><span class="line">e011573e4a35dda973b7cdadd8ef5954cfa8314f</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79ly1g1qumgi8x7j30zo062dgu.jpg" alt="image-20190404195709051"></p>
+<p>这些文件的内容其实是压缩的数据外加一个标注类型和长度的头. </p>
+<p>类型可以是</p>
+<ul>
+<li>块(blob)</li>
+<li>树(tree)</li>
+<li>提交(commit)</li>
+<li>标签(tag)</li>
+</ul>
+<p>使用<code>git cat-file -t &lt;SHA值&gt;</code>可以看到它的类型</p>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1g1quoo0cr8j31gm02maae.jpg" alt="查看类型"></p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79ly1g1qupgpkqtj31fi07c75s.jpg" alt="tree"></p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79ly1g1quq0c662j31fg03qwf2.jpg" alt="blob"></p>
+<p>使用<code>git cat-file commit &lt;SHA值&gt;</code>可以看到提交信息</p>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1g1quqw5ej9j31hc08w765.jpg" alt="提交信息"></p>
+<p>使用<code>git ls-tree &lt;SHA值&gt;</code>可以看到树的信息，我们在这棵树里面看到了我们刚新建的三个文件</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79ly1g1qusiv7wkj31di068abo.jpg" alt="树的信息"></p>
+<p>使用<code>git cat-file blob &lt;SHA值&gt;</code>可以看到文件的内容，不过可惜我这次的提交是空文件。</p>
+<p>我对文件进行修改之后再进行了一次提交，然后再查看blob的时候可以看到和我新增的修改一样</p>
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79ly1g1quy2np8xj31gm03yjs0.jpg" alt="文件内容"></p>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1g1quzs4nsdj30y60jo78u.jpg" alt="首次提交对象及其树结构"></p>
+<p>在修改之后，指针就会指向新的提交</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79ly1g1qv0se9ysj30y00cszo3.jpg" alt="提交后指向"></p>
+<h3 id="创建分支"><a href="#创建分支" class="headerlink" title="创建分支"></a>创建分支</h3><p>我们要创建一个分支，就相当于要创建一个可以<code>移动的新指针</code>。</p>
+<p>使用的是<code>git branch &lt;name&gt;</code></p>
+<p><img src="https://ws1.sinaimg.cn/large/006tNc79ly1g1qv3b1ax6j31640gw0vw.jpg" alt="创建分支"></p>
+<p>虽然我们创建了一个分支，但其实我们还是在master上，我们当前的位置其实是由<code>HEAD</code>这个特殊的指针决定的。</p>
+<h3 id="切换分支"><a href="#切换分支" class="headerlink" title="切换分支"></a>切换分支</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git checkout testing</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79ly1g1qv5jwd8wj316k0hy41x.jpg" alt="切换分支"></p>
+<p>我们可以在这个分支上进行后续的提交</p>
+<p><img src="https://ws1.sinaimg.cn/large/006tNc79ly1g1qv7zx3baj311k0u0wm8.jpg" alt="分支上新增一个提交"></p>
+<p>假设我们回到master分支上进行一个提交</p>
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79ly1g1qv93sqthj31ba0hon17.jpg" alt="新建文件"></p>
+<p>我们就可以发现两个分支往不同的方向走去了</p>
+<p>使用<code>git log --oneline --decorate --graph --all</code> ，它会输出你的提交历史、各个分支的指向以及项目的分支分叉情况。</p>
+<p>也可以用<code>git log --graph --all</code>查看分支图的详细信息</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79ly1g1qva81badj313i0tgtdx.jpg" alt="分支图详细信息"></p>
+<p>不加上<code>--all</code>的话只会显示当前所在分支的内容</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79ly1g1qvbgraiaj311w0mg786.jpg" alt="当前分支的内容"></p>
+<p>以上就学会了Git基础的数据存放方式，分支的创建，当前状态的查看。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt=" wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt=" 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt=" 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Git/" rel="tag"># Git</a>
+          
+            <a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/" rel="tag"># 测试开发</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/article/4704933a.html" rel="next" title="Git基础知识（四）">
+                <i class="fa fa-chevron-left"></i> Git基础知识（四）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/article/4d941da4.html" rel="prev" title="Git基础知识（六）">
+                Git基础知识（六） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpeg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">146</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zx490336534" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/zhong-xin-97-8" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-angellist"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Git%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86-%E4%BA%94"><span class="nav-number">1.</span> <span class="nav-text">Git基础知识(五)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%94%AF"><span class="nav-number">1.1.</span> <span class="nav-text">分支</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Git%E4%BF%9D%E5%AD%98%E6%95%B0%E6%8D%AE%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">1.1.1.</span> <span class="nav-text">Git保存数据的方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8BGit%E7%9A%84%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.1.2.</span> <span class="nav-text">查看Git的对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E5%88%86%E6%94%AF"><span class="nav-number">1.1.3.</span> <span class="nav-text">创建分支</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%87%E6%8D%A2%E5%88%86%E6%94%AF"><span class="nav-number">1.1.4.</span> <span class="nav-text">切换分支</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">测试游记</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://zx490336534.github.io/article/289a567d.html';
+          this.page.identifier = 'article/289a567d.html';
+          this.page.title = 'Git基础知识（五）';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
