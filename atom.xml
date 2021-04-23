@@ -6,7 +6,7 @@
   <link href="http://zx490336534.github.io/atom.xml" rel="self"/>
   
   <link href="http://zx490336534.github.io/"/>
-  <updated>2021-04-22T14:34:11.422Z</updated>
+  <updated>2021-04-23T14:06:08.736Z</updated>
   <id>http://zx490336534.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>12-使用JDBC读取与写入数据</title>
+    <link href="http://zx490336534.github.io/article/b1e20de1.html"/>
+    <id>http://zx490336534.github.io/article/b1e20de1.html</id>
+    <published>2021-04-23T11:48:00.000Z</published>
+    <updated>2021-04-23T14:06:08.736Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="12-使用JDBC读取与写入数据"><a href="#12-使用JDBC读取与写入数据" class="headerlink" title="12-使用JDBC读取与写入数据"></a>12-使用JDBC读取与写入数据</h1><h2 id="JDBC注意点"><a href="#JDBC注意点" class="headerlink" title="JDBC注意点"></a>JDBC注意点</h2><h3 id="SQL语句"><a href="#SQL语句" class="headerlink" title="SQL语句"></a>SQL语句</h3><p>建议不要带<code>;</code></p><p>一个jdbc request中不要写多个sql，默认只能支持一条sql</p><h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><h4 id="Variable-names"><a href="#Variable-names" class="headerlink" title="Variable names"></a>Variable names</h4><ul><li><p>定义变量，接收对应「列」的值</p></li><li><p>如果有不需要接收的列，则使用「空格+逗号」进行间隔</p></li><li><p>结果的值，使用「变量名称+_顺序数字」调用</p></li></ul><p><strong>实例</strong></p><p>定义一个<code>, mb</code>提取结果中的手机号码</p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gptyh64a9sj313v0jract.jpg" alt="取值"></p><p>查看全部的运行结果</p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gptyh9sjwaj313v0jrq7t.jpg" alt="结果查看"></p><p>使用「调试取样器」查看提取到的内容</p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gptyhfcgvfj313v0jr0wu.jpg" alt="调试"></p><p>使用「ForEach控制器」输出全部结果</p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gptykt48tkj315w0luwig.jpg" alt="ForEach控制器"></p><ul><li>输入变量前缀：<code>mb</code></li><li>开始循环 0</li><li>结束循环 10</li><li>输出变量名称:<code>mbil</code></li></ul><p>添加一个「调试取样器」并修改它的名称为<code>${mbil}</code></p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gptym0ruavj31740n2ael.jpg" alt="调试取样器"></p><p>运行后查看结果</p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gptymji3uaj31740n2qac.jpg" alt="查看结果"></p><p>使用「循环控制器」获取</p><ul><li>循环次数填写<code>${mb_#}</code></li></ul><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gptytjbr8sj31740dydjj.jpg" alt="截屏2021-04-23 下午8.47.01"></p><p>「计数器」中</p><ul><li>开始值为1</li><li>递增为1</li><li>最大值为<code>${mb_#}</code></li><li>引用名称为<code>d</code></li></ul><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gptytosjnkj31740dygpo.jpg" alt="截屏2021-04-23 下午8.47.10"></p><p>将「调试取样器」名称修改为<code>${__V(mb_${d},)}</code></p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gptytt7irbj31740dyjv7.jpg" alt="截屏2021-04-23 下午8.47.17"></p><p>运行之后可以在结果中查看，每个值都打印出来了</p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gptyu00jzsj31740katg7.jpg" alt="截屏2021-04-23 下午8.47.26"></p><h4 id="Result-variable-name"><a href="#Result-variable-name" class="headerlink" title="Result variable name"></a>Result variable name</h4><blockquote><p>接收全部结果，并以列表展示</p></blockquote><p>添加一个名为「allvar」的变量接收</p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gptyo2meetj31740s57a2.jpg" alt="定义"></p><p>查看结果</p><figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">allvar=[{mobile=13527104953, id=25, gqid=126361, identity=1e7a82646a503f41, token=rjNWTXOSU8g68V62fcqgEMm4ivcNhvV/W7C/k2G8kc+qYRbmw53LuAfcwFRAuT8pxRU/jxaEwo/fQbjJJq9BrA==}, {mobile=13528223194, id=29, gqid=126182, identity=640d783c00a09e98, token=YeCOmrviJNaF6nhhSI4Lqq3sBrTRxAT4m0vZbrLALFDOiIl02I+7z//l7vPA/s5XxRU/jxaEwo/fQbjJJq9BrA==}, {mobile=13560693138, id=40, gqid=124571, identity=7f897d7fd70df90a, token=bu3nXFfaVsqCIZ2eKOQDu8Ah/UfTTez3iPyWRSH3hgFY5AQFvR7kcg9gGdxq/0kTxRU/jxaEwo/fQbjJJq9BrA==}, {mobile=13560696226, id=51, gqid=126474, identity=8a989d323fde98f1, token=pEOeKYMBmmPWnT+CkxUKCj249HbCPHFkgH6FoOjrDcWQtElKwuYUjVwvP1SaDvznxRU/jxaEwo/fQbjJJq9BrA==}, {mobile=13527104943, id=78, gqid=4000000, identity=0da609ddca720332, token=cwjgPJCiSp/zom1v/xG39CkpdxgjTKvts+NVk+sVMzMfEtHIhoe56Ch2gNFKjesdxRU/jxaEwo/fQbjJJq9BrA==}, {mobile=13527104143, id=79, gqid=4000001, identity=195006160bc11f4f, token=JTQBPw32Sq88b5MjfrsA/eErfhax5EHrvVdzumTtRV+yXd0odVFMF8N93QEbnLTYxRU/jxaEwo/fQbjJJq9BrA==}]</span><br></pre></td></tr></tbody></table></figure><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gptynxpyg2j31740s5497.jpg" alt="结果"></p><h2 id="使用JDBC批量造数据"><a href="#使用JDBC批量造数据" class="headerlink" title="使用JDBC批量造数据"></a>使用JDBC批量造数据</h2><blockquote><p>思路：循环执行insert语句</p></blockquote><h3 id="使用SQLite存储数据"><a href="#使用SQLite存储数据" class="headerlink" title="使用SQLite存储数据"></a>使用<code>SQLite</code>存储数据</h3><p>先连接数据库</p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gpu0762o9kj31740s2jy7.jpg" alt="连接数据库"></p><p>创建一张表</p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gpu07li9hvj31740s244t.jpg" alt="创建表"></p><p>调用注册接口</p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gpu08jac88j31740s2agt.jpg" alt="注册接口"></p><p>将注册结果插入到数据库中</p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gpu07xb1e3j31740s20z1.jpg" alt="插入表"></p><p>查看结果</p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gpu08zaryfj30xr0u0tev.jpg" alt="查看结果"></p><p>修改「线程组」的次数为1000次运行后查看数据库</p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gpu0c7veduj30xr0u0gus.jpg" alt="查看结果"></p><p>新建「JDBC Request」</p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gpu0fy2cvlj31740s2wl1.jpg" alt="JDBC Request"></p><p>新建一个「保存响应到文件」</p><p>去除勾选「Dont add number to prefix」和「Dont add content type suffix」</p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gpu0fmwcl5j31740s2wkz.jpg" alt="保存响应到文件"></p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gpu0jrnmdpj30ps0qpgrw.jpg" alt="查看结果"></p><h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>使用数据库的优势：可以指定读取n行，每次操作消耗小</p><p>使用csv文件每次需要打开整个文件后进行读取</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;12-使用JDBC读取与写入数据&quot;&gt;&lt;a href=&quot;#12-使用JDBC读取与写入数据&quot; class=&quot;headerlink&quot; title=&quot;12-使用JDBC读取与写入数据&quot;&gt;&lt;/a&gt;12-使用JDBC读取与写入数据&lt;/h1&gt;&lt;h2 id=&quot;JDBC注意点&quot;&gt;</summary>
+      
+    
+    
+    
+    <category term="性能测试" scheme="http://zx490336534.github.io/categories/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/"/>
+    
+    
+    <category term="测试开发" scheme="http://zx490336534.github.io/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/"/>
+    
+    <category term="性能测试" scheme="http://zx490336534.github.io/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/"/>
+    
+  </entry>
   
   <entry>
     <title>11-其他协议</title>
@@ -552,40 +578,6 @@
     
     
     <summary type="html">&lt;h1 id=&quot;Java自动化测试-web自动化测试框架-28&quot;&gt;&lt;a href=&quot;#Java自动化测试-web自动化测试框架-28&quot; class=&quot;headerlink&quot; title=&quot;Java自动化测试(web自动化测试框架 28)&quot;&gt;&lt;/a&gt;Java自动化测试(web自动化测试框架 28)&lt;/h1&gt;&lt;h2 id=&quot;测试数据&quot;&gt;&lt;a href=&quot;#测试数据&quot; class=&quot;headerlink&quot; title=&quot;测试数据&quot;&gt;&lt;/a&gt;测试数据&lt;/h2&gt;&lt;h3 id=&quot;测试地址&quot;&gt;&lt;a href=&quot;#测试地址&quot; class=&quot;headerlink&quot; title=&quot;测试地址&quot;&gt;&lt;/a&gt;测试地址&lt;/h3&gt;&lt;p&gt;&lt;a href=&quot;http://120.78.128.25:8765/&quot;&gt;http://120.78.128.25:8765/&lt;/a&gt;&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="Java自动化测试" scheme="http://zx490336534.github.io/categories/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/"/>
-    
-    
-    <category term="Java" scheme="http://zx490336534.github.io/tags/Java/"/>
-    
-    <category term="自动化测试" scheme="http://zx490336534.github.io/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Java自动化测试(自动化测试背景与流程 27)</title>
-    <link href="http://zx490336534.github.io/article/3d748498.html"/>
-    <id>http://zx490336534.github.io/article/3d748498.html</id>
-    <published>2020-09-07T22:34:25.353Z</published>
-    <updated>2021-04-22T13:58:48.670Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Java自动化测试-自动化测试背景与流程-27"><a href="#Java自动化测试-自动化测试背景与流程-27" class="headerlink" title="Java自动化测试(自动化测试背景与流程 27)"></a>Java自动化测试(自动化测试背景与流程 27)</h1><h2 id="自动化测试背景"><a href="#自动化测试背景" class="headerlink" title="自动化测试背景"></a>自动化测试背景</h2><h3 id="什么是自动化测试"><a href="#什么是自动化测试" class="headerlink" title="什么是自动化测试"></a>什么是自动化测试</h3><p>机器代替手工测试，自动验证结果是否符合预期</p><h3 id="自动化测试优点"><a href="#自动化测试优点" class="headerlink" title="自动化测试优点"></a>自动化测试优点</h3><ol><li>替代大量重复手工测试</li><li>提升回归测试效率，适合敏捷开发</li><li>在非工作时间自动执行，工作时间查看测试报告</li><li>保证每次测试执行的一致性与正确性，避免人为错误</li></ol><h3 id="自动化测试劣势"><a href="#自动化测试劣势" class="headerlink" title="自动化测试劣势"></a>自动化测试劣势</h3><ol><li>一般用于回归测试，项目开发初期不适合使用自动化</li><li>不能全部取代手工测试，只能替代手工测试中机械化，重复度高的操作，自动化测试极少能够达到100%覆盖率</li><li>自动化测试非常脆弱，特别是UI自动化</li><li>自动化测试工作量(框架设计+脚本开发)比单次手工测试大很多，当自动化多次执行时，性价比才会凸显<span id="more"></span><h3 id="自动化测试实施流程"><a href="#自动化测试实施流程" class="headerlink" title="自动化测试实施流程"></a>自动化测试实施流程</h3></li></ol><h3 id="1-评估自动化测试实施可行性"><a href="#1-评估自动化测试实施可行性" class="headerlink" title="1.评估自动化测试实施可行性"></a>1.评估自动化测试实施可行性</h3><p>想要开展自动化测试，应该遵循以下几个前提条件：</p><ol><li>需求稳定，不会频繁变更</li><li>研发和维护周期长，需要频繁执行回归测试</li><li>项目资源足够「人力」</li></ol><h3 id="2-测试需求分析"><a href="#2-测试需求分析" class="headerlink" title="2.测试需求分析"></a>2.测试需求分析</h3><p>自动化测试到底要做到什么程度</p><p>自动化测试覆盖范围：</p><ul><li>主业务流程</li><li>历史BUG较多的模块</li><li>基础重复的功能</li><li>优先级</li></ul><h3 id="3-制定测试计划"><a href="#3-制定测试计划" class="headerlink" title="3.制定测试计划"></a>3.制定测试计划</h3><p>测试工具/框架选型</p><ul><li>接口自动化：TestNG+HttpClient+Maven+Allure+Log4j</li><li>web自动化：TestNG+Selenium</li></ul><p>框架设计，自动化测试脚本开发时间计划表</p><p>脚本执行的策略，冒烟测试/回归测试的频率</p><p>定义自动化测试的输出，测试框架，测试脚本，测试数据，发现的缺陷，测试报告</p><h4 id="测试数据生成"><a href="#测试数据生成" class="headerlink" title="测试数据生成"></a>测试数据生成</h4><ol><li>UI方法：人工方式造数据</li><li>接口方法：效率高 用的最多 有保证的</li><li>数据库：效率高 添加数据影响到其他的数据表 不能确保正确性</li></ol><h3 id="4-搭建自动化测试环境，设计框架"><a href="#4-搭建自动化测试环境，设计框架" class="headerlink" title="4.搭建自动化测试环境，设计框架"></a>4.搭建自动化测试环境，设计框架</h3><h3 id="5-开发自动化测试脚本"><a href="#5-开发自动化测试脚本" class="headerlink" title="5.开发自动化测试脚本"></a>5.开发自动化测试脚本</h3><p>手工测试用例转自动化测试用例的过程</p><h3 id="6-执行自动化测试"><a href="#6-执行自动化测试" class="headerlink" title="6.执行自动化测试"></a>6.执行自动化测试</h3><p>本地执行：IDE调试/执行</p><p>持续集成平台：jenkins</p><h3 id="7-分析自动化测试结果"><a href="#7-分析自动化测试结果" class="headerlink" title="7.分析自动化测试结果"></a>7.分析自动化测试结果</h3><p>自动化用例失败了</p><ul><li>BUG</li><li>脚本设计/稳定性问题</li></ul><h3 id="8-框架-脚本维护"><a href="#8-框架-脚本维护" class="headerlink" title="8.框架/脚本维护"></a>8.框架/脚本维护</h3><p>周期最长</p><ul><li>框架优化</li><li>需求变更</li></ul><h3 id="9-成功展示「落地」"><a href="#9-成功展示「落地」" class="headerlink" title="9.成功展示「落地」"></a>9.成功展示「落地」</h3><ul><li><p>自动化测试用例覆盖，一般为20%的自动化测试，80%的手工测试</p></li><li><p>节省的时间成本：手工测试花费的时间-自动化测试所花的时间</p></li><li><p>自动化测试发现的缺陷数：保证质量，不能保证发现很多BUG</p></li><li><p>自动化测试的投入产出ROI「越高越好」</p></li></ul><p>(手工测试的成本-自动化测试成本)/自动化测试脚本</p><h2 id="自动化测试可以达到100-覆盖率吗"><a href="#自动化测试可以达到100-覆盖率吗" class="headerlink" title="自动化测试可以达到100%覆盖率吗"></a>自动化测试可以达到100%覆盖率吗</h2><p>有些用例场景无法被自动化</p><p>一些验证易用性，友好性，美观的用例不适合做自动化</p><p>有些边缘用例很少被重复执行，从ROI角度考虑不适合做自动化</p>]]></content>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;Java自动化测试-自动化测试背景与流程-27&quot;&gt;&lt;a href=&quot;#Java自动化测试-自动化测试背景与流程-27&quot; class=&quot;headerlink&quot; title=&quot;Java自动化测试(自动化测试背景与流程 27)&quot;&gt;&lt;/a&gt;Java自动化测试(自动化测试背景与流程 27)&lt;/h1&gt;&lt;h2 id=&quot;自动化测试背景&quot;&gt;&lt;a href=&quot;#自动化测试背景&quot; class=&quot;headerlink&quot; title=&quot;自动化测试背景&quot;&gt;&lt;/a&gt;自动化测试背景&lt;/h2&gt;&lt;h3 id=&quot;什么是自动化测试&quot;&gt;&lt;a href=&quot;#什么是自动化测试&quot; class=&quot;headerlink&quot; title=&quot;什么是自动化测试&quot;&gt;&lt;/a&gt;什么是自动化测试&lt;/h3&gt;&lt;p&gt;机器代替手工测试，自动验证结果是否符合预期&lt;/p&gt;
-&lt;h3 id=&quot;自动化测试优点&quot;&gt;&lt;a href=&quot;#自动化测试优点&quot; class=&quot;headerlink&quot; title=&quot;自动化测试优点&quot;&gt;&lt;/a&gt;自动化测试优点&lt;/h3&gt;&lt;ol&gt;
-&lt;li&gt;替代大量重复手工测试&lt;/li&gt;
-&lt;li&gt;提升回归测试效率，适合敏捷开发&lt;/li&gt;
-&lt;li&gt;在非工作时间自动执行，工作时间查看测试报告&lt;/li&gt;
-&lt;li&gt;保证每次测试执行的一致性与正确性，避免人为错误&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h3 id=&quot;自动化测试劣势&quot;&gt;&lt;a href=&quot;#自动化测试劣势&quot; class=&quot;headerlink&quot; title=&quot;自动化测试劣势&quot;&gt;&lt;/a&gt;自动化测试劣势&lt;/h3&gt;&lt;ol&gt;
-&lt;li&gt;一般用于回归测试，项目开发初期不适合使用自动化&lt;/li&gt;
-&lt;li&gt;不能全部取代手工测试，只能替代手工测试中机械化，重复度高的操作，自动化测试极少能够达到100%覆盖率&lt;/li&gt;
-&lt;li&gt;自动化测试非常脆弱，特别是UI自动化&lt;/li&gt;
-&lt;li&gt;自动化测试工作量(框架设计+脚本开发)比单次手工测试大很多，当自动化多次执行时，性价比才会凸显&lt;/li&gt;&lt;/ol&gt;</summary>
     
     
     
