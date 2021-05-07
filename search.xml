@@ -1100,11 +1100,11 @@
       
         <tags>
             
+            <tag> 测试开发 </tag>
+            
             <tag> Python </tag>
             
             <tag> Flask </tag>
-            
-            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1264,11 +1264,11 @@
       
         <tags>
             
+            <tag> 测试开发 </tag>
+            
             <tag> Python </tag>
             
             <tag> Flask </tag>
-            
-            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1320,11 +1320,11 @@
       
         <tags>
             
+            <tag> 测试开发 </tag>
+            
             <tag> Python </tag>
             
             <tag> Flask </tag>
-            
-            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1349,11 +1349,11 @@
       
         <tags>
             
+            <tag> 测试开发 </tag>
+            
             <tag> Python </tag>
             
             <tag> Flask </tag>
-            
-            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1378,11 +1378,11 @@
       
         <tags>
             
+            <tag> 测试开发 </tag>
+            
             <tag> Python </tag>
             
             <tag> Flask </tag>
-            
-            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1396,33 +1396,6 @@
       <url>article/12d70e10.html</url>
       
         <content type="html"><![CDATA[<h1 id="Vue学习-猜大小游戏"><a href="#Vue学习-猜大小游戏" class="headerlink" title="Vue学习-猜大小游戏"></a>Vue学习-猜大小游戏</h1><p>今天看了一会儿Vue文档，写一个猜大小的小游戏，大概这个丑样：</p><p><img src="http://ww2.sinaimg.cn/large/006tNc79ly1g36pcx4hs4j30u60u047v.jpg" alt="长这样"></p><span id="more"></span><h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><ol><li>按下开始之后出现输入框</li><li>输入数字自动与一个1-100之间的数字比较</li><li>数字一致后，出现「重新开始」按钮，输入框灰显</li><li>每次输入非重复内容都会被记录</li></ol><h2 id="Html"><a href="#Html" class="headerlink" title="Html"></a>Html</h2><h3 id="head"><a href="#head" class="headerlink" title="head"></a>head</h3><p>头部导入一下<code>Vue.js</code>代码</p><figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"index.css"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"https://cdn.jsdelivr.net/npm/vue/dist/vue.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>猜大小<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure><h3 id="body"><a href="#body" class="headerlink" title="body"></a>body</h3><p>主体部分包含</p><ul><li>一个<code>&lt;h1&gt;</code>标签的标题</li><li>一个交互信息</li><li>开始/重新开始按钮</li><li>游戏记录</li></ul><figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"guess"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h1</span>&gt;</span>猜大小游戏<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">    {{info}}</span><br><span class="line">    <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">v-model</span>=<span class="string">"num1"</span> <span class="attr">v-show</span>=<span class="string">"input_status"</span> <span class="attr">:disabled</span>=<span class="string">"isdisabled"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">button</span> @<span class="attr">click</span>=<span class="string">"playGame"</span> <span class="attr">v-show</span>=<span class="string">"hidden_status"</span>&gt;</span></span><br><span class="line">        {{message}}</span><br><span class="line">    <span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span> <span class="attr">v-for</span>=<span class="string">"info_ in info_list"</span>&gt;</span></span><br><span class="line">            第{{info_.id}}次猜数字,输入了<span class="tag">&lt;<span class="name">span</span>&gt;</span>「{{info_.num}}」<span class="tag">&lt;/<span class="name">span</span>&gt;</span>,提示:{{info_.text}}</span><br><span class="line">        <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"index.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure><ul><li><p><code>{{info}}</code>等<code>{{xxx}}</code>的部分会被js中的内容渲染</p></li><li><p><code>v-model="num1"</code>表示输入框关联一下num1</p></li><li><p><code>v-show</code>决定元素是否显示</p></li><li><p><code>:xxx</code>是<code>v-bind:</code>的简写</p><ul><li><code>:disabled</code>表示的是可编辑状态由变量<code>isdisabled</code>决定</li></ul></li><li><p><code>@xxx</code>是<code>v-on</code>的简写</p><ul><li><code>@click="playGame"</code>表示，鼠标点击操作会触发<code>playGame</code>函数</li></ul></li><li><p><code>v-for</code>是循环增加无序标签li，答应游戏日志</p></li></ul><h2 id="Css"><a href="#Css" class="headerlink" title="Css"></a>Css</h2><p>看页面就知道，css瞎写的</p><figure class="highlight css"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">html</span>, <span class="selector-tag">body</span> {</span><br><span class="line">    <span class="attribute">margin</span>: <span class="number">5px</span>;</span><br><span class="line">    <span class="attribute">padding</span>: <span class="number">0</span>;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure><h2 id="JavaScript"><a href="#JavaScript" class="headerlink" title="JavaScript"></a>JavaScript</h2><ul><li>data中的部分都可以在html部分使用渲染出来</li><li>watch是一个监听，每次输入框发生改变都会去调用<code>changed_num()</code>函数</li><li>created是在首次运行的时候执行的，会给一个给定的1-100内的数字</li><li>methods存放的全部的函数<ul><li>changed_num，主要的游戏结果的判断，并会把日志加入到<code>info_list</code>，然后被展示到无序序列里面，有几种状态：<ul><li>正确</li><li>输入为空</li><li>输入大于100</li><li>输入的数字比要猜的数字大</li><li>输入的数字比要猜的数字小</li><li>输入非整数</li></ul></li><li>通过内容的遍历<code>(this.num1 == item.num)</code>，只有没有输入过的数字的信息，才会被打印到日志中</li></ul></li><li>重新开始游戏<ul><li>把几个状态都重新刷新一下，并生成一个新的数字</li></ul></li></ul><figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> item = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">var</span> guess_num = <span class="keyword">new</span> Vue({</span><br><span class="line">        el: <span class="string">"#guess"</span>,</span><br><span class="line">        data: {</span><br><span class="line">            num: <span class="string">''</span>,</span><br><span class="line">            num1: <span class="string">''</span>,</span><br><span class="line">            info: <span class="string">"请按「开始游戏」开始猜数字游戏"</span>,</span><br><span class="line">            hidden_status: <span class="literal">true</span>,</span><br><span class="line">            input_status: <span class="literal">false</span>,</span><br><span class="line">            message: <span class="string">'开始'</span>,</span><br><span class="line">            isdisabled: <span class="literal">false</span>,</span><br><span class="line">            info_list: []</span><br><span class="line">        },</span><br><span class="line">        watch: {</span><br><span class="line">            num1: <span class="function"><span class="keyword">function</span> (<span class="params">newNum1, oldNum1</span>) </span>{</span><br><span class="line">                <span class="built_in">this</span>.info = <span class="string">'开始比较'</span>;</span><br><span class="line">                guess_num.changed_num()</span><br><span class="line">            }</span><br><span class="line">        },</span><br><span class="line">        created: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>{</span><br><span class="line">            <span class="built_in">this</span>.num = <span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random() * <span class="number">100</span> + <span class="number">1</span>);</span><br><span class="line">        },</span><br><span class="line">        methods: {</span><br><span class="line">            changed_num: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>{</span><br><span class="line">                <span class="keyword">var</span> regNeg = <span class="regexp">/[0-9]*/</span>;</span><br><span class="line">                <span class="keyword">let</span> flag = <span class="literal">true</span>;</span><br><span class="line">                <span class="keyword">if</span> (<span class="built_in">this</span>.num1 == <span class="built_in">this</span>.num) {</span><br><span class="line">                    <span class="built_in">this</span>.info = <span class="string">'你猜对了!'</span>;</span><br><span class="line">                    <span class="built_in">this</span>.hidden_status = <span class="literal">true</span>;</span><br><span class="line">                    <span class="built_in">this</span>.isdisabled = <span class="literal">true</span>;</span><br><span class="line">                } <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">this</span>.num1 == <span class="string">''</span>) {</span><br><span class="line">                    flag = <span class="literal">false</span>;</span><br><span class="line">                    <span class="built_in">this</span>.info = <span class="string">'请输入一个小于100整数'</span>;</span><br><span class="line">                } <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">this</span>.num1 &gt; <span class="number">100</span>) {</span><br><span class="line">                    <span class="built_in">this</span>.info = <span class="string">'请输入一个小于100的值'</span>;</span><br><span class="line">                } <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">this</span>.num1 &gt; <span class="built_in">this</span>.num) {</span><br><span class="line">                    <span class="built_in">this</span>.info = <span class="string">'你输入的数字比要猜的数字大'</span>;</span><br><span class="line">                } <span class="keyword">else</span> <span class="keyword">if</span> (!regNeg.test(self.num1)) {</span><br><span class="line">                    <span class="built_in">this</span>.info = <span class="string">'请输入一个整数数字'</span>;</span><br><span class="line">                } <span class="keyword">else</span> {</span><br><span class="line">                    <span class="built_in">this</span>.info = <span class="string">'你输入的数字比要猜的数字小'</span>;</span><br><span class="line">                }</span><br><span class="line">                <span class="built_in">this</span>.info_list.forEach(<span class="function"><span class="params">item</span> =&gt;</span> {</span><br><span class="line">                    <span class="keyword">if</span> (<span class="built_in">this</span>.num1 == item.num) {</span><br><span class="line">                        flag = <span class="literal">false</span></span><br><span class="line">                    }</span><br><span class="line">                });</span><br><span class="line">                <span class="keyword">if</span> (flag) {</span><br><span class="line">                    item++;</span><br><span class="line">                    <span class="built_in">this</span>.info_list.push({<span class="attr">id</span>: item, <span class="attr">num</span>: <span class="built_in">this</span>.num1, <span class="attr">text</span>: <span class="built_in">this</span>.info});</span><br><span class="line">                }</span><br><span class="line"></span><br><span class="line">            },</span><br><span class="line">            playGame: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>{</span><br><span class="line">                <span class="built_in">this</span>.message = <span class="string">"重新开始"</span>;</span><br><span class="line">                <span class="built_in">this</span>.hidden_status = <span class="literal">false</span>;</span><br><span class="line">                <span class="built_in">this</span>.input_status = <span class="literal">true</span>;</span><br><span class="line">                <span class="built_in">this</span>.isdisabled = <span class="literal">false</span>;</span><br><span class="line">                <span class="built_in">this</span>.num1 = <span class="string">''</span>;</span><br><span class="line">                item = <span class="number">0</span>;</span><br><span class="line">                self.info = <span class="string">'请输入数字'</span>;</span><br><span class="line">                <span class="built_in">this</span>.info_list = [];</span><br><span class="line">                <span class="built_in">this</span>.num = <span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random() * <span class="number">100</span> + <span class="number">1</span>);</span><br><span class="line">            }</span><br><span class="line">        },</span><br><span class="line">    })</span><br><span class="line">;</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>]]></content>
-      
-      
-      <categories>
-          
-          <category> Vue </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 测试开发 </tag>
-            
-            <tag> Vue </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>使用Vue完成一个checklist</title>
-      <link href="article/d4c3ce36.html"/>
-      <url>article/d4c3ce36.html</url>
-      
-        <content type="html"><![CDATA[<h1 id="使用Vue完成一个checklist"><a href="#使用Vue完成一个checklist" class="headerlink" title="使用Vue完成一个checklist"></a>使用Vue完成一个checklist</h1><h2 id="创建一个项目"><a href="#创建一个项目" class="headerlink" title="创建一个项目"></a>创建一个项目</h2><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vue init webpack-simple vuedemo01</span></span><br></pre></td></tr></tbody></table></figure><p><img src="https://ws1.sinaimg.cn/large/006tNc79ly1g2ahiskk7oj317i0igq5e.jpg" alt="初始化项目"></p><p>除了Use sass?选择<code>N</code>，其他默认</p><span id="more"></span><p>根据提示安装依赖并运行</p><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> vuedemo01</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> npm install</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> npm run dev</span></span><br></pre></td></tr></tbody></table></figure><p><code>npm install</code>可以使用淘宝的镜像<code>cnpm</code></p><p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1g2ahlpwfj7j31400u0q6n.jpg" alt="运行结果"></p><p>使用编辑器打开该文件夹</p><p><img src="https://ws3.sinaimg.cn/large/006tNc79ly1g2ahn1xlsoj309u0g0gmv.jpg" alt="文件夹"></p><h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>差不多是要完成以下界面</p><p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1g2ahteyn5dj30ji0i0gmh.jpg" alt="目标"></p><h2 id="编码"><a href="#编码" class="headerlink" title="编码"></a>编码</h2><p>去除<code>App.vue</code>多余部分，剩下如下部分即可</p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div id="app"&gt;</span><br><span class="line">    {{msg}}</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">export default {</span><br><span class="line">  name: "app",</span><br><span class="line">  data() {</span><br><span class="line">    return {</span><br><span class="line">      msg: "Welcome to Your Vue.js App"</span><br><span class="line">    };</span><br><span class="line">  }</span><br><span class="line">};</span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">&lt;style&gt;</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></tbody></table></figure><p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1g2ahrm46j1j31400u0mz0.jpg" alt="当前页面"></p><h3 id="html部分"><a href="#html部分" class="headerlink" title="html部分"></a>html部分</h3><p>包含</p><ul><li>一个输入框，</li><li>两个h2标签的文字</li><li>n个无序的项</li><li>删除按钮</li></ul><figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"app"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">hr</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h2</span>&gt;</span>进行中<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span>1<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">hr</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h2</span>&gt;</span>已完成<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span>2<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure><p><img src="https://ws3.sinaimg.cn/large/006tNc79ly1g2ahypook3j31400u0mz4.jpg" alt="初版"></p><h3 id="script数据部分"><a href="#script数据部分" class="headerlink" title="script数据部分"></a>script数据部分</h3><p>每次输入到<code>输入框</code>的内容需要一个变量来接收</p><p>存放的每个内容，以及与其对应的状态</p><figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript"><span class="keyword">export</span> <span class="keyword">default</span> {</span></span><br><span class="line"><span class="javascript">  name: <span class="string">"app"</span>,</span></span><br><span class="line"><span class="javascript">  <span class="function"><span class="title">data</span>(<span class="params"></span>)</span> {</span></span><br><span class="line"><span class="javascript">    <span class="keyword">return</span> {</span></span><br><span class="line"><span class="javascript">      todo: <span class="string">""</span>,</span></span><br><span class="line"><span class="javascript">      list: [{ <span class="attr">todo</span>: <span class="string">"aa"</span>, <span class="attr">checked</span>: <span class="literal">false</span> }]</span></span><br><span class="line">    };</span><br><span class="line">  }</span><br><span class="line">};</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure><p>为了把数据渲染到页面上，需要修改html部分的li中的内容</p><p>使用<code>v-for</code>来循环输出list的索引和内容</p><p>使用<code>v-if</code>来判断：</p><ul><li>复选框没选中的内容会显示在<code>进行中</code></li><li>复选框选中的内容会显示在<code>已完成</code></li></ul><figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">li</span> <span class="attr">v-for</span>=<span class="string">"(item,key) in list"</span> <span class="attr">v-if</span>=<span class="string">"!item.checked"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">v-model</span>=<span class="string">'item.checked'</span> @<span class="attr">change</span>=<span class="string">"saveList()"</span>&gt;</span></span><br><span class="line">      {{item.title}} ----- <span class="tag">&lt;<span class="name">button</span>&gt;</span>删除<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure><figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">li</span> <span class="attr">v-for</span>=<span class="string">"(item,key) in list"</span> <span class="attr">v-if</span>=<span class="string">"item.checked"</span> @<span class="attr">change</span>=<span class="string">"saveList()"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">v-model</span>=<span class="string">'item.checked'</span>&gt;</span> {{item.title}} ----- <span class="tag">&lt;<span class="name">button</span> @<span class="attr">click</span>=<span class="string">'deleteDate(key)'</span>&gt;</span>删除<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure><h3 id="函数部分"><a href="#函数部分" class="headerlink" title="函数部分"></a>函数部分</h3><p>在说函数部分前，还剩下顶部的输入框还没有增加方法的入口</p><figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">v-model</span>=<span class="string">"todo"</span> @<span class="attr">keydown</span>=<span class="string">'doAdd($event)'</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure><p><code>v-model</code>表明它接收的内容会修改todo</p><p><code>@keydown</code>对应键盘操作</p><p>在date部分之后增加<code>methods</code></p><p><img src="https://ws2.sinaimg.cn/large/006tNc79ly1g2aie48b7ij30hq0dkdgs.jpg" alt="image-20190421200514387"></p><figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">import storage from "./model/storage.js";</span><br><span class="line">export default {</span><br><span class="line">  data() {</span><br><span class="line">    return {</span><br><span class="line">      todo: "",</span><br><span class="line">      list: [{ todo: "aa", checked: false }]</span><br><span class="line">    };</span><br><span class="line">  },</span><br><span class="line">  methods: {</span><br><span class="line">    doAdd(e) {</span><br><span class="line">      if (e.keyCode == 13) { //按键13是回车</span><br><span class="line">        this.list.push({//列表中插入对象</span><br><span class="line">          title: this.todo,</span><br><span class="line">          checked: false</span><br><span class="line">        });</span><br><span class="line">      }</span><br><span class="line">      storage.set("list", this.list);</span><br><span class="line">    },</span><br><span class="line">    deleteDate(key) {</span><br><span class="line">      this.list.splice(key, 1);//删除对应索引的内容</span><br><span class="line">      storage.set("list", this.list);</span><br><span class="line">    },</span><br><span class="line">    saveList() {</span><br><span class="line">      storage.set("list", this.list);</span><br><span class="line">    }</span><br><span class="line">  }</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure><p>这里封装了一个<code>storage.js</code>，用于保存数据至本地，这样下次打开页面还是会恢复至上次关闭的时候。</p><p><img src="https://ws1.sinaimg.cn/large/006tNc79ly1g2aimtmtrjj309q0k80ub.jpg" alt="封装"></p><figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> { loadavg } <span class="keyword">from</span> <span class="string">"os"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> storage={</span><br><span class="line">    <span class="function"><span class="title">set</span>(<span class="params">key,value</span>)</span>{</span><br><span class="line">        <span class="built_in">localStorage</span>.setItem(key,<span class="built_in">JSON</span>.stringify(value));</span><br><span class="line">    },</span><br><span class="line">    <span class="function"><span class="title">get</span>(<span class="params">key</span>)</span>{</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">JSON</span>.parse(<span class="built_in">localStorage</span>.getItem(key));</span><br><span class="line">    },</span><br><span class="line">    <span class="function"><span class="title">remove</span>(<span class="params">key</span>)</span>{</span><br><span class="line">        <span class="built_in">localStorage</span>.removeItem(key);</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> storage</span><br></pre></td></tr></tbody></table></figure><h3 id="全代码"><a href="#全代码" class="headerlink" title="全代码"></a>全代码</h3><figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"app"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">v-model</span>=<span class="string">"todo"</span> @<span class="attr">keydown</span>=<span class="string">'doAdd($event)'</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">hr</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h2</span>&gt;</span>进行中<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span> <span class="attr">v-for</span>=<span class="string">"(item,key) in list"</span> <span class="attr">v-if</span>=<span class="string">"!item.checked"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">v-model</span>=<span class="string">'item.checked'</span> @<span class="attr">change</span>=<span class="string">"saveList()"</span>&gt;</span></span><br><span class="line">        {{item.title}} ----- <span class="tag">&lt;<span class="name">button</span> @<span class="attr">click</span>=<span class="string">'deleteDate(key)'</span>&gt;</span>删除<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">hr</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h2</span>&gt;</span>已完成<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span> <span class="attr">v-for</span>=<span class="string">"(item,key) in list"</span> <span class="attr">v-if</span>=<span class="string">"item.checked"</span> @<span class="attr">change</span>=<span class="string">"saveList()"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">v-model</span>=<span class="string">'item.checked'</span>&gt;</span> {{item.title}} ----- <span class="tag">&lt;<span class="name">button</span> @<span class="attr">click</span>=<span class="string">'deleteDate(key)'</span>&gt;</span>删除<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">  <span class="keyword">import</span> storage <span class="keyword">from</span> <span class="string">'./model/storage.js'</span></span></span><br><span class="line"><span class="javascript">  <span class="keyword">export</span> <span class="keyword">default</span> {</span></span><br><span class="line"><span class="javascript">    <span class="function"><span class="title">data</span>(<span class="params"></span>)</span> {</span></span><br><span class="line"><span class="javascript">      <span class="keyword">return</span> {</span></span><br><span class="line"><span class="javascript">        todo: <span class="string">""</span>,</span></span><br><span class="line">        list: []</span><br><span class="line">      };</span><br><span class="line">    },</span><br><span class="line">    methods: {</span><br><span class="line"><span class="javascript">      <span class="function"><span class="title">doAdd</span>(<span class="params">e</span>)</span> {</span></span><br><span class="line">        if (e.keyCode == 13) {</span><br><span class="line"><span class="javascript">          <span class="built_in">this</span>.list.push({</span></span><br><span class="line"><span class="javascript">            title: <span class="built_in">this</span>.todo,</span></span><br><span class="line"><span class="javascript">            checked: <span class="literal">false</span></span></span><br><span class="line">          })</span><br><span class="line">        }</span><br><span class="line"><span class="javascript">        storage.set(<span class="string">'list'</span>, <span class="built_in">this</span>.list)</span></span><br><span class="line">      },</span><br><span class="line"><span class="javascript">      <span class="function"><span class="title">deleteDate</span>(<span class="params">key</span>)</span> {</span></span><br><span class="line"><span class="javascript">        <span class="built_in">this</span>.list.splice(key, <span class="number">1</span>)</span></span><br><span class="line"><span class="javascript">        storage.set(<span class="string">'list'</span>, <span class="built_in">this</span>.list)</span></span><br><span class="line">      },</span><br><span class="line"><span class="javascript">      <span class="function"><span class="title">saveList</span>(<span class="params"></span>)</span> {</span></span><br><span class="line"><span class="javascript">        storage.set(<span class="string">'list'</span>, <span class="built_in">this</span>.list)</span></span><br><span class="line">      }</span><br><span class="line">    },</span><br><span class="line"><span class="javascript">    <span class="function"><span class="title">mounted</span>(<span class="params"></span>)</span> {</span></span><br><span class="line"><span class="javascript">      <span class="keyword">var</span> list = storage.get(<span class="string">'list'</span>, <span class="built_in">this</span>.list);</span></span><br><span class="line">      if (list) {</span><br><span class="line"><span class="javascript">        <span class="built_in">this</span>.list = list</span></span><br><span class="line">      }</span><br><span class="line">    }</span><br><span class="line">  };</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">lang</span>=<span class="string">"scss"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure>]]></content>
       
       
       <categories>
@@ -1466,6 +1439,33 @@
             <tag> Pytest </tag>
             
             <tag> Allure </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>使用Vue完成一个checklist</title>
+      <link href="article/d4c3ce36.html"/>
+      <url>article/d4c3ce36.html</url>
+      
+        <content type="html"><![CDATA[<h1 id="使用Vue完成一个checklist"><a href="#使用Vue完成一个checklist" class="headerlink" title="使用Vue完成一个checklist"></a>使用Vue完成一个checklist</h1><h2 id="创建一个项目"><a href="#创建一个项目" class="headerlink" title="创建一个项目"></a>创建一个项目</h2><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vue init webpack-simple vuedemo01</span></span><br></pre></td></tr></tbody></table></figure><p><img src="https://ws1.sinaimg.cn/large/006tNc79ly1g2ahiskk7oj317i0igq5e.jpg" alt="初始化项目"></p><p>除了Use sass?选择<code>N</code>，其他默认</p><span id="more"></span><p>根据提示安装依赖并运行</p><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> vuedemo01</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> npm install</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> npm run dev</span></span><br></pre></td></tr></tbody></table></figure><p><code>npm install</code>可以使用淘宝的镜像<code>cnpm</code></p><p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1g2ahlpwfj7j31400u0q6n.jpg" alt="运行结果"></p><p>使用编辑器打开该文件夹</p><p><img src="https://ws3.sinaimg.cn/large/006tNc79ly1g2ahn1xlsoj309u0g0gmv.jpg" alt="文件夹"></p><h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>差不多是要完成以下界面</p><p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1g2ahteyn5dj30ji0i0gmh.jpg" alt="目标"></p><h2 id="编码"><a href="#编码" class="headerlink" title="编码"></a>编码</h2><p>去除<code>App.vue</code>多余部分，剩下如下部分即可</p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div id="app"&gt;</span><br><span class="line">    {{msg}}</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">export default {</span><br><span class="line">  name: "app",</span><br><span class="line">  data() {</span><br><span class="line">    return {</span><br><span class="line">      msg: "Welcome to Your Vue.js App"</span><br><span class="line">    };</span><br><span class="line">  }</span><br><span class="line">};</span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">&lt;style&gt;</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></tbody></table></figure><p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1g2ahrm46j1j31400u0mz0.jpg" alt="当前页面"></p><h3 id="html部分"><a href="#html部分" class="headerlink" title="html部分"></a>html部分</h3><p>包含</p><ul><li>一个输入框，</li><li>两个h2标签的文字</li><li>n个无序的项</li><li>删除按钮</li></ul><figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"app"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">hr</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h2</span>&gt;</span>进行中<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span>1<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">hr</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h2</span>&gt;</span>已完成<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span>2<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure><p><img src="https://ws3.sinaimg.cn/large/006tNc79ly1g2ahypook3j31400u0mz4.jpg" alt="初版"></p><h3 id="script数据部分"><a href="#script数据部分" class="headerlink" title="script数据部分"></a>script数据部分</h3><p>每次输入到<code>输入框</code>的内容需要一个变量来接收</p><p>存放的每个内容，以及与其对应的状态</p><figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript"><span class="keyword">export</span> <span class="keyword">default</span> {</span></span><br><span class="line"><span class="javascript">  name: <span class="string">"app"</span>,</span></span><br><span class="line"><span class="javascript">  <span class="function"><span class="title">data</span>(<span class="params"></span>)</span> {</span></span><br><span class="line"><span class="javascript">    <span class="keyword">return</span> {</span></span><br><span class="line"><span class="javascript">      todo: <span class="string">""</span>,</span></span><br><span class="line"><span class="javascript">      list: [{ <span class="attr">todo</span>: <span class="string">"aa"</span>, <span class="attr">checked</span>: <span class="literal">false</span> }]</span></span><br><span class="line">    };</span><br><span class="line">  }</span><br><span class="line">};</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure><p>为了把数据渲染到页面上，需要修改html部分的li中的内容</p><p>使用<code>v-for</code>来循环输出list的索引和内容</p><p>使用<code>v-if</code>来判断：</p><ul><li>复选框没选中的内容会显示在<code>进行中</code></li><li>复选框选中的内容会显示在<code>已完成</code></li></ul><figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">li</span> <span class="attr">v-for</span>=<span class="string">"(item,key) in list"</span> <span class="attr">v-if</span>=<span class="string">"!item.checked"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">v-model</span>=<span class="string">'item.checked'</span> @<span class="attr">change</span>=<span class="string">"saveList()"</span>&gt;</span></span><br><span class="line">      {{item.title}} ----- <span class="tag">&lt;<span class="name">button</span>&gt;</span>删除<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure><figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">li</span> <span class="attr">v-for</span>=<span class="string">"(item,key) in list"</span> <span class="attr">v-if</span>=<span class="string">"item.checked"</span> @<span class="attr">change</span>=<span class="string">"saveList()"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">v-model</span>=<span class="string">'item.checked'</span>&gt;</span> {{item.title}} ----- <span class="tag">&lt;<span class="name">button</span> @<span class="attr">click</span>=<span class="string">'deleteDate(key)'</span>&gt;</span>删除<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure><h3 id="函数部分"><a href="#函数部分" class="headerlink" title="函数部分"></a>函数部分</h3><p>在说函数部分前，还剩下顶部的输入框还没有增加方法的入口</p><figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">v-model</span>=<span class="string">"todo"</span> @<span class="attr">keydown</span>=<span class="string">'doAdd($event)'</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure><p><code>v-model</code>表明它接收的内容会修改todo</p><p><code>@keydown</code>对应键盘操作</p><p>在date部分之后增加<code>methods</code></p><p><img src="https://ws2.sinaimg.cn/large/006tNc79ly1g2aie48b7ij30hq0dkdgs.jpg" alt="image-20190421200514387"></p><figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">import storage from "./model/storage.js";</span><br><span class="line">export default {</span><br><span class="line">  data() {</span><br><span class="line">    return {</span><br><span class="line">      todo: "",</span><br><span class="line">      list: [{ todo: "aa", checked: false }]</span><br><span class="line">    };</span><br><span class="line">  },</span><br><span class="line">  methods: {</span><br><span class="line">    doAdd(e) {</span><br><span class="line">      if (e.keyCode == 13) { //按键13是回车</span><br><span class="line">        this.list.push({//列表中插入对象</span><br><span class="line">          title: this.todo,</span><br><span class="line">          checked: false</span><br><span class="line">        });</span><br><span class="line">      }</span><br><span class="line">      storage.set("list", this.list);</span><br><span class="line">    },</span><br><span class="line">    deleteDate(key) {</span><br><span class="line">      this.list.splice(key, 1);//删除对应索引的内容</span><br><span class="line">      storage.set("list", this.list);</span><br><span class="line">    },</span><br><span class="line">    saveList() {</span><br><span class="line">      storage.set("list", this.list);</span><br><span class="line">    }</span><br><span class="line">  }</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure><p>这里封装了一个<code>storage.js</code>，用于保存数据至本地，这样下次打开页面还是会恢复至上次关闭的时候。</p><p><img src="https://ws1.sinaimg.cn/large/006tNc79ly1g2aimtmtrjj309q0k80ub.jpg" alt="封装"></p><figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> { loadavg } <span class="keyword">from</span> <span class="string">"os"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> storage={</span><br><span class="line">    <span class="function"><span class="title">set</span>(<span class="params">key,value</span>)</span>{</span><br><span class="line">        <span class="built_in">localStorage</span>.setItem(key,<span class="built_in">JSON</span>.stringify(value));</span><br><span class="line">    },</span><br><span class="line">    <span class="function"><span class="title">get</span>(<span class="params">key</span>)</span>{</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">JSON</span>.parse(<span class="built_in">localStorage</span>.getItem(key));</span><br><span class="line">    },</span><br><span class="line">    <span class="function"><span class="title">remove</span>(<span class="params">key</span>)</span>{</span><br><span class="line">        <span class="built_in">localStorage</span>.removeItem(key);</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> storage</span><br></pre></td></tr></tbody></table></figure><h3 id="全代码"><a href="#全代码" class="headerlink" title="全代码"></a>全代码</h3><figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">template</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"app"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">v-model</span>=<span class="string">"todo"</span> @<span class="attr">keydown</span>=<span class="string">'doAdd($event)'</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">hr</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">br</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h2</span>&gt;</span>进行中<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span> <span class="attr">v-for</span>=<span class="string">"(item,key) in list"</span> <span class="attr">v-if</span>=<span class="string">"!item.checked"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">v-model</span>=<span class="string">'item.checked'</span> @<span class="attr">change</span>=<span class="string">"saveList()"</span>&gt;</span></span><br><span class="line">        {{item.title}} ----- <span class="tag">&lt;<span class="name">button</span> @<span class="attr">click</span>=<span class="string">'deleteDate(key)'</span>&gt;</span>删除<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">hr</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h2</span>&gt;</span>已完成<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span> <span class="attr">v-for</span>=<span class="string">"(item,key) in list"</span> <span class="attr">v-if</span>=<span class="string">"item.checked"</span> @<span class="attr">change</span>=<span class="string">"saveList()"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"checkbox"</span> <span class="attr">v-model</span>=<span class="string">'item.checked'</span>&gt;</span> {{item.title}} ----- <span class="tag">&lt;<span class="name">button</span> @<span class="attr">click</span>=<span class="string">'deleteDate(key)'</span>&gt;</span>删除<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">  <span class="keyword">import</span> storage <span class="keyword">from</span> <span class="string">'./model/storage.js'</span></span></span><br><span class="line"><span class="javascript">  <span class="keyword">export</span> <span class="keyword">default</span> {</span></span><br><span class="line"><span class="javascript">    <span class="function"><span class="title">data</span>(<span class="params"></span>)</span> {</span></span><br><span class="line"><span class="javascript">      <span class="keyword">return</span> {</span></span><br><span class="line"><span class="javascript">        todo: <span class="string">""</span>,</span></span><br><span class="line">        list: []</span><br><span class="line">      };</span><br><span class="line">    },</span><br><span class="line">    methods: {</span><br><span class="line"><span class="javascript">      <span class="function"><span class="title">doAdd</span>(<span class="params">e</span>)</span> {</span></span><br><span class="line">        if (e.keyCode == 13) {</span><br><span class="line"><span class="javascript">          <span class="built_in">this</span>.list.push({</span></span><br><span class="line"><span class="javascript">            title: <span class="built_in">this</span>.todo,</span></span><br><span class="line"><span class="javascript">            checked: <span class="literal">false</span></span></span><br><span class="line">          })</span><br><span class="line">        }</span><br><span class="line"><span class="javascript">        storage.set(<span class="string">'list'</span>, <span class="built_in">this</span>.list)</span></span><br><span class="line">      },</span><br><span class="line"><span class="javascript">      <span class="function"><span class="title">deleteDate</span>(<span class="params">key</span>)</span> {</span></span><br><span class="line"><span class="javascript">        <span class="built_in">this</span>.list.splice(key, <span class="number">1</span>)</span></span><br><span class="line"><span class="javascript">        storage.set(<span class="string">'list'</span>, <span class="built_in">this</span>.list)</span></span><br><span class="line">      },</span><br><span class="line"><span class="javascript">      <span class="function"><span class="title">saveList</span>(<span class="params"></span>)</span> {</span></span><br><span class="line"><span class="javascript">        storage.set(<span class="string">'list'</span>, <span class="built_in">this</span>.list)</span></span><br><span class="line">      }</span><br><span class="line">    },</span><br><span class="line"><span class="javascript">    <span class="function"><span class="title">mounted</span>(<span class="params"></span>)</span> {</span></span><br><span class="line"><span class="javascript">      <span class="keyword">var</span> list = storage.get(<span class="string">'list'</span>, <span class="built_in">this</span>.list);</span></span><br><span class="line">      if (list) {</span><br><span class="line"><span class="javascript">        <span class="built_in">this</span>.list = list</span></span><br><span class="line">      }</span><br><span class="line">    }</span><br><span class="line">  };</span><br><span class="line"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">lang</span>=<span class="string">"scss"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> Vue </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 测试开发 </tag>
+            
+            <tag> Vue </tag>
             
         </tags>
       
@@ -1571,11 +1571,11 @@
       
         <tags>
             
+            <tag> 测试开发 </tag>
+            
             <tag> Python </tag>
             
             <tag> Flask </tag>
-            
-            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1735,11 +1735,11 @@
       
         <tags>
             
+            <tag> 测试开发 </tag>
+            
             <tag> Python </tag>
             
             <tag> Flask </tag>
-            
-            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1791,11 +1791,11 @@
       
         <tags>
             
+            <tag> 测试开发 </tag>
+            
             <tag> Python </tag>
             
             <tag> Flask </tag>
-            
-            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1847,11 +1847,11 @@
       
         <tags>
             
+            <tag> 测试开发 </tag>
+            
             <tag> Python </tag>
             
             <tag> Flask </tag>
-            
-            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1876,40 +1876,11 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
-            <tag> Flask </tag>
-            
             <tag> 测试开发 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>1.Flask:从wsgi开始</title>
-      <link href="article/d044d6a3.html"/>
-      <url>article/d044d6a3.html</url>
-      
-        <content type="html"><![CDATA[<h1 id="Flask-从wsgi开始-一"><a href="#Flask-从wsgi开始-一" class="headerlink" title="Flask(从wsgi开始 一)"></a>Flask(从wsgi开始 一)</h1><blockquote><p>运行Flask=开启一个服务</p></blockquote><h2 id="web应用处理请求的具体流程"><a href="#web应用处理请求的具体流程" class="headerlink" title="web应用处理请求的具体流程"></a>web应用处理请求的具体流程</h2><ol><li>用户操作操作浏览器发送请求；</li><li>请求转发至对应的web服务器</li><li>web服务器将请求转交给web应用程序，web应用程序处理请求</li><li>web应用将请求结果返回给web服务器，由web服务器返回用户响应结果</li><li>浏览器收到响应，向用户展示<span id="more"></span><h2 id="一个wsgi服务"><a href="#一个wsgi服务" class="headerlink" title="一个wsgi服务"></a>一个<code>wsgi</code>服务</h2></li></ol><blockquote><p>全称Python Web Server Gateway Interface，指定了web服务器和Python web应用或web框架之间的标准接口，以提高web应用在一系列web服务器间的移植性。 具体可查看 <a href="https://link.zhihu.com/?target=https://www.python.org/dev/peps/pep-0333/">官方文档</a>:<a href="https://www.python.org/dev/peps/pep-0333/">https://www.python.org/dev/peps/pep-0333/</a></p></blockquote><ol><li>WSGI是一套接口标准协议/规范；</li><li>通信（作用）区间是Web服务器和Python Web应用程序之间；</li><li>目的是制定标准，以保证不同Web服务器可以和不同的Python程序之间相互通信</li></ol><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> wsgiref.simple_server <span class="keyword">import</span> make_server</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">app</span>(<span class="params">env, start_response</span>):</span></span><br><span class="line">    <span class="comment"># env 获取请求相关数据</span></span><br><span class="line">    <span class="comment"># start_response</span></span><br><span class="line">    start_response(<span class="string">'200 OK'</span>,[(<span class="string">'content-type'</span>,<span class="string">'text/plain'</span>),])</span><br><span class="line">    <span class="keyword">return</span> [<span class="string">b"hello"</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">server = make_server(<span class="string">""</span>, <span class="number">6001</span>, app)</span><br><span class="line">server.serve_forever()  <span class="comment"># poll_interval轮询时间</span></span><br></pre></td></tr></tbody></table></figure><ol><li>env：字典，包含请求的所有信息</li><li>start_response：在可调用对象中调用的函数，用来发起响应，参数包括状态码，headers等</li></ol><p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gfqf64earnj30n809sjs8.jpg" alt="访问"></p><h2 id="拓展1（面向过程）"><a href="#拓展1（面向过程）" class="headerlink" title="拓展1（面向过程）"></a>拓展1（面向过程）</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> wsgiref.simple_server <span class="keyword">import</span> make_server</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">app</span>(<span class="params">env, start_response</span>):</span></span><br><span class="line">    <span class="comment"># env 获取请求相关数据</span></span><br><span class="line">    <span class="comment"># start_response</span></span><br><span class="line">    url = env[<span class="string">'PATH_INFO'</span>]</span><br><span class="line">    <span class="keyword">if</span> url == <span class="string">'/hi'</span>:</span><br><span class="line">        start_response(<span class="string">'200 OK'</span>, [(<span class="string">'content-type'</span>, <span class="string">'text/plain'</span>), ])</span><br><span class="line">        <span class="keyword">return</span> [<span class="string">b"hello"</span>]</span><br><span class="line">    <span class="keyword">elif</span> url == <span class="string">'/'</span>:</span><br><span class="line">        start_response(<span class="string">'200 OK'</span>, [(<span class="string">'content-type'</span>, <span class="string">'text/plain'</span>), ])</span><br><span class="line">        <span class="keyword">return</span> [<span class="string">b"welcom"</span>]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        start_response(<span class="string">'404 not fount'</span>, [(<span class="string">'content-type'</span>, <span class="string">'text/plain'</span>), ])</span><br><span class="line">        <span class="keyword">return</span> [<span class="string">b"not fount"</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">server = make_server(<span class="string">""</span>, <span class="number">6001</span>, app)</span><br><span class="line">server.serve_forever()  <span class="comment"># poll_interval轮询时间</span></span><br></pre></td></tr></tbody></table></figure><p>这样可以访问</p><ul><li><code>/hi</code></li><li><code>/</code></li><li>其他路由返回not found</li></ul><h2 id="拓展2（字典路由）"><a href="#拓展2（字典路由）" class="headerlink" title="拓展2（字典路由）"></a>拓展2（字典路由）</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- encoding: utf-8 -*-</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">@File    : day0_1.py</span></span><br><span class="line"><span class="string">@Time    : 2020/6/13 9:40 上午</span></span><br><span class="line"><span class="string">@Author  : zhongxin</span></span><br><span class="line"><span class="string">@Email   : 490336534@qq.com</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="keyword">from</span> wsgiref.simple_server <span class="keyword">import</span> make_server</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">home</span>():</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'welcome'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hi</span>():</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'hi'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">router = {</span><br><span class="line">    <span class="string">"/"</span>: home,</span><br><span class="line">    <span class="string">'hi'</span>: hi</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">app</span>(<span class="params">env, start_response</span>):</span></span><br><span class="line">    url = env.get(<span class="string">"PATH_INFO"</span>)</span><br><span class="line">    resp = router.get(url)</span><br><span class="line">    <span class="keyword">if</span> url <span class="keyword">is</span> <span class="literal">None</span> <span class="keyword">or</span> resp <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        start_response(<span class="string">'404 not fount'</span>, [(<span class="string">'content-type'</span>, <span class="string">'text/plain'</span>), ])</span><br><span class="line">        <span class="keyword">return</span> [<span class="string">b"not fount"</span>]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        start_response(<span class="string">'200 OK'</span>, [(<span class="string">'content-type'</span>, <span class="string">'text/plain'</span>), ])</span><br><span class="line">    <span class="keyword">return</span> [resp().encode()]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">server = make_server(<span class="string">""</span>, <span class="number">6001</span>, app)</span><br><span class="line">server.serve_forever()  <span class="comment"># poll_interval轮询时间</span></span><br></pre></td></tr></tbody></table></figure><h2 id="使用装饰器拓展"><a href="#使用装饰器拓展" class="headerlink" title="使用装饰器拓展"></a>使用装饰器拓展</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- encoding: utf-8 -*-</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">@File    : day0_1.py</span></span><br><span class="line"><span class="string">@Time    : 2020/6/13 9:40 上午</span></span><br><span class="line"><span class="string">@Author  : zhongxin</span></span><br><span class="line"><span class="string">@Email   : 490336534@qq.com</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="keyword">from</span> wsgiref.simple_server <span class="keyword">import</span> make_server</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Route</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.url = {}</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">route</span>(<span class="params">self, path</span>):</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">decorator</span>(<span class="params">func</span>):</span></span><br><span class="line">            self.url[path] = func</span><br><span class="line">            func()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> decorator</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span>(<span class="params">self, env, start_response</span>):</span></span><br><span class="line">        path = env[<span class="string">"PATH_INFO"</span>]</span><br><span class="line">        <span class="keyword">if</span> path <span class="keyword">in</span> self.url:</span><br><span class="line">            status = <span class="string">'200 OK'</span></span><br><span class="line">            response_header = [(<span class="string">'content-type'</span>, <span class="string">'text/html'</span>)]</span><br><span class="line">            start_response(status, response_header)</span><br><span class="line">            <span class="keyword">return</span> self.url[path]()</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            status = <span class="string">'404 Not Found'</span></span><br><span class="line">            response_header = [(<span class="string">'content-type'</span>, <span class="string">'text/html'</span>)]</span><br><span class="line">            start_response(status, response_header)</span><br><span class="line">            <span class="keyword">return</span> [<span class="string">b"404 not found"</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">app = Route()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">'/'</span></span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span>():</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="string">b'welcome'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">'/hi'</span></span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hi</span>():</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="string">b'hello'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">server = make_server(<span class="string">""</span>, <span class="number">6001</span>, app)</span><br><span class="line">server.serve_forever()  <span class="comment"># poll_interval轮询时间</span></span><br></pre></td></tr></tbody></table></figure><p>一本<code>函数式编程</code>的书：《The Little Schemer》</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> Flask基础 </category>
-          
-      </categories>
-      
-      
-        <tags>
             
             <tag> Python </tag>
             
             <tag> Flask </tag>
-            
-            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1964,6 +1935,35 @@
             <tag> 测试开发 </tag>
             
             <tag> Git </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>1.Flask:从wsgi开始</title>
+      <link href="article/d044d6a3.html"/>
+      <url>article/d044d6a3.html</url>
+      
+        <content type="html"><![CDATA[<h1 id="Flask-从wsgi开始-一"><a href="#Flask-从wsgi开始-一" class="headerlink" title="Flask(从wsgi开始 一)"></a>Flask(从wsgi开始 一)</h1><blockquote><p>运行Flask=开启一个服务</p></blockquote><h2 id="web应用处理请求的具体流程"><a href="#web应用处理请求的具体流程" class="headerlink" title="web应用处理请求的具体流程"></a>web应用处理请求的具体流程</h2><ol><li>用户操作操作浏览器发送请求；</li><li>请求转发至对应的web服务器</li><li>web服务器将请求转交给web应用程序，web应用程序处理请求</li><li>web应用将请求结果返回给web服务器，由web服务器返回用户响应结果</li><li>浏览器收到响应，向用户展示<span id="more"></span><h2 id="一个wsgi服务"><a href="#一个wsgi服务" class="headerlink" title="一个wsgi服务"></a>一个<code>wsgi</code>服务</h2></li></ol><blockquote><p>全称Python Web Server Gateway Interface，指定了web服务器和Python web应用或web框架之间的标准接口，以提高web应用在一系列web服务器间的移植性。 具体可查看 <a href="https://link.zhihu.com/?target=https://www.python.org/dev/peps/pep-0333/">官方文档</a>:<a href="https://www.python.org/dev/peps/pep-0333/">https://www.python.org/dev/peps/pep-0333/</a></p></blockquote><ol><li>WSGI是一套接口标准协议/规范；</li><li>通信（作用）区间是Web服务器和Python Web应用程序之间；</li><li>目的是制定标准，以保证不同Web服务器可以和不同的Python程序之间相互通信</li></ol><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> wsgiref.simple_server <span class="keyword">import</span> make_server</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">app</span>(<span class="params">env, start_response</span>):</span></span><br><span class="line">    <span class="comment"># env 获取请求相关数据</span></span><br><span class="line">    <span class="comment"># start_response</span></span><br><span class="line">    start_response(<span class="string">'200 OK'</span>,[(<span class="string">'content-type'</span>,<span class="string">'text/plain'</span>),])</span><br><span class="line">    <span class="keyword">return</span> [<span class="string">b"hello"</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">server = make_server(<span class="string">""</span>, <span class="number">6001</span>, app)</span><br><span class="line">server.serve_forever()  <span class="comment"># poll_interval轮询时间</span></span><br></pre></td></tr></tbody></table></figure><ol><li>env：字典，包含请求的所有信息</li><li>start_response：在可调用对象中调用的函数，用来发起响应，参数包括状态码，headers等</li></ol><p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gfqf64earnj30n809sjs8.jpg" alt="访问"></p><h2 id="拓展1（面向过程）"><a href="#拓展1（面向过程）" class="headerlink" title="拓展1（面向过程）"></a>拓展1（面向过程）</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> wsgiref.simple_server <span class="keyword">import</span> make_server</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">app</span>(<span class="params">env, start_response</span>):</span></span><br><span class="line">    <span class="comment"># env 获取请求相关数据</span></span><br><span class="line">    <span class="comment"># start_response</span></span><br><span class="line">    url = env[<span class="string">'PATH_INFO'</span>]</span><br><span class="line">    <span class="keyword">if</span> url == <span class="string">'/hi'</span>:</span><br><span class="line">        start_response(<span class="string">'200 OK'</span>, [(<span class="string">'content-type'</span>, <span class="string">'text/plain'</span>), ])</span><br><span class="line">        <span class="keyword">return</span> [<span class="string">b"hello"</span>]</span><br><span class="line">    <span class="keyword">elif</span> url == <span class="string">'/'</span>:</span><br><span class="line">        start_response(<span class="string">'200 OK'</span>, [(<span class="string">'content-type'</span>, <span class="string">'text/plain'</span>), ])</span><br><span class="line">        <span class="keyword">return</span> [<span class="string">b"welcom"</span>]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        start_response(<span class="string">'404 not fount'</span>, [(<span class="string">'content-type'</span>, <span class="string">'text/plain'</span>), ])</span><br><span class="line">        <span class="keyword">return</span> [<span class="string">b"not fount"</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">server = make_server(<span class="string">""</span>, <span class="number">6001</span>, app)</span><br><span class="line">server.serve_forever()  <span class="comment"># poll_interval轮询时间</span></span><br></pre></td></tr></tbody></table></figure><p>这样可以访问</p><ul><li><code>/hi</code></li><li><code>/</code></li><li>其他路由返回not found</li></ul><h2 id="拓展2（字典路由）"><a href="#拓展2（字典路由）" class="headerlink" title="拓展2（字典路由）"></a>拓展2（字典路由）</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- encoding: utf-8 -*-</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">@File    : day0_1.py</span></span><br><span class="line"><span class="string">@Time    : 2020/6/13 9:40 上午</span></span><br><span class="line"><span class="string">@Author  : zhongxin</span></span><br><span class="line"><span class="string">@Email   : 490336534@qq.com</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="keyword">from</span> wsgiref.simple_server <span class="keyword">import</span> make_server</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">home</span>():</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'welcome'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hi</span>():</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'hi'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">router = {</span><br><span class="line">    <span class="string">"/"</span>: home,</span><br><span class="line">    <span class="string">'hi'</span>: hi</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">app</span>(<span class="params">env, start_response</span>):</span></span><br><span class="line">    url = env.get(<span class="string">"PATH_INFO"</span>)</span><br><span class="line">    resp = router.get(url)</span><br><span class="line">    <span class="keyword">if</span> url <span class="keyword">is</span> <span class="literal">None</span> <span class="keyword">or</span> resp <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        start_response(<span class="string">'404 not fount'</span>, [(<span class="string">'content-type'</span>, <span class="string">'text/plain'</span>), ])</span><br><span class="line">        <span class="keyword">return</span> [<span class="string">b"not fount"</span>]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        start_response(<span class="string">'200 OK'</span>, [(<span class="string">'content-type'</span>, <span class="string">'text/plain'</span>), ])</span><br><span class="line">    <span class="keyword">return</span> [resp().encode()]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">server = make_server(<span class="string">""</span>, <span class="number">6001</span>, app)</span><br><span class="line">server.serve_forever()  <span class="comment"># poll_interval轮询时间</span></span><br></pre></td></tr></tbody></table></figure><h2 id="使用装饰器拓展"><a href="#使用装饰器拓展" class="headerlink" title="使用装饰器拓展"></a>使用装饰器拓展</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- encoding: utf-8 -*-</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">@File    : day0_1.py</span></span><br><span class="line"><span class="string">@Time    : 2020/6/13 9:40 上午</span></span><br><span class="line"><span class="string">@Author  : zhongxin</span></span><br><span class="line"><span class="string">@Email   : 490336534@qq.com</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="keyword">from</span> wsgiref.simple_server <span class="keyword">import</span> make_server</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Route</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.url = {}</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">route</span>(<span class="params">self, path</span>):</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">decorator</span>(<span class="params">func</span>):</span></span><br><span class="line">            self.url[path] = func</span><br><span class="line">            func()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> decorator</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span>(<span class="params">self, env, start_response</span>):</span></span><br><span class="line">        path = env[<span class="string">"PATH_INFO"</span>]</span><br><span class="line">        <span class="keyword">if</span> path <span class="keyword">in</span> self.url:</span><br><span class="line">            status = <span class="string">'200 OK'</span></span><br><span class="line">            response_header = [(<span class="string">'content-type'</span>, <span class="string">'text/html'</span>)]</span><br><span class="line">            start_response(status, response_header)</span><br><span class="line">            <span class="keyword">return</span> self.url[path]()</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            status = <span class="string">'404 Not Found'</span></span><br><span class="line">            response_header = [(<span class="string">'content-type'</span>, <span class="string">'text/html'</span>)]</span><br><span class="line">            start_response(status, response_header)</span><br><span class="line">            <span class="keyword">return</span> [<span class="string">b"404 not found"</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">app = Route()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">'/'</span></span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span>():</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="string">b'welcome'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">'/hi'</span></span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hi</span>():</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="string">b'hello'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">server = make_server(<span class="string">""</span>, <span class="number">6001</span>, app)</span><br><span class="line">server.serve_forever()  <span class="comment"># poll_interval轮询时间</span></span><br></pre></td></tr></tbody></table></figure><p>一本<code>函数式编程</code>的书：《The Little Schemer》</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Flask基础 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
+            
+            <tag> Flask </tag>
             
         </tags>
       
@@ -2306,9 +2306,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2333,9 +2333,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2360,9 +2360,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2387,9 +2387,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2414,9 +2414,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2441,9 +2441,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2468,9 +2468,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2495,9 +2495,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2522,9 +2522,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2549,9 +2549,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2576,9 +2576,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2603,9 +2603,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2630,9 +2630,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2657,9 +2657,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2684,9 +2684,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2711,9 +2711,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2738,9 +2738,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2765,9 +2765,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2792,9 +2792,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2819,9 +2819,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2846,9 +2846,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2873,9 +2873,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2900,9 +2900,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2927,9 +2927,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2954,9 +2954,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2981,9 +2981,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3008,9 +3008,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3035,9 +3035,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3062,9 +3062,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3089,9 +3089,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3116,9 +3116,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3143,9 +3143,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3170,9 +3170,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3197,9 +3197,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3224,9 +3224,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3251,9 +3251,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3278,9 +3278,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3305,9 +3305,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3332,9 +3332,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3359,9 +3359,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3386,9 +3386,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3413,9 +3413,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3440,9 +3440,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3467,9 +3467,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3494,9 +3494,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3521,9 +3521,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3548,9 +3548,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3575,9 +3575,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3602,9 +3602,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Jenkins </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3629,9 +3629,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Jenkins </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3656,9 +3656,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Jenkins </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3683,9 +3683,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Jenkins </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3710,9 +3710,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Jenkins </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3737,9 +3737,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Jenkins </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3764,9 +3764,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Jenkins </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3791,9 +3791,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Jenkins </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
