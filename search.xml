@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>16-负载、压力、面向目标测试场景</title>
+      <link href="article/b22971f7.html"/>
+      <url>article/b22971f7.html</url>
+      
+        <content type="html"><![CDATA[<h1 id="16-负载、压力、面向目标测试场景"><a href="#16-负载、压力、面向目标测试场景" class="headerlink" title="16-负载、压力、面向目标测试场景"></a>16-负载、压力、面向目标测试场景</h1><h2 id="负载测试场景"><a href="#负载测试场景" class="headerlink" title="负载测试场景"></a>负载测试场景</h2><blockquote><p>负载测试：逐步增加并发用户数，拐点区间</p></blockquote><p>jmeter如何逐步增加并发用户数：</p><p>安装<code>jpgc - Standard Set</code>插件</p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqbc93qh02j30vk0oggpt.jpg" alt="jpgc"></p><p>在「测试计划」右键添加「线程」的时候可以发现多了很多项</p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqbcizds0qj30b605qt9a.jpg" alt="线程"></p><span id="more"></span><p>选择「jp@gc - Stepping Thread Group (deprecated)」</p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqbcj7twwwj30xr0u046k.jpg" alt="jp@gc - Stepping Thread Group (deprecated)"></p><p>x轴：时间</p><p>y轴：用户数</p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqbckz1jy4j30p706jq3d.jpg" alt="配置"></p><ol><li>This group will start 「100」 threads：将启动100个线程数</li><li>First，wair for 「0」 seconds： 首先等待0秒</li><li>Then start 「0」threads：然后 启动0个用户</li><li>Next，add「10」 threads every 「30」seconds，using ramp-up 「5」 seconds：每5秒钟，增加10个线程数，然后运行30秒</li><li>Then hold load for 「60」seconds：然后持续运行60秒</li><li>Finally，stop「5」threads every 「1」 seconds：最后，没1秒停止5个线程数</li></ol><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqbd3r6xbdj30t20sg0vl.jpg" alt="图讲解"></p><p><strong>缓起步，快结束</strong></p><p>结束时间不能太短，也不能太长</p><ul><li>太短：可能导致出错，这个出错是场景设计的问题，不是性能问题</li><li>太长：导致性能指标值与实际值偏差太大</li></ul><p>如果330正常，在360出现异常，出现拐点区间。</p><p>所以拐点范围为<code>[330,360]</code>，通过缩小范围，找到拐点值</p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqbdffo2y6j30p206o74q.jpg" alt="寻找拐点"></p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqbdexynrjj30xr0u0gty.jpg" alt="寻找拐点"></p><p>想要寻找某个接口的最大并发用户数，通过最大并发用户数，获取性能指标值？</p><ol><li>设置一个阶梯线程组，自己设置一个最大值</li><li>运行，找到拐点值</li><li>缩小拐点区间，找到最大并发用户数</li><li>进行性能测试</li></ol><h3 id="如何找到拐点值"><a href="#如何找到拐点值" class="headerlink" title="如何找到拐点值"></a>如何找到拐点值</h3><p>在添加插件后可以看到「监听器」中新增了部分内容</p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqbdmbxnbbj309b0cxabi.jpg" alt="监听器"></p><ul><li>Active Threads Over Time：随着时间变化的活跃线程数</li><li>PerfMon Metrics Collecotr：性能监控器</li><li>Response Times Over Time：随着时间变化的响应时间</li><li>Transactions per Second：TPS</li></ul><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqbdr9pladj30900510t5.jpg" alt="线程组"></p><h4 id="Active-Threads-Over-Time"><a href="#Active-Threads-Over-Time" class="headerlink" title="Active Threads Over Time"></a>Active Threads Over Time</h4><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqbdrx556oj31240fxmyw.jpg" alt="Active Threads Over Time"></p><h4 id="Response-Times-Over-Time"><a href="#Response-Times-Over-Time" class="headerlink" title="Response Times Over Time"></a>Response Times Over Time</h4><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqbds3ncb6j313t0k1789.jpg" alt="Response Times Over Time"></p><h4 id="Transactions-per-Second"><a href="#Transactions-per-Second" class="headerlink" title="Transactions per Second]"></a>Transactions per Second]</h4><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqbdsa6ogkj313v0kftdi.jpg" alt="Transactions per Second"></p><ol><li><p>是否有报错</p></li><li><p>响应时间是否超过1.5s：用户满意度指数：500ms是可以接受，超过1.5s不能接受</p></li><li><p>tps 不上升，反而下降</p></li></ol><p>响应时间+活跃线程数=&gt;不同线程数时的平均响应时间</p><p>活跃线程数+TPS=&gt;不同线程数的平均tps</p><p>注意：一般不会在一个线程组下挂载多个接口，因为 监听器图标中，会把所有接口数据合并在一个图标中，数据太多，不利于分析</p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqbe6voyl3j31740pctic.jpg" alt="多个接口"></p><h2 id="压力测试场景"><a href="#压力测试场景" class="headerlink" title="压力测试场景"></a>压力测试场景</h2><ul><li>持续运行比较长时间，看服务器的稳定性</li><li>普通线程组：调度器持续运行时间，设置比较长</li><li>阶梯线程组：hold load时间设置比较长</li></ul><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqbecy8qw3j30q106rt96.jpg" alt="hold load"></p><h2 id="面向目标的场景"><a href="#面向目标的场景" class="headerlink" title="面向目标的场景"></a>面向目标的场景</h2><blockquote><p>需求：有一个页面，需要做性能测试。看能否支持一秒钟5000人访问</p></blockquote><p>相当于：1秒钟要处理500人的请求事务=&gt;500tps</p><p>一般的公司，接口tps范围数50～200</p><p>添加一个「bzm - Arrivals Thread Group」</p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqbehzyr2aj31740pc7al.jpg" alt="bzm - Arrivals Thread Group"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 性能测试 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 测试开发 </tag>
+            
+            <tag> 性能测试 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>15-性能测试场景</title>
       <link href="article/e64c544a.html"/>
       <url>article/e64c544a.html</url>
@@ -425,9 +452,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -452,9 +479,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -479,9 +506,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -506,9 +533,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -533,9 +560,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -560,9 +587,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -587,9 +614,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -614,9 +641,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -641,9 +668,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -668,9 +695,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -695,9 +722,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -722,9 +749,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -749,9 +776,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -776,9 +803,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -803,9 +830,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -830,9 +857,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -857,9 +884,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -884,9 +911,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -911,9 +938,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -938,9 +965,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -965,9 +992,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -992,9 +1019,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -1019,9 +1046,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -1046,9 +1073,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -1073,9 +1100,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -1100,11 +1127,11 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
             
             <tag> Flask </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1129,9 +1156,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -1156,9 +1183,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -1183,9 +1210,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -1210,9 +1237,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -1237,9 +1264,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -1264,11 +1291,11 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
             
             <tag> Flask </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1293,9 +1320,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -1320,11 +1347,11 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
             
             <tag> Flask </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1349,11 +1376,11 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
             
             <tag> Flask </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1378,11 +1405,11 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
             
             <tag> Flask </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1571,11 +1598,11 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
             
             <tag> Flask </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1735,11 +1762,11 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
             
             <tag> Flask </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1791,11 +1818,11 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
             
             <tag> Flask </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1847,11 +1874,11 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
             
             <tag> Flask </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1876,11 +1903,40 @@
       
         <tags>
             
+            <tag> Python </tag>
+            
+            <tag> Flask </tag>
+            
             <tag> 测试开发 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>1.Flask:从wsgi开始</title>
+      <link href="article/d044d6a3.html"/>
+      <url>article/d044d6a3.html</url>
+      
+        <content type="html"><![CDATA[<h1 id="Flask-从wsgi开始-一"><a href="#Flask-从wsgi开始-一" class="headerlink" title="Flask(从wsgi开始 一)"></a>Flask(从wsgi开始 一)</h1><blockquote><p>运行Flask=开启一个服务</p></blockquote><h2 id="web应用处理请求的具体流程"><a href="#web应用处理请求的具体流程" class="headerlink" title="web应用处理请求的具体流程"></a>web应用处理请求的具体流程</h2><ol><li>用户操作操作浏览器发送请求；</li><li>请求转发至对应的web服务器</li><li>web服务器将请求转交给web应用程序，web应用程序处理请求</li><li>web应用将请求结果返回给web服务器，由web服务器返回用户响应结果</li><li>浏览器收到响应，向用户展示<span id="more"></span><h2 id="一个wsgi服务"><a href="#一个wsgi服务" class="headerlink" title="一个wsgi服务"></a>一个<code>wsgi</code>服务</h2></li></ol><blockquote><p>全称Python Web Server Gateway Interface，指定了web服务器和Python web应用或web框架之间的标准接口，以提高web应用在一系列web服务器间的移植性。 具体可查看 <a href="https://link.zhihu.com/?target=https://www.python.org/dev/peps/pep-0333/">官方文档</a>:<a href="https://www.python.org/dev/peps/pep-0333/">https://www.python.org/dev/peps/pep-0333/</a></p></blockquote><ol><li>WSGI是一套接口标准协议/规范；</li><li>通信（作用）区间是Web服务器和Python Web应用程序之间；</li><li>目的是制定标准，以保证不同Web服务器可以和不同的Python程序之间相互通信</li></ol><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> wsgiref.simple_server <span class="keyword">import</span> make_server</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">app</span>(<span class="params">env, start_response</span>):</span></span><br><span class="line">    <span class="comment"># env 获取请求相关数据</span></span><br><span class="line">    <span class="comment"># start_response</span></span><br><span class="line">    start_response(<span class="string">'200 OK'</span>,[(<span class="string">'content-type'</span>,<span class="string">'text/plain'</span>),])</span><br><span class="line">    <span class="keyword">return</span> [<span class="string">b"hello"</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">server = make_server(<span class="string">""</span>, <span class="number">6001</span>, app)</span><br><span class="line">server.serve_forever()  <span class="comment"># poll_interval轮询时间</span></span><br></pre></td></tr></tbody></table></figure><ol><li>env：字典，包含请求的所有信息</li><li>start_response：在可调用对象中调用的函数，用来发起响应，参数包括状态码，headers等</li></ol><p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gfqf64earnj30n809sjs8.jpg" alt="访问"></p><h2 id="拓展1（面向过程）"><a href="#拓展1（面向过程）" class="headerlink" title="拓展1（面向过程）"></a>拓展1（面向过程）</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> wsgiref.simple_server <span class="keyword">import</span> make_server</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">app</span>(<span class="params">env, start_response</span>):</span></span><br><span class="line">    <span class="comment"># env 获取请求相关数据</span></span><br><span class="line">    <span class="comment"># start_response</span></span><br><span class="line">    url = env[<span class="string">'PATH_INFO'</span>]</span><br><span class="line">    <span class="keyword">if</span> url == <span class="string">'/hi'</span>:</span><br><span class="line">        start_response(<span class="string">'200 OK'</span>, [(<span class="string">'content-type'</span>, <span class="string">'text/plain'</span>), ])</span><br><span class="line">        <span class="keyword">return</span> [<span class="string">b"hello"</span>]</span><br><span class="line">    <span class="keyword">elif</span> url == <span class="string">'/'</span>:</span><br><span class="line">        start_response(<span class="string">'200 OK'</span>, [(<span class="string">'content-type'</span>, <span class="string">'text/plain'</span>), ])</span><br><span class="line">        <span class="keyword">return</span> [<span class="string">b"welcom"</span>]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        start_response(<span class="string">'404 not fount'</span>, [(<span class="string">'content-type'</span>, <span class="string">'text/plain'</span>), ])</span><br><span class="line">        <span class="keyword">return</span> [<span class="string">b"not fount"</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">server = make_server(<span class="string">""</span>, <span class="number">6001</span>, app)</span><br><span class="line">server.serve_forever()  <span class="comment"># poll_interval轮询时间</span></span><br></pre></td></tr></tbody></table></figure><p>这样可以访问</p><ul><li><code>/hi</code></li><li><code>/</code></li><li>其他路由返回not found</li></ul><h2 id="拓展2（字典路由）"><a href="#拓展2（字典路由）" class="headerlink" title="拓展2（字典路由）"></a>拓展2（字典路由）</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- encoding: utf-8 -*-</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">@File    : day0_1.py</span></span><br><span class="line"><span class="string">@Time    : 2020/6/13 9:40 上午</span></span><br><span class="line"><span class="string">@Author  : zhongxin</span></span><br><span class="line"><span class="string">@Email   : 490336534@qq.com</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="keyword">from</span> wsgiref.simple_server <span class="keyword">import</span> make_server</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">home</span>():</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'welcome'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hi</span>():</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'hi'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">router = {</span><br><span class="line">    <span class="string">"/"</span>: home,</span><br><span class="line">    <span class="string">'hi'</span>: hi</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">app</span>(<span class="params">env, start_response</span>):</span></span><br><span class="line">    url = env.get(<span class="string">"PATH_INFO"</span>)</span><br><span class="line">    resp = router.get(url)</span><br><span class="line">    <span class="keyword">if</span> url <span class="keyword">is</span> <span class="literal">None</span> <span class="keyword">or</span> resp <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        start_response(<span class="string">'404 not fount'</span>, [(<span class="string">'content-type'</span>, <span class="string">'text/plain'</span>), ])</span><br><span class="line">        <span class="keyword">return</span> [<span class="string">b"not fount"</span>]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        start_response(<span class="string">'200 OK'</span>, [(<span class="string">'content-type'</span>, <span class="string">'text/plain'</span>), ])</span><br><span class="line">    <span class="keyword">return</span> [resp().encode()]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">server = make_server(<span class="string">""</span>, <span class="number">6001</span>, app)</span><br><span class="line">server.serve_forever()  <span class="comment"># poll_interval轮询时间</span></span><br></pre></td></tr></tbody></table></figure><h2 id="使用装饰器拓展"><a href="#使用装饰器拓展" class="headerlink" title="使用装饰器拓展"></a>使用装饰器拓展</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- encoding: utf-8 -*-</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">@File    : day0_1.py</span></span><br><span class="line"><span class="string">@Time    : 2020/6/13 9:40 上午</span></span><br><span class="line"><span class="string">@Author  : zhongxin</span></span><br><span class="line"><span class="string">@Email   : 490336534@qq.com</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="keyword">from</span> wsgiref.simple_server <span class="keyword">import</span> make_server</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Route</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.url = {}</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">route</span>(<span class="params">self, path</span>):</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">decorator</span>(<span class="params">func</span>):</span></span><br><span class="line">            self.url[path] = func</span><br><span class="line">            func()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> decorator</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span>(<span class="params">self, env, start_response</span>):</span></span><br><span class="line">        path = env[<span class="string">"PATH_INFO"</span>]</span><br><span class="line">        <span class="keyword">if</span> path <span class="keyword">in</span> self.url:</span><br><span class="line">            status = <span class="string">'200 OK'</span></span><br><span class="line">            response_header = [(<span class="string">'content-type'</span>, <span class="string">'text/html'</span>)]</span><br><span class="line">            start_response(status, response_header)</span><br><span class="line">            <span class="keyword">return</span> self.url[path]()</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            status = <span class="string">'404 Not Found'</span></span><br><span class="line">            response_header = [(<span class="string">'content-type'</span>, <span class="string">'text/html'</span>)]</span><br><span class="line">            start_response(status, response_header)</span><br><span class="line">            <span class="keyword">return</span> [<span class="string">b"404 not found"</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">app = Route()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">'/'</span></span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span>():</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="string">b'welcome'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">'/hi'</span></span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hi</span>():</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="string">b'hello'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">server = make_server(<span class="string">""</span>, <span class="number">6001</span>, app)</span><br><span class="line">server.serve_forever()  <span class="comment"># poll_interval轮询时间</span></span><br></pre></td></tr></tbody></table></figure><p>一本<code>函数式编程</code>的书：《The Little Schemer》</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Flask基础 </category>
+          
+      </categories>
+      
+      
+        <tags>
             
             <tag> Python </tag>
             
             <tag> Flask </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1943,35 +1999,6 @@
     
     
     <entry>
-      <title>1.Flask:从wsgi开始</title>
-      <link href="article/d044d6a3.html"/>
-      <url>article/d044d6a3.html</url>
-      
-        <content type="html"><![CDATA[<h1 id="Flask-从wsgi开始-一"><a href="#Flask-从wsgi开始-一" class="headerlink" title="Flask(从wsgi开始 一)"></a>Flask(从wsgi开始 一)</h1><blockquote><p>运行Flask=开启一个服务</p></blockquote><h2 id="web应用处理请求的具体流程"><a href="#web应用处理请求的具体流程" class="headerlink" title="web应用处理请求的具体流程"></a>web应用处理请求的具体流程</h2><ol><li>用户操作操作浏览器发送请求；</li><li>请求转发至对应的web服务器</li><li>web服务器将请求转交给web应用程序，web应用程序处理请求</li><li>web应用将请求结果返回给web服务器，由web服务器返回用户响应结果</li><li>浏览器收到响应，向用户展示<span id="more"></span><h2 id="一个wsgi服务"><a href="#一个wsgi服务" class="headerlink" title="一个wsgi服务"></a>一个<code>wsgi</code>服务</h2></li></ol><blockquote><p>全称Python Web Server Gateway Interface，指定了web服务器和Python web应用或web框架之间的标准接口，以提高web应用在一系列web服务器间的移植性。 具体可查看 <a href="https://link.zhihu.com/?target=https://www.python.org/dev/peps/pep-0333/">官方文档</a>:<a href="https://www.python.org/dev/peps/pep-0333/">https://www.python.org/dev/peps/pep-0333/</a></p></blockquote><ol><li>WSGI是一套接口标准协议/规范；</li><li>通信（作用）区间是Web服务器和Python Web应用程序之间；</li><li>目的是制定标准，以保证不同Web服务器可以和不同的Python程序之间相互通信</li></ol><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> wsgiref.simple_server <span class="keyword">import</span> make_server</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">app</span>(<span class="params">env, start_response</span>):</span></span><br><span class="line">    <span class="comment"># env 获取请求相关数据</span></span><br><span class="line">    <span class="comment"># start_response</span></span><br><span class="line">    start_response(<span class="string">'200 OK'</span>,[(<span class="string">'content-type'</span>,<span class="string">'text/plain'</span>),])</span><br><span class="line">    <span class="keyword">return</span> [<span class="string">b"hello"</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">server = make_server(<span class="string">""</span>, <span class="number">6001</span>, app)</span><br><span class="line">server.serve_forever()  <span class="comment"># poll_interval轮询时间</span></span><br></pre></td></tr></tbody></table></figure><ol><li>env：字典，包含请求的所有信息</li><li>start_response：在可调用对象中调用的函数，用来发起响应，参数包括状态码，headers等</li></ol><p><img src="https://tva1.sinaimg.cn/large/007S8ZIlly1gfqf64earnj30n809sjs8.jpg" alt="访问"></p><h2 id="拓展1（面向过程）"><a href="#拓展1（面向过程）" class="headerlink" title="拓展1（面向过程）"></a>拓展1（面向过程）</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> wsgiref.simple_server <span class="keyword">import</span> make_server</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">app</span>(<span class="params">env, start_response</span>):</span></span><br><span class="line">    <span class="comment"># env 获取请求相关数据</span></span><br><span class="line">    <span class="comment"># start_response</span></span><br><span class="line">    url = env[<span class="string">'PATH_INFO'</span>]</span><br><span class="line">    <span class="keyword">if</span> url == <span class="string">'/hi'</span>:</span><br><span class="line">        start_response(<span class="string">'200 OK'</span>, [(<span class="string">'content-type'</span>, <span class="string">'text/plain'</span>), ])</span><br><span class="line">        <span class="keyword">return</span> [<span class="string">b"hello"</span>]</span><br><span class="line">    <span class="keyword">elif</span> url == <span class="string">'/'</span>:</span><br><span class="line">        start_response(<span class="string">'200 OK'</span>, [(<span class="string">'content-type'</span>, <span class="string">'text/plain'</span>), ])</span><br><span class="line">        <span class="keyword">return</span> [<span class="string">b"welcom"</span>]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        start_response(<span class="string">'404 not fount'</span>, [(<span class="string">'content-type'</span>, <span class="string">'text/plain'</span>), ])</span><br><span class="line">        <span class="keyword">return</span> [<span class="string">b"not fount"</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">server = make_server(<span class="string">""</span>, <span class="number">6001</span>, app)</span><br><span class="line">server.serve_forever()  <span class="comment"># poll_interval轮询时间</span></span><br></pre></td></tr></tbody></table></figure><p>这样可以访问</p><ul><li><code>/hi</code></li><li><code>/</code></li><li>其他路由返回not found</li></ul><h2 id="拓展2（字典路由）"><a href="#拓展2（字典路由）" class="headerlink" title="拓展2（字典路由）"></a>拓展2（字典路由）</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- encoding: utf-8 -*-</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">@File    : day0_1.py</span></span><br><span class="line"><span class="string">@Time    : 2020/6/13 9:40 上午</span></span><br><span class="line"><span class="string">@Author  : zhongxin</span></span><br><span class="line"><span class="string">@Email   : 490336534@qq.com</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="keyword">from</span> wsgiref.simple_server <span class="keyword">import</span> make_server</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">home</span>():</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'welcome'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hi</span>():</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'hi'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">router = {</span><br><span class="line">    <span class="string">"/"</span>: home,</span><br><span class="line">    <span class="string">'hi'</span>: hi</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">app</span>(<span class="params">env, start_response</span>):</span></span><br><span class="line">    url = env.get(<span class="string">"PATH_INFO"</span>)</span><br><span class="line">    resp = router.get(url)</span><br><span class="line">    <span class="keyword">if</span> url <span class="keyword">is</span> <span class="literal">None</span> <span class="keyword">or</span> resp <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        start_response(<span class="string">'404 not fount'</span>, [(<span class="string">'content-type'</span>, <span class="string">'text/plain'</span>), ])</span><br><span class="line">        <span class="keyword">return</span> [<span class="string">b"not fount"</span>]</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        start_response(<span class="string">'200 OK'</span>, [(<span class="string">'content-type'</span>, <span class="string">'text/plain'</span>), ])</span><br><span class="line">    <span class="keyword">return</span> [resp().encode()]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">server = make_server(<span class="string">""</span>, <span class="number">6001</span>, app)</span><br><span class="line">server.serve_forever()  <span class="comment"># poll_interval轮询时间</span></span><br></pre></td></tr></tbody></table></figure><h2 id="使用装饰器拓展"><a href="#使用装饰器拓展" class="headerlink" title="使用装饰器拓展"></a>使用装饰器拓展</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- encoding: utf-8 -*-</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="string">@File    : day0_1.py</span></span><br><span class="line"><span class="string">@Time    : 2020/6/13 9:40 上午</span></span><br><span class="line"><span class="string">@Author  : zhongxin</span></span><br><span class="line"><span class="string">@Email   : 490336534@qq.com</span></span><br><span class="line"><span class="string">"""</span></span><br><span class="line"><span class="keyword">from</span> wsgiref.simple_server <span class="keyword">import</span> make_server</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Route</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self</span>):</span></span><br><span class="line">        self.url = {}</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">route</span>(<span class="params">self, path</span>):</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">decorator</span>(<span class="params">func</span>):</span></span><br><span class="line">            self.url[path] = func</span><br><span class="line">            func()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> decorator</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span>(<span class="params">self, env, start_response</span>):</span></span><br><span class="line">        path = env[<span class="string">"PATH_INFO"</span>]</span><br><span class="line">        <span class="keyword">if</span> path <span class="keyword">in</span> self.url:</span><br><span class="line">            status = <span class="string">'200 OK'</span></span><br><span class="line">            response_header = [(<span class="string">'content-type'</span>, <span class="string">'text/html'</span>)]</span><br><span class="line">            start_response(status, response_header)</span><br><span class="line">            <span class="keyword">return</span> self.url[path]()</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            status = <span class="string">'404 Not Found'</span></span><br><span class="line">            response_header = [(<span class="string">'content-type'</span>, <span class="string">'text/html'</span>)]</span><br><span class="line">            start_response(status, response_header)</span><br><span class="line">            <span class="keyword">return</span> [<span class="string">b"404 not found"</span>]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">app = Route()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">'/'</span></span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span>():</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="string">b'welcome'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">'/hi'</span></span>)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hi</span>():</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="string">b'hello'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">server = make_server(<span class="string">""</span>, <span class="number">6001</span>, app)</span><br><span class="line">server.serve_forever()  <span class="comment"># poll_interval轮询时间</span></span><br></pre></td></tr></tbody></table></figure><p>一本<code>函数式编程</code>的书：《The Little Schemer》</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> Flask基础 </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 测试开发 </tag>
-            
-            <tag> Python </tag>
-            
-            <tag> Flask </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>mac安装tomcat</title>
       <link href="article/fea5375c.html"/>
       <url>article/fea5375c.html</url>
@@ -1988,9 +2015,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -2015,9 +2042,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -2042,9 +2069,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -2069,9 +2096,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -2096,9 +2123,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -2123,9 +2150,9 @@
       
         <tags>
             
-            <tag> Java </tag>
-            
             <tag> 自动化测试 </tag>
+            
+            <tag> Java </tag>
             
         </tags>
       
@@ -2306,9 +2333,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2333,9 +2360,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2360,9 +2387,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2387,9 +2414,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2414,9 +2441,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2441,9 +2468,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2468,9 +2495,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2495,9 +2522,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2522,9 +2549,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2549,9 +2576,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2576,9 +2603,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2603,9 +2630,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2630,9 +2657,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2657,9 +2684,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2684,9 +2711,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2711,9 +2738,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2738,9 +2765,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2765,9 +2792,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2792,9 +2819,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2819,9 +2846,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2846,9 +2873,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2873,9 +2900,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2900,9 +2927,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2927,9 +2954,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2954,9 +2981,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2981,9 +3008,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3008,9 +3035,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3035,9 +3062,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3062,9 +3089,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3089,9 +3116,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3116,9 +3143,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3143,9 +3170,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3170,9 +3197,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3197,9 +3224,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3224,9 +3251,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3251,9 +3278,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3278,9 +3305,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3305,9 +3332,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3332,9 +3359,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3359,9 +3386,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3386,9 +3413,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3413,9 +3440,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3440,9 +3467,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3467,9 +3494,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3494,9 +3521,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3521,9 +3548,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3548,9 +3575,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3575,9 +3602,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Python </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3602,9 +3629,9 @@
       
         <tags>
             
-            <tag> Jenkins </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Jenkins </tag>
             
         </tags>
       
@@ -3629,9 +3656,9 @@
       
         <tags>
             
-            <tag> Jenkins </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Jenkins </tag>
             
         </tags>
       
@@ -3656,9 +3683,9 @@
       
         <tags>
             
-            <tag> Jenkins </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Jenkins </tag>
             
         </tags>
       
@@ -3683,9 +3710,9 @@
       
         <tags>
             
-            <tag> Jenkins </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Jenkins </tag>
             
         </tags>
       
@@ -3710,9 +3737,9 @@
       
         <tags>
             
-            <tag> Jenkins </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Jenkins </tag>
             
         </tags>
       
@@ -3737,9 +3764,9 @@
       
         <tags>
             
-            <tag> Jenkins </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Jenkins </tag>
             
         </tags>
       
@@ -3764,9 +3791,9 @@
       
         <tags>
             
-            <tag> Jenkins </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Jenkins </tag>
             
         </tags>
       
@@ -3791,9 +3818,9 @@
       
         <tags>
             
-            <tag> Jenkins </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Jenkins </tag>
             
         </tags>
       
