@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>19-nmon</title>
+      <link href="article/5ac52f3c.html"/>
+      <url>article/5ac52f3c.html</url>
+      
+        <content type="html"><![CDATA[<h1 id="19-nmon"><a href="#19-nmon" class="headerlink" title="19-nmon"></a>19-nmon</h1><h2 id="nmon"><a href="#nmon" class="headerlink" title="nmon"></a>nmon</h2><blockquote><p><a href="http://nmon.sourceforge.net/">http://nmon.sourceforge.net/</a></p><p>C语言编写本身资源消耗非常小</p></blockquote><p>部署到被测试服务器上，可以监控不同的Linux系统（不同的linux发行版本，nmon命令是不同的）</p><h3 id="查看Linux的发行版本"><a href="#查看Linux的发行版本" class="headerlink" title="查看Linux的发行版本"></a>查看Linux的发行版本</h3><blockquote><p><code>cd /etc</code>查看路径下有没有「release」关键字的文件</p></blockquote><h4 id="查看redhat家族的发行版本"><a href="#查看redhat家族的发行版本" class="headerlink" title="查看redhat家族的发行版本"></a>查看redhat家族的发行版本</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@vircent7 ~]# cat /etc/redhat-release </span><br><span class="line">CentOS Linux release 7.8.2003 (Core)</span><br></pre></td></tr></tbody></table></figure><span id="more"></span><h4 id="查看Ubuntu的发行版本"><a href="#查看Ubuntu的发行版本" class="headerlink" title="查看Ubuntu的发行版本"></a>查看Ubuntu的发行版本</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">root@zx:/# cat /etc/os-release </span><br><span class="line">NAME="Ubuntu"</span><br><span class="line">VERSION="20.04.1 LTS (Focal Fossa)"</span><br><span class="line">ID=ubuntu</span><br><span class="line">ID_LIKE=debian</span><br><span class="line">PRETTY_NAME="Ubuntu 20.04.1 LTS"</span><br><span class="line">VERSION_ID="20.04"</span><br><span class="line">HOME_URL="https://www.ubuntu.com/"</span><br><span class="line">SUPPORT_URL="https://help.ubuntu.com/"</span><br><span class="line">BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"</span><br><span class="line">PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"</span><br><span class="line">VERSION_CODENAME=focal</span><br><span class="line">UBUNTU_CODENAME=focal</span><br></pre></td></tr></tbody></table></figure><h3 id="确定下载的文件"><a href="#确定下载的文件" class="headerlink" title="确定下载的文件"></a>确定下载的文件</h3><p>进入<code>http://nmon.sourceforge.net/pmwiki.php?n=Site.Download</code>找到有符合当前Linux版本信息的文件下载</p><h3 id="解压"><a href="#解压" class="headerlink" title="解压"></a>解压</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@vircent7 nmon16m_helpsystems]# ls</span><br><span class="line">nmon_power_64_centos6      nmon_power_64_linux   nmon_x86_64_mint19      nmon_x86_64_rhel8</span><br><span class="line">nmon_power_64_centos7      nmon_power_64_rhel6   nmon_x86_64_oel5        nmon_x86_64_sles10</span><br><span class="line">nmon_power_64le_centos7    nmon_power_64_rhel7   nmon_x86_64_oel6        nmon_x86_64_sles11</span><br><span class="line">nmon_power_64le_centos8    nmon_power_64_sles11  nmon_x86_64_oel7        nmon_x86_64_sles12</span><br><span class="line">nmon_power_64le_linux      nmon_x86_64_centos5   nmon_x86_64_oel8        nmon_x86_64_sles15</span><br><span class="line">nmon_power_64le_rhel7      nmon_x86_64_centos6   nmon_x86_64_opensuse10  nmon_x86_64_ubuntu14</span><br><span class="line">nmon_power_64le_rhel7_gpu  nmon_x86_64_centos7   nmon_x86_64_opensuse11  nmon_x86_64_ubuntu16</span><br><span class="line">nmon_power_64le_rhel8      nmon_x86_64_centos8   nmon_x86_64_opensuse12  nmon_x86_64_ubuntu18</span><br><span class="line">nmon_power_64le_sles12     nmon_x86_64_debian08  nmon_x86_64_opensuse15  nmon_x86_64_ubuntu19</span><br><span class="line">nmon_power_64le_ubuntu14   nmon_x86_64_debian09  nmon_x86_64_rhel5</span><br><span class="line">nmon_power_64le_ubuntu16   nmon_x86_64_debian10  nmon_x86_64_rhel6</span><br><span class="line">nmon_power_64le_ubuntu18   nmon_x86_64_mint18    nmon_x86_64_rhel7</span><br></pre></td></tr></tbody></table></figure><h3 id="nmon三种运行模式"><a href="#nmon三种运行模式" class="headerlink" title="nmon三种运行模式"></a>nmon三种运行模式</h3><h4 id="实时屏幕交互"><a href="#实时屏幕交互" class="headerlink" title="实时屏幕交互"></a>实时屏幕交互</h4><p>优点：可以通过屏幕实时看到服务器资源使用情况</p><p>缺点：只能看到，无法保存数据</p><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@vircent7 nmon16m_helpsystems]# ./nmon_x86_64_centos7</span><br></pre></td></tr></tbody></table></figure><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqjxipq9buj312o0pc0y2.jpg" alt="实时屏幕交互"></p><p><strong>常用命令</strong>：<code>cmdrtn</code></p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqjxmfpresj30u01f6av9.jpg" alt="截屏2021-05-16 上午7.50.17"></p><ul><li>c:cpu信息</li></ul><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqjxof6ct0j30jl03t0sw.jpg" alt="CPU"></p><p>CPU下面的数字表示有几核</p><p><code>User%</code>:用户态cpu的使用率</p><p><code>Sys%</code>:系统态cpu的使用率</p><p><code>Wait%</code>:等待的cpu占用率</p><p><code>Idle%</code>:空闲cpu的占用率</p><ul><li>m:内存</li></ul><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqjxs2rjbgj30kc05qdgp.jpg" alt="内存"></p><ul><li>d:磁盘读写</li></ul><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqjxsismz0j30kb04idge.jpg" alt="磁盘读写"></p><ul><li>r:资源</li></ul><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqjxv1jqjaj30lc0b2myu.jpg" alt="资源"></p><ul><li>t:top命令</li></ul><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqjxuqvwkqj30s40ceq55.jpg" alt="top"></p><ul><li>n:网络</li></ul><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqjxuhy55ej30k503ddg8.jpg" alt="网络"></p><h4 id="数据收集模式"><a href="#数据收集模式" class="headerlink" title="数据收集模式"></a>数据收集模式</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-f            spreadsheet output format [note: default -s300 -c288]</span><br><span class="line">                         output file is &lt;hostname&gt;_YYYYMMDD_HHMM.nmon</span><br><span class="line">-s &lt;seconds&gt;  Time between snap shots - with "-c count" decides duration of the data capture</span><br><span class="line">-c &lt;number&gt;   The number of snapshots before nmon stops</span><br></pre></td></tr></tbody></table></figure><p><code>-f</code>=<code>-s 300 -c 288</code>每隔300秒收集一次数据，收集288次。收集完成后自动结束。总共会收集300*288=24小时</p><p><code>-s num</code>:间隔多长时间收集一次数据</p><p><code>-c num</code>:总共收集的次数</p><p>运行后会生成<code>vircent7_210327_1457.nmon</code></p><p>该文件打开后难以查看结果，需要导出后使用Excel宏解读</p><blockquote><p>解析的<code>nmon analyser v66.xlsm</code>文件，需要使用Office的Excel打开</p><p>打开后点击分析按钮，就可以查看到图表展示</p><p>链接: <a href="https://pan.baidu.com/s/183jY_ktWO3gxouIFb3KYfw">https://pan.baidu.com/s/183jY_ktWO3gxouIFb3KYfw</a>  密码: ri7h</p></blockquote><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">./nmon_x86_64_centos7 -f #收集24小时</span><br><span class="line">./nmon_x86_64_centos7 -f -s2 -c200 #按照设定的间隔和次数收集</span><br><span class="line">./nmon_x86_64_centos7 -f -s2 -c200 -m /tmp/mon #指定输出到一个存在的文件夹路径下</span><br></pre></td></tr></tbody></table></figure><h4 id="定时收集模式"><a href="#定时收集模式" class="headerlink" title="定时收集模式"></a>定时收集模式</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Capacity Planning mode - use cron to run each day</span><br><span class="line">        -x            Sensible spreadsheet output for one day</span><br><span class="line">                      Every 15 mins for 1 day ( i.e. -ft -s 900 -c 96)</span><br><span class="line">        -X            Sensible spreadsheet output for busy hour</span><br><span class="line">                      Every 30 secs for 1 hour ( i.e. -ft -s 30 -c 120)</span><br><span class="line">        -z            Like -x but the output saved in /var/perf/tmp assuming root user</span><br></pre></td></tr></tbody></table></figure><p>-X:收集一小时</p><p>-x:收集一天</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 性能测试 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 测试开发 </tag>
+            
+            <tag> 性能测试 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>18-读取数据库数据进行性能测试</title>
       <link href="article/d51793d9.html"/>
       <url>article/d51793d9.html</url>
@@ -2256,9 +2283,9 @@
       
         <tags>
             
-            <tag> PC端自动化 </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> PC端自动化 </tag>
             
         </tags>
       
@@ -2283,9 +2310,9 @@
       
         <tags>
             
-            <tag> PC端自动化 </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> PC端自动化 </tag>
             
         </tags>
       
@@ -2310,9 +2337,9 @@
       
         <tags>
             
-            <tag> PC端自动化 </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> PC端自动化 </tag>
             
         </tags>
       
@@ -3683,9 +3710,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Jenkins </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3710,9 +3737,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Jenkins </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3737,9 +3764,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Jenkins </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3764,9 +3791,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Jenkins </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3791,9 +3818,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Jenkins </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3818,9 +3845,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Jenkins </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3845,9 +3872,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Jenkins </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -3872,9 +3899,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Jenkins </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
