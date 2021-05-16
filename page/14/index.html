@@ -275,6 +275,173 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/article/d63b1e9.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="测试游记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/article/d63b1e9.html" itemprop="url">测试开发进阶(七)</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-20T08:12:00+08:00">
+                2019-08-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/" itemprop="url" rel="index">
+                    <span itemprop="name">Python测试开发进阶</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/article/d63b1e9.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="article/d63b1e9.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="测试开发进阶-七"><a href="#测试开发进阶-七" class="headerlink" title="测试开发进阶(七)"></a>测试开发进阶(七)</h1><h2 id="元类"><a href="#元类" class="headerlink" title="元类"></a>元类</h2><h3 id="新式类-旧式类"><a href="#新式类-旧式类" class="headerlink" title="新式类 旧式类"></a>新式类 旧式类</h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在python3中两个类定义没有任何区别，都是继承于object</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 在python2 中Myclass称为旧式类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Myclass</span>:</span></span><br><span class="line">   <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 在python2 中Myclass1称为新式类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Myclass1</span>(<span class="params"><span class="built_in">object</span></span>):</span></span><br><span class="line">   <span class="keyword">pass</span></span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>在python2中</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">c = Myclass()</span><br><span class="line">c1 = Myclass1()</span><br><span class="line"><span class="built_in">print</span> <span class="built_in">type</span>(c)  <span class="comment"># &lt;type 'instance'&gt;</span></span><br><span class="line"><span class="built_in">print</span> <span class="built_in">type</span>(c1)  <span class="comment"># &lt;class '__main__.Myclass1'&gt;</span></span><br><span class="line"><span class="built_in">print</span> <span class="built_in">type</span>(Myclass)  <span class="comment"># &lt;type 'classobj'&gt;</span></span><br><span class="line"><span class="built_in">print</span> <span class="built_in">type</span>(Myclass1)  <span class="comment"># &lt;class 'type'&gt;</span></span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>在python3中</li>
+</ul>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">c = Myclass()</span><br><span class="line">c1 = Myclass1()</span><br><span class="line">print(<span class="built_in">type</span>(c))  <span class="comment"># &lt;class '__main__.Myclass'&gt;</span></span><br><span class="line">print(<span class="built_in">type</span>(c1))  <span class="comment"># &lt;class '__main__.Myclass1'&gt;</span></span><br><span class="line">print(<span class="built_in">type</span>(Myclass))  <span class="comment"># &lt;class 'type'&gt;</span></span><br><span class="line">print(<span class="built_in">type</span>(Myclass1))  <span class="comment"># &lt;class 'type'&gt;</span></span><br></pre></td></tr></tbody></table></figure>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/article/d63b1e9.html#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/article/926ba963.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1721,177 +1888,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/article/3f7b6567.html">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.jpeg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="测试游记">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/article/3f7b6567.html" itemprop="url">Jenkins(五)</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-13T12:57:00+08:00">
-                2019-07-13
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Jenkins/" itemprop="url" rel="index">
-                    <span itemprop="name">Jenkins</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/article/3f7b6567.html#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="article/3f7b6567.html" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="Jenkins-五"><a href="#Jenkins-五" class="headerlink" title="Jenkins(五)"></a>Jenkins(五)</h1><h2 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h2><p>环境变量可以分为：</p>
-<ul>
-<li>Jenkins内置变量</li>
-<li>自定义变量</li>
-</ul>
-<h3 id="Jenkins内置变量"><a href="#Jenkins内置变量" class="headerlink" title="Jenkins内置变量"></a>Jenkins内置变量</h3><blockquote>
-<p>Jenkins通过一个名为<code>env</code>的全局变量，将Jenkins内置环境变量暴露出来</p>
-</blockquote>
-<ul>
-<li><code>${env.BUILD_NUMBER}$</code></li>
-<li><code>$env.BUILD_NUMBER$</code></li>
-<li><code>$BUILD_NUMBER$</code>，不推荐使用</li>
-</ul>
-<p>查看全局变量：http://「Jenkins服务器地址」:「端口」/pipeline-syntax/globals</p>
-<p>例如：<a target="_blank" rel="noopener" href="http://127.0.0.1:8080/pipeline-syntax/globals">http://127.0.0.1:8080/pipeline-syntax/globals</a></p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/article/3f7b6567.html#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1946,7 +1942,7 @@
               
                 <a href="/archives%7C%7C%20archive">
               
-                  <span class="site-state-item-count">154</span>
+                  <span class="site-state-item-count">155</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

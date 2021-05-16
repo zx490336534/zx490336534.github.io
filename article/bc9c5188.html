@@ -81,28 +81,31 @@
 
 
 
-<meta name="description" content="19-nmonnmon http:&#x2F;&#x2F;nmon.sourceforge.net&#x2F; C语言编写本身资源消耗非常小  部署到被测试服务器上，可以监控不同的Linux系统（不同的linux发行版本，nmon命令是不同的） 查看Linux的发行版本 cd &#x2F;etc查看路径下有没有「release」关键字的文件  查看redhat家族的发行版本12[root@vircent7 ~]# cat &#x2F;etc&#x2F;re">
+<meta name="description" content="20-grafana+influxdb 一款用go编写的开源应用，用于大规模指标数据的可视化展示，是网络架构和应用分析中最流行的时序数据展示工具  grafana:展示时序数据库数据的工具 influxdb:时序数据库，存数据 安装 grafana+influxdb不能安装在被测服务器上  1[root@dubbo opt]# yum install grafana-7.4.3-1.x86_64.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="19-nmon">
-<meta property="og:url" content="http://zx490336534.github.io/article/5ac52f3c.html">
+<meta property="og:title" content="20-grafana+influxdb">
+<meta property="og:url" content="http://zx490336534.github.io/article/bc9c5188.html">
 <meta property="og:site_name" content="测试游记">
-<meta property="og:description" content="19-nmonnmon http:&#x2F;&#x2F;nmon.sourceforge.net&#x2F; C语言编写本身资源消耗非常小  部署到被测试服务器上，可以监控不同的Linux系统（不同的linux发行版本，nmon命令是不同的） 查看Linux的发行版本 cd &#x2F;etc查看路径下有没有「release」关键字的文件  查看redhat家族的发行版本12[root@vircent7 ~]# cat &#x2F;etc&#x2F;re">
+<meta property="og:description" content="20-grafana+influxdb 一款用go编写的开源应用，用于大规模指标数据的可视化展示，是网络架构和应用分析中最流行的时序数据展示工具  grafana:展示时序数据库数据的工具 influxdb:时序数据库，存数据 安装 grafana+influxdb不能安装在被测服务器上  1[root@dubbo opt]# yum install grafana-7.4.3-1.x86_64.">
 <meta property="og:locale">
-<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gqjxipq9buj312o0pc0y2.jpg">
-<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gqjxmfpresj30u01f6av9.jpg">
-<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gqjxof6ct0j30jl03t0sw.jpg">
-<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gqjxs2rjbgj30kc05qdgp.jpg">
-<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gqjxsismz0j30kb04idge.jpg">
-<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gqjxv1jqjaj30lc0b2myu.jpg">
-<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gqjxuqvwkqj30s40ceq55.jpg">
-<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gqjxuhy55ej30k503ddg8.jpg">
-<meta property="article:published_time" content="2021-05-15T23:34:00.000Z">
-<meta property="article:modified_time" content="2021-05-16T00:32:16.387Z">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gqjzlusawqj30xr0u0qf6.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gqjz04qhlwj30xr0u0dos.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gqk063muq2j313p0ex796.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gqk06963xhj30xr0u0dov.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gqk07abuoij30xr0u07d6.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gqkdo7dltuj306m0b9jrn.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gqkdooyzugj30xr0u0q9h.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gqkdq4z5muj30r705z0t7.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gqkdpknfedj30xr0u0wmi.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gqkdvbmctnj30xv0u0481.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gqkdy8bu0mj31g90u0gut.jpg">
+<meta property="article:published_time" content="2021-05-16T00:30:00.000Z">
+<meta property="article:modified_time" content="2021-05-16T09:22:03.487Z">
 <meta property="article:author" content="测试游记">
 <meta property="article:tag" content="测试开发">
 <meta property="article:tag" content="性能测试">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gqjxipq9buj312o0pc0y2.jpg">
+<meta name="twitter:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gqjzlusawqj30xr0u0qf6.jpg">
 
 
 
@@ -132,13 +135,13 @@
 
 
 
-  <link rel="canonical" href="http://zx490336534.github.io/article/5ac52f3c.html"/>
+  <link rel="canonical" href="http://zx490336534.github.io/article/bc9c5188.html"/>
 
 
 
 
 
-  <title>19-nmon | 测试游记</title>
+  <title>20-grafana+influxdb | 测试游记</title>
   
 
 
@@ -287,7 +290,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/article/5ac52f3c.html">
+    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/article/bc9c5188.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -304,7 +307,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">19-nmon</h1>
+          <h1 class="post-title" itemprop="name headline">20-grafana+influxdb</h1>
         
 
         <div class="post-meta">
@@ -316,7 +319,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-16T07:34:00+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-16T08:30:00+08:00">
                 2021-05-16
               </time>
             
@@ -357,9 +360,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/article/5ac52f3c.html#comments" itemprop="discussionUrl">
+                <a href="/article/bc9c5188.html#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="article/5ac52f3c.html" itemprop="commentCount"></span>
+                        data-disqus-identifier="article/bc9c5188.html" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -387,75 +390,58 @@
       
 
       
-        <h1 id="19-nmon"><a href="#19-nmon" class="headerlink" title="19-nmon"></a>19-nmon</h1><h2 id="nmon"><a href="#nmon" class="headerlink" title="nmon"></a>nmon</h2><blockquote>
-<p><a target="_blank" rel="noopener" href="http://nmon.sourceforge.net/">http://nmon.sourceforge.net/</a></p>
-<p>C语言编写本身资源消耗非常小</p>
+        <h1 id="20-grafana-influxdb"><a href="#20-grafana-influxdb" class="headerlink" title="20-grafana+influxdb"></a>20-grafana+influxdb</h1><blockquote>
+<p>一款用go编写的开源应用，用于大规模指标数据的可视化展示，是网络架构和应用分析中最流行的时序数据展示工具</p>
 </blockquote>
-<p>部署到被测试服务器上，可以监控不同的Linux系统（不同的linux发行版本，nmon命令是不同的）</p>
-<h3 id="查看Linux的发行版本"><a href="#查看Linux的发行版本" class="headerlink" title="查看Linux的发行版本"></a>查看Linux的发行版本</h3><blockquote>
-<p><code>cd /etc</code>查看路径下有没有「release」关键字的文件</p>
+<p><code>grafana</code>:展示时序数据库数据的工具</p>
+<p><code>influxdb</code>:时序数据库，存数据</p>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><blockquote>
+<p>grafana+influxdb不能安装在被测服务器上</p>
 </blockquote>
-<h4 id="查看redhat家族的发行版本"><a href="#查看redhat家族的发行版本" class="headerlink" title="查看redhat家族的发行版本"></a>查看redhat家族的发行版本</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@vircent7 ~]# cat /etc/redhat-release </span><br><span class="line">CentOS Linux release 7.8.2003 (Core)</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@dubbo opt]# yum install grafana-7.4.3-1.x86_64.rpm -y</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@dubbo opt]# systemctl restart grafana-server</span><br></pre></td></tr></tbody></table></figure>
+
 <span id="more"></span>
-<h4 id="查看Ubuntu的发行版本"><a href="#查看Ubuntu的发行版本" class="headerlink" title="查看Ubuntu的发行版本"></a>查看Ubuntu的发行版本</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">root@zx:/# cat /etc/os-release </span><br><span class="line">NAME="Ubuntu"</span><br><span class="line">VERSION="20.04.1 LTS (Focal Fossa)"</span><br><span class="line">ID=ubuntu</span><br><span class="line">ID_LIKE=debian</span><br><span class="line">PRETTY_NAME="Ubuntu 20.04.1 LTS"</span><br><span class="line">VERSION_ID="20.04"</span><br><span class="line">HOME_URL="https://www.ubuntu.com/"</span><br><span class="line">SUPPORT_URL="https://help.ubuntu.com/"</span><br><span class="line">BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"</span><br><span class="line">PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"</span><br><span class="line">VERSION_CODENAME=focal</span><br><span class="line">UBUNTU_CODENAME=focal</span><br></pre></td></tr></tbody></table></figure>
 
-<h3 id="确定下载的文件"><a href="#确定下载的文件" class="headerlink" title="确定下载的文件"></a>确定下载的文件</h3><p>进入<code>http://nmon.sourceforge.net/pmwiki.php?n=Site.Download</code>找到有符合当前Linux版本信息的文件下载</p>
-<h3 id="解压"><a href="#解压" class="headerlink" title="解压"></a>解压</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@vircent7 nmon16m_helpsystems]# ls</span><br><span class="line">nmon_power_64_centos6      nmon_power_64_linux   nmon_x86_64_mint19      nmon_x86_64_rhel8</span><br><span class="line">nmon_power_64_centos7      nmon_power_64_rhel6   nmon_x86_64_oel5        nmon_x86_64_sles10</span><br><span class="line">nmon_power_64le_centos7    nmon_power_64_rhel7   nmon_x86_64_oel6        nmon_x86_64_sles11</span><br><span class="line">nmon_power_64le_centos8    nmon_power_64_sles11  nmon_x86_64_oel7        nmon_x86_64_sles12</span><br><span class="line">nmon_power_64le_linux      nmon_x86_64_centos5   nmon_x86_64_oel8        nmon_x86_64_sles15</span><br><span class="line">nmon_power_64le_rhel7      nmon_x86_64_centos6   nmon_x86_64_opensuse10  nmon_x86_64_ubuntu14</span><br><span class="line">nmon_power_64le_rhel7_gpu  nmon_x86_64_centos7   nmon_x86_64_opensuse11  nmon_x86_64_ubuntu16</span><br><span class="line">nmon_power_64le_rhel8      nmon_x86_64_centos8   nmon_x86_64_opensuse12  nmon_x86_64_ubuntu18</span><br><span class="line">nmon_power_64le_sles12     nmon_x86_64_debian08  nmon_x86_64_opensuse15  nmon_x86_64_ubuntu19</span><br><span class="line">nmon_power_64le_ubuntu14   nmon_x86_64_debian09  nmon_x86_64_rhel5</span><br><span class="line">nmon_power_64le_ubuntu16   nmon_x86_64_debian10  nmon_x86_64_rhel6</span><br><span class="line">nmon_power_64le_ubuntu18   nmon_x86_64_mint18    nmon_x86_64_rhel7</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="访问"><a href="#访问" class="headerlink" title="访问"></a>访问</h2><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.9.3:3000/login</span><br><span class="line">账号密码都为admin</span><br></pre></td></tr></tbody></table></figure>
 
-<h3 id="nmon三种运行模式"><a href="#nmon三种运行模式" class="headerlink" title="nmon三种运行模式"></a>nmon三种运行模式</h3><h4 id="实时屏幕交互"><a href="#实时屏幕交互" class="headerlink" title="实时屏幕交互"></a>实时屏幕交互</h4><p>优点：可以通过屏幕实时看到服务器资源使用情况</p>
-<p>缺点：只能看到，无法保存数据</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@vircent7 nmon16m_helpsystems]# ./nmon_x86_64_centos7</span><br></pre></td></tr></tbody></table></figure>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqjzlusawqj30xr0u0qf6.jpg" alt="截屏2021-05-16 上午8.58.55"></p>
+<h2 id="安装数据库"><a href="#安装数据库" class="headerlink" title="安装数据库"></a>安装数据库</h2><p>下载地址<code>https://dl.influxdata.com/influxdb/releases/influxdb-1.7.8.x86_64.rpm</code></p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@dubbo opt]# yum install influxdb-2.0.2.x86_64.rpm -y</span><br></pre></td></tr></tbody></table></figure>
 
-<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqjxipq9buj312o0pc0y2.jpg" alt="实时屏幕交互"></p>
-<p><strong>常用命令</strong>：<code>cmdrtn</code></p>
-<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqjxmfpresj30u01f6av9.jpg" alt="截屏2021-05-16 上午7.50.17"></p>
-<ul>
-<li>c:cpu信息</li>
-</ul>
-<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqjxof6ct0j30jl03t0sw.jpg" alt="CPU"></p>
-<p>CPU下面的数字表示有几核</p>
-<p><code>User%</code>:用户态cpu的使用率</p>
-<p><code>Sys%</code>:系统态cpu的使用率</p>
-<p><code>Wait%</code>:等待的cpu占用率</p>
-<p><code>Idle%</code>:空闲cpu的占用率</p>
-<ul>
-<li>m:内存</li>
-</ul>
-<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqjxs2rjbgj30kc05qdgp.jpg" alt="内存"></p>
-<ul>
-<li>d:磁盘读写</li>
-</ul>
-<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqjxsismz0j30kb04idge.jpg" alt="磁盘读写"></p>
-<ul>
-<li>r:资源</li>
-</ul>
-<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqjxv1jqjaj30lc0b2myu.jpg" alt="资源"></p>
-<ul>
-<li>t:top命令</li>
-</ul>
-<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqjxuqvwkqj30s40ceq55.jpg" alt="top"></p>
-<ul>
-<li>n:网络</li>
-</ul>
-<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqjxuhy55ej30k503ddg8.jpg" alt="网络"></p>
-<h4 id="数据收集模式"><a href="#数据收集模式" class="headerlink" title="数据收集模式"></a>数据收集模式</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-f            spreadsheet output format [note: default -s300 -c288]</span><br><span class="line">                         output file is &lt;hostname&gt;_YYYYMMDD_HHMM.nmon</span><br><span class="line">-s &lt;seconds&gt;  Time between snap shots - with "-c count" decides duration of the data capture</span><br><span class="line">-c &lt;number&gt;   The number of snapshots before nmon stops</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="启动数据库"><a href="#启动数据库" class="headerlink" title="启动数据库"></a>启动数据库</h2><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@dubbo opt]# influxd</span><br></pre></td></tr></tbody></table></figure>
 
-<p><code>-f</code>=<code>-s 300 -c 288</code>每隔300秒收集一次数据，收集288次。收集完成后自动结束。总共会收集300*288=24小时</p>
-<p><code>-s num</code>:间隔多长时间收集一次数据</p>
-<p><code>-c num</code>:总共收集的次数</p>
-<p>运行后会生成<code>vircent7_210327_1457.nmon</code></p>
-<p>该文件打开后难以查看结果，需要导出后使用Excel宏解读</p>
-<blockquote>
-<p>解析的<code>nmon analyser v66.xlsm</code>文件，需要使用Office的Excel打开</p>
-<p>打开后点击分析按钮，就可以查看到图表展示</p>
-<p>链接: <a target="_blank" rel="noopener" href="https://pan.baidu.com/s/183jY_ktWO3gxouIFb3KYfw">https://pan.baidu.com/s/183jY_ktWO3gxouIFb3KYfw</a>  密码: ri7h</p>
-</blockquote>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">./nmon_x86_64_centos7 -f #收集24小时</span><br><span class="line">./nmon_x86_64_centos7 -f -s2 -c200 #按照设定的间隔和次数收集</span><br><span class="line">./nmon_x86_64_centos7 -f -s2 -c200 -m /tmp/mon #指定输出到一个存在的文件夹路径下</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="进入数据库"><a href="#进入数据库" class="headerlink" title="进入数据库"></a>进入数据库</h2><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@dubbo ~]# influx</span><br></pre></td></tr></tbody></table></figure>
 
-<h4 id="定时收集模式"><a href="#定时收集模式" class="headerlink" title="定时收集模式"></a>定时收集模式</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Capacity Planning mode - use cron to run each day</span><br><span class="line">        -x            Sensible spreadsheet output for one day</span><br><span class="line">                      Every 15 mins for 1 day ( i.e. -ft -s 900 -c 96)</span><br><span class="line">        -X            Sensible spreadsheet output for busy hour</span><br><span class="line">                      Every 30 secs for 1 hour ( i.e. -ft -s 30 -c 120)</span><br><span class="line">        -z            Like -x but the output saved in /var/perf/tmp assuming root user</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="查看所有数据库"><a href="#查看所有数据库" class="headerlink" title="查看所有数据库"></a>查看所有数据库</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">show databases;</span><br></pre></td></tr></tbody></table></figure>
 
-<p>-X:收集一小时</p>
-<p>-x:收集一天</p>
+<h3 id="创建数据库"><a href="#创建数据库" class="headerlink" title="创建数据库"></a>创建数据库</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create database jmeter;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="删除数据库"><a href="#删除数据库" class="headerlink" title="删除数据库"></a>删除数据库</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">drop databases jmeter;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="使用数据库"><a href="#使用数据库" class="headerlink" title="使用数据库"></a>使用数据库</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">use jmeter;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="退出"><a href="#退出" class="headerlink" title="退出"></a>退出</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exit</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="前置操作"><a href="#前置操作" class="headerlink" title="前置操作"></a>前置操作</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[root@dubbo ~]# influx</span><br><span class="line">Connected to http://localhost:8086 version 1.7.8</span><br><span class="line">InfluxDB shell version: 1.7.8</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> show databases;</span></span><br><span class="line">name: databases</span><br><span class="line">name</span><br><span class="line">----</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> create database jmeter;</span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> show databases;</span></span><br><span class="line">name: databases</span><br><span class="line">name</span><br><span class="line">----</span><br><span class="line">_internal</span><br><span class="line">jmeter</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> use jmeter;</span></span><br><span class="line">Using database jmeter</span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> </span></span><br><span class="line"><span class="meta">&gt;</span><span class="bash"> </span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="数据存入"><a href="#数据存入" class="headerlink" title="数据存入"></a>数据存入</h2><p>添加一个「后端监听器」</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqjz04qhlwj30xr0u0dos.jpg" alt="后端监听器"></p>
+<p>修改IP地址</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">influxdbUrl:http://192.168.9.3:8086/write?db=jmeter</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="grafana中添加数据"><a href="#grafana中添加数据" class="headerlink" title="grafana中添加数据"></a>grafana中添加数据</h2><h3 id="添加数据源"><a href="#添加数据源" class="headerlink" title="添加数据源"></a>添加数据源</h3><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqk063muq2j313p0ex796.jpg" alt="添加数据源"></p>
+<h3 id="选择数据库"><a href="#选择数据库" class="headerlink" title="选择数据库"></a>选择数据库</h3><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqk06963xhj30xr0u0dov.jpg" alt="选择数据库"></p>
+<h3 id="填写数据库信息"><a href="#填写数据库信息" class="headerlink" title="填写数据库信息"></a>填写数据库信息</h3><h3 id="导入模版"><a href="#导入模版" class="headerlink" title="导入模版"></a><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqk07abuoij30xr0u07d6.jpg" alt="填写数据库信息">导入模版</h3><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqkdo7dltuj306m0b9jrn.jpg" alt="导入"></p>
+<p>输入模版编码为<code>5496</code>后点击「Load」</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqkdooyzugj30xr0u0q9h.jpg" alt="模版编码"></p>
+<p>修改「Measurement name」与Jmeter中设置的一致</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqkdq4z5muj30r705z0t7.jpg" alt="jmeter的设置"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqkdpknfedj30xr0u0wmi.jpg" alt="修改Measurement name"></p>
+<h3 id="写入数据"><a href="#写入数据" class="headerlink" title="写入数据"></a>写入数据</h3><p>运行jmeter后，查看数据库</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqkdvbmctnj30xv0u0481.jpg" alt="数据展示"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqkdy8bu0mj31g90u0gut.jpg" alt="查看数据"></p>
 
       
     </div>
@@ -525,8 +511,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/article/d51793d9.html" rel="next" title="18-读取数据库数据进行性能测试">
-                <i class="fa fa-chevron-left"></i> 18-读取数据库数据进行性能测试
+              <a href="/article/5ac52f3c.html" rel="next" title="19-nmon">
+                <i class="fa fa-chevron-left"></i> 19-nmon
               </a>
             
           </div>
@@ -534,10 +520,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/article/bc9c5188.html" rel="prev" title="20-grafana+influxdb">
-                20-grafana+influxdb <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -728,7 +710,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#19-nmon"><span class="nav-number">1.</span> <span class="nav-text">19-nmon</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#nmon"><span class="nav-number">1.1.</span> <span class="nav-text">nmon</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8BLinux%E7%9A%84%E5%8F%91%E8%A1%8C%E7%89%88%E6%9C%AC"><span class="nav-number">1.1.1.</span> <span class="nav-text">查看Linux的发行版本</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8Bredhat%E5%AE%B6%E6%97%8F%E7%9A%84%E5%8F%91%E8%A1%8C%E7%89%88%E6%9C%AC"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">查看redhat家族的发行版本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8BUbuntu%E7%9A%84%E5%8F%91%E8%A1%8C%E7%89%88%E6%9C%AC"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">查看Ubuntu的发行版本</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A1%AE%E5%AE%9A%E4%B8%8B%E8%BD%BD%E7%9A%84%E6%96%87%E4%BB%B6"><span class="nav-number">1.1.2.</span> <span class="nav-text">确定下载的文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%8E%8B"><span class="nav-number">1.1.3.</span> <span class="nav-text">解压</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nmon%E4%B8%89%E7%A7%8D%E8%BF%90%E8%A1%8C%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.1.4.</span> <span class="nav-text">nmon三种运行模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E6%97%B6%E5%B1%8F%E5%B9%95%E4%BA%A4%E4%BA%92"><span class="nav-number">1.1.4.1.</span> <span class="nav-text">实时屏幕交互</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%94%B6%E9%9B%86%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.1.4.2.</span> <span class="nav-text">数据收集模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E6%97%B6%E6%94%B6%E9%9B%86%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.1.4.3.</span> <span class="nav-text">定时收集模式</span></a></li></ol></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#20-grafana-influxdb"><span class="nav-number">1.</span> <span class="nav-text">20-grafana+influxdb</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">1.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8"><span class="nav-number">1.2.</span> <span class="nav-text">启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BF%E9%97%AE"><span class="nav-number">1.3.</span> <span class="nav-text">访问</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">1.4.</span> <span class="nav-text">安装数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">1.5.</span> <span class="nav-text">启动数据库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E5%85%A5%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">1.6.</span> <span class="nav-text">进入数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E6%89%80%E6%9C%89%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">1.6.1.</span> <span class="nav-text">查看所有数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">1.6.2.</span> <span class="nav-text">创建数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">1.6.3.</span> <span class="nav-text">删除数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">1.6.4.</span> <span class="nav-text">使用数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%80%E5%87%BA"><span class="nav-number">1.6.5.</span> <span class="nav-text">退出</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E7%BD%AE%E6%93%8D%E4%BD%9C"><span class="nav-number">1.6.6.</span> <span class="nav-text">前置操作</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%AD%98%E5%85%A5"><span class="nav-number">1.7.</span> <span class="nav-text">数据存入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#grafana%E4%B8%AD%E6%B7%BB%E5%8A%A0%E6%95%B0%E6%8D%AE"><span class="nav-number">1.8.</span> <span class="nav-text">grafana中添加数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%95%B0%E6%8D%AE%E6%BA%90"><span class="nav-number">1.8.1.</span> <span class="nav-text">添加数据源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">1.8.2.</span> <span class="nav-text">选择数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A1%AB%E5%86%99%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BF%A1%E6%81%AF"><span class="nav-number">1.8.3.</span> <span class="nav-text">填写数据库信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5%E6%A8%A1%E7%89%88"><span class="nav-number">1.8.4.</span> <span class="nav-text">导入模版</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%99%E5%85%A5%E6%95%B0%E6%8D%AE"><span class="nav-number">1.8.5.</span> <span class="nav-text">写入数据</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
@@ -898,9 +880,9 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'http://zx490336534.github.io/article/5ac52f3c.html';
-          this.page.identifier = 'article/5ac52f3c.html';
-          this.page.title = '19-nmon';
+          this.page.url = 'http://zx490336534.github.io/article/bc9c5188.html';
+          this.page.identifier = 'article/bc9c5188.html';
+          this.page.title = '20-grafana+influxdb';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://.disqus.com/embed.js';
