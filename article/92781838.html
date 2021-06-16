@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="测试开发,性能测试," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="测试游记" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="26-CPU知识CPU中央处理器 一段程序要被执行，先编译成机器语言 进入内存 cpu控制器再从内存中获取指令、数据，放到寄存器中， 时钟控制cpu的运算器睡眠时候开始计算，计算时长多长 运算器开始计算，运算过程中，如果还需要数据，控制器再从寄存器中拿数据，拿不到就从内存中拿，如果一个时间片段计算不完，就干其他事，之后再执行，执行完了输出数据给寄存器，再传给内存  影响CPU性能的物理因素：主频、">
+<meta property="og:type" content="article">
+<meta property="og:title" content="26-CPU知识">
+<meta property="og:url" content="http://zx490336534.github.io/article/92781838.html">
+<meta property="og:site_name" content="测试游记">
+<meta property="og:description" content="26-CPU知识CPU中央处理器 一段程序要被执行，先编译成机器语言 进入内存 cpu控制器再从内存中获取指令、数据，放到寄存器中， 时钟控制cpu的运算器睡眠时候开始计算，计算时长多长 运算器开始计算，运算过程中，如果还需要数据，控制器再从寄存器中拿数据，拿不到就从内存中拿，如果一个时间片段计算不完，就干其他事，之后再执行，执行完了输出数据给寄存器，再传给内存  影响CPU性能的物理因素：主频、">
+<meta property="og:locale">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gr0brerrb3j608h09qt9002.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gr0c4qt6tfj30jk0cjjtd.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gr0dc9j2f8j30xh0mc42i.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gr0dculm8nj30hg089q64.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gr5d519k81j30mc05kq3t.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gr5e8we173j30m80goacy.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gr5ea9aov7j30m80c8wg7.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gr5ebjv8zpj30m80kdjvt.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gr75b70p9vj30m80goadb.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gr75c9bx6aj30m80gowh1.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gr75dwc06qj30we0jswl3.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gr766julbdj30m80gon07.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gr76783ux0j30m80goq5h.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gr767r8273j30qc0gojul.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gr7685fctgj30qc0gowi8.jpg">
+<meta property="article:published_time" content="2021-05-30T03:57:00.000Z">
+<meta property="article:modified_time" content="2021-06-05T02:42:59.197Z">
+<meta property="article:author" content="测试游记">
+<meta property="article:tag" content="测试开发">
+<meta property="article:tag" content="性能测试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gr0brerrb3j608h09qt9002.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://zx490336534.github.io/article/92781838.html"/>
+
+
+
+
+
+  <title>26-CPU知识 | 测试游记</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?41fc030db57d5570dd22f78997dc4a7e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">测试游记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/article/92781838.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="测试游记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">26-CPU知识</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-30T11:57:00+08:00">
+                2021-05-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index">
+                    <span itemprop="name">性能测试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/article/92781838.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="article/92781838.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="26-CPU知识"><a href="#26-CPU知识" class="headerlink" title="26-CPU知识"></a>26-CPU知识</h1><h2 id="CPU"><a href="#CPU" class="headerlink" title="CPU"></a>CPU</h2><h3 id="中央处理器"><a href="#中央处理器" class="headerlink" title="中央处理器"></a>中央处理器</h3><blockquote>
+<p>一段程序要被执行，先编译成机器语言</p>
+<p>进入内存</p>
+<p>cpu控制器再从内存中获取指令、数据，放到寄存器中，</p>
+<p>时钟控制cpu的运算器睡眠时候开始计算，计算时长多长</p>
+<p>运算器开始计算，运算过程中，如果还需要数据，控制器再从寄存器中拿数据，拿不到就从内存中拿，如果一个时间片段计算不完，就干其他事，之后再执行，执行完了输出数据给寄存器，再传给内存</p>
+</blockquote>
+<p>影响CPU性能的物理因素：主频、架构、核</p>
+<h4 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h4><ul>
+<li>Inter(x86)</li>
+<li>AMD(x86)</li>
+<li>IBM(PowerPC)</li>
+<li>ARM</li>
+</ul>
+<h4 id="主频"><a href="#主频" class="headerlink" title="主频"></a>主频</h4><p>GHz</p>
+<h4 id="核心数"><a href="#核心数" class="headerlink" title="核心数"></a>核心数</h4><p>单核、双核、n核</p>
+<h3 id="CPU的四个组成部分"><a href="#CPU的四个组成部分" class="headerlink" title="CPU的四个组成部分"></a>CPU的四个组成部分</h3><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gr0brerrb3j608h09qt9002.jpg" alt="cpu组成"></p>
+<h4 id="运算器"><a href="#运算器" class="headerlink" title="运算器"></a>运算器</h4><p>运算</p>
+<h4 id="控制器"><a href="#控制器" class="headerlink" title="控制器"></a>控制器</h4><p>把内存的指令、数据读入寄存器，控制计算机</p>
+<h4 id="寄存器"><a href="#寄存器" class="headerlink" title="寄存器"></a>寄存器</h4><p>暂存指针、数据、地址</p>
+<p>CPU的几级缓存，就是寄存器</p>
+<h4 id="时钟"><a href="#时钟" class="headerlink" title="时钟"></a>时钟</h4><p>计时</p>
+<p>在CPU中进行计算时，都会分配一个时间片段</p>
+<ul>
+<li>如果某个计算，在分配的时间片段中完成，自动中断</li>
+<li>如果某个计算，在分配的时间片段中没有完成，强制中断</li>
+</ul>
+<p>如果某个任务需要的计算时间比较长，那么cpu的分片就会出现不连续的时间分片</p>
+<h3 id="内存"><a href="#内存" class="headerlink" title="内存"></a>内存</h3><p>与CPU沟通的桥梁</p>
+<p>存cpu的运算数据</p>
+<p>硬盘、外存数据</p>
+<h3 id="CPU的数据来源"><a href="#CPU的数据来源" class="headerlink" title="CPU的数据来源"></a>CPU的数据来源</h3><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gr0c4qt6tfj30jk0cjjtd.jpg" alt="数据"></p>
+<h4 id="有内存数据"><a href="#有内存数据" class="headerlink" title="有内存数据"></a>有内存数据</h4><ul>
+<li>内存中的数据</li>
+<li>外设数据</li>
+</ul>
+<h4 id="磁盘数据"><a href="#磁盘数据" class="headerlink" title="磁盘数据"></a>磁盘数据</h4><h3 id="执行顺序"><a href="#执行顺序" class="headerlink" title="执行顺序"></a>执行顺序</h3><p>CPU中的控制单元，控制指令执行的顺序，并不是按照先后顺序执行，而是按照优先级顺序</p>
+<p>运算单元，进行计算时：</p>
+<ul>
+<li>如果源数据充足</li>
+<li>如果源数据不够，则会发生等待「iowait」</li>
+</ul>
+<h3 id="查看CPU信息"><a href="#查看CPU信息" class="headerlink" title="查看CPU信息"></a>查看CPU信息</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lscpu</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gr0dc9j2f8j30xh0mc42i.jpg" alt="lscpu"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gr0dculm8nj30hg089q64.jpg" alt="字段含义"></p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cat /proc/cpuinfo 内存中记录的cpu信息</span><br><span class="line">cat /proc/cpuinfo | grep "physical id"|sort |uniq |wc -l 查看物理cpu数量</span><br><span class="line">cat /proc/cpuinfo | grep "cpu cores"|uniq 查看CPU的core数「核数」</span><br><span class="line">cat /proc/cpuinfo | grep "processor"|wc -l 查看逻辑CPU数量</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="监控cpu"><a href="#监控cpu" class="headerlink" title="监控cpu"></a>监控cpu</h2><h3 id="load-average值-和CPU使用率之间的关系"><a href="#load-average值-和CPU使用率之间的关系" class="headerlink" title="load average值 和CPU使用率之间的关系"></a>load average值 和CPU使用率之间的关系</h3><p>现在的linux服务器中 load average 不等于 CPU使用率</p>
+<p>load average是系统的整体负载体现，它包括 CPU负载+Disk负载+网络负载+外设负载</p>
+<p>load average = cpuload + ioload</p>
+<p>CPU的使用：用户进程使用时间us、系统内核运行时间sy、空闲时间idle、管理被抢占时间st</p>
+<p>繁忙：us + sy + st + ni + hi + si = CPU使用率的时间（除以总时间）</p>
+<p>空闲：idle + wa</p>
+<ul>
+<li>sy：上下文切换「自愿、非自愿」</li>
+</ul>
+<blockquote>
+<p>自愿上下文切换：内存瓶颈</p>
+<p>非自愿上下文切换：cpu瓶颈（抢占资源）</p>
+</blockquote>
+<ul>
+<li>us\ni：用户运行计算 CPU密集计算、FGC、死循环</li>
+<li>si：软中断 CPU竞争</li>
+<li>wa：等待资源 I/O问题（磁盘、网络）</li>
+<li>st：抢占资源（宿主机抢占资源）</li>
+</ul>
+<h3 id="CPU上下文"><a href="#CPU上下文" class="headerlink" title="CPU上下文"></a>CPU上下文</h3><p>上下文：CPU寄存器和程序计数器</p>
+<p>程序计数器：存储CPU正在执行的指令位置和下一条指令的位置</p>
+<p>上下文切换：先把当前的任务CPU上下文（CPU寄存器和程序计数器）保存起来，然后加载新任务的上下文到CPU的寄存器和程序计数器中，CPU再跳转到计数器上执行新任务</p>
+<p>上下文切换可以分为：</p>
+<ul>
+<li>进程上下文切换</li>
+<li>线程上下文切换</li>
+<li>中断上下文切换</li>
+</ul>
+<blockquote>
+<p>进程：资源的基本单位</p>
+<p>线程：调度的基本单位</p>
+</blockquote>
+<p>进程上下文切换：特权等级，跨等级时，需要「系统调用」</p>
+<ol>
+<li>同进程上下文切换：进程用户态-系统调用-进程内核-系统调用-进程用户态</li>
+<li>不同进程上下文切换：进程切换时要保存进程用户态资源（虚拟内存，栈等）</li>
+</ol>
+<p>线程上下文切换</p>
+<p>线程，共享进程的资源，但是线程也有自己所有的数据，如栈、寄存器</p>
+<ol>
+<li><p>同进程中线程上下文切换：进程资源共享，切换线程私有资源</p>
+</li>
+<li><p>不通进程中线程上下文切换=切换进程</p>
+</li>
+</ol>
+<h2 id="CPU性能分析"><a href="#CPU性能分析" class="headerlink" title="CPU性能分析"></a>CPU性能分析</h2><h3 id="load-高-amp-amp-CPU高"><a href="#load-高-amp-amp-CPU高" class="headerlink" title="load 高&amp;&amp; CPU高"></a>load 高&amp;&amp; CPU高</h3><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gr5d519k81j30mc05kq3t.jpg" alt="top"></p>
+<h4 id="情况1"><a href="#情况1" class="headerlink" title="情况1"></a>情况1</h4><p>sy系统态高：排查CPU上下文切换</p>
+<ol>
+<li>如果「非资源上下文切换」多，说明CPU不够用，进程时间片到，被迫切换</li>
+<li>如果「自愿上下文切换」多，说明计算用的资源不够用，可能存在I/O、内存瓶颈</li>
+</ol>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root@zx:~# vmstat 1</span><br><span class="line">procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----</span><br><span class="line"> r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st</span><br><span class="line"> 0  0      0 142112 170316 3332688    0    0     0     5    1    2  1  1 99  0  0</span><br><span class="line"> 0  0      0 141844 170316 3332728    0    0     0     0  877 1585  1  1 98  0  0</span><br></pre></td></tr></tbody></table></figure>
+
+<p>如果<code>cs</code>比较高，说明可能存在上下文切换问题</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">root@zx:~# pidstat -u -w 1 </span><br><span class="line">Linux 5.4.0-54-generic (zx)     06/03/2021      _x86_64_        (2 CPU)</span><br><span class="line"></span><br><span class="line">08:45:08 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command</span><br><span class="line">08:45:09 PM     0      6095    0.99    0.00    0.00    0.00    0.99     1  dockerd</span><br><span class="line">08:45:09 PM     0     10684    0.99    0.00    0.00    0.00    0.99     1  containerd-shim</span><br><span class="line">08:45:09 PM     0     10776    0.99    0.99    0.00    0.00    1.98     1  gunicorn</span><br><span class="line">08:45:09 PM     0    479183    0.00    1.98    0.00    0.00    1.98     1  AliYunDun</span><br><span class="line">08:45:09 PM     0    503082    0.00    0.99    0.00    0.00    0.99     0  kworker/0:1-events</span><br><span class="line"></span><br><span class="line">08:45:08 PM   UID       PID   cswch/s nvcswch/s  Command</span><br><span class="line">08:45:09 PM     0        11     40.59      0.00  rcu_sched</span><br><span class="line">08:45:09 PM     0     10708      1.98      0.99  supervisord</span><br><span class="line">08:45:09 PM     0     10775      0.99      0.00  gunicorn</span><br><span class="line">08:45:09 PM     0    479183     10.89      0.00  AliYunDun</span><br><span class="line">08:45:09 PM     0    496341      3.96      0.00  kworker/1:1-events</span><br><span class="line">08:45:09 PM     0    502548     12.87      0.00  kworker/u4:2-events_power_efficient</span><br><span class="line">08:45:09 PM     0    503082      6.93      0.00  kworker/0:1-events</span><br><span class="line">08:45:09 PM     0    503173      0.99      0.00  pidstat</span><br></pre></td></tr></tbody></table></figure>
+
+<p><code>cswch/s</code> :自愿上下文</p>
+<p><code> nvcswch/s</code>:非资源上下文</p>
+<h4 id="情况2"><a href="#情况2" class="headerlink" title="情况2"></a>情况2</h4><p>si软中断高：CPU抢资源，资源不够用 I/O问题</p>
+<ol>
+<li><p>sys高 + si 高 = 内存或者网络I/O问题</p>
+<p>解决办法：排查内存 和 I/O</p>
+</li>
+<li><p>sys高 + si 不高 = CPU瓶颈</p>
+<p>加CPU</p>
+</li>
+</ol>
+<h4 id="情况3"><a href="#情况3" class="headerlink" title="情况3"></a>情况3</h4><p>us用户态高：用户程序计算</p>
+<blockquote>
+<p>GC 资源回收</p>
+</blockquote>
+<p>密集型计算、内存FGC、资源等待（线程池）</p>
+<h2 id="CPU实战"><a href="#CPU实战" class="headerlink" title="CPU实战"></a>CPU实战</h2><h3 id="stress-ng"><a href="#stress-ng" class="headerlink" title="stress-ng"></a>stress-ng</h3><blockquote>
+<p>服务器cpu性能压测工具，模拟系统压力</p>
+</blockquote>
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> yum install -y epel-release.noarch &amp;&amp; yum -y update</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> yum install -y stress-ng</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="实操一：进程上下文"><a href="#实操一：进程上下文" class="headerlink" title="实操一：进程上下文"></a>实操一：进程上下文</h4><p>进程上下文切换「进程密集型」</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 启动N*10个进程，在只有N核的系统上，会产生大量的进程切换，模拟进程间竞争CPU的场景</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> (( proc_cnt = <span class="string">'nproc'</span>*10 )); stress-ng --cpu <span class="variable">$proc_cnt</span> --pthread 1 --timeout 150</span></span><br><span class="line">stress-ng: info:  [504418] dispatching hogs: 2 cpu, 1 pthread</span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> top</span></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gr5e8we173j30m80goacy.jpg" alt="启动后"></p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vmstat 1</span></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gr5ea9aov7j30m80c8wg7.jpg" alt="vmstat 1"></p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pidstat -u -w 1</span> </span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gr5ebjv8zpj30m80kdjvt.jpg" alt="pidstat -u -w 1"></p>
+<ol>
+<li>top：load值一直在增加 系统负载在升高</li>
+<li>top：CPU的 <code>us</code> +<code>sy</code> 约等于 100% <code>us</code>较高 <code>sy</code>较低</li>
+<li>vmstat：procs的 r就绪队列长度，正在运行和等待的CPU进程数很大</li>
+<li>vmstat ：system的in「每秒中断次数」和cs「上下文切换次数」都很大</li>
+<li>vmstat：free、buff、cache变化不大</li>
+<li>pidstat：nvcswch/s 非自愿上下文切换在逐步升高</li>
+</ol>
+<p>解决办法：项目所在的服务器，</p>
+<ul>
+<li>减少运行中的进程</li>
+<li>增加cpu的数量</li>
+</ul>
+<h4 id="实操二：线程上下文"><a href="#实操二：线程上下文" class="headerlink" title="实操二：线程上下文"></a>实操二：线程上下文</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 在N核系统上，生成N个进程，每个进程1024个线程，模拟线程间竞争CPU的场景</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> stress-ng --cpu `nproc` --pthread 1024 --timeout 60</span> </span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> top</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gr75b70p9vj30m80goadb.jpg" alt="top"></p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vmstat 1</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gr75c9bx6aj30m80gowh1.jpg" alt="vmstat 1"></p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pidstat -u -w 1</span> </span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gr75dwc06qj30we0jswl3.jpg" alt="pidstat -u -w 1 "></p>
+<ol>
+<li>top：load值一直在增加，而且增长的非常大</li>
+<li>top：CPU的us + sy 约等于100% us较低、sy较高</li>
+<li>vmstat：procs的r就绪队列长度，正在运行和等待的CPU进程数很大</li>
+<li>vmsta：system的in「每秒中断数」和cs「上下文切换数」都很大</li>
+<li>vmstat：free变小、buff基本不变、cache变大</li>
+</ol>
+<ul>
+<li>free：内存空闲空间，内存消耗增大</li>
+<li>buffer：buffer数磁盘虚拟出来的，用于内存从磁盘读取数据时使用</li>
+<li>cache：cache是内存虚拟出来，用于cpu与内存速度匹配</li>
+</ul>
+<ol start="6">
+<li>pidstat：cswch/s 自愿上下文切换升高</li>
+</ol>
+<p>当一个程序开启了大量的线程，就会使用大量的内存资源，就会出现大量的cpu竞争。</p>
+<p>从内存中获取数据会有大量的IO数据交换。</p>
+<p>解决办法</p>
+<ul>
+<li>减少项目启动的线程数</li>
+<li>更换内存速度更高的内存条</li>
+<li>更换使用CPU的缓存更大的CPU（效果不一定好）</li>
+<li>改系统的交互分区</li>
+</ul>
+<h4 id="实战三：IO密集型"><a href="#实战三：IO密集型" class="headerlink" title="实战三：IO密集型"></a>实战三：IO密集型</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 开启1个worker不停的读写临时文件，同时启动 6个workers不停的调用sync系统调用提交缓存</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> stress-ng -i 6 --hdd 1 --timeout 150</span></span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> top</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gr766julbdj30m80gon07.jpg" alt="top"></p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vmstat 1</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gr76783ux0j30m80goq5h.jpg" alt="vmstat 1"></p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> mpstat -P ALL 3</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gr767r8273j30qc0gojul.jpg" alt="mpstat -P ALL 3"></p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pidstat -w 1</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gr7685fctgj30qc0gowi8.jpg" alt="image-20210605101558463"></p>
+<ol>
+<li>top：load值升高，CPU的wa值很大，freeMem变小，buff/cache值增大</li>
+<li>vmstat ：memory的free变小，buff基本不变，cache变大，io的bo值非常大「磁盘读写」，CPU的in、cs也都很大</li>
+<li>mpstat：%iowait变得很大，有大量的磁盘IO</li>
+<li>pidstat：cswch/s 自愿上下文切换 变得非常大</li>
+</ol>
+<p>解决办法</p>
+<p>磁盘性能导致</p>
+<ul>
+<li>更换读写速度更快的磁盘</li>
+<li>加大内存</li>
+</ul>
+<p>网络IO导致</p>
+<ul>
+<li>调整网络参数或更换速度更快的网卡</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt=" wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt=" 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt=" 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/" rel="tag"># 测试开发</a>
+          
+            <a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/" rel="tag"># 性能测试</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/article/90d9f3f5.html" rel="next" title="23-分布式">
+                <i class="fa fa-chevron-left"></i> 23-分布式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/article/f32ce47c.html" rel="prev" title="27-内存知识">
+                27-内存知识 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpeg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">160</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zx490336534" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/zhong-xin-97-8" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-angellist"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://testingpai.com/" title="测试派" target="_blank">测试派</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://testerhome.com/" title="TesterHome" target="_blank">TesterHome</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://dongfanger.gitee.io/blog/index.html" title="自动化代码美学" target="_blank">自动化代码美学</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#26-CPU%E7%9F%A5%E8%AF%86"><span class="nav-number">1.</span> <span class="nav-text">26-CPU知识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CPU"><span class="nav-number">1.1.</span> <span class="nav-text">CPU</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8"><span class="nav-number">1.1.1.</span> <span class="nav-text">中央处理器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%B6%E6%9E%84"><span class="nav-number">1.1.1.1.</span> <span class="nav-text">架构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BB%E9%A2%91"><span class="nav-number">1.1.1.2.</span> <span class="nav-text">主频</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%95%B0"><span class="nav-number">1.1.1.3.</span> <span class="nav-text">核心数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CPU%E7%9A%84%E5%9B%9B%E4%B8%AA%E7%BB%84%E6%88%90%E9%83%A8%E5%88%86"><span class="nav-number">1.1.2.</span> <span class="nav-text">CPU的四个组成部分</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%90%E7%AE%97%E5%99%A8"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">运算器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8E%A7%E5%88%B6%E5%99%A8"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">控制器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">1.1.2.3.</span> <span class="nav-text">寄存器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%B6%E9%92%9F"><span class="nav-number">1.1.2.4.</span> <span class="nav-text">时钟</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98"><span class="nav-number">1.1.3.</span> <span class="nav-text">内存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CPU%E7%9A%84%E6%95%B0%E6%8D%AE%E6%9D%A5%E6%BA%90"><span class="nav-number">1.1.4.</span> <span class="nav-text">CPU的数据来源</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%89%E5%86%85%E5%AD%98%E6%95%B0%E6%8D%AE"><span class="nav-number">1.1.4.1.</span> <span class="nav-text">有内存数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E6%95%B0%E6%8D%AE"><span class="nav-number">1.1.4.2.</span> <span class="nav-text">磁盘数据</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F"><span class="nav-number">1.1.5.</span> <span class="nav-text">执行顺序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8BCPU%E4%BF%A1%E6%81%AF"><span class="nav-number">1.1.6.</span> <span class="nav-text">查看CPU信息</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%91%E6%8E%A7cpu"><span class="nav-number">1.2.</span> <span class="nav-text">监控cpu</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#load-average%E5%80%BC-%E5%92%8CCPU%E4%BD%BF%E7%94%A8%E7%8E%87%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-number">1.2.1.</span> <span class="nav-text">load average值 和CPU使用率之间的关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CPU%E4%B8%8A%E4%B8%8B%E6%96%87"><span class="nav-number">1.2.2.</span> <span class="nav-text">CPU上下文</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CPU%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90"><span class="nav-number">1.3.</span> <span class="nav-text">CPU性能分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#load-%E9%AB%98-amp-amp-CPU%E9%AB%98"><span class="nav-number">1.3.1.</span> <span class="nav-text">load 高&amp;&amp; CPU高</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%83%85%E5%86%B51"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">情况1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%83%85%E5%86%B52"><span class="nav-number">1.3.1.2.</span> <span class="nav-text">情况2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%83%85%E5%86%B53"><span class="nav-number">1.3.1.3.</span> <span class="nav-text">情况3</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CPU%E5%AE%9E%E6%88%98"><span class="nav-number">1.4.</span> <span class="nav-text">CPU实战</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#stress-ng"><span class="nav-number">1.4.1.</span> <span class="nav-text">stress-ng</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">1.4.1.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E6%93%8D%E4%B8%80%EF%BC%9A%E8%BF%9B%E7%A8%8B%E4%B8%8A%E4%B8%8B%E6%96%87"><span class="nav-number">1.4.1.2.</span> <span class="nav-text">实操一：进程上下文</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E6%93%8D%E4%BA%8C%EF%BC%9A%E7%BA%BF%E7%A8%8B%E4%B8%8A%E4%B8%8B%E6%96%87"><span class="nav-number">1.4.1.3.</span> <span class="nav-text">实操二：线程上下文</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E6%88%98%E4%B8%89%EF%BC%9AIO%E5%AF%86%E9%9B%86%E5%9E%8B"><span class="nav-number">1.4.1.4.</span> <span class="nav-text">实战三：IO密集型</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">测试游记</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://zx490336534.github.io/article/92781838.html';
+          this.page.identifier = 'article/92781838.html';
+          this.page.title = '26-CPU知识';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

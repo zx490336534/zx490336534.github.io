@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="测试开发,性能测试," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="测试游记" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="27-内存知识基础概念 内存又叫主存，是CPU与其他设备沟通的桥梁，主要用来临时存放数据，配合CPU工作，协调CPU的处理速度   硬盘数据，外设数据，玩了传输数据，要进CPU前，都要先进入内存 临时存放，在断电后，内存内容就会丢失  内存的组成：内存地址+存储单元 存储单元-数据结构堆栈 两种不同的数据结构  堆（heap）一种经过排序的树型数据结构 存放程序的对象 链表数组、列表：数据是有顺序">
+<meta property="og:type" content="article">
+<meta property="og:title" content="27-内存知识">
+<meta property="og:url" content="http://zx490336534.github.io/article/f32ce47c.html">
+<meta property="og:site_name" content="测试游记">
+<meta property="og:description" content="27-内存知识基础概念 内存又叫主存，是CPU与其他设备沟通的桥梁，主要用来临时存放数据，配合CPU工作，协调CPU的处理速度   硬盘数据，外设数据，玩了传输数据，要进CPU前，都要先进入内存 临时存放，在断电后，内存内容就会丢失  内存的组成：内存地址+存储单元 存储单元-数据结构堆栈 两种不同的数据结构  堆（heap）一种经过排序的树型数据结构 存放程序的对象 链表数组、列表：数据是有顺序">
+<meta property="og:locale">
+<meta property="article:published_time" content="2021-06-05T02:44:00.000Z">
+<meta property="article:modified_time" content="2021-06-16T07:45:54.465Z">
+<meta property="article:author" content="测试游记">
+<meta property="article:tag" content="测试开发">
+<meta property="article:tag" content="性能测试">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://zx490336534.github.io/article/f32ce47c.html"/>
+
+
+
+
+
+  <title>27-内存知识 | 测试游记</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?41fc030db57d5570dd22f78997dc4a7e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">测试游记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/article/f32ce47c.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="测试游记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">27-内存知识</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-06-05T10:44:00+08:00">
+                2021-06-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index">
+                    <span itemprop="name">性能测试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/article/f32ce47c.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="article/f32ce47c.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="27-内存知识"><a href="#27-内存知识" class="headerlink" title="27-内存知识"></a>27-内存知识</h1><h2 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h2><blockquote>
+<p>内存又叫主存，是CPU与其他设备沟通的桥梁，主要用来临时存放数据，配合CPU工作，协调CPU的处理速度</p>
+</blockquote>
+<ul>
+<li>硬盘数据，外设数据，玩了传输数据，要进CPU前，都要先进入内存</li>
+<li>临时存放，在断电后，内存内容就会丢失</li>
+</ul>
+<p>内存的组成：内存地址+存储单元</p>
+<h2 id="存储单元-数据结构"><a href="#存储单元-数据结构" class="headerlink" title="存储单元-数据结构"></a>存储单元-数据结构</h2><h3 id="堆栈"><a href="#堆栈" class="headerlink" title="堆栈"></a>堆栈</h3><blockquote>
+<p>两种不同的数据结构</p>
+</blockquote>
+<h3 id="堆（heap）"><a href="#堆（heap）" class="headerlink" title="堆（heap）"></a>堆（heap）</h3><p>一种经过排序的<strong>树型数据</strong>结构</p>
+<p>存放程序的<strong>对象</strong></p>
+<h4 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h4><p>数组、列表：数据是有顺序的，从左到右，从0开始。如果要在列表中，插入一个数据，那么在插入位置之后的数据，都需要移动，删除列表中间某个数据，在位置之后的数据，也都要移动。</p>
+<p>链表也是一种数组，它的每个数据存储的都是数据值+下一个元素的地址。</p>
+<p>如果要在链表中，插入一个数据。插入位置「前一个元素」中的「下一个元素的地址」需要指向插入的数据的地址，「待插入的元素」记录「下一个元素的地址」。</p>
+<p>查找一个数据时，需要从头开始读取数据，一个一个的比对，直到找到需要的数据才停止。这个过程会有大量的IO，所以读取数据速度并不快。</p>
+<ul>
+<li>二叉树</li>
+</ul>
+<p>建立在链表的基础上的一种数据结构</p>
+<p>二叉树左边存储的是小于自身数据，右边是存储大于自身数据</p>
+<p>插入数据：因为是链表，插入速度也比较快</p>
+<p>读取数据：因为数据已经做了二分，查找链路变短，IO就减少了，读取速度也变快</p>
+<p>二叉树的不足：随着存储的数据量增大，二叉树会越来越大，那要查找某个数据的IO次数，也会非常多</p>
+<ul>
+<li>B树「平衡二叉树」</li>
+</ul>
+<blockquote>
+<p>不是一个简单的平衡二叉树，是一个立体的平衡二叉树</p>
+</blockquote>
+<p>B树和平衡二叉树稍有不同的是B树属于多叉树又名平衡多路查找树（查找路径不只两个），数据库索引技术里大量使用者B树和B+树的数据结构</p>
+<h3 id="栈"><a href="#栈" class="headerlink" title="栈"></a>栈</h3><p>LIFO「Last In First Out」后进先出</p>
+<ul>
+<li><p>装入叫压入</p>
+</li>
+<li><p>取出叫弹出</p>
+</li>
+</ul>
+<h4 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h4><p>FIFO「First In First Out」先进先出</p>
+<ul>
+<li>顺序队列</li>
+<li>循环队列</li>
+</ul>
+<h3 id="内存使用"><a href="#内存使用" class="headerlink" title="内存使用"></a>内存使用</h3><p>一个程序运行起来，需要分配一块内存空间，无异常时，就在分配的空间中弹性伸缩存储</p>
+<p>这个存储空间至少包含一块栈区，一块堆区，还会包括其他</p>
+<ul>
+<li>栈区：存放程序中的变量</li>
+<li>堆区：存放程序中的对象</li>
+</ul>
+<h3 id="JVM-java虚拟机"><a href="#JVM-java虚拟机" class="headerlink" title="JVM java虚拟机"></a>JVM java虚拟机</h3><p>程序计数器、java虚拟机栈、本地方法栈、方法区、堆内存</p>
+<ul>
+<li>程序计数器：记录持续执行字节码的行号指示器</li>
+<li>java虚拟机栈：java方法执行时的内存模型<ul>
+<li>StackOverflowError：线程请求的栈深度大于虚拟机运行的最大深度</li>
+<li>OutOfMemoryError：栈在动态扩展时，无法申请到足够的内存空间</li>
+<li>内存泄漏：程序运行时，申请的内存空间使用完了，不及时释放，导致可申请的内存空间越来越少。可以使用的内存空间越来越少。</li>
+</ul>
+</li>
+<li>方法区：共享内存区域，存储已被虚拟机加载的数据</li>
+<li>栈内存：存储局部变量，变量有一定的作用域，离开作用域，空间就会被释放，所以更新速度快，生命周期短</li>
+<li>堆内存：存储数组和对象，new出来的都存堆里，如果数据消失，实体不会马上释放</li>
+</ul>
+<p>OOM会导致整个内存条空间全被使用吗？ 不会！只会消耗该程序申请的空间，不会消耗内存条全部空间</p>
+<h4 id="堆内存"><a href="#堆内存" class="headerlink" title="堆内存"></a>堆内存</h4><ul>
+<li>新生代=Eden（存放JVM刚分配的对象） + Survivor1 + Survivor2 （两个空间一样大，Eden中未被GC的对象，会在这两个区间来回拷贝，默认拷贝超过15次，就移入年老代）</li>
+<li>Tenured 年老代</li>
+<li>Perm 永久代（元空间）</li>
+</ul>
+<h3 id="内存空间的释放"><a href="#内存空间的释放" class="headerlink" title="内存空间的释放"></a>内存空间的释放</h3><p>GC资源回收</p>
+<p>需要有GC，但是频率要合理，不能过高</p>
+<h4 id="怎么判断是可回收"><a href="#怎么判断是可回收" class="headerlink" title="怎么判断是可回收"></a>怎么判断是可回收</h4><ul>
+<li>是否可达</li>
+<li>是否存活</li>
+</ul>
+<h4 id="判断哪些可被回收"><a href="#判断哪些可被回收" class="headerlink" title="判断哪些可被回收"></a>判断哪些可被回收</h4><ul>
+<li>不要的、不能被回收：新生代、年老代</li>
+<li>拷贝算法：把新生代变为年老代</li>
+</ul>
+<h4 id="什么时候回收"><a href="#什么时候回收" class="headerlink" title="什么时候回收"></a>什么时候回收</h4><ul>
+<li>分配的空间不足，才会执行回收</li>
+<li>定时回收</li>
+</ul>
+<h4 id="怎么回收"><a href="#怎么回收" class="headerlink" title="怎么回收"></a>怎么回收</h4><p>垃圾回收算法：新生代-复制算法「清理Eden，将存活的复制到Survivor」，年老代-标记整理算法「先标记，再整理」</p>
+<h3 id="资源回收"><a href="#资源回收" class="headerlink" title="资源回收"></a>资源回收</h3><p>只有在讲「堆」的时候，才会说资源回收。本地方法栈、程序计数器、虚拟机栈这些是不需要进行垃圾回收的</p>
+<h3 id="Java的内存回收机制"><a href="#Java的内存回收机制" class="headerlink" title="Java的内存回收机制"></a>Java的内存回收机制</h3><p>内存空间中垃圾回收的工作由垃圾回收器「Garbage Collecot，GC」完成。它的核心思想是：对虚拟机可用内存空间，即堆空间中的对象进行识别，如果对象正在被引用，那么称其为存活对象，反之，如果对象不再被引用，则为垃圾对象，可以回收其占据的空间，用于再分配。</p>
+<h2 id="参数含义"><a href="#参数含义" class="headerlink" title="参数含义"></a>参数含义</h2><p><code>-Xms</code>:初始堆大小<br><code>-Xmx</code>:最大堆空间<br><code>-Xmn</code>:设置新生代大小<br><code>-XX:SurivivorRatio</code>:新生代eden空间，from空间，to空间的比例关系<br><code>-XX:PermSize</code>:方法区初始大小<br><code>-XX:MaxPermSize</code>:方法区最大值<br><code>-XX:MetaspaceSize</code>:元空间GC阈值<br><code>-XX:MaxMetaspaceSize</code>:最大元空间大小<br><code>-Xss</code>:栈大小<br><code>-XX:MaxDirectMemorySize</code>:直接内存大小，默认为最大堆空间</p>
+<h2 id="查看内存"><a href="#查看内存" class="headerlink" title="查看内存"></a>查看内存</h2><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root@zx:~# free -h</span><br><span class="line">              total        used        free      shared  buff/cache   available</span><br><span class="line">Mem:          3.8Gi       414Mi       293Mi       2.0Mi       3.2Gi       3.2Gi</span><br><span class="line">Swap:            0B          0B          0B</span><br></pre></td></tr></tbody></table></figure>
+
+<p>Mem:物理内存</p>
+<ul>
+<li>total合计</li>
+<li>used已被用</li>
+<li>free未使用</li>
+<li>shared共享</li>
+<li>buff/cache缓冲区、缓存<ul>
+<li>buff：对原始磁盘块（操作系统与磁盘交流的最小单位）的临时存储</li>
+<li>cache：从磁盘读取文件的页缓存</li>
+</ul>
+</li>
+<li>available新进程可分配=free+可回收的</li>
+</ul>
+<p>Swap:交换分区</p>
+<p>一种虚拟内存，由磁盘虚拟化而来，存在于内存和磁盘之间，因为磁盘和内存之间速度存在差异</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">top - 14:51:35 up 169 days,  4:55,  1 user,  load average: 0.01, 0.02, 0.00</span><br><span class="line">Tasks: 108 total,   1 running, 107 sleeping,   0 stopped,   0 zombie</span><br><span class="line"><span class="meta">%</span><span class="bash">Cpu(s):  1.2 us,  0.5 sy,  0.0 ni, 98.3 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span></span><br><span class="line">MiB Mem :   3936.1 total,    294.0 free,    414.6 used,   3227.6 buff/cache</span><br><span class="line">MiB Swap:      0.0 total,      0.0 free,      0.0 used.   3266.4 avail Mem </span><br><span class="line"></span><br><span class="line">    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND                                                     </span><br><span class="line"> 479183 root      10 -10  128.7m  37.5m  14.5m S   2.3   1.0 487:05.64 AliYunDun                                                   </span><br><span class="line"> 672280 root      20   0   59.3m  53.2m   5.9m S   1.0   1.4 139:43.55 gunicorn                                                    </span><br><span class="line"> 479138 root      10 -10   21.8m   5.7m   4.9m S   0.3   0.1  27:41.60 AliYunDunUpdate</span><br></pre></td></tr></tbody></table></figure>
+
+<p>VIRT 虚拟内存使用量 = Swap + RES</p>
+<p>RES 物理内存使用量+未换出的虚拟内存大小 = CODE + DATA</p>
+<p>SHR 共享内存使用量</p>
+<p>Swap 虚拟内存中被换出的大小</p>
+<p>CODE 代码占用的物理内存大小</p>
+<p>DATA 代码之外的部分占用的物理内存大小</p>
+<p>%MEM 使用的物理内存占总内存的比率</p>
+<h2 id="内存分析"><a href="#内存分析" class="headerlink" title="内存分析"></a>内存分析</h2><h3 id="jmap"><a href="#jmap" class="headerlink" title="jmap"></a>jmap</h3><p>命令：jmap [options] pid</p>
+<p><code>-dump</code>:生成java堆栈的快照信息<br><code>-heap</code>:显示java堆详细信息，使用那种回收机制，参数配置，分代情况<br><code>-histo</code>:显示堆中对象统计信息，包括类，实例数量</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">jmap -F -dump:format=b,file=jvmpertest110901.bin 3636</span><br><span class="line">format=b 格式为二进制</span><br><span class="line">file 输出到什么文件，文件格式.bin</span><br><span class="line">3636 进程pid</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这个命令，执行时间很长，生成的文件也很大</p>
+<h3 id="arthas"><a href="#arthas" class="headerlink" title="arthas"></a>arthas</h3><blockquote>
+<p>阿里巴巴开源的java诊断工具，实现了jvm自带的几乎所有诊断功能</p>
+</blockquote>
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -O https://arthas.aliyun.com/arthas-boot.jar</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="工具上手"><a href="#工具上手" class="headerlink" title="工具上手"></a>工具上手</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar arthas-boot.jar</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="内存泄漏抓包"><a href="#内存泄漏抓包" class="headerlink" title="内存泄漏抓包"></a>内存泄漏抓包</h4><ul>
+<li>dashboard</li>
+<li>heapdump</li>
+</ul>
+<h2 id="jvm分析"><a href="#jvm分析" class="headerlink" title="jvm分析"></a>jvm分析</h2><h3 id="输出gc日志"><a href="#输出gc日志" class="headerlink" title="输出gc日志"></a>输出gc日志</h3><p>jvm的启动参数中加入</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-XX:+PrintGC -XX:+PrintGCDetails -XX:+PrintGCTimestamps -XX:+PrintGCApplicationsStopedTime</span><br></pre></td></tr></tbody></table></figure>
+
+<p>启动后输出：GC概要信息，详细信息，gc时间，gc造成的应用暂停时间</p>
+<h3 id="jcosole"><a href="#jcosole" class="headerlink" title="jcosole"></a>jcosole</h3><p>jdk自带的内存分析工具，有图形界面，可以查看jvm内存信息，线程信息，类加载信息，MBean信息</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jconsole.sh pid</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="jstat"><a href="#jstat" class="headerlink" title="jstat"></a>jstat</h3><p>jdk自带的分析gc工具，参数很多</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jstat -gcutil pid 10000 间隔10000毫秒显示一次gc信息</span><br></pre></td></tr></tbody></table></figure>
+
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt=" wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt=" 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt=" 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/" rel="tag"># 测试开发</a>
+          
+            <a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/" rel="tag"># 性能测试</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/article/92781838.html" rel="next" title="26-CPU知识">
+                <i class="fa fa-chevron-left"></i> 26-CPU知识
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpeg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">160</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zx490336534" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/zhong-xin-97-8" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-angellist"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://testingpai.com/" title="测试派" target="_blank">测试派</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://testerhome.com/" title="TesterHome" target="_blank">TesterHome</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://dongfanger.gitee.io/blog/index.html" title="自动化代码美学" target="_blank">自动化代码美学</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#27-%E5%86%85%E5%AD%98%E7%9F%A5%E8%AF%86"><span class="nav-number">1.</span> <span class="nav-text">27-内存知识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5"><span class="nav-number">1.1.</span> <span class="nav-text">基础概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%98%E5%82%A8%E5%8D%95%E5%85%83-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">1.2.</span> <span class="nav-text">存储单元-数据结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A0%86%E6%A0%88"><span class="nav-number">1.2.1.</span> <span class="nav-text">堆栈</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A0%86%EF%BC%88heap%EF%BC%89"><span class="nav-number">1.2.2.</span> <span class="nav-text">堆（heap）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%93%BE%E8%A1%A8"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">链表</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%88"><span class="nav-number">1.2.3.</span> <span class="nav-text">栈</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%98%9F%E5%88%97"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">队列</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E4%BD%BF%E7%94%A8"><span class="nav-number">1.2.4.</span> <span class="nav-text">内存使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JVM-java%E8%99%9A%E6%8B%9F%E6%9C%BA"><span class="nav-number">1.2.5.</span> <span class="nav-text">JVM java虚拟机</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A0%86%E5%86%85%E5%AD%98"><span class="nav-number">1.2.5.1.</span> <span class="nav-text">堆内存</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E7%A9%BA%E9%97%B4%E7%9A%84%E9%87%8A%E6%94%BE"><span class="nav-number">1.2.6.</span> <span class="nav-text">内存空间的释放</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%8E%E4%B9%88%E5%88%A4%E6%96%AD%E6%98%AF%E5%8F%AF%E5%9B%9E%E6%94%B6"><span class="nav-number">1.2.6.1.</span> <span class="nav-text">怎么判断是可回收</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A4%E6%96%AD%E5%93%AA%E4%BA%9B%E5%8F%AF%E8%A2%AB%E5%9B%9E%E6%94%B6"><span class="nav-number">1.2.6.2.</span> <span class="nav-text">判断哪些可被回收</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E5%9B%9E%E6%94%B6"><span class="nav-number">1.2.6.3.</span> <span class="nav-text">什么时候回收</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%8E%E4%B9%88%E5%9B%9E%E6%94%B6"><span class="nav-number">1.2.6.4.</span> <span class="nav-text">怎么回收</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B5%84%E6%BA%90%E5%9B%9E%E6%94%B6"><span class="nav-number">1.2.7.</span> <span class="nav-text">资源回收</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java%E7%9A%84%E5%86%85%E5%AD%98%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6"><span class="nav-number">1.2.8.</span> <span class="nav-text">Java的内存回收机制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E5%90%AB%E4%B9%89"><span class="nav-number">1.3.</span> <span class="nav-text">参数含义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%86%85%E5%AD%98"><span class="nav-number">1.4.</span> <span class="nav-text">查看内存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E5%88%86%E6%9E%90"><span class="nav-number">1.5.</span> <span class="nav-text">内存分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#jmap"><span class="nav-number">1.5.1.</span> <span class="nav-text">jmap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#arthas"><span class="nav-number">1.5.2.</span> <span class="nav-text">arthas</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">1.5.2.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E4%B8%8A%E6%89%8B"><span class="nav-number">1.5.2.2.</span> <span class="nav-text">工具上手</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E6%8A%93%E5%8C%85"><span class="nav-number">1.5.2.3.</span> <span class="nav-text">内存泄漏抓包</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jvm%E5%88%86%E6%9E%90"><span class="nav-number">1.6.</span> <span class="nav-text">jvm分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BE%93%E5%87%BAgc%E6%97%A5%E5%BF%97"><span class="nav-number">1.6.1.</span> <span class="nav-text">输出gc日志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jcosole"><span class="nav-number">1.6.2.</span> <span class="nav-text">jcosole</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jstat"><span class="nav-number">1.6.3.</span> <span class="nav-text">jstat</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">测试游记</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://zx490336534.github.io/article/f32ce47c.html';
+          this.page.identifier = 'article/f32ce47c.html';
+          this.page.title = '27-内存知识';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
