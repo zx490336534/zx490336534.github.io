@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="测试开发,性能测试," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="测试游记" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="28-磁盘知识 持久化的存储设备  存储设备，系统中容量最大的存储设备 存储数据之前，要先进行格式化 linux：ext4 windwos：FAT32、NTFS 在读写数据时，数据与磁盘间有个磁盘缓存（内存的一部分） 机械磁盘「HHD」由盘片，磁头组成，数据存在盘片的环形磁道上，读写时，磁头移动，定位到数据的磁道，进行数据读写 固态磁盘「SSD」由固态电子元器件组成，不需要磁头寻址，所以不管是连续">
+<meta property="og:type" content="article">
+<meta property="og:title" content="28-磁盘知识">
+<meta property="og:url" content="http://zx490336534.github.io/article/daf73f86.html">
+<meta property="og:site_name" content="测试游记">
+<meta property="og:description" content="28-磁盘知识 持久化的存储设备  存储设备，系统中容量最大的存储设备 存储数据之前，要先进行格式化 linux：ext4 windwos：FAT32、NTFS 在读写数据时，数据与磁盘间有个磁盘缓存（内存的一部分） 机械磁盘「HHD」由盘片，磁头组成，数据存在盘片的环形磁道上，读写时，磁头移动，定位到数据的磁道，进行数据读写 固态磁盘「SSD」由固态电子元器件组成，不需要磁头寻址，所以不管是连续">
+<meta property="og:locale">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1grk5x1ia0jj30ni0cyn2h.jpg">
+<meta property="article:published_time" content="2021-06-17T07:51:00.000Z">
+<meta property="article:modified_time" content="2021-06-22T14:13:26.709Z">
+<meta property="article:author" content="测试游记">
+<meta property="article:tag" content="测试开发">
+<meta property="article:tag" content="性能测试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tva1.sinaimg.cn/large/008i3skNly1grk5x1ia0jj30ni0cyn2h.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://zx490336534.github.io/article/daf73f86.html"/>
+
+
+
+
+
+  <title>28-磁盘知识 | 测试游记</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?41fc030db57d5570dd22f78997dc4a7e";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">测试游记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/article/daf73f86.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="测试游记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">28-磁盘知识</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-06-17T15:51:00+08:00">
+                2021-06-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index">
+                    <span itemprop="name">性能测试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/article/daf73f86.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="article/daf73f86.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="28-磁盘知识"><a href="#28-磁盘知识" class="headerlink" title="28-磁盘知识"></a>28-磁盘知识</h1><blockquote>
+<p>持久化的存储设备</p>
+</blockquote>
+<p>存储设备，系统中容量最大的存储设备</p>
+<p>存储数据之前，要先进行格式化</p>
+<p>linux：ext4</p>
+<p>windwos：FAT32、NTFS</p>
+<p>在读写数据时，数据与磁盘间有个磁盘缓存（内存的一部分）</p>
+<h2 id="机械磁盘「HHD」"><a href="#机械磁盘「HHD」" class="headerlink" title="机械磁盘「HHD」"></a>机械磁盘「HHD」</h2><p>由盘片，磁头组成，数据存在盘片的环形磁道上，读写时，磁头移动，定位到数据的磁道，进行数据读写</p>
+<h2 id="固态磁盘「SSD」"><a href="#固态磁盘「SSD」" class="headerlink" title="固态磁盘「SSD」"></a>固态磁盘「SSD」</h2><p>由固态电子元器件组成，不需要磁头寻址，所以不管是连续IO还是随机IO，都比机械盘快</p>
+<span id="more"></span>
+
+<h2 id="为什么代码可以运行在不同的操作系统中"><a href="#为什么代码可以运行在不同的操作系统中" class="headerlink" title="为什么代码可以运行在不同的操作系统中"></a>为什么代码可以运行在不同的操作系统中</h2><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1grk5x1ia0jj30ni0cyn2h.jpg" alt="不同系统的读写"></p>
+<h2 id="Linux中，一切都是文件"><a href="#Linux中，一切都是文件" class="headerlink" title="Linux中，一切都是文件"></a>Linux中，一切都是文件</h2><p>磁盘文件系统：ext4、xfs、nfs</p>
+<p>内存文件系统：基于内存的文件系统 <code>/proc/sys</code></p>
+<p>网络文件系统：用来访问其他计算机数据的文件系统 <code>nfs</code> ,<code>smb</code></p>
+<h2 id="磁盘内部"><a href="#磁盘内部" class="headerlink" title="磁盘内部"></a>磁盘内部</h2><p>扇区sector：磁盘组成的最小单位「512B」，磁盘磁道中一个弧段</p>
+<p>块Block：操作系统与磁盘数据交换的最小单位，快=2^n*扇区</p>
+<ul>
+<li>linux：类似Ext4文件系统，就是磁盘分块</li>
+<li>windows：类似NTFS文件系统，也就是块，只是被叫做「簇」</li>
+</ul>
+<p>页page：操作系统与内存数据交换的最小单位</p>
+<p>缓冲区：buffer内存与磁盘速度不匹配，在数据与磁盘进行IO时，数据先进入缓存区</p>
+<p>页缓存：Linux内存中对磁盘部分数据的副本，加快程序读取磁盘的速度和进程间数据共享</p>
+<h2 id="磁盘分区"><a href="#磁盘分区" class="headerlink" title="磁盘分区"></a>磁盘分区</h2><ul>
+<li><p>基本分区：不能再分区</p>
+</li>
+<li><p>扩展分区：必须进行二次分区，才能使用。再分区就是逻辑分区</p>
+</li>
+</ul>
+<p>linux中IDE设备分区符以「hd」开头</p>
+<ul>
+<li>hd=Hard Disk表示硬盘是IDE（或ATA）并行接口.速度快一些</li>
+</ul>
+<p>linux中SCSI设备分区符以「sd」开头</p>
+<ul>
+<li>sd=Serial ATA Disk表示硬盘是scsi，<strong>SATA串行接口</strong>，u盘也是scsi</li>
+<li>vmware中把磁盘做成scsi设备，所以硬盘名称是sda</li>
+</ul>
+<p>sda:a、b、c…第几个硬盘</p>
+<p>sda1、sda2…数字1、2、3表示第几个分区</p>
+<p><code>fdisk -l</code>查看系统分区详细信息</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">root@zx:~# fdisk -l</span><br><span class="line">Disk /dev/vda: 40 GiB, 42949672960 bytes, 83886080 sectors</span><br><span class="line">Units: sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disklabel type: dos</span><br><span class="line">Disk identifier: 0xcdbde65e</span><br><span class="line"></span><br><span class="line">Device     Boot Start      End  Sectors Size Id Type</span><br><span class="line">/dev/vda1  *     2048 83886046 83883999  40G 83 Linux</span><br><span class="line">root@zx:~# </span><br></pre></td></tr></tbody></table></figure>
+
+<p>分区的目的：提升磁盘读写数据的速度</p>
+<h2 id="磁盘阵列RAID"><a href="#磁盘阵列RAID" class="headerlink" title="磁盘阵列RAID"></a>磁盘阵列RAID</h2><blockquote>
+<p>独立磁盘构成具有冗余能力的阵列</p>
+</blockquote>
+<ul>
+<li>由多块独立的磁盘组成一个容量巨大的磁盘组，利用磁盘提供数据所产生的加成效果提升整个磁盘系统的效能。利用这个技术，把数据切割成多段，分别存在不同磁盘上</li>
+<li>RAID0:数据分片存在2块磁盘，读写速度提升2倍，主要用于SWAP\TMP，但是数据不冗余，数据恢复难</li>
+<li>RAID1:相同数据冗余存入2块磁盘，写速度不变，读速度提升2倍，数据冗余1份，主要用于数据备份，但磁盘利用率低</li>
+<li>RAID5:数据分片和校验码混合存储3份，读写速度提升2倍，主要在要求告诉时用，可以用于数据还原</li>
+<li>RAID10:2块磁盘1组先做RAID1，多组RAID1，再做RAID0，读写速度N「组数」倍</li>
+</ul>
+<h2 id="虚拟文件系统"><a href="#虚拟文件系统" class="headerlink" title="虚拟文件系统"></a>虚拟文件系统</h2><p>Virtual File System简称VFS。是Linux内核的子系统之一，它为用户程序提供文件和文件操作系统的统一接口，屏蔽不同文件系统的差异和操作细节。节奏VFS可以直接使用open()，read()，write()这样的系统调用操作文件，而无需考虑具体的文化系统和实际的存储介质</p>
+<p>通过VFS系统，Linux提供了通用的系统调用，可以跨越不同文件系统和介质之间执行，极大简化了用户访问不同文件系统的过程。另一方面，新的文件系统，新类型的存储介质，可以无须编译的情况下，动态加载到Linux中</p>
+<h2 id="文件IO"><a href="#文件IO" class="headerlink" title="文件IO"></a>文件IO</h2><p>文件操作：先open，再read或write，最后close</p>
+<p>读写的不同：</p>
+<ul>
+<li>是否利用标准库缓存：缓存IO、非缓存IO</li>
+<li>是否利用页缓存：直接IO、非直接IO<ul>
+<li>直接IO：跳过操作系统和页缓存，直接与文件系统交互来访问文件</li>
+<li>非直接IO：文件读写时，先给页缓存，再由内核调用，写入磁盘</li>
+</ul>
+</li>
+<li>释放阻塞自身运行：阻塞IO、非阻塞IO<ul>
+<li>阻塞IO：如果没有获得响应，就阻塞当前线程</li>
+<li>非阻塞IO：不阻塞当前线程</li>
+</ul>
+</li>
+<li>是否等待响应结果：同步IO、异步IO<ul>
+<li>同步IO：要一直等待整个IO完成，才能获取IO响应</li>
+<li>异步IO：不等待IO完成，可以执行另外任务</li>
+</ul>
+</li>
+</ul>
+<h2 id="iostat"><a href="#iostat" class="headerlink" title="iostat"></a>iostat</h2><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">root@zx:~# iostat -dx 2</span><br><span class="line">Linux 5.4.0-54-generic (zx)     06/17/2021      _x86_64_        (2 CPU)</span><br><span class="line"></span><br><span class="line">Device            r/s     rkB/s   rrqm/s  %rrqm r_await rareq-sz     w/s     wkB/s   wrqm/s  %wrqm w_await wareq-sz     d/s     dkB/s   drqm/s  %drqm d_await dareq-sz  aqu-sz  %util</span><br><span class="line">vda              0.00      0.11     0.00  33.65    1.93    28.47    0.94     10.72     1.28  57.78    2.17    11.43    0.00      0.00     0.00   0.00    0.00     0.00    0.00   0.13</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Device            r/s     rkB/s   rrqm/s  %rrqm r_await rareq-sz     w/s     wkB/s   wrqm/s  %wrqm w_await wareq-sz     d/s     dkB/s   drqm/s  %drqm d_await dareq-sz  aqu-sz  %util</span><br><span class="line">vda              0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00   0.00</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Device            r/s     rkB/s   rrqm/s  %rrqm r_await rareq-sz     w/s     wkB/s   wrqm/s  %wrqm w_await wareq-sz     d/s     dkB/s   drqm/s  %drqm d_await dareq-sz  aqu-sz  %util</span><br><span class="line">vda              0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00      0.00     0.00   0.00    0.00     0.00    0.00   0.00</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li><code>rrqm/s</code>:每秒进行merge的读操作数目，即delta(rmerge)/s</li>
+<li><code>wrqm/s</code>:每秒进行merge的写操作数目，即delta(wmerge)/s</li>
+<li><code>r/s</code>:每秒完成的读IO设备次数，即delta(rio)/s</li>
+<li><code>w/s</code>:每秒完成的写IO设备次数</li>
+<li><code>rsec/s</code>:每秒读扇区数</li>
+<li><code>wsec/s</code>:每秒写扇区数</li>
+<li><code>rkBs</code>:每秒读k字节数</li>
+<li><code>wkB/s</code>:每秒写k字节数</li>
+</ul>
+<h2 id="磁盘性能指标"><a href="#磁盘性能指标" class="headerlink" title="磁盘性能指标"></a>磁盘性能指标</h2><h3 id="使用率"><a href="#使用率" class="headerlink" title="使用率"></a>使用率</h3><p>指磁盘处理IO的时间百分比</p>
+<h3 id="饱和度"><a href="#饱和度" class="headerlink" title="饱和度"></a>饱和度</h3><p>磁盘处理IO的繁忙程度</p>
+<h3 id="IOPS"><a href="#IOPS" class="headerlink" title="IOPS"></a>IOPS</h3><p>input\output per second 每秒的IO请求</p>
+<h3 id="吞吐量"><a href="#吞吐量" class="headerlink" title="吞吐量"></a>吞吐量</h3><p>每秒的IO请求大小</p>
+<h3 id="响应时间"><a href="#响应时间" class="headerlink" title="响应时间"></a>响应时间</h3><p>指IO请求从发送到收到响应的时间间隔</p>
+<h2 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h2><h3 id="清理缓存"><a href="#清理缓存" class="headerlink" title="清理缓存"></a>清理缓存</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo 3 &gt; /proc/sys/vm/drop_caches</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>echo 1:释放页缓存</li>
+<li>echo 2:释放目录项</li>
+<li>echo 3:释放页缓存、目录项、节点</li>
+</ul>
+<p>执行之后，buff会为0，cache会减少，free增大</p>
+<h2 id="测试磁盘「写」能力"><a href="#测试磁盘「写」能力" class="headerlink" title="测试磁盘「写」能力"></a>测试磁盘「写」能力</h2><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">root@zx:~# dd if=/dev/zero of=$PWD/outfile bs=20MB count=100</span><br><span class="line">100+0 records in</span><br><span class="line">100+0 records out</span><br><span class="line">2000000000 bytes (2.0 GB, 1.9 GiB) copied, 12.5943 s, 159 MB/s</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">root@zx:~# time dd if=/dev/zero of=$PWD/outfile bs=20MB count=100</span><br><span class="line">100+0 records in</span><br><span class="line">100+0 records out</span><br><span class="line">2000000000 bytes (2.0 GB, 1.9 GiB) copied, 18.2494 s, 110 MB/s</span><br><span class="line"></span><br><span class="line">real    0m18.556s</span><br><span class="line">user    0m0.000s</span><br><span class="line">sys     0m2.696s</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>if输入文件(in file)</li>
+<li>of输出文件(out file)</li>
+<li>/dev/zero 一个伪设备，只产生字符流，不会有IO</li>
+<li>of=$PWD/outfile 输出到当前目录下的outfile文件中</li>
+<li>bs=20MB count=100 块文件20MB，执行100次</li>
+</ul>
+<h3 id="观察"><a href="#观察" class="headerlink" title="观察"></a>观察</h3><p>使用<code>vmstat 1</code>：free变小，空闲内存变小；buffer为0，cache数据变大，bo数据也变大，说明有大量的写磁盘</p>
+<p>使用<code>iostat -dx 1</code>：r/s没有数据，wKB/s有大量数据，说明有大量的磁盘操作</p>
+<p><code>top</code>：wa有明显的数据</p>
+<h2 id="测试磁盘「读」能力"><a href="#测试磁盘「读」能力" class="headerlink" title="测试磁盘「读」能力"></a>测试磁盘「读」能力</h2><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">root@zx:~# df -h</span><br><span class="line">Filesystem      Size  Used Avail Use% Mounted on</span><br><span class="line">udev            1.9G     0  1.9G   0% /dev</span><br><span class="line">tmpfs           394M  908K  393M   1% /run</span><br><span class="line">/dev/vda1        40G   14G   24G  37% /</span><br><span class="line">tmpfs           2.0G     0  2.0G   0% /dev/shm</span><br><span class="line">tmpfs           5.0M     0  5.0M   0% /run/lock</span><br><span class="line">tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup</span><br><span class="line">overlay          40G   14G   24G  37% /var/lib/docker/overlay2/620bb7aa0e627cdba9390176389043e6822ab9e5eb2babdeab85277eff33f615/merged</span><br><span class="line">overlay          40G   14G   24G  37% /var/lib/docker/overlay2/d3473cb9961cfa686528b22e036640d393e58e3f53498952e88b602392005deb/merged</span><br><span class="line">overlay          40G   14G   24G  37% /var/lib/docker/overlay2/4255afaa35207b007713bd6b0366838b6452038dffd1c1a1d23639aaab9a37ae/merged</span><br><span class="line">tmpfs           394M     0  394M   0% /run/user/0</span><br><span class="line"></span><br><span class="line">root@zx:~# dd if=/dev/vda1 of=/dev/null bs=20MB count=100</span><br><span class="line">100+0 records in</span><br><span class="line">100+0 records out</span><br><span class="line">2000000000 bytes (2.0 GB, 1.9 GiB) copied, 17.9035 s, 112 MB/s</span><br><span class="line"></span><br><span class="line">root@zx:~# time dd if=/dev/vda1 of=/dev/null bs=20MB count=100</span><br><span class="line">100+0 records in</span><br><span class="line">100+0 records out</span><br><span class="line">2000000000 bytes (2.0 GB, 1.9 GiB) copied, 9.53937 s, 210 MB/s</span><br><span class="line"></span><br><span class="line">real    0m9.548s</span><br><span class="line">user    0m0.001s</span><br><span class="line">sys     0m1.305s</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>if输入文件(in file)</li>
+<li>of输出文件(out file)</li>
+<li>/dev/vda1 磁盘第1个物理分区，读取这个磁盘文件，会有IO</li>
+<li>/dev/null 一个伪设置，回收站，是个无底洞，可以无限放暑假</li>
+<li>bs=20MB count=100 块文件20MB，执行100次</li>
+</ul>
+<h3 id="观察-1"><a href="#观察-1" class="headerlink" title="观察"></a>观察</h3><p>使用<code>vmstat 1</code>：free变小，空闲内存变小；buffer明显变大，cache数据没有明显变化，bi也有明显的数据</p>
+<p>bi数据，经过几次增加后，buffer数据也相应的增加，当bi数据没有时，buffer数据也不变了，但是读的操作还没有结束。说明后面的读数据来自buffer</p>
+<ul>
+<li>buffer是由磁盘虚拟而来，用于加快磁盘读速度。</li>
+</ul>
+<p>使用<code>iostat -dx 1</code>：rkB/s数据变大，wkB/s数据不明显</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>在<strong>写</strong>磁盘数据时，<strong>cache会变大</strong>，在<strong>读</strong>磁盘数据时，buffer会变大。</p>
+<h2 id="测试内存的速度"><a href="#测试内存的速度" class="headerlink" title="测试内存的速度"></a>测试内存的速度</h2><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root@zx:~# echo 3&gt;/proc/sys/vm/drop_caches </span><br><span class="line"></span><br><span class="line">root@zx:~# dd if=/dev/zero of=/dev/null bs=50MB count=100</span><br><span class="line">100+0 records in</span><br><span class="line">100+0 records out</span><br><span class="line">5000000000 bytes (5.0 GB, 4.7 GiB) copied, 0.831753 s, 6.0 GB/s</span><br></pre></td></tr></tbody></table></figure>
+
+<p>内存的速度，大概是几个GB/s</p>
+<p>内存的速度，看你是磁盘速度的上百倍</p>
+<h2 id="磁盘性能优化"><a href="#磁盘性能优化" class="headerlink" title="磁盘性能优化"></a>磁盘性能优化</h2><ol>
+<li>由机械硬盘，转为固态硬盘，提升磁盘的速度，所以整体性能提升</li>
+<li>减少磁盘的IO次数。代码可以优化</li>
+<li>可以适当的加大内存的大小</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt=" wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt=" 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt=" 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/" rel="tag"># 测试开发</a>
+          
+            <a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/" rel="tag"># 性能测试</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/article/f32ce47c.html" rel="next" title="27-内存知识">
+                <i class="fa fa-chevron-left"></i> 27-内存知识
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpeg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">161</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zx490336534" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/zhong-xin-97-8" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-angellist"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://testingpai.com/" title="测试派" target="_blank">测试派</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://testerhome.com/" title="TesterHome" target="_blank">TesterHome</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://dongfanger.gitee.io/blog/index.html" title="自动化代码美学" target="_blank">自动化代码美学</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#28-%E7%A3%81%E7%9B%98%E7%9F%A5%E8%AF%86"><span class="nav-number">1.</span> <span class="nav-text">28-磁盘知识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%BA%E6%A2%B0%E7%A3%81%E7%9B%98%E3%80%8CHHD%E3%80%8D"><span class="nav-number">1.1.</span> <span class="nav-text">机械磁盘「HHD」</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BA%E6%80%81%E7%A3%81%E7%9B%98%E3%80%8CSSD%E3%80%8D"><span class="nav-number">1.2.</span> <span class="nav-text">固态磁盘「SSD」</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BB%A3%E7%A0%81%E5%8F%AF%E4%BB%A5%E8%BF%90%E8%A1%8C%E5%9C%A8%E4%B8%8D%E5%90%8C%E7%9A%84%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B8%AD"><span class="nav-number">1.3.</span> <span class="nav-text">为什么代码可以运行在不同的操作系统中</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux%E4%B8%AD%EF%BC%8C%E4%B8%80%E5%88%87%E9%83%BD%E6%98%AF%E6%96%87%E4%BB%B6"><span class="nav-number">1.4.</span> <span class="nav-text">Linux中，一切都是文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E5%86%85%E9%83%A8"><span class="nav-number">1.5.</span> <span class="nav-text">磁盘内部</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E5%88%86%E5%8C%BA"><span class="nav-number">1.6.</span> <span class="nav-text">磁盘分区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E9%98%B5%E5%88%97RAID"><span class="nav-number">1.7.</span> <span class="nav-text">磁盘阵列RAID</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.8.</span> <span class="nav-text">虚拟文件系统</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6IO"><span class="nav-number">1.9.</span> <span class="nav-text">文件IO</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#iostat"><span class="nav-number">1.10.</span> <span class="nav-text">iostat</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87"><span class="nav-number">1.11.</span> <span class="nav-text">磁盘性能指标</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E7%8E%87"><span class="nav-number">1.11.1.</span> <span class="nav-text">使用率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A5%B1%E5%92%8C%E5%BA%A6"><span class="nav-number">1.11.2.</span> <span class="nav-text">饱和度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IOPS"><span class="nav-number">1.11.3.</span> <span class="nav-text">IOPS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%9E%E5%90%90%E9%87%8F"><span class="nav-number">1.11.4.</span> <span class="nav-text">吞吐量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%93%8D%E5%BA%94%E6%97%B6%E9%97%B4"><span class="nav-number">1.11.5.</span> <span class="nav-text">响应时间</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E6%88%98"><span class="nav-number">1.12.</span> <span class="nav-text">实战</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B8%85%E7%90%86%E7%BC%93%E5%AD%98"><span class="nav-number">1.12.1.</span> <span class="nav-text">清理缓存</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%A3%81%E7%9B%98%E3%80%8C%E5%86%99%E3%80%8D%E8%83%BD%E5%8A%9B"><span class="nav-number">1.13.</span> <span class="nav-text">测试磁盘「写」能力</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%82%E5%AF%9F"><span class="nav-number">1.13.1.</span> <span class="nav-text">观察</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%A3%81%E7%9B%98%E3%80%8C%E8%AF%BB%E3%80%8D%E8%83%BD%E5%8A%9B"><span class="nav-number">1.14.</span> <span class="nav-text">测试磁盘「读」能力</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%82%E5%AF%9F-1"><span class="nav-number">1.14.1.</span> <span class="nav-text">观察</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">1.15.</span> <span class="nav-text">小结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E5%86%85%E5%AD%98%E7%9A%84%E9%80%9F%E5%BA%A6"><span class="nav-number">1.16.</span> <span class="nav-text">测试内存的速度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96"><span class="nav-number">1.17.</span> <span class="nav-text">磁盘性能优化</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">测试游记</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://zx490336534.github.io/article/daf73f86.html';
+          this.page.identifier = 'article/daf73f86.html';
+          this.page.title = '28-磁盘知识';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
