@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>30-服务器架构演进</title>
+      <link href="article/88f586e9.html"/>
+      <url>article/88f586e9.html</url>
+      
+        <content type="html"><![CDATA[<h1 id="30-服务器架构演进"><a href="#30-服务器架构演进" class="headerlink" title="30-服务器架构演进"></a>30-服务器架构演进</h1><p>把服务包部署到多台设备</p><p>多台机器一起向外提供服务，合并在一起的软件：niginx</p><p>多台机器合并在一起：集群</p><p>nginx负载均衡，反向代理</p><p>nginx里面记录不同机器的ip，配置不同的分配策略</p><p>nginx：web服务器，并不一定是一般理解的前台服务</p><p>前后分离：front+server</p><h2 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h2><ul><li>最典型的软件是nginx</li><li>也可以是硬件F5</li><li>阿里云的SLB，也是一个软件负载均衡</li></ul><span id="more"></span><h2 id="tomcat"><a href="#tomcat" class="headerlink" title="tomcat"></a>tomcat</h2><p>需要有jdk</p><h3 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h3><ul><li>bin：启动、关闭tomcat的文件。startup、shutdown为启动文件，catalina文件为配置文件</li><li>conf：配置文件。server.xml为最重要的配置文件</li><li>logs：项目运行时，默认日志路径。在没有修改默认日志路径时，运行日志记录在该路径下</li><li>webapps：项目包防止路径。把wat包，放在这个路径下，启动tomcat会自动解压</li></ul><h3 id="catalina-bat「Windows」、catalina-sh「Linux」"><a href="#catalina-bat「Windows」、catalina-sh「Linux」" class="headerlink" title="catalina.bat「Windows」、catalina.sh「Linux」"></a>catalina.bat「Windows」、catalina.sh「Linux」</h3><p>在执行startup文件启动tomcat时，会去执行catalina文件</p><h4 id="catalina文件中，-设置堆栈信息"><a href="#catalina文件中，-设置堆栈信息" class="headerlink" title="catalina文件中， 设置堆栈信息"></a>catalina文件中， 设置堆栈信息</h4><figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JAVA_OPTS=<span class="string">"-server -Xms256m -Xmx512m -Xss256k -XX:PermSize=128m"</span></span><br></pre></td></tr></tbody></table></figure><p>-server：第一个参数，指定为服务，多核时使用</p><p>-Xms：启动时，初始堆大小；没有配置时，从最小逐步增加到最大值</p><p>-Xmx：运行时分配的最大堆大小；默认64M</p><p>-Xmn：新生代堆大小</p><p>-Xss：每个线程栈大小</p><p>-XX:PermSize：初始化非内存大小</p><p>-XX:MaxPermSize：永久代(非堆)最大内存大小</p><p>-XX:MaxNewSize：新生代最大大小</p><h4 id="catalina文件中，-设置GC"><a href="#catalina文件中，-设置GC" class="headerlink" title="catalina文件中， 设置GC"></a>catalina文件中， 设置GC</h4><figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JAVA_OPTS=<span class="string">"-verbose:gc -XX+PrintGC -XX:PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:filename"</span></span><br></pre></td></tr></tbody></table></figure><p>-verbose:gc：显示垃圾回收信息</p><p>-XX:+UseParNewGC：设置minor收集的时间</p><p>-XX:+UseConcMarkSweepGC：设置major收集时间</p><ul><li>设置并行收集器：</li></ul><p>-XX:ParallelGCThreads=n：设置并行收集器收时使用的CPU数，并行收集线程数。</p><p>-XX:MaxGCPauseMillis=n：设置并行收集最大暂停时间</p><p>-XX:GCTimeRatio=n：设置垃圾回收时间占程序运行时间的百分比</p><ul><li>设置并发收集器：</li></ul><p>-XX:+CMSIncrementalMode：设置为增量模式。适用于单CPU情况</p><p>-XX:ParallelGCThreads=n：设置并发收集器年轻代收集方式为并行收集时，使用的CPU数，并行收集线程数</p><p><strong>写GC日志，是要消耗IO的，所以在生成环境，一般不配置这个</strong></p><h3 id="conf-server-xml"><a href="#conf-server-xml" class="headerlink" title="conf/server.xml"></a>conf/server.xml</h3><p>Tomcat中最顶层的是server，代表整个服务器，一个server可以包含至少一个service，每个service可以包含多个connector和一个container。Connector用于处理连接相关的事情，并提供Socket与Request和Response相关的转化；Container用于封装和管理Servlet，以及具体Request请求；多个connector就可以配置多种类型连接，如http、https</p><h4 id="不同的protocol"><a href="#不同的protocol" class="headerlink" title="不同的protocol"></a>不同的protocol</h4><p>Connector在处理HTTP请求时，会使用不同的protocol，典型的有：</p><ul><li>BIO：BlockingIO阻塞(tomcat7支持，8支持NIO2，8.5\9去掉了BIO)默认值为maxThreads值</li><li>NIO：Non-blockingIO非阻塞IO，默认值10000</li><li>APR：ApachePortableRuntime Apache可移植运行库，是高并发的首选模式；默认值8192，需要安装apr、apr_utils、tomcat-native包</li></ul><p>Protocol默认是HTTP/1.1，不同版本，会自动选择上面的模式（APR模式需要有相应的包才会自动选择）</p><h4 id="Connector重要参数"><a href="#Connector重要参数" class="headerlink" title="Connector重要参数"></a>Connector重要参数</h4><ul><li>connectionsTimeout：连接超时时间，单位毫秒</li><li>acceptCount：能接收的队列长度，队列满了，再有连接就会拒绝，默认100</li><li>maxConnections：任意时刻能接受和处理的最大连接数。达到最大值，就会阻塞accept连接。如果设置为-1，则连接数不受限制</li><li>maxThreads：请求处理线程的最大数量。默认为200</li><li>minSpareThreads：tomcat初始化默认时默认创建的线程数，也是以后线程增加时一次增加的最小数量</li><li>maxSpareThreads：这个参数标识，一旦创建的线程数量超过了这个值，Tomcat就会关闭不活动的线程</li></ul><h3 id="连接数不够"><a href="#连接数不够" class="headerlink" title="连接数不够"></a>连接数不够</h3><p>修改如下内容：</p><figure class="highlight xml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Executor</span> <span class="attr">name</span>=<span class="string">"tomcatThreadPool"</span> <span class="attr">namePrefix</span>=<span class="string">"catalina-exec-"</span> <span class="attr">maxThreads</span>=<span class="string">"150"</span> <span class="attr">minSpareThreads</span>=<span class="string">"4"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Connector</span> <span class="attr">executor</span>=<span class="string">"tomcatThreadPool"</span> <span class="attr">port</span>=<span class="string">"8080"</span> <span class="attr">protocol</span>=<span class="string">"HTTP/1.1"</span> <span class="attr">connectionTimeout</span>=<span class="string">"20000"</span> <span class="attr">redirectPort</span>=<span class="string">"8443"</span> <span class="attr">acceptCount</span>=<span class="string">"1000"</span>/&gt;</span></span><br></pre></td></tr></tbody></table></figure><ul><li><p>name：线程池的标记</p></li><li><p>namePrefix：线程名字前缀</p></li><li><p>maxThreads：线程池中最大活跃线程数，默认200</p></li><li><p>minSpareThreads：线程池中保存的最小线程数，也是线程每次增加的最小值，默认25</p></li><li><p>connectionTimrout：连接超时时间，单位毫秒</p></li><li><p>accepCount：最大可接受的排队数量</p></li><li><p>maxSpareThreads：一旦创建的线程数量超过这个数值，Tomcat就会关闭不活动的线程</p></li></ul><h2 id="tomcat监控环境搭建"><a href="#tomcat监控环境搭建" class="headerlink" title="tomcat监控环境搭建"></a>tomcat监控环境搭建</h2><blockquote><p>gragana + prometheus监控tomcat</p></blockquote><h3 id="下载jvm-exporter-jar"><a href="#下载jvm-exporter-jar" class="headerlink" title="下载jvm_exporter.jar"></a>下载jvm_exporter.jar</h3><p>下载地址：<a href="https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/">https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/</a></p><p>将<code>jvm_exporter.jar</code>放到tomcat的bin文件夹下</p><h3 id="配置tomcat-yml到tomcat的bin文件夹下"><a href="#配置tomcat-yml到tomcat的bin文件夹下" class="headerlink" title="配置tomcat.yml到tomcat的bin文件夹下"></a>配置tomcat.yml到tomcat的bin文件夹下</h3><figure class="highlight xml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">---   </span><br><span class="line">lowercaseOutputLabelNames: true</span><br><span class="line">lowercaseOutputName: true</span><br><span class="line">rules:</span><br><span class="line">- pattern: 'Catalina&lt;type=GlobalRequestProcessor, name=\"(\w+-\w+)-(\d+)\"&gt;<span class="tag">&lt;&gt;</span>(\w+):'</span><br><span class="line">  name: tomcat_$3_total</span><br><span class="line">  labels:</span><br><span class="line">    port: "$2"</span><br><span class="line">    protocol: "$1"</span><br><span class="line">  help: Tomcat global $3</span><br><span class="line">  type: COUNTER</span><br><span class="line">- pattern: 'Catalina&lt;j2eeType=Servlet, WebModule=//([-a-zA-Z0-9+&amp;@#/%?=~_|!:.,;]*[-a-zA-Z0-9+&amp;@#/%=~_|]), name=([-a-zA-Z0-9+/$%~_-|!.]*), J2EEApplication=none, J2EEServer=none&gt;<span class="tag">&lt;&gt;</span>(requestCount|maxTime|processingTime|errorCount):'</span><br><span class="line">  name: tomcat_servlet_$3_total</span><br><span class="line">  labels:</span><br><span class="line">    module: "$1"</span><br><span class="line">    servlet: "$2"</span><br><span class="line">  help: Tomcat servlet $3 total</span><br><span class="line">  type: COUNTER</span><br><span class="line">- pattern: 'Catalina&lt;type=ThreadPool, name="(\w+-\w+)-(\d+)"&gt;<span class="tag">&lt;&gt;</span>(currentThreadCount|currentThreadsBusy|keepAliveCount|pollerThreadCount|connectionCount):'</span><br><span class="line">  name: tomcat_threadpool_$3</span><br><span class="line">  labels:</span><br><span class="line">    port: "$2"</span><br><span class="line">    protocol: "$1"</span><br><span class="line">  help: Tomcat threadpool $3</span><br><span class="line">  type: GAUGE</span><br><span class="line">- pattern: 'Catalina&lt;type=Manager, host=([-a-zA-Z0-9+&amp;@#/%?=~_|!:.,;]*[-a-zA-Z0-9+&amp;@#/%=~_|]), context=([-a-zA-Z0-9+/$%~_-|!.]*)&gt;<span class="tag">&lt;&gt;</span>(processingTime|sessionCounter|rejectedSessions|expiredSessions):'</span><br><span class="line">  name: tomcat_session_$3_total</span><br><span class="line">  labels:</span><br><span class="line">    context: "$2"</span><br><span class="line">    host: "$1"</span><br><span class="line">  help: Tomcat session $3 total</span><br><span class="line">  type: COUNTER</span><br><span class="line">- pattern: ".*"</span><br></pre></td></tr></tbody></table></figure><h3 id="配置catalina-sh"><a href="#配置catalina-sh" class="headerlink" title="配置catalina.sh"></a>配置catalina.sh</h3><figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">JAVA_OPTS=<span class="string">"-javaagent:./jmx_prometheus_javaagent-0.14.0.jar=3088:./tomcat.yml"</span></span><br></pre></td></tr></tbody></table></figure><h3 id="启动tomcat"><a href="#启动tomcat" class="headerlink" title="启动tomcat"></a>启动tomcat</h3><h3 id="配置prometheus"><a href="#配置prometheus" class="headerlink" title="配置prometheus"></a>配置prometheus</h3><p>配置prometheus.yml文件</p><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- job_name:"tomcat_export"</span><br><span class="line">  static_configs:</span><br><span class="line">  - targets:["被监控机器IP:3088"]</span><br></pre></td></tr></tbody></table></figure><h3 id="配置grafana"><a href="#配置grafana" class="headerlink" title="配置grafana"></a>配置grafana</h3><ul><li>添加数据源：URL<code>http://prometheus_ip:9000</code></li><li>引入模版：8563或3457</li><li>名称：自定义</li><li>job修改为prometheus.yml文件中的job_name</li></ul><h2 id="GC分析"><a href="#GC分析" class="headerlink" title="GC分析"></a>GC分析</h2><blockquote><p><a href="https://gceasy.io/">https://gceasy.io/</a></p></blockquote><h2 id="nginx"><a href="#nginx" class="headerlink" title="nginx"></a>nginx</h2><blockquote><p>是一个用C语言编写的高性能HTTP服务器，反向代理web服务器</p></blockquote><ul><li>占用内存小</li><li>并发能力强</li></ul><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1grybnro1vxj30lq05kdhz.jpg" alt="image-20210628215410866"></p><figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">worker_processes  1;</span><br><span class="line"></span><br><span class="line">events {</span><br><span class="line">    use epoll;</span><br><span class="line">    worker_connections  1024;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">http {</span><br><span class="line">    include       mime.types;</span><br><span class="line">    default_type  application/octet-stream;</span><br><span class="line">    sendfile        on;</span><br><span class="line">    keepalive_timeout  65;</span><br><span class="line">    upstream web_app {</span><br><span class="line">        server 192.168.114.139:8080 weight=1 max_fails=2 fail_timeout=30;</span><br><span class="line">server 192.168.114.139:8880 weight=1 max_fails=2 fail_timeout=30;</span><br><span class="line">    }</span><br><span class="line">    server {</span><br><span class="line">        listen       80;</span><br><span class="line">        server_name  192.168.114.139;</span><br><span class="line">        location / {</span><br><span class="line">    proxy_next_upstream http_502 http_504 error timeout invalid_header;</span><br><span class="line">            proxy_set_header Host  $host;</span><br><span class="line">            proxy_set_header X-Real-IP $remote_addr;</span><br><span class="line">            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">            proxy_pass http://web_app;</span><br><span class="line">            root   html;</span><br><span class="line">            index  index.html index.htm;</span><br><span class="line">        }</span><br><span class="line">        error_page   500 502 503 504  /50x.html;</span><br><span class="line">        location = /50x.html {</span><br><span class="line">            root   html;</span><br><span class="line">        }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure><h2 id="niginx-tomcat负载均衡"><a href="#niginx-tomcat负载均衡" class="headerlink" title="niginx+tomcat负载均衡"></a>niginx+tomcat负载均衡</h2><h3 id="轮询"><a href="#轮询" class="headerlink" title="轮询"></a>轮询</h3><p>默认策略，如果服务器down掉了，会自动剔除该服务器，此策略适合服务器配置相当，无状态且短平快的服务使用</p><h3 id="weight权重"><a href="#weight权重" class="headerlink" title="weight权重"></a>weight权重</h3><p>权重越高分配到需要处理的请求越多，此策略可以与least_conn和ip_hash结合使用，此策略比较适合服务器的硬件配置差别比较大的情况</p><h3 id="ip-hash依据ip分配"><a href="#ip-hash依据ip分配" class="headerlink" title="ip_hash依据ip分配"></a>ip_hash依据ip分配</h3><p>ip_hash不能与backup同时使用，此策略适合有状态服务，比如session，服务器需要剔除，必须手动down掉</p><h3 id="least-conn最小连接"><a href="#least-conn最小连接" class="headerlink" title="least_conn最小连接"></a>least_conn最小连接</h3><p>此负载均衡策略适合请求处理时间长短不一造成服务器过载的情况</p><h3 id="fair响应时间"><a href="#fair响应时间" class="headerlink" title="fair响应时间"></a>fair响应时间</h3><p>负载均衡策略的实现需要安装第三方插件，按照服务器端的响应时间来分配请求，响应时间短的优先分配</p><h3 id="url-hash依据url分配"><a href="#url-hash依据url分配" class="headerlink" title="url_hash依据url分配"></a>url_hash依据url分配</h3><p>按访问url结果来分配请求，使每个url定向到同一个后端服务器，要配合缓存命中来使用</p><h2 id="niginx常用配置"><a href="#niginx常用配置" class="headerlink" title="niginx常用配置"></a>niginx常用配置</h2><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1grze9nxcyyj30on09qgzx.jpg" alt="niginx常用配置"></p><h2 id="对niginx监控"><a href="#对niginx监控" class="headerlink" title="对niginx监控"></a>对niginx监控</h2><p>使用<code>nginx-module-vts</code>与<code>nginx-vts-exporter</code></p><ul><li>nginx-module-vts: Nginx virtual host traffic status module，nginx的监控模块，能够提供json、html、prometheus格式的数据产出。</li><li>nginx-vts-exporter: Simple server that scrapes Nginx vts stats and exports them via HTTP for Prometheus consumption。主要用于收集nginx的监控数据，并给Prometheus提供监控接口，默认端口号9913。</li></ul><h2 id="如何测试集群的性能"><a href="#如何测试集群的性能" class="headerlink" title="如何测试集群的性能"></a>如何测试集群的性能</h2><p>首先，需要有一个集群，就要安装项目的集群环境搭建的标准，搭建一套集群环境，只是此时，集群规模不需要做那么大，自己搭建一套最小的集群（至少是两个相同服务构成的一个集群）</p><p>然后，对该集群进行性能测试，得到最小规模的集群的性能指标</p><p>然后，再在集群中，添加服务，此时集群有3个服务，然后再对集群进行一次性能测试，此时3个服务构成的集群的性能指标tps增加了多少，并发用户增加了多少，那么理论上，可以计算出增加服务后tps等指标的增加情况</p><h2 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h2><blockquote><p>数据：描述事物的符号记录，符号可以是数字，文字，图片，图像，声音，语言</p><p>数据库：存放数据的仓库，这个仓库是计算机存储设备，而且数据是按一定的格式存放的</p></blockquote><p>在企业项目中，数据库的读操作更频繁</p><h3 id="dbms"><a href="#dbms" class="headerlink" title="dbms"></a>dbms</h3><h4 id="关系型数据库"><a href="#关系型数据库" class="headerlink" title="关系型数据库"></a>关系型数据库</h4><p>采用关系模型来组织数据库的数据，以行+列方式存储数据</p><ul><li>结构化方式存储数据库</li><li>标准的结构化查询语句「SQL」标准的增删改查</li><li>事物性，寻找ACID规则「原子性、一致性、隔离性、持久性」</li></ul><p>sql有四种</p><ul><li>DCL数据库控制语言「Data Control Language」用来确认或取消数据库用户和角色权限变更</li><li>DDL数据库定义语言「Data Definition Language」用来创建或删除数据库以及表</li><li>DML数据库操作语言「Data Mainpulation Language」用来变更表数据记录</li><li>DQL数据库查询语言「Data Query Language」用来查询表中的记录</li></ul><h4 id="非关系型数据库NoSQL「Not-only-SQL」"><a href="#非关系型数据库NoSQL「Not-only-SQL」" class="headerlink" title="非关系型数据库NoSQL「Not only SQL」"></a>非关系型数据库NoSQL「Not only SQL」</h4><h3 id="选择数据库需要注意"><a href="#选择数据库需要注意" class="headerlink" title="选择数据库需要注意"></a>选择数据库需要注意</h3><ul><li>IO性能比较好的</li><li>磁盘空间比较大</li><li>稳定性</li></ul><h3 id="数据库缓存"><a href="#数据库缓存" class="headerlink" title="数据库缓存"></a>数据库缓存</h3><p>数据库的缓存有两部分</p><ul><li>数据库本身的缓存</li><li>专门做缓存的数据库</li></ul><h3 id="数据库拆分"><a href="#数据库拆分" class="headerlink" title="数据库拆分"></a>数据库拆分</h3><ul><li>直接拆数据库</li><li>分表分区</li></ul><h3 id="存储引擎"><a href="#存储引擎" class="headerlink" title="存储引擎"></a>存储引擎</h3><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gs4nrjw436j30pd0bq0yl.jpg" alt="存储引擎"></p><p>mysql数据库建表的时候，有一个存储引擎，可以选择，默认为<strong>InnoDB</strong></p><p>数据库存储引擎是数据库底层软件组件，数据库管理系统使用数据库引擎进行创建，查询，更新和删除数据操作。</p><p>存储引擎就是指表的类型。数据库的存储引擎决定了表在计算机中的存储方式。不同的存储引擎提供不同的存储机制，索引技巧，锁定水平等功能，使用不同的存储引擎还可以获得特定的功能</p><p>例如，存在两张表：一个配置表，一个用户表</p><ul><li>配置表，一般在项目启动的时候，读取一次，在项目运行过程中，一般都不会去修改</li><li>用户信息表：在项目启动时，不会去读取，但是在项目运行过程中，随时都有可能修改</li></ul><p>所以，它们的使用场景不一样，创建表时会选择不同的搜索引擎</p><p>配置表一般选用<code>MyISM</code>存储引擎</p><p>用户信息表一般选用<code>InnoDB</code></p><p>mysql数据库5.5版本及以前</p><ul><li>默认存储引擎为<code>MyISM</code></li><li>追求存储数据的速度，存储数据不准</li><li>锁，表锁，会锁定整张表</li><li>索引：B树索引</li></ul><p>mysql数据库5.5版本及以后</p><ul><li>默认存储引擎为<code>InnoDB</code></li><li>追求存储数据的准确性，事务一致性</li><li>锁，行锁，会锁定当前行</li><li>索引：默认B+树索引</li></ul><p>B+树的优点：</p><ul><li>树的层次更低，IO次数更少</li><li>每次查询的结果都是在叶子节点，查询性能稳定</li><li>叶子节点形成链表，范围查询更方便</li></ul><h3 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h3><blockquote><p>是一种数据结构，用于帮助我们在大量数据中快速定位我们要查找的数据</p></blockquote><p>建索引：使用空间换时间，索引有一定大小，占磁盘、内存空间，以此来换取时间更少。是为了提升查询数据的速度，它会降低修改速度</p><ul><li><p>主键索引：有且仅有一个</p><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> index 索引名 <span class="keyword">on</span> 表名(字段);</span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> 表名 <span class="keyword">ADD</span> INDEX 索引名(字段);</span><br></pre></td></tr></tbody></table></figure></li><li><p>唯一索引：不可重复，但是可以存储NULL</p></li></ul><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">unique</span> index 索引名 <span class="keyword">on</span> 表名(字段);</span><br></pre></td></tr></tbody></table></figure><ul><li>复合索引：由表的多列按照顺序组合成为索引，使用时，按照组合顺序使用索引，也可以使用组合索引中部分索引字段</li></ul><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> index 索引名 <span class="keyword">on</span> 表名(字段<span class="number">1</span>，字段<span class="number">2.</span>...)</span><br></pre></td></tr></tbody></table></figure><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> index index_name <span class="keyword">on</span> name(id，co3，co2);</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_name <span class="keyword">where</span> id<span class="operator">=</span>?,co3<span class="operator">=</span>? 使用了索引</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_name <span class="keyword">where</span> id<span class="operator">=</span>?,co2<span class="operator">=</span>?</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_name <span class="keyword">where</span> co3<span class="operator">=</span>?,co2<span class="operator">=</span>?</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_name <span class="keyword">where</span> co2<span class="operator">=</span>?,co3<span class="operator">=</span>?</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_name <span class="keyword">where</span> id<span class="operator">=</span>?,co3<span class="operator">=</span>?,co2<span class="operator">=</span>? 使用了索引</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_name <span class="keyword">where</span> id<span class="operator">=</span>?,co2<span class="operator">=</span>?,co3<span class="operator">=</span>?</span><br><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_name <span class="keyword">where</span> id<span class="operator">=</span>? 使用了索引</span><br></pre></td></tr></tbody></table></figure><h4 id="索引的弊端"><a href="#索引的弊端" class="headerlink" title="索引的弊端"></a>索引的弊端</h4><ul><li>索引本身很大，通常存放在磁盘或内存</li><li>不是索引情况都可以用索引，数据库很少，列值比频繁变更，列很少使用</li><li>索引会降低增删改的效率，但是一般会提升查的效率</li></ul><h4 id="索引的优势"><a href="#索引的优势" class="headerlink" title="索引的优势"></a>索引的优势</h4><ul><li>降低IO、CPU使用率</li><li>索引列，可以保证行的唯一性</li><li>可以有效缩短数据检索时间</li><li>加快表与表之间的连接</li></ul><h2 id="Select"><a href="#Select" class="headerlink" title="Select"></a>Select</h2><h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">SELECT {*|字段列名} 查询要显示的列名</span><br><span class="line"><span class="keyword">FROM</span> <span class="operator">&lt;</span>表名<span class="number">1</span><span class="operator">&gt;</span>,<span class="operator">&lt;</span>表名<span class="number">2</span><span class="operator">&gt;</span> <span class="keyword">join</span>, <span class="keyword">on</span> 数据来源表</span><br><span class="line"><span class="keyword">WHERE</span> <span class="operator">&lt;</span>表达式<span class="operator">&gt;</span> 限制条件</span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span><span class="operator">&lt;</span>字段<span class="operator">&gt;</span> 查询的结果，按照条件字段分组</span><br><span class="line"><span class="keyword">HAVING</span> <span class="operator">&lt;</span>expression<span class="operator">&gt;</span> 过滤分组</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> <span class="operator">&lt;</span>字段<span class="operator">&gt;</span> 按照字段排序</span><br><span class="line">LIMIT <span class="operator">&lt;</span><span class="keyword">offset</span><span class="operator">&gt;</span>[<span class="operator">&lt;</span><span class="type">row</span> count<span class="operator">&gt;</span>] 显示数据条数</span><br></pre></td></tr></tbody></table></figure><p>sql语句的执行顺序，与编写顺序会不一致</p><p>sql执行过程：</p><ul><li>输入数据库的ip，端口，账号，密码「连接层」</li><li>提供各种接口，CRUD，对脚本进行优化「服务层」</li><li>执行你的sql「引擎层」</li><li>数据交换「存储层」</li></ul><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gslf0b4girj30rh0afjrx.jpg" alt="关系型数据库"></p><p>数据库管理系统dbms，写数据时，把你的数据，转化为日志文件，对日志文件进行解读，还原你的日志过程</p><h3 id="select的解析过程"><a href="#select的解析过程" class="headerlink" title="select的解析过程"></a>select的解析过程</h3><ul><li>from table_name 数据源中捞取数据</li><li>where 条件 对捞取的数据进行条件过滤</li><li>group by 分组<ul><li>根据上面的条件字段来分组「建议where条件字段」</li><li>不按照上面的条件字段来分组「会产生临时表」</li></ul></li><li>having 分组过滤</li><li>select 字段</li><li>order by 建议使用select 字段来排序</li><li>limit 数据量</li></ul><h2 id="数据库性能优化"><a href="#数据库性能优化" class="headerlink" title="数据库性能优化"></a>数据库性能优化</h2><ul><li>数据库库层面的优化「os」<ul><li>sysctl</li><li>ulimit</li></ul></li><li>数据库配置文件<ul><li>/etc/my.cnf</li><li>SHOW VARIABLES;</li></ul></li></ul><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">'%slow_query_log%'</span> 查看慢查询的开关与日志路径 默认<span class="number">10</span>秒为慢查询</span><br><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">'long_query_time'</span> 慢查询的阈值默认<span class="number">10</span>秒</span><br></pre></td></tr></tbody></table></figure><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">'max_connections%'</span> 查看系统配置的最大连接数</span><br><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">'Max_used_connections'</span> 查看当前用户已经建立的连接数</span><br></pre></td></tr></tbody></table></figure><p>当出现<code>ERROR 1040:Too many connections</code>可以通过修改连接数来解决</p><h3 id="定位慢查询日志"><a href="#定位慢查询日志" class="headerlink" title="定位慢查询日志"></a>定位慢查询日志</h3><ol><li>开启慢查询的开关</li></ol><blockquote><p>因为，数据中慢查询日志，一般情况下都是关闭的，因为慢查询的开启，就要写日志，会消耗IO。</p><p>所以在生产数据库中，建议千万不要去开启</p></blockquote><p>我们用jmeter做性能测试，设计了一个性能场景，运行，发现在一定量的并发用户时，平均响应时间，已经超过了1秒钟，那么，我们可以说，可能存在了慢查询日志。</p><p>响应时间都没有超过1秒(阈值)，那么肯定没有慢查询日志。</p><h3 id="SQL优化"><a href="#SQL优化" class="headerlink" title="SQL优化"></a>SQL优化</h3><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">explain <span class="keyword">sql</span>语句</span><br></pre></td></tr></tbody></table></figure><ul><li><p>id:编号</p><ul><li>id相同时，从上往下执行</li><li>id不同时，从大到小</li></ul></li><li><p>select type:查询语句</p><ul><li>SIMPLE:简单的SELECT，不使用union或子查询</li><li>PRIMARY:查询中包含复杂的子查询，最外层的select被标记为PRIMARY</li><li>UNION:union中第二个或后面的select语句</li><li>DEPENDENT UNION:union中的第二个或后面的select语句，取决于外面的查询</li><li>UNION RESULT:union的结果</li><li>SUBQUERY:子查询的第一个select</li><li>DEPENDENT SUBQUERY:子查询中的第一个select，取决于外面的查询</li><li>DERIVD:衍生查询，使用临时表(select from子句的子查询)</li><li>UNCACHEABLE SUBQUERY:一个子查询的结果不能被缓存，必须重新评估外链接的第一行</li></ul></li><li><p>table:表</p></li><li><p>type:类型</p><ul><li>All:全表扫描Full table scan</li><li>index:遍历索引数据 Full index scan</li><li>range:使用一个索引来检索给定范围的行</li><li>ref:使用了索引列上值进行查询</li><li>eq_ref:类似ref，只是使用的索引为唯一索引</li><li>const,system:MySQL对查询某部分进行优化，并转化为一个常量时，使用这些类型访问。如将主键置于where列表中，MySQL就能将该查询转化为一个常量，system上const类型的特例，当查询的表只有一行的情况下，使用system</li><li>Null:MySQl在优化过程中分解语句，执行时甚至不用访问表或索引</li></ul><blockquote><p>性能效率：system &gt; const  &gt; eq_ref  &gt; ref  &gt; range  &gt; index &gt; all 左边效率高于右边</p></blockquote></li><li><p>possible_keys:预测用到的索引</p></li><li><p>key:实际用到的索引</p></li><li><p>key_len:实际使用索引的长度</p></li><li><p>ref:表之间的匹配条件</p></li><li><p>rows:通过索引查询到的数据量</p></li><li><p>filtered:</p></li><li><p>Extra:额外的信息</p><ul><li>Using  where:显示的字段不在索引(select 的字段，有的不再索引中，要从源table表中查询)</li><li>Using index:使用了索引，不用回表查询，能够起到性能提升</li><li>Using temporary:使用了临时表，性能消耗比较大，常见于group by语句</li><li>Using fileSort:使用文件排序，无法利用索引完成排序操作，性能消耗非常大，常见于order by语句</li><li>Using join buffer:mysql引擎使用了链接缓存</li><li>Impossible where:where子句永远为false</li><li>Select tables optimized away:仅通过使用索引，优化器可能仅从聚合函数结果返回一行</li><li>NULL:</li></ul></li></ul><p>using where 使用where条件过滤，但是where条件不在索引，那我们就要考虑用和where后面的字段来建索引</p><h3 id="优化方法"><a href="#优化方法" class="headerlink" title="优化方法"></a>优化方法</h3><ul><li>在写on语句时，将数据量小的表放在左边</li><li>where后面的条件尽可能用索引字段，复合索引时，最好按复合索引顺序写where条件</li><li>where后面有in语句，in字段的索引，最好放复合索引的后面，因为in的字段索引可能会失效</li><li>模糊查询时，尽量用常量开头，不要用%开头，用%开头查询索引将失效</li><li>尽量不要使用or，否则索引失效</li><li>尽量不要使用类型转化（显式、隐式），否则索引失效</li><li>如果主查询数据量大，则使用in</li><li>如果子查询数据量大，则使用exists</li><li>查询哪些列，就根据哪些列group by，不然会产生一个临时表</li></ul><h3 id="库优化"><a href="#库优化" class="headerlink" title="库优化"></a>库优化</h3><ul><li>os配置修改</li><li>数据库的配置参数</li><li>数据库 &lt;=&gt; 应用程序 &lt;=&gt; 配置文件</li></ul><h3 id="表优化"><a href="#表优化" class="headerlink" title="表优化"></a>表优化</h3><ul><li><p>表存储引擎</p></li><li><p>表结构（拆表）</p></li><li><p>表建立索引</p><ul><li>慢sql：根据分析结果调整索引，开发人员修改自己的sql</li></ul></li><li><p>主从同步</p></li><li><p>分表分区</p></li></ul><h3 id="主从同步"><a href="#主从同步" class="headerlink" title="主从同步"></a>主从同步</h3><ul><li>数据同步</li><li>读写分离</li></ul><p>在主数据库中做任何操作，在从数据库中，都会重复一次</p><p>在从数据库中修改，主数据库是不会变化的</p><p>所以主数据库进行写操作，从数据库进行读操作</p><p>可以手动设置同步时间间隔</p><h3 id="分表分区"><a href="#分表分区" class="headerlink" title="分表分区"></a>分表分区</h3><h4 id="分表"><a href="#分表" class="headerlink" title="分表"></a>分表</h4><ul><li>拆列：一张表多列，被拆到多张表「垂直分表」</li></ul><p>表字段变少，行数不变</p><ul><li>拆行：一张表某些行，被拆到另外行「水平分表」</li></ul><p>表字段不变，行数变少</p><h4 id="分区"><a href="#分区" class="headerlink" title="分区"></a>分区</h4><p>把数据存到不同地方</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 性能测试 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 测试开发 </tag>
+            
+            <tag> 性能测试 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>29-网络知识</title>
       <link href="article/91eff690.html"/>
       <url>article/91eff690.html</url>
@@ -1424,11 +1451,11 @@
       
         <tags>
             
+            <tag> 测试开发 </tag>
+            
             <tag> Python </tag>
             
             <tag> Flask </tag>
-            
-            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1588,11 +1615,11 @@
       
         <tags>
             
+            <tag> 测试开发 </tag>
+            
             <tag> Python </tag>
             
             <tag> Flask </tag>
-            
-            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1644,11 +1671,11 @@
       
         <tags>
             
+            <tag> 测试开发 </tag>
+            
             <tag> Python </tag>
             
             <tag> Flask </tag>
-            
-            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1673,11 +1700,11 @@
       
         <tags>
             
+            <tag> 测试开发 </tag>
+            
             <tag> Python </tag>
             
             <tag> Flask </tag>
-            
-            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1702,11 +1729,11 @@
       
         <tags>
             
+            <tag> 测试开发 </tag>
+            
             <tag> Python </tag>
             
             <tag> Flask </tag>
-            
-            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1814,9 +1841,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Git </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1841,9 +1868,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Git </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1868,9 +1895,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Git </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1895,11 +1922,11 @@
       
         <tags>
             
+            <tag> 测试开发 </tag>
+            
             <tag> Python </tag>
             
             <tag> Flask </tag>
-            
-            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1924,9 +1951,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Git </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1951,9 +1978,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Git </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -1978,9 +2005,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Git </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2005,9 +2032,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Git </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2032,9 +2059,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Git </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2059,11 +2086,11 @@
       
         <tags>
             
+            <tag> 测试开发 </tag>
+            
             <tag> Python </tag>
             
             <tag> Flask </tag>
-            
-            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2088,9 +2115,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Git </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2115,11 +2142,11 @@
       
         <tags>
             
+            <tag> 测试开发 </tag>
+            
             <tag> Python </tag>
             
             <tag> Flask </tag>
-            
-            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2144,9 +2171,9 @@
       
         <tags>
             
-            <tag> 测试开发 </tag>
-            
             <tag> Git </tag>
+            
+            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2171,11 +2198,11 @@
       
         <tags>
             
+            <tag> 测试开发 </tag>
+            
             <tag> Python </tag>
             
             <tag> Flask </tag>
-            
-            <tag> 测试开发 </tag>
             
         </tags>
       
@@ -2200,9 +2227,63 @@
       
         <tags>
             
+            <tag> 测试开发 </tag>
+            
             <tag> Python </tag>
             
             <tag> Flask </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Gitlab合并代码的几种情况</title>
+      <link href="article/500537c1.html"/>
+      <url>article/500537c1.html</url>
+      
+        <content type="html"><![CDATA[<h1 id="Gitlab合并代码的几种情况"><a href="#Gitlab合并代码的几种情况" class="headerlink" title="Gitlab合并代码的几种情况"></a>Gitlab合并代码的几种情况</h1><h2 id="开发者权限提交代码并请求合并"><a href="#开发者权限提交代码并请求合并" class="headerlink" title="开发者权限提交代码并请求合并"></a>开发者权限提交代码并请求合并</h2><p>如下图新建一个 <code>Issue</code>点击提交</p><p><img src="https://ws2.sinaimg.cn/large/006tKfTcly1g1hrh0qultj319a0u07ca.jpg" alt="Issue创建"></p><span id="more"></span><p>在问题界面点击 <code>Create merge request</code>创建一个合并请求</p><p><img src="https://ws4.sinaimg.cn/large/006tKfTcly1g1hs8vmhnkj319a0u0gvs.jpg" alt="Issue界面"></p><p>点击之后会跳转至 <code>合并请求</code>页面</p><p><img src="https://ws3.sinaimg.cn/large/006tKfTcly1g1hrk1faauj319a0u0n93.jpg" alt="合并请求页面"></p><p>正常的操作应该是把新建的分支 <code>7-_1</code>拉到本地然后修改后推送到远端</p><p><img src="https://ws4.sinaimg.cn/large/006tKfTcly1g1hrlrhovlj31830u0jv7.jpg" alt="本地合并方式"></p><p>为了方便起见，直接使用 <code>在Web IDE中打开</code></p><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g1hrmfbscwj319a0u0n4x.jpg" alt="web Ide修改"></p><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g1hrmn5uzlj319a0u07cu.jpg" alt="提交请求">在修改了这个新建的分支之后回到 <code>合并请求</code>页面就可以看到其中的内容发生了改变</p><p><img src="https://ws2.sinaimg.cn/large/006tKfTcly1g1hs9lrs5yj31he0oedi7.jpg" alt="分支提交之后的页面"></p><p>之前是询问是否要创建一个新文件，现在直接就是问你这不是已经完成了这个半成品了，点击 <code>Resolve WIP status</code>提示信息就会变成<code>已可自动合并。 请具有仓库写入权限的用户来合并此请求</code></p><p><img src="https://ws2.sinaimg.cn/large/006tKfTcly1g1hrp1l8b2j31hs07wmxz.jpg" alt="开发者看到的页面"></p><p>下面登录管理员账户查看,可以看到<code>合并</code>按钮已经变成绿色了</p><p><img src="https://ws3.sinaimg.cn/large/006tKfTcly1g1hrralpmwj31hq0amta6.jpg" alt="管理员看的的页面"></p><h2 id="两个合并先后修改了文件不同位置"><a href="#两个合并先后修改了文件不同位置" class="headerlink" title="两个合并先后修改了文件不同位置"></a>两个合并先后修改了文件不同位置</h2><p>这个情况比较简单，正常的合并操作也不会出现冲突，所以不赘述了。</p><h2 id="两个合并先后修改了文件同一个位置"><a href="#两个合并先后修改了文件同一个位置" class="headerlink" title="两个合并先后修改了文件同一个位置"></a>两个合并先后修改了文件同一个位置</h2><p>我们创建两个问题单：<code>两个合并先后修改了文件同一个位置_1</code>  和<code>两个合并先后修改了文件同一个位置_2</code>并为他们分别拉取分支，创建合并请求</p><p><img src="https://ws4.sinaimg.cn/large/006tKfTcly1g1hry5d0k5j30u00q8jtt.jpg" alt="创建两个合并请求">首先在第一个里面修改里面的一个文件并完成提交</p><p><img src="https://ws2.sinaimg.cn/large/006tKfTcly1g1hryu4zm2j30gk0c2wfe.jpg" alt="修改1号请求"></p><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g1hrzblp4wj31iw0oen0s.jpg" alt="提交一号请求"></p><p>同理，在第二个页面也修改第五行</p><p><img src="https://ws4.sinaimg.cn/large/006tKfTcly1g1hs02xv7bj30us0b0wfn.jpg" alt="修改2号请求">然后管理员进行合并的同意</p><p>先同意提交1</p><p><img src="https://ws2.sinaimg.cn/large/006tKfTcly1g1hs14lvr6j31io0tigq6.jpg" alt="管理员同意一号请求"></p><p>然后查看提交2</p><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g1hs1qd1o4j31ii0msn0k.jpg" alt="管理员查看2号请求"></p><p>我们就可以看到出现冲突了，可以本地合并</p><p><img src="https://ws4.sinaimg.cn/large/006tKfTcly1g1hs28l5k8j318c0s4jut.jpg" alt="本地合并方式"></p><p>也可以直接在页面进行<code>解决冲突</code></p><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g1hs393n0fj319a0u07fz.jpg" alt="页面选择进行解决合并"></p><p>同意哪个改哪个，如果都不同意就自己改</p><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g1hs44suk1j31uw0qejut.jpg" alt="自行解决"></p><p>去除多余的 〈〈〈符号就好了</p><p><img src="https://ws3.sinaimg.cn/large/006tKfTcly1g1hs4phuevj30us0bcabg.jpg" alt="合并方法"></p><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g1hs5akzukj31hc0a6q4j.jpg" alt="正常提交"></p><p>之后就可以正常合并了</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Git </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Git </tag>
+            
+            <tag> 测试开发 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Git基础知识（一）</title>
+      <link href="article/8d21c5d5.html"/>
+      <url>article/8d21c5d5.html</url>
+      
+        <content type="html"><![CDATA[<h1 id="Git基础知识（一）"><a href="#Git基础知识（一）" class="headerlink" title="Git基础知识（一）"></a>Git基础知识（一）</h1><h2 id="Git的特点"><a href="#Git的特点" class="headerlink" title="Git的特点"></a>Git的特点</h2><h3 id="直接记录快照，而非差异比较"><a href="#直接记录快照，而非差异比较" class="headerlink" title="直接记录快照，而非差异比较"></a>直接记录快照，而非差异比较</h3><blockquote><p>概念上来区分，其它大部分系统以文件变更列表的方式存储信息. 这类系统（CVS、Subversion、Perforce、Bazaar等）将它们保存的信息看作是一组基本文件和每个文件随时间<strong>逐步累积</strong>的差异。</p><p>Git 更像是把数据看作是对小型文件系统的一组快照。每次你提交更新，或在 Git 中保存项目状态时，它主要对当时的全部文件制作一个快照并保存这个快照的索引。为了高效，如果文件没有修改，Git 不再重新存储该文件，而是只保留一个链接指向之前存储的文件。Git 对待数据更像是一个快照流。</p></blockquote><span id="more"></span><h3 id="近乎所有操作都是本地执行"><a href="#近乎所有操作都是本地执行" class="headerlink" title="近乎所有操作都是本地执行"></a>近乎所有操作都是本地执行</h3><blockquote><p>在 Git 中的绝大多数操作都只需要访问本地文件和资源，一般不需要来自网络上其它计算机的信息。</p><p>使用其它系统，做到如此是不可能或很费力的。 比如，用 Perforce，你没有连接服务器时几乎不能做什么事；用 Subversion和CVS，你能修改 文件，但不能向数据库提交修改（因为你的本地数据库离线了）。</p></blockquote><h3 id="Git保证完整性"><a href="#Git保证完整性" class="headerlink" title="Git保证完整性"></a>Git保证完整性</h3><blockquote><p>Git 中所有数据在存储前都计算校验和，然后以校验和来引用。若你在传送过程中丢失信息或损坏 文件，Git 就能发现。</p><p>Git 用以计算校验和的机制叫做 SHA-1 散列（hash，哈希）。</p></blockquote><p>这是一个由 40 个十六进制字符（0-9 和 a-f）组 成字符串，基于 Git 中文件的内容或目录结构计算出来。 SHA-1 哈希看起来是这样：</p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">24b9da6552252987aa493b52f8696cd6d3b00373</span><br></pre></td></tr></tbody></table></figure><h3 id="Git一般只添加数据"><a href="#Git一般只添加数据" class="headerlink" title="Git一般只添加数据"></a>Git一般只添加数据</h3><blockquote><p>你执行的 Git 操作，几乎只往 Git 数据库中增加数据。 很难让 Git 执行任何不可逆操作，或者让它以任何方式清 除数据。</p></blockquote><h3 id="Git的三种状态"><a href="#Git的三种状态" class="headerlink" title="Git的三种状态"></a>Git的三种状态</h3><ul><li><code>已提交(committed)</code>:数据已经安全的保存在本地数据库中</li><li><code>已修改(modified)</code>:修改了文件，但还没保存到数据库中</li><li><code>已暂存(staged)</code>:对已修改的文件的当前版本做了标记，使它包含在下次提交的快照中</li></ul><p>Git项目的三个工作区域：<code>Git仓库</code>,<code>工作目录</code>,<code>暂存区域</code></p><ul><li><strong>Git 仓库</strong>目录是 Git 用来保存项目的元数据和对象数据库的地方。 这是 Git 中最重要的部分，从其它计算机克隆仓库时，拷贝的就是这里的数据。</li><li><strong>工作目录</strong>是对项目的某个版本独立提取出来的内容。 这些从 Git 仓库的压缩数据库中提取出来的文件，放在磁盘上供你使用或修改。</li><li><strong>暂存区域</strong>是一个文件，保存了下次将提交的文件列表信息，一般在 Git 仓库目录中。 有时候也被称作索引，不过一般说法还是叫暂存区域。</li></ul><h3 id="基本的Git工作流程"><a href="#基本的Git工作流程" class="headerlink" title="基本的Git工作流程"></a>基本的Git工作流程</h3><ol><li><p>在工作目录中修改文件。</p></li><li><p>暂存文件，将文件的快照放入暂存区域。</p></li><li><p>提交更新，找到暂存区域的文件，将快照永久性存储到 Git 仓库目录。</p></li></ol><p><img src="https://ws2.sinaimg.cn/large/006tKfTcly1g1lnxeozyij30zm0ki77x.jpg" alt="三个工作区域"></p><h2 id="起步"><a href="#起步" class="headerlink" title="起步"></a>起步</h2><p>使用<code>git config</code>工具来帮助控制Git外观和行为。</p><h3 id="配置用户信息"><a href="#配置用户信息" class="headerlink" title="配置用户信息"></a>配置用户信息</h3><p>当安装完 Git 应该做的第一件事就是设置你的<code>用户名称</code>与<code>邮件地址</code>。每一个 Git 的提交都会使用这些信息，并且它会写入到你的每一次提交中，<strong>不可更改</strong>：</p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name 你的姓名</span><br><span class="line">git config --global user.email 你的邮箱</span><br></pre></td></tr></tbody></table></figure><p>例如：</p><blockquote><p>$ git config –global user.name “John Doe” </p><p>$ git config –global user.email <a href="mailto:johndoe@example.com">johndoe@example.com</a></p></blockquote><h3 id="检查配置信息"><a href="#检查配置信息" class="headerlink" title="检查配置信息"></a>检查配置信息</h3><p><code>git config --list</code>:列出所有Git当前能找到的配置</p><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g1lo2pq4jzj30uk0byabv.jpg" alt="列出所有Git配置"></p><p><code>git config &lt;key&gt;</code>:通过指定的方式查看某一项</p><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g1lo3xky34j30v802aaa9.jpg" alt="指定查看用户名"></p><h3 id="获取帮助"><a href="#获取帮助" class="headerlink" title="获取帮助"></a>获取帮助</h3><p>合理使用git自带的帮助文档，可以解决大部分的问题</p><p>例如<code>git help config</code></p><p>还有其他方式找到Git命令的使用手册。</p><blockquote><p>git help <verb></verb></p><p>git <verb> - -help</verb></p><p>man git-<berb></berb></p></blockquote><h2 id="Git基础"><a href="#Git基础" class="headerlink" title="Git基础"></a>Git基础</h2><p>有两种方式开始Git的学习：<code>在现有项目或目录下用Git进行管理</code>,<code>从服务器克隆一个现有的Git仓库</code></p><h3 id="在现有目录中初始化仓库"><a href="#在现有目录中初始化仓库" class="headerlink" title="在现有目录中初始化仓库"></a>在现有目录中初始化仓库</h3><p>使用<code>git init</code>就可以初始化一个空的Git仓库</p><p><img src="https://ws4.sinaimg.cn/large/006tKfTcly1g1lo9mwt7qj312i09qabz.jpg" alt="初始化仓库"></p><p>其中**.git**文件夹中包含了初始化Git仓库中所有的必须文件，这些文件是Git仓库的骨干。</p><h2 id="克隆现有仓库"><a href="#克隆现有仓库" class="headerlink" title="克隆现有仓库"></a>克隆现有仓库</h2><p>以我在GitHub上的一个项目为例：<a href="https://github.com/zx490336534/spider-review%E3%80%82">https://github.com/zx490336534/spider-review。</a></p><p>输入url地址打开页面后点击<code>Clone or download</code>把弹出框中的地址复制出来：<a href="https://github.com/zx490336534/spider-review.git">https://github.com/zx490336534/spider-review.git</a></p><p><img src="https://ws4.sinaimg.cn/large/006tKfTcly1g1lod6je57j319a0u016y.jpg" alt="克隆"></p><p>在本地找一个文件夹</p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/zx490336534/spider-review.git</span><br></pre></td></tr></tbody></table></figure><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g1loeso7cnj31ko0d2wi1.jpg" alt="克隆到本地"></p><p>这样克隆会自动在当前目录下新建一个项目同名的文件夹，也可以自定义一个名称</p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/zx490336534/spider-review.git 666</span><br></pre></td></tr></tbody></table></figure><p><img src="https://ws4.sinaimg.cn/large/006tKfTcly1g1logpoz9rj31os0cygp9.jpg" alt="克隆文件至自定义的地方"></p><h3 id="记录每次更新到仓库"><a href="#记录每次更新到仓库" class="headerlink" title="记录每次更新到仓库"></a>记录每次更新到仓库</h3><p><img src="https://ws4.sinaimg.cn/large/006tKfTcly1g1lok4se2nj30y80g2416.jpg" alt="文件的状态变化周期"></p><p>这一小节的目标的学会这一个文件的状态变化周期图</p><p>从最上方的箭头开始</p><p><code>Add the file</code>:从<strong>Untracked</strong>指向<strong>Staged</strong>，也就是从<strong>未跟踪</strong>到<strong>暂存区</strong>，需要学会<strong>git status</strong>和<strong>git add</strong>两个指令</p><p>首次新建的文件都是untracked状态（未跟踪），此时需要<code>git add</code>到暂存区，Git便会在暂存区中生成一个该文件的索引。</p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">touch README.md </span><br><span class="line">git add README.md </span><br><span class="line">git status</span><br></pre></td></tr></tbody></table></figure><p><img src="https://ws3.sinaimg.cn/large/006tKfTcly1g1looqv7bdj30us0e0762.jpg" alt="img"></p><p><code>touch README.md</code>:创建一个名为README.md的文件，对应<strong>Untracked</strong>对象的创建</p><p><code>git add README.md</code>:把新建的README.md文件提交到暂存区，对应<code>Add the file</code></p><p><code>git status</code>:查看文件处于什么状态</p><p>从上面操作可以看出，如果我新建了一个文件，但是没有使用<strong>git add</strong>，那么它就还是<strong>Untracked</strong>，可以结合<strong>git status</strong>进行试验</p><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g1loxf7dy3j30rq0iw0uu.jpg" alt="Untracked"></p><p>开始下面一个箭头<code>Edit the file</code>，但是我们需要一个<strong>Unmodified</strong>状态的文件，在学习了<strong>Add the file</strong>流程之后我们拿到了一个<strong>Staged</strong>状态的文件<em>README.md</em>，从图中可以看出，从<strong>Staged</strong>变为<strong>Unmodified</strong>需要经过<code>Commit</code>流程。</p><p>那我们暂时先学习<code>Commit</code>流程：</p><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g1lp2ht373j31b00fodj3.jpg" alt="提交"></p><p>使用的语句为<code>git commit -m '描述信息'</code></p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git commit -m '从Staged状态变为Unmodified状态'</span><br></pre></td></tr></tbody></table></figure><p>再使用<strong>git status</strong>可以看到已经没有之前绿色的语句了(<em>新文件：   README.md</em>)</p><p>下面返回正题，学习<code>Edit the file</code>，使用编辑器修改一下README.md文件</p><p><img src="https://ws3.sinaimg.cn/large/006tKfTcly1g1lp63l241j31700d6dgz.jpg" alt="修改文件"></p><p>修改之后使用<strong>git status</strong>查看文件当前的状态</p><p><img src="https://ws4.sinaimg.cn/large/006tKfTcly1g1lp75t9hqj30wa0howhb.jpg" alt="修改文件"></p><p>这样就完成了<code>Edit the file</code>流程了，通过阅读提示信息可以知道，我们要用<code>git add &lt;文件&gt;</code>更新要提交的内容。从<strong>Add the file</strong>流程可以看出，<strong>git add</strong>的作用就是把东西放入<strong>Staged</strong>(暂存区)，所以使用这句指令就完成了<code>Stage the file</code>流程了</p><p><img src="https://ws2.sinaimg.cn/large/006tKfTcly1g1lpall2hqj30uw0hc40s.jpg" alt="Stage the file流程"></p><p>最后最后还有一个<code>Remove the file</code>流程,我们使用上面学过的<code>Commit</code>流程把<em>README.md</em>文件的状态变成<strong>Unmodified</strong></p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git commit -m '修改README.md'</span><br></pre></td></tr></tbody></table></figure><p>使用<strong>git rm READE.md</strong>就能删除处于<strong>Unmodified</strong>的文件了，可以看到提示信息是绿色的，所以还需要一步<strong>commit</strong>操作</p><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g1lpfsbpinj30uq0de0um.jpg" alt="删除"></p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git commit -m '删除README.md'</span><br></pre></td></tr></tbody></table></figure><p><img src="https://ws4.sinaimg.cn/large/006tKfTcly1g1lpi8xx0tj310q0a2myz.jpg" alt="删除后查看状态"></p><p>我们可以用<strong>git log</strong>查看提交历史，从图中可以看出，我们全部<strong>commit</strong>操作都被记录了。</p><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g1lpll5pyzj311a0me42g.jpg" alt="提交历史"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Git </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Git </tag>
             
             <tag> 测试开发 </tag>
             
@@ -2229,65 +2310,11 @@
       
         <tags>
             
+            <tag> 测试开发 </tag>
+            
             <tag> Python </tag>
             
             <tag> Flask </tag>
-            
-            <tag> 测试开发 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Gitlab合并代码的几种情况</title>
-      <link href="article/500537c1.html"/>
-      <url>article/500537c1.html</url>
-      
-        <content type="html"><![CDATA[<h1 id="Gitlab合并代码的几种情况"><a href="#Gitlab合并代码的几种情况" class="headerlink" title="Gitlab合并代码的几种情况"></a>Gitlab合并代码的几种情况</h1><h2 id="开发者权限提交代码并请求合并"><a href="#开发者权限提交代码并请求合并" class="headerlink" title="开发者权限提交代码并请求合并"></a>开发者权限提交代码并请求合并</h2><p>如下图新建一个 <code>Issue</code>点击提交</p><p><img src="https://ws2.sinaimg.cn/large/006tKfTcly1g1hrh0qultj319a0u07ca.jpg" alt="Issue创建"></p><span id="more"></span><p>在问题界面点击 <code>Create merge request</code>创建一个合并请求</p><p><img src="https://ws4.sinaimg.cn/large/006tKfTcly1g1hs8vmhnkj319a0u0gvs.jpg" alt="Issue界面"></p><p>点击之后会跳转至 <code>合并请求</code>页面</p><p><img src="https://ws3.sinaimg.cn/large/006tKfTcly1g1hrk1faauj319a0u0n93.jpg" alt="合并请求页面"></p><p>正常的操作应该是把新建的分支 <code>7-_1</code>拉到本地然后修改后推送到远端</p><p><img src="https://ws4.sinaimg.cn/large/006tKfTcly1g1hrlrhovlj31830u0jv7.jpg" alt="本地合并方式"></p><p>为了方便起见，直接使用 <code>在Web IDE中打开</code></p><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g1hrmfbscwj319a0u0n4x.jpg" alt="web Ide修改"></p><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g1hrmn5uzlj319a0u07cu.jpg" alt="提交请求">在修改了这个新建的分支之后回到 <code>合并请求</code>页面就可以看到其中的内容发生了改变</p><p><img src="https://ws2.sinaimg.cn/large/006tKfTcly1g1hs9lrs5yj31he0oedi7.jpg" alt="分支提交之后的页面"></p><p>之前是询问是否要创建一个新文件，现在直接就是问你这不是已经完成了这个半成品了，点击 <code>Resolve WIP status</code>提示信息就会变成<code>已可自动合并。 请具有仓库写入权限的用户来合并此请求</code></p><p><img src="https://ws2.sinaimg.cn/large/006tKfTcly1g1hrp1l8b2j31hs07wmxz.jpg" alt="开发者看到的页面"></p><p>下面登录管理员账户查看,可以看到<code>合并</code>按钮已经变成绿色了</p><p><img src="https://ws3.sinaimg.cn/large/006tKfTcly1g1hrralpmwj31hq0amta6.jpg" alt="管理员看的的页面"></p><h2 id="两个合并先后修改了文件不同位置"><a href="#两个合并先后修改了文件不同位置" class="headerlink" title="两个合并先后修改了文件不同位置"></a>两个合并先后修改了文件不同位置</h2><p>这个情况比较简单，正常的合并操作也不会出现冲突，所以不赘述了。</p><h2 id="两个合并先后修改了文件同一个位置"><a href="#两个合并先后修改了文件同一个位置" class="headerlink" title="两个合并先后修改了文件同一个位置"></a>两个合并先后修改了文件同一个位置</h2><p>我们创建两个问题单：<code>两个合并先后修改了文件同一个位置_1</code>  和<code>两个合并先后修改了文件同一个位置_2</code>并为他们分别拉取分支，创建合并请求</p><p><img src="https://ws4.sinaimg.cn/large/006tKfTcly1g1hry5d0k5j30u00q8jtt.jpg" alt="创建两个合并请求">首先在第一个里面修改里面的一个文件并完成提交</p><p><img src="https://ws2.sinaimg.cn/large/006tKfTcly1g1hryu4zm2j30gk0c2wfe.jpg" alt="修改1号请求"></p><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g1hrzblp4wj31iw0oen0s.jpg" alt="提交一号请求"></p><p>同理，在第二个页面也修改第五行</p><p><img src="https://ws4.sinaimg.cn/large/006tKfTcly1g1hs02xv7bj30us0b0wfn.jpg" alt="修改2号请求">然后管理员进行合并的同意</p><p>先同意提交1</p><p><img src="https://ws2.sinaimg.cn/large/006tKfTcly1g1hs14lvr6j31io0tigq6.jpg" alt="管理员同意一号请求"></p><p>然后查看提交2</p><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g1hs1qd1o4j31ii0msn0k.jpg" alt="管理员查看2号请求"></p><p>我们就可以看到出现冲突了，可以本地合并</p><p><img src="https://ws4.sinaimg.cn/large/006tKfTcly1g1hs28l5k8j318c0s4jut.jpg" alt="本地合并方式"></p><p>也可以直接在页面进行<code>解决冲突</code></p><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g1hs393n0fj319a0u07fz.jpg" alt="页面选择进行解决合并"></p><p>同意哪个改哪个，如果都不同意就自己改</p><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g1hs44suk1j31uw0qejut.jpg" alt="自行解决"></p><p>去除多余的 〈〈〈符号就好了</p><p><img src="https://ws3.sinaimg.cn/large/006tKfTcly1g1hs4phuevj30us0bcabg.jpg" alt="合并方法"></p><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g1hs5akzukj31hc0a6q4j.jpg" alt="正常提交"></p><p>之后就可以正常合并了</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> Git </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 测试开发 </tag>
-            
-            <tag> Git </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Git基础知识（一）</title>
-      <link href="article/8d21c5d5.html"/>
-      <url>article/8d21c5d5.html</url>
-      
-        <content type="html"><![CDATA[<h1 id="Git基础知识（一）"><a href="#Git基础知识（一）" class="headerlink" title="Git基础知识（一）"></a>Git基础知识（一）</h1><h2 id="Git的特点"><a href="#Git的特点" class="headerlink" title="Git的特点"></a>Git的特点</h2><h3 id="直接记录快照，而非差异比较"><a href="#直接记录快照，而非差异比较" class="headerlink" title="直接记录快照，而非差异比较"></a>直接记录快照，而非差异比较</h3><blockquote><p>概念上来区分，其它大部分系统以文件变更列表的方式存储信息. 这类系统（CVS、Subversion、Perforce、Bazaar等）将它们保存的信息看作是一组基本文件和每个文件随时间<strong>逐步累积</strong>的差异。</p><p>Git 更像是把数据看作是对小型文件系统的一组快照。每次你提交更新，或在 Git 中保存项目状态时，它主要对当时的全部文件制作一个快照并保存这个快照的索引。为了高效，如果文件没有修改，Git 不再重新存储该文件，而是只保留一个链接指向之前存储的文件。Git 对待数据更像是一个快照流。</p></blockquote><span id="more"></span><h3 id="近乎所有操作都是本地执行"><a href="#近乎所有操作都是本地执行" class="headerlink" title="近乎所有操作都是本地执行"></a>近乎所有操作都是本地执行</h3><blockquote><p>在 Git 中的绝大多数操作都只需要访问本地文件和资源，一般不需要来自网络上其它计算机的信息。</p><p>使用其它系统，做到如此是不可能或很费力的。 比如，用 Perforce，你没有连接服务器时几乎不能做什么事；用 Subversion和CVS，你能修改 文件，但不能向数据库提交修改（因为你的本地数据库离线了）。</p></blockquote><h3 id="Git保证完整性"><a href="#Git保证完整性" class="headerlink" title="Git保证完整性"></a>Git保证完整性</h3><blockquote><p>Git 中所有数据在存储前都计算校验和，然后以校验和来引用。若你在传送过程中丢失信息或损坏 文件，Git 就能发现。</p><p>Git 用以计算校验和的机制叫做 SHA-1 散列（hash，哈希）。</p></blockquote><p>这是一个由 40 个十六进制字符（0-9 和 a-f）组 成字符串，基于 Git 中文件的内容或目录结构计算出来。 SHA-1 哈希看起来是这样：</p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">24b9da6552252987aa493b52f8696cd6d3b00373</span><br></pre></td></tr></tbody></table></figure><h3 id="Git一般只添加数据"><a href="#Git一般只添加数据" class="headerlink" title="Git一般只添加数据"></a>Git一般只添加数据</h3><blockquote><p>你执行的 Git 操作，几乎只往 Git 数据库中增加数据。 很难让 Git 执行任何不可逆操作，或者让它以任何方式清 除数据。</p></blockquote><h3 id="Git的三种状态"><a href="#Git的三种状态" class="headerlink" title="Git的三种状态"></a>Git的三种状态</h3><ul><li><code>已提交(committed)</code>:数据已经安全的保存在本地数据库中</li><li><code>已修改(modified)</code>:修改了文件，但还没保存到数据库中</li><li><code>已暂存(staged)</code>:对已修改的文件的当前版本做了标记，使它包含在下次提交的快照中</li></ul><p>Git项目的三个工作区域：<code>Git仓库</code>,<code>工作目录</code>,<code>暂存区域</code></p><ul><li><strong>Git 仓库</strong>目录是 Git 用来保存项目的元数据和对象数据库的地方。 这是 Git 中最重要的部分，从其它计算机克隆仓库时，拷贝的就是这里的数据。</li><li><strong>工作目录</strong>是对项目的某个版本独立提取出来的内容。 这些从 Git 仓库的压缩数据库中提取出来的文件，放在磁盘上供你使用或修改。</li><li><strong>暂存区域</strong>是一个文件，保存了下次将提交的文件列表信息，一般在 Git 仓库目录中。 有时候也被称作索引，不过一般说法还是叫暂存区域。</li></ul><h3 id="基本的Git工作流程"><a href="#基本的Git工作流程" class="headerlink" title="基本的Git工作流程"></a>基本的Git工作流程</h3><ol><li><p>在工作目录中修改文件。</p></li><li><p>暂存文件，将文件的快照放入暂存区域。</p></li><li><p>提交更新，找到暂存区域的文件，将快照永久性存储到 Git 仓库目录。</p></li></ol><p><img src="https://ws2.sinaimg.cn/large/006tKfTcly1g1lnxeozyij30zm0ki77x.jpg" alt="三个工作区域"></p><h2 id="起步"><a href="#起步" class="headerlink" title="起步"></a>起步</h2><p>使用<code>git config</code>工具来帮助控制Git外观和行为。</p><h3 id="配置用户信息"><a href="#配置用户信息" class="headerlink" title="配置用户信息"></a>配置用户信息</h3><p>当安装完 Git 应该做的第一件事就是设置你的<code>用户名称</code>与<code>邮件地址</code>。每一个 Git 的提交都会使用这些信息，并且它会写入到你的每一次提交中，<strong>不可更改</strong>：</p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name 你的姓名</span><br><span class="line">git config --global user.email 你的邮箱</span><br></pre></td></tr></tbody></table></figure><p>例如：</p><blockquote><p>$ git config –global user.name “John Doe” </p><p>$ git config –global user.email <a href="mailto:johndoe@example.com">johndoe@example.com</a></p></blockquote><h3 id="检查配置信息"><a href="#检查配置信息" class="headerlink" title="检查配置信息"></a>检查配置信息</h3><p><code>git config --list</code>:列出所有Git当前能找到的配置</p><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g1lo2pq4jzj30uk0byabv.jpg" alt="列出所有Git配置"></p><p><code>git config &lt;key&gt;</code>:通过指定的方式查看某一项</p><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g1lo3xky34j30v802aaa9.jpg" alt="指定查看用户名"></p><h3 id="获取帮助"><a href="#获取帮助" class="headerlink" title="获取帮助"></a>获取帮助</h3><p>合理使用git自带的帮助文档，可以解决大部分的问题</p><p>例如<code>git help config</code></p><p>还有其他方式找到Git命令的使用手册。</p><blockquote><p>git help <verb></verb></p><p>git <verb> - -help</verb></p><p>man git-<berb></berb></p></blockquote><h2 id="Git基础"><a href="#Git基础" class="headerlink" title="Git基础"></a>Git基础</h2><p>有两种方式开始Git的学习：<code>在现有项目或目录下用Git进行管理</code>,<code>从服务器克隆一个现有的Git仓库</code></p><h3 id="在现有目录中初始化仓库"><a href="#在现有目录中初始化仓库" class="headerlink" title="在现有目录中初始化仓库"></a>在现有目录中初始化仓库</h3><p>使用<code>git init</code>就可以初始化一个空的Git仓库</p><p><img src="https://ws4.sinaimg.cn/large/006tKfTcly1g1lo9mwt7qj312i09qabz.jpg" alt="初始化仓库"></p><p>其中**.git**文件夹中包含了初始化Git仓库中所有的必须文件，这些文件是Git仓库的骨干。</p><h2 id="克隆现有仓库"><a href="#克隆现有仓库" class="headerlink" title="克隆现有仓库"></a>克隆现有仓库</h2><p>以我在GitHub上的一个项目为例：<a href="https://github.com/zx490336534/spider-review%E3%80%82">https://github.com/zx490336534/spider-review。</a></p><p>输入url地址打开页面后点击<code>Clone or download</code>把弹出框中的地址复制出来：<a href="https://github.com/zx490336534/spider-review.git">https://github.com/zx490336534/spider-review.git</a></p><p><img src="https://ws4.sinaimg.cn/large/006tKfTcly1g1lod6je57j319a0u016y.jpg" alt="克隆"></p><p>在本地找一个文件夹</p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/zx490336534/spider-review.git</span><br></pre></td></tr></tbody></table></figure><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g1loeso7cnj31ko0d2wi1.jpg" alt="克隆到本地"></p><p>这样克隆会自动在当前目录下新建一个项目同名的文件夹，也可以自定义一个名称</p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/zx490336534/spider-review.git 666</span><br></pre></td></tr></tbody></table></figure><p><img src="https://ws4.sinaimg.cn/large/006tKfTcly1g1logpoz9rj31os0cygp9.jpg" alt="克隆文件至自定义的地方"></p><h3 id="记录每次更新到仓库"><a href="#记录每次更新到仓库" class="headerlink" title="记录每次更新到仓库"></a>记录每次更新到仓库</h3><p><img src="https://ws4.sinaimg.cn/large/006tKfTcly1g1lok4se2nj30y80g2416.jpg" alt="文件的状态变化周期"></p><p>这一小节的目标的学会这一个文件的状态变化周期图</p><p>从最上方的箭头开始</p><p><code>Add the file</code>:从<strong>Untracked</strong>指向<strong>Staged</strong>，也就是从<strong>未跟踪</strong>到<strong>暂存区</strong>，需要学会<strong>git status</strong>和<strong>git add</strong>两个指令</p><p>首次新建的文件都是untracked状态（未跟踪），此时需要<code>git add</code>到暂存区，Git便会在暂存区中生成一个该文件的索引。</p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">touch README.md </span><br><span class="line">git add README.md </span><br><span class="line">git status</span><br></pre></td></tr></tbody></table></figure><p><img src="https://ws3.sinaimg.cn/large/006tKfTcly1g1looqv7bdj30us0e0762.jpg" alt="img"></p><p><code>touch README.md</code>:创建一个名为README.md的文件，对应<strong>Untracked</strong>对象的创建</p><p><code>git add README.md</code>:把新建的README.md文件提交到暂存区，对应<code>Add the file</code></p><p><code>git status</code>:查看文件处于什么状态</p><p>从上面操作可以看出，如果我新建了一个文件，但是没有使用<strong>git add</strong>，那么它就还是<strong>Untracked</strong>，可以结合<strong>git status</strong>进行试验</p><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g1loxf7dy3j30rq0iw0uu.jpg" alt="Untracked"></p><p>开始下面一个箭头<code>Edit the file</code>，但是我们需要一个<strong>Unmodified</strong>状态的文件，在学习了<strong>Add the file</strong>流程之后我们拿到了一个<strong>Staged</strong>状态的文件<em>README.md</em>，从图中可以看出，从<strong>Staged</strong>变为<strong>Unmodified</strong>需要经过<code>Commit</code>流程。</p><p>那我们暂时先学习<code>Commit</code>流程：</p><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g1lp2ht373j31b00fodj3.jpg" alt="提交"></p><p>使用的语句为<code>git commit -m '描述信息'</code></p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git commit -m '从Staged状态变为Unmodified状态'</span><br></pre></td></tr></tbody></table></figure><p>再使用<strong>git status</strong>可以看到已经没有之前绿色的语句了(<em>新文件：   README.md</em>)</p><p>下面返回正题，学习<code>Edit the file</code>，使用编辑器修改一下README.md文件</p><p><img src="https://ws3.sinaimg.cn/large/006tKfTcly1g1lp63l241j31700d6dgz.jpg" alt="修改文件"></p><p>修改之后使用<strong>git status</strong>查看文件当前的状态</p><p><img src="https://ws4.sinaimg.cn/large/006tKfTcly1g1lp75t9hqj30wa0howhb.jpg" alt="修改文件"></p><p>这样就完成了<code>Edit the file</code>流程了，通过阅读提示信息可以知道，我们要用<code>git add &lt;文件&gt;</code>更新要提交的内容。从<strong>Add the file</strong>流程可以看出，<strong>git add</strong>的作用就是把东西放入<strong>Staged</strong>(暂存区)，所以使用这句指令就完成了<code>Stage the file</code>流程了</p><p><img src="https://ws2.sinaimg.cn/large/006tKfTcly1g1lpall2hqj30uw0hc40s.jpg" alt="Stage the file流程"></p><p>最后最后还有一个<code>Remove the file</code>流程,我们使用上面学过的<code>Commit</code>流程把<em>README.md</em>文件的状态变成<strong>Unmodified</strong></p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git commit -m '修改README.md'</span><br></pre></td></tr></tbody></table></figure><p>使用<strong>git rm READE.md</strong>就能删除处于<strong>Unmodified</strong>的文件了，可以看到提示信息是绿色的，所以还需要一步<strong>commit</strong>操作</p><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g1lpfsbpinj30uq0de0um.jpg" alt="删除"></p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git commit -m '删除README.md'</span><br></pre></td></tr></tbody></table></figure><p><img src="https://ws4.sinaimg.cn/large/006tKfTcly1g1lpi8xx0tj310q0a2myz.jpg" alt="删除后查看状态"></p><p>我们可以用<strong>git log</strong>查看提交历史，从图中可以看出，我们全部<strong>commit</strong>操作都被记录了。</p><p><img src="https://ws1.sinaimg.cn/large/006tKfTcly1g1lpll5pyzj311a0me42g.jpg" alt="提交历史"></p>]]></content>
-      
-      
-      <categories>
-          
-          <category> Git </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> 测试开发 </tag>
-            
-            <tag> Git </tag>
             
         </tags>
       
@@ -2630,9 +2657,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2657,9 +2684,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2684,9 +2711,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2711,9 +2738,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2738,9 +2765,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2765,9 +2792,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2792,9 +2819,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2819,9 +2846,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2846,9 +2873,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2873,9 +2900,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2900,9 +2927,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2927,9 +2954,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2954,9 +2981,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -2981,9 +3008,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3008,9 +3035,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3035,9 +3062,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3062,9 +3089,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3089,9 +3116,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3116,9 +3143,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3143,9 +3170,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3170,9 +3197,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3197,9 +3224,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3224,9 +3251,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3251,9 +3278,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3278,9 +3305,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3305,9 +3332,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3332,9 +3359,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3359,9 +3386,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3386,9 +3413,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3413,9 +3440,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3440,9 +3467,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3467,9 +3494,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3494,9 +3521,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3521,9 +3548,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3548,9 +3575,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3575,9 +3602,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3602,9 +3629,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3629,9 +3656,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3656,9 +3683,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3683,9 +3710,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3710,9 +3737,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3737,9 +3764,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3764,9 +3791,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3791,9 +3818,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3818,9 +3845,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3845,9 +3872,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3872,9 +3899,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
@@ -3899,9 +3926,9 @@
       
         <tags>
             
-            <tag> Python </tag>
-            
             <tag> 测试开发 </tag>
+            
+            <tag> Python </tag>
             
         </tags>
       
