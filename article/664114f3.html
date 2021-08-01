@@ -81,21 +81,26 @@
 
 
 
-<meta name="description" content="23-分布式集群集合在一起的一群机器，多台机器向外提供服务器能力 性能分布式多台机器分摊压力机，产生更大的并发，向服务器发起请求 什么时候用分布式在单台机器无法虚拟出更高并发数时">
+<meta name="description" content="31-redis 最开始使用memcache做缓存数据库，但是它不能进行数据持久化，而是放在内存中   持久化：把数据存储在磁盘上 内存中的数据的特点：一旦断电，数据就会丢失  使用redis做缓存数据库，可以把数据存在内存中，加快我们读取数据的速度，同时，它可以定时去同步数据到磁盘，进行内存数据持久化。它还有个重大优势：缓存数据库之间可以自动同步 功能强大，但是比较复杂，所以在使用过程中也存在一">
 <meta property="og:type" content="article">
-<meta property="og:title" content="23-分布式">
-<meta property="og:url" content="http://zx490336534.github.io/article/90d9f3f5.html">
+<meta property="og:title" content="31-redis">
+<meta property="og:url" content="http://zx490336534.github.io/article/664114f3.html">
 <meta property="og:site_name" content="测试游记">
-<meta property="og:description" content="23-分布式集群集合在一起的一群机器，多台机器向外提供服务器能力 性能分布式多台机器分摊压力机，产生更大的并发，向服务器发起请求 什么时候用分布式在单台机器无法虚拟出更高并发数时">
+<meta property="og:description" content="31-redis 最开始使用memcache做缓存数据库，但是它不能进行数据持久化，而是放在内存中   持久化：把数据存储在磁盘上 内存中的数据的特点：一旦断电，数据就会丢失  使用redis做缓存数据库，可以把数据存在内存中，加快我们读取数据的速度，同时，它可以定时去同步数据到磁盘，进行内存数据持久化。它还有个重大优势：缓存数据库之间可以自动同步 功能强大，但是比较复杂，所以在使用过程中也存在一">
 <meta property="og:locale">
-<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gqqcutmmz3j307w0a4q4g.jpg">
-<meta property="article:published_time" content="2021-05-21T11:50:00.000Z">
-<meta property="article:modified_time" content="2021-06-16T07:51:07.480Z">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gsun1f561rj30xo0ncq4h.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gsunnmgsg5j30xo0nc0ty.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gsunnb5lvgj30xo0ncq4a.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gsunz1hvd4j30xo0ncabg.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gsuo1kdrpmj30xo0ncta3.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gsuntxlxsxj311f0autam.jpg">
+<meta property="article:published_time" content="2021-07-26T12:07:00.000Z">
+<meta property="article:modified_time" content="2021-08-01T02:51:13.718Z">
 <meta property="article:author" content="测试游记">
 <meta property="article:tag" content="测试开发">
 <meta property="article:tag" content="性能测试">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gqqcutmmz3j307w0a4q4g.jpg">
+<meta name="twitter:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gsun1f561rj30xo0ncq4h.jpg">
 
 
 
@@ -125,13 +130,13 @@
 
 
 
-  <link rel="canonical" href="http://zx490336534.github.io/article/90d9f3f5.html"/>
+  <link rel="canonical" href="http://zx490336534.github.io/article/664114f3.html"/>
 
 
 
 
 
-  <title>23-分布式 | 测试游记</title>
+  <title>31-redis | 测试游记</title>
   
 
 
@@ -280,7 +285,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/article/90d9f3f5.html">
+    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/article/664114f3.html">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -297,7 +302,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">23-分布式</h1>
+          <h1 class="post-title" itemprop="name headline">31-redis</h1>
         
 
         <div class="post-meta">
@@ -309,8 +314,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-21T19:50:00+08:00">
-                2021-05-21
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-07-26T20:07:00+08:00">
+                2021-07-26
               </time>
             
 
@@ -350,9 +355,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/article/90d9f3f5.html#comments" itemprop="discussionUrl">
+                <a href="/article/664114f3.html#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="article/90d9f3f5.html" itemprop="commentCount"></span>
+                        data-disqus-identifier="article/664114f3.html" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -380,58 +385,70 @@
       
 
       
-        <h1 id="23-分布式"><a href="#23-分布式" class="headerlink" title="23-分布式"></a>23-分布式</h1><h2 id="集群"><a href="#集群" class="headerlink" title="集群"></a>集群</h2><p>集合在一起的一群机器，多台机器向外提供服务器能力</p>
-<h2 id="性能分布式"><a href="#性能分布式" class="headerlink" title="性能分布式"></a>性能分布式</h2><p>多台机器分摊压力机，产生更大的并发，向服务器发起请求</p>
-<h2 id="什么时候用分布式"><a href="#什么时候用分布式" class="headerlink" title="什么时候用分布式"></a>什么时候用分布式</h2><p>在单台机器无法虚拟出更高并发数时</p>
-<span id="more"></span>
-<h2 id="分布式的配置"><a href="#分布式的配置" class="headerlink" title="分布式的配置"></a>分布式的配置</h2><h3 id="前提条件"><a href="#前提条件" class="headerlink" title="前提条件"></a>前提条件</h3><ul>
-<li>安装jdk，且大版本一致</li>
-</ul>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -version</span><br></pre></td></tr></tbody></table></figure>
-
-<ul>
-<li>jmeter的版本一致「包括插件」</li>
-<li>一个局域网中</li>
-<li>开放防火墙端口或者关闭防火墙</li>
-</ul>
-<h3 id="slave"><a href="#slave" class="headerlink" title="slave"></a>slave</h3><ol>
-<li>操作系统可以任选，但是不能混合多种操作系统，最好是统一一种</li>
-<li>本地jmeter包上传到从机上，并修改bin文件中文件的执行权限</li>
-</ol>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod -R +x * #对当前文件夹下所有文件增加执行权限</span><br></pre></td></tr></tbody></table></figure>
-
-<ol start="3">
-<li>开启并修改<code>jmeter.properties</code>中</li>
-</ol>
-<blockquote>
-<p>server_port 和 server.rmi.port 修改为同一个端口</p>
+        <h1 id="31-redis"><a href="#31-redis" class="headerlink" title="31-redis"></a>31-redis</h1><blockquote>
+<p>最开始使用memcache做缓存数据库，但是它不能进行数据持久化，而是放在内存中</p>
 </blockquote>
 <ul>
-<li><code>server_port</code> </li>
-<li><code>server.rmi.port</code> </li>
-<li><code>server.rmi.ssl.disable=true</code>:不开启加密认证传输</li>
+<li>持久化：把数据存储在磁盘上</li>
+<li>内存中的数据的特点：一旦断电，数据就会丢失</li>
 </ul>
-<ol start="4">
-<li>启动服务</li>
-</ol>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> Linux</span></span><br><span class="line">./jmeter-server -Djava.rmi.server.hostname=当前机器IP</span><br><span class="line"><span class="meta">#</span><span class="bash"> Windows</span></span><br><span class="line">jmeter-server.bat -Djava.rmi.server.hostname=当前机器IP</span><br></pre></td></tr></tbody></table></figure>
-
-<h3 id="master"><a href="#master" class="headerlink" title="master"></a>master</h3><ol>
-<li>开启并修改<code>jmeter.properties</code>中</li>
-</ol>
+<p>使用redis做缓存数据库，可以把数据存在内存中，加快我们读取数据的速度，同时，它可以定时去同步数据到磁盘，进行<strong>内存数据持久化</strong>。它还有个重大优势：缓存数据库之间可以自动同步</p>
+<p>功能强大，但是比较复杂，所以在使用过程中也存在一定的问题。</p>
+<p>性能测试人员需要了解redis的使用，原理，存在的问题，发现问题，如何给出调优建议。</p>
+<span id="more"></span>
+<h2 id="redis介绍"><a href="#redis介绍" class="headerlink" title="redis介绍"></a>redis介绍</h2><ul>
+<li>非关系性数据库「Nosql」「Not only sql」</li>
+<li>key-value形式的非关系性数据库。一个key，对应value</li>
+</ul>
+<h3 id="非关系型数据库"><a href="#非关系型数据库" class="headerlink" title="非关系型数据库"></a>非关系型数据库</h3><ul>
+<li>没有声明查询语言</li>
+<li>没有预定义的模型</li>
+<li>非机构化，不可预知的数据</li>
+<li>高性能，高可用性，高可伸缩性</li>
+</ul>
+<h3 id="NoSQL分类"><a href="#NoSQL分类" class="headerlink" title="NoSQL分类"></a>NoSQL分类</h3><ul>
+<li>列存储：Hbase</li>
+<li>文档存储：Mongodb</li>
+<li>key-value存储：redis</li>
+</ul>
+<h3 id="value的类型"><a href="#value的类型" class="headerlink" title="value的类型"></a>value的类型</h3><blockquote>
+<p>典型的有五种</p>
+</blockquote>
 <ul>
-<li><code>remote_hosts</code>=<code>slaveIP:端口</code>,<code>slaveIP:端口</code>,<code>slaveIP:端口</code></li>
-<li><code>server.rmi.ssl.disable=true</code></li>
-<li><code>mode=Standard</code>:在slave机器上显示监控结果数据</li>
+<li>字符串</li>
+<li>列表</li>
+<li>哈希</li>
+<li>集合</li>
+<li>有序集合</li>
 </ul>
-<h3 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h3><ol>
-<li><p>打开jmeter图形界面</p>
-</li>
-<li><p>在<code>运行</code>-&gt;<code>远程启动</code>中选择<code>Slave</code>地址项</p>
-</li>
-</ol>
-<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gqqcutmmz3j307w0a4q4g.jpg" alt="远程启动"></p>
-<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>Slave上的机器执行完全按照Master机器的指令执行。包括场景、脚本。所以我们只需要修改master上的脚本就可以了，无需修改slave上的内容</p>
+<h2 id="doctor安装redis"><a href="#doctor安装redis" class="headerlink" title="doctor安装redis"></a>doctor安装redis</h2><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -itd --name you_redis_name -p 6379:6379 redis redis-server --appendonly yes</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="连接redis"><a href="#连接redis" class="headerlink" title="连接redis"></a>连接redis</h2><p>RemoteDictionaryServer(Redis)</p>
+<p><a target="_blank" rel="noopener" href="https://gitee.com/qishibo/AnotherRedisDesktopManager/releases">https://gitee.com/qishibo/AnotherRedisDesktopManager/releases</a></p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gsun1f561rj30xo0ncq4h.jpg" alt="redis连接"></p>
+<h2 id="常用操作"><a href="#常用操作" class="headerlink" title="常用操作"></a>常用操作</h2><h3 id="查看redis的所有配置参数"><a href="#查看redis的所有配置参数" class="headerlink" title="查看redis的所有配置参数"></a>查看redis的所有配置参数</h3><p>在客户端模式下执行</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">config get *</span><br><span class="line">config set key value</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="插入数据"><a href="#插入数据" class="headerlink" title="插入数据"></a>插入数据</h3><h4 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">set strkey value</span><br><span class="line">get strkey</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gsunnmgsg5j30xo0nc0ty.jpg" alt="字符串"></p>
+<h4 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">lpush listkey zhongxin</span><br><span class="line">lpush listkey 测试游记</span><br><span class="line">lrange listkey 0 1</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gsunnb5lvgj30xo0ncq4a.jpg" alt="列表"></p>
+<h4 id="哈希"><a href="#哈希" class="headerlink" title="哈希"></a>哈希</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hset hxkey filed1 hashvalue1 filed2 hashvalue</span><br><span class="line">hget hxkey filed2</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gsunz1hvd4j30xo0ncabg.jpg" alt="哈希"></p>
+<h3 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sadd zsetkey 1 redis</span><br><span class="line">smembers zsetkey</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gsuo1kdrpmj30xo0ncta3.jpg" alt="集合"></p>
+<h2 id="自带性能测试工具"><a href="#自带性能测试工具" class="headerlink" title="自带性能测试工具"></a>自带性能测试工具</h2><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-benchmark -n 10000 -q</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gsuntxlxsxj311f0autam.jpg" alt="命令"></p>
+<h2 id="redis穿透、雪崩、击穿"><a href="#redis穿透、雪崩、击穿" class="headerlink" title="redis穿透、雪崩、击穿"></a>redis穿透、雪崩、击穿</h2><h3 id="穿透"><a href="#穿透" class="headerlink" title="穿透"></a>穿透</h3><p>key查不到（例如 id为负数），去存储层数据库中获取，失去了缓存意义</p>
+<p>解决办法：程序层做逻辑检查</p>
+<h3 id="雪崩"><a href="#雪崩" class="headerlink" title="雪崩"></a>雪崩</h3><p>redis缓存数据库中大量的key在同一时间失效，请求这些key获取不到数据，从而去获取更底层的DB数据库</p>
+<p>解决办法：设置key失效时间随机</p>
+<h3 id="击穿"><a href="#击穿" class="headerlink" title="击穿"></a>击穿</h3><p>持续长时间大并发请求某一个热点key，在key失效的瞬间，就突破了缓存</p>
 
       
     </div>
@@ -501,8 +518,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/article/46316bdc.html" rel="next" title="22-性能测试持续集成">
-                <i class="fa fa-chevron-left"></i> 22-性能测试持续集成
+              <a href="/article/88f586e9.html" rel="next" title="30-服务器架构演进">
+                <i class="fa fa-chevron-left"></i> 30-服务器架构演进
               </a>
             
           </div>
@@ -510,10 +527,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/article/92781838.html" rel="prev" title="26-CPU知识">
-                26-CPU知识 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -704,7 +717,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#23-%E5%88%86%E5%B8%83%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">23-分布式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9B%86%E7%BE%A4"><span class="nav-number">1.1.</span> <span class="nav-text">集群</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E5%88%86%E5%B8%83%E5%BC%8F"><span class="nav-number">1.2.</span> <span class="nav-text">性能分布式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E7%94%A8%E5%88%86%E5%B8%83%E5%BC%8F"><span class="nav-number">1.3.</span> <span class="nav-text">什么时候用分布式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E7%9A%84%E9%85%8D%E7%BD%AE"><span class="nav-number">1.4.</span> <span class="nav-text">分布式的配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E6%8F%90%E6%9D%A1%E4%BB%B6"><span class="nav-number">1.4.1.</span> <span class="nav-text">前提条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#slave"><span class="nav-number">1.4.2.</span> <span class="nav-text">slave</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#master"><span class="nav-number">1.4.3.</span> <span class="nav-text">master</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8"><span class="nav-number">1.4.4.</span> <span class="nav-text">启动</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F"><span class="nav-number">1.5.</span> <span class="nav-text">注意</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#31-redis"><span class="nav-number">1.</span> <span class="nav-text">31-redis</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#redis%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.1.</span> <span class="nav-text">redis介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%9E%E5%85%B3%E7%B3%BB%E5%9E%8B%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">1.1.1.</span> <span class="nav-text">非关系型数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NoSQL%E5%88%86%E7%B1%BB"><span class="nav-number">1.1.2.</span> <span class="nav-text">NoSQL分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#value%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.1.3.</span> <span class="nav-text">value的类型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#doctor%E5%AE%89%E8%A3%85redis"><span class="nav-number">1.2.</span> <span class="nav-text">doctor安装redis</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5redis"><span class="nav-number">1.3.</span> <span class="nav-text">连接redis</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C"><span class="nav-number">1.4.</span> <span class="nav-text">常用操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8Bredis%E7%9A%84%E6%89%80%E6%9C%89%E9%85%8D%E7%BD%AE%E5%8F%82%E6%95%B0"><span class="nav-number">1.4.1.</span> <span class="nav-text">查看redis的所有配置参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E6%95%B0%E6%8D%AE"><span class="nav-number">1.4.2.</span> <span class="nav-text">插入数据</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">1.4.2.1.</span> <span class="nav-text">字符串</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%97%E8%A1%A8"><span class="nav-number">1.4.2.2.</span> <span class="nav-text">列表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%93%88%E5%B8%8C"><span class="nav-number">1.4.2.3.</span> <span class="nav-text">哈希</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9B%86%E5%90%88"><span class="nav-number">1.4.3.</span> <span class="nav-text">集合</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%B8%A6%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7"><span class="nav-number">1.5.</span> <span class="nav-text">自带性能测试工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#redis%E7%A9%BF%E9%80%8F%E3%80%81%E9%9B%AA%E5%B4%A9%E3%80%81%E5%87%BB%E7%A9%BF"><span class="nav-number">1.6.</span> <span class="nav-text">redis穿透、雪崩、击穿</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A9%BF%E9%80%8F"><span class="nav-number">1.6.1.</span> <span class="nav-text">穿透</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9B%AA%E5%B4%A9"><span class="nav-number">1.6.2.</span> <span class="nav-text">雪崩</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BB%E7%A9%BF"><span class="nav-number">1.6.3.</span> <span class="nav-text">击穿</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
@@ -874,9 +887,9 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'http://zx490336534.github.io/article/90d9f3f5.html';
-          this.page.identifier = 'article/90d9f3f5.html';
-          this.page.title = '23-分布式';
+          this.page.url = 'http://zx490336534.github.io/article/664114f3.html';
+          this.page.identifier = 'article/664114f3.html';
+          this.page.title = '31-redis';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://.disqus.com/embed.js';

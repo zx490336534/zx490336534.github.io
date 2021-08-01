@@ -6,7 +6,7 @@
   <link href="http://zx490336534.github.io/atom.xml" rel="self"/>
   
   <link href="http://zx490336534.github.io/"/>
-  <updated>2021-07-26T12:08:55.961Z</updated>
+  <updated>2021-08-01T02:51:13.718Z</updated>
   <id>http://zx490336534.github.io/</id>
   
   <author>
@@ -15,6 +15,38 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>31-redis</title>
+    <link href="http://zx490336534.github.io/article/664114f3.html"/>
+    <id>http://zx490336534.github.io/article/664114f3.html</id>
+    <published>2021-07-26T12:07:00.000Z</published>
+    <updated>2021-08-01T02:51:13.718Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="31-redis"><a href="#31-redis" class="headerlink" title="31-redis"></a>31-redis</h1><blockquote><p>最开始使用memcache做缓存数据库，但是它不能进行数据持久化，而是放在内存中</p></blockquote><ul><li>持久化：把数据存储在磁盘上</li><li>内存中的数据的特点：一旦断电，数据就会丢失</li></ul><p>使用redis做缓存数据库，可以把数据存在内存中，加快我们读取数据的速度，同时，它可以定时去同步数据到磁盘，进行<strong>内存数据持久化</strong>。它还有个重大优势：缓存数据库之间可以自动同步</p><p>功能强大，但是比较复杂，所以在使用过程中也存在一定的问题。</p><p>性能测试人员需要了解redis的使用，原理，存在的问题，发现问题，如何给出调优建议。</p><span id="more"></span><h2 id="redis介绍"><a href="#redis介绍" class="headerlink" title="redis介绍"></a>redis介绍</h2><ul><li>非关系性数据库「Nosql」「Not only sql」</li><li>key-value形式的非关系性数据库。一个key，对应value</li></ul><h3 id="非关系型数据库"><a href="#非关系型数据库" class="headerlink" title="非关系型数据库"></a>非关系型数据库</h3><ul><li>没有声明查询语言</li><li>没有预定义的模型</li><li>非机构化，不可预知的数据</li><li>高性能，高可用性，高可伸缩性</li></ul><h3 id="NoSQL分类"><a href="#NoSQL分类" class="headerlink" title="NoSQL分类"></a>NoSQL分类</h3><ul><li>列存储：Hbase</li><li>文档存储：Mongodb</li><li>key-value存储：redis</li></ul><h3 id="value的类型"><a href="#value的类型" class="headerlink" title="value的类型"></a>value的类型</h3><blockquote><p>典型的有五种</p></blockquote><ul><li>字符串</li><li>列表</li><li>哈希</li><li>集合</li><li>有序集合</li></ul><h2 id="doctor安装redis"><a href="#doctor安装redis" class="headerlink" title="doctor安装redis"></a>doctor安装redis</h2><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -itd --name you_redis_name -p 6379:6379 redis redis-server --appendonly yes</span><br></pre></td></tr></tbody></table></figure><h2 id="连接redis"><a href="#连接redis" class="headerlink" title="连接redis"></a>连接redis</h2><p>RemoteDictionaryServer(Redis)</p><p><a href="https://gitee.com/qishibo/AnotherRedisDesktopManager/releases">https://gitee.com/qishibo/AnotherRedisDesktopManager/releases</a></p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gsun1f561rj30xo0ncq4h.jpg" alt="redis连接"></p><h2 id="常用操作"><a href="#常用操作" class="headerlink" title="常用操作"></a>常用操作</h2><h3 id="查看redis的所有配置参数"><a href="#查看redis的所有配置参数" class="headerlink" title="查看redis的所有配置参数"></a>查看redis的所有配置参数</h3><p>在客户端模式下执行</p><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">config get *</span><br><span class="line">config set key value</span><br></pre></td></tr></tbody></table></figure><h3 id="插入数据"><a href="#插入数据" class="headerlink" title="插入数据"></a>插入数据</h3><h4 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">set strkey value</span><br><span class="line">get strkey</span><br></pre></td></tr></tbody></table></figure><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gsunnmgsg5j30xo0nc0ty.jpg" alt="字符串"></p><h4 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">lpush listkey zhongxin</span><br><span class="line">lpush listkey 测试游记</span><br><span class="line">lrange listkey 0 1</span><br></pre></td></tr></tbody></table></figure><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gsunnb5lvgj30xo0ncq4a.jpg" alt="列表"></p><h4 id="哈希"><a href="#哈希" class="headerlink" title="哈希"></a>哈希</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hset hxkey filed1 hashvalue1 filed2 hashvalue</span><br><span class="line">hget hxkey filed2</span><br></pre></td></tr></tbody></table></figure><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gsunz1hvd4j30xo0ncabg.jpg" alt="哈希"></p><h3 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sadd zsetkey 1 redis</span><br><span class="line">smembers zsetkey</span><br></pre></td></tr></tbody></table></figure><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gsuo1kdrpmj30xo0ncta3.jpg" alt="集合"></p><h2 id="自带性能测试工具"><a href="#自带性能测试工具" class="headerlink" title="自带性能测试工具"></a>自带性能测试工具</h2><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">redis-benchmark -n 10000 -q</span><br></pre></td></tr></tbody></table></figure><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gsuntxlxsxj311f0autam.jpg" alt="命令"></p><h2 id="redis穿透、雪崩、击穿"><a href="#redis穿透、雪崩、击穿" class="headerlink" title="redis穿透、雪崩、击穿"></a>redis穿透、雪崩、击穿</h2><h3 id="穿透"><a href="#穿透" class="headerlink" title="穿透"></a>穿透</h3><p>key查不到（例如 id为负数），去存储层数据库中获取，失去了缓存意义</p><p>解决办法：程序层做逻辑检查</p><h3 id="雪崩"><a href="#雪崩" class="headerlink" title="雪崩"></a>雪崩</h3><p>redis缓存数据库中大量的key在同一时间失效，请求这些key获取不到数据，从而去获取更底层的DB数据库</p><p>解决办法：设置key失效时间随机</p><h3 id="击穿"><a href="#击穿" class="headerlink" title="击穿"></a>击穿</h3><p>持续长时间大并发请求某一个热点key，在key失效的瞬间，就突破了缓存</p>]]></content>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;31-redis&quot;&gt;&lt;a href=&quot;#31-redis&quot; class=&quot;headerlink&quot; title=&quot;31-redis&quot;&gt;&lt;/a&gt;31-redis&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;最开始使用memcache做缓存数据库，但是它不能进行数据持久化，而是放在内存中&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;持久化：把数据存储在磁盘上&lt;/li&gt;
+&lt;li&gt;内存中的数据的特点：一旦断电，数据就会丢失&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;使用redis做缓存数据库，可以把数据存在内存中，加快我们读取数据的速度，同时，它可以定时去同步数据到磁盘，进行&lt;strong&gt;内存数据持久化&lt;/strong&gt;。它还有个重大优势：缓存数据库之间可以自动同步&lt;/p&gt;
+&lt;p&gt;功能强大，但是比较复杂，所以在使用过程中也存在一定的问题。&lt;/p&gt;
+&lt;p&gt;性能测试人员需要了解redis的使用，原理，存在的问题，发现问题，如何给出调优建议。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="性能测试" scheme="http://zx490336534.github.io/categories/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/"/>
+    
+    
+    <category term="测试开发" scheme="http://zx490336534.github.io/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/"/>
+    
+    <category term="性能测试" scheme="http://zx490336534.github.io/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/"/>
+    
+  </entry>
   
   <entry>
     <title>30-服务器架构演进</title>
@@ -660,37 +692,6 @@
 
 &lt;ol start=&quot;3&quot;&gt;
 &lt;li&gt;&lt;code&gt;Evaluate for all children?&lt;/code&gt; 执行子节点前先计算表达式真假&lt;/li&gt;&lt;/ol&gt;</summary>
-    
-    
-    
-    <category term="性能测试" scheme="http://zx490336534.github.io/categories/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/"/>
-    
-    
-    <category term="测试开发" scheme="http://zx490336534.github.io/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/"/>
-    
-    <category term="性能测试" scheme="http://zx490336534.github.io/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>9-正则提取器</title>
-    <link href="http://zx490336534.github.io/article/c04862c6.html"/>
-    <id>http://zx490336534.github.io/article/c04862c6.html</id>
-    <published>2021-04-19T13:22:00.000Z</published>
-    <updated>2021-04-22T14:34:11.432Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="9-正则提取器"><a href="#9-正则提取器" class="headerlink" title="9-正则提取器"></a>9-正则提取器</h1><h2 id="正则提取器"><a href="#正则提取器" class="headerlink" title="正则提取器"></a>正则提取器</h2><h3 id="apply-to"><a href="#apply-to" class="headerlink" title="apply to"></a>apply to</h3><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gpl6zeymgoj30ti09bt9n.jpg" alt="apply to"></p><ul><li>Main sample and sub-samples 主取样器+子取样器</li><li>Main sample only 主取样器</li><li>Sub-sample only 子取样器</li><li>JMeter Variable Name to use：从一个变量中再提取想要的信息。直接写变量名称即可</li></ul><p>正则提取式的写法：左边界(正则式)右边界</p><p>「模版」的固定格式：<code>$数字$</code> 这个数字从1开始</p><span id="more"></span><h3 id="提取信息测试"><a href="#提取信息测试" class="headerlink" title="提取信息测试"></a>提取信息测试</h3><p>填写后进行测试：</p><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gpl79zzutzj30ti09b3zj.jpg" alt="填写"></p><p>在「调试取样器」中可以看到<code>reg_msg</code>被正确赋值为我们正则匹配到的内容</p><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gpl7awymsvj30ti0mctd7.jpg" alt="查看结果"></p><h3 id="进行二次提取"><a href="#进行二次提取" class="headerlink" title="进行二次提取"></a>进行二次提取</h3><p>使用「JMeter Variable Name to use」对「token」进行二次提取</p><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gpl7ovralhj30ti099my7.jpg" alt="二次提取"></p><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gpl7q03i4jj30ti0o7gpt.jpg" alt="结果"></p><h3 id="提取响应头"><a href="#提取响应头" class="headerlink" title="提取响应头"></a>提取响应头</h3><p>选择「Request Headers」</p><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gpl7tv2q06j30ti09odgx.jpg" alt="响应头"></p><p>运行测试</p><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gpl7uqj0ocj30ti0qn433.jpg" alt="查看结果"></p><h2 id="脚本性能转换"><a href="#脚本性能转换" class="headerlink" title="脚本性能转换"></a>脚本性能转换</h2><p>在jmeter中，默认一个取样器的一次请求，就是一个事务</p><p>如果想要把多个接口<strong>合并</strong>成为一个事务，合计「tps」值。</p><p>需要添加「事务控制器」 一定要勾选「generate parent sample」</p><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gpl8cxvhz5j30ti056t8z.jpg" alt="事务控制器"></p><h2 id="聚合报告"><a href="#聚合报告" class="headerlink" title="聚合报告"></a>聚合报告</h2><ul><li>样本：事务的总请求次数</li><li>平均值、中位数、90%、95%、99%、最小值、最大值：都是响应时间<ul><li>xx% 的时间都是小于xxx响应时间</li></ul></li><li>异常</li><li>吞吐量：在固定不变的并发用户数情况下，且没有网络瓶颈时，与tps相等</li></ul><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gpl8ffg929j313u0biact.jpg" alt="聚合报告"></p>]]></content>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;9-正则提取器&quot;&gt;&lt;a href=&quot;#9-正则提取器&quot; class=&quot;headerlink&quot; title=&quot;9-正则提取器&quot;&gt;&lt;/a&gt;9-正则提取器&lt;/h1&gt;&lt;h2 id=&quot;正则提取器&quot;&gt;&lt;a href=&quot;#正则提取器&quot; class=&quot;headerlink&quot; title=&quot;正则提取器&quot;&gt;&lt;/a&gt;正则提取器&lt;/h2&gt;&lt;h3 id=&quot;apply-to&quot;&gt;&lt;a href=&quot;#apply-to&quot; class=&quot;headerlink&quot; title=&quot;apply to&quot;&gt;&lt;/a&gt;apply to&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;https://tva1.sinaimg.cn/large/008eGmZEly1gpl6zeymgoj30ti09bt9n.jpg&quot; alt=&quot;apply to&quot;&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Main sample and sub-samples 主取样器+子取样器&lt;/li&gt;
-&lt;li&gt;Main sample only 主取样器&lt;/li&gt;
-&lt;li&gt;Sub-sample only 子取样器&lt;/li&gt;
-&lt;li&gt;JMeter Variable Name to use：从一个变量中再提取想要的信息。直接写变量名称即可&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;正则提取式的写法：左边界(正则式)右边界&lt;/p&gt;
-&lt;p&gt;「模版」的固定格式：&lt;code&gt;$数字$&lt;/code&gt; 这个数字从1开始&lt;/p&gt;</summary>
     
     
     
