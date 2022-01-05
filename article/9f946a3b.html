@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="测试开发,Git," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="测试游记" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Git基础知识(七)–分支开发工作流分支开发基础知识长期分支在master分支上保留完全稳定的代码  已发布的代码 即将发布的代码  创建develop分支，在该分支上进行开发与测试。 当develop分支稳定后可以合入master分支，等待下一次发布。  大型项目中，通过类似的方式使分支具有不同级别的稳定性。当它们具有一定程度的稳定性后，再把它们合入更高级别的稳定性分支中。使用多个长期分支的方法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git基础知识（七）">
+<meta property="og:url" content="http://zx490336534.github.io/article/9f946a3b.html">
+<meta property="og:site_name" content="测试游记">
+<meta property="og:description" content="Git基础知识(七)–分支开发工作流分支开发基础知识长期分支在master分支上保留完全稳定的代码  已发布的代码 即将发布的代码  创建develop分支，在该分支上进行开发与测试。 当develop分支稳定后可以合入master分支，等待下一次发布。  大型项目中，通过类似的方式使分支具有不同级别的稳定性。当它们具有一定程度的稳定性后，再把它们合入更高级别的稳定性分支中。使用多个长期分支的方法">
+<meta property="og:locale">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1g1su45jvr4j30x60doace.jpg">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79ly1g1su9htykjj30xm0qatc9.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1g1suckpcvlj311e0d877n.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1g1sudw9ij3j31200q4jwy.jpg">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79ly1g1suhgwy36j30x20o6whv.jpg">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79ly1g1suk616iej31k30u0wn0.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79ly1g1sumti2fjj31p40awjts.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1g1surpkytij312i0fkjvy.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1g1susiuuqbj30xe09uac4.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79ly1g1sutnygq0j315o0eadj0.jpg">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79ly1g1suvyhmkuj314605a755.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79ly1g1sw4lyamjj306k08jt8s.jpg">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79ly1g1sw5h1v8oj30h20axdg7.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79ly1g1sw7syol5j30h20exwev.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79ly1g1sv7dhw0kj30eu0mc74p.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1g1svbxajdyj307e0jugln.jpg">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79ly1g1svh0hufcj30qk0niweq.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tNc79ly1g1svprnwd5j30hk0not9c.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1g1svqhelvij30u013rwhl.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79ly1g1svupigffj313a0u0qfa.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/006tNc79ly1g1swifk4o2j30b409k74f.jpg">
+<meta property="og:image" content="https://ws4.sinaimg.cn/large/006tNc79ly1g1swp2bv04j30em05jt92.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tKfTcly1g1jxu8t22aj31800u014x.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tKfTcly1g1jxv1ar8gj316o0u0qb4.jpg">
+<meta property="og:image" content="https://ws3.sinaimg.cn/large/006tKfTcly1g1jxw1j4izj318m0u0ajx.jpg">
+<meta property="og:image" content="https://ws2.sinaimg.cn/large/006tKfTcly1g1jxwluihzj31550u012h.jpg">
+<meta property="article:published_time" content="2020-06-19T00:43:00.000Z">
+<meta property="article:modified_time" content="2021-04-22T14:34:11.215Z">
+<meta property="article:author" content="测试游记">
+<meta property="article:tag" content="测试开发">
+<meta property="article:tag" content="Git">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ws2.sinaimg.cn/large/006tNc79ly1g1su45jvr4j30x60doace.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://zx490336534.github.io/article/9f946a3b.html"/>
+
+
+
+
+
+  <title>Git基础知识（七） | 测试游记</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?b9b685a8cb69e5c6faf06433381e30b6";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">测试游记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/article/9f946a3b.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="测试游记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Git基础知识（七）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-06-19T08:43:00+08:00">
+                2020-06-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Git/" itemprop="url" rel="index">
+                    <span itemprop="name">Git</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/article/9f946a3b.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="article/9f946a3b.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Git基础知识-七-–分支开发工作流"><a href="#Git基础知识-七-–分支开发工作流" class="headerlink" title="Git基础知识(七)–分支开发工作流"></a>Git基础知识(七)–分支开发工作流</h1><h2 id="分支开发基础知识"><a href="#分支开发基础知识" class="headerlink" title="分支开发基础知识"></a>分支开发基础知识</h2><h3 id="长期分支"><a href="#长期分支" class="headerlink" title="长期分支"></a>长期分支</h3><p>在<code>master</code>分支上保留完全稳定的代码</p>
+<ul>
+<li>已发布的代码</li>
+<li>即将发布的代码</li>
+</ul>
+<p>创建<code>develop</code>分支，在该分支上进行开发与测试。</p>
+<p>当<code>develop</code>分支稳定后可以合入<code>master</code>分支，等待下一次发布。</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79ly1g1su45jvr4j30x60doace.jpg" alt="渐进稳定分支"></p>
+<p>大型项目中，通过类似的方式使分支具有<code>不同级别的稳定性</code>。当它们具有一定程度的稳定性后，再把它们合入<code>更高级别的稳定性分支</code>中。使用多个长期分支的方法并非必要，但是当你在一 个非常庞大或者复杂的项目中工作时，就会提供很大的帮助。</p>
+<span id="more"></span>
+<h3 id="特性分支"><a href="#特性分支" class="headerlink" title="特性分支"></a>特性分支</h3><p>一个短期的分支，用于实现单一特性或者相关工作。</p>
+<ul>
+<li>主线分支<code>master</code></li>
+<li>开发分支<code>dumbidea</code></li>
+<li>问题修复分支<code>iss91</code></li>
+<li>问题修复测试分支<code>iss91v2</code></li>
+</ul>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1g1su9htykjj30xm0qatc9.jpg" alt="特性分支"></p>
+<h3 id="远程分支"><a href="#远程分支" class="headerlink" title="远程分支"></a>远程分支</h3><p>上述的分支都是在本地的操作</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git ls-remote &lt;remote_name&gt;</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git remote show &lt;remote_name&gt;</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79ly1g1suckpcvlj311e0d877n.jpg" alt="查看远端分支信息"></p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79ly1g1sudw9ij3j31200q4jwy.jpg" alt="远程分支更多信息"></p>
+<p>一般当多人协作的时候，总是会出现先后修改的问题。当别人对改分支进行修改之后，远端的分支就会前进，而你本地不会实时的获取到这个改变。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git fetch origin <span class="comment">#更新本地数据库，移动origin/master指针指向新的位置</span></span></span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1g1suhgwy36j30x20o6whv.jpg" alt="同步远程仓库，更新本地仓库信息"></p>
+<h3 id="推送"><a href="#推送" class="headerlink" title="推送"></a>推送</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git push &lt;remote_name&gt; &lt;branch&gt; <span class="comment">#推送branch分支到远端的branch分支</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git push &lt;remote_name&gt; &lt;branch&gt;&lt;remote_branch&gt; <span class="comment">#推送branch分支到远端的remote_branch分支</span></span></span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1g1suk616iej31k30u0wn0.jpg" alt="推送分支"></p>
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79ly1g1sumti2fjj31p40awjts.jpg" alt="推送远端并改名"></p>
+<h3 id="跟踪分支"><a href="#跟踪分支" class="headerlink" title="跟踪分支"></a>跟踪分支</h3><blockquote>
+<p>从一个远程跟踪分支检出一个本地分支会自动创建一个叫做 “跟踪分支”（有时候也叫做 “上游分支”）。跟踪分支是与远程分支有直接关系的本地分支。如果在一个跟踪分支上输入 <code>git pull</code>，Git 能自动地识别去哪个服务器上抓取、合并到哪个分支。</p>
+</blockquote>
+<p>检出时确定跟踪分支关联关系：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git checkout -b [branch] [remotename]/[branch]</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>检出后修改跟踪分支关联关系：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git branch -u [remotename]/[branch]b</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79ly1g1surpkytij312i0fkjvy.jpg" alt="修改跟踪分支"></p>
+<h4 id="查看跟踪分支关系"><a href="#查看跟踪分支关系" class="headerlink" title="查看跟踪分支关系"></a>查看跟踪分支关系</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git branch -vv</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git fetch --all; git branch -vv <span class="comment">#建议在查看前更新一下本地仓库信息</span></span></span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79ly1g1susiuuqbj30xe09uac4.jpg" alt="查看跟踪分支"></p>
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79ly1g1sutnygq0j315o0eadj0.jpg" alt="查看跟踪分支2"></p>
+<h3 id="拉取"><a href="#拉取" class="headerlink" title="拉取"></a>拉取</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git pull</span></span><br><span class="line">=</span><br><span class="line"><span class="meta">$</span><span class="bash"> git fetch</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git merge</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="删除远程分支"><a href="#删除远程分支" class="headerlink" title="删除远程分支"></a>删除远程分支</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git push [remotename] --delete [branch]</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1g1suvyhmkuj314605a755.jpg" alt="删除分支"></p>
+<h2 id="常见的分支开发工作流"><a href="#常见的分支开发工作流" class="headerlink" title="常见的分支开发工作流"></a>常见的分支开发工作流</h2><p><code>Gitflow</code>工作流是经典模型，处于核心位置，体现了工作流的经验和精髓。随着项目过程复杂化，你会感受到这个工作流中的深思熟虑和威力！</p>
+<p><code>Forking</code>工作流是分布式协作的（<code>GitHub</code>风格）可以先看看<code>GitHub</code>的Help：<a target="_blank" rel="noopener" href="https://help.github.com/articles/fork-a-repo/">Fork A Repo</a>和<a target="_blank" rel="noopener" href="https://help.github.com/articles/using-pull-requests/">Using pull requests</a> 。照着操作，给一个<code>GitHub</code>项目贡献你的提交，有操作经验再看指南容易意会。指南中给了<a target="_blank" rel="noopener" href="https://github.com/oldratlee/translations/blob/master/git-workflows-and-tutorials/workflow-forking.md#%E5%BC%80%E5%8F%91%E8%80%85fork%E6%AD%A3%E5%BC%8F%E4%BB%93%E5%BA%93">自己实现<code>Fork</code>的方法</a>：<code>Fork</code>就是服务端的克隆。在指南的操练中使用的是代码托管服务（如<code>GitHub</code>），可以点一下按钮就让开发者完成仓库的<code>fork</code>操作。</p>
+<h3 id="集中式工作流"><a href="#集中式工作流" class="headerlink" title="集中式工作流"></a>集中式工作流</h3><p>基本上和<code>SVN</code>一样的开发方式。</p>
+<p>虽然机制一样，但是<code>Git</code>有相比<code>SVN</code>的几个优势。 首先，每个开发可以有属于自己的整个工程的本地拷贝。隔离的环境让各个开发者的工作和项目的其他部分修改独立开来 —— 即自由地提交到自己的本地仓库，先完全忽略上游的开发，直到方便的时候再把修改反馈上去。</p>
+<p>其次，<code>Git</code>提供了强壮的分支和合并模型。不像<code>SVN</code>，<code>Git</code>的分支设计成可以做为一种用来在仓库之间集成代码和分享修改的『失败安全』的机制。</p>
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79ly1g1sw4lyamjj306k08jt8s.jpg" alt="git-workflow-svn-push-local"></p>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1g1sw5h1v8oj30h20axdg7.jpg" alt="git-workflow-svn"></p>
+<h3 id="功能分支工作流"><a href="#功能分支工作流" class="headerlink" title="功能分支工作流"></a>功能分支工作流</h3><p>功能分支工作流以集中式工作流为基础，不同的是为各个新功能分配一个专门的分支来开发。这样可以在把新功能集成到正式项目前，用<code>Pull Requests</code>/<code>Merage Requests</code>的方式讨论变更。</p>
+<p>功能分支工作流背后的核心思路是所有的功能开发应该在一个专门的分支，而不是在<code>master</code>分支上。 这个隔离可以方便多个开发者在各自的功能上开发而不会弄乱主干代码。 另外，也保证了<code>master</code>分支的代码一定不会是有问题的，极大有利于集成环境。</p>
+<p>功能开发隔离也让<code>pull requests</code>成为可能， <code>pull requests</code>工作流能为每个分支发起一个讨论，在分支合入正式项目之前，给其它开发者有表示赞同的机会。 另外，如果你在功能开发中有问题卡住了，可以开一个<code>pull requests</code>来向同学们征求建议。 这些做法的重点就是，<code>pull requests</code>让团队成员之间互相评论工作变成非常方便！</p>
+<p><code>Code Review</code>是<code>Pull Requests</code>的一个主要的收益，但<code>Pull Requests</code>实际上用作讨论代码的常用手段。 你可以把<code>Pull Requests</code>作为专门给某个分支的讨论。这意味着可以在更早的开发过程中就可以进行<code>Code Review</code>。 比如，一个开发者开发功能需要帮助时，要做的就是发起一个<code>Pull Request</code>，相关的人就会自动收到通知，在相关的提交旁边能看到需要帮助解决的问题。</p>
+<p>一旦<code>Pull Request</code>被接受了，发布功能要做的就和集中式工作流就很像了。 首先，确定本地的<code>master</code>分支和上游的<code>master</code>分支是同步的。然后合并功能分支到本地<code>master</code>分支并<code>push</code>已经更新的本地<code>master</code>分支到中央仓库。</p>
+<p><img src="https://ws1.sinaimg.cn/large/006tNc79ly1g1sw7syol5j30h20exwev.jpg" alt="git-workflow-feature-branch-1"></p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git checkout marys-feature</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git pull <span class="comment"># 确认是最新的</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git pull --rebase origin master <span class="comment"># rebase新功能到master分支的顶部</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git checkout master</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git merge marys-feature <span class="comment"># 合并marys-feature分支的修改，因为这个分支之前对齐（rebase）了master，一定是快进合并</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git push</span></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h3 id="Gitflow"><a href="#Gitflow" class="headerlink" title="Gitflow"></a>Gitflow</h3><p><code>Gitflow</code>工作流通过为功能开发、发布准备和维护分配独立的分支，让发布迭代过程更流畅。严格的分支模型也为大型项目提供了一些非常必要的结构。</p>
+<blockquote>
+<p><code>Gitflow</code>工作流定义了一个围绕项目发布的严格分支模型。虽然比<a target="_blank" rel="noopener" href="https://github.com/oldratlee/translations/blob/master/git-workflows-and-tutorials/workflow-feature-branch.md">功能分支工作流</a>复杂几分，但提供了用于一个健壮的用于管理大型项目的框架。</p>
+<p><code>Gitflow</code>工作流没有用超出功能分支工作流的概念和命令，而是为不同的分支分配一个很明确的角色，并定义分支之间如何和什么时候进行交互。 除了使用功能分支，在做准备、维护和记录发布也使用各自的分支。 当然你可以用上功能分支工作流所有的好处：<code>Pull Requests</code>、隔离实验性开发和更高效的协作。</p>
+</blockquote>
+<h4 id="Main"><a href="#Main" class="headerlink" title="Main"></a>Main</h4><p>主干包含两条分支</p>
+<ul>
+<li>master:存储了正式发布的历史</li>
+<li>develop:功能的集成分支</li>
+</ul>
+<p>每个新功能位于一个自己的分支，这样可以<code>push</code>。 但功能分支不是从<code>master</code>分支上拉出新分支，而是使用<code>develop</code>分支作为父分支。当新功能完成时，<code>develop</code>分支。 新功能提交应该从不直接与<code>master</code>分支交互。</p>
+<p><img src="https://ws1.sinaimg.cn/large/006tNc79ly1g1sv7dhw0kj30eu0mc74p.jpg" alt="main-branches"></p>
+<h3 id="Supporting-branches"><a href="#Supporting-branches" class="headerlink" title="Supporting branches"></a>Supporting branches</h3><ul>
+<li>Feature：功能分支</li>
+<li>Release：发布分支</li>
+<li>Hotfix：维护分支</li>
+</ul>
+<h4 id="Feature"><a href="#Feature" class="headerlink" title="Feature"></a>Feature</h4><p>其中<code>Feature</code>分支可能从<code>develop</code>分支中某一节点创建，最终会合入<code>develop</code>分支，一般为特性分支。并且大部分时候都是在用户本地存在而非远端。</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79ly1g1svbxajdyj307e0jugln.jpg" alt="Feature"></p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 创建一个特性分支</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git checkout -b myfeature develop</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 完成特性并合入开发分支</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git checkout develop</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git merge --no-ff myfeature</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git branch -d myfeature</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git push origin develop</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1g1svh0hufcj30qk0niweq.jpg" alt="合并"></p>
+<blockquote>
+<p>The <code>--no-ff</code> flag causes the merge to always create a new commit object, even if the merge could be performed with a fast-forward. </p>
+</blockquote>
+<p>用<code>--no-ff</code>会创建一个新的空提交，但是可以很<strong>清晰的看出特性开发的内容与流程</strong>，它的收益远大于消耗。</p>
+<h4 id="Release"><a href="#Release" class="headerlink" title="Release"></a>Release</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 从开发分支新建一个release分支</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git checkout -b release-1.2 develop</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 使用shell脚本写入版本信息</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> ./bump-version.sh 1.2</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 提交修改</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git commit -a -m <span class="string">"Bumped version number to 1.2"</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 检出master分支</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git checkout master</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 以非快进分方式将release分支合入master分支</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git merge --no-ff release-1.2</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 基于当前提交创建标签</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git tag -a 1.2</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>将版本信息更新至开发分支</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 检出开发分支</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git checkout develop</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 将release分支合入开发分支</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git merge --no-ff release-1.2</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 删除release分支</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git branch -d release-1.2</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="Hotfix"><a href="#Hotfix" class="headerlink" title="Hotfix"></a>Hotfix</h4><blockquote>
+<p>维护分支或说是热修复（<code>hotfix</code>）分支用于生成快速给产品发布版本（<code>production releases</code>）打补丁，这是唯一可以直接从<code>master</code>分支<code>fork</code>出来的分支。 修复完成，修改应该马上合并回<code>master</code>分支和<code>develop</code>分支（当前的发布分支），<code>master</code>分支应该用新的版本号打好<code>Tag</code>。</p>
+</blockquote>
+<p><img src="https://ws3.sinaimg.cn/large/006tNc79ly1g1svprnwd5j30hk0not9c.jpg" alt="hotfix-branches"></p>
+<p>和特性分支差不多，不在赘述</p>
+<p>最终的结果：</p>
+<p><img src="https://ws2.sinaimg.cn/large/006tNc79ly1g1svqhelvij30u013rwhl.jpg" alt="gitflow"></p>
+<p><img src="https://ws1.sinaimg.cn/large/006tNc79ly1g1svupigffj313a0u0qfa.jpg" alt="gitflow"></p>
+<h2 id="Forking-工作流"><a href="#Forking-工作流" class="headerlink" title="Forking 工作流"></a>Forking 工作流</h2><blockquote>
+<p><code>Forking</code>工作流和前面讨论的几种工作流有根本的不同。 这种工作流不是使用单个服务端仓库作为『中央』代码基线，而让各个开发者都有一个服务端仓库。 这意味着各个代码贡献者有2个<code>Git</code>仓库而不是1个：一个本地私有的，另一个服务端公开的。</p>
+</blockquote>
+<p>和其它的<code>Git</code>工作流一样，<code>Forking</code>工作流要先有一个公开的正式仓库存储在服务器上。 但一个新的开发者想要在项目上工作时，不是直接从正式仓库克隆，而是<code>fork</code>正式项目在服务器上创建一个拷贝。</p>
+<p><img src="https://ws1.sinaimg.cn/large/006tNc79ly1g1swifk4o2j30b409k74f.jpg" alt="git-workflows-forking"></p>
+<p>要提交本地修改时，<code>push</code>提交到自己公开仓库中 —— 而不是正式仓库中。 然后，给正式仓库发起一个<code>pull request</code>，让项目维护者知道有更新已经准备好可以集成了。 对于贡献的代码，<code>pull request</code>也可以很方便地作为一个讨论的地方。为了把功能集成到正式代码库，维护者<code>pull</code>贡献者的变更到自己的本地仓库中，检查变更以确保不会让项目出错， 合并变更到自己本地的<code>master</code>分支， 然后<code>push master</code>分支到服务器的正式仓库中。 到此，贡献的提交成为了项目的一部分，其它的开发者应该执行<code>pull</code>操作与正式仓库同步自己本地仓库。</p>
+<p><strong>使用之前讲过的<code>git remote add</code>管理多个远端</strong>，可以方便的更新主仓库的他人的提交。</p>
+<h2 id="Pull-Request"><a href="#Pull-Request" class="headerlink" title="Pull Request"></a>Pull Request</h2><p><code>Pull Request</code>可以和<code>功能分支工作流</code>、<code>Gitflow工作流</code>或<code>Forking工作流</code>一起使用。 但一个<code>Pull Request</code>要求要么分支不同要么仓库不同，所以不能用于<code>集中式工作流</code>。 在不同的工作流中使用<code>Pull Request</code>会有一些不同，但基本的过程是这样的：</p>
+<ol>
+<li>开发者在本地仓库中新建一个专门的分支开发功能。</li>
+<li>开发者<code>push</code>分支修改到公开的仓库中。</li>
+<li>开发者通过代码管理平台发起一个<code>Pull Request</code>。</li>
+<li>团队的其它成员<code>review code</code>，讨论并修改。</li>
+<li>项目维护者合并功能到官方仓库中并关闭<code>Pull Request</code>。</li>
+</ol>
+<p><img src="https://ws4.sinaimg.cn/large/006tNc79ly1g1swp2bv04j30em05jt92.jpg" alt="pull-request-feature-branch"></p>
+<blockquote>
+<p>参考：<a target="_blank" rel="noopener" href="https://www.atlassian.com/git/tutorials/comparing-workflows">https://www.atlassian.com/git/tutorials/comparing-workflows</a></p>
+</blockquote>
+<h3 id="其他根据Gitflow简化的分支开发工作流"><a href="#其他根据Gitflow简化的分支开发工作流" class="headerlink" title="其他根据Gitflow简化的分支开发工作流"></a>其他根据Gitflow简化的分支开发工作流</h3><p><img src="https://ws3.sinaimg.cn/large/006tKfTcly1g1jxu8t22aj31800u014x.jpg" alt="GitHub Flow"></p>
+<p><img src="https://ws2.sinaimg.cn/large/006tKfTcly1g1jxv1ar8gj316o0u0qb4.jpg" alt="GitLab Flow"></p>
+<p><img src="https://ws3.sinaimg.cn/large/006tKfTcly1g1jxw1j4izj318m0u0ajx.jpg" alt="GitLab Flow"><img src="https://ws2.sinaimg.cn/large/006tKfTcly1g1jxwluihzj31550u012h.jpg" alt="GitLab Flow"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt=" wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt=" 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt=" 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/" rel="tag"># 测试开发</a>
+          
+            <a href="/tags/Git/" rel="tag"># Git</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/article/4d941da4.html" rel="next" title="Git基础知识（六）">
+                <i class="fa fa-chevron-left"></i> Git基础知识（六）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/article/68ff4278.html" rel="prev" title="Git基础知识（八）">
+                Git基础知识（八） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpeg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">164</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zx490336534" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/zhong-xin-97-8" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-angellist"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://testingpai.com/" title="测试派" target="_blank">测试派</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://testerhome.com/" title="TesterHome" target="_blank">TesterHome</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://dongfanger.gitee.io/blog/index.html" title="自动化代码美学" target="_blank">自动化代码美学</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Git%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86-%E4%B8%83-%E2%80%93%E5%88%86%E6%94%AF%E5%BC%80%E5%8F%91%E5%B7%A5%E4%BD%9C%E6%B5%81"><span class="nav-number">1.</span> <span class="nav-text">Git基础知识(七)–分支开发工作流</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%94%AF%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="nav-number">1.1.</span> <span class="nav-text">分支开发基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%95%BF%E6%9C%9F%E5%88%86%E6%94%AF"><span class="nav-number">1.1.1.</span> <span class="nav-text">长期分支</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E6%80%A7%E5%88%86%E6%94%AF"><span class="nav-number">1.1.2.</span> <span class="nav-text">特性分支</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%9C%E7%A8%8B%E5%88%86%E6%94%AF"><span class="nav-number">1.1.3.</span> <span class="nav-text">远程分支</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A8%E9%80%81"><span class="nav-number">1.1.4.</span> <span class="nav-text">推送</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%9F%E8%B8%AA%E5%88%86%E6%94%AF"><span class="nav-number">1.1.5.</span> <span class="nav-text">跟踪分支</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E8%B7%9F%E8%B8%AA%E5%88%86%E6%94%AF%E5%85%B3%E7%B3%BB"><span class="nav-number">1.1.5.1.</span> <span class="nav-text">查看跟踪分支关系</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%89%E5%8F%96"><span class="nav-number">1.1.6.</span> <span class="nav-text">拉取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E8%BF%9C%E7%A8%8B%E5%88%86%E6%94%AF"><span class="nav-number">1.1.7.</span> <span class="nav-text">删除远程分支</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E5%88%86%E6%94%AF%E5%BC%80%E5%8F%91%E5%B7%A5%E4%BD%9C%E6%B5%81"><span class="nav-number">1.2.</span> <span class="nav-text">常见的分支开发工作流</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9B%86%E4%B8%AD%E5%BC%8F%E5%B7%A5%E4%BD%9C%E6%B5%81"><span class="nav-number">1.2.1.</span> <span class="nav-text">集中式工作流</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E5%88%86%E6%94%AF%E5%B7%A5%E4%BD%9C%E6%B5%81"><span class="nav-number">1.2.2.</span> <span class="nav-text">功能分支工作流</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Gitflow"><span class="nav-number">1.2.3.</span> <span class="nav-text">Gitflow</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Main"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">Main</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Supporting-branches"><span class="nav-number">1.2.4.</span> <span class="nav-text">Supporting branches</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Feature"><span class="nav-number">1.2.4.1.</span> <span class="nav-text">Feature</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Release"><span class="nav-number">1.2.4.2.</span> <span class="nav-text">Release</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Hotfix"><span class="nav-number">1.2.4.3.</span> <span class="nav-text">Hotfix</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Forking-%E5%B7%A5%E4%BD%9C%E6%B5%81"><span class="nav-number">1.3.</span> <span class="nav-text">Forking 工作流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pull-Request"><span class="nav-number">1.4.</span> <span class="nav-text">Pull Request</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E6%A0%B9%E6%8D%AEGitflow%E7%AE%80%E5%8C%96%E7%9A%84%E5%88%86%E6%94%AF%E5%BC%80%E5%8F%91%E5%B7%A5%E4%BD%9C%E6%B5%81"><span class="nav-number">1.4.1.</span> <span class="nav-text">其他根据Gitflow简化的分支开发工作流</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2021 &mdash; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">测试游记</span>
+
+  
+  <a href="https://beian.miit.gov.cn/" target="_blank">浙ICP备2021000476号-1</a>
+
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://zx490336534.github.io/article/9f946a3b.html';
+          this.page.identifier = 'article/9f946a3b.html';
+          this.page.title = 'Git基础知识（七）';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

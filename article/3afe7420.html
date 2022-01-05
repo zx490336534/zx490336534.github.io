@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="测试开发,性能测试," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="测试游记" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="5-HTTP请求注意事项HTTP请求注意事项Web服务器-协议 http可以写，可以不写 https必须写">
+<meta property="og:type" content="article">
+<meta property="og:title" content="5-HTTP请求注意事项">
+<meta property="og:url" content="http://zx490336534.github.io/article/3afe7420.html">
+<meta property="og:site_name" content="测试游记">
+<meta property="og:description" content="5-HTTP请求注意事项HTTP请求注意事项Web服务器-协议 http可以写，可以不写 https必须写">
+<meta property="og:locale">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008eGmZEly1gpasx263h6j30tf0dataa.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008eGmZEly1gpasz3addcj30tf0dataa.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008eGmZEly1gpaszs5l11j30tf0dataa.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008eGmZEly1gpat3hk85uj30tf0dataa.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008eGmZEly1gpat597w8sj30tf0dataa.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008eGmZEly1gpat7a5jouj30tf0dataa.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008eGmZEly1gpatdimb18j30tf0daq4a.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008eGmZEly1gpatx8rw59j30tf0dataa.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008eGmZEly1gpav09nqirj30xv0u0doc.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008eGmZEly1gpauz1yru4j30xr0u0dpl.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008eGmZEly1gpatyd3k5xj30tf0dataa.jpg">
+<meta property="og:image" content="https://tva1.sinaimg.cn/large/008eGmZEly1gpauq2qwq7j309y06wgm6.jpg">
+<meta property="article:published_time" content="2021-04-08T22:39:00.000Z">
+<meta property="article:modified_time" content="2021-04-22T14:34:11.425Z">
+<meta property="article:author" content="测试游记">
+<meta property="article:tag" content="测试开发">
+<meta property="article:tag" content="性能测试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://tva1.sinaimg.cn/large/008eGmZEly1gpasx263h6j30tf0dataa.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://zx490336534.github.io/article/3afe7420.html"/>
+
+
+
+
+
+  <title>5-HTTP请求注意事项 | 测试游记</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?b9b685a8cb69e5c6faf06433381e30b6";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">测试游记</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zx490336534.github.io/article/3afe7420.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="测试游记">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">5-HTTP请求注意事项</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-09T06:39:00+08:00">
+                2021-04-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/" itemprop="url" rel="index">
+                    <span itemprop="name">性能测试</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/article/3afe7420.html#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="article/3afe7420.html" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="5-HTTP请求注意事项"><a href="#5-HTTP请求注意事项" class="headerlink" title="5-HTTP请求注意事项"></a>5-HTTP请求注意事项</h1><h2 id="HTTP请求注意事项"><a href="#HTTP请求注意事项" class="headerlink" title="HTTP请求注意事项"></a>HTTP请求注意事项</h2><h3 id="Web服务器-协议"><a href="#Web服务器-协议" class="headerlink" title="Web服务器-协议"></a>Web服务器-协议</h3><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gpasx263h6j30tf0dataa.jpg" alt="协议"></p>
+<p><code>http</code>可以写，可以不写</p>
+<p><code>https</code>必须写</p>
+<span id="more"></span>
+<h3 id="Web服务器-服务器名称或IP"><a href="#Web服务器-服务器名称或IP" class="headerlink" title="Web服务器-服务器名称或IP"></a>Web服务器-服务器名称或IP</h3><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gpasz3addcj30tf0dataa.jpg" alt="服务器名称或IP"></p>
+<p>只能写域名或者IP。不能有<code>/</code></p>
+<h3 id="Web服务器-端口"><a href="#Web服务器-端口" class="headerlink" title="Web服务器-端口"></a>Web服务器-端口</h3><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gpaszs5l11j30tf0dataa.jpg" alt="端口"></p>
+<p>不写默认为80端口</p>
+<h3 id="HTTP请求-方法"><a href="#HTTP请求-方法" class="headerlink" title="HTTP请求-方法"></a>HTTP请求-方法</h3><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gpat3hk85uj30tf0dataa.jpg" alt="方法"></p>
+<p>根据接口文档选择</p>
+<blockquote>
+<p>浏览器地址栏中，只能执行get方法，不能执行post方法</p>
+</blockquote>
+<h3 id="HTTP请求-路径"><a href="#HTTP请求-路径" class="headerlink" title="HTTP请求-路径"></a>HTTP请求-路径</h3><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gpat597w8sj30tf0dataa.jpg" alt="路径"></p>
+<p>不要在这个地址中写<code>domain</code>和<code>端口</code>信息，只写路径信息</p>
+<p>不要忘记开头的<code>/</code></p>
+<p>前后的空格要删除。如果没有删除，请求的时候会多<code>%20</code></p>
+<h3 id="HTTP请求-内容编码"><a href="#HTTP请求-内容编码" class="headerlink" title="HTTP请求-内容编码"></a>HTTP请求-内容编码</h3><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gpat7a5jouj30tf0dataa.jpg" alt="内容编码"></p>
+<p>默认<code>utf-8</code></p>
+<p>只对<strong>请求体</strong>进行编码，对<strong>响应体</strong>无效</p>
+<p>http请求的四部分：</p>
+<ul>
+<li>请求行</li>
+<li>请求头 request-header</li>
+<li>空行</li>
+<li>请求体 request-body</li>
+</ul>
+<p>http响应的四部分</p>
+<ul>
+<li>响应头</li>
+<li>响应体 response-header</li>
+<li>空行</li>
+<li>响应体 response-body</li>
+</ul>
+<h4 id="当请求中出现乱码"><a href="#当请求中出现乱码" class="headerlink" title="当请求中出现乱码"></a>当请求中出现乱码</h4><ol>
+<li>内容编码设置为utf-8</li>
+<li>消息头<code>Content-Type:;charset=utf-8</code></li>
+<li>参数格式中的<code>编码</code>复选框<ol>
+<li>当参数为中文时一定要勾选编码</li>
+<li>当参数为<code>+=</code>等特殊符号时「常见于密码被加密」一定要勾选编码</li>
+</ol>
+</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gpatdimb18j30tf0daq4a.jpg" alt="编码"></p>
+<h4 id="当响应中出现乱码"><a href="#当响应中出现乱码" class="headerlink" title="当响应中出现乱码"></a>当响应中出现乱码</h4><blockquote>
+<p>原因：jmeter的gui图形界面，默认的编码是操作系统的编码</p>
+<p>国内Windows系统的编码是 936gbk</p>
+</blockquote>
+<p>解决办法</p>
+<p>打开<code>/apache-jmeter-5.1.1/bin/jmeter.properties</code></p>
+<p>找到</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># The encoding to be used if none is provided (default ISO-8859-1)</span><br><span class="line">#sampleresult.default.encoding=ISO-8859-1</span><br></pre></td></tr></tbody></table></figure>
+
+<p>根据响应信息中的编码修改<code>sampleresult.default.encoding</code>值。修改后保存重启Jmeter</p>
+<p>查看方法：</p>
+<p>请求相应地址后查看<code>网页源代码</code>在头部找到「meta-content」</p>
+<figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"X-UA-Compatible"</span> <span class="attr">content</span>=<span class="string">"IE=edge,chrome=1"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"content-type"</span> <span class="attr">content</span>=<span class="string">"text/html;charset=utf-8"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">content</span>=<span class="string">"always"</span> <span class="attr">name</span>=<span class="string">"referrer"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"theme-color"</span> <span class="attr">content</span>=<span class="string">"#2932e1"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"shortcut icon"</span> <span class="attr">href</span>=<span class="string">"/favicon.ico"</span> <span class="attr">type</span>=<span class="string">"image/x-icon"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"icon"</span> <span class="attr">sizes</span>=<span class="string">"any"</span> <span class="attr">mask</span> <span class="attr">href</span>=<span class="string">"//www.baidu.com/img/baidu_85beaf5496f291521eb75ba38eacbd87.svg"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"search"</span> <span class="attr">type</span>=<span class="string">"application/opensearchdescription+xml"</span> <span class="attr">href</span>=<span class="string">"/content-search.xml"</span> <span class="attr">title</span>=<span class="string">"百度搜索"</span> /&gt;</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>可以看出上面这段代码的编码为<code>utf-8</code></p>
+<h3 id="HTTP请求-自动重定向"><a href="#HTTP请求-自动重定向" class="headerlink" title="HTTP请求-自动重定向"></a>HTTP请求-自动重定向</h3><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gpatx8rw59j30tf0dataa.jpg" alt="重定向"></p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gpav09nqirj30xv0u0doc.jpg" alt="自动重定向"></p>
+<p>都是重定向。HTTP响应码都是300系列</p>
+<p>没有中间过程，无法进行中间数据提取</p>
+<h3 id="HTTP请求-跟随重定向"><a href="#HTTP请求-跟随重定向" class="headerlink" title="HTTP请求-跟随重定向"></a>HTTP请求-跟随重定向</h3><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gpauz1yru4j30xr0u0dpl.jpg" alt="跟随重定向"></p>
+<p>默认勾选</p>
+<p>可以提取中间过程，用于后续关联</p>
+<p>从图中可以看到，它将每次跳转都展示给了我们，可以展开查看每次跳转情况</p>
+<h3 id="HTTP请求-使用KeepAlive"><a href="#HTTP请求-使用KeepAlive" class="headerlink" title="HTTP请求-使用KeepAlive"></a>HTTP请求-使用KeepAlive</h3><p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gpatyd3k5xj30tf0dataa.jpg" alt="使用KeepAlive"></p>
+<p>默认都是长连接</p>
+<h3 id="HTTP请求-消息体数据"><a href="#HTTP请求-消息体数据" class="headerlink" title="HTTP请求-消息体数据"></a>HTTP请求-消息体数据</h3><p>参数-消息体数据是互斥的，写了之后无法写另一个</p>
+<h2 id="优先级"><a href="#优先级" class="headerlink" title="优先级"></a>优先级</h2><blockquote>
+<p>优先级越高，越先执行</p>
+</blockquote>
+<p>配置元件中的所有元件，优先级是最高的</p>
+<p>前置处理器-取样器-后置处理器 </p>
+<p><img src="https://tva1.sinaimg.cn/large/008eGmZEly1gpauq2qwq7j309y06wgm6.jpg" alt="优先级"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.jpg" alt=" wechat" style="width: 200px; max-width: 100%;"/>
+    <div>欢迎您扫一扫上面的微信公众号，订阅我的博客！</div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt=" 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt=" 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/" rel="tag"># 测试开发</a>
+          
+            <a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/" rel="tag"># 性能测试</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/article/8aebc491.html" rel="next" title="4-使用Jmeter编写第一个脚本">
+                <i class="fa fa-chevron-left"></i> 4-使用Jmeter编写第一个脚本
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/article/a44ae78a.html" rel="prev" title="6-手写Jmeter与录制">
+                6-手写Jmeter与录制 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a target="_blank" rel="noopener" href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/avatar.jpeg"
+                alt="" />
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">164</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/zx490336534" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/zhong-xin-97-8" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-angellist"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-block">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://testingpai.com/" title="测试派" target="_blank">测试派</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://testerhome.com/" title="TesterHome" target="_blank">TesterHome</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://dongfanger.gitee.io/blog/index.html" title="自动化代码美学" target="_blank">自动化代码美学</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#5-HTTP%E8%AF%B7%E6%B1%82%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">1.</span> <span class="nav-text">5-HTTP请求注意事项</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTP%E8%AF%B7%E6%B1%82%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">1.1.</span> <span class="nav-text">HTTP请求注意事项</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Web%E6%9C%8D%E5%8A%A1%E5%99%A8-%E5%8D%8F%E8%AE%AE"><span class="nav-number">1.1.1.</span> <span class="nav-text">Web服务器-协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Web%E6%9C%8D%E5%8A%A1%E5%99%A8-%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%8D%E7%A7%B0%E6%88%96IP"><span class="nav-number">1.1.2.</span> <span class="nav-text">Web服务器-服务器名称或IP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Web%E6%9C%8D%E5%8A%A1%E5%99%A8-%E7%AB%AF%E5%8F%A3"><span class="nav-number">1.1.3.</span> <span class="nav-text">Web服务器-端口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP%E8%AF%B7%E6%B1%82-%E6%96%B9%E6%B3%95"><span class="nav-number">1.1.4.</span> <span class="nav-text">HTTP请求-方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP%E8%AF%B7%E6%B1%82-%E8%B7%AF%E5%BE%84"><span class="nav-number">1.1.5.</span> <span class="nav-text">HTTP请求-路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP%E8%AF%B7%E6%B1%82-%E5%86%85%E5%AE%B9%E7%BC%96%E7%A0%81"><span class="nav-number">1.1.6.</span> <span class="nav-text">HTTP请求-内容编码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BD%93%E8%AF%B7%E6%B1%82%E4%B8%AD%E5%87%BA%E7%8E%B0%E4%B9%B1%E7%A0%81"><span class="nav-number">1.1.6.1.</span> <span class="nav-text">当请求中出现乱码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BD%93%E5%93%8D%E5%BA%94%E4%B8%AD%E5%87%BA%E7%8E%B0%E4%B9%B1%E7%A0%81"><span class="nav-number">1.1.6.2.</span> <span class="nav-text">当响应中出现乱码</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP%E8%AF%B7%E6%B1%82-%E8%87%AA%E5%8A%A8%E9%87%8D%E5%AE%9A%E5%90%91"><span class="nav-number">1.1.7.</span> <span class="nav-text">HTTP请求-自动重定向</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP%E8%AF%B7%E6%B1%82-%E8%B7%9F%E9%9A%8F%E9%87%8D%E5%AE%9A%E5%90%91"><span class="nav-number">1.1.8.</span> <span class="nav-text">HTTP请求-跟随重定向</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP%E8%AF%B7%E6%B1%82-%E4%BD%BF%E7%94%A8KeepAlive"><span class="nav-number">1.1.9.</span> <span class="nav-text">HTTP请求-使用KeepAlive</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP%E8%AF%B7%E6%B1%82-%E6%B6%88%E6%81%AF%E4%BD%93%E6%95%B0%E6%8D%AE"><span class="nav-number">1.1.10.</span> <span class="nav-text">HTTP请求-消息体数据</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%98%E5%85%88%E7%BA%A7"><span class="nav-number">1.2.</span> <span class="nav-text">优先级</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2021 &mdash; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">测试游记</span>
+
+  
+  <a href="https://beian.miit.gov.cn/" target="_blank">浙ICP备2021000476号-1</a>
+
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://zx490336534.github.io/article/3afe7420.html';
+          this.page.identifier = 'article/3afe7420.html';
+          this.page.title = '5-HTTP请求注意事项';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
