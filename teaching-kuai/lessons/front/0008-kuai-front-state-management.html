@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0008 - 状态管理与数据流 | Kuai 前端课程</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1rem;margin-bottom:.5rem}
+  .breadcrumb{color:var(--text-secondary);font-size:.85rem;margin-bottom:2rem}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .breadcrumb a:hover{text-decoration:underline}
+  h2{font-size:1.35rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;padding-bottom:.4rem;border-bottom:2px solid var(--accent-light);display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.3rem}
+  h3{font-size:1.1rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem;color:var(--accent)}
+  p{margin-bottom:1rem}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.4rem}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15rem .4rem;border-radius:4px;font-size:.88em;color:var(--accent)}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;overflow-x:auto;margin:1rem 0;font-size:.88rem;line-height:1.6}
+  pre code{background:none;padding:0;color:var(--text)}
+  .highlight{background:var(--accent-light);border-left:4px solid var(--accent);padding:1rem 1.25rem;border-radius:0 8px 8px 0;margin:1rem 0}
+  .info-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:.93rem}
+  .info-box::before{content:'💡 '}
+  .warn-box{background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:.93rem}
+  .warn-box::before{content:'⚠️ '}
+  .tag{display:inline-block;padding:.15rem .5rem;border-radius:4px;font-size:.75rem;font-weight:500;margin-right:.3rem}
+  .tag.deep{background:#fef3c7;color:#b45309}
+  table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.9rem}
+  th,td{border:1px solid var(--border);padding:.6rem .8rem;text-align:left}
+  th{background:var(--accent-light);font-weight:600}
+  .quiz-section{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:1.5rem 2rem;margin-top:2.5rem}
+  .quiz-section h2{border:none;margin-top:0}
+  .quiz-q{margin-bottom:1.5rem;padding:1rem 1.25rem;background:var(--bg);border-radius:8px}
+  .quiz-q strong{color:var(--accent)}
+  .quiz-q label{display:block;margin:.3rem 0;cursor:pointer;padding:.3rem .5rem;border-radius:4px;transition:background .15s}
+  .quiz-q label:hover{background:var(--accent-light)}
+  .quiz-q input[type="radio"]{margin-right:.5rem}
+  .quiz-answer{margin-top:.75rem;padding:.75rem 1rem;background:#dcfce7;border-radius:6px;display:none;font-size:.9rem}
+  .quiz-answer.show{display:block}
+  .quiz-btn{background:var(--accent);color:#fff;border:none;padding:.6rem 1.5rem;border-radius:6px;font-size:.9rem;cursor:pointer;margin-top:1rem;font-weight:500}
+  .quiz-btn:hover{opacity:.9}
+  .nav-footer{display:flex;justify-content:space-between;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+  .nav-footer a{color:var(--accent);text-decoration:none;font-weight:500}
+  .nav-footer a:hover{text-decoration:underline}
+  .arch-diagram{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.7;overflow-x:auto;white-space:pre}
+.nav-links{max-width:900px;margin:2.5rem auto 0;padding:1.5rem 2rem;border-top:1px solid #e7e5e4;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem}.nav-links a{color:#b45309;text-decoration:none;font-weight:500}.nav-links a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="container">
+
+<p class="breadcrumb"><a href="../index.html">课程首页</a> &rsaquo; kuai-service-front &rsaquo; 0008 状态管理与数据流</p>
+
+<div class="card info" style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0;font-size:.93rem">
+  <div class="card-label" style="font-weight:600;color:#2563eb;margin-bottom:.35rem">前置知识</div>
+  <p style="margin-bottom:.5rem">如果你不熟悉以下概念，建议先阅读对应教程：</p>
+  <ul style="margin:.5rem 0 0 1.5rem">
+    <li style="margin-bottom:.4rem"><a href="../../reference/redux-toolkit-basics.html">Redux Toolkit 基础入门</a></li>
+    <li style="margin-bottom:.4rem"><a href="../../reference/mongodb-basics.html">MongoDB 基础入门</a></li>
+  </ul>
+</div>
+
+<h1>🔄 状态管理与数据流</h1>
+<p class="subtitle"><span class="tag deep">深度</span> Redux Toolkit、会话存储、chatStreamHandler 流处理与增量持久化</p>
+
+<!-- ============================== -->
+<h2><span class="icon">📦</span> 1. Redux Toolkit 状态管理</h2>
+
+<p>项目使用 <strong>Redux Toolkit (RTK)</strong> 作为全局状态管理方案，通过 <code>configureStore</code> 创建 Store，使用 <code>createSlice</code> 模式按业务模块组织 Reducers。</p>
+
+<h3>1.1 Store 架构</h3>
+<div class="arch-diagram">src/
+├── app/
+│   ├── layout.js        ← 根布局，包含 Redux Provider
+│   └── providers.js     ← configureStore 创建 Store 实例
+│
+├── store/
+│   ├── index.js         ← 统一导出所有 Reducers
+│   └── modules/
+│       ├── config.js    ← 配置状态（模型配置、全局设置）
+│       ├── user.js      ← 用户状态（登录信息、权限）
+│       ├── moon.js      ← Moon 服务状态
+│       └── kaptain.js   ← Kaptain 项目管理状态</div>
+
+<h3>1.2 Store 创建（providers.js）</h3>
+<pre><code>// src/app/providers.js
+'use client';
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
+import { reducers } from '@/store';
+
+const store = configureStore({
+  reducer: reducers,
+});
+
+export function Providers({ children }) {
+  return &lt;Provider store={store}&gt;{children}&lt;/Provider&gt;;
+}</code></pre>
+
+<h3>1.3 Reducers 统一导出</h3>
+<pre><code>// src/store/index.js
+import configReducer from './modules/config';
+import userReducer from './modules/user';
+import moonReducer from './modules/moon';
+import kaptainReducer from './modules/kaptain';
+
+export const reducers = {
+  config: configReducer,
+  user: userReducer,
+  moon: moonReducer,
+  kaptain: kaptainReducer,
+};
+
+// 单独导出便于按需使用
+export { configReducer, userReducer, moonReducer, kaptainReducer };</code></pre>
+
+<h3>1.4 Slice 模式示例</h3>
+<pre><code>// src/store/modules/user.js
+import { createSlice } from '@reduxjs/toolkit';
+
+const userSlice = createSlice({
+  name: 'user',
+  initialState: {
+    userInfo: null,
+    isLoggedIn: false,
+  },
+  reducers: {
+    setUserInfo(state, action) {
+      state.userInfo = action.payload;
+      state.isLoggedIn = true;
+    },
+    clearUser(state) {
+      state.userInfo = null;
+      state.isLoggedIn = false;
+    },
+  },
+});
+
+export const { setUserInfo, clearUser } = userSlice.actions;
+export default userSlice.reducer;</code></pre>
+
+<h3>1.5 在组件中使用</h3>
+<pre><code>// 页面组件
+'use client';
+import { useSelector, useDispatch } from 'react-redux';
+
+export default function MyPage() {
+  const { userInfo, isLoggedIn } = useSelector(state => state.user);
+  const dispatch = useDispatch();
+
+  return (
+    &lt;div&gt;
+      {isLoggedIn ? `欢迎, ${userInfo.name}` : '请登录'}
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+<div class="warn-box">
+  <strong>注意：</strong>Redux 数据存储在内存中，页面刷新后会丢失。需要持久化的数据应存储在 localStorage 或后端。可以考虑使用 <code>redux-persist</code> 中间件。
+</div>
+
+<!-- ============================== -->
+<h2><span class="icon">🗄️</span> 2. 会话存储（MongoDB）</h2>
+
+<p>Agent 的对话历史通过 <code>ConversationStore</code> 持久化到 MongoDB 的 <code>agent_conversations</code> 集合中。</p>
+
+<h3>2.1 ConversationStore 核心 API</h3>
+<pre><code>// src/lib/agents/conversationStore.js
+import { conversationStore } from '@/lib/agents/conversationStore';
+
+// 创建会话
+const conv = await conversationStore.createConversation({
+  agentId: 'code-assistant-agent',
+  userId: 'user-123',
+  initialMessage: { role: 'user', content: '你好' },
+});
+
+// 获取会话
+const existing = await conversationStore.getConversation('conv-xxx');
+
+// 添加消息
+await conversationStore.addMessage('conv-xxx', {
+  role: 'assistant',
+  content: '你好！有什么可以帮你的？',
+});
+
+// 批量添加消息
+await conversationStore.addMessages('conv-xxx', [userMsg, assistantMsg]);
+
+// 按 Agent 查询
+const conversations = await conversationStore.getConversationsByAgent(
+  'code-assistant-agent',
+  { limit: 20, skip: 0 }
+);
+
+// 按用户查询
+const userConvs = await conversationStore.getConversationsByUser(
+  'user-123',
+  { agentId: 'code-assistant-agent', limit: 10 }
+);
+
+// 删除会话
+await conversationStore.deleteConversation('conv-xxx');</code></pre>
+
+<h3>2.2 MongoDB 索引策略</h3>
+<pre><code>// 应用启动时确保索引存在
+await conversationStore.ensureIndexes();
+// 创建以下索引：
+// - { id: 1 }        — 唯一索引，会话 ID 查询
+// - { agentId: 1 }   — 按 Agent 查询
+// - { userId: 1 }    — 按用户查询
+// - { updatedAt: -1 } — 按更新时间排序</code></pre>
+
+<h3>2.3 数据结构</h3>
+<table>
+  <tr><th>字段</th><th>类型</th><th>说明</th></tr>
+  <tr><td><code>id</code></td><td>string</td><td>会话 ID（<code>conv-</code> + ObjectId）</td></tr>
+  <tr><td><code>agentId</code></td><td>string</td><td>关联的 Agent ID</td></tr>
+  <tr><td><code>userId</code></td><td>string</td><td>用户 ID</td></tr>
+  <tr><td><code>messages</code></td><td>Array</td><td>消息数组（role + content）</td></tr>
+  <tr><td><code>createdAt</code></td><td>Date</td><td>创建时间</td></tr>
+  <tr><td><code>updatedAt</code></td><td>Date</td><td>最后更新时间</td></tr>
+</table>
+
+<!-- ============================== -->
+<h2><span class="icon">🌊</span> 3. chatStreamHandler 流处理</h2>
+
+<p><code>chatStreamHandler.js</code> 是整个 Agent 对话系统的<strong>核心引擎</strong>，它同时服务于 <code>/api/agents/[id]/chat</code>（普通对话）和 <code>/api/share/[shareId]/chat</code>（分享对话），实现了 Agent 任务与 HTTP 连接的完全解耦。</p>
+
+<h3>3.1 核心架构：后台执行</h3>
+<div class="arch-diagram">浏览器请求 ──► chatStreamHandler
+                    │
+                    ├──► agent.streamEvents()  ← LangGraph 事件流
+                    │         │
+                    │         ▼
+                    │    AsyncQueue 广播（一对多分发）
+                    │         │
+                    │    ┌────┴────┐
+                    │    ▼         ▼
+                    │  AI SDK    后台 DB 持久化
+                    │  流(前端)  管道(MongoDB)
+                    │    │         │
+                    │    ▼         ▼
+                    │  前端展示   增量写入
+                    │  (可断开)   (始终运行)
+                    │
+                    └──► 返回 Response
+                    
+浏览器关闭？ ──► AI SDK 流断开，但后台 DB 管道继续运行直到完成</div>
+
+<h3>3.2 AsyncQueue — 解耦生产者和消费者</h3>
+<p>AsyncQueue 是自实现的异步队列，用于将 Agent 事件广播给多个消费者：</p>
+<pre><code>class AsyncQueue {
+  push(value)   // 生产者推入事件
+  end()         // 标记结束
+  throw(error)  // 标记错误
+  [Symbol.asyncIterator]()  // 支持 for await...of 消费
+}
+
+// 广播：一个源 → 多个消费者
+function broadcastAsyncIterable(source, count) {
+  const queues = Array.from({ length: count }, () => new AsyncQueue());
+  // 后台消费源并分发到所有队列
+  // 任一消费者断开不影响其他消费者
+  return queues;
+}</code></pre>
+
+<div class="highlight">
+  <strong>关键设计：</strong>当浏览器关闭时，AI SDK 流断开（消费者 1 消失），但后台 DB 持久化管道（消费者 2）不受影响，Agent 任务继续执行并写入数据库。用户重新进入页面后可以看到已完成的结果。
+</div>
+
+<h3>3.3 事件处理</h3>
+<p>chatStreamHandler 处理以下 LangGraph 事件类型：</p>
+<table>
+  <tr><th>事件</th><th>处理方式</th></tr>
+  <tr><td><code>on_chat_model_stream</code></td><td>AI 生成的文本流，实时推送到前端</td></tr>
+  <tr><td><code>on_tool_start</code></td><td>工具开始执行，更新前端进度</td></tr>
+  <tr><td><code>on_tool_end</code></td><td>工具执行完成，提取输出结果</td></tr>
+  <tr><td><code>on_tool_error</code></td><td>工具执行失败，记录错误信息</td></tr>
+  <tr><td><code>on_chain_start/end</code></td><td>Agent 链执行进度</td></tr>
+</table>
+
+<h3>3.4 任务管理</h3>
+<pre><code>import { abortTask, getRunningTask, getRunningTasks } from '@/lib/agents/chatStreamHandler';
+
+// 终止后台任务
+abortTask('sessionId-messageKey');
+
+// 查询运行中的任务
+const task = getRunningTask('sessionId-messageKey');
+
+// 获取所有运行中的任务
+const allTasks = getRunningTasks();</code></pre>
+
+<!-- ============================== -->
+<h2><span class="icon">💾</span> 4. 增量持久化</h2>
+
+<p>增量持久化是项目的核心特性之一：流式响应<strong>实时节流写入</strong> MongoDB，支持断线恢复。</p>
+
+<h3>4.1 持久化管道（persistInBackground）</h3>
+<pre><code>// 后台持久化状态
+const state = {
+  content: '',           // 累积的 AI 回复文本
+  toolCalls: [],         // 工具调用记录 { id, name, input, output, status }
+  parts: [],             // 有序的 parts 数组（交错的 text 和 tool）
+  todos: [],             // 待办事项
+  lastDbUpdate: 0,       // 上次 DB 写入时间戳
+  currentTextSegment: '', // 当前文本段落（两个工具调用之间的文本）
+};</code></pre>
+
+<h3>4.2 节流写入策略</h3>
+<pre><code>const DB_UPDATE_INTERVAL_MS = 500;  // 500ms 节流间隔
+
+async function flushToDb(force = false) {
+  const now = Date.now();
+  // 非强制模式下，500ms 内只写一次
+  if (!force && now - state.lastDbUpdate &lt; DB_UPDATE_INTERVAL_MS) return;
+  state.lastDbUpdate = now;
+
+  await chatHistoryService.updateMessage(sessionId, messageKey, {
+    content: state.content,
+    toolCalls: state.toolCalls,
+    parts: [...state.parts],
+    todos: [...state.todos],
+    streaming: true,  // 标记为流式进行中
+  });
+}</code></pre>
+
+<h3>4.3 流式结束时的最终写入</h3>
+<pre><code>async function finalize(isError = false) {
+  flushTextSegment();  // 刷出最后的文本段落
+
+  await chatHistoryService.updateMessage(sessionId, messageKey, {
+    content: state.content,
+    toolCalls: state.toolCalls,
+    parts: [...state.parts],
+    todos: [...state.todos],
+    streaming: false,  // 标记流式完成
+  });
+
+  return {
+    status: isError ? 'error' : (signal?.aborted ? 'aborted' : 'completed'),
+    assistantMessage: { key: messageKey, role: 'assistant', content: state.content, ... },
+  };
+}</code></pre>
+
+<h3>4.4 Parts 交错顺序</h3>
+<p>持久化的 <code>parts</code> 数组保留了 AI 回复的原始交错顺序：</p>
+<pre><code>// 示例：AI 先输出文本，然后调用工具，再输出文本
+parts = [
+  { type: 'text', text: '让我帮你分析这段代码...' },
+  { type: 'tool', toolCallId: 'tc-1', name: 'ask_claudecode', status: 'done', ... },
+  { type: 'text', text: '分析结果如下：...' },
+  { type: 'tool', toolCallId: 'tc-2', name: 'getMCPTools', status: 'done', ... },
+  { type: 'text', text: '以上是完整的分析报告。' },
+]</code></pre>
+
+<div class="info-box">
+  <strong>断线恢复：</strong>当用户重新进入聊天页面时，系统从 MongoDB 加载消息历史。如果某条消息的 <code>streaming: true</code>，说明任务仍在进行中，前端可以重新订阅进度。
+</div>
+
+<!-- ============================== -->
+<h2><span class="icon">🔗</span> 5. 数据流全景</h2>
+
+<p>将 Redux、MongoDB、chatStreamHandler 串联起来，整体数据流如下：</p>
+
+<div class="arch-diagram">用户输入
+    │
+    ▼
+前端 Redux Store (即时 UI 状态)
+    │
+    ▼
+POST /api/agents/[id]/chat
+    │
+    ▼
+chatStreamHandler
+    ├──► Agent 执行 (LangGraph)
+    │        │
+    │        ├──► MCP 工具调用
+    │        ├──► ClaudeCode 分析
+    │        └──► 其他工具
+    │
+    ├──► AsyncQueue 广播
+    │     ├──► AI SDK Stream ──► 前端实时展示
+    │     └──► persistInBackground ──► MongoDB 增量写入
+    │
+    └──► finalize() ──► MongoDB 最终写入 (streaming: false)
+    
+用户刷新/重连
+    │
+    ▼
+MongoDB 加载历史 ──► 前端恢复展示</div>
+
+<!-- ============================== -->
+<div class="quiz-section">
+<h2><span class="icon">📝</span> Quiz — 测测你理解了多少</h2>
+
+<div class="quiz-q" id="q1">
+  <strong>Q1：Redux Store 在哪里创建？</strong><br>
+  <label><input type="radio" name="q1" value="a"> A. src/store/index.js</label>
+  <label><input type="radio" name="q1" value="b"> B. src/app/providers.js</label>
+  <label><input type="radio" name="q1" value="c"> C. src/app/layout.js</label>
+  <label><input type="radio" name="q1" value="d"> D. src/config/navigation.js</label>
+  <div class="quiz-answer" id="a1"><strong>✅ 正确答案：B</strong><br>Store 实例在 <code>src/app/providers.js</code> 中通过 <code>configureStore</code> 创建。而 <code>src/store/index.js</code> 只负责导出 Reducers 配置，<code>layout.js</code> 中引入 Providers 包裹应用。</div>
+</div>
+
+<div class="quiz-q" id="q2">
+  <strong>Q2：chatStreamHandler 的 AsyncQueue 设计有什么好处？</strong><br>
+  <label><input type="radio" name="q2" value="a"> A. 提高网络传输速度</label>
+  <label><input type="radio" name="q2" value="b"> B. 将 Agent 事件广播给多个消费者，浏览器关闭不影响后台 DB 持久化</label>
+  <label><input type="radio" name="q2" value="c"> C. 减少 MongoDB 写入次数</label>
+  <label><input type="radio" name="q2" value="d"> D. 加密传输数据</label>
+  <div class="quiz-answer" id="a2"><strong>✅ 正确答案：B</strong><br>AsyncQueue 实现了一对多广播：AI SDK 流（前端）和后台 DB 持久化管道各自独立消费事件。浏览器关闭时前端消费者断开，但 DB 管道继续运行，确保 Agent 任务结果不会丢失。</div>
+</div>
+
+<div class="quiz-q" id="q3">
+  <strong>Q3：增量持久化的节流间隔是多少？</strong><br>
+  <label><input type="radio" name="q3" value="a"> A. 100ms</label>
+  <label><input type="radio" name="q3" value="b"> B. 500ms</label>
+  <label><input type="radio" name="q3" value="c"> C. 2000ms</label>
+  <label><input type="radio" name="q3" value="d"> D. 5000ms</label>
+  <div class="quiz-answer" id="a3"><strong>✅ 正确答案：B</strong><br><code>DB_UPDATE_INTERVAL_MS = 500</code>，即每 500ms 最多写入一次 MongoDB。这个间隔在实时性和性能之间取得了平衡：用户能快速看到进展，同时避免过于频繁的数据库写入。流式结束时会强制执行一次最终写入。</div>
+</div>
+
+<button class="quiz-btn" onclick="showAnswers()">查看答案</button>
+</div>
+
+<div class="nav-links">
+  <a href="0007-kuai-front-mcp-tools.html">← MCP 工具集成</a>
+  <a href="../index.html">🗺️ 完整学习地图</a>
+  <a href="0009-kuai-front-dev-guide.html">前端开发实战指南 →</a>
+</div>
+
+</div>
+
+<script>
+function showAnswers(){
+  document.querySelectorAll('.quiz-answer').forEach(el=>el.classList.add('show'));
+}
+</script>
+</body>
+</html>

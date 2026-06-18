@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>059 模板系统与灯光/背景管理</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --accent: #b45309;
+    --accent-light: #fef3c7;
+    --border: #e7e5e4;
+    --code-bg: #f5f5f4;
+    --success: #16a34a;
+    --warning: #d97706;
+    --info: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .card.info { border-left: 3px solid var(--info); }
+  .card.warning { border-left: 3px solid var(--warning); }
+  .card.success { border-left: 3px solid var(--success); }
+
+  .card-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+  .card.info .card-label { color: var(--info); }
+  .card.warning .card-label { color: var(--warning); }
+  .card.success .card-label { color: var(--success); }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    font-size: 0.88em;
+  }
+
+  pre {
+    background: #1c1917;
+    color: #e7e5e4;
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  pre .comment { color: #78716c; }
+  pre .keyword { color: #f59e0b; }
+  pre .string { color: #86efac; }
+  pre .dir { color: #93c5fd; }
+  pre .file { color: #e7e5e4; }
+  pre .important { color: #fbbf24; font-weight: 500; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.92rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .tree { margin: 1rem 0; }
+
+  .quiz {
+    background: var(--accent-light);
+    border: 1px solid #fbbf24;
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .quiz-title {
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+  .quiz-options { list-style: none; }
+  .quiz-options li {
+    padding: 0.5rem 0.75rem;
+    margin: 0.35rem 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+  }
+  .quiz-options li:hover { background: #fde68a33; border-color: #fbbf24; }
+  .quiz-options li.correct { background: #dcfce7; border-color: #16a34a; }
+  .quiz-options li.wrong { background: #fee2e2; border-color: #ef4444; }
+  .quiz-feedback {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    display: none;
+    font-size: 0.9rem;
+  }
+
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+  }
+  .flow-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .flow-arrow { color: var(--text-secondary); }
+
+  .next-lesson {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .next-lesson a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .next-lesson a:hover { text-decoration: underline; }
+
+  .ask-agent {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+    color: #1e40af;
+  }
+  .ask-agent::before { content: '💡 '; }
+
+  ul, ol { margin: 0.5rem 0 1rem 1.5rem; }
+  li { margin-bottom: 0.3rem; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>059 模板系统与灯光/背景管理</h1>
+<p class="subtitle">理解 render-3d 中模板配置、obsConfigCache 缓存、灯光样式映射、背景配置与默认回退机制</p>
+
+<!-- ==================== Section 1 ==================== -->
+<h2>1. 模板配置的整体结构</h2>
+
+<p>在 render-3d 中，"模板"决定了渲染画面的灯光氛围和背景环境。每个模板由一个 <code>obsId</code> 唯一标识，包含灯光样式映射和背景配置两大部分。</p>
+
+<div class="card info">
+  <div class="card-label">核心状态</div>
+  <p>模板相关状态全部维护在 <code>OfflineRenderStateManager</code> 中，关键字段包括：<code>currentObsId</code>、<code>lightStyleId</code>、<code>hdriBackgroundId</code>、<code>backgroundConfig</code>、<code>obsConfigCache</code>。</p>
+</div>
+
+<p>模板配置的来源链路：</p>
+
+<pre>
+┌──────────────────────────────────────────────────────┐
+│  <span class="important">实时渲染层</span> (StateManager/realtime/*)                │
+│  维护当前实时模板的 obsId                              │
+└──────────────────────┬───────────────────────────────┘
+                       │ <span class="comment">core.realtime.getCurrentObsTemplateIdList()</span>
+┌──────────────────────▼───────────────────────────────┐
+│  <span class="important">OfflineRenderStateManager.init()</span>                   │
+│  拉 snapshotList → 取当前 obsId → 初始化灯光/背景配置    │
+└──────────────────────┬───────────────────────────────┘
+                       │ <span class="comment">fetchAndCacheObsConfig(obsId)</span>
+┌──────────────────────▼───────────────────────────────┐
+│  <span class="important">obsConfigCache</span>                                      │
+│  缓存灯光样式映射 + 背景配置                            │
+└──────────────────────────────────────────────────────┘
+</pre>
+
+<!-- ==================== Section 2 ==================== -->
+<h2>2. obsConfigCache 缓存机制</h2>
+
+<p><code>obsConfigCache</code> 是模板系统的核心缓存，避免同一模板反复请求后端。</p>
+
+<h3>缓存写入</h3>
+<p><code>fetchAndCacheObsConfig(obsId)</code> 执行时：</p>
+<ol>
+  <li>以 <code>obsId</code> 为 key 检查缓存是否已存在</li>
+  <li>缓存命中 → 直接返回，跳过网络请求</li>
+  <li>缓存未命中 → 请求后端获取灯光样式映射和背景配置，写入缓存</li>
+</ol>
+
+<div class="card warning">
+  <div class="card-label">注意事项</div>
+  <p>切换模板时必须同时检查 <code>currentObsId</code>、<code>obsConfigCache</code>、实时模板来源和默认背景回退。只改一个地方容易出 bug。</p>
+</div>
+
+<h3>缓存结构</h3>
+<table>
+  <tr><th>字段</th><th>类型</th><th>说明</th></tr>
+  <tr><td>lightStyleMap</td><td>Map</td><td>灯光样式 ID → 灯光参数的映射表</td></tr>
+  <tr><td>backgroundConfigData</td><td>Object</td><td>HDRI 背景 ID、环境光参数、地面配置等</td></tr>
+</table>
+
+<!-- ==================== Section 3 ==================== -->
+<h2>3. 灯光样式映射</h2>
+
+<p>灯光样式通过 <code>lightStyleId</code> 控制。同一个模板可以对应多种灯光风格（如暖光、冷光、自然光），渲染时根据用户选择的 <code>lightStyleId</code> 从映射表中取出对应参数。</p>
+
+<pre>
+<span class="comment">// 灯光样式映射示意</span>
+<span class="keyword">obsConfigCache</span>[obsId].lightStyleMap = {
+  <span class="string">"warm"</span>:    { intensity: 0.8, colorTemp: 3200, ... },
+  <span class="string">"cool"</span>:    { intensity: 0.6, colorTemp: 5500, ... },
+  <span class="string">"natural"</span>: { intensity: 0.7, colorTemp: 4500, ... },
+}
+</pre>
+
+<div class="card success">
+  <div class="card-label">设计要点</div>
+  <p>灯光参数不在前端硬编码，而是从模板配置动态获取。这使得后端可以独立更新灯光方案，前端无需发版。</p>
+</div>
+
+<!-- ==================== Section 4 ==================== -->
+<h2>4. 背景配置</h2>
+
+<p>背景配置通过 <code>hdriBackgroundId</code> 和 <code>backgroundConfig</code> 两个字段管理：</p>
+
+<table>
+  <tr><th>字段</th><th>作用</th></tr>
+  <tr><td><code>hdriBackgroundId</code></td><td>标识当前使用的 HDRI 环境贴图</td></tr>
+  <tr><td><code>backgroundConfig</code></td><td>完整的背景参数（环境光强度、地面反射、天空配置等）</td></tr>
+</table>
+
+<p>背景配置同样来自 <code>obsConfigCache</code>，与灯光样式绑定在同一个模板下。切换模板时，灯光和背景会同时更新。</p>
+
+<!-- ==================== Section 5 ==================== -->
+<h2>5. 模板切换流程</h2>
+
+<p>当用户在 UI 上选择一个新模板时，完整流程如下：</p>
+
+<div class="flow">
+  <span class="flow-step">用户选模板</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">更新 currentObsId</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">查 obsConfigCache</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">缓存命中? 直接用</span>
+  <span class="flow-arrow">/</span>
+  <span class="flow-step">未命中? fetchAndCacheObsConfig</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">更新 lightStyleId</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">更新 backgroundConfig</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">3D 场景生效</span>
+</div>
+
+<div class="card warning">
+  <div class="card-label">常见坑</div>
+  <p>改模板切换逻辑时，如果只更新了 <code>lightStyleId</code> 而忘了同步 <code>backgroundConfig</code>，会出现灯光变了但背景没变的情况。两者必须一起更新。</p>
+</div>
+
+<!-- ==================== Section 6 ==================== -->
+<h2>6. 默认配置回退</h2>
+
+<p>当 <code>fetchAndCacheObsConfig</code> 失败时（网络异常、服务端错误等），系统不会直接报错炸页面，而是<strong>静默回退到默认配置</strong>。</p>
+
+<pre>
+<span class="comment">// 回退逻辑示意</span>
+<span class="keyword">try</span> {
+  <span class="keyword">await</span> fetchAndCacheObsConfig(obsId);
+} <span class="keyword">catch</span> (e) {
+  <span class="comment">// 回退到默认配置</span>
+  <span class="keyword">this</span>.backgroundConfig = <span class="important">DEFAULT_TEMPLATE_CONFIG</span>.backgroundConfigData;
+  <span class="comment">// 错误上报但不阻断页面</span>
+  errorReporter.report(e);
+}
+</pre>
+
+<div class="card info">
+  <div class="card-label">用户感知</div>
+  <p>回退发生时，用户看到的是"渲染风格悄悄回到默认值"，而不是错误弹窗。这是一种优雅降级策略 — 宁可画面风格不对，也不能让页面白屏。</p>
+</div>
+
+<!-- ==================== Section 7 ==================== -->
+<h2>7. 离线渲染状态机中的模板状态全景</h2>
+
+<p>把模板相关的所有状态放在一起看：</p>
+
+<pre>
+<span class="keyword">OfflineRenderStateManager</span> {
+  <span class="comment">// === 模板相关 ===</span>
+  <span class="dir">currentObsId</span>: string          <span class="comment">// 当前模板 ID</span>
+  <span class="dir">lightStyleId</span>: string           <span class="comment">// 当前灯光样式</span>
+  <span class="dir">hdriBackgroundId</span>: string       <span class="comment">// 当前 HDRI 背景</span>
+  <span class="dir">backgroundConfig</span>: object       <span class="comment">// 背景完整参数</span>
+  <span class="dir">obsConfigCache</span>: Map&lt;id, cfg&gt;   <span class="comment">// 模板配置缓存</span>
+
+  <span class="comment">// === 渲染相关 ===</span>
+  snapshotList: []               <span class="comment">// 快照列表</span>
+  objectShowRuleMap: Map          <span class="comment">// 来自父页面同步</span>
+  renderTasks: []                <span class="comment">// 渲染任务队列</span>
+  hasNewRender: boolean          <span class="comment">// 图册红点</span>
+  isSubmitting: boolean          <span class="comment">// 提交中锁</span>
+  hdPermission: boolean          <span class="comment">// 高清渲染权限</span>
+}
+</pre>
+
+<div class="ask-agent">
+  <strong>想深入了解？</strong>试试问："fetchAndCacheObsConfig 的完整请求链路是什么" 或 "objectShowRuleMap 从父页面同步的具体协议"。
+</div>
+
+<!-- ==================== Quiz ==================== -->
+<h2>8. 自检 Quiz</h2>
+
+<div class="quiz" id="quiz1">
+  <div class="quiz-title">Q1: obsConfigCache 的作用是什么？</div>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz1', 0)">A. 缓存渲染任务的提交状态</li>
+    <li onclick="checkQuiz('quiz1', 1)">B. 缓存模板的灯光样式映射和背景配置，避免重复请求</li>
+    <li onclick="checkQuiz('quiz1', 2)">C. 缓存父页面同步的 objectShowRuleMap</li>
+    <li onclick="checkQuiz('quiz1', 3)">D. 缓存 3D 场景的相机视角</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <div class="quiz-title">Q2: 当 fetchAndCacheObsConfig 请求失败时，系统会怎么做？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz2', 0)">A. 直接抛出错误，页面白屏</li>
+    <li onclick="checkQuiz('quiz2', 1)">B. 自动重试 3 次后放弃</li>
+    <li onclick="checkQuiz('quiz2', 2)">C. 回退到 DEFAULT_TEMPLATE_CONFIG.backgroundConfigData，渲染风格回到默认值</li>
+    <li onclick="checkQuiz('quiz2', 3)">D. 停止渲染功能，隐藏渲染按钮</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <div class="quiz-title">Q3: 切换模板时，为什么必须同时更新 lightStyleId 和 backgroundConfig？</div>
+  <ul class="quiz-options" data-correct="0">
+    <li onclick="checkQuiz('quiz3', 0)">A. 因为灯光和背景绑定在同一个模板下，只更新一个会导致画面不一致</li>
+    <li onclick="checkQuiz('quiz3', 1)">B. 因为代码有 bug，必须两个一起改才行</li>
+    <li onclick="checkQuiz('quiz3', 2)">C. 因为 lightStyleId 是 backgroundConfig 的子字段</li>
+    <li onclick="checkQuiz('quiz3', 3)">D. 不需要同时更新，它们是独立的</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<!-- ==================== Next ==================== -->
+
+</div>
+</div>
+
+<script>
+function checkQuiz(quizId, selected) {
+  const quiz = document.getElementById(quizId);
+  const options = quiz.querySelector('.quiz-options');
+  const correct = parseInt(options.dataset.correct);
+  const items = options.querySelectorAll('li');
+  const feedback = quiz.querySelector('.quiz-feedback');
+
+  items.forEach((item, i) => {
+    item.onclick = null;
+    if (i === correct) item.classList.add('correct');
+    if (i === selected && i !== correct) item.classList.add('wrong');
+  });
+
+  const feedbacks = {
+    quiz1: {
+      correct: '✓ 对！obsConfigCache 以 obsId 为 key 缓存灯光样式映射和背景配置，同一模板重复切换时优先走缓存，避免重复网络请求。',
+      wrong: '✗ 是 B。obsConfigCache 缓存的是模板的灯光样式映射和背景配置，不是渲染任务、显示规则或相机视角。'
+    },
+    quiz2: {
+      correct: '✓ 对！这是优雅降级策略 — 回退到 DEFAULT_TEMPLATE_CONFIG.backgroundConfigData，渲染风格回到默认值，但页面不会白屏。',
+      wrong: '✗ 是 C。失败时回退到 DEFAULT_TEMPLATE_CONFIG.backgroundConfigData，用户看到的是渲染风格悄悄回到默认值。'
+    },
+    quiz3: {
+      correct: '✓ 对！灯光和背景绑定在同一个模板下，只更新一个会导致"灯光变了但背景没变"的画面不一致问题。',
+      wrong: '✗ 是 A。同一个模板的灯光和背景是绑定的，必须一起更新才能保证画面风格一致。'
+    }
+  };
+
+  feedback.style.display = 'block';
+  feedback.textContent = selected === correct
+    ? feedbacks[quizId].correct
+    : feedbacks[quizId].wrong;
+  feedback.style.background = selected === correct ? '#dcfce7' : '#fee2e2';
+}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 059</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0058-offline-render-pipeline.html">上一课：058 离线渲染管线详解</a><a class="primary" href="0060-cross-repo-integration.html">下一课：060 跨仓库集成指南</a></div></nav>
+</body>
+</html>

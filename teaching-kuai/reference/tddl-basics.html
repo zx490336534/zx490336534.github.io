@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TDDL 数据库中间件入门</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:2rem}
+  .breadcrumb{color:var(--text-secondary);font-size:.85rem;margin-bottom:1.5rem}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .breadcrumb a:hover{text-decoration:underline}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.15rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem}
+  p{margin-bottom:1rem}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15rem .4rem;border-radius:4px;font-size:.88em}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;overflow-x:auto;margin:1rem 0;font-size:.88rem;line-height:1.6}
+  pre code{background:none;padding:0}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.4rem}
+  .tag{display:inline-block;padding:.1rem .4rem;border-radius:4px;font-size:.7rem;font-weight:500;margin-right:.3rem}
+  .tag.overview{background:#dbeafe;color:#2563eb}
+  .tag.concept{background:#f3e8ff;color:#7c3aed}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0}
+  .card-title{font-weight:600;margin-bottom:.5rem;font-size:1.05rem}
+  .module-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin:1rem 0}
+  .module-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;transition:all .2s}
+  .module-card:hover{border-color:var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .module-card h4{font-size:1rem;font-weight:600;margin-bottom:.35rem}
+  .module-card p{color:var(--text-secondary);font-size:.9rem;margin:0}
+  .quiz-section{background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:1.5rem;margin-top:2.5rem}
+  .quiz-section h2{margin-top:0;color:var(--accent)}
+  .quiz-q{margin-bottom:1.5rem}
+  .quiz-q .q-title{font-weight:600;margin-bottom:.5rem}
+  .quiz-q label{display:block;padding:.4rem .75rem;margin:.3rem 0;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s;background:var(--surface)}
+  .quiz-q label:hover{border-color:var(--accent)}
+  .quiz-q input[type="radio"]{margin-right:.5rem}
+  .quiz-q .answer{display:none;margin-top:.5rem;padding:.75rem 1rem;border-radius:6px;font-size:.9rem}
+  .quiz-q .answer.correct{background:#dcfce7;color:#166534;border:1px solid #86efac}
+  .quiz-q .answer.wrong{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
+  .ask-agent::before{content:'💡 '}
+  .nav-links{display:flex;justify-content:space-between;margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+  .nav-links a{color:var(--accent);text-decoration:none;font-weight:500}
+  .nav-links a:hover{text-decoration:underline}
+  .highlight{background:var(--accent-light);padding:.1rem .3rem;border-radius:3px}
+  table{width:100%;border-collapse:collapse;margin:1rem 0}
+  th,td{padding:.6rem .8rem;border:1px solid var(--border);text-align:left;font-size:.9rem}
+  th{background:var(--code-bg);font-weight:600}
+</style>
+<script>
+function checkAnswer(qId, correct, el){
+  var ans=el.parentElement.parentElement.querySelector('.answer');
+  if(el.value===correct){ans.className='answer correct';ans.innerHTML='✅ 正确！';ans.style.display='block'}
+  else{ans.className='answer wrong';ans.innerHTML='❌ 错误，正确答案是 '+correct+'。';ans.style.display='block'}
+}
+</script>
+</head>
+<body>
+<div class="container">
+
+<div class="breadcrumb"><a href="../lessons/index.html">课程首页</a> &gt; 概念教程 &gt; TDDL 数据库中间件入门</div>
+
+<h1>🗄️ TDDL 数据库中间件入门</h1>
+<p class="subtitle"><span class="tag concept">概念</span> 了解 TDDL 是什么、为什么需要它，以及如何在项目中使用</p>
+
+<!-- ============ 1. 什么是 TDDL ============ -->
+<h2><span class="icon">🤔</span> 什么是 TDDL？</h2>
+<p><strong>TDDL</strong>（Taobao Distributed Data Layer）是阿里巴巴开源的<strong>数据库中间件</strong>。它在你的 Java 应用和数据库之间加了一层，帮你处理数据库访问的各种复杂问题。</p>
+
+<div class="card">
+  <p class="card-title">🎯 一句话理解</p>
+  <p>TDDL 是一个<strong>"智能代理"</strong>，站在你的应用和数据库中间，帮你自动完成数据源选择、读写分离、分库分表等操作。你的代码不需要关心底层有几个数据库、数据存在哪个库。</p>
+</div>
+
+<p>TDDL 的核心能力：</p>
+<ul>
+  <li><strong>数据源路由</strong>：自动选择访问哪个数据库</li>
+  <li><strong>读写分离</strong>：写操作走主库，读操作走从库</li>
+  <li><strong>分库分表</strong>：数据量大时自动拆分到多个库/表</li>
+  <li><strong>故障转移</strong>：某个库挂了自动切到备用库</li>
+</ul>
+
+<!-- ============ 2. 为什么不用普通 JDBC ============ -->
+<h2><span class="icon">💡</span> 为什么不用普通 JDBC？</h2>
+<p>当你的系统只有一个数据库、数据量不大时，普通 JDBC（或 MyBatis 直连）完全够用。</p>
+<p>但当业务增长到一定程度，你会遇到这些问题：</p>
+
+<table>
+  <tr><th>场景</th><th>普通 JDBC 的问题</th><th>TDDL 的解决方案</th></tr>
+  <tr><td>读多写少</td><td>所有请求打到一个库，主库压力大</td><td>自动读写分离，读走从库</td></tr>
+  <tr><td>数据量巨大</td><td>单表几亿行，查询慢到爆</td><td>分库分表，数据分散存储</td></tr>
+  <tr><td>多个数据源</td><td>代码里写死连接地址，切换麻烦</td><td>统一配置，动态路由</td></tr>
+  <tr><td>数据库故障</td><td>应用直接报错，无法自动恢复</td><td>健康检查 + 自动故障转移</td></tr>
+</table>
+
+<div class="card">
+  <p class="card-title">🏢 酷家乐为什么用 TDDL？</p>
+  <p>酷家乐作为大型 SaaS 平台，用户数据量大、访问量高。使用 TDDL 可以在<strong>不改变业务代码</strong>的情况下，通过配置实现数据库的水平扩展，保障系统性能和稳定性。</p>
+</div>
+
+<!-- ============ 3. tddl-min 依赖 ============ -->
+<h2><span class="icon">📦</span> tddl-min 依赖</h2>
+<p>在项目中使用 TDDL，需要引入 <code>tddl-min</code> 依赖。这是一个精简版的 TDDL，只包含核心功能：</p>
+
+<pre><code>&lt;!-- pom.xml --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.taobao.tddl&lt;/groupId&gt;
+    &lt;artifactId&gt;tddl-min&lt;/artifactId&gt;
+    &lt;version&gt;5.1.4&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+
+<p><code>tddl-min</code> vs 完整版 TDDL：</p>
+<ul>
+  <li><code>tddl-min</code>：轻量级，只包含数据源路由和基本功能，适合大多数项目</li>
+  <li>完整版 TDDL：包含分库分表、分布式事务等高级功能，配置更复杂</li>
+</ul>
+
+<!-- ============ 4. 数据源配置 ============ -->
+<h2><span class="icon">⚙️</span> 数据源配置</h2>
+<p>TDDL 的核心是<strong>数据源（DataSource）</strong>配置。它替代了你之前直接配置的 JDBC 数据源。</p>
+
+<h3>4.1 Spring 配置方式</h3>
+<p>在 Spring Boot 中，通常通过 Java Config 类配置 TDDL 数据源：</p>
+
+<pre><code>@Configuration
+public class DataSourceConfig {
+
+    @Bean
+    public DataSource dataSource() {
+        // TDDL 数据源配置
+        TGroupDataSource dataSource = new TGroupDataSource();
+
+        // 配置数据库连接信息
+        Properties props = new Properties();
+        props.setProperty("ip", "your-db-host");
+        props.setProperty("port", "3306");
+        props.setProperty("dbName", "kuai_db");
+        props.setProperty("dbType", "mysql");
+        props.setProperty("userName", "root");
+        props.setProperty("password", "your-password");
+
+        dataSource.setDataSourceProperties(props);
+        return dataSource;
+    }
+}</code></pre>
+
+<h3>4.2 application.yml 配置</h3>
+<p>也可以在配置文件中统一管理：</p>
+<pre><code>spring:
+  tddl:
+    datasource:
+      ip: your-db-host
+      port: 3306
+      dbName: kuai_db
+      dbType: mysql
+      userName: root
+      password: your-password</code></pre>
+
+<div class="ask-agent">
+  <strong>注意：</strong>在实际的酷家乐项目中，数据库地址、密码等敏感信息不会写在代码里，而是通过<strong>配置中心</strong>（如 Diamond/Nacos）动态获取。
+</div>
+
+<!-- ============ 5. 与 MyBatis 集成 ============ -->
+<h2><span class="icon">🔗</span> 与 MyBatis / MyBatis-Plus 的集成</h2>
+<p>TDDL 最大的优势是：<strong>它对上层框架完全透明</strong>。你的 MyBatis-Plus 代码不需要做任何改动。</p>
+
+<h3>集成原理</h3>
+<pre><code>你的代码 (Mapper/Service)
+        ↓ 调用
+MyBatis-Plus (ORM 框架)
+        ↓ 使用 DataSource
+TDDL 数据源 (智能代理)  ← 这层帮你做路由、读写分离
+        ↓ 连接
+实际数据库 (MySQL)</code></pre>
+
+<p>只要把 Spring 的 <code>DataSource</code> Bean 替换为 TDDL 的数据源，MyBatis-Plus 的所有操作（<code>selectById</code>、<code>insert</code> 等）都会自动经过 TDDL 路由。</p>
+
+<h3>集成步骤</h3>
+<ol>
+  <li>引入 <code>tddl-min</code> 依赖</li>
+  <li>配置 TDDL 数据源 Bean（替代原来的 JDBC 数据源）</li>
+  <li>MyBatis-Plus 的 Mapper 和 Service 代码<strong>不需要改任何一行</strong></li>
+</ol>
+
+<pre><code>// 这段代码和用不用 TDDL 完全一样，无需修改
+@Service
+public class UserService {
+    @Autowired
+    private UserMapper userMapper;
+
+    public User getUser(Long id) {
+        return userMapper.selectById(id);  // TDDL 自动帮你路由到正确的库
+    }
+}</code></pre>
+
+<div class="card">
+  <p class="card-title">总结：TDDL 的使用姿势</p>
+  <ol>
+    <li>加 <code>tddl-min</code> Maven 依赖</li>
+    <li>把 <code>DataSource</code> Bean 换成 TDDL 的实现</li>
+    <li>业务代码零改动，框架透明</li>
+    <li>通过配置中心管理数据库连接信息</li>
+  </ol>
+</div>
+
+<div class="ask-agent">
+  <strong>试试问 Agent：</strong>"TDDL 是怎么实现读写分离的？" 或者 "分库分表的策略有哪些？"
+</div>
+
+<!-- ============ Quiz ============ -->
+<div class="quiz-section">
+  <h2><span class="icon">📝</span> Quiz — 检验你的理解</h2>
+
+  <div class="quiz-q">
+    <div class="q-title">Q1: TDDL 的主要作用是什么？</div>
+    <label><input type="radio" name="q1" value="A" onclick="checkAnswer('q1','A',this)"> A. 在应用和数据库之间提供数据源路由、读写分离等功能</label>
+    <label><input type="radio" name="q1" value="B" onclick="checkAnswer('q1','B',this)"> B. 替代 MySQL 数据库本身</label>
+    <label><input type="radio" name="q1" value="C" onclick="checkAnswer('q1','C',this)"> C. 一个前端 UI 工具，用于管理数据库</label>
+    <div class="answer"></div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-title">Q2: 使用 TDDL 后，MyBatis-Plus 的 Mapper 代码需要修改吗？</div>
+    <label><input type="radio" name="q2" value="A" onclick="checkAnswer('q2','A',this)"> A. 不需要，TDDL 对上层框架完全透明</label>
+    <label><input type="radio" name="q2" value="B" onclick="checkAnswer('q2','B',this)"> B. 需要，必须使用 TDDL 特有的 API</label>
+    <label><input type="radio" name="q2" value="C" onclick="checkAnswer('q2','C',this)"> C. 需要，必须改写所有 SQL 语句</label>
+    <div class="answer"></div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-title">Q3: 在项目中引入 TDDL，需要添加哪个 Maven 依赖？</div>
+    <label><input type="radio" name="q3" value="A" onclick="checkAnswer('q3','A',this)"> A. tddl-min</label>
+    <label><input type="radio" name="q3" value="B" onclick="checkAnswer('q3','B',this)"> B. spring-boot-starter-tddl</label>
+    <label><input type="radio" name="q3" value="C" onclick="checkAnswer('q3','C',this)"> C. mybatis-plus-tddl</label>
+    <div class="answer"></div>
+  </div>
+</div>
+
+<div class="nav-links">
+  <a href="mybatis-plus-basics.html">← 上一课：MyBatis-Plus 基础</a>
+  <a href="../lessons/index.html">返回课程首页 →</a>
+</div>
+
+</div>
+</body>
+</html>

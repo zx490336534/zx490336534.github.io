@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>006 Maven 多模块 + Java 工程读法</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:820px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:0}
+  .subtitle{color:var(--text-secondary);font-size:.95rem;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  h2{font-size:1.35rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem}
+  h3{font-size:1.1rem;font-weight:500;margin-top:1.5rem;margin-bottom:.75rem;color:var(--accent)}
+  p{margin-bottom:1rem}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0}
+  .card.info{border-left:3px solid var(--info)}.card.warning{border-left:3px solid var(--warning)}.card.success{border-left:3px solid var(--success)}
+  .card-label{font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+  .card.info .card-label{color:var(--info)}.card.warning .card-label{color:var(--warning)}.card.success .card-label{color:var(--success)}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15em .4em;border-radius:4px;font-size:.88em}
+  pre{background:#1c1917;color:#e7e5e4;padding:1.25rem 1.5rem;border-radius:8px;overflow-x:auto;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.6}
+  pre .comment{color:#a8a29e}pre .important{color:#fbbf24;font-weight:500}pre .dir{color:#93c5fd}pre .file{color:#e7e5e4}pre .tag{color:#f59e0b}pre .value{color:#86efac}
+  table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.92rem}
+  th,td{text-align:left;padding:.6rem .8rem;border-bottom:1px solid var(--border);vertical-align:top}
+  th{font-weight:500;color:var(--text-secondary);font-size:.82rem;text-transform:uppercase;letter-spacing:.04em}
+  .flow{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin:1rem 0;font-size:.9rem}
+  .flow-step{background:var(--surface);border:1px solid var(--border);padding:.4rem .8rem;border-radius:6px;white-space:nowrap}
+  .flow-arrow{color:var(--text-secondary)}
+  .quiz{background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0}
+  .quiz-title{font-weight:700;margin-bottom:.75rem;color:var(--accent)}
+  .quiz-options{list-style:none;margin:0}.quiz-options li{padding:.5rem .75rem;margin:.35rem 0;border-radius:6px;cursor:pointer;transition:background .15s;border:1px solid transparent}
+  .quiz-options li:hover{background:#fde68a33;border-color:#fbbf24}
+  .quiz-options li.correct{background:#dcfce7;border-color:#16a34a}.quiz-options li.wrong{background:#fee2e2;border-color:#ef4444}
+  .quiz-feedback{margin-top:.75rem;padding:.75rem;border-radius:6px;display:none;font-size:.9rem}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.3rem}
+  a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+  .nav{margin:2.5rem 0 0;padding:1rem 1.1rem;border:1px solid #d6d3d1;border-radius:8px;background:#fff;display:grid;gap:.75rem}
+  .nav-title{font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:#78716c}
+  .nav-links{display:flex;flex-wrap:wrap;gap:.65rem;align-items:center}
+  .nav a{color:#44403c;text-decoration:none;border:1px solid #e7e5e4;border-radius:6px;padding:.35rem .65rem}
+  .nav a.primary{color:#fff;border-color:#b45309;background:#b45309}.nav a.map{color:#2563eb;border-color:#bfdbfe;background:#eff6ff}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>006 Maven 多模块 + Java 工程读法</h1>
+<p class="subtitle">用 ai-native-service / auto-layout-service 的 common、client、web 模块，读懂工程边界、依赖来源和 Java 8/21 混合模块</p>
+
+<h2>1. 先看根 pom，不先钻代码</h2>
+
+<p>测试转开发读后端工程时，第一步不是找某个类，而是打开根目录的 <code>pom.xml</code>。它告诉你三件事：这是一个父工程、下面有哪些子模块、版本大多从哪里来。</p>
+
+<div class="card info">
+  <div class="card-label">读法</div>
+  <p><code>&lt;packaging&gt;pom&lt;/packaging&gt;</code> 通常表示“聚合父工程”，不是直接启动的业务包。真正启动服务的，通常在 <code>*-web</code> 模块里。</p>
+</div>
+
+<pre>
+<span class="dir">ai-native-service</span> / <span class="dir">auto-layout-service</span>
+├── <span class="file">pom.xml</span>                         <span class="comment">父工程：声明 modules、父依赖、统一版本</span>
+├── <span class="dir">*-common</span> / <span class="file">pom.xml</span>              <span class="comment">共享 DTO / VO / 枚举 / 契约模型</span>
+├── <span class="dir">*-client</span> / <span class="file">pom.xml</span>              <span class="comment">给别的服务调用自己的客户端包</span>
+└── <span class="dir">*-web</span> / <span class="file">pom.xml</span>                 <span class="comment">Controller / Service / Manager / Mapper，启动入口</span>
+</pre>
+
+<p>两个仓库都是真实的三模块结构：</p>
+
+<table>
+  <tr><th>仓库</th><th>父 artifactId</th><th>modules</th><th>启动模块</th></tr>
+  <tr><td><code>ai-native-service</code></td><td><code>ai-native-service-parent</code></td><td><code>ai-native-service-common</code><br><code>ai-native-service-client</code><br><code>ai-native-service-web</code></td><td><code>ai-native-service-web</code></td></tr>
+  <tr><td><code>auto-layout-service</code></td><td><code>auto-layout-service-parent</code></td><td><code>auto-layout-service-common</code><br><code>auto-layout-service-client</code><br><code>auto-layout-service-web</code></td><td><code>auto-layout-service-web</code></td></tr>
+</table>
+
+<h2>2. common、client、web 分别管什么</h2>
+
+<p>你可以先用“谁会依赖谁”来判断边界：</p>
+
+<div class="flow">
+  <span class="flow-step">common：共享数据结构</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">client：远程调用封装</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">web：真正业务服务</span>
+</div>
+
+<table>
+  <tr><th>模块</th><th>主要内容</th><th>AIHom 读代码时怎么用</th></tr>
+  <tr><td><code>common</code></td><td>请求 / 响应 VO、DTO、枚举、校验注解等共享对象</td><td>看到接口入参或返回值，先到这里找字段含义</td></tr>
+  <tr><td><code>client</code></td><td>给其他服务使用的调用封装，例如 <code>AiNativeClient</code></td><td>跨服务调用时，先看 client 暴露了哪些方法</td></tr>
+  <tr><td><code>web</code></td><td>Controller、Service、Factory、Manager、Mapper、配置和启动类</td><td>新增功能大多数改这里；排查问题也从这里追调用链</td></tr>
+</table>
+
+<div class="card success">
+  <div class="card-label">真实例子</div>
+  <p><code>auto-layout-service-web</code> 依赖了 <code>ai-native-service-client</code>，代码里 <code>AiNativeManager</code> 注入 <code>AiNativeClient</code>，再调用 <code>imageGenerateWithPolling</code>。这说明 <code>client</code> 是“跨服务调用的门面”。</p>
+</div>
+
+<h2>3. 依赖版本从哪里来</h2>
+
+<p>Maven 查版本时，不要只看当前模块。顺序通常是：</p>
+
+<ol>
+  <li>当前模块 <code>&lt;dependency&gt;</code> 自己写了 <code>&lt;version&gt;</code>，就用它。</li>
+  <li>当前模块没写版本，去父工程的 <code>&lt;dependencyManagement&gt;</code> 找。</li>
+  <li>父工程也可能继承公司统一 BOM，比如 <code>pilot-boot-dependencies</code>。</li>
+  <li>某些 BOM 用 <code>type=pom</code> + <code>scope=import</code> 导入一整套版本。</li>
+</ol>
+
+<pre>
+<span class="tag">&lt;dependencyManagement&gt;</span>
+  <span class="tag">&lt;dependency&gt;</span>
+    <span class="tag">&lt;groupId&gt;</span>org.springframework.ai<span class="tag">&lt;/groupId&gt;</span>
+    <span class="tag">&lt;artifactId&gt;</span>spring-ai-bom<span class="tag">&lt;/artifactId&gt;</span>
+    <span class="tag">&lt;version&gt;</span><span class="value">${spring-ai.version}</span><span class="tag">&lt;/version&gt;</span>
+    <span class="tag">&lt;type&gt;</span>pom<span class="tag">&lt;/type&gt;</span>
+    <span class="tag">&lt;scope&gt;</span>import<span class="tag">&lt;/scope&gt;</span>
+  <span class="tag">&lt;/dependency&gt;</span>
+<span class="tag">&lt;/dependencyManagement&gt;</span>
+</pre>
+
+<p><code>ai-native-service</code> 的父 POM 里能看到 <code>spring-ai.version</code>、<code>spring-ai-alibaba.version</code>、<code>netty.version</code>、<code>mybatis-plus.version</code> 这些集中版本。<code>ai-native-service-web</code> 里再使用 <code>spring-ai-openai</code>、<code>spring-ai-starter-mcp-client</code> 等依赖时，就不一定需要逐个写版本。</p>
+
+<div class="card warning">
+  <div class="card-label">小心</div>
+  <p>课程里不要把“没写 version”理解成“没有版本”。很多版本被父 POM 或 BOM 管住了。测试定位依赖冲突时，要顺着父子 POM 往上找。</p>
+</div>
+
+<h2>4. Java 8 / 21 混合模块怎么读</h2>
+
+<p><code>ai-native-service</code> 父工程声明 <code>java.version=21</code>，但 <code>ai-native-service-common</code> 和 <code>ai-native-service-client</code> 都用 <code>maven-compiler-plugin</code> 的 <code>&lt;release&gt;8&lt;/release&gt;</code>。这不是矛盾，而是边界设计。</p>
+
+<table>
+  <tr><th>位置</th><th>Java 版本信号</th><th>意思</th></tr>
+  <tr><td><code>ai-native-service/pom.xml</code></td><td><code>java.version=21</code></td><td>web 服务主工程可以使用 Java 21 / Spring Boot 3 生态</td></tr>
+  <tr><td><code>ai-native-service-common/pom.xml</code></td><td><code>release 8</code></td><td>共享模型尽量兼容老服务</td></tr>
+  <tr><td><code>ai-native-service-client/pom.xml</code></td><td><code>release 8</code></td><td>客户端包要给 Java 8 服务依赖，比如 auto-layout-service</td></tr>
+  <tr><td><code>auto-layout-service/pom.xml</code></td><td><code>java.version=1.8</code></td><td>自动布局服务整体还是 Java 8 风格</td></tr>
+</table>
+
+<p>所以读代码时要形成一个直觉：<strong>common / client 是契约边界，通常更保守；web 是业务运行边界，版本可能更新。</strong></p>
+
+<h2>5. 一分钟读工程步骤</h2>
+
+<ol>
+  <li>打开根 <code>pom.xml</code>，确认 <code>packaging</code>、<code>modules</code>、父依赖。</li>
+  <li>打开 <code>*-web/pom.xml</code>，找 <code>spring-boot-maven-plugin</code> 的 <code>mainClass</code>。</li>
+  <li>看 <code>*-web</code> 依赖了哪些 <code>common</code>、<code>client</code> 和外部 SDK。</li>
+  <li>遇到请求 / 响应类，先按名字去 <code>common</code> 或 <code>web/.../vo</code> 找字段。</li>
+  <li>遇到版本疑问，先查当前 POM，再查父 POM，再查 BOM。</li>
+</ol>
+
+<h2>6. 代码证据</h2>
+
+<table>
+  <tr><th>你要确认什么</th><th>真实文件</th></tr>
+  <tr><td>两个服务都有 common/client/web 三模块</td><td><code>ai-native-service/pom.xml</code><br><code>auto-layout-service/pom.xml</code></td></tr>
+  <tr><td><code>ai-native-service</code> 父工程 Java 21、Spring AI BOM</td><td><code>ai-native-service/pom.xml</code></td></tr>
+  <tr><td><code>ai-native-service-common</code> / <code>client</code> 编译 Java 8</td><td><code>ai-native-service/ai-native-service-common/pom.xml</code><br><code>ai-native-service/ai-native-service-client/pom.xml</code></td></tr>
+  <tr><td><code>auto-layout-service</code> Java 8，web 依赖 <code>ai-native-service-client</code></td><td><code>auto-layout-service/pom.xml</code><br><code>auto-layout-service/auto-layout-service-web/pom.xml</code></td></tr>
+  <tr><td>跨服务 client 真实调用</td><td><code>AiNativeClient</code><br><code>AiNativeManager</code></td></tr>
+</table>
+
+<h2>7. 自检 Quiz</h2>
+
+<div class="quiz" id="quiz1">
+  <div class="quiz-title">Q1: 根 POM 里的 <code>&lt;packaging&gt;pom&lt;/packaging&gt;</code> 最像在说什么？</div>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz1',0)">A. 直接启动</li>
+    <li onclick="checkQuiz('quiz1',1)">B. 聚合父工程</li>
+    <li onclick="checkQuiz('quiz1',2)">C. 前端资源包</li>
+    <li onclick="checkQuiz('quiz1',3)">D. 数据库脚本</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <div class="quiz-title">Q2: 其他服务想调用 ai-native-service，优先依赖哪个模块？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz2',0)">A. parent 模块</li>
+    <li onclick="checkQuiz('quiz2',1)">B. common 模块</li>
+    <li onclick="checkQuiz('quiz2',2)">C. client 模块</li>
+    <li onclick="checkQuiz('quiz2',3)">D. web 模块</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <div class="quiz-title">Q3: 依赖没写 version，最可能先去哪里找版本？</div>
+  <ul class="quiz-options" data-correct="0">
+    <li onclick="checkQuiz('quiz3',0)">A. dependencyManagement</li>
+    <li onclick="checkQuiz('quiz3',1)">B. controller 包</li>
+    <li onclick="checkQuiz('quiz3',2)">C. resources 图片</li>
+    <li onclick="checkQuiz('quiz3',3)">D. mapper XML</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="ask-agent">
+  卡住时可以直接问 agent：“帮我从某个 POM 追一个依赖版本从哪里来”，或者“帮我判断这个类应该放 common、client 还是 web”。
+</div>
+
+<div class="card info">
+  <div class="card-label">推荐主资料</div>
+  <p>想补 Maven 基础，优先看 Apache Maven 官方的 <a href="https://maven.apache.org/guides/introduction/introduction-to-the-pom.html" target="_blank" rel="noopener">Introduction to the POM</a>。读完这节课后，只需要重点理解 parent、modules、dependencyManagement、properties。</p>
+</div>
+
+</div>
+<script>
+function checkQuiz(q,s){const root=document.getElementById(q),o=root.querySelector('.quiz-options'),c=parseInt(o.dataset.correct),items=o.querySelectorAll('li'),f=root.querySelector('.quiz-feedback');items.forEach((x,n)=>{x.onclick=null;if(n===c)x.classList.add('correct');if(n===s&&n!==c)x.classList.add('wrong')});const fb={quiz1:{c:'答对了。根 POM 负责聚合和管理，启动入口一般在 web 模块。',w:'再看 packaging。pom 表示它更像父工程，不是直接启动的服务包。'},quiz2:{c:'答对了。client 模块就是给别的服务调用自己的门面。',w:'答案是 client 模块。common 是共享模型，web 是服务本体。'},quiz3:{c:'答对了。先查当前或父 POM 的 dependencyManagement，再看导入的 BOM。',w:'先找 dependencyManagement。很多依赖版本不会写在当前 dependency 上。'}};f.style.display='block';f.textContent=s===c?fb[q].c:fb[q].w;f.style.background=s===c?'#dcfce7':'#fee2e2'}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 006</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="../spring-ai/0005-spring-autoconfig-yml.html">上一课：005 Spring Boot 自动配置 + starter + yml</a><a class="primary" href="0007-springboot-web-layers.html">下一课：007 Spring Boot Web 三层最小闭环</a></div></nav>
+</body>
+</html>

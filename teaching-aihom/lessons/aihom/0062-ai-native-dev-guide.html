@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>062 ai-native-service 开发实战</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:780px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:.95rem;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  h2{font-size:1.35rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem}
+  h3{font-size:1.1rem;font-weight:500;margin-top:1.5rem;margin-bottom:.75rem;color:var(--accent)}
+  p{margin-bottom:1rem}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0}
+  .card.info{border-left:3px solid var(--info)}.card.warning{border-left:3px solid var(--warning)}.card.success{border-left:3px solid var(--success)}
+  .card-label{font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+  .card.info .card-label{color:var(--info)}.card.warning .card-label{color:var(--warning)}.card.success .card-label{color:var(--success)}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15em .4em;border-radius:4px;font-size:.88em}
+  pre{background:#1c1917;color:#e7e5e4;padding:1.25rem 1.5rem;border-radius:8px;overflow-x:auto;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.6}
+  pre .comment{color:#78716c}pre .keyword{color:#f59e0b}pre .string{color:#86efac}pre .dir{color:#93c5fd}pre .important{color:#fbbf24;font-weight:500}
+  table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.92rem}
+  th,td{text-align:left;padding:.6rem .8rem;border-bottom:1px solid var(--border)}
+  th{font-weight:500;color:var(--text-secondary);font-size:.82rem;text-transform:uppercase;letter-spacing:.04em}
+  .step{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0}
+  .step-num{display:inline-block;background:var(--accent);color:white;width:24px;height:24px;border-radius:50%;text-align:center;line-height:24px;font-size:.8rem;font-weight:700;margin-right:.5rem}
+  .quiz{background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0}
+  .quiz-title{font-weight:700;margin-bottom:.75rem;color:var(--accent)}
+  .quiz-options{list-style:none}.quiz-options li{padding:.5rem .75rem;margin:.35rem 0;border-radius:6px;cursor:pointer;transition:background .15s;border:1px solid transparent}
+  .quiz-options li:hover{background:#fde68a33;border-color:#fbbf24}
+  .quiz-options li.correct{background:#dcfce7;border-color:#16a34a}.quiz-options li.wrong{background:#fee2e2;border-color:#ef4444}
+  .quiz-feedback{margin-top:.75rem;padding:.75rem;border-radius:6px;display:none;font-size:.9rem}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
+  .ask-agent::before{content:'💡 '}
+  .next-lesson{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+  .next-lesson a{color:var(--accent);text-decoration:none;font-weight:500}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.3rem}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>062 ai-native-service 开发实战</h1>
+<p class="subtitle">常见开发任务的 step-by-step 指南</p>
+
+<h2>1. 如何新增一个本地 Tool</h2>
+<p>当 AI Agent 需要调用新的后端能力时，你需要创建一个 Tool。</p>
+
+<div class="step">
+  <span class="step-num">1</span>
+  <strong>创建 Tool 类</strong>
+  <p>在 <code>tool/</code> 目录下新建 Java 类，继承 <code>AbstractToolCallBack</code>：</p>
+  <pre>
+<span class="keyword">@Component</span>
+<span class="keyword">public class</span> <span class="important">MyNewTool</span> <span class="keyword">extends</span> AbstractToolCallBack {
+
+    <span class="keyword">@Override</span>
+    <span class="keyword">public</span> String getName() {
+        <span class="keyword">return</span> <span class="string">"my_new_tool"</span>;  <span class="comment">// 工具唯一标识</span>
+    }
+
+    <span class="keyword">@Override</span>
+    <span class="keyword">public</span> String getDescription() {
+        <span class="keyword">return</span> <span class="string">"描述这个工具做什么，LLM 会根据描述决定何时调用"</span>;
+    }
+
+    <span class="keyword">@Override</span>
+    <span class="keyword">public</span> String getParameters() {
+        <span class="comment">// 返回 JSON Schema 格式的参数定义</span>
+        <span class="keyword">return</span> <span class="string">"""
+            {
+                "type": "object",
+                "properties": {
+                    "input": {"type": "string", "description": "输入参数"}
+                },
+                "required": ["input"]
+            }
+            """</span>;
+    }
+
+    <span class="keyword">@Override</span>
+    <span class="keyword">public</span> String execute(Map&lt;String, Object&gt; args) {
+        <span class="comment">// 实际执行逻辑</span>
+        String input = (String) args.get(<span class="string">"input"</span>);
+        <span class="comment">// ... 业务逻辑 ...</span>
+        <span class="keyword">return</span> JSONUtils.toJSONNoException(result);
+    }
+}
+  </pre>
+</div>
+
+<div class="step">
+  <span class="step-num">2</span>
+  <strong>注册到 ToolCallBackFactory</strong>
+  <p>在 <code>factory/ToolCallBackFactory.java</code> 中添加新 Tool 的注册。确保它被包含在对应 Agent 的工具列表中。</p>
+</div>
+
+<div class="step">
+  <span class="step-num">3</span>
+  <strong>在 Nacos 配置中绑定</strong>
+  <p>在 Nacos 配置中心的对应 Agent 配置中，将新工具名添加到 <code>tools</code> 列表。</p>
+</div>
+
+<div class="step">
+  <span class="step-num">4</span>
+  <strong>测试</strong>
+  <p>本地启动服务，通过前端对话触发对应场景，检查 Langfuse trace 中工具是否被正确调用。</p>
+</div>
+
+<h2>2. 如何新增一个子 Agent</h2>
+
+<div class="step">
+  <span class="step-num">1</span>
+  <strong>在 Nacos 中配置 Agent</strong>
+  <p>添加新的 Agent 配置：名称、prompt、模型、工具列表、温度等参数。</p>
+</div>
+
+<div class="step">
+  <span class="step-num">2</span>
+  <strong>在 Supervisor 中注册路由</strong>
+  <p>修改 Supervisor 的 prompt 或路由配置，让它知道新 Agent 的存在和适用场景。</p>
+</div>
+
+<div class="step">
+  <span class="step-num">3</span>
+  <strong>在 StateGraph 中添加节点</strong>
+  <p>如果需要自定义节点逻辑，在 <code>node/</code> 目录下创建适配器，或使用默认的 AgentNodeAdapterImpl。</p>
+</div>
+
+<h2>3. 如何新增 Controller 接口</h2>
+
+<pre>
+<span class="keyword">@RestController</span>
+<span class="keyword">@AccessControlAllowEnable</span>
+<span class="keyword">public class</span> <span class="important">MyController</span> <span class="keyword">extends</span> BaseController {
+
+    <span class="keyword">@Resource</span>
+    <span class="keyword">private</span> MyService myService;
+
+    <span class="keyword">@PostMapping</span>(UriConstants.MY_ENDPOINT)
+    <span class="keyword">@LoginCheck</span>  <span class="comment">// 需要登录</span>
+    <span class="keyword">public</span> Result&lt;MyResponseVo&gt; myMethod(<span class="keyword">@RequestBody</span> MyRequestVo reqVo) {
+        <span class="comment">// 参数校验</span>
+        BeanValidator.validate(reqVo);
+        <span class="comment">// 业务逻辑</span>
+        MyResponseVo result = myService.doSomething(reqVo);
+        <span class="keyword">return</span> Result.ok(result);
+    }
+}
+</pre>
+
+<div class="card warning">
+  <div class="card-label">规范</div>
+  <ul>
+    <li>URI 常量定义在 <code>constants/UriConstants.java</code></li>
+    <li>依赖注入用 <code>@Resource</code> 不用 <code>@Autowired</code></li>
+    <li>请求/响应 VO 放在 <code>vo/</code> 目录</li>
+    <li>错误码定义在 <code>enums/ErrorCodeEnum.java</code></li>
+  </ul>
+</div>
+
+<h2>4. 如何修改 Supervisor 路由</h2>
+<p>Supervisor 的路由逻辑由 <strong>Nacos 配置</strong>驱动，不需要改代码：</p>
+<ol>
+  <li>登录 Nacos 配置中心</li>
+  <li>找到 Supervisor Agent 的配置</li>
+  <li>修改 prompt 中的路由规则描述</li>
+  <li>修改子 Agent 列表和工具绑定</li>
+  <li>配置热更新，无需重启</li>
+</ol>
+
+<h2>5. 数据库表结构</h2>
+<table>
+  <tr><th>表名</th><th>用途</th><th>关键字段</th></tr>
+  <tr><td><code>conversation</code></td><td>会话</td><td>uuid, userId, graphId, title</td></tr>
+  <tr><td><code>message</code></td><td>消息</td><td>uuid, conversationUuid, role, content, agent</td></tr>
+  <tr><td><code>state_graph</code></td><td>状态图配置</td><td>graphId, graphVersion, config</td></tr>
+  <tr><td><code>graph_nodes</code></td><td>图节点配置</td><td>graphId, nodeId, nodeType, config</td></tr>
+  <tr><td><code>model_usage_info</code></td><td>模型用量</td><td>userId, model, tokens, cost</td></tr>
+</table>
+
+<h2>6. 本地运行和调试</h2>
+<pre>
+<span class="comment"># 1. 确保 JDK 21</span>
+java -version
+
+<span class="comment"># 2. 编译（跳过测试）</span>
+mvn clean install -DskipTests
+
+<span class="comment"># 3. 启动（dev 环境）</span>
+java -jar ai-native-service-web/target/ai-native-service-0.0.1-SNAPSHOT.war \
+  --add-opens java.base/java.lang=ALL-UNNAMED \
+  -Dspring.profiles.active=dev \
+  -Dstage=dev
+
+<span class="comment"># 4. 检查日志</span>
+tail -f logs/ai-native-service.log
+</pre>
+
+<h2>7. 常见排查路径</h2>
+<table>
+  <tr><th>问题</th><th>看哪里</th></tr>
+  <tr><td>消息没响应</td><td><code>SendMessageHandlerImpl.handleMessage()</code> 的 catch 块日志</td></tr>
+  <tr><td>Agent 没路由到预期子 Agent</td><td>Langfuse trace 中的 Supervisor 决策日志</td></tr>
+  <tr><td>Tool 调用失败</td><td>Tool 的 execute() 方法日志 + Langfuse tool call 记录</td></tr>
+  <tr><td>并发锁冲突</td><td>Redis 中 <code>ai-home-lock:*</code> key 状态</td></tr>
+  <tr><td>流式消息中断</td><td><code>MessageProcessService</code> 的 doOnError 日志</td></tr>
+  <tr><td>积分不足</td><td><code>InsufficientCreditsException</code> 日志 + 积分服务状态</td></tr>
+</table>
+
+<h2>8. 自检 Quiz</h2>
+
+<div class="quiz" id="quiz1">
+  <div class="quiz-title">Q1: 新增 Tool 时，工具描述放在哪个方法中？</div>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz1',0)">A. getName()</li>
+    <li onclick="checkQuiz('quiz1',1)">B. getDescription()</li>
+    <li onclick="checkQuiz('quiz1',2)">C. getParameters()</li>
+    <li onclick="checkQuiz('quiz1',3)">D. execute()</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <div class="quiz-title">Q2: Supervisor 路由配置存储在哪里？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz2',0)">A. 代码硬编码</li>
+    <li onclick="checkQuiz('quiz2',1)">B. MySQL 数据库</li>
+    <li onclick="checkQuiz('quiz2',2)">C. Nacos 配置中心</li>
+    <li onclick="checkQuiz('quiz2',3)">D. application.yml</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <div class="quiz-title">Q3: 依赖注入推荐使用哪个注解？</div>
+  <ul class="quiz-options" data-correct="0">
+    <li onclick="checkQuiz('quiz3',0)">A. @Resource (JSR-250)</li>
+    <li onclick="checkQuiz('quiz3',1)">B. @Autowired (Spring)</li>
+    <li onclick="checkQuiz('quiz3',2)">C. @Inject (CDI)</li>
+    <li onclick="checkQuiz('quiz3',3)">D. @Value (Spring)</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+</div>
+<script>
+function checkQuiz(q,s){const o=document.getElementById(q).querySelector('.quiz-options'),c=parseInt(o.dataset.correct),i=o.querySelectorAll('li'),f=document.getElementById(q).querySelector('.quiz-feedback');i.forEach((x,n)=>{x.onclick=null;if(n===c)x.classList.add('correct');if(n===s&&n!==c)x.classList.add('wrong')});const fb={q1:{c:'✓ 对！getDescription() 返回的描述会被 LLM 用来判断何时调用该工具。',w:'✗ 是 getDescription()。LLM 根据工具描述决定是否调用。'},q2:{c:'✓ 对！Supervisor 路由配置在 Nacos 配置中心，支持热更新不重启。',w:'✗ 是 Nacos 配置中心。这是项目的配置驱动架构特色。'},q3:{c:'✓ 对！项目规范推荐使用 @Resource (JSR-250)。',w:'✗ 是 @Resource。项目规范明确推荐 @Resource 而非 @Autowired。'}};f.style.display='block';f.textContent=s===c?fb[q].c:fb[q].w;f.style.background=s===c?'#dcfce7':'#fee2e2'}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 062</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="../spring-ai/0061-aihom-hands-on.html">上一课：061 回到 AIHom：重读 ai-native-service + 新增功能</a><a class="primary" href="0063-auto-layout-dev-guide.html">下一课：063 auto-layout-service 开发实战</a></div></nav>
+</body>
+</html>

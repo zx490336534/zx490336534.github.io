@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>066 render-3d 开发实战</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --accent: #b45309;
+    --accent-light: #fef3c7;
+    --border: #e7e5e4;
+    --code-bg: #f5f5f4;
+    --success: #16a34a;
+    --warning: #d97706;
+    --info: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .card.info { border-left: 3px solid var(--info); }
+  .card.warning { border-left: 3px solid var(--warning); }
+  .card.success { border-left: 3px solid var(--success); }
+
+  .card-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+  .card.info .card-label { color: var(--info); }
+  .card.warning .card-label { color: var(--warning); }
+  .card.success .card-label { color: var(--success); }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    font-size: 0.88em;
+  }
+
+  pre {
+    background: #1c1917;
+    color: #e7e5e4;
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  pre .comment { color: #78716c; }
+  pre .keyword { color: #f59e0b; }
+  pre .string { color: #86efac; }
+  pre .dir { color: #93c5fd; }
+  pre .file { color: #e7e5e4; }
+  pre .important { color: #fbbf24; font-weight: 500; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.92rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .tree { margin: 1rem 0; }
+
+  .quiz {
+    background: var(--accent-light);
+    border: 1px solid #fbbf24;
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .quiz-title {
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+  .quiz-options { list-style: none; }
+  .quiz-options li {
+    padding: 0.5rem 0.75rem;
+    margin: 0.35rem 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+  }
+  .quiz-options li:hover { background: #fde68a33; border-color: #fbbf24; }
+  .quiz-options li.correct { background: #dcfce7; border-color: #16a34a; }
+  .quiz-options li.wrong { background: #fee2e2; border-color: #ef4444; }
+  .quiz-feedback {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    display: none;
+    font-size: 0.9rem;
+  }
+
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+  }
+  .flow-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .flow-arrow { color: var(--text-secondary); }
+
+  .next-lesson {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .next-lesson a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .next-lesson a:hover { text-decoration: underline; }
+
+  .ask-agent {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+    color: #1e40af;
+  }
+  .ask-agent::before { content: '💡 '; }
+
+  ul, ol { margin: 0.5rem 0 1rem 1.5rem; }
+  li { margin-bottom: 0.3rem; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>066 render-3d 开发实战</h1>
+<p class="subtitle">掌握 render-3d 渲染引擎的参数扩展、iframe 通信协议以及常见问题排查</p>
+
+<!-- ==================== Section 1 ==================== -->
+<h2>1. 如何新增渲染参数</h2>
+
+<p>render-3d 是一个独立的 3D 渲染服务，通过 iframe 嵌入到 ai-home 主应用中。渲染参数定义了场景的材质、光照、视角等视觉效果。</p>
+
+<h3>参数架构</h3>
+<pre>
+render-3d 参数体系
+├── <span class="important">场景参数 (Scene)</span>
+│   ├── backgroundColor    <span class="comment"># 背景色</span>
+│   ├── environmentMap     <span class="comment"># 环境贴图</span>
+│   └── fog                <span class="comment"># 雾效配置</span>
+├── <span class="important">相机参数 (Camera)</span>
+│   ├── position           <span class="comment"># 相机位置 [x, y, z]</span>
+│   ├── target             <span class="comment"># 观察目标点</span>
+│   └── fov                <span class="comment"># 视场角</span>
+├── <span class="important">光照参数 (Lighting)</span>
+│   ├── ambientIntensity   <span class="comment"># 环境光强度</span>
+│   ├── directionalLight   <span class="comment"># 方向光</span>
+│   └── shadowQuality      <span class="comment"># 阴影质量</span>
+└── <span class="important">材质参数 (Material)</span>
+    ├── roughness           <span class="comment"># 粗糙度</span>
+    ├── metalness           <span class="comment"># 金属度</span>
+    └── textureScale        <span class="comment"># 贴图缩放</span>
+</pre>
+
+<h3>Step 1 — 定义参数类型</h3>
+<pre><span class="comment">// src/types/render-params.ts</span>
+<span class="keyword">export interface</span> RenderParam {
+  key: <span class="keyword">string</span>;
+  label: <span class="keyword">string</span>;
+  type: <span class="string">'number'</span> | <span class="string">'boolean'</span> | <span class="string">'vector3'</span> | <span class="string">'color'</span> | <span class="string">'enum'</span>;
+  default: <span class="keyword">unknown</span>;
+  min?: <span class="keyword">number</span>;
+  max?: <span class="keyword">number</span>;
+  description: <span class="keyword">string</span>;
+}
+
+<span class="comment">// 示例：新增一个环境光色温参数</span>
+<span class="keyword">export const</span> colorTemperatureParam: RenderParam = {
+  key: <span class="string">'lighting.colorTemperature'</span>,
+  label: <span class="string">'色温'</span>,
+  type: <span class="string">'number'</span>,
+  default: 6500,
+  min: 2000,
+  max: 10000,
+  description: <span class="string">'环境光色温，单位 K。暖光 2700K，日光 6500K，冷光 9000K'</span>,
+};</pre>
+
+<h3>Step 2 — 注册到参数 Schema</h3>
+<pre><span class="comment">// src/config/render-schema.ts</span>
+<span class="keyword">import</span> { colorTemperatureParam } <span class="keyword">from</span> <span class="string">'@/types/render-params'</span>;
+
+<span class="keyword">export const</span> lightingSchema = {
+  ambientIntensity: { <span class="comment">/* 已有参数 */</span> },
+  directionalLight: { <span class="comment">/* 已有参数 */</span> },
+  colorTemperature: colorTemperatureParam,  <span class="comment">// 新增</span>
+};</pre>
+
+<h3>Step 3 — 在渲染引擎中应用</h3>
+<pre><span class="comment">// src/renderer/lighting.ts</span>
+<span class="keyword">export function</span> applyLighting(params: LightingParams) {
+  <span class="comment">// 已有逻辑...</span>
+
+  <span class="comment">// 新增色温处理</span>
+  <span class="keyword">if</span> (params.colorTemperature !== <span class="keyword">undefined</span>) {
+    <span class="keyword">const</span> color = colorTemperatureToRGB(params.colorTemperature);
+    ambientLight.color.setRGB(color.r, color.g, color.b);
+  }
+}</pre>
+
+<div class="card info">
+  <div class="card-label">参数命名规范</div>
+  <p>参数 key 使用 <strong>点分层级</strong> 命名（如 <code>lighting.colorTemperature</code>），与 JSON 嵌套结构一致，方便后端 Agent 直接引用。</p>
+</div>
+
+<!-- ==================== Section 2 ==================== -->
+<h2>2. iframe 通信协议</h2>
+
+<p>render-3d 以 iframe 方式嵌入 ai-home，两者通过 <code>postMessage</code> 进行双向通信。所有消息遵循统一协议格式。</p>
+
+<h3>消息格式</h3>
+<pre><span class="comment">// 通用消息结构</span>
+<span class="keyword">interface</span> RenderMessage {
+  type: <span class="keyword">string</span>;        <span class="comment">// 消息类型</span>
+  payload: <span class="keyword">unknown</span>;   <span class="comment">// 消息载荷</span>
+  requestId: <span class="keyword">string</span>;  <span class="comment">// 请求 ID，用于匹配响应</span>
+  source: <span class="string">'ai-home'</span> | <span class="string">'render-3d'</span>;  <span class="comment">// 消息来源</span>
+}</pre>
+
+<h3>消息类型一览</h3>
+<table>
+  <tr><th>type</th><th>方向</th><th>说明</th></tr>
+  <tr><td><code>RENDER_INIT</code></td><td>ai-home → render-3d</td><td>初始化渲染场景</td></tr>
+  <tr><td><code>RENDER_UPDATE_PARAMS</code></td><td>ai-home → render-3d</td><td>更新渲染参数</td></tr>
+  <tr><td><code>RENDER_LOAD_MODEL</code></td><td>ai-home → render-3d</td><td>加载 3D 模型</td></tr>
+  <tr><td><code>RENDER_SET_CAMERA</code></td><td>ai-home → render-3d</td><td>设置相机视角</td></tr>
+  <tr><td><code>RENDER_CAPTURE</code></td><td>ai-home → render-3d</td><td>截图并返回 base64</td></tr>
+  <tr><td><code>RENDER_READY</code></td><td>render-3d → ai-home</td><td>渲染器初始化完成</td></tr>
+  <tr><td><code>RENDER_PROGRESS</code></td><td>render-3d → ai-home</td><td>加载/渲染进度</td></tr>
+  <tr><td><code>RENDER_RESULT</code></td><td>render-3d → ai-home</td><td>操作结果（含截图数据）</td></tr>
+  <tr><td><code>RENDER_ERROR</code></td><td>render-3d → ai-home</td><td>错误信息</td></tr>
+</table>
+
+<h3>通信流程示例</h3>
+<div class="flow">
+  <span class="flow-step">ai-home: RENDER_INIT</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">render-3d 初始化</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">render-3d: RENDER_READY</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">ai-home: RENDER_UPDATE_PARAMS</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">render-3d: RENDER_RESULT</span>
+</div>
+
+<h3>ai-home 侧的消息发送</h3>
+<pre><span class="comment">// src/services/renderBridge.ts</span>
+<span class="keyword">class</span> RenderBridge {
+  <span class="keyword">private</span> iframe: HTMLIFrameElement;
+  <span class="keyword">private</span> pendingRequests = <span class="keyword">new</span> Map&lt;<span class="keyword">string</span>, <span class="keyword">Promise</span>Resolve&gt;();
+
+  send&lt;T&gt;(type: <span class="keyword">string</span>, payload: <span class="keyword">unknown</span>): <span class="keyword">Promise</span>&lt;T&gt; {
+    <span class="keyword">const</span> requestId = crypto.randomUUID();
+
+    <span class="keyword">this</span>.iframe.contentWindow?.postMessage({
+      type,
+      payload,
+      requestId,
+      source: <span class="string">'ai-home'</span>,
+    }, <span class="string">'*'</span>);
+
+    <span class="keyword">return new Promise</span>((resolve) =&gt; {
+      <span class="keyword">this</span>.pendingRequests.set(requestId, resolve);
+    });
+  }
+}
+
+<span class="comment">// 使用示例</span>
+<span class="keyword">const</span> result = <span class="keyword">await</span> renderBridge.send&lt;CaptureResult&gt;(
+  <span class="string">'RENDER_CAPTURE'</span>,
+  { width: 1920, height: 1080, format: <span class="string">'png'</span> }
+);</pre>
+
+<h3>render-3d 侧的消息接收</h3>
+<pre><span class="comment">// render-3d/src/bridge/messageHandler.ts</span>
+window.addEventListener(<span class="string">'message'</span>, (event) =&gt; {
+  <span class="keyword">const</span> msg = event.data <span class="keyword">as</span> RenderMessage;
+
+  <span class="keyword">if</span> (msg.source !== <span class="string">'ai-home'</span>) <span class="keyword">return</span>;
+
+  <span class="keyword">switch</span> (msg.type) {
+    <span class="keyword">case</span> <span class="string">'RENDER_INIT'</span>:
+      initScene(msg.payload);
+      reply(msg.requestId, <span class="string">'RENDER_READY'</span>, {});
+      <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="string">'RENDER_UPDATE_PARAMS'</span>:
+      updateParams(msg.payload);
+      reply(msg.requestId, <span class="string">'RENDER_RESULT'</span>, { success: <span class="keyword">true</span> });
+      <span class="keyword">break</span>;
+    <span class="comment">// ...其他消息类型</span>
+  }
+});</pre>
+
+<div class="card warning">
+  <div class="card-label">安全须知</div>
+  <p>生产环境中 <code>postMessage</code> 的 targetOrigin 必须指定为具体域名（不能用 <code>'*'</code>），防止跨域消息泄露。开发环境可放宽限制。</p>
+</div>
+
+<!-- ==================== Section 3 ==================== -->
+<h2>3. 常见排查路径</h2>
+
+<h3>问题 1：iframe 加载白屏</h3>
+<pre>
+排查步骤：
+1. <span class="important">检查 iframe src 是否正确</span>
+   → 浏览器 DevTools → Elements → 检查 iframe 标签的 src 属性
+2. <span class="important">检查跨域</span>
+   → Console 中是否出现 "Blocked a frame with origin" 错误
+3. <span class="important">检查 render-3d 服务状态</span>
+   → 直接在新标签页打开 iframe 的 URL，确认是否可访问
+4. <span class="important">检查网络</span>
+   → DevTools → Network，查看是否有资源加载失败（404/500）
+</pre>
+
+<h3>问题 2：渲染参数不生效</h3>
+<pre>
+排查步骤：
+1. <span class="important">确认消息已发送</span>
+   → Console 中打印发送的 postMessage 数据
+2. <span class="important">确认消息已接收</span>
+   → render-3d 侧的 message 事件是否触发
+3. <span class="important">检查参数 key 拼写</span>
+   → 参数 key 必须与 render-3d 侧 schema 完全一致（区分大小写）
+4. <span class="important">检查参数值范围</span>
+   → 数值参数是否在 min/max 范围内，超范围可能被忽略
+</pre>
+
+<h3>问题 3：截图返回空白或黑屏</h3>
+<pre>
+排查步骤：
+1. <span class="important">确认 RENDER_READY 已收到</span>
+   → 在发送 RENDER_CAPTURE 前必须等待 READY 响应
+2. <span class="important">检查 WebGL 上下文</span>
+   → canvas.getContext('webgl2') 是否返回 null
+3. <span class="important">检查 preserveDrawingBuffer</span>
+   → WebGL 创建时必须设置 preserveDrawingBuffer: true
+4. <span class="important">检查时序</span>
+   → capture 请求是否在模型加载完成之后发出
+</pre>
+
+<h3>快速调试技巧</h3>
+<div class="card success">
+  <div class="card-label">Debug Mode</div>
+  <p>在 URL 后加 <code>?renderDebug=true</code> 可开启 render-3d 的调试模式，会在控制台打印所有收发消息和渲染状态变更，极大加速排查。</p>
+</div>
+
+<!-- ==================== Quiz ==================== -->
+<h2>4. 自检 Quiz</h2>
+
+<div class="quiz" id="quiz1">
+  <div class="quiz-title">Q1: ai-home 与 render-3d 之间的通信方式是？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz1', 0)">A. WebSocket</li>
+    <li onclick="checkQuiz('quiz1', 1)">B. HTTP 轮询</li>
+    <li onclick="checkQuiz('quiz1', 2)">C. postMessage</li>
+    <li onclick="checkQuiz('quiz1', 3)">D. 共享内存 SharedArrayBuffer</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <div class="quiz-title">Q2: render-3d 初始化完成后，向 ai-home 发送的消息类型是？</div>
+  <ul class="quiz-options" data-correct="0">
+    <li onclick="checkQuiz('quiz2', 0)">A. RENDER_READY</li>
+    <li onclick="checkQuiz('quiz2', 1)">B. RENDER_INIT</li>
+    <li onclick="checkQuiz('quiz2', 2)">C. RENDER_RESULT</li>
+    <li onclick="checkQuiz('quiz2', 3)">D. RENDER_COMPLETE</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <div class="quiz-title">Q3: 截图返回空白，最可能的原因是？</div>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz3', 0)">A. 截图分辨率太高</li>
+    <li onclick="checkQuiz('quiz3', 1)">B. WebGL 未设置 preserveDrawingBuffer: true</li>
+    <li onclick="checkQuiz('quiz3', 2)">C. iframe 跨域限制</li>
+    <li onclick="checkQuiz('quiz3', 3)">D. 模型文件格式错误</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<!-- ==================== Next ==================== -->
+
+</div>
+</div>
+
+<script>
+function checkQuiz(quizId, selected) {
+  const quiz = document.getElementById(quizId);
+  const options = quiz.querySelector('.quiz-options');
+  const correct = parseInt(options.dataset.correct);
+  const items = options.querySelectorAll('li');
+  const feedback = quiz.querySelector('.quiz-feedback');
+
+  items.forEach((item, i) => {
+    item.onclick = null;
+    if (i === correct) item.classList.add('correct');
+    if (i === selected && i !== correct) item.classList.add('wrong');
+  });
+
+  const feedbacks = {
+    quiz1: {
+      correct: '✓ 对！render-3d 以 iframe 嵌入，两者通过 postMessage 进行双向通信。',
+      wrong: '✗ 是 postMessage。render-3d 以 iframe 嵌入 ai-home，跨 iframe 通信的标准方式就是 postMessage。'
+    },
+    quiz2: {
+      correct: '✓ 对！render-3d 初始化完成后发送 RENDER_READY，ai-home 收到后才可发送后续指令。',
+      wrong: '✗ 是 RENDER_READY。这是 render-3d 告知 ai-home "我准备好了" 的标准消息类型。'
+    },
+    quiz3: {
+      correct: '✓ 对！WebGL 默认在每帧渲染后清空缓冲区，设置 preserveDrawingBuffer: true 才能在渲染后读取像素数据。',
+      wrong: '✗ 最常见原因是 preserveDrawingBuffer 未设为 true。WebGL 默认清空帧缓冲，截图时读到的就是空白。'
+    }
+  };
+
+  feedback.style.display = 'block';
+  feedback.textContent = selected === correct
+    ? feedbacks[quizId].correct
+    : feedbacks[quizId].wrong;
+  feedback.style.background = selected === correct ? '#dcfce7' : '#fee2e2';
+}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 066</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0065-viewer-2d-dev-guide.html">上一课：065 viewer-2d 开发实战</a></div></nav>
+</body>
+</html>

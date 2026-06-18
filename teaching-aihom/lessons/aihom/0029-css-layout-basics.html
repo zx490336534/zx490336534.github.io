@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>029 前端基础 09：CSS 布局与样式排查</title>
+<style>
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--muted:#78716c;--accent:#b45309;--soft:#fef3c7;--border:#e7e5e4;--code:#f5f5f4;--info:#2563eb;--ok:#16a34a;--bad:#ef4444}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.8 -apple-system,BlinkMacSystemFont,"Noto Sans SC","Segoe UI",sans-serif}.container{max-width:780px;margin:0 auto;padding:3rem 2rem}h1{font-size:2rem;margin:.2rem 0 .5rem}.subtitle{color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:1.4rem;margin-bottom:2rem}h2{font-size:1.35rem;margin:2rem 0 .8rem}code{font-family:Menlo,Consolas,monospace;background:var(--code);padding:.15em .35em;border-radius:4px}pre{background:#1c1917;color:#e7e5e4;padding:1rem 1.2rem;border-radius:8px;overflow:auto}.card{background:#fff;border:1px solid var(--border);border-left:3px solid var(--info);border-radius:8px;padding:1rem 1.2rem;margin:1rem 0}.label{font-size:.75rem;color:var(--info);font-weight:700;text-transform:uppercase}table{width:100%;border-collapse:collapse;margin:1rem 0}th,td{border-bottom:1px solid var(--border);padding:.55rem;text-align:left;vertical-align:top}th{color:var(--muted)}.quiz{background:var(--soft);border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.2rem;margin:1.5rem 0}.quiz-options{list-style:none;margin:0;padding:0}.quiz-options li{padding:.45rem .65rem;margin:.35rem 0;border:1px solid transparent;border-radius:6px;cursor:pointer}.correct{background:#dcfce7!important;border-color:var(--ok)!important}.wrong{background:#fee2e2!important;border-color:var(--bad)!important}.quiz-feedback{display:none;margin-top:.6rem;padding:.6rem;border-radius:6px}.nav{margin-top:2.5rem;border:1px solid var(--border);border-radius:8px;background:#fff;padding:1rem}.nav a{display:inline-block;margin:.25rem;color:#444;text-decoration:none;border:1px solid var(--border);border-radius:6px;padding:.35rem .65rem}.nav a.primary{background:var(--accent);border-color:var(--accent);color:#fff}.nav a.map{background:#eff6ff;border-color:#bfdbfe;color:var(--info)}
+</style></head><body><div class="container">
+<h1>029 前端基础 09：CSS 布局与样式排查</h1>
+<p class="subtitle">目标：看到 ai-home 的画布、侧栏、对话框、viewer 容器时，能判断布局问题大概率出在 flex、position、overflow 还是 z-index。</p>
+
+<h2>1. 盒模型：每个元素都是一个盒子</h2>
+<pre>content 内容
+padding 内边距
+border 边框
+margin 外边距</pre>
+<p>排查尺寸不对时，先在 DevTools 的 Computed 面板看盒模型，而不是直接猜 CSS。</p>
+
+<h2>2. flex：最常见的一维布局</h2>
+<p>AIHom 里左画布、右对话、工具栏、按钮组，经常是 flex。</p>
+<pre>.page {
+  display: flex;
+}
+.canvas {
+  flex: 1;
+}
+.chat {
+  width: 360px;
+}</pre>
+<table>
+  <tr><th>属性</th><th>读法</th></tr>
+  <tr><td><code>display: flex</code></td><td>子元素排成一行或一列</td></tr>
+  <tr><td><code>flex: 1</code></td><td>吃掉剩余空间</td></tr>
+  <tr><td><code>gap</code></td><td>子元素之间的间距</td></tr>
+</table>
+
+<h2>3. position、overflow、z-index</h2>
+<table>
+  <tr><th>现象</th><th>优先查</th></tr>
+  <tr><td>弹窗被盖住</td><td><code>z-index</code> 和父级 stacking context</td></tr>
+  <tr><td>内容被裁掉</td><td><code>overflow: hidden</code></td></tr>
+  <tr><td>浮层位置不对</td><td><code>position: absolute/fixed</code> 的参考对象</td></tr>
+  <tr><td>移动端挤爆</td><td>固定宽度、最小宽度、flex 收缩</td></tr>
+</table>
+
+<div class="card"><div class="label">AIHom 读法</div><p>前端功能问题先看数据流；纯视觉问题先看盒模型和布局。不要一上来改一堆样式，先在 DevTools 临时开关 CSS，确认是哪一条规则影响了结果。</p></div>
+
+<div class="quiz" id="quiz1"><strong>Q1: 对话面板宽度固定、画布占剩余空间，最常见会用什么？</strong>
+  <ul class="quiz-options" data-correct="0">
+    <li onclick="checkQuiz('quiz1',0)">A. flex 布局</li>
+    <li onclick="checkQuiz('quiz1',1)">B. SQL 查询</li>
+    <li onclick="checkQuiz('quiz1',2)">C. Java 注解</li>
+  </ul><div class="quiz-feedback"></div>
+</div>
+
+<div class="card"><div class="label">主资料</div><p>优先看 MDN 的 <a href="https://developer.mozilla.org/en-US/docs/Learn/CSS/Building_blocks/The_box_model" target="_blank" rel="noopener">Box model</a> 和 <a href="https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Flexbox" target="_blank" rel="noopener">Flexbox</a>。</p></div>
+</div><script>
+function checkQuiz(id,s){const q=document.getElementById(id),o=q.querySelector('.quiz-options'),c=Number(o.dataset.correct),items=o.querySelectorAll('li'),f=q.querySelector('.quiz-feedback');items.forEach((x,i)=>{x.onclick=null;if(i===c)x.classList.add('correct');if(i===s&&i!==c)x.classList.add('wrong')});f.style.display='block';f.textContent=s===c?'对。这是一维空间分配问题，flex 很适合。':'不是。这个场景是典型 CSS 布局问题。';f.style.background=s===c?'#dcfce7':'#fee2e2'}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 029</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0028-browser-network-dom-basics.html">上一课：028 前端基础 08：浏览器、网络与 DOM</a><a class="primary" href="0030-react-rendering-mental-model.html">下一课：030 前端基础 10：React 渲染模型</a></div></nav>
+</body></html>

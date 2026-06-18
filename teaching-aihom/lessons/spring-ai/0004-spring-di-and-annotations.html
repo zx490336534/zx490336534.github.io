@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>004 Spring 依赖注入 DI + 三层注解</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --accent: #b45309;
+    --accent-light: #fef3c7;
+    --border: #e7e5e4;
+    --code-bg: #1c1917;
+    --code-text: #f5f5f4;
+    --success: #16a34a;
+    --success-light: #dcfce7;
+    --warning: #d97706;
+    --warning-light: #fef3c7;
+    --info: #2563eb;
+    --info-light: #dbeafe;
+    --tag-java: #d97706;
+    --tag-spring: #16a34a;
+    --tag-ai: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 3rem 2rem 5rem;
+  }
+
+  .lesson-meta {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2.8rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  strong { font-weight: 700; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.25rem 0;
+  }
+  .card.info { border-left: 3px solid var(--info); background: var(--info-light); }
+  .card.warning { border-left: 3px solid var(--warning); background: var(--warning-light); }
+  .card.success { border-left: 3px solid var(--success); background: var(--success-light); }
+  .card.tip { border-left: 3px solid var(--accent); }
+
+  .card-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+  }
+
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 1.25rem 1.4rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1.25rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.86rem;
+    line-height: 1.7;
+  }
+  code { font-family: 'JetBrains Mono', monospace; }
+  p code, li code {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 0.12em 0.4em;
+    border-radius: 4px;
+    font-size: 0.85em;
+  }
+  .com { color: #a8a29e; }      /* 代码注释 */
+  .kw  { color: #fbbf24; }      /* 关键字 */
+  .ann { color: #86efac; }      /* 注解 @ */
+  .typ { color: #93c5fd; }      /* 类型 */
+  .str { color: #fda4af; }      /* 字符串 */
+
+  /* 逐行归属表 */
+  table.belong {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.25rem 0;
+    font-size: 0.9rem;
+  }
+  table.belong th, table.belong td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  table.belong th {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+  table.belong td code { font-size: 0.82em; }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.1em 0.55em;
+    border-radius: 10px;
+    color: #fff;
+    letter-spacing: 0.02em;
+  }
+  .tag.java   { background: var(--tag-java); }
+  .tag.spring { background: var(--tag-spring); }
+  .tag.ai     { background: var(--tag-ai); }
+
+  /* Quiz */
+  .quiz {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem 1.6rem;
+    margin: 1.5rem 0;
+  }
+  .quiz-q {
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  .quiz-opt {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--text);
+    transition: all 0.15s;
+  }
+  .quiz-opt:hover { border-color: var(--accent); }
+  .quiz-opt.correct {
+    background: var(--success-light);
+    border-color: var(--success);
+    color: #14532d;
+    font-weight: 500;
+  }
+  .quiz-opt.wrong {
+    background: #fee2e2;
+    border-color: #dc2626;
+    color: #7f1d1d;
+  }
+  .quiz-opt.disabled { cursor: default; opacity: 0.85; }
+  .quiz-fb {
+    margin-top: 0.85rem;
+    font-size: 0.9rem;
+    display: none;
+    padding: 0.7rem 0.9rem;
+    border-radius: 6px;
+    line-height: 1.7;
+  }
+  .quiz-fb.show { display: block; }
+
+  .win {
+    background: var(--success-light);
+    border-left: 3px solid var(--success);
+    border-radius: 8px;
+    padding: 1rem 1.4rem;
+    margin: 2rem 0;
+  }
+  .win .card-label { color: #14532d; }
+
+  .reading {
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.4rem;
+    margin: 1.5rem 0;
+  }
+  .reading a { color: var(--info); text-decoration: none; font-weight: 500; }
+  .reading a:hover { text-decoration: underline; }
+
+  .ask {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+  }
+
+  blockquote {
+    border-left: 3px solid var(--accent);
+    padding-left: 1rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin: 1.25rem 0;
+  }
+@media print {
+    body { background: #fff; }
+    .quiz-opt { border: 1px solid #999; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="lesson-meta">AIHom 全栈学习 · 第 004 课 · Spring 基础</div>
+  <h1>004 Spring 依赖注入 DI + 三层注解</h1>
+  <div class="subtitle">本节目标：搞懂 Spring 最核心的魔法——对象不用你自己 new，Spring 会"喂"给你。看完后你能对着 AIHom 的一个 Controller + Service，说清"谁把谁注入了谁"。</div>
+
+  <!-- 1. 痛点 -->
+  <h2>先讲一个测试工程师最懂的痛点</h2>
+  <p>假设没有 Spring。你写一个 <code>ChatController</code>，它要用到大模型客户端，于是你在构造方法里自己 <code>new</code> 一个：</p>
+
+  <pre><span class="kw">public class</span> <span class="typ">ChatController</span> {
+    <span class="kw">private final</span> <span class="typ">DashScopeChatClient</span> client;
+
+    <span class="kw">public</span> <span class="typ">ChatController</span>() {
+        <span class="kw">this</span>.client = <span class="kw">new</span> <span class="typ">DashScopeChatClient</span>(
+            <span class="str">"sk-xxx"</span>, <span class="str">"qwen-plus"</span>, <span class="kw">new</span> <span class="typ">HttpExecutor</span>()...);
+    }
+}</pre>
+
+  <div class="card warning">
+    <div class="card-label">这种写法有三个致命问题</div>
+    <p style="margin:0">
+    <strong>① 耦合死。</strong>Controller 死死绑定了 <code>DashScopeChatClient</code> 这个具体实现。哪天要换成 OpenAI，得改这个类的代码。<br>
+    <strong>② 难测试。</strong>（这是你的主场）你想对 Controller 写单元测试，但它内部直接 <code>new</code> 了一个真的会去联网调大模型的客户端。你想换成"假的、返回固定结果"的 mock？<strong>改不了，因为 new 写死在构造方法里。</strong><br>
+    <strong>③ 重复造。</strong>十个类都要用客户端，就 new 十次，配置散落十处。</p>
+  </div>
+
+  <div class="card info">
+    <div class="card-label">测试工程师视角：依赖注入 = 测试福音</div>
+    <p style="margin:0">要解决"难测试"，核心思路是：<strong>不要在类内部自己造依赖，而是让外部把依赖传进来。</strong>这样测试时，你就能传一个假实现（mock）进去，不用真的去调大模型。这个"由外部传入依赖"的机制，就叫<strong>依赖注入（Dependency Injection，简称 DI）</strong>。Spring 就是干这件事最成熟的工具。</p>
+  </div>
+
+  <!-- 2. DI -->
+  <h2>依赖注入：你只声明"我要什么"，Spring 负责造好递给你</h2>
+  <p>回到 001 课的那段代码，现在你能看懂它最关键的一行了：</p>
+
+  <pre><span class="ann">@RestController</span>
+<span class="kw">public class</span> <span class="typ">ChatController</span> {
+
+    <span class="kw">private final</span> <span class="typ">ChatClient.Builder</span> builder;
+
+    <span class="kw">public</span> <span class="typ">ChatController</span>(<span class="typ">ChatClient.Builder</span> builder) {  <span class="com">// ← 这里没 new！</span>
+        <span class="kw">this</span>.builder = builder;
+    }
+}</pre>
+
+  <p>注意看构造方法的参数 <code>ChatClient.Builder builder</code>——Controller 自己<strong>从来没有</strong> <code>new</code> 这个 builder。它只是"声明"：我需要一个 <code>ChatClient.Builder</code>。真正把它造好、并塞进来的，是 <strong>Spring 容器</strong>。你写一个 <code>new ChatController(???)</code> 都不用，Spring 帮你调构造方法、帮你找好参数。</p>
+
+  <div class="card tip">
+    <div class="card-label">DI 的心智模型（一句话版）</div>
+    <p style="margin:0"><strong>你只管"点菜"，Spring 当"服务员"。</strong>Controller 说"我要 ChatClient.Builder"，Spring 就去厨房找有没有这个对象，有就端上来。你不用知道厨房在哪、怎么做。</p>
+  </div>
+
+  <h3>两种注入姿势：构造注入（推荐） vs 字段注入</h3>
+
+  <p>把依赖传进来，有两种主流写法：</p>
+
+  <pre><span class="com">// 写法 A：构造注入（★ 官方推荐，AIHom 里几乎都是这种）</span>
+<span class="ann">@RestController</span>
+<span class="kw">public class</span> <span class="typ">ChatController</span> {
+    <span class="kw">private final</span> <span class="typ">ChatService</span> service;
+
+    <span class="kw">public</span> <span class="typ">ChatController</span>(<span class="typ">ChatService</span> service) {   <span class="com">// 通过构造方法传</span>
+        <span class="kw">this</span>.service = service;
+    }
+}
+
+<span class="com">// 写法 B：字段注入（老代码里会看到，现在不推荐）</span>
+<span class="ann">@RestController</span>
+<span class="kw">public class</span> <span class="typ">ChatController</span> {
+    <span class="ann">@Autowired</span>                                   <span class="com">// 在字段上贴注解</span>
+    <span class="kw">private</span> <span class="typ">ChatService</span> service;            <span class="com">// 没有构造方法，Spring 反射直接塞</span>
+}</pre>
+
+  <div class="card success">
+    <div class="card-label">为什么构造注入更好</div>
+    <p style="margin:0">① 依赖能写成 <code>final</code>，对象一造好就不会变，更安全；② 不依赖 Spring 也能 <code>new</code> 出来测，直接 <code>new ChatController(fakeService)</code> 就能跑单测——<strong>这对测试工程师是天大的好事</strong>；③ 一眼看清这个类到底依赖了什么。<strong>看 AIHom 代码时，默认按构造注入理解就行。</strong>（注：<code>@Autowired</code> 这个词你会经常见，它就是"请 Spring 帮我注入"的开关；Spring 4.3 之后，如果类只有一个构造方法，构造注入可以省略 <code>@Autowired</code>。）</p>
+  </div>
+
+  <!-- 3. Bean -->
+  <h2>什么是 Bean：被 Spring 容器管理的对象</h2>
+  <p>既然 Spring 要"端菜上桌"，那它厨房里得有菜。这些被 Spring 统一造好、统一保管、随时能拿出来的对象，有一个专门的名字——<strong>Bean</strong>。</p>
+
+  <div class="card info">
+    <div class="card-label">Bean 的大白话定义</div>
+    <p style="margin:0"><strong>Bean = 一个普通的 Java 对象，但它不是你 new 出来的，而是由 Spring 容器创建并管理的。</strong>它和普通对象的区别只有一个：谁来管它的生老病死。你自己 new 的，你自己管；Spring 造的，就是 Bean，归 Spring 管。</p>
+  </div>
+
+  <p>那 Spring 怎么知道哪些类该变成 Bean？答案是——<strong>靠"三层注解"打标签。</strong>你给一个类贴上特定注解，Spring 启动时扫到，就把它登记进容器，变成一个 Bean，以后谁需要就注入给谁。</p>
+
+  <!-- 4. 三层注解 -->
+  <h2>三层注解族：给类贴标签，让它成为 Bean</h2>
+  <p>还记得 001 课那张"三层归属表"吗？里面 <code>@RestController</code>、对象自动被传进来，都归 <span class="tag spring">Spring</span> 那一层。<strong>这一节，我们正式讲清 Spring 这一层。</strong></p>
+
+  <table class="belong">
+    <thead>
+      <tr><th>注解</th><th>用在哪一层</th><th>大白话</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>@RestController</code> / <code>@Controller</code></td>
+        <td>接口层（接 HTTP 请求）</td>
+        <td>最外层门面，负责接收 HTTP 请求、返回结果。<code>@RestController</code> = <code>@Controller</code> + 默认返回 JSON。AIHom 几乎全用前者。</td>
+      </tr>
+      <tr>
+        <td><code>@Service</code></td>
+        <td>业务逻辑层</td>
+        <td>真正干活的地方。编排各种操作、写核心业务规则。AIHom 里调大模型、走 Agent 的逻辑都在这层。</td>
+      </tr>
+      <tr>
+        <td><code>@Repository</code> / <code>@Mapper</code></td>
+        <td>数据访问层</td>
+        <td>和数据库打交道的。<code>@Repository</code> 是 Spring 自带；<code>@Mapper</code> 是 MyBatis 的，AIHom 里也常见。</td>
+      </tr>
+      <tr>
+        <td><code>@Component</code></td>
+        <td>通用组件</td>
+        <td>不知道归哪层、但又想被 Spring 管的"工具类"，就用它。是上面几个的"祖宗"——它们本质都是 <code>@Component</code>。</td>
+      </tr>
+      <tr>
+        <td><code>@Configuration</code></td>
+        <td>配置类</td>
+        <td>专门用来"手动造 Bean"的类（通过 <code>@Bean</code> 方法）。第三方库的对象没法贴注解，就靠它在配置类里 new。</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card tip">
+    <div class="card-label">一句话记住它们的关系</div>
+    <p style="margin:0">这五个注解<strong>本质都是一回事</strong>——告诉 Spring"把这个类注册成一个 Bean"。区别只在<strong>语义/角色</strong>：贴 <code>@Service</code> 是在跟读代码的人说"这是业务层"，贴 <code>@RestController</code> 是在说"这是接口层"。从"变 Bean"的角度看，它们效果一样。</p>
+  </div>
+
+  <!-- 5. 综合示例 -->
+  <h2>看懂 AIHom 的依赖关系：一个 Controller + Service</h2>
+  <p>下面是一段贴近 AIHom 真实风格的代码。一个 <code>ChatController</code>（接口层）依赖一个 <code>ChatService</code>（业务层），而 <code>ChatService</code> 又依赖 Spring AI 的 <code>ChatClient</code>。串起来看：</p>
+
+  <pre><span class="com">// ① 接口层：接 HTTP 请求</span>
+<span class="ann">@RestController</span>
+<span class="ann">@RequestMapping</span>(<span class="str">"/ai"</span>)
+<span class="kw">public class</span> <span class="typ">ChatController</span> {
+
+    <span class="kw">private final</span> <span class="typ">ChatService</span> chatService;          <span class="com">// 声明依赖</span>
+
+    <span class="kw">public</span> <span class="typ">ChatController</span>(<span class="typ">ChatService</span> chatService) {  <span class="com">// 构造注入</span>
+        <span class="kw">this</span>.chatService = chatService;
+    }
+
+    <span class="ann">@PostMapping</span>(<span class="str">"/chat"</span>)
+    <span class="kw">public</span> <span class="typ">String</span> chat(<span class="ann">@RequestBody</span> <span class="typ">String</span> question) {
+        <span class="kw">return</span> chatService.ask(question);    <span class="com">// 把活儿甩给业务层</span>
+    }
+}
+
+<span class="com">// ② 业务层：真正调大模型的地方</span>
+<span class="ann">@Service</span>
+<span class="kw">public class</span> <span class="typ">ChatService</span> {
+
+    <span class="kw">private final</span> <span class="typ">ChatClient</span> chatClient;          <span class="com">// Spring AI 提供的</span>
+
+    <span class="kw">public</span> <span class="typ">ChatService</span>(<span class="typ">ChatClient</span> chatClient) {  <span class="com">// 构造注入</span>
+        <span class="kw">this</span>.chatClient = chatClient;
+    }
+
+    <span class="kw">public</span> <span class="typ">String</span> ask(<span class="typ">String</span> q) {
+        <span class="kw">return</span> chatClient.prompt().user(q).call().content();
+    }
+}</pre>
+
+  <p>读这段代码时，脑子里要有一张"谁注入谁"的关系图：</p>
+
+  <blockquote>
+    Spring 容器造好 <code>ChatClient</code>（Bean）→ 注入给 <code>ChatService</code>（Bean）→
+    Spring 容器再造好 <code>ChatService</code>（Bean）→ 注入给 <code>ChatController</code>（Bean）→
+    Spring 容器再造好 <code>ChatController</code>（Bean）→ 准备接 HTTP 请求。
+  </blockquote>
+
+  <p>整个链条里，<strong>没有任何一个 <code>new</code></strong>。每个类只在构造方法里声明"我要什么"，Spring 按依赖顺序把它们一个个造好、串起来。这就是 DI 的全貌。</p>
+
+  <div class="card success">
+    <div class="card-label">测试视角再回味一遍</div>
+    <p style="margin:0">正因为 <code>ChatController</code> 通过构造方法拿 <code>ChatService</code>，你写单测时完全可以 <code>new ChatController(fakeService)</code>，传一个不联网、秒回固定字符串的假 Service 进去，瞬间就能测接口逻辑——不用起服务、不用调真大模型。这就是 DI 给测试带来的红利。</p>
+  </div>
+
+  <!-- 6. Quiz -->
+  <h2>小测验：确认你真的 get 到了</h2>
+
+  <div class="quiz" id="quiz1">
+    <div class="quiz-q">第 1 题：下面哪种说法<strong>最准确</strong>地描述了"依赖注入 DI"?</div>
+    <button class="quiz-opt" data-correct="false">类自己 new 出它需要的对象，性能最高</button>
+    <button class="quiz-opt" data-correct="true">类只声明需要什么，由外部（Spring）造好传进来</button>
+    <button class="quiz-opt" data-correct="false">用 @Autowired 把所有对象变成静态变量</button>
+    <button class="quiz-opt" data-correct="false">Spring 自动给每个类生成 SQL 查询语句</button>
+    <div class="quiz-fb" id="fb1"></div>
+  </div>
+
+  <div class="quiz" id="quiz2">
+    <div class="quiz-q">第 2 题：在 AIHom 里，负责"调大模型、写业务规则"的类，最该贴哪个注解？</div>
+    <button class="quiz-opt" data-correct="false"><code>@RestController</code> —— 接 HTTP 请求的门面</button>
+    <button class="quiz-opt" data-correct="true"><code>@Service</code> —— 业务逻辑层</button>
+    <button class="quiz-opt" data-correct="false"><code>@Repository</code> —— 和数据库打交道</button>
+    <button class="quiz-opt" data-correct="false"><code>@Configuration</code> —— 用来手动造 Bean</button>
+    <div class="quiz-fb" id="fb2"></div>
+  </div>
+
+  <div class="quiz" id="quiz3">
+    <div class="quiz-q">第 3 题：为什么官方推荐"构造注入"而不是"字段注入（@Autowired 贴字段）"？</div>
+    <button class="quiz-opt" data-correct="false">因为字段注入会让程序运行得更慢</button>
+    <button class="quiz-opt" data-correct="false">因为字段注入不被 Spring 支持</button>
+    <button class="quiz-opt" data-correct="true">依赖可设 final 更安全，且不依赖 Spring 也能 new 出来测</button>
+    <button class="quiz-opt" data-correct="false">因为构造注入可以省掉写类名</button>
+    <div class="quiz-fb" id="fb3"></div>
+  </div>
+
+  <!-- 7. 本节胜利 -->
+  <div class="win">
+    <div class="card-label">本节你获得的胜利</div>
+    <p style="margin:0.3rem 0 0">现在你拿到一段 AIHom 的 Controller + Service 代码，能一眼看出：哪些类是 Bean（贴了注解的）、谁注入了谁（看构造方法参数）、为什么这么写（为了解耦 + 好测试）。<strong>你已经迈进了 Spring Boot 的门。</strong>下一节我们看 Spring 的另一个魔法——自动配置和 application.yml。</p>
+  </div>
+
+  <!-- 8. 推荐阅读 -->
+  <div class="reading">
+    <div class="card-label">推荐 primary source（一手资料）</div>
+    <p style="margin:0.5rem 0 0">
+    • <a href="https://docs.spring.io/spring-framework/reference/core/beans/dependencies/factory-collaborators.html" target="_blank">Spring 官方文档 · 依赖注入</a>（讲 DI、构造注入 vs setter/字段注入的权威出处）<br>
+    • <a href="https://docs.spring.io/spring-framework/reference/core/beans/annotation-introduction.html" target="_blank">Spring 官方文档 · 注解与 Bean</a>（<code>@Component</code> 系列注解族）<br>
+    • <a href="https://java2ai.com/" target="_blank">java2ai.com（Spring AI Alibaba 官方文档）</a> —— 阶段 2 的主线，现在收藏即可。<br>
+    配合本课，先扫官方 DI 这一页的"构造注入 vs 字段注入"小节就够，不用全读。</p>
+  </div>
+
+  <div class="card warning">
+    <div class="card-label">一个容易混的点（提前打预防针）</div>
+    <p style="margin:0">你会看到 <code>@Bean</code> 和 <code>@Component / @Service</code> 长得很像，都跟"变 Bean"有关。区别：<code>@Component</code> 类贴在<strong>类</strong>上，让你自己的类变 Bean；<code>@Bean</code> 贴在 <code>@Configuration</code> 类里的<strong>方法</strong>上，让"方法的返回值"变 Bean（用来造第三方库的对象）。本节先有个印象，005 课讲自动配置时还会再遇到。</p>
+  </div>
+
+  <!-- 9. 追问 -->
+  <div class="ask">
+    <p>🤔 <strong>有任何看不懂的地方，直接问我。</strong>比如："为什么构造方法不用写 @Autowired"、"AIHom 里的 ChatClient 是怎么变成 Bean 的"、"怎么写一个假的 ChatService 来测试"……没有蠢问题，我是你的私教，问就对了。</p>
+  </div>
+</div>
+
+<script>
+  // 简单的 quiz 即时反馈
+  const feedback = {
+    1: { ok: '✓ 对！DI 的核心就是"声明需求 + 外部注入"。类不自己 new，而是告诉 Spring"我需要什么"，Spring 负责造好传进来。这让代码解耦、也更易测试。',
+         no: '想想"服务员端菜"的比喻：Controller 只点菜（声明依赖），Spring 端菜（注入）。所以正确答案是"类只声明需要什么，由外部造好传进来"——它不 new、也不生成 SQL。' },
+    2: { ok: '✓ 对！调大模型、写业务规则属于业务逻辑层，贴 @Service。@RestController 是接 HTTP 的门面，@Repository 才管数据库。',
+         no: '按分层职责：接 HTTP 的贴 @RestController，写业务逻辑的贴 @Service，碰数据库的贴 @Repository/@Mapper。AIHom 里调 Agent/大模型的逻辑在 @Service 这一层。' },
+    3: { ok: '✓ 对！构造注入让依赖可以是 final（不可变、更安全），而且不靠 Spring 也能 new ChatController(fake) 跑单测——这是测试工程师的红利。',
+         no: '关键在"可 final + 可脱离 Spring 单测"。字段注入做不到这两点。和性能、是否被 Spring 支持都无关。' }
+  };
+
+  function wireQuiz(id) {
+    const quiz = document.getElementById('quiz' + id);
+    const fb = document.getElementById('fb' + id);
+    const opts = quiz.querySelectorAll('.quiz-opt');
+    opts.forEach(opt => {
+      opt.addEventListener('click', () => {
+        const correct = opt.dataset.correct === 'true';
+        opts.forEach(o => o.classList.add('disabled'));
+        if (correct) {
+          opt.classList.add('correct');
+          fb.style.background = 'var(--success-light)';
+          fb.style.color = '#14532d';
+          fb.textContent = feedback[id].ok;
+        } else {
+          opt.classList.add('wrong');
+          // 同时点亮正确答案
+          opts.forEach(o => { if (o.dataset.correct === 'true') o.classList.add('correct'); });
+          fb.style.background = '#fee2e2';
+          fb.style.color = '#7f1d1d';
+          fb.textContent = feedback[id].no;
+        }
+        fb.classList.add('show');
+      });
+    });
+  }
+  [1,2,3].forEach(wireQuiz);
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 004</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0003-java-annotation-interface-generic.html">上一课：003 Java 注解、接口、泛型、lambda</a><a class="primary" href="0005-spring-autoconfig-yml.html">下一课：005 Spring Boot 自动配置 + starter + yml</a></div></nav>
+</body>
+</html>

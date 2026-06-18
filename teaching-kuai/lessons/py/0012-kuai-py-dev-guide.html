@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0012 - kuai-service-py 开发实战指南</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:2rem}
+  .breadcrumb{color:var(--text-secondary);font-size:.85rem;margin-bottom:1.5rem}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .breadcrumb a:hover{text-decoration:underline}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.15rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem}
+  p{margin-bottom:1rem}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15rem .4rem;border-radius:4px;font-size:.88em}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;overflow-x:auto;margin:1rem 0;font-size:.88rem;line-height:1.6}
+  pre code{background:none;padding:0}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.4rem}
+  .tag{display:inline-block;padding:.1rem .4rem;border-radius:4px;font-size:.7rem;font-weight:500;margin-right:.3rem}
+  .tag.overview{background:#dbeafe;color:#2563eb}
+  .tag.deep{background:#fef3c7;color:#b45309}
+  .tag.dev{background:#dcfce7;color:#16a34a}
+  .tag.special{background:#f3e8ff;color:#7c3aed}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0}
+  .card-title{font-weight:600;margin-bottom:.5rem;font-size:1.05rem}
+  .module-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:1rem;margin:1rem 0}
+  .module-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;transition:all .2s}
+  .module-card:hover{border-color:var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .module-card h4{font-size:1rem;font-weight:600;margin-bottom:.35rem}
+  .module-card p{color:var(--text-secondary);font-size:.9rem;margin:0}
+  .quiz-section{background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:1.5rem;margin-top:2.5rem}
+  .quiz-section h2{margin-top:0;color:var(--accent)}
+  .quiz-q{margin-bottom:1.5rem}
+  .quiz-q .q-title{font-weight:600;margin-bottom:.5rem}
+  .quiz-q label{display:block;padding:.4rem .75rem;margin:.3rem 0;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s;background:var(--surface)}
+  .quiz-q label:hover{border-color:var(--accent)}
+  .quiz-q input[type="radio"]{margin-right:.5rem}
+  .quiz-q .answer{display:none;margin-top:.5rem;padding:.75rem 1rem;border-radius:6px;font-size:.9rem}
+  .quiz-q .answer.correct{background:#dcfce7;color:#166534;border:1px solid #86efac}
+  .quiz-q .answer.wrong{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
+  .ask-agent::before{content:'💡 '}
+  .nav-links{display:flex;justify-content:space-between;margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+  .nav-links a{color:var(--accent);text-decoration:none;font-weight:500}
+  .nav-links a:hover{text-decoration:underline}
+  .highlight{background:var(--accent-light);padding:.1rem .3rem;border-radius:3px}
+  table{width:100%;border-collapse:collapse;margin:1rem 0}
+  th,td{padding:.6rem .8rem;border:1px solid var(--border);text-align:left;font-size:.9rem}
+  th{background:var(--code-bg);font-weight:600}
+  .step-box{background:var(--surface);border-left:4px solid var(--accent);border-radius:0 8px 8px 0;padding:1rem 1.25rem;margin:1rem 0}
+  .step-num{display:inline-block;background:var(--accent);color:white;width:1.5rem;height:1.5rem;border-radius:50%;text-align:center;line-height:1.5rem;font-size:.8rem;font-weight:700;margin-right:.5rem}
+</style>
+<script>
+function checkAnswer(qId, correct, el){
+  var ans=el.parentElement.parentElement.querySelector('.answer');
+  if(el.value===correct){ans.className='answer correct';ans.innerHTML='✅ 正确！';ans.style.display='block'}
+  else{ans.className='answer wrong';ans.innerHTML='❌ 错误，正确答案是 '+correct+'。';ans.style.display='block'}
+}
+</script>
+</head>
+<body>
+<div class="container">
+
+<div class="breadcrumb"><a href="../index.html">课程首页</a> &gt; kuai-service-py &gt; 0012 开发实战指南</div>
+
+<div class="card info" style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0;font-size:.93rem">
+  <div class="card-label" style="font-weight:600;color:#2563eb;margin-bottom:.35rem">前置知识</div>
+  <p style="margin-bottom:.5rem">如果你不熟悉以下概念，建议先阅读对应教程：</p>
+  <ul style="margin:.5rem 0 0 1.5rem">
+    <li style="margin-bottom:.4rem"><a href="../../reference/fastapi-basics.html">FastAPI 基础入门</a></li>
+    <li style="margin-bottom:.4rem"><a href="../../reference/mcp-protocol.html">MCP 协议基础入门</a></li>
+  </ul>
+</div>
+
+<h1>🚀 kuai-service-py 开发实战指南</h1>
+<p class="subtitle"><span class="tag dev">实战</span> 动手做：新增 MCP 服务器、新增分组、本地运行与调试技巧</p>
+
+<!-- ============ 1. 如何新增 MCP 服务器 ============ -->
+<h2><span class="icon">➕</span> 如何新增 MCP 服务器</h2>
+
+<p>新增 MCP 服务器是最常见的开发任务。你需要通过 API 向系统注册一个服务器配置，系统会自动建立连接并加载工具。</p>
+
+<h3>方式一：通过 REST API 添加</h3>
+
+<div class="step-box">
+  <span class="step-num">1</span> <strong>确定传输协议</strong>
+  <p style="margin-top:.5rem">根据你的 MCP 服务器类型选择合适的传输协议：</p>
+  <table>
+    <tr><th>场景</th><th>传输类型</th><th>必填字段</th></tr>
+    <tr><td>远程 HTTP SSE 服务器</td><td><code>sse</code></td><td><code>url</code></td></tr>
+    <tr><td>本地命令行工具</td><td><code>stdio</code></td><td><code>command</code>, <code>args</code></td></tr>
+    <tr><td>远程 StreamableHTTP 服务器</td><td><code>streamable_http</code></td><td><code>url</code></td></tr>
+  </table>
+</div>
+
+<div class="step-box">
+  <span class="step-num">2</span> <strong>调用创建 API</strong>
+  <pre><code># SSE 服务器示例
+curl -X POST http://localhost:8000/servers/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "my-sse-server",
+    "transport": "sse",
+    "url": "http://localhost:3000/sse",
+    "enabled": true,
+    "auto_start": true
+  }'
+
+# Stdio 服务器示例（本地 MCP 工具）
+curl -X POST http://localhost:8000/servers/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "my-stdio-server",
+    "transport": "stdio",
+    "command": "python",
+    "args": ["-m", "my_mcp_tool"],
+    "env": {"API_KEY": "xxx"},
+    "enabled": true,
+    "auto_start": true
+  }'
+
+# StreamableHTTP 服务器示例
+curl -X POST http://localhost:8000/servers/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "my-http-server",
+    "transport": "streamable_http",
+    "url": "http://localhost:4000/mcp",
+    "headers": {"Authorization": "Bearer token123"},
+    "enabled": true,
+    "auto_start": true
+  }'</code></pre>
+</div>
+
+<div class="step-box">
+  <span class="step-num">3</span> <strong>验证服务器状态</strong>
+  <pre><code># 查看所有服务器状态
+curl http://localhost:8000/servers/
+
+# 查看特定服务器详情
+curl http://localhost:8000/servers/my-sse-server
+
+# 健康检查
+curl http://localhost:8000/servers/my-sse-server/health
+
+# 查看诊断信息
+curl http://localhost:8000/servers/my-sse-server/diagnostics</code></pre>
+</div>
+
+<h3>方式二：通过代码添加</h3>
+<pre><code>from src.models import ServerConfig, TransportType
+
+config = ServerConfig(
+    name="my-server",
+    transport=TransportType.SSE,       # 或 STDIO / STREAMABLE_HTTP
+    url="http://localhost:3000/sse",
+    enabled=True,
+    auto_start=True,
+    timeout=30000,                     # 超时时间（毫秒）
+    keep_alive_interval=60000          # 心跳间隔（毫秒）
+)
+
+success = await mcp_service.add_server(config)</code></pre>
+
+<h3>服务器管理操作</h3>
+<pre><code># 启动/停止/重启
+POST /servers/{name}/start
+POST /servers/{name}/stop
+POST /servers/{name}/restart
+
+# 更新配置
+PUT /servers/{name}
+{
+  "url": "http://new-url:3000/sse",
+  "timeout": 60000
+}
+
+# 删除服务器
+DELETE /servers/{name}</code></pre>
+
+<!-- ============ 2. 如何新增分组 ============ -->
+<h2><span class="icon">📂</span> 如何新增分组</h2>
+
+<p>分组将多个 MCP 服务器组织在一起，可以指定每个服务器暴露哪些工具，然后以一个统一的 MCP 端点对外提供服务。</p>
+
+<h3>创建分组</h3>
+<pre><code>curl -X POST http://localhost:8000/groups/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "development",
+    "description": "开发环境工具组",
+    "servers": [
+      {
+        "name": "my-sse-server",
+        "tools": "all",
+        "enabled": true
+      },
+      {
+        "name": "my-stdio-server",
+        "tools": ["read_file", "write_file"],
+        "enabled": true
+      }
+    ]
+  }'</code></pre>
+
+<h3>工具过滤说明</h3>
+<table>
+  <tr><th>tools 值</th><th>含义</th><th>示例</th></tr>
+  <tr><td><code>"all"</code></td><td>暴露该服务器的所有工具</td><td><code>"tools": "all"</code></td></tr>
+  <tr><td><code>[]</code>（空列表）</td><td>等同于 "all"</td><td><code>"tools": []</code></td></tr>
+  <tr><td><code>["tool1", "tool2"]</code></td><td>只暴露指定的工具</td><td><code>"tools": ["read_file", "list_files"]</code></td></tr>
+</table>
+
+<h3>分组管理操作</h3>
+<pre><code># 获取所有分组
+GET /groups/
+
+# 获取分组详情
+GET /groups/{group_id}
+
+# 向分组添加服务器
+POST /groups/{group_id}/servers
+{
+  "name": "another-server",
+  "tools": ["specific_tool"],
+  "enabled": true
+}
+
+# 从分组移除服务器
+DELETE /groups/{group_id}/servers/{server_name}
+
+# 删除分组
+DELETE /groups/{group_id}
+
+# 通过 MCP 协议访问分组（SSE 端点）
+GET /groups/{group_id}/mcp</code></pre>
+
+<h3>AI Agent 对话</h3>
+<p>分组端点还集成了 LangChain Agent，支持自然语言对话并自动调用工具：</p>
+<pre><code># AI 对话（自动工具调用）
+POST /groups/{group_id}/ai/chat
+{
+  "model_name": "gpt-4",
+  "messages": [
+    {"role": "user", "content": "帮我查看当前目录下的文件列表"}
+  ]
+}</code></pre>
+
+<!-- ============ 3. 本地运行 ============ -->
+<h2><span class="icon">🖥️</span> 本地运行命令</h2>
+
+<h3>环境准备</h3>
+<pre><code># 1. 确保 Python 3.12+
+python --version
+
+# 2. 安装依赖（推荐 uv）
+cd kuai-service-py
+uv sync
+
+# 或使用 pip
+pip install -e .</code></pre>
+
+<h3>启动服务</h3>
+<pre><code># 方式一：使用 uv（推荐）
+uv run python main.py
+
+# 方式二：直接 python
+python main.py
+
+# 方式三：使用 uvicorn 命令（支持热重载）
+uvicorn src.api:create_app --factory --reload --host 0.0.0.0 --port 8000</code></pre>
+
+<h3>启动后验证</h3>
+<pre><code># 健康检查
+curl http://localhost:8000/healthz
+# → {"status": "OK", "issues": []}
+
+# 查看 API 文档
+open http://localhost:8000/docs       # Swagger UI
+open http://localhost:8000/redoc      # ReDoc
+
+# 查看服务器列表
+curl http://localhost:8000/servers/</code></pre>
+
+<h3>环境变量</h3>
+<table>
+  <tr><th>变量名</th><th>默认值</th><th>说明</th></tr>
+  <tr><td><code>KUAI_SKIP_MCP_AUTOSTART</code></td><td><code>false</code></td><td>设为 <code>true</code> 跳过启动时自动连接 MCP 服务器</td></tr>
+  <tr><td><code>KUAI_MCP_AUTOSTART_TIMEOUT</code></td><td><code>120</code></td><td>自动启动超时时间（秒）</td></tr>
+  <tr><td><code>KUAI_MCP_AUTOSTART_RETRIES</code></td><td><code>2</code></td><td>自动启动重试次数</td></tr>
+</table>
+
+<!-- ============ 4. 调试技巧 ============ -->
+<h2><span class="icon">🐛</span> 调试技巧</h2>
+
+<div class="module-grid">
+  <div class="module-card">
+    <h4>📋 日志排查</h4>
+    <p>应用日志输出到 <code>logs/kuai-mcp.log</code> 和 stdout。日志级别通过 <code>log_config.yaml</code> 配置。启动失败时先看日志中的 ERROR 级别信息。</p>
+  </div>
+  <div class="module-card">
+    <h4>🔍 健康检查</h4>
+    <p>每个服务器都有独立的健康检查端点：<code>GET /servers/{name}/health</code>。返回 ping 结果和连接状态。诊断端点 <code>GET /servers/{name}/diagnostics</code> 提供更详细的 transport 信息。</p>
+  </div>
+  <div class="module-card">
+    <h4>🧪 跳过自动启动</h4>
+    <p>开发调试时可以设置 <code>KUAI_SKIP_MCP_AUTOSTART=true</code> 环境变量，跳过启动时自动连接所有服务器，手动逐个启动需要调试的服务器。</p>
+  </div>
+  <div class="module-card">
+    <h4>📊 Swagger UI</h4>
+    <p>访问 <code>http://localhost:8000/docs</code> 可以直接在浏览器中测试所有 API 端点，查看请求/响应模型，是最快的接口调试方式。</p>
+  </div>
+  <div class="module-card">
+    <h4>🔧 工具调用测试</h4>
+    <p>先通过 <code>GET /servers/{name}</code> 确认服务器已连接且有工具。然后用 <code>POST /tools/servers/{name}/{tool}/call</code> 直接调用测试。分组工具可通过 MCP SSE 端点测试。</p>
+  </div>
+  <div class="module-card">
+    <h4>⚠️ 常见问题排查</h4>
+    <p><strong>连接超时</strong>：检查 <code>url</code> 是否正确、网络是否可达。<br>
+    <strong>工具为空</strong>：服务器连接成功但未返回工具，检查 MCP 服务器端实现。<br>
+    <strong>Stdio 失败</strong>：检查 <code>command</code> 和 <code>args</code> 是否正确，<code>env</code> 中的变量是否已设置。</p>
+  </div>
+</div>
+
+<h3>常用调试命令速查</h3>
+<pre><code># 查看所有服务器状态（快速概览）
+curl -s http://localhost:8000/servers/ | python -m json.tool
+
+# 启动特定服务器
+curl -X POST http://localhost:8000/servers/my-server/start
+
+# 查看服务器诊断信息（包括连接次数、失败次数等）
+curl http://localhost:8000/servers/my-server/diagnostics
+
+# 调用工具
+curl -X POST http://localhost:8000/tools/servers/my-server/tool_name/call \
+  -H "Content-Type: application/json" \
+  -d '{"arguments": {"param1": "value1"}}'
+
+# 获取分组可用工具
+curl http://localhost:8000/groups/{group_id}/tools
+
+# 重启服务器（连接异常时）
+curl -X POST http://localhost:8000/servers/my-server/restart</code></pre>
+
+<h3>运行测试</h3>
+<pre><code># 运行所有测试
+uv run pytest src/test/
+
+# 运行特定测试
+uv run pytest src/test/test_server_manager_startup.py -v
+
+# 运行带标记的测试
+uv run pytest src/test/ -k "test_mcp_service" -v</code></pre>
+
+<!-- ============ Quiz ============ -->
+<div class="quiz-section">
+  <h2>📝 自检 Quiz</h2>
+
+  <div class="quiz-q">
+    <div class="q-title">Q1: 要添加一个本地 Python MCP 工具，应该使用哪种传输协议？</div>
+    <label><input type="radio" name="q1" value="A" onclick="checkAnswer('q1','B',this)"> A. SSE</label>
+    <label><input type="radio" name="q1" value="B" onclick="checkAnswer('q1','B',this)"> B. Stdio</label>
+    <label><input type="radio" name="q1" value="C" onclick="checkAnswer('q1','B',this)"> C. StreamableHTTP</label>
+    <label><input type="radio" name="q1" value="D" onclick="checkAnswer('q1','B',this)"> D. WebSocket</label>
+    <div class="answer"></div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-title">Q2: 开发调试时不想让服务启动时自动连接所有 MCP 服务器，应该怎么做？</div>
+    <label><input type="radio" name="q2" value="A" onclick="checkAnswer('q2','C',this)"> A. 删除所有服务器配置</label>
+    <label><input type="radio" name="q2" value="B" onclick="checkAnswer('q2','C',this)"> B. 设置 auto_start=false</label>
+    <label><input type="radio" name="q2" value="C" onclick="checkAnswer('q2','C',this)"> C. 设置环境变量 KUAI_SKIP_MCP_AUTOSTART=true</label>
+    <label><input type="radio" name="q2" value="D" onclick="checkAnswer('q2','C',this)"> D. 使用 --no-autostart 命令行参数</label>
+    <div class="answer"></div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-title">Q3: 创建分组时，<code>tools</code> 设为 <code>[]</code>（空列表）等同于什么？</div>
+    <label><input type="radio" name="q3" value="A" onclick="checkAnswer('q3','B',this)"> A. 不暴露任何工具</label>
+    <label><input type="radio" name="q3" value="B" onclick="checkAnswer('q3','B',this)"> B. 等同于 "all"，暴露所有工具</label>
+    <label><input type="radio" name="q3" value="C" onclick="checkAnswer('q3','B',this)"> C. 服务器配置错误</label>
+    <label><input type="radio" name="q3" value="D" onclick="checkAnswer('q3','B',this)"> D. 只暴露第一个工具</label>
+    <div class="answer"></div>
+  </div>
+</div>
+
+<div class="ask-agent">
+  <strong>想深入了解？</strong>试试问 Agent："如何写一个新的 Transport 子类？" 或 "SmartRouter 的语义搜索是怎么实现的？" 或 "如何在分组中只暴露特定工具？"
+</div>
+
+<div class="nav-links">
+  <a href="0011-kuai-py-mcp-service.html">← MCP 服务架构</a>
+  <a href="../index.html">🗺️ 完整学习地图</a>
+  <a href="../service/0016-kuai-service-prompt-system.html">Prompt 管理系统 →</a>
+</div>
+
+</div>
+</body>
+</html>

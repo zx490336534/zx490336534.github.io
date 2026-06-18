@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0006 - Agent 系统深度追踪</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.5rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:2rem}
+  .desc{color:var(--text-secondary);font-size:.95rem;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.15rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem;color:var(--accent)}
+  h4{font-size:1rem;font-weight:600;margin-top:1rem;margin-bottom:.5rem}
+  p{margin-bottom:1rem}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;overflow-x:auto;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.6}
+  code{font-family:'JetBrains Mono',monospace;font-size:.85em;background:var(--code-bg);padding:.15rem .4rem;border-radius:4px}
+  pre code{background:none;padding:0}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.4rem}
+  .lesson-num{display:inline-block;background:var(--accent-light);color:var(--accent);padding:.2rem .6rem;border-radius:4px;font-size:.8rem;font-weight:500;margin-bottom:.5rem}
+  .tag{display:inline-block;padding:.1rem .4rem;border-radius:4px;font-size:.7rem;font-weight:500;margin-right:.3rem}
+  .tag.deep{background:#fef3c7;color:#b45309}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
+  .ask-agent::before{content:'💡 '}
+  .warn{background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:.9rem}
+  .warn::before{content:'⚠️ '}
+  .success{background:#dcfce7;border:1px solid #86efac;border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:.9rem}
+  .success::before{content:'✅ '}
+  .info{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:.9rem;color:#1e40af}
+  .info::before{content:'ℹ️ '}
+  .flow{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1rem 0}
+  .flow-step{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1rem}
+  .flow-num{background:var(--accent);color:white;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;flex-shrink:0}
+  .flow-content{flex:1}
+  .flow-arrow{color:var(--text-secondary);text-align:center;margin:.5rem 0;font-size:1.2rem;padding-left:8px}
+  .quiz{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1rem 0}
+  .quiz-q{font-weight:600;margin-bottom:.5rem}
+  .quiz-options{margin:.5rem 0 .5rem 1rem}
+  .quiz-options li{margin-bottom:.3rem}
+  .quiz-answer{color:var(--success);font-weight:500;margin-top:.75rem;padding-top:.75rem;border-top:1px dashed var(--border)}
+  table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.9rem}
+  th,td{border:1px solid var(--border);padding:.6rem .8rem;text-align:left}
+  th{background:var(--code-bg);font-weight:600}
+  nav{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:.9rem}
+  nav a{color:var(--accent);text-decoration:none}
+  nav a:hover{text-decoration:underline}
+  .card{border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0;font-size:.93rem}
+  .card.info{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
+  .card-label{font-weight:600;font-size:.85rem;margin-bottom:.5rem;color:var(--accent)}
+  .card ul{margin:.5rem 0 0 1.25rem}
+  .card a{color:var(--accent);text-decoration:none}
+  .card a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="card info">
+  <div class="card-label">前置知识</div>
+  <p>如果你不熟悉以下概念，建议先阅读对应教程：</p>
+  <ul>
+    <li><a href="../../reference/nextjs-app-router.html">Next.js App Router 基础入门</a></li>
+    <li><a href="../../reference/langchain-basics.html">LangChain 基础入门</a></li>
+    <li><a href="../../reference/mcp-protocol.html">MCP 协议基础入门</a></li>
+  </ul>
+</div>
+
+<span class="lesson-num">0006</span>
+<h1>🔬 Agent 系统深度追踪</h1>
+<p class="subtitle"><span class="tag deep">深度</span> LangChain Agent 定义流程 · defineAgent · AgentScanner · 流式对话</p>
+<p class="desc">本课深入 Agent 系统的核心代码，追踪从 Agent 定义到流式对话的完整调用链。理解这些，你就掌握了 kuai-service-front 最核心的架构。</p>
+
+<!-- ==================== 1. LangChain Agent 定义流程 ==================== -->
+<h2><span class="icon">📐</span> 一、LangChain Agent 定义流程</h2>
+
+<p>每个 Agent 的生命周期分为 3 个阶段：定义 → 注册 → 运行。</p>
+
+<div class="flow">
+  <div class="flow-step">
+    <div class="flow-num">1</div>
+    <div class="flow-content">
+      <h4>创建 Agent 文件</h4>
+      <p>在 <code>src/agents/</code> 目录创建 <code>my-agent.js</code>，使用 <code>defineAgent()</code> 定义元数据和工厂函数。</p>
+    </div>
+  </div>
+  <div class="flow-arrow">↓</div>
+  <div class="flow-step">
+    <div class="flow-num">2</div>
+    <div class="flow-content">
+      <h4>注册到 Scanner</h4>
+      <p>在 <code>src/lib/agents/scanner.js</code> 的 <code>AGENT_MODULES</code> 数组中添加导入和注册项。</p>
+    </div>
+  </div>
+  <div class="flow-arrow">↓</div>
+  <div class="flow-step">
+    <div class="flow-num">3</div>
+    <div class="flow-content">
+      <h4>启动时自动扫描</h4>
+      <p><code>AgentScanner</code> 在应用启动时遍历 <code>AGENT_MODULES</code>，验证并提取元数据，注册到全局注册中心。</p>
+    </div>
+  </div>
+  <div class="flow-arrow">↓</div>
+  <div class="flow-step">
+    <div class="flow-num">4</div>
+    <div class="flow-content">
+      <h4>API 暴露元数据</h4>
+      <p><code>/api/agents</code> 返回所有已注册 Agent 的元数据（name, description, examples 等），前端据此渲染 Agent 列表。</p>
+    </div>
+  </div>
+  <div class="flow-arrow">↓</div>
+  <div class="flow-step">
+    <div class="flow-num">5</div>
+    <div class="flow-content">
+      <h4>用户发起对话</h4>
+      <p>前端调用 <code>/api/agents/[id]/chat</code>，触发 <code>createAgent()</code> 工厂函数创建 LangGraph Agent 实例，开始流式对话。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 2. defineAgent 辅助函数 ==================== -->
+<h2><span class="icon">🔧</span> 二、defineAgent 辅助函数</h2>
+
+<p>源码位置：<code>src/lib/agents/define.js</code></p>
+
+<p><code>defineAgent()</code> 是所有 Agent 定义的入口，它做的事情很简单 — 给定义对象设置默认值：</p>
+
+<pre><code>// src/lib/agents/define.js
+export function defineAgent(definition) {
+  return {
+    isPublic: true,           // 默认公开
+    enableSuggestions: true,   // 默认启用建议
+    enableModelSwitch: false,  // 默认不启用模型切换
+    ...definition,             // 用户定义覆盖默认值
+  };
+}</code></pre>
+
+<h3>defineAgent 配置项详解</h3>
+
+<table>
+  <tr><th>字段</th><th>类型</th><th>默认值</th><th>说明</th></tr>
+  <tr><td><code>id</code></td><td>string</td><td>从文件名推断</td><td>Agent 唯一标识，如 <code>chart-agent</code></td></tr>
+  <tr><td><code>name</code></td><td>string</td><td><strong>必填</strong></td><td>显示名称，如 "图表助手"</td></tr>
+  <tr><td><code>description</code></td><td>string</td><td><strong>必填</strong></td><td>功能描述</td></tr>
+  <tr><td><code>createAgent</code></td><td>function</td><td><strong>必填</strong></td><td>工厂函数，返回 LangGraph Agent 实例</td></tr>
+  <tr><td><code>isPublic</code></td><td>boolean</td><td>true</td><td>是否在前端列表中显示</td></tr>
+  <tr><td><code>enableSuggestions</code></td><td>boolean</td><td>true</td><td>是否显示建议问题</td></tr>
+  <tr><td><code>enableModelSwitch</code></td><td>boolean</td><td>false</td><td>是否允许用户切换模型</td></tr>
+  <tr><td><code>requiresDrawio</code></td><td>boolean</td><td>false</td><td>是否显示 DrawIO 编辑器分屏</td></tr>
+  <tr><td><code>requiresXmind</code></td><td>boolean</td><td>false</td><td>是否显示 XMind 脑图分屏</td></tr>
+  <tr><td><code>allowAddKnowledge</code></td><td>boolean</td><td>false</td><td>是否启用知识库导入</td></tr>
+  <tr><td><code>examples</code></td><td>array</td><td>[]</td><td>示例问题列表</td></tr>
+  <tr><td><code>initialForm</code></td><td>object</td><td>null</td><td>对话前收集信息的表单配置</td></tr>
+  <tr><td><code>modelOptions</code></td><td>array</td><td>[]</td><td>可切换的模型选项</td></tr>
+</table>
+
+<h3>extractMetadata — 元数据提取</h3>
+<p><code>define.js</code> 还导出了 <code>extractMetadata()</code> 函数，用于从 Agent 定义中提取轻量级元数据（不含 <code>createAgent</code> 函数），供 <code>/api/agents</code> 返回给前端：</p>
+
+<pre><code>export function extractMetadata(definition, fallbackId) {
+  return {
+    id: definition.id || fallbackId,
+    name: definition.name,
+    description: definition.description,
+    isPublic: definition.isPublic ?? true,
+    enableSuggestions: definition.enableSuggestions ?? true,
+    examples: [...(definition.examples || [])],
+    requiresDrawio: definition.requiresDrawio ?? false,
+    requiresXmind: definition.requiresXmind ?? false,
+    allowAddKnowledge: definition.allowAddKnowledge ?? false,
+    initialForm: definition.initialForm ?? null,
+    mountedSkills: inferMountedSkills(definition),  // 自动推断挂载的技能
+    enableModelSwitch: ...,
+    modelOptions: ...,
+  };
+}</code></pre>
+
+<div class="info">
+  <strong>inferMountedSkills</strong> 会自动扫描 <code>createAgent</code> 函数源码中的 <code>getSkillTools()</code> 调用，提取挂载的技能名称。这是一种巧妙的静态分析技巧。
+</div>
+
+<!-- ==================== 3. AgentScanner 自动注册 ==================== -->
+<h2><span class="icon">🔍</span> 三、AgentScanner 自动注册</h2>
+
+<p>源码位置：<code>src/lib/agents/scanner.js</code></p>
+
+<p>由于 Next.js 打包限制无法使用真正的动态导入，所有 Agent 必须<strong>手动静态导入</strong>后注册到 <code>AGENT_MODULES</code> 数组。</p>
+
+<h3>注册步骤</h3>
+<pre><code>// src/lib/agents/scanner.js
+
+// 1. 导入 Agent 定义
+import myAgent from '@/agents/my-agent';
+
+// 2. 添加到 AGENT_MODULES 数组
+const AGENT_MODULES = [
+  { filename: 'chart-agent.js', module: chartAgent },
+  { filename: 'code-assistant-agent.js', module: codeAssistantAgent },
+  // ... 更多 Agent
+  { filename: 'my-agent.js', module: myAgent },  // ⬅️ 新增
+];</code></pre>
+
+<h3>AgentScanner 类</h3>
+<pre><code>class AgentScanner {
+  constructor() {
+    this.agentModules = AGENT_MODULES;
+  }
+
+  // 从文件名推导 Agent ID
+  getAgentIdFromFilename(filename) {
+    return filename.replace(/\.(ts|js)$/, '');
+  }
+
+  // 加载并验证单个 Agent 模块
+  loadAgentModule(agentEntry) {
+    const { filename, module: definition } = agentEntry;
+    const fallbackId = this.getAgentIdFromFilename(filename);
+
+    // 验证必填字段
+    if (!isValidAgentDefinition(definition)) {
+      return { success: false, error: '缺少 name, description, createAgent' };
+    }
+
+    // 提取元数据
+    const metadata = extractMetadata(definition, fallbackId);
+    return { success: true, definition, metadata };
+  }
+
+  // 扫描所有 Agent
+  async scanAgents() {
+    const agents = new Map();
+    for (const entry of this.agentModules) {
+      const result = this.loadAgentModule(entry);
+      if (result.success) {
+        agents.set(result.definition.id, result.definition);
+      }
+    }
+    return agents;
+  }
+}
+
+// 单例导出
+export const agentScanner = new AgentScanner();</code></pre>
+
+<h3>扫描流程</h3>
+<ol>
+  <li>遍历 <code>AGENT_MODULES</code> 数组</li>
+  <li>对每个模块调用 <code>isValidAgentDefinition()</code> 验证（必须有 name, description, createAgent）</li>
+  <li>调用 <code>extractMetadata()</code> 提取元数据</li>
+  <li>去重检查（相同 ID 的 Agent 跳过后者）</li>
+  <li>返回 <code>Map&lt;id, definition&gt;</code></li>
+</ol>
+
+<div class="warn">
+  <strong>常见错误：</strong>忘记在 <code>scanner.js</code> 注册是最常见的遗漏。Agent 文件写好了但不出现在列表中，第一步就检查这里。
+</div>
+
+<!-- ==================== 4. createReactAgent ==================== -->
+<h2><span class="icon">🤖</span> 四、createReactAgent</h2>
+
+<p><code>createReactAgent</code> 来自 <code>@langchain/langgraph/prebuilt</code>，是 LangGraph 提供的预构建 ReAct Agent。</p>
+
+<h3>ReAct 模式</h3>
+<p>ReAct = Reasoning + Acting。Agent 的思考-行动循环：</p>
+<ol>
+  <li><strong>思考</strong>（Thought）：分析用户问题，决定需要什么工具</li>
+  <li><strong>行动</strong>（Action）：调用工具获取信息</li>
+  <li><strong>观察</strong>（Observation）：获取工具返回结果</li>
+  <li><strong>循环</strong>：重复直到得出最终答案</li>
+</ol>
+
+<h3>在 Agent 中使用</h3>
+<pre><code>// src/agents/my-agent.js
+import { defineAgent } from "@/lib/agents/define";
+import { createReactAgent } from "@langchain/langgraph/prebuilt";
+import { ChatOpenAI } from "@langchain/openai";
+import { MODEL_CONFIG } from "@/config/modelConfig";
+
+export default defineAgent({
+  name: '我的助手',
+  description: '示例 Agent',
+
+  createAgent: async (options = {}) =&gt; {
+    const { formData = {} } = options;
+
+    // 1. 创建 LLM 模型
+    const model = new ChatOpenAI({
+      model: MODEL_CONFIG.defaultModel,
+      temperature: 0.3,
+      apiKey: MODEL_CONFIG.defaultApiKey,
+      configuration: { baseURL: MODEL_CONFIG.defaultBaseHost },
+    });
+
+    // 2. 并行加载工具（推荐）
+    const [mcpTools, gitTools, claudecodeTools] = await Promise.all([
+      getMCPTools(MCP_SERVERS, { useCache: true }),
+      getGitCloneTools(),
+      getClaudecodeTools(),
+    ]);
+
+    // 3. 创建 ReAct Agent
+    return createReactAgent({
+      llm: model,
+      tools: [...mcpTools, ...gitTools, ...claudecodeTools],
+    });
+  },
+});</code></pre>
+
+<div class="success">
+  <strong>最佳实践：</strong>使用 <code>Promise.all()</code> 并行加载工具，避免串行等待。MCP 工具有 2 分钟缓存，重复调用不会重新创建客户端。
+</div>
+
+<h3>工具并行加载模式</h3>
+<pre><code>// 推荐：并行加载
+const [mcpTools, gitTools, skillTools] = await Promise.all([
+  getMCPTools(MCP_SERVERS, { useCache: true }),
+  getGitCloneTools(),
+  getSkillTools({ skills: ['git-clone', 'dev-design'] }),
+]);
+
+// 不推荐：串行加载
+const mcpTools = await getMCPTools(...);      // 等待...
+const gitTools = await getGitCloneTools();    // 再等待...
+const skillTools = await getSkillTools(...);  // 再等待...</code></pre>
+
+<!-- ==================== 5. 流式对话处理 ==================== -->
+<h2><span class="icon">🌊</span> 五、流式对话处理</h2>
+
+<p>源码位置：<code>src/lib/agents/chatStreamHandler.js</code></p>
+
+<p>这是整个 Agent 系统最复杂的部分 — 统一的对话流处理器，同时服务于普通对话和分享对话。</p>
+
+<h3>核心架构</h3>
+
+<pre><code>agent.streamEvents()           ← LangGraph 生成事件流
+        │
+        ▼
+   AsyncQueue 广播              ← 一个流分发给多个消费者
+        │
+   ┌────┴────┐
+   ▼         ▼
+AI SDK 流   后台 DB 持久化       ← 两条独立管道
+(前端 SSE)  (MongoDB 增量写入)</code></pre>
+
+<h3>AsyncQueue — 解耦生产者和消费者</h3>
+<p>核心设计：当浏览器关闭时，AI SDK 流消费者断开，但后台 DB 持久化消费者不受影响。</p>
+
+<pre><code>class AsyncQueue {
+  constructor() {
+    this._queue = [];
+    this._resolve = null;
+    this._done = false;
+  }
+
+  // 生产者推送事件
+  push(value) {
+    if (this._resolve) {
+      this._resolve({ value, done: false });
+      this._resolve = null;
+    } else {
+      this._queue.push(value);
+    }
+  }
+
+  // 标记结束
+  end() { this._done = true; }
+
+  // 消费者通过 async iteration 消费
+  [Symbol.asyncIterator]() {
+    return {
+      next: () => {
+        if (this._queue.length > 0)
+          return Promise.resolve({ value: this._queue.shift(), done: false });
+        if (this._done)
+          return Promise.resolve({ value: undefined, done: true });
+        return new Promise((resolve, reject) => { this._resolve = resolve; });
+      }
+    };
+  }
+}</code></pre>
+
+<h3>后台 DB 持久化</h3>
+<p><code>persistInBackground()</code> 函数消费事件流并增量写入 MongoDB：</p>
+<ul>
+  <li><strong>节流写入</strong>：每 500ms 最多写一次 DB，避免频繁 IO</li>
+  <li><strong>累积状态</strong>：content（文本）、toolCalls（工具调用）、parts（有序消息部件）</li>
+  <li><strong>最终写入</strong>：流结束时强制写入 <code>streaming: false</code></li>
+  <li><strong>中断支持</strong>：收到 abort 信号时保存当前进度</li>
+</ul>
+
+<h3>任务管理</h3>
+<pre><code>// 全局任务注册表
+const runningTasks = new Map();
+
+// 终止任务
+export function abortTask(taskId) {
+  const task = runningTasks.get(taskId);
+  if (task) {
+    task.abortController.abort();
+    runningTasks.delete(taskId);
+    return true;
+  }
+  return false;
+}
+
+// 查询运行中的任务
+export function getRunningTasks() {
+  return Array.from(runningTasks.values());
+}</code></pre>
+
+<h3>流式事件类型</h3>
+<table>
+  <tr><th>事件</th><th>说明</th></tr>
+  <tr><td><code>on_chat_model_start</code></td><td>LLM 开始生成</td></tr>
+  <tr><td><code>on_chat_model_stream</code></td><td>LLM token 流式输出</td></tr>
+  <tr><td><code>on_chat_model_end</code></td><td>LLM 生成完成</td></tr>
+  <tr><td><code>on_tool_start</code></td><td>工具开始执行</td></tr>
+  <tr><td><code>on_tool_end</code></td><td>工具执行完成</td></tr>
+  <tr><td><code>on_tool_error</code></td><td>工具执行出错</td></tr>
+</table>
+
+<h3>Tool Progress Handler</h3>
+<p>工具进度处理器（<code>toolProgressHandler.js</code>）将工具调用事件转换为前端可展示的进度信息，包括工具名称、输入参数、执行状态等。</p>
+
+<div class="ask-agent">
+  <strong>遇到不懂的地方？</strong>直接问 Agent。比如："帮我解释 AsyncQueue 是怎么实现的" 或 "chatStreamHandler 的流式处理流程是什么"。
+</div>
+
+<!-- ==================== Quiz ==================== -->
+<h2><span class="icon">📝</span> Quiz</h2>
+
+<div class="quiz">
+  <p class="quiz-q">Q1：<code>defineAgent()</code> 函数的核心作用是什么？</p>
+  <ul class="quiz-options">
+    <li>A. 创建 LangGraph Agent 实例</li>
+    <li>B. 给 Agent 定义对象设置默认值（isPublic=true, enableSuggestions=true 等）</li>
+    <li>C. 注册 Agent 到全局注册中心</li>
+    <li>D. 启动流式对话</li>
+  </ul>
+  <p class="quiz-answer">✅ 答案：B — <code>defineAgent()</code> 本身非常简单，就是用展开运算符合并默认值和用户定义。真正的 Agent 创建在 <code>createAgent</code> 工厂函数中。</p>
+</div>
+
+<div class="quiz">
+  <p class="quiz-q">Q2：为什么 Agent 必须在 <code>scanner.js</code> 中手动注册，而不能自动扫描 <code>src/agents/</code> 目录？</p>
+  <ul class="quiz-options">
+    <li>A. 为了代码审查方便</li>
+    <li>B. Next.js 打包限制，无法使用真正的动态导入</li>
+    <li>C. 为了安全性</li>
+    <li>D. 这是 LangChain 的要求</li>
+  </ul>
+  <p class="quiz-answer">✅ 答案：B — Next.js 的 Turbopack/Webpack 打包器需要在编译时知道所有依赖，不支持运行时动态扫描目录，所以必须静态导入。</p>
+</div>
+
+<div class="quiz">
+  <p class="quiz-q">Q3：在 <code>chatStreamHandler</code> 的后台持久化中，DB 写入的节流间隔是多少？为什么需要节流？</p>
+  <ul class="quiz-options">
+    <li>A. 100ms，为了实时性</li>
+    <li>B. 500ms，避免频繁 IO 操作影响性能</li>
+    <li>C. 5s，节省存储空间</li>
+    <li>D. 不节流，每次事件都写入</li>
+  </ul>
+  <p class="quiz-answer">✅ 答案：B — <code>DB_UPDATE_INTERVAL_MS = 500</code>。流式输出每秒可能产生几十个 token 事件，每次都写 DB 会造成巨大 IO 压力，500ms 节流是性能和实时性的平衡点。</p>
+</div>
+
+<div class="nav-links">
+  <a href="../service/0004-kuai-service-dev-guide.html">← 后端开发实战指南</a>
+  <a href="../index.html">🗺️ 完整学习地图</a>
+  <a href="0007-kuai-front-mcp-tools.html">MCP 工具集成 →</a>
+</div>
+
+</div>
+</body>
+</html>

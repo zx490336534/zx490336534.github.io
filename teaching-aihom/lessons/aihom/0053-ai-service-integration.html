@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>053 AI 服务集成与模型调用</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --accent: #b45309;
+    --accent-light: #fef3c7;
+    --border: #e7e5e4;
+    --code-bg: #f5f5f4;
+    --success: #16a34a;
+    --warning: #d97706;
+    --info: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .card.info { border-left: 3px solid var(--info); }
+  .card.warning { border-left: 3px solid var(--warning); }
+  .card.success { border-left: 3px solid var(--success); }
+
+  .card-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+  .card.info .card-label { color: var(--info); }
+  .card.warning .card-label { color: var(--warning); }
+  .card.success .card-label { color: var(--success); }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    font-size: 0.88em;
+  }
+
+  pre {
+    background: #1c1917;
+    color: #e7e5e4;
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  pre .comment { color: #78716c; }
+  pre .keyword { color: #f59e0b; }
+  pre .string { color: #86efac; }
+  pre .dir { color: #93c5fd; }
+  pre .file { color: #e7e5e4; }
+  pre .important { color: #fbbf24; font-weight: 500; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.92rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .tree { margin: 1rem 0; }
+
+  .quiz {
+    background: var(--accent-light);
+    border: 1px solid #fbbf24;
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .quiz-title {
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+  .quiz-options { list-style: none; }
+  .quiz-options li {
+    padding: 0.5rem 0.75rem;
+    margin: 0.35rem 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+  }
+  .quiz-options li:hover { background: #fde68a33; border-color: #fbbf24; }
+  .quiz-options li.correct { background: #dcfce7; border-color: #16a34a; }
+  .quiz-options li.wrong { background: #fee2e2; border-color: #ef4444; }
+  .quiz-feedback {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    display: none;
+    font-size: 0.9rem;
+  }
+
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+  }
+  .flow-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .flow-arrow { color: var(--text-secondary); }
+
+  .next-lesson {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .next-lesson a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .next-lesson a:hover { text-decoration: underline; }
+
+  .ask-agent {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+    color: #1e40af;
+  }
+  .ask-agent::before { content: '💡 '; }
+
+  ul, ol { margin: 0.5rem 0 1rem 1.5rem; }
+  li { margin-bottom: 0.3rem; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>053 AI 服务集成与模型调用</h1>
+<p class="subtitle">从 AGENTS.md 中的 OpenaiManager 出发，深入理解如何在 auto-layout-service 中集成 OpenAI / Gemini 等大模型服务</p>
+
+<!-- ==================== Section 1 ==================== -->
+<h2>1. 为什么需要 AI 服务集成</h2>
+
+<p>在 <code>auto-layout-service</code> 中，AI 不是装饰，而是<strong>核心驱动力</strong>。根据 AGENTS.md 的架构说明，系统使用了两个 AI 提供商：</p>
+
+<table>
+  <tr><th>提供商</th><th>Manager 类</th><th>用途</th><th>SDK</th></tr>
+  <tr><td>OpenAI</td><td><code>OpenaiManager</code></td><td>Chat Completions、Embeddings、图像分析</td><td><code>com.openai</code> SDK</td></tr>
+  <tr><td>AI Native Service</td><td><code>AiNativeManager</code></td><td>图像生成（户型图着色等）</td><td><code>ai-native-service-client</code></td></tr>
+</table>
+
+<div class="card info">
+  <div class="card-label">核心数据流</div>
+  <p>以 <code>AutoLayoutWithImageProcessor</code> 为例：先通过 <code>AiNativeManager</code> 着色户型图（<code>coloringLayoutImage()</code>），再通过 <code>OpenaiManager</code> 分析着色后的图片（<code>getLayoutWithImage()</code>），最终构建布局结果。</p>
+</div>
+
+<!-- ==================== Section 2 ==================== -->
+<h2>2. OpenAI SDK 集成</h2>
+
+<h3>2.1 SDK 选择与配置</h3>
+
+<p>项目使用官方 <code>com.openai:openai-java</code> SDK，而非社区库。在 <code>OpenaiManager</code> 中封装了对 OpenAI API 的所有调用。</p>
+
+<pre>
+<span class="comment">// OpenaiManager 核心职责</span>
+<span class="keyword">public class</span> OpenaiManager {
+    <span class="comment">// 1. Chat Completions — 对话补全，用于理解户型图</span>
+    chatCompletion(messages, model, ...);
+
+    <span class="comment">// 2. Embeddings — 文本向量化，用于语义搜索</span>
+    createEmbedding(text, model);
+
+    <span class="comment">// 3. Image Analysis — 视觉理解，用于户型图识别</span>
+    analyzeImage(imageUrl, prompt);
+}
+</pre>
+
+<h3>2.2 Chat Completions 调用模式</h3>
+
+<p>最常用的调用方式。构造 messages 数组，指定模型和参数，获取 AI 响应：</p>
+
+<pre>
+<span class="comment">// 典型调用流程</span>
+List&lt;Message&gt; messages = List.of(
+    systemMessage(<span class="string">"你是一个户型布局分析专家..."</span>),
+    userMessage(
+        textContent(<span class="string">"请分析这个户型的布局"</span>),
+        imageContent(floorplanBase64)
+    )
+);
+
+ChatCompletion result = openaiManager.chatCompletion(
+    messages,
+    <span class="string">"gpt-4o"</span>,           <span class="comment">// 模型选择</span>
+    0.2,                  <span class="comment">// temperature — 越低越确定</span>
+    4096                  <span class="comment">// max_tokens</span>
+);
+</pre>
+
+<h3>2.3 多模态调用（Vision）</h3>
+
+<p>户型图分析是典型的<strong>多模态场景</strong>：同时发送文本指令和图片数据。OpenAI 的 Vision API 支持 base64 和 URL 两种图片输入方式。</p>
+
+<div class="card warning">
+  <div class="card-label">实际应用</div>
+  <p>在 <code>getLayoutWithImage()</code> 方法中，系统将 AI Native 着色后的户型图以 base64 编码发送给 GPT-4o，让 AI 识别房间类型、门窗位置等结构信息。</p>
+</div>
+
+<!-- ==================== Section 3 ==================== -->
+<h2>3. Gemini 集成</h2>
+
+<h3>3.1 为什么还需要 Gemini</h3>
+
+<p>OpenAI 不是唯一选择。在实际业务中，我们可能需要：</p>
+<ul>
+  <li><strong>降本</strong> — Gemini Flash 系列价格远低于 GPT-4o</li>
+  <li><strong>降延迟</strong> — Google 全球节点覆盖好，亚洲访问延迟低</li>
+  <li><strong>兜底容灾</strong> — OpenAI 限流或宕机时自动切换</li>
+  <li><strong>差异化能力</strong> — Gemini 在某些多语言/多模态任务上表现更优</li>
+</ul>
+
+<h3>3.2 集成方式</h3>
+
+<p>Gemini 提供了与 OpenAI 兼容的 API 端点，大部分场景可以直接复用 OpenAI SDK 的调用模式：</p>
+
+<pre>
+<span class="comment">// 方式一：使用 Gemini 原生 SDK</span>
+<span class="keyword">import</span> com.google.genai.Client;
+
+Client client = Client.builder()
+    .apiKey(geminiApiKey)
+    .build();
+
+GenerateContentResponse response = client.models.generateContent(
+    <span class="string">"gemini-2.5-flash"</span>,
+    contents,
+    config
+);
+
+<span class="comment">// 方式二：使用 OpenAI 兼容端点</span>
+<span class="comment">// base_url 改为 https://generativelanguage.googleapis.com/v1beta/openai/</span>
+<span class="comment">// 即可复用 openai-java SDK</span>
+</pre>
+
+<h3>3.3 统一抽象层</h3>
+
+<p>在实际项目中，推荐通过<strong>策略模式</strong>抽象不同模型提供商，上层业务代码不感知具体是 OpenAI 还是 Gemini：</p>
+
+<pre>
+<span class="keyword">public interface</span> LlmClient {
+    ChatResponse chat(List&lt;Message&gt; messages, LlmConfig config);
+    EmbeddingResponse embed(String text, LlmConfig config);
+}
+
+<span class="keyword">public class</span> OpenAiLlmClient <span class="keyword">implements</span> LlmClient { ... }
+<span class="keyword">public class</span> GeminiLlmClient <span class="keyword">implements</span> LlmClient { ... }
+
+<span class="comment">// 通过配置切换</span>
+<span class="keyword">@Bean</span>
+LlmClient llmClient(LlmProperties props) {
+    <span class="keyword">return switch</span> (props.getProvider()) {
+        <span class="keyword">case</span> OPENAI -> <span class="keyword">new</span> OpenAiLlmClient(props);
+        <span class="keyword">case</span> GEMINI -> <span class="keyword">new</span> GeminiLlmClient(props);
+    };
+}
+</pre>
+
+<!-- ==================== Section 4 ==================== -->
+<h2>4. 模型选择策略</h2>
+
+<p>不同任务对模型的要求截然不同。盲目使用最贵的模型既浪费钱又增加延迟。</p>
+
+<table>
+  <tr><th>任务类型</th><th>推荐模型</th><th>理由</th></tr>
+  <tr><td>户型图结构分析</td><td>GPT-4o</td><td>多模态能力强，空间理解准确</td></tr>
+  <tr><td>简单文本分类/路由</td><td>GPT-4o-mini / Gemini Flash</td><td>速度快、成本低</td></tr>
+  <tr><td>文本向量化</td><td>text-embedding-3-small</td><td>性价比最高</td></tr>
+  <tr><td>复杂推理/代码生成</td><td>o3 / Gemini Pro</td><td>推理深度足够</td></tr>
+  <tr><td>图像生成</td><td>AI Native 服务</td><td>内部服务，无外部 API 费用</td></tr>
+</table>
+
+<div class="card success">
+  <div class="card-label">选择原则</div>
+  <ul>
+    <li><strong>能用小模型就不用大模型</strong> — 成本和延迟都更低</li>
+    <li><strong>多模态任务优先选视觉强的模型</strong> — GPT-4o / Gemini Pro Vision</li>
+    <li><strong>关键路径做好 fallback</strong> — 主模型失败时自动降级到备用模型</li>
+  </ul>
+</div>
+
+<!-- ==================== Section 5 ==================== -->
+<h2>5. Prompt 管理</h2>
+
+<h3>5.1 Prompt 的重要性</h3>
+
+<p>Prompt 是 AI 应用的"代码"。在 <code>auto-layout-service</code> 中，Prompt 的质量直接决定了户型分析的准确性。</p>
+
+<h3>5.2 项目中的 Prompt 管理实践</h3>
+
+<p>根据 AGENTS.md，ai-native-service 项目使用 <strong>Nacos 配置中心</strong>管理 Agent 的 prompt，支持热更新。auto-layout-service 中的 <code>OpenaiManager</code> 也遵循类似模式：</p>
+
+<pre>
+<span class="comment">// Prompt 管理最佳实践</span>
+
+<span class="comment">// 1. 结构化 — 使用 System + User 分离角色和指令</span>
+messages = [
+    system(<span class="string">"角色定义 + 输出格式约束"</span>),
+    user(<span class="string">"具体任务描述 + 输入数据"</span>)
+]
+
+<span class="comment">// 2. 版本化 — 每次 prompt 变更记录版本号</span>
+<span class="keyword">@Value</span>(<span class="string">"${prompts.layout-analysis.version}"</span>)
+private String promptVersion;
+
+<span class="comment">// 3. 外部化 — prompt 存配置中心，不硬编码</span>
+<span class="keyword">@Value</span>(<span class="string">"${prompts.layout-analysis.system}"</span>)
+private String systemPrompt;
+
+<span class="comment">// 4. 模板化 — 使用变量占位符</span>
+<span class="comment">// "请分析户型图中的 {room_count} 个房间，风格偏好为 {style}"</span>
+</pre>
+
+<div class="card info">
+  <div class="card-label">Prompt 工程要点</div>
+  <ul>
+    <li><strong>明确角色</strong> — 告诉 AI "你是户型布局专家"，比 "请分析这张图" 效果好 10 倍</li>
+    <li><strong>约束输出格式</strong> — 要求 JSON 输出时给出 schema 示例</li>
+    <li><strong>Few-shot 示例</strong> — 给 1-2 个输入输出示例，比长篇描述更有效</li>
+    <li><strong>温度控制</strong> — 结构化任务用 0.1-0.3，创意任务用 0.7-0.9</li>
+  </ul>
+</div>
+
+<!-- ==================== Section 6 ==================== -->
+<h2>6. Token 用量统计</h2>
+
+<h3>6.1 为什么统计 Token</h3>
+
+<p>AI 调用是<strong>按 token 计费</strong>的。不统计就无法控制成本，也无法优化。</p>
+
+<h3>6.2 Token 计算基础</h3>
+
+<table>
+  <tr><th>模型</th><th>输入价格 (每 1M tokens)</th><th>输出价格 (每 1M tokens)</th></tr>
+  <tr><td>GPT-4o</td><td>$2.50</td><td>$10.00</td></tr>
+  <tr><td>GPT-4o-mini</td><td>$0.15</td><td>$0.60</td></tr>
+  <tr><td>Gemini 2.5 Flash</td><td>$0.15</td><td>$0.60</td></tr>
+  <tr><td>text-embedding-3-small</td><td>$0.02</td><td>—</td></tr>
+</table>
+
+<h3>6.3 统计实现方式</h3>
+
+<p>OpenAI API 响应中自带 <code>usage</code> 字段，记录了本次请求的 token 消耗：</p>
+
+<pre>
+<span class="comment">// API 响应中的 usage 字段</span>
+{
+  <span class="string">"usage"</span>: {
+    <span class="string">"prompt_tokens"</span>: 1250,      <span class="comment">// 输入 token 数</span>
+    <span class="string">"completion_tokens"</span>: 380,   <span class="comment">// 输出 token 数</span>
+    <span class="string">"total_tokens"</span>: 1630        <span class="comment">// 总计</span>
+  }
+}
+
+<span class="comment">// 在 Manager 层记录日志</span>
+log.info(<span class="string">"model={}, prompt_tokens={}, completion_tokens={}, cost=${}"</span>,
+    model, usage.getPromptTokens(), usage.getCompletionTokens(),
+    calculateCost(model, usage));
+</pre>
+
+<h3>6.4 成本优化技巧</h3>
+
+<ul>
+  <li><strong>精简 system prompt</strong> — 去掉冗余描述，每次调用都节省 token</li>
+  <li><strong>控制 max_tokens</strong> — 不需要长回复时限制输出长度</li>
+  <li><strong>缓存 embedding</strong> — 相同文本只算一次 embedding</li>
+  <li><strong>分层调用</strong> — 简单任务用 mini 模型，复杂任务才用 4o</li>
+  <li><strong>图片压缩</strong> — 发送前降低分辨率，减少 vision token 消耗</li>
+</ul>
+
+<div class="card warning">
+  <div class="card-label">成本陷阱</div>
+  <p>一张 1024x1024 的图片在 Vision API 中大约消耗 <strong>765 tokens</strong>。如果每个请求都带高分辨率图片，月账单会非常可观。务必做好图片预处理。</p>
+</div>
+
+<!-- ==================== Quiz ==================== -->
+<h2>7. 自检 Quiz</h2>
+
+<div class="quiz" id="quiz1">
+  <div class="quiz-title">Q1: 在 auto-layout-service 中，户型图着色和户型图分析分别由哪个 Manager 负责？</div>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz1', 0)">A. 都是 OpenaiManager</li>
+    <li onclick="checkQuiz('quiz1', 1)">B. 着色由 AiNativeManager，分析由 OpenaiManager</li>
+    <li onclick="checkQuiz('quiz1', 2)">C. 着色由 OpenaiManager，分析由 AiNativeManager</li>
+    <li onclick="checkQuiz('quiz1', 3)">D. 都是 AiNativeManager</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <div class="quiz-title">Q2: 以下哪种做法最能有效降低 AI 调用成本？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz2', 0)">A. 所有任务都用最贵的模型保证质量</li>
+    <li onclick="checkQuiz('quiz2', 1)">B. 不设置 max_tokens，让模型自由发挥</li>
+    <li onclick="checkQuiz('quiz2', 2)">C. 简单任务用小模型，复杂任务用大模型</li>
+    <li onclick="checkQuiz('quiz2', 3)">D. 每次都发送原始高分辨率图片</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <div class="quiz-title">Q3: OpenAI API 响应中，哪个字段用于统计 token 用量？</div>
+  <ul class="quiz-options" data-correct="0">
+    <li onclick="checkQuiz('quiz3', 0)">A. usage</li>
+    <li onclick="checkQuiz('quiz3', 1)">B. metadata</li>
+    <li onclick="checkQuiz('quiz3', 2)">C. statistics</li>
+    <li onclick="checkQuiz('quiz3', 3)">D. billing</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<!-- ==================== Next ==================== -->
+
+
+  <h3>推荐阅读</h3>
+  <ul>
+    <li><a href="https://platform.openai.com/docs/api-reference">OpenAI API Reference</a> — 官方 API 文档</li>
+    <li><a href="https://ai.google.dev/gemini-api/docs">Gemini API Docs</a> — Google AI 官方文档</li>
+    <li><code>auto-layout-service/AGENTS.md</code> — 项目架构文档，理解 Manager 层定位</li>
+  </ul>
+</div>
+</div>
+
+<script>
+function checkQuiz(quizId, selected) {
+  const quiz = document.getElementById(quizId);
+  const options = quiz.querySelector('.quiz-options');
+  const correct = parseInt(options.dataset.correct);
+  const items = options.querySelectorAll('li');
+  const feedback = quiz.querySelector('.quiz-feedback');
+
+  items.forEach((item, i) => {
+    item.onclick = null;
+    if (i === correct) item.classList.add('correct');
+    if (i === selected && i !== correct) item.classList.add('wrong');
+  });
+
+  const feedbacks = {
+    quiz1: {
+      correct: '✓ 对！根据 AGENTS.md，AiNativeManager 负责图像生成（着色），OpenaiManager 负责 Chat Completions（分析）。两者分工明确。',
+      wrong: '✗ 根据 AGENTS.md，着色由 AiNativeManager（AI Native 图像生成服务）负责，分析由 OpenaiManager（OpenAI Chat Completions）负责。'
+    },
+    quiz2: {
+      correct: '✓ 对！分层调用是成本优化的核心策略 — 能用小模型就不用大模型。',
+      wrong: '✗ 正确做法是分层调用：简单任务用 mini/flash 小模型（便宜快速），复杂任务才用大模型。'
+    },
+    quiz3: {
+      correct: '✓ 对！OpenAI API 响应中的 usage 字段包含 prompt_tokens、completion_tokens 和 total_tokens。',
+      wrong: '✗ 是 usage 字段。它包含 prompt_tokens（输入）、completion_tokens（输出）和 total_tokens（总计）。'
+    }
+  };
+
+  feedback.style.display = 'block';
+  feedback.textContent = selected === correct
+    ? feedbacks[quizId].correct
+    : feedbacks[quizId].wrong;
+  feedback.style.background = selected === correct ? '#dcfce7' : '#fee2e2';
+}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 053</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0052-dual-channel-layout.html">上一课：052 双通道并行布局算法</a><a class="primary" href="0054-reactive-framework.html">下一课：054 reactive-framework 深入</a></div></nav>
+</body>
+</html>

@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>058 离线渲染管线详解</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --accent: #b45309;
+    --accent-light: #fef3c7;
+    --border: #e7e5e4;
+    --code-bg: #f5f5f4;
+    --success: #16a34a;
+    --warning: #d97706;
+    --info: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1rem 0;
+  }
+  .card.info { border-left: 3px solid var(--info); }
+  .card.warning { border-left: 3px solid var(--warning); }
+  .card.success { border-left: 3px solid var(--success); }
+
+  .card-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+  .card.info .card-label { color: var(--info); }
+  .card.warning .card-label { color: var(--warning); }
+  .card.success .card-label { color: var(--success); }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    font-size: 0.88em;
+  }
+
+  pre {
+    background: #1c1917;
+    color: #e7e5e4;
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  pre .comment { color: #78716c; }
+  pre .keyword { color: #f59e0b; }
+  pre .string { color: #86efac; }
+  pre .dir { color: #93c5fd; }
+  pre .file { color: #e7e5e4; }
+  pre .important { color: #fbbf24; font-weight: 500; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.92rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .quiz {
+    background: var(--accent-light);
+    border: 1px solid #fbbf24;
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .quiz-title {
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+  .quiz-options { list-style: none; }
+  .quiz-options li {
+    padding: 0.5rem 0.75rem;
+    margin: 0.35rem 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+  }
+  .quiz-options li:hover { background: #fde68a33; border-color: #fbbf24; }
+  .quiz-options li.correct { background: #dcfce7; border-color: #16a34a; }
+  .quiz-options li.wrong { background: #fee2e2; border-color: #ef4444; }
+  .quiz-feedback {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    display: none;
+    font-size: 0.9rem;
+  }
+
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+  }
+  .flow-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .flow-arrow { color: var(--text-secondary); }
+
+  .ask-agent {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+    color: #1e40af;
+  }
+  .ask-agent::before { content: '\1F4A1 '; }
+
+  ul, ol { margin: 0.5rem 0 1rem 1.5rem; }
+  li { margin-bottom: 0.3rem; }
+
+  .next-lesson {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .next-lesson a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .next-lesson a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>058 离线渲染管线详解</h1>
+<p class="subtitle">从渲染任务提交到结果回写，完整理解 OfflineRenderStateManager 驱动的离线出图链路</p>
+
+<!-- ==================== Section 1 ==================== -->
+<h2>1. 离线渲染管线全景</h2>
+
+<p><code>render-3d</code> 仓库中的离线渲染并不是"点一下按钮等图片出来"这么简单。它是一条由 <code>OfflineRenderStateManager</code> 驱动的<strong>异步管线</strong>，涉及参数装配、API 提交、轮询等待、结果回写和父页面同步。</p>
+
+<div class="flow">
+  <span class="flow-step">用户点渲染</span>
+  <span class="flow-arrow">&rarr;</span>
+  <span class="flow-step">参数装配</span>
+  <span class="flow-arrow">&rarr;</span>
+  <span class="flow-step">API 提交</span>
+  <span class="flow-arrow">&rarr;</span>
+  <span class="flow-step">轮询 SnapshotTaskStatus</span>
+  <span class="flow-arrow">&rarr;</span>
+  <span class="flow-step">结果回写</span>
+</div>
+
+<div class="card info">
+  <div class="card-label">关键文件</div>
+  <p>这条管线的核心代码分布在 <code>OfflineRenderStateManager.ts</code>（状态机）、<code>RenderButton/*</code>（参数装配与 UI 入口）和 <code>iframeHelper/*</code>（父页面同步协议）。</p>
+</div>
+
+<!-- ==================== Section 2 ==================== -->
+<h2>2. 渲染任务提交与参数装配</h2>
+
+<h3>2.1 入口：RenderButton</h3>
+<p><code>RenderButton</code> 看起来是一个按钮组件，实际上它是<strong>渲染参数的总装配层</strong>。点击时，它会收集以下参数：</p>
+
+<table>
+  <tr><th>参数</th><th>来源</th><th>说明</th></tr>
+  <tr><td><code>currentObsId</code></td><td>实时模板</td><td>当前场景使用的实时模板 ID</td></tr>
+  <tr><td><code>lightStyleId</code></td><td>模板灯光缓存</td><td>灯光样式 ID，来自 <code>obsConfigCache</code></td></tr>
+  <tr><td><code>hdriBackgroundId</code></td><td>模板背景缓存</td><td>HDRI 背景 ID</td></tr>
+  <tr><td><code>backgroundConfig</code></td><td>模板配置</td><td>背景配置数据</td></tr>
+  <tr><td><code>objectShowRuleMap</code></td><td>父页面同步</td><td>对象显示规则，决定哪些物件在渲染图中可见</td></tr>
+  <tr><td><code>cameraView</code></td><td>场景相机</td><td>相机位置、角度等属性</td></tr>
+  <tr><td><code>hdPermission</code></td><td>权限接口</td><td>是否允许高清渲染</td></tr>
+</table>
+
+<h3>2.2 模板配置缓存机制</h3>
+<p><code>fetchAndCacheObsConfig(obsId)</code> 负责拉取并缓存模板配置：</p>
+
+<pre>
+<span class="comment">// 伪代码：模板配置缓存逻辑</span>
+<span class="keyword">async</span> fetchAndCacheObsConfig(obsId) {
+  <span class="keyword">if</span> (obsConfigCache.has(obsId)) {
+    <span class="keyword">return</span> obsConfigCache.get(obsId);  <span class="comment">// 缓存命中，直接返回</span>
+  }
+  <span class="keyword">const</span> config = <span class="keyword">await</span> fetchObsConfig(obsId);
+  obsConfigCache.set(obsId, config);     <span class="comment">// 写入缓存</span>
+  <span class="keyword">return</span> config;
+}
+</pre>
+
+<div class="card warning">
+  <div class="card-label">兜底策略</div>
+  <p>初始化失败时，系统会回退到 <code>DEFAULT_TEMPLATE_CONFIG.backgroundConfigData</code>。这意味着有些配置错误不会炸页面，而是<strong>渲染风格悄悄回到默认值</strong> — 这种静默回退在排查问题时容易被忽略。</p>
+</div>
+
+<h3>2.3 提交前的前置检查</h3>
+<ul>
+  <li><strong>权限校验</strong>：检查 <code>hdPermission</code>，低权限用户可能无法使用高清渲染</li>
+  <li><strong>提交锁</strong>：<code>isSubmitting</code> 状态防止重复提交</li>
+  <li><strong>显示规则合并</strong>：<code>objectShowRuleMap</code> 与本地场景状态合并，确定最终提交参数</li>
+</ul>
+
+<!-- ==================== Section 3 ==================== -->
+<h2>3. API 调用与任务提交</h2>
+
+<p>参数装配完成后，<code>OfflineRenderStateManager</code> 调用渲染接口提交任务。提交成功后，任务进入 <code>renderTasks</code> 列表，同时设置 <code>isSubmitting = false</code>。</p>
+
+<pre>
+<span class="comment">// 伪代码：任务提交流程</span>
+<span class="keyword">async</span> submitRender(params) {
+  <span class="keyword">this</span>.isSubmitting = <span class="keyword">true</span>;
+  <span class="keyword">try</span> {
+    <span class="keyword">const</span> task = <span class="keyword">await</span> renderAPI.submit(params);
+    <span class="keyword">this</span>.renderTasks.push(task);
+    <span class="keyword">this</span>.startPolling(task.taskId);   <span class="comment">// 启动轮询</span>
+  } <span class="keyword">catch</span> (err) {
+    errorReporter.report(err);        <span class="comment">// 错误归一化上报</span>
+  } <span class="keyword">finally</span> {
+    <span class="keyword">this</span>.isSubmitting = <span class="keyword">false</span>;
+  }
+}
+</pre>
+
+<div class="ask-agent">
+  想看真实的渲染参数结构？可以直接问 agent：<code>RenderButton 里提交渲染时传了哪些参数</code>。
+</div>
+
+<!-- ==================== Section 4 ==================== -->
+<h2>4. SnapshotTaskStatus 状态机</h2>
+
+<p>渲染任务提交后，系统需要知道任务进行到哪一步。<code>SnapshotTaskStatus</code> 是一个状态枚举，驱动着整个轮询和结果回写流程。</p>
+
+<pre>
+<span class="comment">// SnapshotTaskStatus 状态转换</span>
+
+  <span class="important">PENDING</span>  ──→  <span class="important">PROCESSING</span>  ──→  <span class="important">SUCCESS</span>
+      │              │                │
+      │              └──→  <span class="important">FAILED</span>   │
+      │                      │        │
+      └──────────────────────┘        │
+                                      ↓
+                              <span class="string">结果回写 + 红点通知</span>
+</pre>
+
+<table>
+  <tr><th>状态</th><th>含义</th><th>前端行为</th></tr>
+  <tr><td><code>PENDING</code></td><td>任务已提交，排队中</td><td>继续轮询，展示等待态</td></tr>
+  <tr><td><code>PROCESSING</code></td><td>渲染引擎正在处理</td><td>继续轮询，展示进度</td></tr>
+  <tr><td><code>SUCCESS</code></td><td>渲染完成</td><td>停止轮询，回写结果，设置 <code>hasNewRender = true</code></td></tr>
+  <tr><td><code>FAILED</code></td><td>渲染失败</td><td>停止轮询，上报错误，提示用户重试</td></tr>
+</table>
+
+<h3>4.1 轮询策略</h3>
+<div class="card info">
+  <div class="card-label">轮询参数</div>
+  <p><strong>间隔 6 秒</strong>，<strong>最长 10 分钟</strong>。超过 10 分钟仍未完成的视为超时，按失败处理。这个策略在 <code>OfflineRenderStateManager</code> 中硬编码，不走配置。</p>
+</div>
+
+<h3>4.2 hasNewRender 的共享语义</h3>
+<p><code>hasNewRender</code> 不只是一个"有没有新渲染完成"的布尔值。它是<strong>图册红点和新结果提示的共享业务状态</strong> — 图册组件、侧栏入口和父页面都会读取这个值来决定是否显示红点。</p>
+
+<!-- ==================== Section 5 ==================== -->
+<h2>5. 结果回写与父页面同步</h2>
+
+<h3>5.1 回写流程</h3>
+<p>渲染成功后，系统需要把结果 URL 回写到业务层：</p>
+<ol>
+  <li>从轮询响应中获取渲染结果 URL</li>
+  <li>更新 <code>snapshotList</code>，把新结果追加到图册列表</li>
+  <li>设置 <code>hasNewRender = true</code>，触发红点通知</li>
+  <li>通过 <code>postMessage</code> 通知父页面（如果需要）</li>
+</ol>
+
+<h3>5.2 iframe 协议注意事项</h3>
+<div class="card warning">
+  <div class="card-label">协议一致性</div>
+  <p>修改 <code>postMessage</code> / iframe 协议时，必须同时检查：<strong>显示规则</strong>（<code>objectShowRuleMap</code>）、<strong>任务回写</strong>、<strong>图册入口</strong>和<strong>父页面接收端</strong>。最常见的症状是"页面还能渲染，但离线参数或图册结果已经和父层脱节"。</p>
+</div>
+
+<!-- ==================== Section 6 ==================== -->
+<h2>6. 错误处理与重试</h2>
+
+<h3>6.1 错误归一化</h3>
+<p><code>utils/errorReporter.ts</code> 是渲染链路的错误归一化中心。所有异常都会被转化为可上报的统一格式，供监控和用户提示使用。</p>
+
+<h3>6.2 典型错误场景</h3>
+
+<table>
+  <tr><th>场景</th><th>处理方式</th><th>用户感知</th></tr>
+  <tr><td>模板配置拉取失败</td><td>回退到 <code>DEFAULT_TEMPLATE_CONFIG</code></td><td>渲染风格变成默认值，无报错</td></tr>
+  <tr><td>渲染 API 提交失败</td><td>errorReporter 上报 + 提示用户</td><td>弹出错误提示</td></tr>
+  <tr><td>轮询超时（10 分钟）</td><td>停止轮询，标记为失败</td><td>提示渲染超时</td></tr>
+  <tr><td>轮询接口返回 FAILED</td><td>停止轮询，上报错误</td><td>提示渲染失败，可重试</td></tr>
+  <tr><td>父页面同步显示规则失败</td><td>使用本地缓存的规则</td><td>可能与父页面不一致</td></tr>
+</table>
+
+<h3>6.3 重试机制</h3>
+<p>渲染失败后，用户可以手动点击重试。系统会<strong>重新走一遍完整的参数装配流程</strong>，确保拿到最新的模板配置、显示规则和相机状态，而不是简单地用旧参数重新提交。</p>
+
+<div class="card success">
+  <div class="card-label">批量出图保护</div>
+  <p><code>batchCaptureManager.ts</code> 和 <code>utils/async.ts</code> 负责异步调度和批量出图任务保护。房间自动出图时，系统会按 <code>RoomType</code> 过滤房间，优先使用 <code>smartCameraViewMap</code> 智能视角，没有时回退到 <code>renderRoomCenterView()</code> 计算兜底视角。</p>
+</div>
+
+<!-- ==================== Section 7 ==================== -->
+<h2>7. 核心状态一览</h2>
+
+<p><code>OfflineRenderStateManager</code> 维护的关键状态字段：</p>
+
+<table>
+  <tr><th>字段</th><th>类型</th><th>用途</th></tr>
+  <tr><td><code>snapshotList</code></td><td>Array</td><td>历史渲染快照列表</td></tr>
+  <tr><td><code>lightStyleId</code></td><td>string</td><td>当前灯光样式 ID</td></tr>
+  <tr><td><code>hdriBackgroundId</code></td><td>string</td><td>当前 HDRI 背景 ID</td></tr>
+  <tr><td><code>backgroundConfig</code></td><td>object</td><td>背景配置数据</td></tr>
+  <tr><td><code>objectShowRuleMap</code></td><td>Map</td><td>对象显示规则（来自父页面同步）</td></tr>
+  <tr><td><code>renderTasks</code></td><td>Array</td><td>当前进行中的渲染任务</td></tr>
+  <tr><td><code>hasNewRender</code></td><td>boolean</td><td>是否有新渲染结果（红点信号）</td></tr>
+  <tr><td><code>isSubmitting</code></td><td>boolean</td><td>是否正在提交渲染</td></tr>
+  <tr><td><code>hdPermission</code></td><td>object</td><td>高清渲染权限</td></tr>
+  <tr><td><code>currentObsId</code></td><td>string</td><td>当前实时模板 ID</td></tr>
+  <tr><td><code>obsConfigCache</code></td><td>Map</td><td>模板配置缓存</td></tr>
+</table>
+
+<!-- ==================== Quiz ==================== -->
+<h2>8. 自检 Quiz</h2>
+
+<div class="quiz" id="quiz1">
+  <div class="quiz-title">Q1: 渲染任务提交后，前端轮询 SnapshotTaskStatus 的策略是？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz1', 0)">A. 每 2 秒轮询一次，最长 5 分钟</li>
+    <li onclick="checkQuiz('quiz1', 1)">B. 每 3 秒轮询一次，最长 15 分钟</li>
+    <li onclick="checkQuiz('quiz1', 2)">C. 每 6 秒轮询一次，最长 10 分钟</li>
+    <li onclick="checkQuiz('quiz1', 3)">D. 每 10 秒轮询一次，最长 20 分钟</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <div class="quiz-title">Q2: 模板配置拉取失败时，系统会怎么处理？</div>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz2', 0)">A. 直接报错，阻断用户操作</li>
+    <li onclick="checkQuiz('quiz2', 1)">B. 静默回退到 DEFAULT_TEMPLATE_CONFIG 默认配置</li>
+    <li onclick="checkQuiz('quiz2', 2)">C. 自动重试 3 次后报错</li>
+    <li onclick="checkQuiz('quiz2', 3)">D. 刷新整个页面重新初始化</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <div class="quiz-title">Q3: hasNewRender 状态的作用是什么？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz3', 0)">A. 控制渲染按钮是否可点击</li>
+    <li onclick="checkQuiz('quiz3', 1)">B. 标记当前是否有任务正在渲染</li>
+    <li onclick="checkQuiz('quiz3', 2)">C. 作为图册红点和新结果提示的共享业务信号</li>
+    <li onclick="checkQuiz('quiz3', 3)">D. 决定是否需要重新拉取 snapshotList</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<!-- ==================== Next ==================== -->
+
+</div>
+</div>
+
+<script>
+function checkQuiz(quizId, selected) {
+  const quiz = document.getElementById(quizId);
+  const options = quiz.querySelector('.quiz-options');
+  const correct = parseInt(options.dataset.correct);
+  const items = options.querySelectorAll('li');
+  const feedback = quiz.querySelector('.quiz-feedback');
+
+  items.forEach((item, i) => {
+    item.onclick = null;
+    if (i === correct) item.classList.add('correct');
+    if (i === selected && i !== correct) item.classList.add('wrong');
+  });
+
+  const feedbacks = {
+    quiz1: {
+      correct: '\u2713 对！轮询间隔 6 秒，最长 10 分钟。超时按失败处理，用户可手动重试。',
+      wrong: '\u2717 是每 6 秒轮询一次、最长 10 分钟。这个策略在 OfflineRenderStateManager 中硬编码。'
+    },
+    quiz2: {
+      correct: '\u2713 对！系统会静默回退到 DEFAULT_TEMPLATE_CONFIG.backgroundConfigData，不会直接报错。',
+      wrong: '\u2717 实际是静默回退到默认配置。这种回退不会炸页面，但渲染风格会悄悄变回默认值。'
+    },
+    quiz3: {
+      correct: '\u2713 对！hasNewRender 是图册红点和新结果提示的共享业务状态，图册组件、侧栏入口和父页面都会读取它。',
+      wrong: '\u2717 hasNewRender 是图册红点和新结果提示的共享业务信号，不直接控制渲染按钮或任务状态。'
+    }
+  };
+
+  feedback.style.display = 'block';
+  feedback.textContent = selected === correct
+    ? feedbacks[quizId].correct
+    : feedbacks[quizId].wrong;
+  feedback.style.background = selected === correct ? '#dcfce7' : '#fee2e2';
+}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 058</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0057-entity-system.html">上一课：057 实体系统与 Drawable 绑定</a><a class="primary" href="0059-template-system.html">下一课：059 模板系统与灯光/背景管理</a></div></nav>
+</body>
+</html>

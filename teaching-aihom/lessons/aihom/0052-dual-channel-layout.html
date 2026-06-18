@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>052 双通道并行布局算法</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --accent: #b45309;
+    --accent-light: #fef3c7;
+    --border: #e7e5e4;
+    --code-bg: #f5f5f4;
+    --success: #16a34a;
+    --warning: #d97706;
+    --info: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .card.info { border-left: 3px solid var(--info); }
+  .card.warning { border-left: 3px solid var(--warning); }
+  .card.success { border-left: 3px solid var(--success); }
+
+  .card-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+  .card.info .card-label { color: var(--info); }
+  .card.warning .card-label { color: var(--warning); }
+  .card.success .card-label { color: var(--success); }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    font-size: 0.88em;
+  }
+
+  pre {
+    background: #1c1917;
+    color: #e7e5e4;
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  pre .comment { color: #78716c; }
+  pre .keyword { color: #f59e0b; }
+  pre .string { color: #86efac; }
+  pre .dir { color: #93c5fd; }
+  pre .file { color: #e7e5e4; }
+  pre .important { color: #fbbf24; font-weight: 500; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.92rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .tree { margin: 1rem 0; }
+
+  .quiz {
+    background: var(--accent-light);
+    border: 1px solid #fbbf24;
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .quiz-title {
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+  .quiz-options { list-style: none; }
+  .quiz-options li {
+    padding: 0.5rem 0.75rem;
+    margin: 0.35rem 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+  }
+  .quiz-options li:hover { background: #fde68a33; border-color: #fbbf24; }
+  .quiz-options li.correct { background: #dcfce7; border-color: #16a34a; }
+  .quiz-options li.wrong { background: #fee2e2; border-color: #ef4444; }
+  .quiz-feedback {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    display: none;
+    font-size: 0.9rem;
+  }
+
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+  }
+  .flow-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .flow-arrow { color: var(--text-secondary); }
+
+  .next-lesson {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .next-lesson a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .next-lesson a:hover { text-decoration: underline; }
+
+  .ask-agent {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+    color: #1e40af;
+  }
+  .ask-agent::before { content: '💡 '; }
+
+  ul, ol { margin: 0.5rem 0 1rem 1.5rem; }
+  li { margin-bottom: 0.3rem; }
+
+  .channel-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  .channel-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+  }
+  .channel-card h3 {
+    margin-top: 0;
+    font-size: 1rem;
+  }
+  .channel-card.rag { border-top: 3px solid var(--info); }
+  .channel-card.rag h3 { color: var(--info); }
+  .channel-card.config { border-top: 3px solid var(--success); }
+  .channel-card.config h3 { color: var(--success); }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>052 双通道并行布局算法</h1>
+<p class="subtitle">理解 auto-layout-service 如何通过 RAG + PRODUCT_CONFIG 双通道并行执行布局任务，以及结果合并的核心策略</p>
+
+<!-- ==================== Section 1 ==================== -->
+<h2>1. 为什么需要双通道</h2>
+
+<p>在前面的课程中，我们了解了 <code>auto-layout-service</code> 的 Processor 模式和 Manager 层设计。当系统接到一个布局请求时，它面临一个核心问题：<strong>如何在保证布局质量的同时，最大化利用已有数据？</strong></p>
+
+<p>系统中存在两类数据源：</p>
+<ul>
+  <li><strong>历史案例库</strong> — 存储了大量已有的优秀布局方案，可以通过向量检索找到相似案例</li>
+  <li><strong>产品配置库</strong> — 存储了产品的标准化配置信息（PRODUCT_CONFIG），包含经过验证的布局规则</li>
+</ul>
+
+<p>单通道执行的问题在于：向量检索可能找到"相似但不完全匹配"的案例，而产品配置虽然精确但缺乏灵活性。<strong>双通道并行</strong>正是为了融合两者优势。</p>
+
+<div class="card info">
+  <div class="card-label">设计思想</div>
+  <p>并行发起两个独立的 AI 通道，让它们各自给出布局方案，最后通过合并策略取最优解。这类似于"专家会诊"——多个专家独立诊断，综合意见后给出最终方案。</p>
+</div>
+
+<!-- ==================== Section 2 ==================== -->
+<h2>2. 双通道架构总览</h2>
+
+<pre>
+┌─────────────────────────────────────────────────────────────┐
+│                 <span class="important">布局请求 (Layout Request)</span>                   │
+│  包含: 户型结构、用户偏好、产品约束                             │
+└─────────────────────┬───────────────────────────────────────┘
+                      │
+          ┌───────────┴───────────┐
+          ▼                       ▼
+┌──────────────────┐    ┌──────────────────────┐
+│  <span class="important">RAG 布局通道</span>       │    │  <span class="important">PRODUCT_CONFIG 通道</span>   │
+│                  │    │                      │
+│  1. Embedding    │    │  1. 查询产品配置       │
+│  2. 向量检索     │    │  2. Gemini 生成布局    │
+│  3. OpenAI 生成  │    │                      │
+│                  │    │  模型: <span class="string">Gemini</span>         │
+│  模型: <span class="string">OpenAI</span>     │    │                      │
+└────────┬─────────┘    └──────────┬───────────┘
+         │                         │
+         └────────────┬────────────┘
+                      ▼
+        ┌──────────────────────────┐
+        │    <span class="important">结果合并策略</span>             │
+        │  评分 → 选择/融合 → 输出  │
+        └──────────────────────────┘
+                      │
+                      ▼
+              <span class="important">最终布局结果</span>
+</pre>
+
+<!-- ==================== Section 3 ==================== -->
+<h2>3. RAG 布局通道：向量检索 + OpenAI</h2>
+
+<p>RAG（Retrieval-Augmented Generation）通道是系统中最成熟的布局通道。它的工作分为三步：</p>
+
+<h3>Step 1: Embedding — 将查询转化为向量</h3>
+
+<p>首先，系统将当前户型的结构特征（房间数量、面积、功能分区等）通过 OpenAI Embedding API 转化为高维向量。在 <code>OpenaiManager</code> 中，调用链路为：</p>
+
+<pre>
+<span class="comment">// OpenaiManager 中的 Embedding 调用</span>
+<span class="keyword">public</span> List&lt;Float&gt; getEmbedding(String text) {
+    <span class="comment">// 调用 OpenAI Embedding API (text-embedding-3-small)</span>
+    <span class="comment">// 将户型结构描述转化为 1536 维向量</span>
+}
+</pre>
+
+<h3>Step 2: 向量检索 — 在案例库中寻找相似布局</h3>
+
+<p>拿到向量后，在向量数据库中执行相似度搜索（通常是余弦相似度），找到 Top-K 个最相似的历史布局案例。这些案例作为"参考素材"传给下一步的 LLM。</p>
+
+<div class="card warning">
+  <div class="card-label">检索策略</div>
+  <p>检索不是简单地找"最像的"。系统会设定相似度阈值（如 0.75），低于阈值的案例会被过滤掉，避免给 LLM 提供质量不高的参考。</p>
+</div>
+
+<h3>Step 3: OpenAI 生成 — 基于参考案例生成新布局</h3>
+
+<p>将检索到的参考案例 + 当前户型需求 + 用户偏好，组装成 prompt 发送给 OpenAI Chat Completions API。LLM 会参考历史案例的布局思路，结合当前户型的特殊性，生成一套新的布局方案。</p>
+
+<pre>
+<span class="comment">// 伪代码：RAG 通道的核心流程</span>
+List&lt;Float&gt; embedding = openaiManager.getEmbedding(layoutQuery);
+List&lt;Case&gt; similarCases = vectorStore.search(embedding, topK=5, threshold=0.75);
+
+String prompt = buildPrompt(currentLayout, similarCases, userPreference);
+LayoutResult result = openaiManager.chatCompletion(prompt);
+</pre>
+
+<!-- ==================== Section 4 ==================== -->
+<h2>4. PRODUCT_CONFIG 通道：Gemini 驱动</h2>
+
+<p>PRODUCT_CONFIG 通道走的是一条完全不同的路径。它不依赖历史案例，而是基于<strong>产品标准化配置</strong>来生成布局。</p>
+
+<h3>什么是 PRODUCT_CONFIG</h3>
+
+<p>PRODUCT_CONFIG 是产品团队预先定义的配置数据，包含：</p>
+<ul>
+  <li>各功能区域的标准家具清单（客厅必须有沙发、茶几、电视柜...）</li>
+  <li>家具间的空间约束规则（沙发与电视柜距离 2.5m-3.5m...）</li>
+  <li>不同户型面积段的布局模板</li>
+  <li>风格适配规则</li>
+</ul>
+
+<h3>Gemini 生成流程</h3>
+
+<p>PRODUCT_CONFIG 通道选择 <strong>Gemini</strong> 作为生成模型（区别于 RAG 通道的 OpenAI），流程如下：</p>
+
+<pre>
+<span class="comment">// 伪代码：PRODUCT_CONFIG 通道的核心流程</span>
+ProductConfig config = productConfigManager.getConfig(areaType, style);
+String prompt = buildConfigPrompt(currentLayout, config, constraints);
+
+<span class="comment">// 使用 Gemini 模型生成布局</span>
+LayoutResult result = geminiManager.generate(prompt);
+</pre>
+
+<div class="card success">
+  <div class="card-label">Gemini 的优势</div>
+  <p>选择 Gemini 而非 OpenAI 用于此通道，是因为 Gemini 在<strong>结构化数据理解和规则遵循</strong>方面表现优异，特别适合处理 PRODUCT_CONFIG 中大量的约束条件和标准化规则。</p>
+</div>
+
+<!-- ==================== Section 5 ==================== -->
+<h2>5. 双通道并行执行</h2>
+
+<p>两个通道通过<strong>线程池</strong>并行提交，互不阻塞。在 <code>BaseAsyncProcessor</code> 的异步处理框架下，核心执行逻辑如下：</p>
+
+<pre>
+<span class="comment">// 伪代码：双通道并行执行</span>
+<span class="keyword">public</span> LayoutResult doDualChannelLayout(LayoutRequest request) {
+
+    <span class="comment">// 并行提交两个通道</span>
+    CompletableFuture&lt;LayoutResult&gt; ragFuture =
+        CompletableFuture.supplyAsync(() -&gt;
+            ragChannel.execute(request),
+            executorPool
+        );
+
+    CompletableFuture&lt;LayoutResult&gt; configFuture =
+        CompletableFuture.supplyAsync(() -&gt;
+            productConfigChannel.execute(request),
+            executorPool
+        );
+
+    <span class="comment">// 等待两个通道都完成</span>
+    CompletableFuture.allOf(ragFuture, configFuture).join();
+
+    <span class="comment">// 合并结果</span>
+    return mergeResults(ragFuture.get(), configFuture.get());
+}
+</pre>
+
+<p>这种并行设计的关键好处：</p>
+<ul>
+  <li><strong>总耗时 = max(通道A, 通道B)</strong>，而非两者之和</li>
+  <li>单通道失败不影响另一个（可以降级为单通道结果）</li>
+  <li>两个通道使用的不同 AI 模型（OpenAI / Gemini），避免了单一模型的偏见</li>
+</ul>
+
+<div class="card info">
+  <div class="card-label">容错设计</div>
+  <p>如果某个通道超时或异常，系统不会整体失败。它会降级使用另一个通道的结果，并在日志中记录降级原因。这保证了服务的高可用性。</p>
+</div>
+
+<!-- ==================== Section 6 ==================== -->
+<h2>6. 结果合并策略</h2>
+
+<p>双通道各自产出布局结果后，需要一个合并策略来决定最终方案。合并不是简单地"二选一"，而是一个多维度评分的过程。</p>
+
+<h3>评分维度</h3>
+
+<table>
+  <tr><th>维度</th><th>说明</th><th>权重</th></tr>
+  <tr><td>约束满足度</td><td>布局是否满足户型硬约束（墙、门、窗）</td><td>高</td></tr>
+  <tr><td>空间利用率</td><td>家具覆盖面积 / 可用面积</td><td>中</td></tr>
+  <tr><td>动线合理性</td><td>行走路径是否通畅、符合生活习惯</td><td>中</td></tr>
+  <tr><td>风格一致性</td><td>与用户选择的风格是否匹配</td><td>低</td></tr>
+</table>
+
+<h3>合并流程</h3>
+
+<div class="flow">
+  <span class="flow-step">RAG 结果</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">多维评分</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">┌</span>
+  <span class="flow-step">比较选择</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">最优方案</span>
+</div>
+<div class="flow">
+  <span class="flow-step">CONFIG 结果</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">多维评分</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">└</span>
+</div>
+
+<p>合并策略有三种模式：</p>
+
+<ol>
+  <li><strong>择优模式</strong> — 两个结果各自打分，选总分更高的那个。适用于两个结果差异较大的场景。</li>
+  <li><strong>融合模式</strong> — 从 RAG 结果中提取布局创意（如家具摆放角度），从 CONFIG 结果中提取约束合规性，合并为一个新方案。</li>
+  <li><strong>降级模式</strong> — 当某个通道失败时，直接使用另一个通道的结果。</li>
+</ol>
+
+<div class="card warning">
+  <div class="card-label">合并的核心原则</div>
+  <p>约束满足度是"一票否决"项。无论 RAG 通道的结果多有创意，如果违反了硬约束（如家具穿墙），该方案会被直接淘汰。这保证了布局的物理可行性。</p>
+</div>
+
+<!-- ==================== Section 7 ==================== -->
+<h2>7. 关键代码位置速查</h2>
+
+<table>
+  <tr><th>类 / 文件</th><th>职责</th></tr>
+  <tr><td><code>OpenaiManager</code></td><td>OpenAI API 调用（Embedding + Chat Completion）</td></tr>
+  <tr><td><code>AiNativeManager</code></td><td>AI Native 服务调用（图像生成相关）</td></tr>
+  <tr><td><code>BaseAsyncProcessor</code></td><td>异步任务基类，管理任务生命周期</td></tr>
+  <tr><td><code>BaseDbTaskAsyncProcessor</code></td><td>DB 持久化的异步任务处理器</td></tr>
+  <tr><td><code>AutoDesignInfoManager</code></td><td>布局任务 CRUD 操作</td></tr>
+  <tr><td><code>AutoLayoutContext</code></td><td>ThreadLocal 上下文，传递请求级数据</td></tr>
+</table>
+
+<div class="ask-agent">
+  想深入了解某个类的实现细节？直接问我，比如 "OpenaiManager 的 getEmbedding 方法完整实现" 或 "BaseAsyncProcessor 的 doProcess 流程"。
+</div>
+
+<!-- ==================== Quiz ==================== -->
+<h2>8. 自检 Quiz</h2>
+
+<div class="quiz" id="quiz1">
+  <div class="quiz-title">Q1: RAG 布局通道中，向量检索的目的是什么？</div>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz1', 0)">A. 将用户偏好转化为向量存储</li>
+    <li onclick="checkQuiz('quiz1', 1)">B. 在历史案例库中找到与当前户型最相似的布局方案作为参考</li>
+    <li onclick="checkQuiz('quiz1', 2)">C. 直接输出最终布局结果</li>
+    <li onclick="checkQuiz('quiz1', 3)">D. 为 PRODUCT_CONFIG 通道准备输入数据</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <div class="quiz-title">Q2: PRODUCT_CONFIG 通道为什么选择 Gemini 而不是 OpenAI？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz2', 0)">A. Gemini 的价格更便宜</li>
+    <li onclick="checkQuiz('quiz2', 1)">B. OpenAI 不支持结构化输出</li>
+    <li onclick="checkQuiz('quiz2', 2)">C. Gemini 在结构化数据理解和规则遵循方面表现更优</li>
+    <li onclick="checkQuiz('quiz2', 3)">D. 只是为了和 RAG 通道使用不同的模型</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <div class="quiz-title">Q3: 双通道合并策略中，哪个评分维度是"一票否决"的？</div>
+  <ul class="quiz-options" data-correct="0">
+    <li onclick="checkQuiz('quiz3', 0)">A. 约束满足度</li>
+    <li onclick="checkQuiz('quiz3', 1)">B. 空间利用率</li>
+    <li onclick="checkQuiz('quiz3', 2)">C. 动线合理性</li>
+    <li onclick="checkQuiz('quiz3', 3)">D. 风格一致性</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<!-- ==================== Next ==================== -->
+
+
+  <h3>推荐阅读</h3>
+  <ul>
+    <li><code>auto-layout-service/AGENTS.md</code> — 项目架构文档，Processor 模式和 Manager 层详解</li>
+    <li><code>OpenaiManager.java</code> — 理解 OpenAI API 的调用方式</li>
+    <li><code>BaseAsyncProcessor.java</code> — 理解异步任务的完整生命周期</li>
+  </ul>
+</div>
+</div>
+
+<script>
+function checkQuiz(quizId, selected) {
+  const quiz = document.getElementById(quizId);
+  const options = quiz.querySelector('.quiz-options');
+  const correct = parseInt(options.dataset.correct);
+  const items = options.querySelectorAll('li');
+  const feedback = quiz.querySelector('.quiz-feedback');
+
+  items.forEach((item, i) => {
+    item.onclick = null;
+    if (i === correct) item.classList.add('correct');
+    if (i === selected && i !== correct) item.classList.add('wrong');
+  });
+
+  const feedbacks = {
+    quiz1: {
+      correct: '✓ 对！RAG 通道的核心就是"先检索再生成" — 向量检索找到相似案例，作为参考输入给 OpenAI 生成新布局。',
+      wrong: '✗ 向量检索的目的是在历史案例库中找到与当前户型最相似的布局方案，作为 OpenAI 生成新布局的参考素材。'
+    },
+    quiz2: {
+      correct: '✓ 对！Gemini 在结构化数据理解和规则遵循方面表现优异，特别适合处理 PRODUCT_CONFIG 中大量的约束条件。',
+      wrong: '✗ 选择 Gemini 是因为它在结构化数据理解和规则遵循方面表现更优，而非单纯为了用不同的模型。'
+    },
+    quiz3: {
+      correct: '✓ 对！约束满足度是"一票否决"项 — 违反硬约束（如家具穿墙）的方案会被直接淘汰，保证布局的物理可行性。',
+      wrong: '✗ 是约束满足度。无论布局多有创意，如果违反了硬约束（墙、门、窗），方案会被直接淘汰。'
+    }
+  };
+
+  feedback.style.display = 'block';
+  feedback.textContent = selected === correct
+    ? feedbacks[quizId].correct
+    : feedbacks[quizId].wrong;
+  feedback.style.background = selected === correct ? '#dcfce7' : '#fee2e2';
+}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 052</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0051-stategraph-internals.html">上一课：051 StateGraph 内部机制</a><a class="primary" href="0053-ai-service-integration.html">下一课：053 AI 服务集成与模型调用</a></div></nav>
+</body>
+</html>

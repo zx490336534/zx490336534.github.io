@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>043 ai-home 前端项目全景</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --accent: #b45309;
+    --accent-light: #fef3c7;
+    --border: #e7e5e4;
+    --code-bg: #f5f5f4;
+    --success: #16a34a;
+    --warning: #d97706;
+    --info: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .card.info { border-left: 3px solid var(--info); }
+  .card.warning { border-left: 3px solid var(--warning); }
+  .card.success { border-left: 3px solid var(--success); }
+
+  .card-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+  .card.info .card-label { color: var(--info); }
+  .card.warning .card-label { color: var(--warning); }
+  .card.success .card-label { color: var(--success); }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    font-size: 0.88em;
+  }
+
+  pre {
+    background: #1c1917;
+    color: #e7e5e4;
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  pre .comment { color: #78716c; }
+  pre .keyword { color: #f59e0b; }
+  pre .string { color: #86efac; }
+  pre .dir { color: #93c5fd; }
+  pre .file { color: #e7e5e4; }
+  pre .important { color: #fbbf24; font-weight: 500; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.92rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .tree { margin: 1rem 0; }
+
+  .quiz {
+    background: var(--accent-light);
+    border: 1px solid #fbbf24;
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .quiz-title {
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+  .quiz-options { list-style: none; }
+  .quiz-options li {
+    padding: 0.5rem 0.75rem;
+    margin: 0.35rem 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+  }
+  .quiz-options li:hover { background: #fde68a33; border-color: #fbbf24; }
+  .quiz-options li.correct { background: #dcfce7; border-color: #16a34a; }
+  .quiz-options li.wrong { background: #fee2e2; border-color: #ef4444; }
+  .quiz-feedback {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    display: none;
+    font-size: 0.9rem;
+  }
+
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+  }
+  .flow-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .flow-arrow { color: var(--text-secondary); }
+
+  .next-lesson {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .next-lesson a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .next-lesson a:hover { text-decoration: underline; }
+
+  .ask-agent {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+    color: #1e40af;
+  }
+  .ask-agent::before { content: '💡 '; }
+
+  ul, ol { margin: 0.5rem 0 1rem 1.5rem; }
+  li { margin-bottom: 0.3rem; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>043 ai-home 前端项目全景</h1>
+<p class="subtitle">理解前端核心仓库的结构、架构和关键入口 — 从 App.tsx 到画布+对话+Viewer 的完整链路</p>
+
+<!-- ==================== Section 1 ==================== -->
+<h2>1. 这个项目是什么</h2>
+
+<p><code>ai-home</code> 是 AI Home 产品的<strong>前端界面</strong>。它是一个基于 React 的单页应用，核心交互模式是<strong>"左侧画布 + 右侧 AI 对话"</strong>——用户通过自然语言对话驱动 AI 完成家装设计，设计结果实时呈现在 2D/3D 画布上。</p>
+
+<div class="card info">
+  <div class="card-label">一句话定位</div>
+  <p>React 17 + TypeScript 构建的 <strong>AI 对话驱动家装设计工具</strong>，通过 WebSocket 与后端 ai-native-service 通信，前端同时承载 2D/3D 画布渲染和 AI 对话交互。</p>
+</div>
+
+<!-- ==================== Section 2 ==================== -->
+<h2>2. 技术栈速览</h2>
+
+<table>
+  <tr><th>类别</th><th>技术</th><th>说明</th></tr>
+  <tr><td>框架</td><td>React 17</td><td>Class Component 为主，逐步引入 Hooks</td></tr>
+  <tr><td>语言</td><td>TypeScript 4.7</td><td>严格模式，禁止 any</td></tr>
+  <tr><td>构建</td><td>Rspack</td><td>基于 @rspack/core 的快速打包</td></tr>
+  <tr><td>样式</td><td>CSS Modules + SCSS + Tailwind</td><td>BEM 命名，禁止内联样式</td></tr>
+  <tr><td>UI 组件</td><td>shadcn/ui + Radix UI</td><td>放 src/components/ui/</td></tr>
+  <tr><td>富文本编辑</td><td>Lexical</td><td>AI 对话输入框使用</td></tr>
+  <tr><td>状态管理</td><td>@qunhe/reactive-framework</td><td>observable + observer 响应式</td></tr>
+  <tr><td>数据层</td><td>@qunhe/kaf</td><td>Document/StateManager/Backup</td></tr>
+  <tr><td>AI 通信</td><td>@qunhe/agent-conversation-sdk</td><td>WebSocket/STOMP 连接 + RawSocketMessage 业务体</td></tr>
+  <tr><td>3D 渲染</td><td>@qunhe/design-viewer-sdk</td><td>3D Viewer 引擎</td></tr>
+  <tr><td>国际化</td><td>@qunhe/i18n-translate</td><td>所有用户可见文本走 translate()</td></tr>
+  <tr><td>埋点</td><td>@qunhe/ktracker</td><td>业务埋点 + 性能监控</td></tr>
+</table>
+
+<div class="card warning">
+  <div class="card-label">关键约束</div>
+  <p>项目仍在 React 17 时代，使用 Class Component + <code>@qunhe/reactive-framework</code> 的 <code>@observer</code> 装饰器实现响应式，不是 MobX 也不是 Redux。新组件推荐用 Hooks + connect 模式。</p>
+</div>
+
+<!-- ==================== Section 3 ==================== -->
+<h2>3. 目录结构</h2>
+
+<pre>
+<span class="dir">src/</span>
+├── <span class="dir">app/</span>                    <span class="comment"># 核心应用代码（90% 的开发在这里）</span>
+│   ├── <span class="file">App.tsx</span>              <span class="comment"># 根组件 — 路由：HomePage / MainPage / Feedback</span>
+│   ├── <span class="file">state.ts</span>             <span class="comment"># 全局状态定义 — combine() 组合所有 StateManager</span>
+│   ├── <span class="file">const.ts</span>             <span class="comment"># 应用常量</span>
+│   │
+│   ├── <span class="dir">components/</span>          <span class="comment"># 业务组件</span>
+│   │   ├── <span class="dir">HomePage/</span>        <span class="comment"># 首页（项目列表、入口）</span>
+│   │   ├── <span class="dir">MainPage/</span>        <span class="comment"># 主工作页（画布 + 工具栏）</span>
+│   │   ├── <span class="dir">AIChatDrawer/</span>    <span class="comment"># AI 对话抽屉（核心交互组件）</span>
+│   │   ├── <span class="dir">InputArea/</span>       <span class="comment"># 对话输入区（Lexical 编辑器）</span>
+│   │   └── <span class="dir">...</span>
+│   │
+│   ├── <span class="dir">agent/</span>               <span class="comment"># AI Agent 前端逻辑</span>
+│   │   ├── <span class="dir">service/</span>         <span class="comment"># AgentSDKService — WebSocket 连接管理</span>
+│   │   ├── <span class="dir">manager/</span>         <span class="comment"># ConversationManager — 对话生命周期</span>
+│   │   ├── <span class="dir">handlers/</span>        <span class="comment"># 消息处理器（2D布局、3D渲染、视频...）</span>
+│   │   ├── <span class="dir">MCP/</span>             <span class="comment"># 前端 MCP 工具（search_model、capture_render...）</span>
+│   │   └── <span class="dir">config/</span>          <span class="comment"># Agent 配置</span>
+│   │
+│   ├── <span class="dir">Scene2D/</span>             <span class="comment"># 2D 场景管理（状态、常量、工具函数）</span>
+│   ├── <span class="dir">Tools/</span>               <span class="comment"># 画布交互工具（拖拽、选中、连线...）</span>
+│   ├── <span class="dir">StateManager/</span>        <span class="comment"># 子状态管理器（Viewer、UserInfo）</span>
+│   ├── <span class="dir">utils/</span>               <span class="comment"># 工具函数（Viewer、Message、FileUpload...）</span>
+│   ├── <span class="dir">hooks/</span>               <span class="comment"># 自定义 Hooks</span>
+│   ├── <span class="dir">setup/</span>               <span class="comment"># 全局初始化（Iframe 消息、选区变更）</span>
+│   ├── <span class="dir">project/</span>             <span class="comment"># 项目管理</span>
+│   └── <span class="dir">styles/</span>              <span class="comment"># 全局样式、CSS 变量、分层样式</span>
+│
+├── <span class="dir">components/ui/</span>           <span class="comment"># 通用 UI 组件（shadcn/radix 封装）</span>
+├── <span class="dir">Entities/</span>                <span class="comment"># 实体类（ViewContainer、EntityDocument）</span>
+├── <span class="dir">storage/</span>                 <span class="comment"># 数据层（Model、Interface、Serializer、Parser）</span>
+├── <span class="dir">api/</span>                     <span class="comment"># API 请求封装（按业务域拆分）</span>
+├── <span class="dir">types/</span>                   <span class="comment"># 全局类型定义</span>
+├── <span class="dir">i18n/</span>                    <span class="comment"># 国际化</span>
+├── <span class="dir">common/</span>                  <span class="comment"># 公共工具（view、log）</span>
+├── <span class="dir">lib/</span>                     <span class="comment"># 底层库（tracker 埋点）</span>
+└── <span class="dir">pages/</span>                   <span class="comment"># 页面入口模板（HTML 模板）</span>
+</pre>
+
+<div class="card success">
+  <div class="card-label">开发重点</div>
+  <p>你 90% 的工作在 <code>src/app/</code> 下，特别是 <code>components/</code>、<code>agent/</code>、<code>Tools/</code> 三个目录。修改数据结构前（Entities/、storage/）需先输出方案确认。</p>
+</div>
+
+<!-- ==================== Section 4 ==================== -->
+<h2>4. 核心架构：画布 + 对话 + Viewer</h2>
+
+<p>整个页面的布局是一个经典的<strong>"左画布 + 右对话"</strong>双栏结构：</p>
+
+<pre>
+┌──────────────────────────────────────────────────────────────┐
+│  <span class="important">App.tsx</span>  — 根组件，根据 URL ?page= 参数路由                    │
+│  page=mainPage → MainPage  |  page=home → HomePage            │
+└──────────────────────┬───────────────────────────────────────┘
+                       │
+┌──────────────────────▼───────────────────────────────────────┐
+│  <span class="important">MainPage</span>  — 主工作页面                                       │
+│  ┌──────────────────────────┬─────────────────────────────┐  │
+│  │                          │  <span class="important">AIChatDrawer</span>               │  │
+│  │  <span class="important">ViewContents</span>             │  ┌───────────────────────┐  │  │
+│  │  ┌─────────┬─────────┐  │  │  MessagesList         │  │  │
+│  │  │ <span class="keyword">Viewer2D</span> │ <span class="keyword">Viewer3D</span> │  │  │  消息流（Markdown 渲染）│  │  │
+│  │  │ (iframe) │ (Canvas)│  │  ├───────────────────────┤  │  │
+│  │  │          │         │  │  │  <span class="keyword">InputArea</span>             │  │  │
+│  │  │  2D 平面  │  3D 渲染 │  │  │  (Lexical 编辑器)     │  │  │
+│  │  └─────────┴─────────┘  │  └───────────────────────┘  │  │
+│  └──────────────────────────┴─────────────────────────────┘  │
+│  LeftTopBar | RightTopBar | OperationBtns | Tools overlay    │
+└──────────────────────────────────────────────────────────────┘
+</pre>
+
+<h3>三大核心区域</h3>
+
+<table>
+  <tr><th>区域</th><th>核心组件</th><th>职责</th></tr>
+  <tr><td><strong>画布 (ViewContents)</strong></td><td>Viewer2D / Viewer3D</td><td>承载 2D 平面图（iframe 嵌入）和 3D 渲染视图（design-viewer-sdk）</td></tr>
+  <tr><td><strong>对话 (AIChatDrawer)</strong></td><td>MessagesList + InputArea</td><td>AI 对话界面，消息流展示 + Lexical 富文本输入</td></tr>
+  <tr><td><strong>Viewer 层</strong></td><td>ViewerStateManager</td><td>管理 Viewer 的同步状态、加载进度、连接线</td></tr>
+</table>
+
+<!-- ==================== Section 5 ==================== -->
+<h2>5. 入口文件与路由</h2>
+
+<h3>App.tsx — 应用入口</h3>
+
+<p><code>src/app/App.tsx</code> 是整个前端的入口，极其简洁：</p>
+
+<pre>
+<span class="comment">// App.tsx — 核心路由逻辑</span>
+<span class="keyword">class</span> App <span class="keyword">extends</span> React.Component {
+    render() {
+        <span class="keyword">const</span> page = <span class="keyword">new</span> URLSearchParams(location.search).get(<span class="string">'page'</span>);
+        <span class="keyword">const</span> isMain = page === <span class="string">'mainPage'</span>;
+
+        <span class="keyword">return</span> (
+            &lt;&gt;
+                &lt;GlobalShortcuts /&gt;
+                {isMain ? &lt;MainPage /&gt; : &lt;HomePage /&gt;}
+                &lt;Toaster /&gt;
+            &lt;/&gt;
+        );
+    }
+}
+</pre>
+
+<p>只有两个主页面：<code>HomePage</code>（首页/项目列表）和 <code>MainPage</code>（设计工作台）。通过 URL 参数 <code>?page=mainPage</code> 切换，没有使用 React Router。</p>
+
+<h3>state.ts — 全局状态</h3>
+
+<p><code>src/app/state.ts</code> 使用 <code>@qunhe/kaf</code> 的 <code>combine()</code> 将多个 StateManager 组合成一个根状态对象，包括：</p>
+
+<ul>
+  <li><strong>AIHomeScene2DStateManager</strong> — 2D 场景状态（缩放、平移、选中）</li>
+  <li><strong>ViewerStateManager</strong> — Viewer 同步状态、加载进度</li>
+  <li><strong>UserInfoStateManager</strong> — 用户信息</li>
+  <li>Document 相关状态 — 设计文档的加载、保存、备份</li>
+</ul>
+
+<div class="ask-agent">
+  不理解 StateManager 模式？可以问："KafBaseStateManager 和 Redux 有什么区别？" 或 "combine() 是怎么把多个 StateManager 组合的？"
+</div>
+
+<!-- ==================== Section 6 ==================== -->
+<h2>6. AI 对话：前端 Agent 通信</h2>
+
+<p>前端通过 <code>@qunhe/agent-conversation-sdk</code> 与后端 ai-native-service 的 WebSocket 通信。核心链路：</p>
+
+<div class="flow">
+  <span class="flow-step">InputArea 发送消息</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">ConversationManager</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">AgentSDKService (WebSocket)</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">后端 Agent</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">流式响应</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">MessageHandler 分发</span>
+</div>
+
+<h3>agent/ 目录结构</h3>
+
+<table>
+  <tr><th>模块</th><th>文件</th><th>职责</th></tr>
+  <tr><td>service/</td><td>AgentSDKService.ts</td><td>WebSocket 连接管理、SDK 初始化</td></tr>
+  <tr><td>manager/</td><td>ConversationManager.ts</td><td>对话生命周期（创建、切换、关闭）</td></tr>
+  <tr><td>handlers/</td><td>*.ts</td><td>消息处理器 — 2D 布局、媒体、视频、Viewer 限制等</td></tr>
+  <tr><td>MCP/</td><td>index.ts</td><td>前端 MCP 工具注册（search_model、capture_render 等）</td></tr>
+  <tr><td>config/</td><td>agentConfig.ts</td><td>Agent 配置（连接参数等）</td></tr>
+</table>
+
+<h3>前端 MCP 工具</h3>
+
+<p>后端需要前端执行操作时（如 3D 渲染截图），通过 MCP 协议下发 Tool Call。前端注册的工具：</p>
+
+<pre>
+<span class="comment">// src/app/agent/MCP/index.ts</span>
+<span class="keyword">export const</span> FRONT_TOOLS: MCPTool[] = [
+    { name: <span class="string">'search_decoration_model'</span>, callback: searchDecorationModel },
+    { name: <span class="string">'replace_decoration_model'</span>, callback: replaceDecorationModel },
+    { name: <span class="string">'capture_3d_screenshot'</span>,    callback: capture3DScreenshot },
+    { name: <span class="string">'capture_3d_render'</span>,         callback: capture3DRender },
+];
+</pre>
+
+<!-- ==================== Section 7 ==================== -->
+<h2>7. 关键组件速查</h2>
+
+<table>
+  <tr><th>组件</th><th>路径</th><th>说明</th></tr>
+  <tr><td><code>MainPage</code></td><td>components/MainPage/</td><td>主工作台 — 组合画布、工具栏、对话抽屉</td></tr>
+  <tr><td><code>AIChatDrawer</code></td><td>components/AIChatDrawer/</td><td>AI 对话抽屉 — Class Component + @observer</td></tr>
+  <tr><td><code>MessagesList</code></td><td>components/AIChatDrawer/</td><td>消息列表 — Markdown 渲染、媒体展示</td></tr>
+  <tr><td><code>InputArea</code></td><td>components/InputArea/</td><td>输入区 — Lexical 富文本 + 图片粘贴</td></tr>
+  <tr><td><code>Viewer2D</code></td><td>components/MainPage/</td><td>2D 平面图 — iframe 嵌入</td></tr>
+  <tr><td><code>Viewer3D</code></td><td>components/MainPage/</td><td>3D 渲染 — design-viewer-sdk</td></tr>
+  <tr><td><code>ViewContents</code></td><td>components/MainPage/</td><td>画布容器 — 管理 2D/3D 切换与布局</td></tr>
+  <tr><td><code>HomePage</code></td><td>components/HomePage/</td><td>首页 — 项目列表、用户菜单</td></tr>
+  <tr><td><code>ContainerControlsTool</code></td><td>Tools/</td><td>画布控件 — 拖拽、连线、同步状态</td></tr>
+  <tr><td><code>IdleTool</code></td><td>Tools/</td><td>空闲态工具 — 框选、多选、拖拽场景</td></tr>
+</table>
+
+<!-- ==================== Section 8 ==================== -->
+<h2>8. 数据流</h2>
+
+<h3>状态管理模式</h3>
+
+<p>项目使用 <code>@qunhe/reactive-framework</code> 的 <code>observable</code> + <code>observer</code> 模式，类似 MobX 但更轻量：</p>
+
+<pre>
+<span class="comment">// 1. 定义 StateManager（继承 KafBaseStateManager）</span>
+<span class="keyword">class</span> ViewerStateManager <span class="keyword">extends</span> KafBaseStateManager&lt;State&gt; {
+    initState() { <span class="keyword">this</span>.updateState({...}); }
+    setSyncStatus(id, level, status) { <span class="keyword">this</span>.mergeState({...}); }
+}
+
+<span class="comment">// 2. 在 state.ts 中 combine 组合</span>
+<span class="keyword">const</span> rootState = combine({
+    scene2d: AIHomeScene2DStateManager,
+    viewer: ViewerStateManager,
+    userInfo: UserInfoStateManager,
+});
+
+<span class="comment">// 3. 组件中通过 connect() 注入</span>
+<span class="keyword">const</span> MainPage = connect(rootState)(
+    (props) =&gt; &lt;div&gt;{props.rootState.viewer.state.syncStatus}&lt;/div&gt;
+);
+
+<span class="comment">// 4. 或使用 @observer 装饰器（Class Component）</span>
+@observer
+<span class="keyword">class</span> AIChatDrawer <span class="keyword">extends</span> React.Component { ... }
+</pre>
+
+<h3>数据流路径</h3>
+
+<div class="flow">
+  <span class="flow-step">用户操作 / AI 消息</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">StateManager.mergeState()</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">observable 响应式更新</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">observer 组件重渲染</span>
+</div>
+
+<h3>设计文档数据流</h3>
+
+<div class="flow">
+  <span class="flow-step">后端下发设计数据</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">MessageHandler 解析</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">storage/model 更新</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">Entities 渲染到画布</span>
+</div>
+
+<div class="card warning">
+  <div class="card-label">注意</div>
+  <p>修改 <code>storage/model/</code>、<code>storage/interface/</code>、<code>Entities/</code> 下的数据结构属于高风险操作，必须先输出方案说明并确认后再动手。参见 AGENTS.md 第七节。</p>
+</div>
+
+<!-- ==================== Section 9 ==================== -->
+<h2>9. 核心概念速查</h2>
+
+<h3>ViewContainer（视图容器）</h3>
+<p>画布上每个设计元素（户型图、效果图、3D 场景）都是一个 ViewContainer。它有 2D 和 3D 两种渲染模式，通过 <code>Viewer2D</code>（iframe）和 <code>Viewer3D</code>（Canvas）分别承载。</p>
+
+<h3>MCP 工具桥接</h3>
+<p>后端通过 WebSocket 下发 Tool Call，前端执行后回传结果。例如后端需要 3D 渲染截图时，会调用 <code>capture_3d_screenshot</code>，前端在浏览器中完成截图后把图片数据返回给后端。</p>
+
+<h3>Tools（画布工具）</h3>
+<p>类似 CAD 软件的工具栏。每个 Tool 定义了一组交互行为（鼠标事件、键盘事件），如 <code>IdleTool</code>（选择/框选）、<code>DragScene2dTool</code>（拖拽画布）、<code>ContainerControlsTool</code>（容器控件）。</p>
+
+<h3>Entities（实体）</h3>
+<p><code>src/Entities/</code> 下的实体类是对 <code>storage/model/</code> 数据模型的渲染层封装。例如 <code>EntityDocument</code> 包含所有 ViewContainer 的 2D 绘制逻辑，<code>Drawable2D</code> 负责将模型数据转化为 Canvas 绘制指令。</p>
+
+<!-- ==================== Quiz ==================== -->
+<h2>10. 自检 Quiz</h2>
+
+<div class="quiz" id="quiz1">
+  <div class="quiz-title">Q1: ai-home 的页面路由是如何实现的？</div>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz1', 0)">A. 使用 React Router 的 BrowserRouter</li>
+    <li onclick="checkQuiz('quiz1', 1)">B. 通过 URL 参数 ?page= 判断，App.tsx 中条件渲染</li>
+    <li onclick="checkQuiz('quiz1', 2)">C. 使用 Next.js 的文件系统路由</li>
+    <li onclick="checkQuiz('quiz1', 3)">D. 使用 hash 路由 + 动态 import</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <div class="quiz-title">Q2: 前端 MCP 工具 capture_3d_screenshot 的执行者是谁？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz2', 0)">A. 后端 ai-native-service</li>
+    <li onclick="checkQuiz('quiz2', 1)">B. 后端调用第三方渲染服务</li>
+    <li onclick="checkQuiz('quiz2', 2)">C. 前端浏览器（通过 design-viewer-sdk 在 Canvas 中截图）</li>
+    <li onclick="checkQuiz('quiz2', 3)">D. 独立的渲染微服务</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <div class="quiz-title">Q3: 项目的状态管理使用的是哪个方案？</div>
+  <ul class="quiz-options" data-correct="0">
+    <li onclick="checkQuiz('quiz3', 0)">A. @qunhe/reactive-framework 的 observable + observer + StateManager</li>
+    <li onclick="checkQuiz('quiz3', 1)">B. Redux + Redux Toolkit</li>
+    <li onclick="checkQuiz('quiz3', 2)">C. MobX</li>
+    <li onclick="checkQuiz('quiz3', 3)">D. Zustand</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<!-- ==================== Next ==================== -->
+
+
+  <h3>推荐阅读</h3>
+  <ul>
+    <li><code>AGENTS.md</code> — 项目的 AI Agent 编码规范，包含组件、样式、i18n、命名等所有约束</li>
+    <li><code>src/app/state.ts</code> — 全局状态定义，理解所有 StateManager 的组合方式</li>
+    <li><code>src/app/agent/service/AgentSDKService.ts</code> — WebSocket 通信核心</li>
+  </ul>
+</div>
+</div>
+
+<script>
+function checkQuiz(quizId, selected) {
+  const quiz = document.getElementById(quizId);
+  const options = quiz.querySelector('.quiz-options');
+  const correct = parseInt(options.dataset.correct);
+  const items = options.querySelectorAll('li');
+  const feedback = quiz.querySelector('.quiz-feedback');
+
+  items.forEach((item, i) => {
+    item.onclick = null;
+    if (i === correct) item.classList.add('correct');
+    if (i === selected && i !== correct) item.classList.add('wrong');
+  });
+
+  const feedbacks = {
+    quiz1: {
+      correct: '✓ 对！App.tsx 通过 URLSearchParams 读取 ?page= 参数，简单直接，没有使用 React Router。',
+      wrong: '✗ 是 B。App.tsx 直接用 URLSearchParams 判断 ?page=mainPage 来决定渲染 MainPage 还是 HomePage，没有使用任何路由库。'
+    },
+    quiz2: {
+      correct: '✓ 对！前端 MCP 工具在浏览器中执行。capture_3d_screenshot 通过 design-viewer-sdk 在 Canvas 中截图，然后把图片数据通过 WebSocket 回传给后端。',
+      wrong: '✗ 是 C。前端 MCP 工具的含义就是"后端告诉前端执行"。截图在浏览器 Canvas 中完成，不需要额外的渲染服务。'
+    },
+    quiz3: {
+      correct: '✓ 对！项目使用 @qunhe/reactive-framework（类似 MobX 的轻量方案），通过 observable + observer + KafBaseStateManager 实现响应式状态管理。',
+      wrong: '✗ 是 A。项目使用内部的 @qunhe/reactive-framework，不是 Redux/MobX/Zustand。通过 combine() 组合多个 StateManager，用 connect() 或 @observer 装饰器注入组件。'
+    }
+  };
+
+  feedback.style.display = 'block';
+  feedback.textContent = selected === correct
+    ? feedbacks[quizId].correct
+    : feedbacks[quizId].wrong;
+  feedback.style.background = selected === correct ? '#dcfce7' : '#fee2e2';
+}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 043</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0042-auto-layout-service-overview.html">上一课：042 auto-layout-service 项目全景</a><a class="primary" href="0044-viewer-2d-overview.html">下一课：044 viewer-2d 项目全景</a></div></nav>
+</body>
+</html>

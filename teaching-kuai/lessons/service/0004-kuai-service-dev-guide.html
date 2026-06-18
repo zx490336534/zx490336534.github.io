@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0004 - kuai-service 开发实战指南</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.5rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:2rem}
+  .desc{color:var(--text-secondary);font-size:.95rem;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.15rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem;color:var(--accent)}
+  p{margin-bottom:1rem}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;overflow-x:auto;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.6}
+  code{font-family:'JetBrains Mono',monospace;font-size:.85em;background:var(--code-bg);padding:.15rem .4rem;border-radius:4px}
+  pre code{background:none;padding:0}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.4rem}
+  .lesson-num{display:inline-block;background:var(--accent-light);color:var(--accent);padding:.2rem .6rem;border-radius:4px;font-size:.8rem;font-weight:500;margin-bottom:.5rem}
+  .step{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0}
+  .step-title{font-weight:600;color:var(--accent);margin-bottom:.5rem}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
+  .ask-agent::before{content:'💡 '}
+  .warn{background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:.9rem}
+  .warn::before{content:'⚠️ '}
+  .success{background:#dcfce7;border:1px solid #86efac;border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:.9rem}
+  .success::before{content:'✅ '}
+  .tag{display:inline-block;padding:.1rem .4rem;border-radius:4px;font-size:.7rem;font-weight:500;margin-right:.3rem}
+  .tag.dev{background:#dcfce7;color:#16a34a}
+  .quiz{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1rem 0}
+  .quiz-q{font-weight:600;margin-bottom:.5rem}
+  .quiz-options{margin:.5rem 0 .5rem 1rem}
+  .quiz-options li{margin-bottom:.3rem}
+  .quiz-answer{color:var(--success);font-weight:500;margin-top:.75rem;padding-top:.75rem;border-top:1px dashed var(--border)}
+  nav{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:.9rem}
+  nav a{color:var(--accent);text-decoration:none}
+  nav a:hover{text-decoration:underline}
+  table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.9rem}
+  th,td{border:1px solid var(--border);padding:.6rem .8rem;text-align:left}
+  th{background:var(--code-bg);font-weight:600}
+</style>
+</head>
+<body>
+<div class="container">
+
+<span class="lesson-num">0004</span>
+<h1>🛠️ kuai-service 开发实战指南</h1>
+<p class="subtitle"><span class="tag dev">实战</span> 从零上手 kuai-service 后端开发</p>
+<p class="desc">本课聚焦实战：如何新增 Controller 接口、如何新增 Service 层、本地运行命令、调试技巧和常见排查路径。学完即可动手开发小功能。</p>
+
+<!-- ==================== 1. 新增 Controller ==================== -->
+<h2><span class="icon">📡</span> 一、新增 Controller 接口</h2>
+
+<p>kuai-service 使用 Spring Boot + MyBatis-Plus，Controller 层负责接收 HTTP 请求并调用 Service。</p>
+
+<div class="step">
+  <div class="step-title">Step 1：创建 Controller 类</div>
+  <p>在 <code>src/main/java/.../controller/</code> 目录下新建文件：</p>
+<pre><code>@RestController
+@RequestMapping("/api/example")
+public class ExampleController {
+
+    @Autowired
+    private ExampleService exampleService;
+
+    /**
+     * GET /api/example/list
+     * 获取示例列表
+     */
+    @GetMapping("/list")
+    public Result&lt;List&lt;ExampleDTO&gt;&gt; list(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
+    ) {
+        return Result.success(exampleService.listByKeyword(keyword, page, size));
+    }
+
+    /**
+     * POST /api/example/create
+     * 创建新记录
+     */
+    @PostMapping("/create")
+    public Result&lt;ExampleDTO&gt; create(@RequestBody @Valid ExampleCreateReq req) {
+        return Result.success(exampleService.create(req));
+    }
+}</code></pre>
+</div>
+
+<div class="step">
+  <div class="step-title">Step 2：定义请求体 DTO</div>
+<pre><code>@Data
+public class ExampleCreateReq {
+    @NotBlank(message = "名称不能为空")
+    private String name;
+    private String description;
+    private Integer status;
+}</code></pre>
+</div>
+
+<div class="step">
+  <div class="step-title">Step 3：统一返回格式</div>
+  <p>所有接口使用 <code>Result&lt;T&gt;</code> 包装返回值：</p>
+<pre><code>// 成功
+Result.success(data)
+
+// 失败
+Result.error(ErrorCode.PARAM_ERROR, "参数错误")
+</code></pre>
+</div>
+
+<div class="warn">
+  <strong>注意：</strong>新增的接口路径不要与已有路径冲突。使用 <code>@Valid</code> 注解启用参数校验。
+</div>
+
+<!-- ==================== 2. 新增 Service ==================== -->
+<h2><span class="icon">⚙️</span> 二、新增 Service</h2>
+
+<p>Service 层封装业务逻辑，调用 Mapper（MyBatis-Plus）操作数据库。</p>
+
+<div class="step">
+  <div class="step-title">Step 1：定义 Service 接口</div>
+<pre><code>public interface ExampleService extends IService&lt;ExampleEntity&gt; {
+    List&lt;ExampleDTO&gt; listByKeyword(String keyword, Integer page, Integer size);
+    ExampleDTO create(ExampleCreateReq req);
+}</code></pre>
+</div>
+
+<div class="step">
+  <div class="step-title">Step 2：实现 Service</div>
+<pre><code>@Service
+public class ExampleServiceImpl extends ServiceImpl&lt;ExampleMapper, ExampleEntity&gt;
+        implements ExampleService {
+
+    @Override
+    public List&lt;ExampleDTO&gt; listByKeyword(String keyword, Integer page, Integer size) {
+        LambdaQueryWrapper&lt;ExampleEntity&gt; wrapper = new LambdaQueryWrapper&lt;&gt;();
+        if (StringUtils.isNotBlank(keyword)) {
+            wrapper.like(ExampleEntity::getName, keyword);
+        }
+        wrapper.orderByDesc(ExampleEntity::getCreateTime);
+        Page&lt;ExampleEntity&gt; pageResult = page(new Page&lt;&gt;(page, size), wrapper);
+        return pageResult.getRecords().stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ExampleDTO create(ExampleCreateReq req) {
+        ExampleEntity entity = new ExampleEntity();
+        BeanUtils.copyProperties(req, entity);
+        entity.setCreateTime(new Date());
+        save(entity);
+        return toDTO(entity);
+    }
+
+    private ExampleDTO toDTO(ExampleEntity entity) {
+        ExampleDTO dto = new ExampleDTO();
+        BeanUtils.copyProperties(entity, dto);
+        return dto;
+    }
+}</code></pre>
+</div>
+
+<div class="step">
+  <div class="step-title">Step 3：定义 Mapper</div>
+<pre><code>@Mapper
+public interface ExampleMapper extends BaseMapper&lt;ExampleEntity&gt; {
+    // MyBatis-Plus 自动提供 CRUD 方法
+    // 如需自定义 SQL，在 resources/mapper/ 下编写 XML
+}</code></pre>
+</div>
+
+<div class="success">
+  <strong>约定：</strong>Mapper XML 文件放在 <code>src/main/resources/mapper/</code> 目录，与 Mapper 接口同名。
+</div>
+
+<!-- ==================== 3. 本地运行 ==================== -->
+<h2><span class="icon">🚀</span> 三、本地运行命令</h2>
+
+<table>
+  <tr><th>命令</th><th>说明</th></tr>
+  <tr><td><code>mvn spring-boot:run</code></td><td>启动开发服务器（默认端口 8080）</td></tr>
+  <tr><td><code>mvn clean package -DskipTests</code></td><td>跳过测试打包</td></tr>
+  <tr><td><code>mvn test</code></td><td>运行单元测试</td></tr>
+  <tr><td><code>mvn compile</code></td><td>仅编译，检查语法错误</td></tr>
+</table>
+
+<h3>环境配置</h3>
+<ul>
+  <li>配置文件：<code>src/main/resources/application.yml</code>（或 <code>application-local.yml</code>）</li>
+  <li>数据库连接：修改 <code>spring.datasource</code> 配置项</li>
+  <li>端口配置：<code>server.port=8080</code></li>
+  <li>日志级别：<code>logging.level.root=INFO</code>，开发时可改为 <code>DEBUG</code></li>
+</ul>
+
+<!-- ==================== 4. 调试技巧 ==================== -->
+<h2><span class="icon">🔍</span> 四、调试技巧</h2>
+
+<h3>1. 日志调试</h3>
+<pre><code>// 在 Service/Controller 中使用 Slf4j 日志
+@Slf4j
+@Service
+public class ExampleServiceImpl {
+    public void doSomething() {
+        log.info("开始处理请求, param={}", param);
+        log.debug("详细调试信息: {}", detail);
+        log.error("处理失败: {}", e.getMessage(), e);
+    }
+}</code></pre>
+
+<h3>2. 接口测试工具</h3>
+<ul>
+  <li><strong>Swagger/Knife4j</strong>：访问 <code>/doc.html</code> 在线调试接口</li>
+  <li><strong>Postman</strong>：导入接口集合进行测试</li>
+  <li><strong>curl</strong>：快速命令行测试</li>
+</ul>
+<pre><code># 测试 GET 请求
+curl http://localhost:8080/api/example/list?keyword=test
+
+# 测试 POST 请求
+curl -X POST http://localhost:8080/api/example/create \
+  -H "Content-Type: application/json" \
+  -d '{"name":"test","description":"desc"}'</code></pre>
+
+<h3>3. 断点调试</h3>
+<ul>
+  <li>IDEA 中在行号左侧点击设置断点</li>
+  <li>使用 <code>Debug</code> 模式启动（而非 <code>Run</code>）</li>
+  <li>Step Over (F8)：跳过当前行</li>
+  <li>Step Into (F7)：进入方法内部</li>
+  <li>Evaluate Expression (Alt+F8)：查看/修改变量值</li>
+</ul>
+
+<h3>4. 热部署</h3>
+<p>添加 <code>spring-boot-devtools</code> 依赖，修改代码后自动重启（需在 IDEA 中开启自动编译）。</p>
+
+<!-- ==================== 5. 常见排查路径 ==================== -->
+<h2><span class="icon">🧩</span> 五、常见排查路径</h2>
+
+<table>
+  <tr><th>问题</th><th>排查路径</th></tr>
+  <tr>
+    <td>接口返回 404</td>
+    <td>
+      1. 检查 <code>@RequestMapping</code> 路径是否正确<br>
+      2. 检查 Controller 是否在 <code>@ComponentScan</code> 扫描范围内<br>
+      3. 检查方法注解（<code>@GetMapping</code> / <code>@PostMapping</code>）
+    </td>
+  </tr>
+  <tr>
+    <td>接口返回 500</td>
+    <td>
+      1. 查看控制台异常堆栈<br>
+      2. 检查 Service 层是否有 NPE<br>
+      3. 检查数据库连接和 SQL
+    </td>
+  </tr>
+  <tr>
+    <td>参数校验不生效</td>
+    <td>
+      1. 确认 DTO 上有 <code>@Valid</code> 注解<br>
+      2. 确认字段上有校验注解（<code>@NotBlank</code> 等）<br>
+      3. 确认 Controller 参数有 <code>@RequestBody</code>
+    </td>
+  </tr>
+  <tr>
+    <td>MyBatis SQL 异常</td>
+    <td>
+      1. 开启 SQL 日志：<code>logging.level.mapper包名=DEBUG</code><br>
+      2. 检查实体类字段与数据库列映射<br>
+      3. 检查 XML 中 SQL 语法
+    </td>
+  </tr>
+  <tr>
+    <td>启动报 Bean 注入失败</td>
+    <td>
+      1. 检查 <code>@Service</code> / <code>@Mapper</code> 注解是否遗漏<br>
+      2. 检查包路径是否在启动类所在包的子包下<br>
+      3. 检查循环依赖
+    </td>
+  </tr>
+</table>
+
+<div class="ask-agent">
+  <strong>遇到不懂的地方？</strong>直接问 Agent。比如："帮我排查 MyBatis-Plus 查询返回空列表的问题" 或 "Spring Boot 启动报 BeanCreationException 怎么解决"。
+</div>
+
+<!-- ==================== Quiz ==================== -->
+<h2><span class="icon">📝</span> Quiz</h2>
+
+<div class="quiz">
+  <p class="quiz-q">Q1：在 kuai-service 中，新增 Controller 接口时，统一的返回值包装类是什么？</p>
+  <ul class="quiz-options">
+    <li>A. <code>ResponseEntity</code></li>
+    <li>B. <code>Result&lt;T&gt;</code></li>
+    <li>C. <code>ApiResponse</code></li>
+    <li>D. <code>JsonResult</code></li>
+  </ul>
+  <p class="quiz-answer">✅ 答案：B. <code>Result&lt;T&gt;</code> — 项目使用统一的 <code>Result</code> 类包装所有接口返回值。</p>
+</div>
+
+<div class="quiz">
+  <p class="quiz-q">Q2：MyBatis-Plus 的 <code>ServiceImpl</code> 已经内置了哪些常用方法？</p>
+  <ul class="quiz-options">
+    <li>A. 只有 <code>save</code> 和 <code>remove</code></li>
+    <li>B. <code>save</code>、<code>removeById</code>、<code>updateById</code>、<code>getById</code>、<code>list</code>、<code>page</code> 等</li>
+    <li>C. 需要自己写所有 SQL</li>
+    <li>D. 只有查询方法</li>
+  </ul>
+  <p class="quiz-answer">✅ 答案：B — <code>ServiceImpl</code> 提供了完整的 CRUD 方法，无需额外编写。</p>
+</div>
+
+<div class="quiz">
+  <p class="quiz-q">Q3：Spring Boot 中如何开启 SQL 日志以便调试 MyBatis 查询？</p>
+  <ul class="quiz-options">
+    <li>A. 在代码中使用 <code>System.out.println</code> 打印 SQL</li>
+    <li>B. 配置 <code>logging.level.你的Mapper包路径=DEBUG</code></li>
+    <li>C. 修改 MyBatis 源码</li>
+    <li>D. 无法查看 SQL 日志</li>
+  </ul>
+  <p class="quiz-answer">✅ 答案：B — 在 <code>application.yml</code> 中设置 Mapper 包的日志级别为 DEBUG 即可。</p>
+</div>
+
+<div class="nav-links">
+  <a href="0003-kuai-service-api-design.html">← API 设计与数据层</a>
+  <a href="../index.html">🗺️ 完整学习地图</a>
+  <a href="../front/0006-kuai-front-agent-system.html">Agent 系统深度追踪 →</a>
+</div>
+
+</div>
+</body>
+</html>

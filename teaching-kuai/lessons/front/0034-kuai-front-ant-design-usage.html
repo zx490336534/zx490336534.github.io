@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0034 - Ant Design 与 AI 组件库使用指南</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:1rem}
+  .breadcrumb{color:var(--text-secondary);font-size:.85rem;margin-bottom:2rem}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .breadcrumb a:hover{text-decoration:underline}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.15rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem;color:var(--accent)}
+  p{margin-bottom:1rem}
+  .desc{color:var(--text-secondary);font-size:.95rem;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;overflow-x:auto;margin:1rem 0 1.5rem;font-size:.85rem;line-height:1.7}
+  code{font-family:'JetBrains Mono',monospace;font-size:.85em}
+  p code,li code{background:var(--code-bg);padding:.15rem .4rem;border-radius:4px;color:var(--accent)}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1.5rem 0}
+  .card.warn{border-color:#fbbf24;background:#fffbeb}
+  .card.info{border-color:#93c5fd;background:#eff6ff}
+  .card.success{border-color:#86efac;background:#f0fdf4}
+  .card.purple{border-color:#c4b5fd;background:#f5f3ff}
+  .card h3{margin-top:0}
+  .card ul,.card ol{margin:.5rem 0 0 1.25rem}
+  .card li{margin-bottom:.3rem}
+  .tag{display:inline-block;padding:.15rem .5rem;border-radius:4px;font-size:.75rem;font-weight:500;margin-right:.3rem}
+  .tag.deep{background:#fef3c7;color:#b45309}
+  .tag.code{background:#dbeafe;color:#2563eb}
+  .tag.arch{background:#f3e8ff;color:#7c3aed}
+  .tag.ui{background:#dcfce7;color:#16a34a}
+  .quiz{background:var(--surface);border:2px solid var(--border);border-radius:8px;padding:1.5rem;margin:1.5rem 0}
+  .quiz h3{color:var(--info);margin-top:0}
+  .quiz ol{margin-left:1.25rem}
+  .quiz li{margin-bottom:1rem}
+  .quiz .options{margin:.5rem 0 0 1rem}
+  .quiz .options div{margin-bottom:.3rem;padding:.4rem .75rem;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s}
+  .quiz .options div:hover{border-color:var(--accent);background:var(--accent-light)}
+  .quiz .options div.correct{border-color:var(--success);background:#dcfce7;color:var(--success);font-weight:600}
+  .quiz .options div.wrong{border-color:#ef4444;background:#fef2f2;color:#ef4444}
+  .quiz .answer{margin-top:.75rem;padding:.75rem 1rem;background:#f0fdf4;border:1px solid #86efac;border-radius:6px;display:none;font-size:.9rem}
+  .quiz .answer.show{display:block}
+  .quiz .show-btn{display:inline-block;margin-top:.75rem;padding:.4rem 1rem;background:var(--accent);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:.85rem}
+  .quiz .show-btn:hover{opacity:.9}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.3rem}
+  .file-ref{display:inline-block;background:var(--code-bg);border:1px solid var(--border);border-radius:4px;padding:.1rem .5rem;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--purple)}
+  table{width:100%;border-collapse:collapse;margin:1rem 0 1.5rem;font-size:.9rem}
+  th,td{padding:.6rem 1rem;border:1px solid var(--border);text-align:left}
+  th{background:var(--code-bg);font-weight:600}
+  .tree{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:2;overflow-x:auto;white-space:pre}
+  .nav-links{display:flex;justify-content:space-between;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+  .nav-links a{color:var(--accent);text-decoration:none;font-size:.9rem}
+  .nav-links a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="breadcrumb"><a href="../index.html">课程首页</a> &gt; kuai-service-front &gt; 0034 Ant Design 与 AI 组件库使用指南</div>
+
+<h1>🎨 Ant Design 与 AI 组件库使用指南</h1>
+<p class="subtitle">掌握 Ant Design 6 组件、Ant Design X（AI 组件库）、CSS Modules 配合和主题定制</p>
+<p class="desc">Kuai 前端使用 <strong>Ant Design 6</strong> 作为基础 UI 库，<strong>Ant Design X</strong> 作为 AI 对话专用组件库，配合 <strong>CSS Modules</strong> 进行样式隔离。本课程详细介绍这些 UI 工具在项目中的使用方式。</p>
+
+<div class="card purple">
+  <h3>📚 前置知识</h3>
+  <ul>
+    <li><strong>React 基础</strong>：JSX 语法、组件 props、事件处理</li>
+    <li><strong>CSS 基础</strong>：选择器、盒模型、Flexbox 布局</li>
+    <li><strong>npm/pnpm</strong>：包管理器的基本使用</li>
+    <li><strong>0005 课程</strong>：kuai-service-front 项目概览（了解技术栈）</li>
+    <li><strong>0023 课程</strong>：组件架构与布局系统（了解组件组织方式）</li>
+  </ul>
+</div>
+
+<!-- ==================== Ant Design 6 概述 ==================== -->
+<h2><span class="icon">🐜</span> Ant Design 6 概述</h2>
+
+<p><strong>Ant Design</strong>（简称 antd）是蚂蚁金服开源的企业级 UI 设计语言和 React 组件库。Kuai 前端使用的是 <strong>Ant Design 6</strong> 版本，提供了丰富的开箱即用组件。</p>
+
+<h3>项目中的核心组件</h3>
+
+<table>
+  <tr><th>分类</th><th>组件</th><th>用途</th></tr>
+  <tr><td rowspan="4">布局</td><td><code>Layout</code></td><td>页面整体布局（Header + Sider + Content）</td></tr>
+  <tr><td><code>Layout.Sider</code></td><td>侧边栏导航</td></tr>
+  <tr><td><code>Layout.Header</code></td><td>顶部导航栏</td></tr>
+  <tr><td><code>Layout.Content</code></td><td>主内容区域</td></tr>
+  <tr><td rowspan="3">导航</td><td><code>Menu</code></td><td>侧边栏菜单（配合 navbarMenu 配置）</td></tr>
+  <tr><td><code>Breadcrumb</code></td><td>面包屑导航</td></tr>
+  <tr><td><code>Tabs</code></td><td>标签页切换</td></tr>
+  <tr><td rowspan="4">数据展示</td><td><code>Table</code></td><td>数据表格（列表页核心组件）</td></tr>
+  <tr><td><code>Card</code></td><td>卡片容器</td></tr>
+  <tr><td><code>Tag</code></td><td>标签（状态标记）</td></tr>
+  <tr><td><code>Descriptions</code></td><td>描述列表（详情页）</td></tr>
+  <tr><td rowspan="4">数据录入</td><td><code>Form</code></td><td>表单（创建/编辑页面）</td></tr>
+  <tr><td><code>Input</code></td><td>输入框</td></tr>
+  <tr><td><code>Select</code></td><td>下拉选择器</td></tr>
+  <tr><td><code>Modal</code></td><td>弹窗（确认操作、表单弹窗）</td></tr>
+  <tr><td rowspan="3">反馈</td><td><code>message</code></td><td>全局提示（操作成功/失败）</td></tr>
+  <tr><td><code>notification</code></td><td>通知提醒（更详细的通知）</td></tr>
+  <tr><td><code>Spin</code></td><td>加载中状态</td></tr>
+</table>
+
+<h3>按需导入</h3>
+
+<pre><code class="language-javascript">// Ant Design 6 支持 Tree Shaking，按需导入即可
+import { Button, Table, Form, Input, Modal, message } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';</code></pre>
+
+<!-- ==================== 常用组件示例 ==================== -->
+<h2><span class="icon">📝</span> 常用组件使用示例</h2>
+
+<h3>Table 数据表格</h3>
+
+<pre><code class="language-javascript">import { Table, Tag, Button, Space } from 'antd';
+
+function ServerList({ servers, loading }) {
+  const columns = [
+    {
+      title: '服务器名称',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      key: 'status',
+      render: (status) => (
+        &lt;Tag color={status === 'running' ? 'green' : 'red'}&gt;
+          {status}
+        &lt;/Tag&gt;
+      ),
+    },
+    {
+      title: '操作',
+      key: 'action',
+      render: (_, record) => (
+        &lt;Space&gt;
+          &lt;Button size="small" onClick={() => handleStart(record)}&gt;启动&lt;/Button&gt;
+          &lt;Button size="small" danger onClick={() => handleStop(record)}&gt;停止&lt;/Button&gt;
+        &lt;/Space&gt;
+      ),
+    },
+  ];
+
+  return (
+    &lt;Table
+      columns={columns}
+      dataSource={servers}
+      loading={loading}
+      rowKey="name"
+    /&gt;
+  );
+}</code></pre>
+
+<h3>Form 表单</h3>
+
+<pre><code class="language-javascript">import { Form, Input, Select, Button, message } from 'antd';
+
+function AddServerForm({ onSubmit }) {
+  const [form] = Form.useForm();
+
+  const handleSubmit = async (values) => {
+    try {
+      await onSubmit(values);
+      message.success('服务器添加成功');
+      form.resetFields();
+    } catch (err) {
+      message.error('添加失败: ' + err.message);
+    }
+  };
+
+  return (
+    &lt;Form form={form} onFinish={handleSubmit} layout="vertical"&gt;
+      &lt;Form.Item
+        label="服务器名称"
+        name="name"
+        rules={[{ required: true, message: '请输入服务器名称' }]}
+      &gt;
+        &lt;Input placeholder="请输入名称" /&gt;
+      &lt;/Form.Item&gt;
+
+      &lt;Form.Item
+        label="传输协议"
+        name="transport"
+        rules={[{ required: true, message: '请选择传输协议' }]}
+      &gt;
+        &lt;Select&gt;
+          &lt;Select.Option value="sse"&gt;SSE&lt;/Select.Option&gt;
+          &lt;Select.Option value="stdio"&gt;Stdio&lt;/Select.Option&gt;
+          &lt;Select.Option value="streamablehttp"&gt;StreamableHTTP&lt;/Select.Option&gt;
+        &lt;/Select&gt;
+      &lt;/Form.Item&gt;
+
+      &lt;Form.Item&gt;
+        &lt;Button type="primary" htmlType="submit"&gt;添加服务器&lt;/Button&gt;
+      &lt;/Form.Item&gt;
+    &lt;/Form&gt;
+  );
+}</code></pre>
+
+<h3>Modal 弹窗</h3>
+
+<pre><code class="language-javascript">import { Modal, message } from 'antd';
+
+function DeleteConfirm({ server, onConfirm }) {
+  const handleDelete = () => {
+    Modal.confirm({
+      title: '确认删除',
+      content: `确定要删除服务器 "${server.name}" 吗？此操作不可恢复。`,
+      okText: '确认删除',
+      okType: 'danger',
+      cancelText: '取消',
+      onOk: async () => {
+        await onConfirm(server.name);
+        message.success('删除成功');
+      },
+    });
+  };
+
+  return &lt;Button danger onClick={handleDelete}&gt;删除&lt;/Button&gt;;
+}</code></pre>
+
+<!-- ==================== Ant Design X ==================== -->
+<h2><span class="icon">🤖</span> Ant Design X（AI 组件库）</h2>
+
+<p><strong>Ant Design X</strong> 是 Ant Design 团队专门为 AI 对话场景打造的组件库。Kuai 前端使用它来构建 Agent 对话界面。</p>
+
+<div class="card info">
+  <h3>💡 Ant Design vs Ant Design X</h3>
+  <ul>
+    <li><strong>Ant Design 6</strong>：通用 UI 组件（表格、表单、按钮等）</li>
+    <li><strong>Ant Design X</strong>：AI 对话专用组件（消息气泡、输入框、工具调用等）</li>
+    <li>两者配合使用：antd 负责页面布局和通用交互，antd-x 负责 AI 对话区域</li>
+  </ul>
+</div>
+
+<h3>Ant Design X 核心组件</h3>
+
+<table>
+  <tr><th>组件</th><th>作用</th><th>使用场景</th></tr>
+  <tr><td><code>Bubble</code></td><td>消息气泡</td><td>显示用户消息和 AI 回复</td></tr>
+  <tr><td><code>Bubble.List</code></td><td>消息列表</td><td>对话历史滚动列表</td></tr>
+  <tr><td><code>Sender</code></td><td>消息输入框</td><td>用户输入消息的区域</td></tr>
+  <tr><td><code>ThoughtChain</code></td><td>思考链</td><td>展示 AI 的推理过程</td></tr>
+  <tr><td><code>Attachments</code></td><td>附件组件</td><td>文件上传和预览</td></tr>
+  <tr><td><code>Suggestion</code></td><td>快捷建议</td><td>预设的快捷问题按钮</td></tr>
+</table>
+
+<h3>Bubble 消息气泡</h3>
+
+<pre><code class="language-javascript">import { Bubble } from '@ant-design/x';
+
+// 基本用法
+&lt;Bubble
+  content="你好，我是 AI 助手！"
+  placement="start"  // start=AI(左), end=用户(右)
+/&gt;
+
+// 带头像和自定义内容
+&lt;Bubble
+  content={messageContent}
+  placement="start"
+  avatar={{ src: '/ai-avatar.png' }}
+  loading={isLoading}  // 加载中显示打字动画
+/&gt;
+
+// 消息列表
+&lt;Bubble.List
+  items={messages.map(msg => ({
+    content: msg.text,
+    placement: msg.role === 'user' ? 'end' : 'start',
+    loading: msg.loading,
+  }))}
+/&gt;</code></pre>
+
+<h3>Sender 消息输入框</h3>
+
+<pre><code class="language-javascript">import { Sender } from '@ant-design/x';
+
+function ChatInput({ onSend, loading }) {
+  return (
+    &lt;Sender
+      placeholder="输入消息..."
+      loading={loading}
+      onSubmit={(text) => onSend(text)}
+      onCancel={() => {/* 取消正在生成的回复 */}}
+    /&gt;
+  );
+}</code></pre>
+
+<h3>ThoughtChain 思考链</h3>
+
+<pre><code class="language-javascript">import { ThoughtChain } from '@ant-design/x';
+
+// 展示 AI 的思考/工具调用过程
+&lt;ThoughtChain
+  items={[
+    { title: '分析问题', status: 'success', description: '理解用户意图' },
+    { title: '调用工具', status: 'success', description: '使用 MCP 工具获取数据' },
+    { title: '生成回复', status: 'loading', description: '正在生成...' },
+  ]}
+/&gt;</code></pre>
+
+<!-- ==================== 在 Kuai 中的实际使用 ==================== -->
+<h2><span class="icon">🏗️</span> 在 Kuai 中的实际使用</h2>
+
+<h3>AgentChat 组件（核心对话组件）</h3>
+
+<p>Kuai 的 Agent 对话页面使用 <code>AgentChat</code> 组件，它同时使用了 antd 和 antd-x 的组件：</p>
+
+<pre><code class="language-javascript">// src/components/common/AgentChat/index.jsx（简化）
+'use client';
+
+import { Button, Spin, message } from 'antd';           // antd 组件
+import { Bubble, Sender, ThoughtChain } from '@ant-design/x';  // AI 组件
+import styles from './AgentChat.module.css';              // CSS Modules
+
+function AgentChat({ agentId }) {
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  return (
+    &lt;div className={styles.chatContainer}&gt;
+      {/* 消息列表 — 使用 antd-x 的 Bubble.List */}
+      &lt;div className={styles.messageList}&gt;
+        &lt;Bubble.List items={messages} /&gt;
+      &lt;/div&gt;
+
+      {/* 输入区域 — 使用 antd-x 的 Sender */}
+      &lt;div className={styles.inputArea}&gt;
+        &lt;Sender
+          placeholder="输入消息..."
+          loading={loading}
+          onSubmit={handleSend}
+        /&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+<!-- ==================== CSS Modules 配合 ==================== -->
+<h2><span class="icon">💅</span> 与 CSS Modules 配合</h2>
+
+<p>Kuai 前端使用 <strong>CSS Modules</strong> 进行样式隔离，而不是全局 CSS 或 CSS-in-JS。</p>
+
+<h3>CSS Modules 基本用法</h3>
+
+<pre><code class="language-css">/* AgentChat.module.css — 样式文件 */
+.chatContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.messageList {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+.inputArea {
+  padding: 1rem;
+  border-top: 1px solid #e7e5e4;
+}</code></pre>
+
+<pre><code class="language-javascript">// 导入样式（styles 是一个对象，键是类名，值是编译后的唯一类名）
+import styles from './AgentChat.module.css';
+
+// 使用：styles.chatContainer 会被编译为类似 "AgentChat_chatContainer_a1b2c"
+&lt;div className={styles.chatContainer}&gt;
+  &lt;div className={styles.messageList}&gt;...&lt;/div&gt;
+  &lt;div className={styles.inputArea}&gt;...&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+
+<div class="card">
+  <h3>🔍 CSS Modules 的优势</h3>
+  <ul>
+    <li><strong>样式隔离</strong>：每个组件的类名自动加哈希后缀，不会与其他组件冲突</li>
+    <li><strong>可维护性</strong>：样式文件和组件文件一一对应，容易定位</li>
+    <li><strong>无运行时开销</strong>：编译时处理，不影响运行性能</li>
+    <li><strong>与 antd 共存</strong>：antd 的全局样式和组件的局部样式互不干扰</li>
+  </ul>
+</div>
+
+<h3>CSS Modules 与 Ant Design 配合的注意事项</h3>
+
+<pre><code class="language-javascript">// ❌ 错误：不能用 CSS Modules 覆盖 antd 组件的内部类名
+import styles from './MyComponent.module.css';
+&lt;Button className={styles.myButton}&gt;点击&lt;/Button&gt;
+// styles.myButton 只能控制外层容器，不能直接修改 antd 内部的 .ant-btn 样式
+
+// ✅ 正确方式 1：使用 antd 的 className + CSS Modules 的 :global
+// MyComponent.module.css
+// :global .ant-btn { font-size: 16px; }
+
+// ✅ 正确方式 2：使用 antd 的 style prop
+&lt;Button style={{ fontSize: 16 }}&gt;点击&lt;/Button&gt;
+
+// ✅ 正确方式 3：使用 antd 的 ConfigProvider 进行主题定制（推荐）</code></pre>
+
+<!-- ==================== 主题定制 ==================== -->
+<h2><span class="icon">🎯</span> 主题定制</h2>
+
+<h3>ConfigProvider 全局主题</h3>
+
+<p>Ant Design 6 使用 <code>ConfigProvider</code> 进行全局主题定制，通过 <code>theme</code> 属性配置设计令牌（Design Token）：</p>
+
+<pre><code class="language-javascript">// src/app/providers.js 或根布局中
+import { ConfigProvider } from 'antd';
+
+function AppProviders({ children }) {
+  return (
+    &lt;ConfigProvider
+      theme={{
+        token: {
+          // 品牌色
+          colorPrimary: '#b45309',      // 琥珀色（与课程主题一致）
+
+          // 圆角
+          borderRadius: 6,
+
+          // 字体
+          fontFamily: "'Noto Sans SC', -apple-system, sans-serif",
+
+          // 字号
+          fontSize: 14,
+        },
+        components: {
+          // 组件级别的定制
+          Menu: {
+            itemSelectedBg: '#fef3c7',   // 菜单选中背景
+            itemSelectedColor: '#b45309', // 菜单选中文字色
+          },
+          Table: {
+            headerBg: '#f5f5f4',         // 表头背景色
+          },
+        },
+      }}
+    &gt;
+      {children}
+    &lt;/ConfigProvider&gt;
+  );
+}</code></pre>
+
+<h3>Design Token 体系</h3>
+
+<table>
+  <tr><th>层级</th><th>说明</th><th>示例</th></tr>
+  <tr><td><code>token</code></td><td>全局种子令牌（影响所有组件）</td><td><code>colorPrimary</code>、<code>borderRadius</code></td></tr>
+  <tr><td><code>components</code></td><td>组件级别令牌（只影响特定组件）</td><td><code>Menu.itemSelectedBg</code></td></tr>
+  <tr><td><code>algorithm</code></td><td>主题算法（亮色/暗色/紧凑）</td><td><code>theme.darkAlgorithm</code></td></tr>
+</table>
+
+<pre><code class="language-javascript">// 使用暗色主题算法
+import { ConfigProvider, theme } from 'antd';
+
+&lt;ConfigProvider
+  theme={{
+    algorithm: theme.darkAlgorithm,
+    token: { colorPrimary: '#b45309' },
+  }}
+&gt;
+  {children}
+&lt;/ConfigProvider&gt;</code></pre>
+
+<!-- ==================== 图标使用 ==================== -->
+<h2><span class="icon">✨</span> 图标使用</h2>
+
+<p>Ant Design 图标库 <code>@ant-design/icons</code> 提供了大量 SVG 图标，支持按需导入：</p>
+
+<pre><code class="language-javascript">// 按需导入（只打包使用的图标）
+import {
+  HomeOutlined,
+  SettingOutlined,
+  PlusOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  SearchOutlined,
+  RobotOutlined,
+} from '@ant-design/icons';
+
+// 在组件中使用
+&lt;Button icon={&lt;PlusOutlined /&gt;}&gt;新建&lt;/Button&gt;
+&lt;Menu.Item icon={&lt;HomeOutlined /&gt;}&gt;首页&lt;/Menu.Item&gt;</code></pre>
+
+<div class="card warn">
+  <h3>⚠️ 图标导入注意事项</h3>
+  <ul>
+    <li>不要使用 <code>import { Icon } from 'antd'</code> 的旧方式</li>
+    <li>不要 <code>import * from '@ant-design/icons'</code>（会打包所有图标，体积很大）</li>
+    <li>按需导入：只导入实际使用的图标组件</li>
+    <li>图标后缀 <code>Outlined</code>（线性）、<code>Filled</code>（填充）、<code>TwoTone</code>（双色）</li>
+  </ul>
+</div>
+
+<!-- ==================== 响应式与布局 ==================== -->
+<h2><span class="icon">📱</span> 响应式与布局技巧</h2>
+
+<h3>Grid 栅格系统</h3>
+
+<pre><code class="language-javascript">import { Row, Col } from 'antd';
+
+// 24 列栅格
+&lt;Row gutter={16}&gt;
+  &lt;Col span={8}&gt;  {/* 占 1/3 宽度 */}
+    &lt;Card&gt;卡片 1&lt;/Card&gt;
+  &lt;/Col&gt;
+  &lt;Col span={8}&gt;
+    &lt;Card&gt;卡片 2&lt;/Card&gt;
+  &lt;/Col&gt;
+  &lt;Col span={8}&gt;
+    &lt;Card&gt;卡片 3&lt;/Card&gt;
+  &lt;/Col&gt;
+&lt;/Row&gt;
+
+// 响应式
+&lt;Row gutter={[16, 16]}&gt;
+  &lt;Col xs={24} sm={12} md={8} lg={6}&gt;
+    &lt;Card&gt;自适应卡片&lt;/Card&gt;
+  &lt;/Col&gt;
+&lt;/Row&gt;</code></pre>
+
+<h3>Space 间距组件</h3>
+
+<pre><code class="language-javascript">import { Space, Button } from 'antd';
+
+// 自动给子元素添加间距
+&lt;Space size="middle"&gt;
+  &lt;Button&gt;取消&lt;/Button&gt;
+  &lt;Button type="primary"&gt;确认&lt;/Button&gt;
+&lt;/Space&gt;
+
+// 带分隔线
+&lt;Space split={&lt;Divider type="vertical" /&gt;}&gt;
+  &lt;a&gt;编辑&lt;/a&gt;
+  &lt;a&gt;删除&lt;/a&gt;
+&lt;/Space&gt;</code></pre>
+
+<!-- ==================== Quiz ==================== -->
+<h2><span class="icon">🧪</span> 知识检验</h2>
+
+<div class="quiz" id="quiz1">
+  <h3>题目 1：组件库选择</h3>
+  <p>在 Kuai 前端中，构建 Agent 对话界面的 AI 消息气泡应该使用哪个库的组件？</p>
+  <div class="options">
+    <div onclick="checkAnswer(this,'quiz1',false)">A. Ant Design 6 的 Message 组件</div>
+    <div onclick="checkAnswer(this,'quiz1',true)">B. Ant Design X 的 Bubble 组件</div>
+    <div onclick="checkAnswer(this,'quiz1',false)">C. 自己用 div + CSS 手写</div>
+    <div onclick="checkAnswer(this,'quiz1',false)">D. react-chat-widget 第三方库</div>
+  </div>
+  <button class="show-btn" onclick="toggleAnswer('quiz1')">显示解析</button>
+  <div class="answer" id="quiz1-answer">
+    <strong>答案 B</strong>。<code>@ant-design/x</code>（Ant Design X）是专门的 AI 对话组件库，其中 <code>Bubble</code> 组件专门用于显示消息气泡，支持用户消息（<code>placement="end"</code>）和 AI 回复（<code>placement="start"</code>），还内置了加载动画。antd 的 <code>Message</code> 是全局提示（toast），用于操作反馈，不是对话气泡。
+  </div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <h3>题目 2：CSS Modules</h3>
+  <p>在 Kuai 前端中，为什么使用 <code>import styles from './AgentChat.module.css'</code> 而不是普通的 <code>import './AgentChat.css'</code>？</p>
+  <div class="options">
+    <div onclick="checkAnswer(this,'quiz2',false)">A. 只是命名习惯不同，没有实际区别</div>
+    <div onclick="checkAnswer(this,'quiz2',true)">B. CSS Modules 会自动为类名添加唯一哈希后缀，避免样式冲突</div>
+    <div onclick="checkAnswer(this,'quiz2',false)">C. 普通 CSS 在 Next.js 中不能使用</div>
+    <div onclick="checkAnswer(this,'quiz2',false)">D. CSS Modules 的加载速度更快</div>
+  </div>
+  <button class="show-btn" onclick="toggleAnswer('quiz2')">显示解析</button>
+  <div class="answer" id="quiz2-answer">
+    <strong>答案 B</strong>。CSS Modules 的核心优势是<strong>样式隔离</strong>。当你写 <code>.chatContainer { ... }</code> 时，编译后会变成类似 <code>AgentChat_chatContainer_a1b2c</code> 的唯一类名。这样即使不同组件有同名类名也不会冲突。普通 CSS（全局 CSS）的类名是全局共享的，容易出现样式覆盖问题。
+  </div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <h3>题目 3：主题定制</h3>
+  <p>要将整个应用的主色调从默认蓝色改为橙色，最推荐的方式是什么？</p>
+  <div class="options">
+    <div onclick="checkAnswer(this,'quiz3',false)">A. 用 CSS 覆盖所有 antd 组件的 <code>.ant-btn-primary</code> 类名</div>
+    <div onclick="checkAnswer(this,'quiz3',false)">B. 每个 Button 组件都加 <code>style={{ background: 'orange' }}</code></div>
+    <div onclick="checkAnswer(this,'quiz3',true)">C. 在根组件使用 ConfigProvider 的 <code>theme.token.colorPrimary</code> 配置</div>
+    <div onclick="checkAnswer(this,'quiz3',false)">D. 修改 antd 的源码</div>
+  </div>
+  <button class="show-btn" onclick="toggleAnswer('quiz3')">显示解析</button>
+  <div class="answer" id="quiz3-answer">
+    <strong>答案 C</strong>。Ant Design 6 推荐使用 <code>ConfigProvider</code> 的 <code>theme.token.colorPrimary</code> 来设置主色调。这会自动影响所有使用主色的组件（Button、Link、Menu 选中态等），是一处配置、全局生效。用 CSS 覆盖容易遗漏且难维护，用 style 属性需要每个组件都写，修改源码更不可取。
+  </div>
+</div>
+
+<div class="nav-links">
+  <a href="0033-kuai-front-navigation-routing.html">← 导航与路由系统</a>
+  <a href="../index.html">🗺️ 完整学习地图</a>
+  <a href="../py/0025-kuai-py-transport-protocols.html">MCP 传输协议 →</a>
+</div>
+
+</div>
+
+<script>
+function checkAnswer(el, quizId, correct) {
+  const options = el.parentNode.children;
+  for (let o of options) { o.style.pointerEvents = 'none'; }
+  if (correct) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    for (let o of options) {
+      if (o.onclick && o.onclick.toString().includes('true')) o.classList.add('correct');
+    }
+  }
+  document.getElementById(quizId + '-answer').classList.add('show');
+}
+function toggleAnswer(quizId) {
+  document.getElementById(quizId + '-answer').classList.toggle('show');
+}
+</script>
+</body>
+</html>

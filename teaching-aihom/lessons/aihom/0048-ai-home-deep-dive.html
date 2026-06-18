@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>048 ai-home 前端深度追踪</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --accent: #b45309;
+    --accent-light: #fef3c7;
+    --border: #e7e5e4;
+    --code-bg: #f5f5f4;
+    --success: #16a34a;
+    --warning: #d97706;
+    --info: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .card.info { border-left: 3px solid var(--info); }
+  .card.warning { border-left: 3px solid var(--warning); }
+  .card.success { border-left: 3px solid var(--success); }
+
+  .card-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+  .card.info .card-label { color: var(--info); }
+  .card.warning .card-label { color: var(--warning); }
+  .card.success .card-label { color: var(--success); }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    font-size: 0.88em;
+  }
+
+  pre {
+    background: #1c1917;
+    color: #e7e5e4;
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  pre .comment { color: #78716c; }
+  pre .keyword { color: #f59e0b; }
+  pre .string { color: #86efac; }
+  pre .dir { color: #93c5fd; }
+  pre .file { color: #e7e5e4; }
+  pre .important { color: #fbbf24; font-weight: 500; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.92rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .tree { margin: 1rem 0; }
+
+  .quiz {
+    background: var(--accent-light);
+    border: 1px solid #fbbf24;
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .quiz-title {
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+  .quiz-options { list-style: none; }
+  .quiz-options li {
+    padding: 0.5rem 0.75rem;
+    margin: 0.35rem 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+  }
+  .quiz-options li:hover { background: #fde68a33; border-color: #fbbf24; }
+  .quiz-options li.correct { background: #dcfce7; border-color: #16a34a; }
+  .quiz-options li.wrong { background: #fee2e2; border-color: #ef4444; }
+  .quiz-feedback {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    display: none;
+    font-size: 0.9rem;
+  }
+
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+  }
+  .flow-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .flow-arrow { color: var(--text-secondary); }
+
+  .next-lesson {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .next-lesson a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .next-lesson a:hover { text-decoration: underline; }
+
+  .ask-agent {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+    color: #1e40af;
+  }
+  .ask-agent::before { content: '💡 '; }
+
+  ul, ol { margin: 0.5rem 0 1rem 1.5rem; }
+  li { margin-bottom: 0.3rem; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>048 ai-home 前端深度追踪</h1>
+<p class="subtitle">从 App.tsx 入口出发，追踪 URL 路由、状态管理、MCP 工具桥接、AI 对话通信的完整链路</p>
+
+<!-- ==================== Section 1 ==================== -->
+<h2>1. App.tsx 入口与 URL 参数路由</h2>
+
+<p>ai-home 没有使用 React Router，而是通过 <strong>URL 参数 <code>?page=</code></strong> 实现页面级路由。入口文件 <code>src/app/App.tsx</code> 只有 37 行，逻辑极其简洁：</p>
+
+<pre>
+<span class="keyword">class</span> App <span class="keyword">extends</span> React.Component {
+    componentDidMount() {
+        <span class="comment">// 埋点：记录用户进入了哪个页面</span>
+        <span class="keyword">const</span> queryParams = <span class="keyword">new</span> URLSearchParams(window.location.search);
+        <span class="keyword">const</span> page = queryParams.get(<span class="string">'page'</span>) || <span class="string">'home'</span>;
+        KIO.log(LogType.AIHomePageLoad, { page });
+    }
+
+    render() {
+        <span class="keyword">const</span> page = <span class="keyword">new</span> URLSearchParams(window.location.search).get(<span class="string">'page'</span>);
+        <span class="keyword">const</span> isMain = page === <span class="string">'mainPage'</span>;
+        <span class="keyword">const</span> isFeedback = page === <span class="string">'feedback'</span>;
+
+        <span class="keyword">return</span> (
+            &lt;&gt;
+                &lt;GlobalShortcuts /&gt;
+                {isMain ? &lt;MainPage /&gt; : isFeedback ? &lt;ProductFeedbackPage /&gt; : &lt;HomePage /&gt;}
+                &lt;Toaster position=<span class="string">"top-center"</span> expand /&gt;
+            &lt;/&gt;
+        );
+    }
+}
+</pre>
+
+<table>
+  <tr><th>URL 参数</th><th>组件</th><th>职责</th></tr>
+  <tr><td><code>?page=mainPage</code></td><td><code>MainPage</code></td><td>编辑器主界面 — 2D 画布 + 3D 视图 + AI 对话</td></tr>
+  <tr><td><code>?page=feedback</code></td><td><code>ProductFeedbackPage</code></td><td>反馈页</td></tr>
+  <tr><td>无参数 / 其他</td><td><code>HomePage</code></td><td>项目列表首页</td></tr>
+</table>
+
+<div class="card info">
+  <div class="card-label">为什么不用 React Router？</div>
+  <p>ai-home 嵌入在 Coohom 主站的 iframe 中，URL 参数路由更轻量，且与主站的路由机制天然兼容。页面切换不需要 history 管理。</p>
+</div>
+
+<!-- ==================== Section 2 ==================== -->
+<h2>2. reactive-framework 状态管理</h2>
+
+<p>ai-home 没有用 Redux 或 Zustand，而是基于内部的 <code>@qunhe/reactive-framework</code>（简称 KAF）构建了一套 <strong>响应式状态管理</strong> 体系。</p>
+
+<h3>核心类：RootStateManager</h3>
+
+<p><code>src/app/state.ts</code> 定义了全局状态管理器 <code>RootStateManager</code>，它使用 <code>combine</code> 组合了多个子状态管理器：</p>
+
+<pre>
+<span class="keyword">export class</span> RootStateManager <span class="keyword">extends</span> combine&lt;State, {
+    scene2D: AIHomeScene2DStateManager;
+    viewerState: ViewerStateManager;
+    userInfo: UserInfoStateManager;
+}&gt;({
+    scene2D: AIHomeScene2DStateManager,
+    viewerState: ViewerStateManager,
+    userInfo: UserInfoStateManager,
+}) {
+    <span class="keyword">@observable</span>
+    <span class="keyword">declare</span> designDoc: DesignDocument;
+
+    <span class="comment">// 状态字段通过 @observable 装饰器声明</span>
+    <span class="comment">// 子管理器自动合并到 this.scene2D / this.viewerState / this.userInfo</span>
+}
+</pre>
+
+<h3>@observable 装饰器的工作原理</h3>
+
+<div class="flow">
+  <span class="flow-step">@observable 声明</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">KAF Proxy 拦截读写</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">自动收集依赖</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">变更时通知订阅者</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">组件 re-render</span>
+</div>
+
+<p><code>ConversationManager</code>（对话管理器）同样使用 <code>@observable</code> 装饰器：</p>
+
+<pre>
+<span class="keyword">class</span> ConversationManager {
+    <span class="keyword">@observable</span> messages: Message[] = [];
+    <span class="keyword">@observable</span> streamMessage: Message | <span class="keyword">undefined</span> = <span class="keyword">undefined</span>;
+    <span class="keyword">@observable</span> status: ConversationStatus = ConversationStatus.done;
+    <span class="keyword">@observable</span> connectionStatus: ConnectionStatus = ConnectionStatus.disconnected;
+    <span class="keyword">@observable</span> isInitialized = <span class="keyword">false</span>;
+}
+</pre>
+
+<div class="card warning">
+  <div class="card-label">关键区别</div>
+  <p><code>@observable</code> 不同于 MobX 的 observable。KAF 的响应式系统是自研的，与 KAF 的文档模型（Document）、撤销/重做（TransactionDocument）、选择管理（Selection）深度集成。</p>
+</div>
+
+<h3>AGENTS.md 中的状态规范</h3>
+
+<p>项目 AGENTS.md 明确规定：</p>
+<ul>
+  <li>复杂逻辑或跨组件复用时，抽成自定义 hook 或交由 <code>StateManager</code> 管理</li>
+  <li>自定义 hook 放 <code>src/app/hooks/</code>，以 <code>use</code> 开头</li>
+  <li>副作用必须在 <code>useEffect</code> 中清理</li>
+  <li>修改 <code>StateManager</code> 状态结构前必须先输出方案说明，等待确认</li>
+</ul>
+
+<!-- ==================== Section 3 ==================== -->
+<h2>3. MCP 工具桥接机制</h2>
+
+<p>MCP（Model Context Protocol）工具是 ai-home 最有特色的设计之一。后端 Agent 在推理过程中，可以通过 MCP 协议让<strong>前端执行特定操作</strong>（如 3D 截图、模型搜索），再把结果回传给后端继续推理。</p>
+
+<h3>工具注册</h3>
+
+<p><code>src/app/agent/MCP/index.ts</code> 定义了所有前端 MCP 工具：</p>
+
+<pre>
+<span class="keyword">export const</span> FRONT_TOOLS: MCPTool[] = [
+    { name: <span class="string">'search_decoration_model'</span>, callback: searchDecorationModel },
+    { name: <span class="string">'replace_decoration_model'</span>, callback: replaceDecorationModel },
+    { name: <span class="string">'capture_3d_screenshot'</span>, callback: capture3DScreenshot },
+    { name: <span class="string">'capture_3d_render'</span>, callback: capture3DRender },
+];
+</pre>
+
+<p>这些工具通过 <code>AgentSDKService</code> 注册到 SDK 中：</p>
+
+<pre>
+<span class="keyword">class</span> AgentSDKService {
+    <span class="keyword">async</span> init(config) {
+        <span class="keyword">this</span>.sdk = <span class="keyword">new</span> AgentConversationSDK(initSDKConfig);
+        <span class="keyword">this</span>.sdk.registerAgentHooks({ websocketHooks: { ... } });
+        <span class="keyword">this</span>.sdk.registerTools(FRONT_TOOLS);  <span class="comment">// ← 注册前端工具</span>
+        <span class="keyword">return this</span>.sdk;
+    }
+}
+</pre>
+
+<h3>MCP 工具的执行流程</h3>
+
+<div class="flow">
+  <span class="flow-step">后端 Agent 决策</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">WebSocket 下发 Tool Call</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">SDK 匹配 tool name</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">前端 callback 执行</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">结果回传后端</span>
+</div>
+
+<h3>工具示例：capture3DScreenshot</h3>
+
+<p>以 <code>capture_3d_screenshot</code> 为例，它的职责是截取当前 3D 场景的截图并返回图片 URL：</p>
+
+<pre>
+<span class="keyword">export const</span> capture3DScreenshot = <span class="keyword">async</span> (args: {
+    designId: <span class="keyword">string</span>;
+    levelId: <span class="keyword">string</span>;
+}): Promise&lt;MCPToolResult&gt; => {
+    <span class="comment">// 1. 参数校验</span>
+    <span class="keyword">if</span> (!designId) <span class="keyword">return</span> createErrorResult(...);
+
+    <span class="comment">// 2. 调用前端 3D 引擎截图 API</span>
+    <span class="keyword">const</span> imageUrls = <span class="keyword">await</span> capture3DScreenshotApi({ designId, levelId });
+
+    <span class="comment">// 3. 构建 MCP 标准返回格式</span>
+    <span class="keyword">return</span> {
+        content: imageUrls.map(url => ({
+            type: <span class="string">'image_url'</span>,
+            image_url: { url, detail: <span class="string">'auto'</span> },
+        })),
+    };
+};
+</pre>
+
+<div class="card success">
+  <div class="card-label">MCP 中台注册</div>
+  <p>每个前端 MCP 工具都需要在 MCP 中台注册，类型选择 <code>postMessage</code>。工具的 <code>name</code> 必须与中台注册的 <code>toolName</code> 保持一致，否则后端 Agent 无法找到对应的前端工具。</p>
+</div>
+
+<!-- ==================== Section 4 ==================== -->
+<h2>4. AI 对话通信链路</h2>
+
+<p>AI 对话是 ai-home 的核心功能。整个通信链路由三层组成：</p>
+
+<table>
+  <tr><th>层级</th><th>类</th><th>职责</th></tr>
+  <tr><td>SDK 层</td><td><code>AgentConversationSDK</code></td><td>WebSocket 连接管理、消息收发、MCP 工具分发</td></tr>
+  <tr><td>服务层</td><td><code>AgentSDKService</code></td><td>SDK 初始化、连接状态管理、单例封装</td></tr>
+  <tr><td>管理层</td><td><code>ConversationManager</code></td><td>对话状态、消息列表、流式消息、错误处理</td></tr>
+</table>
+
+<h3>完整通信流程</h3>
+
+<div class="flow">
+  <span class="flow-step">用户输入消息</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">sendMessage()</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">乐观更新 UI</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">WebSocket 发送</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">后端处理</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">流式回调</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">UI 更新</span>
+</div>
+
+<h3>sendMessage 的细节</h3>
+
+<pre>
+<span class="keyword">async</span> sendMessage(userMsg: UserMessage, conversationId?: <span class="keyword">string</span>) {
+    <span class="comment">// 1. 检查连接状态</span>
+    <span class="keyword">if</span> (<span class="keyword">this</span>.connectionStatus !== ConnectionStatus.connected) <span class="keyword">return</span>;
+
+    <span class="comment">// 2. 确保对话已打开</span>
+    <span class="keyword">if</span> (!<span class="keyword">this</span>.isInitialized) {
+        <span class="keyword">await this</span>.openConversation(conversationId);
+    }
+
+    <span class="comment">// 3. 乐观更新 — 先在 UI 上显示用户消息</span>
+    <span class="keyword">const</span> tempMessage = createTempMessage(userMsg, conversationUuid, tempMessageUuid);
+    <span class="keyword">this</span>.messages = [...<span class="keyword">this</span>.messages, tempMessage];
+
+    <span class="comment">// 4. 通过 SDK 发送</span>
+    <span class="keyword">this</span>.conversationRef.send(userMsg);
+}
+</pre>
+
+<h3>回调驱动的响应式更新</h3>
+
+<p>打开对话时，<code>ConversationManager</code> 注册了一系列回调：</p>
+
+<table>
+  <tr><th>回调</th><th>触发时机</th><th>处理逻辑</th></tr>
+  <tr><td><code>onMessagesChange</code></td><td>消息增删</td><td>更新 messages 数组，替换临时消息</td></tr>
+  <tr><td><code>onStreamMessageUpdate</code></td><td>流式消息到达</td><td>更新 streamMessage，驱动打字机效果</td></tr>
+  <tr><td><code>onStatusChange</code></td><td>对话状态变化</td><td>更新 status（done/streaming/error）</td></tr>
+  <tr><td><code>onErrorMessage</code></td><td>错误发生</td><td>设置 errorInfo，触发错误 UI</td></tr>
+  <tr><td><code>onTitleChange</code></td><td>对话标题更新</td><td>更新 title，尝试重命名项目</td></tr>
+  <tr><td><code>onMessageDone</code></td><td>消息处理完成</td><td>记录 credits 消耗</td></tr>
+</table>
+
+<div class="card info">
+  <div class="card-label">乐观更新模式</div>
+  <p>用户发送消息后，前端立即创建一条临时消息（<code>temp-*</code> UUID）显示在界面上，不等后端确认。当后端返回真正的用户消息时，通过内容匹配替换临时消息。这保证了即时反馈体验。</p>
+</div>
+
+<!-- ==================== Quiz ==================== -->
+<h2>5. 自检 Quiz</h2>
+
+<div class="quiz" id="quiz1">
+  <div class="quiz-title">Q1: ai-home 的页面路由使用什么方案？</div>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz1', 0)">A. React Router v6</li>
+    <li onclick="checkQuiz('quiz1', 1)">B. URL 参数 ?page= 判断</li>
+    <li onclick="checkQuiz('quiz1', 2)">C. Next.js 文件路由</li>
+    <li onclick="checkQuiz('quiz1', 3)">D. 哈希路由 #/mainPage</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <div class="quiz-title">Q2: 前端 MCP 工具注册到 SDK 的方法是？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz2', 0)">A. sdk.addPlugin(FRONT_TOOLS)</li>
+    <li onclick="checkQuiz('quiz2', 1)">B. sdk.registerHooks(FRONT_TOOLS)</li>
+    <li onclick="checkQuiz('quiz2', 2)">C. sdk.registerTools(FRONT_TOOLS)</li>
+    <li onclick="checkQuiz('quiz2', 3)">D. sdk.setTools(FRONT_TOOLS)</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <div class="quiz-title">Q3: 用户发送消息后，ConversationManager 如何实现即时反馈？</div>
+  <ul class="quiz-options" data-correct="0">
+    <li onclick="checkQuiz('quiz3', 0)">A. 创建临时消息（temp-* UUID）先显示，后端返回后替换</li>
+    <li onclick="checkQuiz('quiz3', 1)">B. 等待后端确认后再显示</li>
+    <li onclick="checkQuiz('quiz3', 2)">C. 使用 setTimeout 模拟延迟显示</li>
+    <li onclick="checkQuiz('quiz3', 3)">D. 直接修改 messages 数组的最后一条</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<!-- ==================== Next ==================== -->
+
+
+  <h3>推荐阅读</h3>
+  <ul>
+    <li><code>src/app/state.ts</code> — RootStateManager 完整实现</li>
+    <li><code>src/app/agent/service/AgentSDKService.ts</code> — SDK 初始化与工具注册</li>
+    <li><code>src/app/agent/manager/ConversationManager.ts</code> — 对话管理器核心逻辑</li>
+    <li><code>src/app/agent/MCP/index.ts</code> — 前端 MCP 工具定义</li>
+  </ul>
+</div>
+</div>
+
+<script>
+function checkQuiz(quizId, selected) {
+  const quiz = document.getElementById(quizId);
+  const options = quiz.querySelector('.quiz-options');
+  const correct = parseInt(options.dataset.correct);
+  const items = options.querySelectorAll('li');
+  const feedback = quiz.querySelector('.quiz-feedback');
+
+  items.forEach((item, i) => {
+    item.onclick = null;
+    if (i === correct) item.classList.add('correct');
+    if (i === selected && i !== correct) item.classList.add('wrong');
+  });
+
+  const feedbacks = {
+    quiz1: {
+      correct: '✓ 对！ai-home 通过 URL 参数 ?page=mainPage 判断渲染 MainPage，没有使用 React Router。',
+      wrong: '✗ 是 URL 参数方案。App.tsx 中用 new URLSearchParams(window.location.search).get(\'page\') 判断，根据值渲染不同组件。'
+    },
+    quiz2: {
+      correct: '✓ 对！AgentSDKService.init() 中调用 sdk.registerTools(FRONT_TOOLS) 注册前端 MCP 工具。',
+      wrong: '✗ 是 sdk.registerTools()。在 AgentSDKService 的 init 方法中，创建 SDK 实例后立即注册工具。'
+    },
+    quiz3: {
+      correct: '✓ 对！这就是乐观更新模式 — 先用临时消息给用户即时反馈，等后端返回真正的消息后再替换。',
+      wrong: '✗ 是乐观更新。sendMessage() 中先创建 temp-* UUID 的临时消息插入 messages，后端返回时通过内容匹配替换。'
+    }
+  };
+
+  feedback.style.display = 'block';
+  feedback.textContent = selected === correct
+    ? feedbacks[quizId].correct
+    : feedbacks[quizId].wrong;
+  feedback.style.background = selected === correct ? '#dcfce7' : '#fee2e2';
+}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 048</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0047-auto-layout-deep-dive.html">上一课：047 auto-layout-service 深度追踪</a><a class="primary" href="0049-viewer-2d-deep-dive.html">下一课：049 viewer-2d 深度追踪</a></div></nav>
+</body>
+</html>

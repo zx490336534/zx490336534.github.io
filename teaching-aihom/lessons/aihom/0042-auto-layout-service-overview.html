@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>042 auto-layout-service 项目全景</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --accent: #b45309;
+    --accent-light: #fef3c7;
+    --border: #e7e5e4;
+    --code-bg: #f5f5f4;
+    --success: #16a34a;
+    --warning: #d97706;
+    --info: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .card.info { border-left: 3px solid var(--info); }
+  .card.warning { border-left: 3px solid var(--warning); }
+  .card.success { border-left: 3px solid var(--success); }
+
+  .card-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+  .card.info .card-label { color: var(--info); }
+  .card.warning .card-label { color: var(--warning); }
+  .card.success .card-label { color: var(--success); }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    font-size: 0.88em;
+  }
+
+  pre {
+    background: #1c1917;
+    color: #e7e5e4;
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  pre .comment { color: #78716c; }
+  pre .keyword { color: #f59e0b; }
+  pre .string { color: #86efac; }
+  pre .dir { color: #93c5fd; }
+  pre .file { color: #e7e5e4; }
+  pre .important { color: #fbbf24; font-weight: 500; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.92rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .tree { margin: 1rem 0; }
+
+  .quiz {
+    background: var(--accent-light);
+    border: 1px solid #fbbf24;
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .quiz-title {
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+  .quiz-options { list-style: none; }
+  .quiz-options li {
+    padding: 0.5rem 0.75rem;
+    margin: 0.35rem 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+  }
+  .quiz-options li:hover { background: #fde68a33; border-color: #fbbf24; }
+  .quiz-options li.correct { background: #dcfce7; border-color: #16a34a; }
+  .quiz-options li.wrong { background: #fee2e2; border-color: #ef4444; }
+  .quiz-feedback {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    display: none;
+    font-size: 0.9rem;
+  }
+
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+  }
+  .flow-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .flow-arrow { color: var(--text-secondary); }
+
+  .next-lesson {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .next-lesson a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .next-lesson a:hover { text-decoration: underline; }
+
+  .ask-agent {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+    color: #1e40af;
+  }
+  .ask-agent::before { content: '💡 '; }
+
+  ul, ol { margin: 0.5rem 0 1rem 1.5rem; }
+  li { margin-bottom: 0.3rem; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>042 auto-layout-service 项目全景</h1>
+<p class="subtitle">理解 AI 自动布局引擎的结构、Processor 模式和核心数据流 — 为后续布局功能开发打下基础</p>
+
+<!-- ==================== Section 1 ==================== -->
+<h2>1. 这个项目是什么</h2>
+
+<p><code>auto-layout-service</code> 是 AI Home 产品的<strong>自动布局引擎</strong>。当用户请求"帮我自动布置这个户型"时，<code>ai-native-service</code> 会调用本服务，由它完成户型分析、AI 布局、商品匹配等核心工作，最终返回一份完整的软装方案。</p>
+
+<div class="card info">
+  <div class="card-label">一句话定位</div>
+  <p>Java 8 + Spring Boot 驱动的 <strong>AI 自动布局服务</strong>，负责"户型图进来 → AI 分析 → 自动摆放家具 → 匹配真实商品 → 方案出去"这条完整链路。</p>
+</div>
+
+<div class="card warning">
+  <div class="card-label">与 ai-native-service 的关系</div>
+  <p><code>ai-native-service</code> 是总调度中心（Multi-Agent），<code>auto-layout-service</code> 是它的一个<strong>下游工具服务</strong>。ai-native-service 通过 Feign/HTTP 调用本服务的接口，获取布局结果后返回给前端。</p>
+</div>
+
+<!-- ==================== Section 2 ==================== -->
+<h2>2. 技术栈一览</h2>
+
+<table>
+  <tr><th>技术</th><th>版本/说明</th><th>用途</th></tr>
+  <tr><td>Java</td><td>1.8（全模块统一）</td><td>运行时</td></tr>
+  <tr><td>Spring Boot</td><td>via pilot-boot-dependencies 2.4.5</td><td>Web 框架</td></tr>
+  <tr><td>打包方式</td><td>WAR</td><td>部署到 Pilot 容器平台</td></tr>
+  <tr><td>MyBatis / TDDL</td><td>TDDL 5.3.5</td><td>数据库访问 + 分库分表</td></tr>
+  <tr><td>Redis (Spore)</td><td>—</td><td>异步任务状态管理、缓存</td></tr>
+  <tr><td>OpenAI SDK</td><td><code>com.openai</code></td><td>GPT 调用（户型分析、Embedding）</td></tr>
+  <tr><td>Milvus</td><td>—</td><td>向量数据库（商品 Embedding 检索）</td></tr>
+  <tr><td>SOA</td><td>1.5.6</td><td>内部服务 RPC 调用</td></tr>
+  <tr><td>OkHttp</td><td>4.12.0</td><td>HTTP 客户端</td></tr>
+  <tr><td>Lombok</td><td>1.18.24</td><td>减少样板代码</td></tr>
+  <tr><td>Fastjson</td><td>1.2.83</td><td>JSON 序列化</td></tr>
+</table>
+
+<div class="card info">
+  <div class="card-label">注意</div>
+  <p>与 <code>ai-native-service-web</code>（Java 21）不同，本项目<strong>全模块都是 Java 8</strong>。这意味着不能用 <code>var</code>、<code>record</code>、<code>sealed class</code> 等新语法。</p>
+</div>
+
+<!-- ==================== Section 3 ==================== -->
+<h2>3. 三模块结构</h2>
+
+<table>
+  <tr><th>模块</th><th>JDK</th><th>职责</th></tr>
+  <tr><td><code>auto-layout-service-common</code></td><td>Java 8</td><td>公共 DTO、VO、枚举 — 跨模块共享的数据结构</td></tr>
+  <tr><td><code>auto-layout-service-client</code></td><td>Java 8</td><td>SOA 客户端接口定义 — 让其他服务（如 ai-native-service）能调用本服务</td></tr>
+  <tr><td><code>auto-layout-service-web</code></td><td>Java 8</td><td><strong>核心业务</strong> — Controller、Processor、Manager、Service 全在这里</td></tr>
+</table>
+
+<div class="card success">
+  <div class="card-label">开发重点</div>
+  <p>你 95% 的开发工作都在 <code>auto-layout-service-web</code> 模块里。common 和 client 只在需要新增跨服务接口或共享类型时才动。</p>
+</div>
+
+<!-- ==================== Section 4 ==================== -->
+<h2>4. 核心架构：Processor 模式</h2>
+
+<p>本项目最核心的设计模式是 <strong>Processor 模式</strong> — 一种异步任务处理框架。不同于 ai-native-service 的 Agent/StateGraph 架构，这里用的是更传统的"任务处理器"模式。</p>
+
+<pre>
+┌─────────────────────────────────────────────────────┐
+│  <span class="important">调用方 (ai-native-service / 前端)</span>                 │
+│  通过 SOA 或 HTTP 调用本服务的 Controller            │
+└──────────────────────┬──────────────────────────────┘
+                       │ HTTP / SOA
+┌──────────────────────▼──────────────────────────────┐
+│  <span class="important">Controller 层</span>                                       │
+│  AutoLayoutV2Controller / AutoLayoutV3Controller     │
+│  FloorPlanController / BrandgoodController / ...     │
+└──────────────────────┬──────────────────────────────┘
+                       │
+┌──────────────────────▼──────────────────────────────┐
+│  <span class="important">Processor 层 (核心)</span>                                │
+│  BaseAsyncProcessor → BaseDbTaskAsyncProcessor       │
+│  → BaseRedisTaskAsyncProcessor                       │
+│  具体处理器: AutoLayoutWithImageProcessor             │
+│             SubmitAutoDesignV2AsyncProcessor          │
+│             GenerateLayoutImageProcessor / ...        │
+└──────────────────────┬──────────────────────────────┘
+                       │
+┌──────────────────────▼──────────────────────────────┐
+│  <span class="important">Manager 层</span>                                          │
+│  OpenaiManager    — OpenAI API (GPT/Embedding)      │
+│  AiNativeManager  — AI Native 图像生成服务            │
+│  KamManager       — 户型结构识别服务                   │
+│  MilvusManager    — 向量数据库 (商品检索)              │
+│  FurnitureManager — 家具数据管理                      │
+└──────────────────────┬──────────────────────────────┘
+                       │
+┌──────────────────────▼──────────────────────────────┐
+│  <span class="important">Service / Mapper 层</span>                                │
+│  MyBatis Mapper → MySQL (TDDL)                       │
+│  Redis (Spore) → 任务状态缓存                        │
+└─────────────────────────────────────────────────────┘
+</pre>
+
+<!-- ==================== Section 5 ==================== -->
+<h2>5. Processor 生命周期</h2>
+
+<p>所有异步任务都遵循统一的生命周期，由基类 <code>BaseAsyncProcessor</code> 管理：</p>
+
+<div class="flow">
+  <span class="flow-step">1. getExistTask()</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">2. executeNewTask()</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">3. initTask()</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">4. doAsyncProcess()</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">5. onSuccess() / onError()</span>
+</div>
+
+<ol>
+  <li><strong>getExistTask()</strong> — 检查是否已有相同任务在执行（防重复提交）</li>
+  <li><strong>executeNewTask()</strong> — 判断是否应该创建新任务</li>
+  <li><strong>initTask()</strong> — 初始化任务记录（写入 DB 或 Redis）</li>
+  <li><strong>doAsyncProcess()</strong> — 提交到线程池，执行真正的业务逻辑</li>
+  <li><strong>onSuccess() / onError()</strong> — 任务完成后的回调（更新状态、通知等）</li>
+</ol>
+
+<h3>三层继承</h3>
+<table>
+  <tr><th>基类</th><th>存储方式</th><th>适用场景</th></tr>
+  <tr><td><code>BaseAsyncProcessor</code></td><td>内存</td><td>简单异步任务</td></tr>
+  <tr><td><code>BaseDbTaskAsyncProcessor</code></td><td>MySQL</td><td>需要持久化的任务（如自动设计）</td></tr>
+  <tr><td><code>BaseRedisTaskAsyncProcessor</code></td><td>Redis</td><td>高频、短生命周期的任务状态</td></tr>
+</table>
+
+<!-- ==================== Section 6 ==================== -->
+<h2>6. 你需要认识的核心目录</h2>
+
+<pre>
+auto-layout-service-web/src/main/java/.../web/
+├── <span class="dir">controller/</span>          <span class="comment"># HTTP 入口</span>
+│   ├── AutoLayoutV2Controller.java      <span class="comment"># 自动布局 V2 接口</span>
+│   ├── AutoLayoutV3Controller.java      <span class="comment"># 自动布局 V3 接口</span>
+│   ├── FloorPlanController.java         <span class="comment"># 户型图接口</span>
+│   ├── BrandgoodController.java         <span class="comment"># 商品匹配接口</span>
+│   ├── StyleController.java             <span class="comment"># 风格配置接口</span>
+│   └── TaskController.java              <span class="comment"># 任务状态查询</span>
+│
+├── <span class="dir">processor/</span>           <span class="comment"># 异步任务处理器（核心！）</span>
+│   ├── <span class="dir">base/</span>                        <span class="comment"># 基类</span>
+│   │   ├── BaseProcessor.java           <span class="comment"># 最基础处理器</span>
+│   │   ├── BaseRedisTaskAsyncProcessor  <span class="comment"># Redis 任务基类</span>
+│   │   └── BaseDbTaskAsyncProcessor     <span class="comment"># DB 任务基类</span>
+│   ├── <span class="dir">layoutv2/</span>                    <span class="comment"># 布局 V2 处理器</span>
+│   │   ├── SubmitAutoDesignV2AsyncProcessor  <span class="comment"># 提交自动设计任务</span>
+│   │   ├── AutoLayoutWithImageProcessor       <span class="comment"># 图像布局核心处理</span>
+│   │   ├── GenerateLayoutImageProcessor       <span class="comment"># 生成布局图像</span>
+│   │   └── AutoLayoutStatusProcessor          <span class="comment"># 布局状态查询</span>
+│   ├── AutoLayoutAsyncProcessor.java    <span class="comment"># 自动布局异步处理</span>
+│   ├── ReplaceSingleBrandgoodProcessor  <span class="comment"># 替换单个商品</span>
+│   └── SearchReplacementBrandgoodProcessor <span class="comment"># 搜索替换商品</span>
+│
+├── <span class="dir">manager/</span>             <span class="comment"># 业务管理器（外部服务调用）</span>
+│   ├── OpenaiManager.java               <span class="comment"># OpenAI API 调用</span>
+│   ├── AiNativeManager.java             <span class="comment"># AI Native 图像服务</span>
+│   ├── KamManager.java                  <span class="comment"># 户型结构识别</span>
+│   ├── MilvusManager.java               <span class="comment"># 向量数据库检索</span>
+│   ├── FurnitureManager.java            <span class="comment"># 家具数据</span>
+│   └── BrandGoodManager.java            <span class="comment"># 商品数据</span>
+│
+├── <span class="dir">service/</span>             <span class="comment"># 业务服务层</span>
+│   ├── impl/RagLayoutServiceImpl.java   <span class="comment"># RAG 布局服务</span>
+│   ├── impl/MaasLayoutServiceImpl.java  <span class="comment"># MaaS 布局服务</span>
+│   ├── impl/PlaceFurnitureServiceImpl   <span class="comment"># 家具摆放服务</span>
+│   └── impl/BrandgoodSearchServiceImpl  <span class="comment"># 商品搜索服务</span>
+│
+├── <span class="dir">context/</span>             <span class="comment"># ThreadLocal 上下文</span>
+│   └── AutoLayoutContext.java           <span class="comment"># 请求级上下文数据</span>
+│
+├── <span class="dir">bean/</span>                <span class="comment"># 数据对象</span>
+│   ├── po/   <span class="comment"># 持久化对象（数据库映射）</span>
+│   ├── vo/   <span class="comment"># 值对象（请求/响应）</span>
+│   └── dto/  <span class="comment"># 数据传输对象</span>
+│
+├── <span class="dir">config/</span>              <span class="comment"># 配置类</span>
+│   └── ThreadPoolConfig.java            <span class="comment"># 线程池配置</span>
+│
+└── <span class="dir">mapper/</span>              <span class="comment"># MyBatis Mapper 接口</span>
+</pre>
+
+<!-- ==================== Section 7 ==================== -->
+<h2>7. 核心数据流：AutoLayoutWithImage</h2>
+
+<p>当 ai-native-service 请求"根据户型图自动布局"时，数据经过这条链路：</p>
+
+<div class="flow">
+  <span class="flow-step">请求进入</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">SubmitAutoDesignV2AsyncProcessor</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">AutoLayoutWithImageProcessor</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">结果返回</span>
+</div>
+
+<p>在 <code>AutoLayoutWithImageProcessor.doProcessInner()</code> 中，核心三步：</p>
+
+<ol>
+  <li><strong>coloringLayoutImage()</strong> — 调用 AI Native 服务，给户型图上色（区分卧室、客厅、厨房等区域）</li>
+  <li><strong>getLayoutWithImage()</strong> — 调用 OpenAI GPT，分析上色后的图像，生成结构化的布局方案</li>
+  <li><strong>buildAutoLayoutDesign()</strong> — 将 AI 输出构建成最终的布局设计结果，匹配真实商品</li>
+</ol>
+
+<div class="card info">
+  <div class="card-label">AI 双引擎</div>
+  <p>本服务同时使用<strong>两个 AI 引擎</strong>：OpenAI（GPT 做分析推理）和 AI Native Service（做图像处理）。理解这一点对后续开发很重要。</p>
+</div>
+
+<!-- ==================== Section 8 ==================== -->
+<h2>8. 关键设计模式</h2>
+
+<h3>ThreadLocal 上下文：<code>AutoLayoutContext</code></h3>
+<p>请求级别的上下文数据通过 <code>AutoLayoutContext.get()</code> 获取。在一个请求的整个生命周期内，任何 Processor、Manager 都可以通过它共享数据，而不需要层层传参。</p>
+
+<pre>
+<span class="comment">// 使用方式</span>
+AutoLayoutContext ctx = AutoLayoutContext.get();
+ctx.setSomeParam(value);
+<span class="comment">// ... 在另一个 Processor 中</span>
+String val = AutoLayoutContext.get().getSomeParam();
+</pre>
+
+<h3>Manager 层封装外部依赖</h3>
+<p>所有外部服务调用（OpenAI、Milvus、KAM 等）都通过 Manager 层封装。Processor 只调用 Manager，不直接写 HTTP 请求。这保证了外部依赖的集中管理和测试便利。</p>
+
+<h3>自定义日志：<code>QHLogger</code></h3>
+<p>不使用 <code>slf4j</code> 的 <code>LoggerFactory</code>，而是用公司自定义的 <code>QHLogger.getLogger(getClass())</code>。</p>
+
+<!-- ==================== Quiz ==================== -->
+<h2>9. 自检 Quiz</h2>
+
+<div class="quiz" id="quiz1">
+  <div class="quiz-title">Q1: auto-layout-service 使用的 Java 版本是？</div>
+  <ul class="quiz-options" data-correct="0">
+    <li onclick="checkQuiz('quiz1', 0)">A. Java 8（全模块统一）</li>
+    <li onclick="checkQuiz('quiz1', 1)">B. Java 21（和 ai-native-service 一样）</li>
+    <li onclick="checkQuiz('quiz1', 2)">C. common/client 用 Java 8，web 用 Java 21</li>
+    <li onclick="checkQuiz('quiz1', 3)">D. Java 17</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <div class="quiz-title">Q2: Processor 模式中，任务初始化之前先执行的方法是？</div>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz2', 0)">A. doAsyncProcess()</li>
+    <li onclick="checkQuiz('quiz2', 1)">B. getExistTask() + executeNewTask()</li>
+    <li onclick="checkQuiz('quiz2', 2)">C. onSuccess()</li>
+    <li onclick="checkQuiz('quiz2', 3)">D. initTask()</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <div class="quiz-title">Q3: AutoLayoutWithImageProcessor 中，给户型图上色用的是哪个 AI 服务？</div>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz3', 0)">A. OpenAI GPT</li>
+    <li onclick="checkQuiz('quiz3', 1)">B. AI Native Service</li>
+    <li onclick="checkQuiz('quiz3', 2)">C. Milvus</li>
+    <li onclick="checkQuiz('quiz3', 3)">D. KAM 户型识别</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<!-- ==================== Next ==================== -->
+
+
+  <h3>推荐阅读</h3>
+  <ul>
+    <li><code>auto-layout-service/AGENTS.md</code> — 项目自身的架构文档</li>
+    <li><code>processor/base/BaseAsyncProcessor.java</code> — Processor 基类，理解异步任务生命周期</li>
+    <li><code>processor/layoutv2/AutoLayoutWithImageProcessor.java</code> — 核心布局处理器</li>
+  </ul>
+</div>
+</div>
+
+<script>
+function checkQuiz(quizId, selected) {
+  const quiz = document.getElementById(quizId);
+  const options = quiz.querySelector('.quiz-options');
+  const correct = parseInt(options.dataset.correct);
+  const items = options.querySelectorAll('li');
+  const feedback = quiz.querySelector('.quiz-feedback');
+
+  items.forEach((item, i) => {
+    item.onclick = null;
+    if (i === correct) item.classList.add('correct');
+    if (i === selected && i !== correct) item.classList.add('wrong');
+  });
+
+  const feedbacks = {
+    quiz1: {
+      correct: '✓ 对！auto-layout-service 全模块统一使用 Java 8，这与 ai-native-service-web（Java 21）不同。',
+      wrong: '✗ 是 Java 8。这个项目全模块都是 Java 8，不能使用 var、record 等新语法。'
+    },
+    quiz2: {
+      correct: '✓ 对！BaseAsyncProcessor.doProcess() 的顺序是：getExistTask() → executeNewTask() → initTask() → doAsyncProcess() → onSuccess/onError。在 initTask() 之前需要先检查是否有重复任务。',
+      wrong: '✗ 正确顺序是先 getExistTask() + executeNewTask() 判断是否需要创建任务，然后才是 initTask()。'
+    },
+    quiz3: {
+      correct: '✓ 对！coloringLayoutImage() 调用的是 AI Native Service（通过 AiNativeManager），而后续的图像分析才是 OpenAI GPT 做的。',
+      wrong: '✗ 给户型图上色用的是 AI Native Service（AiNativeManager）。OpenAI GPT 负责的是后续的图像分析和布局推理。'
+    }
+  };
+
+  feedback.style.display = 'block';
+  feedback.textContent = selected === correct
+    ? feedbacks[quizId].correct
+    : feedbacks[quizId].wrong;
+  feedback.style.background = selected === correct ? '#dcfce7' : '#fee2e2';
+}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 042</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0041-ai-native-service-overview.html">上一课：041 ai-native-service 项目全景</a><a class="primary" href="0043-ai-home-frontend-overview.html">下一课：043 ai-home 前端项目全景</a></div></nav>
+</body>
+</html>

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>005 Spring Boot 自动配置 + starter + yml</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --accent: #b45309;
+    --accent-light: #fef3c7;
+    --border: #e7e5e4;
+    --code-bg: #1c1917;
+    --code-text: #f5f5f4;
+    --success: #16a34a;
+    --success-light: #dcfce7;
+    --warning: #d97706;
+    --warning-light: #fef3c7;
+    --info: #2563eb;
+    --info-light: #dbeafe;
+    --tag-java: #d97706;
+    --tag-spring: #16a34a;
+    --tag-ai: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 3rem 2rem 5rem;
+  }
+
+  .lesson-meta {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2.8rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  strong { font-weight: 700; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.25rem 0;
+  }
+  .card.info { border-left: 3px solid var(--info); background: var(--info-light); }
+  .card.warning { border-left: 3px solid var(--warning); background: var(--warning-light); }
+  .card.success { border-left: 3px solid var(--success); background: var(--success-light); }
+  .card.tip { border-left: 3px solid var(--accent); }
+
+  .card-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+  }
+
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 1.25rem 1.4rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1.25rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.86rem;
+    line-height: 1.7;
+  }
+  code { font-family: 'JetBrains Mono', monospace; }
+  p code, li code {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 0.12em 0.4em;
+    border-radius: 4px;
+    font-size: 0.85em;
+  }
+  .com { color: #a8a29e; }      /* 代码注释 */
+  .kw  { color: #fbbf24; }      /* 关键字 */
+  .ann { color: #86efac; }      /* 注解 @ */
+  .typ { color: #93c5fd; }      /* 类型 */
+  .str { color: #fda4af; }      /* 字符串 */
+
+  /* 逐行归属表 */
+  table.belong {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.25rem 0;
+    font-size: 0.9rem;
+  }
+  table.belong th, table.belong td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  table.belong th {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+  table.belong td code { font-size: 0.82em; }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.1em 0.55em;
+    border-radius: 10px;
+    color: #fff;
+    letter-spacing: 0.02em;
+  }
+  .tag.java   { background: var(--tag-java); }
+  .tag.spring { background: var(--tag-spring); }
+  .tag.ai     { background: var(--tag-ai); }
+
+  /* 学习地图 */
+  .roadmap {
+    list-style: none;
+    margin: 1.25rem 0;
+    padding: 0;
+  }
+  .roadmap li {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+  }
+  .roadmap .stage {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 0.85rem;
+    min-width: 3.2em;
+    flex-shrink: 0;
+  }
+  .roadmap .here { border-color: var(--accent); background: var(--accent-light); }
+  .roadmap .here .stage { color: var(--text); }
+
+  /* Quiz */
+  .quiz {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem 1.6rem;
+    margin: 1.5rem 0;
+  }
+  .quiz-q {
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  .quiz-opt {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--text);
+    transition: all 0.15s;
+  }
+  .quiz-opt:hover { border-color: var(--accent); }
+  .quiz-opt.correct {
+    background: var(--success-light);
+    border-color: var(--success);
+    color: #14532d;
+    font-weight: 500;
+  }
+  .quiz-opt.wrong {
+    background: #fee2e2;
+    border-color: #dc2626;
+    color: #7f1d1d;
+  }
+  .quiz-opt.disabled { cursor: default; opacity: 0.85; }
+  .quiz-fb {
+    margin-top: 0.85rem;
+    font-size: 0.9rem;
+    display: none;
+    padding: 0.7rem 0.9rem;
+    border-radius: 6px;
+    line-height: 1.7;
+  }
+  .quiz-fb.show { display: block; }
+
+  .win {
+    background: var(--success-light);
+    border-left: 3px solid var(--success);
+    border-radius: 8px;
+    padding: 1rem 1.4rem;
+    margin: 2rem 0;
+  }
+  .win .card-label { color: #14532d; }
+
+  .reading {
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.4rem;
+    margin: 1.5rem 0;
+  }
+  .reading a { color: var(--info); text-decoration: none; font-weight: 500; }
+  .reading a:hover { text-decoration: underline; }
+
+  .ask {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+  }
+
+  blockquote {
+    border-left: 3px solid var(--accent);
+    padding-left: 1rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin: 1.25rem 0;
+  }
+@media print {
+    body { background: #fff; }
+    .quiz-opt { border: 1px solid #999; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="lesson-meta">AIHom 全栈学习 · 第 005 课 · Spring Boot 基础</div>
+  <h1>005 Spring Boot 自动配置 + starter + yml</h1>
+  <div class="subtitle">本节目标：看懂 AIHom 里那句"加一个依赖就能用"的魔法——什么是 starter、自动配置到底在背后做了什么、application.yml 里那一堆 spring.ai 配置项各自管什么，以及 AIHom 为什么要把配置分散到 toad / Nacos / MySQL 三处。</div>
+
+  <!-- 1. 痛点开场 -->
+  <h2>先感受一下"魔法"</h2>
+  <p>上一课讲了"依赖注入"——你不用自己 <code>new</code> 对象，Spring 帮你造好、塞给你。但你可能产生了一个新疑问：<strong>那 Spring 凭什么知道要造哪些对象？</strong>比如我引入了 Spring AI 的依赖，<code>ChatClient.Builder</code> 就能自动注入进来——可是项目里一行 <code>new ChatClient.Builder()</code> 都没人写，它从哪冒出来的？</p>
+  <p>这就是本课要拆的<strong>第二个魔法</strong>：<strong>自动配置（Auto Configuration）</strong>。它和 starter、application.yml 是一套组合拳，是 Spring Boot "约定大于配置" 理念的全部秘密。</p>
+
+  <div class="card tip">
+    <div class="card-label">本课三个关键词</div>
+    <p style="margin:0"><strong>starter</strong>（引一个依赖拿一整套功能）+ <strong>自动配置</strong>（看到依赖就自动装配 Bean）+ <strong>application.yml</strong>（用配置文件微调行为）。三件事连起来，就是你以后改 AIHom 时 90% 的"开局动作"。</p>
+  </div>
+
+  <!-- 2. starter -->
+  <h2>1. starter：一个依赖 = 一整套功能</h2>
+  <p>在传统 Java 项目里，要用某个功能（比如连数据库、做 Web 接口），你得手动引一堆零散的 jar，还得手动调版本号、手动写一堆配置。Spring Boot 把这一切打包成一个<strong>名字很有规律的依赖</strong>，叫 <strong>starter</strong>。</p>
+  <p>规则很简单：<strong>带 <code>spring-boot-starter-</code> 前缀的就是官方 starter</strong>，名字后面跟的就是它给你准备好的功能。</p>
+
+  <pre><span class="com">&lt;!-- pom.xml 里常见的几个 starter --&gt;</span>
+&lt;<span class="typ">dependency</span>&gt;
+    &lt;<span class="typ">groupId</span>&gt;org.springframework.boot&lt;/<span class="typ">groupId</span>&gt;
+    &lt;<span class="typ">artifactId</span>&gt;<span class="str">spring-boot-starter-web</span>&lt;/<span class="typ">artifactId</span>&gt;   <span class="com">&lt;!-- 引一个 = 拿到 Web 接口能力（含 Jetty/Tomcat）--&gt;</span>
+&lt;/<span class="typ">dependency</span>&gt;
+
+&lt;<span class="typ">dependency</span>&gt;
+    &lt;<span class="typ">groupId</span>&gt;org.springframework.boot&lt;/<span class="typ">groupId</span>&gt;
+    &lt;<span class="typ">artifactId</span>&gt;<span class="str">spring-boot-starter-jdbc</span>&lt;/<span class="typ">artifactId</span>&gt;  <span class="com">&lt;!-- 引一个 = 拿到数据库连接能力 --&gt;</span>
+&lt;/<span class="typ">dependency</span>&gt;</pre>
+
+  <div class="card info">
+    <div class="card-label">AIHom 的关键提醒：认准 boot3 版</div>
+    <p style="margin:0.3rem 0 0">AIHom 是 <strong>Spring Boot 3</strong> 项目。很多第三方组件（比如 Nacos、各种 <code>*-starter</code>）会同时维护 <strong>Boot 2</strong> 和 <strong>Boot 3</strong> 两套，artifactId 里通常会带 <code>-spring-boot3-starter</code> 或 <code>-boot-starter</code> 这种区分。<strong>引入时务必认准 boot3 版本</strong>，引成 boot2 版会导致自动配置失效、Bean 装不上——这是新手最常踩的坑之一。</p>
+  </div>
+
+  <p>一句话记住 starter：<strong>它的本质是"把一组功能相关的依赖 + 默认配置打包"，让你一行依赖搞定全部</strong>。这就是"约定大于配置"的第一层含义——Spring Boot 已经替你想好了"做一个 Web 项目大概需要哪些东西"，你只要点头说"要"。</p>
+
+  <!-- 3. 自动配置 -->
+  <h2>2. 自动配置：看到依赖，自动装 Bean</h2>
+  <p>引了 starter，依赖是进来了。但代码里那些对象（Bean）是谁造的？答案是：<strong>Spring Boot 启动时会扫一遍"类路径"（你引的所有依赖），看到哪些依赖就自动帮你装配哪些 Bean</strong>。这就是<strong>自动配置</strong>。</p>
+
+  <div class="card warning">
+    <div class="card-label">"魔法"的真相（不玄乎）</div>
+    <p style="margin:0.3rem 0 0">它本质上就是一段<strong>带 <code>@AutoConfiguration</code> 注解的 Java 配置类</strong>，里面写着"如果类路径里存在 <code>ChatClient</code> 这个类，就帮我 new 一个 <code>ChatClient.Builder</code> 放进容器"。这些配置类的清单，Spring Boot 3 放在一个叫 <code>META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports</code> 的文件里（旧版 Boot 2 用 <code>spring.factories</code>，已淘汰）。所以根本没有什么魔法——只是别人提前写好了"如果...就..."的规则。</p>
+  </div>
+
+  <p>把它的思考过程翻译成大白话，就是这样的"如果...就..."：</p>
+
+  <pre><span class="com"># Spring Boot 启动时的内心戏（伪代码）</span>
+<span class="kw">if</span> (类路径里有 <span class="typ">ChatClient</span>.<span class="kw">class</span>) {
+    <span class="com">// 检测到引了 Spring AI</span>
+    自动造一个 <span class="typ">ChatClient</span>.<span class="typ">Builder</span> 放进容器;
+}
+<span class="kw">if</span> (配置里有 <span class="str">spring.ai.dashscope.api-key</span>) {
+    <span class="com">// 检测到要连通义千问</span>
+    自动造一个连通义千问的 <span class="typ">ChatModel</span>;
+}
+<span class="kw">if</span> (类路径里有 <span class="typ">WebMvc</span>) {
+    <span class="com">// 检测到是个 Web 项目</span>
+    自动启动一个内置 HTTP 服务器（AIHom 用 Jetty）;
+}</pre>
+
+  <div class="card tip">
+    <div class="card-label">对你意味着什么</div>
+    <p style="margin:0"><strong>你引依赖 + 写配置 = Bean 自动就位。</strong>这就是为什么第 1 课那段代码里，<code>ChatClient.Builder</code> 能被构造方法直接注入——根本不用你 new。这是 Spring Boot "约定大于配置"的第二层含义：能猜到的默认行为，它替你做了；只有你<strong>不想要默认值</strong>时，才需要写配置去覆盖。</p>
+  </div>
+
+  <!-- 4. application.yml -->
+  <h2>3. application.yml：给自动配置填空</h2>
+  <p>自动配置能猜默认值，但有些东西它<strong>猜不出来</strong>——比如你的通义千问 API Key 是什么、用哪个模型、服务跑在哪个端口。这些就需要你在一个叫 <strong>application.yml</strong>（或 <code>.properties</code>）的文件里填空。</p>
+  <p>YAML 是一种缩进表示层级的配置格式。<strong>Spring AI 的所有配置都以 <code>spring.ai.*</code> 开头</strong>——记住这个前缀，以后看到配置就知道它归 Spring AI 管。</p>
+
+  <pre><span class="com"># application.yml —— AIHom 风格的真实片段</span>
+<span class="ann">server</span>:
+  <span class="ann">port</span>: <span class="kw">8080</span>                          <span class="com"># 服务端口（Jetty 监听）</span>
+
+<span class="ann">spring</span>:
+  <span class="ann">application</span>:
+    <span class="ann">name</span>: <span class="str">aihom-service</span>             <span class="com"># 服务名，注册到 Nacos 用</span>
+  <span class="ann">ai</span>:
+    <span class="ann">dashscope</span>:                        <span class="com"># ★ 通义千问专属前缀</span>
+      <span class="ann">api-key</span>: <span class="str">${DASHSCOPE_API_KEY}</span>  <span class="com"># 从环境变量读，不写死</span>
+      <span class="ann">model</span>: <span class="str">qwen-plus</span>                <span class="com"># 默认用哪个模型</span>
+    <span class="ann">alibaba</span>:                          <span class="com"># Spring AI Alibaba 扩展配置</span>
+      <span class="ann">mcp</span>:
+        <span class="ann">enabled</span>: <span class="kw">true</span>                  <span class="com"># 开启 MCP Server 接入</span>
+
+<span class="ann">logging</span>:
+  <span class="ann">level</span>:
+    <span class="ann">org.springframework.ai</span>: <span class="str">DEBUG</span>     <span class="com"># 调 Spring AI 时看详细日志</span></pre>
+
+  <table class="belong">
+    <thead>
+      <tr><th>配置项</th><th>归谁管</th><th>大白话</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>server.port</code></td>
+        <td><span class="tag spring">Spring Boot</span></td>
+        <td>内置 HTTP 服务器（Jetty）监听哪个端口</td>
+      </tr>
+      <tr>
+        <td><code>spring.application.name</code></td>
+        <td><span class="tag spring">Spring Boot</span></td>
+        <td>服务名，注册到 Nacos 时用这个名</td>
+      </tr>
+      <tr>
+        <td><code>spring.ai.dashscope.api-key / model</code></td>
+        <td><span class="tag ai">Spring AI Alibaba</span></td>
+        <td>通义千问的密钥和默认模型——AIHom 真正调的大模型</td>
+      </tr>
+      <tr>
+        <td><code>spring.ai.alibaba.mcp.enabled</code></td>
+        <td><span class="tag ai">Spring AI Alibaba</span></td>
+        <td>是否开启 MCP Server 接入（工具调用相关，第 9 课细讲）</td>
+      </tr>
+      <tr>
+        <td><code>logging.level.*</code></td>
+        <td><span class="tag spring">Spring Boot</span></td>
+        <td>日志级别，排查"为什么调模型失败"时调到 DEBUG</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card info">
+    <div class="card-label">两个新手必须知道的小习惯</div>
+    <p style="margin:0"><strong>① API Key 永远不要写死在 yml 里</strong>——用 <code>${环境变量名}</code> 占位，密钥从环境变量注入。AIHom 也是这么做的。<strong>② 配置和代码的关系是"覆盖默认值"</strong>——你写了 <code>model: qwen-plus</code>，就是告诉自动配置"别用你猜的默认模型，用我指定的这个"。</p>
+  </div>
+
+  <!-- 5. AIHom 配置分工 -->
+  <h2>4. AIHom 特色：配置为什么分散在三个地方</h2>
+  <p>这是本课最贴近 AIHom 实战的部分。你会发现 AIHom 的配置<strong>不全在 application.yml 里</strong>——而是按"要不要随环境变 / 要不要动态更新"分成三类，放在不同地方。这不是随意设计，而是工程上的<strong>关注点分离</strong>：</p>
+
+  <ul class="roadmap">
+    <li><span class="stage">toad</span><span><strong>环境差异化配置</strong> → 放 <strong>toad</strong>（公司内部配置中心）。比如开发 / 测试 / 生产用不同的 DashScope Key、不同的下游地址。每个环境一份，启动时拉取。</span></li>
+    <li><span class="stage">Nacos</span><span><strong>Agent 配置</strong> → 放 <strong>Nacos</strong>（动态配置中心）。Agent 的提示词、模型参数这类<strong>需要不重启就能改</strong>的东西放这里——改完即时生效，不用重新发版。</span></li>
+    <li><span class="stage">MySQL</span><span><strong>状态图配置</strong> → 放 <strong>MySQL</strong>。Spring AI Alibaba 的 <strong>StateGraph / Graph</strong>（020 课重点）编排逻辑持久化在库里，便于版本管理、可追溯。</span></li>
+  </ul>
+
+  <div class="card warning">
+    <div class="card-label">一句话总结 AIHom 配置分工</div>
+    <p style="margin:0.3rem 0 0">application.yml 只放<strong>启动时必须的最小配置</strong>（端口、服务名、密钥占位）；<strong>跟环境有关的去 toad，需要动态更新的去 Nacos，要持久化审计的去 MySQL</strong>。这样配置不会乱成一锅粥，改哪里清清楚楚。</p>
+  </div>
+
+  <div class="card tip">
+    <div class="card-label">测试工程师视角的提醒</div>
+    <p style="margin:0">以后排查 AIHom 行为异常，先问三个问题：<strong>① 这个配置在 yml 还是 toad？</strong>（环境对不对）<strong>② 是不是 Nacos 动态下发的？</strong>（别人改过没）<strong>③ 状态图是不是从 MySQL 读的？</strong>（库里版本变了没）。养成这个三连问，定位配置类问题会快很多。</p>
+  </div>
+
+  <!-- 6. Quiz -->
+  <h2>小测验：确认你真的 get 到了</h2>
+
+  <div class="quiz" id="quiz1">
+    <div class="quiz-q">第 1 题：Spring Boot 的"自动配置"，本质上在做什么？</div>
+    <button class="quiz-opt" data-correct="false">启动时从网上下载最新的依赖包</button>
+    <button class="quiz-opt" data-correct="true">扫描类路径，看到哪些依赖就按预设规则自动装配哪些 Bean</button>
+    <button class="quiz-opt" data-correct="false">把 application.yml 编译成 Java 字节码</button>
+    <button class="quiz-opt" data-correct="false">自动把项目部署到生产服务器</button>
+    <div class="quiz-fb" id="fb1"></div>
+  </div>
+
+  <div class="quiz" id="quiz2">
+    <div class="quiz-q">第 2 题：AIHom 是 Spring Boot 3 项目，引入第三方 starter 时最要注意什么？</div>
+    <button class="quiz-opt" data-correct="false">尽量选 Boot 2 版本，更稳定</button>
+    <button class="quiz-opt" data-correct="false">随便引，Boot 2 和 Boot 3 完全兼容</button>
+    <button class="quiz-opt" data-correct="true">认准 boot3 版本的 starter，引错版本会导致自动配置失效</button>
+    <button class="quiz-opt" data-correct="false">starter 版本不影响功能，只影响启动速度</button>
+    <div class="quiz-fb" id="fb2"></div>
+  </div>
+
+  <div class="quiz" id="quiz3">
+    <div class="quiz-q">第 3 题：AIHom 里"Agent 配置"放在哪里，为什么？</div>
+    <button class="quiz-opt" data-correct="false">放 application.yml，因为最稳定</button>
+    <button class="quiz-opt" data-correct="false">放 toad，因为每个环境不同</button>
+    <button class="quiz-opt" data-correct="true">放 Nacos，因为需要不重启就能动态更新</button>
+    <button class="quiz-opt" data-correct="false">放 MySQL，因为要持久化审计</button>
+    <div class="quiz-fb" id="fb3"></div>
+  </div>
+
+  <!-- 7. 本节胜利 -->
+  <div class="win">
+    <div class="card-label">本节你获得的胜利</div>
+    <p style="margin:0.3rem 0 0">现在给你一段 AIHom 的 application.yml，你能<strong>逐项说出每个 spring.ai 配置在做什么</strong>：哪个是端口、哪个是模型密钥、哪个开 MCP；你还知道为什么有些配置不在 yml 里——而是去 toad / Nacos / MySQL 找。这一仗打完，你看项目的配置再也不会"全是字母一锅粥"了。</p>
+  </div>
+
+  <!-- 8. 推荐阅读 -->
+  <div class="reading">
+    <div class="card-label">推荐 primary source（高质量一手资料）</div>
+    <p style="margin:0.5rem 0 0">权威入口，先收藏：<br>
+    • <a href="https://docs.spring.io/spring-boot/reference/using/auto-configuration.html" target="_blank">Spring Boot 官方文档 · 自动配置</a>（讲清 @AutoConfiguration / AutoConfiguration.imports 的来龙去脉）<br>
+    • <a href="https://docs.spring.io/spring-ai/reference/" target="_blank">Spring AI 官方文档</a>（含 spring.ai.* 所有配置项说明，1.1.x）<br>
+    • <a href="https://java2ai.com/" target="_blank">Spring AI Alibaba 官方文档</a>（★ AIHom 实际用的框架，DashScope / Nacos / StateGraph 配置都在这）<br>
+    现在不用全读，先在 Alibaba 文档里搜 "application.yml" 看一段真实配置样例——对照本课讲的内容，你就发现"看得懂了"。</p>
+  </div>
+
+  <div class="card warning">
+    <div class="card-label">关于版本（重要，已从代码核实）</div>
+    <p style="margin:0">AIHom 真实栈：<strong>Java 21 + Spring Boot 3（Jetty）+ Spring AI 1.1.2 + Spring AI Alibaba 1.1.2.0.5-qh + 通义千问（DashScope）</strong>。⚠️ Spring AI 虽已发到 2.0.0（2026-06-12，Boot 4.x），<strong>与你的项目无关</strong>——本课讲的 starter / 自动配置 / application.yml 机制在 1.1.x 完全适用，查配置项请对齐 <strong>1.1.x + Alibaba</strong>，别被 2.x 教程带偏。</p>
+  </div>
+
+  <!-- 9. 追问 -->
+  <div class="ask">
+    <p>🤔 <strong>有任何看不懂的地方，直接问我。</strong>比如："AutoConfiguration.imports 文件长啥样"、"为什么 Nacos 能不重启就改配置"、"AIHom 里 yml 到底放多少东西算够"……没有蠢问题，我是你的私教，问就对了。</p>
+  </div>
+</div>
+
+<script>
+  // 简单的 quiz 即时反馈
+  const feedback = {
+    1: { ok: '✓ 对！自动配置就是"扫描类路径 → 看到依赖 → 按预设的 @AutoConfiguration 规则装配 Bean"。不是下载依赖、不是编译 yml、更不是部署。',
+         no: '自动配置的本质是：Spring Boot 启动时扫一遍类路径，看到你引了哪些依赖，就按预先写好的 @AutoConfiguration 配置类，帮你把对应的 Bean 装进容器。' },
+    2: { ok: '✓ 对！AIHom 是 Boot 3，引第三方 starter 必须认准 boot3 版，引成 boot2 版会导致自动配置规则不匹配、Bean 装不上。',
+         no: 'Boot 2 和 Boot 3 的自动配置机制不兼容（imports 文件位置都不同）。AIHom 是 Boot 3，必须选 boot3 版的 starter，否则自动配置失效。' },
+    3: { ok: '✓ 对！Agent 配置（提示词、模型参数）放 Nacos，就是为了改完即时生效、不用重新发版——这是动态配置中心的核心价值。',
+         no: 'Nacos 的特点是"动态推送、不重启生效"。Agent 配置需要频繁调整（调提示词、换模型），所以放 Nacos 最合适。toad 是环境差异化、MySQL 是持久化审计，目的不同。' }
+  };
+
+  function wireQuiz(id) {
+    const quiz = document.getElementById('quiz' + id);
+    const fb = document.getElementById('fb' + id);
+    const opts = quiz.querySelectorAll('.quiz-opt');
+    opts.forEach(opt => {
+      opt.addEventListener('click', () => {
+        const correct = opt.dataset.correct === 'true';
+        opts.forEach(o => o.classList.add('disabled'));
+        if (correct) {
+          opt.classList.add('correct');
+          fb.style.background = 'var(--success-light)';
+          fb.style.color = '#14532d';
+          fb.textContent = feedback[id].ok;
+        } else {
+          opt.classList.add('wrong');
+          // 同时点亮正确答案
+          opts.forEach(o => { if (o.dataset.correct === 'true') o.classList.add('correct'); });
+          fb.style.background = '#fee2e2';
+          fb.style.color = '#7f1d1d';
+          fb.textContent = feedback[id].no;
+        }
+        fb.classList.add('show');
+      });
+    });
+  }
+  [1,2,3].forEach(wireQuiz);
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 005</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0004-spring-di-and-annotations.html">上一课：004 Spring 依赖注入 DI + 三层注解</a><a class="primary" href="../aihom/0006-maven-multimodule-java-project.html">下一课：006 Maven 多模块 + Java 工程读法</a></div></nav>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>045 render-3d 项目全景</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:780px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:.95rem;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  h2{font-size:1.35rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem}
+  h3{font-size:1.1rem;font-weight:500;margin-top:1.5rem;margin-bottom:.75rem;color:var(--accent)}
+  p{margin-bottom:1rem}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0}
+  .card.info{border-left:3px solid var(--info)}.card.warning{border-left:3px solid var(--warning)}.card.success{border-left:3px solid var(--success)}
+  .card-label{font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+  .card.info .card-label{color:var(--info)}.card.warning .card-label{color:var(--warning)}.card.success .card-label{color:var(--success)}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15em .4em;border-radius:4px;font-size:.88em}
+  pre{background:#1c1917;color:#e7e5e4;padding:1.25rem 1.5rem;border-radius:8px;overflow-x:auto;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.6}
+  pre .comment{color:#78716c}pre .keyword{color:#f59e0b}pre .important{color:#fbbf24;font-weight:500}pre .dir{color:#93c5fd}
+  table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.92rem}
+  th,td{text-align:left;padding:.6rem .8rem;border-bottom:1px solid var(--border)}
+  th{font-weight:500;color:var(--text-secondary);font-size:.82rem;text-transform:uppercase;letter-spacing:.04em}
+  .quiz{background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0}
+  .quiz-title{font-weight:700;margin-bottom:.75rem;color:var(--accent)}
+  .quiz-options{list-style:none}.quiz-options li{padding:.5rem .75rem;margin:.35rem 0;border-radius:6px;cursor:pointer;transition:background .15s;border:1px solid transparent}
+  .quiz-options li:hover{background:#fde68a33;border-color:#fbbf24}
+  .quiz-options li.correct{background:#dcfce7;border-color:#16a34a}.quiz-options li.wrong{background:#fee2e2;border-color:#ef4444}
+  .quiz-feedback{margin-top:.75rem;padding:.75rem;border-radius:6px;display:none;font-size:.9rem}
+  .flow{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin:1rem 0;font-size:.9rem}
+  .flow-step{background:var(--surface);border:1px solid var(--border);padding:.4rem .8rem;border-radius:6px;white-space:nowrap}
+  .flow-arrow{color:var(--text-secondary)}
+  .next-lesson{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+  .next-lesson a{color:var(--accent);text-decoration:none;font-weight:500}.next-lesson a:hover{text-decoration:underline}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
+  .ask-agent::before{content:'💡 '}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.3rem}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>045 render-3d 项目全景</h1>
+<p class="subtitle">理解 3D 渲染容器的架构、离线出图流程和父页面同步机制</p>
+
+<h2>1. 这个项目是什么</h2>
+<p><code>render-3d</code> 是 AI Home 的 <strong>3D 渲染与离线出图容器</strong>。它加载设计方案的 3D 场景，管理实时模板和相机状态，提交离线渲染任务，并驱动图册和房间自动出图。</p>
+
+<div class="card info">
+  <div class="card-label">一句话定位</div>
+  <p>嵌入 ai-home 的 <strong>3D 渲染 iframe</strong>，负责"加载 3D 方案 → 配置灯光/背景 → 提交渲染 → 轮询结果 → 回写图册"。</p>
+</div>
+
+<h2>2. 技术栈</h2>
+<table>
+  <tr><th>技术</th><th>用途</th></tr>
+  <tr><td>React 16 + TypeScript</td><td>UI 视图层</td></tr>
+  <tr><td>@qunhe/kaf</td><td>插件化框架 + StateManager</td></tr>
+  <tr><td>@qunhe/design-viewer</td><td>3D 场景实体管理</td></tr>
+  <tr><td>@qunhe/realtime-render-sdk</td><td>实时渲染能力</td></tr>
+  <tr><td>@qunhe/egs</td><td>WebGL 图形引擎</td></tr>
+  <tr><td>Rspack + Webpack</td><td>构建工具</td></tr>
+</table>
+
+<h2>3. 核心架构</h2>
+<pre>
+┌─────────────────────────────────────────────┐
+│  <span class="important">ai-home (父页面)</span>                           │
+│  同步显示规则、接收渲染结果                    │
+└──────────────────┬──────────────────────────┘
+                   │ postMessage / iframe
+┌──────────────────▼──────────────────────────┐
+│  <span class="important">render-3d</span>                                   │
+│                                              │
+│  ┌──────────────────────────────────────┐   │
+│  │       RootStateManager               │   │
+│  │  scene3D + cameraView + realtime     │   │
+│  │  + offlineRender + visibility        │   │
+│  └──────────┬───────────────────────────┘   │
+│             │                                │
+│  ┌──────────▼───────────────────────────┐   │
+│  │  OfflineRenderStateManager（核心！）  │   │
+│  │  snapshotList + template + lighting  │   │
+│  │  + renderTasks + polling             │   │
+│  └──────────┬───────────────────────────┘   │
+│             │                                │
+│  ┌──────────▼───────────────────────────┐   │
+│  │  Scene3D (EGS WebGL)                 │   │
+│  │  3D 模型加载 + 相机 + 灯光           │   │
+│  └──────────────────────────────────────┘   │
+└─────────────────────────────────────────────┘
+</pre>
+
+<h2>4. 关键目录</h2>
+<pre>
+src/pages/coohom-tool-bim-ai-home-render-3d/
+├── <span class="dir">entry.ts</span>                    <span class="comment"># 真实入口，注册 AppPlugin</span>
+├── <span class="dir">app/</span>
+│   ├── state.ts               <span class="comment"># RootStateManager（状态总装配）</span>
+│   ├── <span class="dir">Scene3D/</span>
+│   │   └── RenderButton/      <span class="comment"># 渲染入口 + 参数装配</span>
+│   └── <span class="dir">components/</span>
+│       └── BrandIpLoading/    <span class="comment"># 品牌化 loading 层</span>
+├── <span class="dir">StateManager/</span>
+│   ├── OfflineRenderStateManager.ts  <span class="comment"># 离线渲染业务中枢</span>
+│   └── <span class="dir">realtime/</span>              <span class="comment"># 实时渲染状态</span>
+└── <span class="dir">utils/</span>
+    ├── errorReporter.ts       <span class="comment"># 错误归一化上报</span>
+    └── iframeHelper/          <span class="comment"># 跨 iframe 通信协议</span>
+</pre>
+
+<h2>5. 核心概念</h2>
+
+<h3>OfflineRenderStateManager</h3>
+<p>看起来是状态类，实际是<strong>离线渲染的业务中枢</strong>。管理 snapshotList、模板灯光/背景缓存、对象显示规则、渲染任务、权限和房间自动出图。</p>
+
+<h3>渲染任务生命周期</h3>
+<div class="flow">
+  <span class="flow-step">用户点渲染</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">装配参数</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">提交任务</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">6秒轮询</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">完成/失败</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">回写图册</span>
+</div>
+
+<h3>模板缓存</h3>
+<p><code>fetchAndCacheObsConfig(obsId)</code> 把灯光样式映射与背景配置缓存到 <code>obsConfigCache</code>，同一模板重复切换走缓存。初始化失败时回退到默认配置。</p>
+
+<h3>房间自动出图</h3>
+<p><code>generateGellarys()</code> 按 RoomType 过滤房间，优先用 <code>smartCameraViewMap</code> 智能视角，没有时退回 <code>renderRoomCenterView()</code> 计算房间中心视角。</p>
+
+<h2>6. 自检 Quiz</h2>
+
+<div class="quiz" id="quiz1">
+  <div class="quiz-title">Q1: 离线渲染任务的轮询间隔是？</div>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz1',0)">A. 1 秒</li>
+    <li onclick="checkQuiz('quiz1',1)">B. 6 秒</li>
+    <li onclick="checkQuiz('quiz1',2)">C. 30 秒</li>
+    <li onclick="checkQuiz('quiz1',3)">D. 60 秒</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <div class="quiz-title">Q2: 模板灯光/背景配置缓存失败时会？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz2',0)">A. 报错阻断页面</li>
+    <li onclick="checkQuiz('quiz2',1)">B. 重试 3 次后阻断</li>
+    <li onclick="checkQuiz('quiz2',2)">C. 回退到默认配置</li>
+    <li onclick="checkQuiz('quiz2',3)">D. 忽略该模板</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <div class="quiz-title">Q3: render-3d 的 3D 图形引擎是？</div>
+  <ul class="quiz-options" data-correct="0">
+    <li onclick="checkQuiz('quiz3',0)">A. @qunhe/egs (WebGL)</li>
+    <li onclick="checkQuiz('quiz3',1)">B. Three.js</li>
+    <li onclick="checkQuiz('quiz3',2)">C. Babylon.js</li>
+    <li onclick="checkQuiz('quiz3',3)">D. PixiJS</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+
+</div>
+</div>
+<script>
+function checkQuiz(q,s){const o=document.getElementById(q).querySelector('.quiz-options'),c=parseInt(o.dataset.correct),i=o.querySelectorAll('li'),f=document.getElementById(q).querySelector('.quiz-feedback');i.forEach((x,n)=>{x.onclick=null;if(n===c)x.classList.add('correct');if(n===s&&n!==c)x.classList.add('wrong')});const fb={q1:{c:'✓ 对！渲染任务以 6 秒一次、最长 10 分钟的策略轮询 SnapshotTaskStatus。',w:'✗ 是 6 秒。渲染任务进入 renderTasks 后，以 6 秒一次轮询状态。'},q2:{c:'✓ 对！fetchAndCacheObsConfig 初始化失败时回退到 DEFAULT_TEMPLATE_CONFIG.backgroundConfigData。',w:'✗ 是回退到默认配置。不会阻断页面，但渲染风格会悄悄回到默认值。'},q3:{c:'✓ 对！render-3d 使用 @qunhe/egs 作为 WebGL 图形引擎。',w:'✗ 是 @qunhe/egs。这是群核自研的 WebGL 图形引擎。'}};f.style.display='block';f.textContent=s===c?fb[q].c:fb[q].w;f.style.background=s===c?'#dcfce7':'#fee2e2'}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 045</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0044-viewer-2d-overview.html">上一课：044 viewer-2d 项目全景</a><a class="primary" href="0046-ai-native-deep-dive.html">下一课：046 ai-native-service 深度追踪</a></div></nav>
+</body>
+</html>

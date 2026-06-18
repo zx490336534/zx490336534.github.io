@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>065 viewer-2d 开发实战</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --accent: #b45309;
+    --accent-light: #fef3c7;
+    --border: #e7e5e4;
+    --code-bg: #f5f5f4;
+    --success: #16a34a;
+    --warning: #d97706;
+    --info: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .card.info { border-left: 3px solid var(--info); }
+  .card.warning { border-left: 3px solid var(--warning); }
+  .card.success { border-left: 3px solid var(--success); }
+
+  .card-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+  .card.info .card-label { color: var(--info); }
+  .card.warning .card-label { color: var(--warning); }
+  .card.success .card-label { color: var(--success); }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    font-size: 0.88em;
+  }
+
+  pre {
+    background: #1c1917;
+    color: #e7e5e4;
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  pre .comment { color: #78716c; }
+  pre .keyword { color: #f59e0b; }
+  pre .string { color: #86efac; }
+  pre .dir { color: #93c5fd; }
+  pre .file { color: #e7e5e4; }
+  pre .important { color: #fbbf24; font-weight: 500; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.92rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .quiz {
+    background: var(--accent-light);
+    border: 1px solid #fbbf24;
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .quiz-title {
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+  .quiz-options { list-style: none; }
+  .quiz-options li {
+    padding: 0.5rem 0.75rem;
+    margin: 0.35rem 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+  }
+  .quiz-options li:hover { background: #fde68a33; border-color: #fbbf24; }
+  .quiz-options li.correct { background: #dcfce7; border-color: #16a34a; }
+  .quiz-options li.wrong { background: #fee2e2; border-color: #ef4444; }
+  .quiz-feedback {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    display: none;
+    font-size: 0.9rem;
+  }
+
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+  }
+  .flow-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .flow-arrow { color: var(--text-secondary); }
+
+  .next-lesson {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .next-lesson a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .next-lesson a:hover { text-decoration: underline; }
+
+  .ask-agent {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+    color: #1e40af;
+  }
+  .ask-agent::before { content: '💡 '; }
+
+  ul, ol { margin: 0.5rem 0 1rem 1.5rem; }
+  li { margin-bottom: 0.3rem; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>065 viewer-2d 开发实战</h1>
+<p class="subtitle">掌握 viewer-2d 的日常开发技能 — 新增实体、修改交互、自动化测试、问题排查</p>
+
+<!-- ==================== Section 1 ==================== -->
+<h2>1. 如何新增实体类型</h2>
+
+<p>当需要在 2D 场景中新增一种可渲染、可交互的元素（如新的标注类型、新的家具图例），需要完成以下步骤：</p>
+
+<h3>1.1 定义实体类</h3>
+
+<p>在 <code>src/app/Entities/</code> 下新建实体类文件。参考已有的实体（如 Room、Door、Window），确保：</p>
+
+<ul>
+  <li>实体类继承合适的基类</li>
+  <li>定义业务数据属性（位置、尺寸、类型等）</li>
+  <li>定义交互状态属性（选中、拖拽中等）</li>
+  <li>绑定对应的 Drawable</li>
+</ul>
+
+<h3>1.2 实现 Drawable</h3>
+
+<p>Drawable 负责实体的 2D 可视化表现。需要：</p>
+
+<ul>
+  <li>实现 PixiJS 图形绘制逻辑（参考 <code>src/drawSVG/</code> 中的 SVG 到 Pixi 图形转换）</li>
+  <li>响应实体状态变化触发重绘</li>
+  <li>处理选中态的视觉反馈（高亮、边框等）</li>
+</ul>
+
+<h3>1.3 注册到场景</h3>
+
+<p>在 <code>DfScene2d.tsx</code> 的 <code>onInit</code> 中注册新的实体类型，让场景知道如何创建和管理它。</p>
+
+<div class="flow">
+  <span class="flow-step">创建实体类</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">实现 Drawable</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">注册到 onInit</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">连接数据源</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">手动验证</span>
+</div>
+
+<div class="card warning">
+  <div class="card-label">注意</div>
+  <p>新增实体类型前，先全局搜索确认没有已存在的类似实体可以复用或扩展。实体与 Drawable 的绑定关系属于高风险改动区域，修改后必须手动验证渲染和交互。</p>
+</div>
+
+<!-- ==================== Section 2 ==================== -->
+<h2>2. 如何修改交互逻辑</h2>
+
+<p>viewer-2d 的交互逻辑分布在多个模块中，修改前需要先定位到正确的模块。</p>
+
+<table>
+  <tr><th>交互类型</th><th>涉及模块</th><th>关键文件</th></tr>
+  <tr><td>拖拽移动</td><td>transform</td><td><code>src/modules/transform/</code></td></tr>
+  <tr><td>吸附对齐</td><td>inference + inferenceBoxAlign</td><td><code>src/modules/inference/</code>、<code>src/modules/inferenceBoxAlign/</code></td></tr>
+  <tr><td>缩放/旋转</td><td>transform</td><td><code>src/modules/transform/</code></td></tr>
+  <tr><td>选中/取消选中</td><td>SelectedControls</td><td><code>src/modules/SelectedControls/</code></td></tr>
+  <tr><td>左侧面板交互</td><td>LeftPanel + views</td><td><code>src/app/views/</code>、<code>src/StateManager/LeftPanelStateManager.ts</code></td></tr>
+  <tr><td>工具切换</td><td>Tools</td><td><code>src/app/Tools/</code></td></tr>
+</table>
+
+<h3>修改交互的标准流程</h3>
+
+<ol>
+  <li><strong>定位</strong>：根据上表确定交互逻辑所在的模块</li>
+  <li><strong>搜索</strong>：全局搜索相关的事件处理函数、状态字段</li>
+  <li><strong>理解</strong>：阅读现有代码，理解交互的状态流转</li>
+  <li><strong>修改</strong>：做最小范围修改，不做无关重构</li>
+  <li><strong>验证</strong>：运行 <code>yarn dev</code>，在页面中手动验证交互行为</li>
+</ol>
+
+<div class="card info">
+  <div class="card-label">提示</div>
+  <p>修改拖拽、吸附、推理、缩放逻辑中的数学计算或坐标系转换属于高风险改动。务必充分测试边界情况（极端位置、重叠、边界碰撞等）。</p>
+</div>
+
+<!-- ==================== Section 3 ==================== -->
+<h2>3. Playwright 测试</h2>
+
+<p>viewer-2d 项目已补充 Playwright E2E 能力，用于自动化验证关键链路。</p>
+
+<h3>3.1 运行测试</h3>
+
+<pre>
+<span class="comment"># 标准执行</span>
+<span class="keyword">yarn test:e2e</span>
+
+<span class="comment"># PowerShell 执行策略受限时</span>
+<span class="keyword">yarn.cmd test:e2e</span>
+</pre>
+
+<h3>3.2 配置与结构</h3>
+
+<ul>
+  <li><strong>配置文件</strong>：<code>playwright.config.js</code></li>
+  <li><strong>测试目录</strong>：<code>playwright/tests/</code>，匹配 <code>*.e2e.ts</code></li>
+  <li><strong>基准域名</strong>：<code>https://localhost:7000</code>（需先启动 <code>yarn dev</code>）</li>
+  <li><strong>用例配置</strong>：<code>playwright/support/cases.ts</code> 或环境变量</li>
+  <li><strong>分类</strong>：<code>smoke</code>、<code>integration</code>、<code>contract</code>、<code>ui</code></li>
+</ul>
+
+<h3>3.3 现有用例</h3>
+
+<table>
+  <tr><th>用例文件</th><th>验证内容</th></tr>
+  <tr><td><code>viewer-bootstrap.e2e.ts</code></td><td>基础挂载验证</td></tr>
+  <tr><td><code>door-window-save.e2e.ts</code></td><td>门窗保存验证</td></tr>
+  <tr><td><code>ksg-furniture-legend.e2e.ts</code></td><td>KSG 图例验证</td></tr>
+  <tr><td><code>room-fill-geometry.e2e.ts</code></td><td>房间铺贴边界回归</td></tr>
+  <tr><td><code>ai-home-push-session.e2e.ts</code></td><td>多 iframe 推送订阅竞态</td></tr>
+</table>
+
+<h3>3.4 编写新用例的原则</h3>
+
+<ul>
+  <li>优先验证"真实页面挂载 + rootState/请求级断言"的稳定链路</li>
+  <li>只有在需求涉及复杂交互时，才补充拖拽、缩放、旋转等重交互自动化</li>
+  <li>需要登录态时，通过 <code>PLAYWRIGHT_QUNHE_JWT</code> 环境变量提供 cookie</li>
+</ul>
+
+<div class="card success">
+  <div class="card-label">验证责任</div>
+  <p>需求实现后，如果影响已有自动验证覆盖范围，必须同步修改现有用例；如果没有对应覆盖，则必须新增用例。不允许只停留在"已写代码但未验证"的状态。</p>
+</div>
+
+<!-- ==================== Section 4 ==================== -->
+<h2>4. 常见排查路径</h2>
+
+<p>遇到问题时，先确定问题属于哪条链路，然后按路径定位：</p>
+
+<table>
+  <tr><th>问题类型</th><th>排查起点</th></tr>
+  <tr><td>页面不挂载 / 容器尺寸异常</td><td><code>plugin.ts</code> → <code>App.tsx</code> → <code>state.ts</code></td></tr>
+  <tr><td>Scene2D 初始化失败</td><td><code>DfScene2d.tsx</code> onInit → <code>Scene2D/state.ts</code> → <code>state.ts</code></td></tr>
+  <tr><td>选中/拖拽/缩放/旋转异常</td><td><code>modules/SelectedControls/</code> → <code>modules/transform/</code></td></tr>
+  <tr><td>左侧面板不联动</td><td><code>views/</code> → <code>LeftPanelStateManager.ts</code> → <code>OutsideStateManager.ts</code></td></tr>
+  <tr><td>房间/门窗/标注渲染异常</td><td><code>Entities/</code> → <code>SelectedControls/</code> → <code>drawSVG/</code></td></tr>
+  <tr><td>拖拽/吸附/推理逻辑异常</td><td><code>modules/layout/</code> → <code>modules/inference/</code> → <code>modules/transform/</code></td></tr>
+  <tr><td>外部数据不同步</td><td><code>documentSource/</code> → <code>helpers/</code> → <code>OutsideStateManager.ts</code></td></tr>
+</table>
+
+<h3>排查步骤</h3>
+
+<ol>
+  <li><strong>确认现象</strong>：页面是否挂载？Scene2D 是否初始化？交互是否响应？</li>
+  <li><strong>定位链路</strong>：根据现象确定入口链路</li>
+  <li><strong>全局搜索</strong>：搜索相关符号，确认影响范围</li>
+  <li><strong>阅读代码</strong>：理解现有逻辑后再动手修改</li>
+  <li><strong>最小修改</strong>：做最小闭环修改，不做无关重构</li>
+  <li><strong>验证</strong>：改完后至少做一次与改动链路对应的人工验证</li>
+</ol>
+
+<div class="card info">
+  <div class="card-label">调试提示</div>
+  <p>本项目没有 Jest / Vitest 等单元测试框架，改动验证主要依赖 <code>yarn dev</code> + 手动验证 + <code>kjl ci:lint</code> / <code>kjl pub:lint</code>。每次改动代码后，必须额外检查是否引入了新的 TypeScript 报错。</p>
+</div>
+
+<!-- ==================== Section 5 ==================== -->
+<h2>5. 编码规范速查</h2>
+
+<ul>
+  <li>禁止使用 <code>any</code> 绕过类型检查，优先补全类型</li>
+  <li>禁止在 <code>finally</code> 中 <code>return</code>（会覆盖返回值）</li>
+  <li>删除变量/函数/类型前必须全局搜索引用</li>
+  <li>优先定义 enum，不用联合类型字面量</li>
+  <li>类型导入优先使用 <code>import type</code></li>
+  <li>路径别名：<code>@/*</code>、<code>@cloudapi/*</code>、<code>@pcIndex/*</code></li>
+  <li>样式沿用模块内已有写法（SCSS / CSS Modules / styled-components）</li>
+  <li>不要为了"现代化"把类组件批量改为 Hooks</li>
+</ul>
+
+<div class="ask-agent">
+  遇到具体的开发问题？可以直接问我，例如 "如何给 viewer-2d 新增一种自定义标注类型？" 或 "拖拽吸附逻辑的坐标系转换在哪里？"
+</div>
+
+<!-- ==================== Quiz ==================== -->
+<h2>Quiz</h2>
+
+<div class="quiz" id="quiz1">
+  <div class="quiz-title">Q1: 新增实体类型的正确步骤是什么？</div>
+  <ul class="quiz-options">
+    <li onclick="checkQuiz(1, this, false)">A. 直接在 Entities/ 下创建文件，不需要其他步骤</li>
+    <li onclick="checkQuiz(1, this, true)">B. 创建实体类 → 实现 Drawable → 注册到 onInit → 连接数据源 → 手动验证</li>
+    <li onclick="checkQuiz(1, this, false)">C. 只需要在 DfScene2d.tsx 中添加一行注册代码</li>
+    <li onclick="checkQuiz(1, this, false)">D. 创建实体类后自动注册到场景</li>
+  </ul>
+  <div class="quiz-feedback" id="quiz1-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <div class="quiz-title">Q2: Playwright 测试的基准域名和启动方式是什么？</div>
+  <ul class="quiz-options">
+    <li onclick="checkQuiz(2, this, false)">A. localhost:3000，通过 Playwright 自动启动</li>
+    <li onclick="checkQuiz(2, this, false)">B. localhost:7000，通过 playwright/scripts/dev-server.cjs 启动</li>
+    <li onclick="checkQuiz(2, this, true)">C. https://localhost:7000，需先手动运行 yarn dev 启动</li>
+    <li onclick="checkQuiz(2, this, false)">D. localhost:8080，通过 webpack-dev-server 启动</li>
+  </ul>
+  <div class="quiz-feedback" id="quiz2-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <div class="quiz-title">Q3: 以下哪项操作是 viewer-2d 编码规范明确禁止的？</div>
+  <ul class="quiz-options">
+    <li onclick="checkQuiz(3, this, false)">A. 使用 enum 定义常量类型</li>
+    <li onclick="checkQuiz(3, this, false)">B. 使用 import type 导入类型</li>
+    <li onclick="checkQuiz(3, this, true)">C. 在 finally 块中使用 return 语句</li>
+    <li onclick="checkQuiz(3, this, false)">D. 使用路径别名 @/* 导入模块</li>
+  </ul>
+  <div class="quiz-feedback" id="quiz3-feedback"></div>
+</div>
+</div>
+
+<script>
+function checkQuiz(q, el, correct) {
+  var quiz = document.getElementById('quiz' + q);
+  var options = quiz.querySelectorAll('.quiz-options li');
+  var feedback = document.getElementById('quiz' + q + '-feedback');
+  for (var i = 0; i < options.length; i++) {
+    options[i].onclick = null;
+    if (options[i] !== el) options[i].style.opacity = '0.5';
+  }
+  if (correct) {
+    el.className = 'correct';
+    feedback.style.display = 'block';
+    feedback.style.background = '#dcfce7';
+    feedback.style.color = '#166534';
+    feedback.textContent = '✓ 正确！';
+  } else {
+    el.className = 'wrong';
+    feedback.style.display = 'block';
+    feedback.style.background = '#fee2e2';
+    feedback.style.color = '#991b1b';
+    feedback.textContent = '✗ 不正确，请参考课程内容。';
+  }
+}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 065</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0064-ai-home-dev-guide.html">上一课：064 ai-home 前端开发实战</a><a class="primary" href="0066-render-3d-dev-guide.html">下一课：066 render-3d 开发实战</a></div></nav>
+</body>
+</html>

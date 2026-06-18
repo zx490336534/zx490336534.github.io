@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>008 本地启动与配置体系</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:780px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:.95rem;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  h2{font-size:1.35rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem}
+  h3{font-size:1.1rem;font-weight:500;margin-top:1.5rem;margin-bottom:.75rem;color:var(--accent)}
+  p{margin-bottom:1rem}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0}
+  .card.info{border-left:3px solid var(--info)}.card.warning{border-left:3px solid var(--warning)}.card.success{border-left:3px solid var(--success)}
+  .card-label{font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+  .card.info .card-label{color:var(--info)}.card.warning .card-label{color:var(--warning)}.card.success .card-label{color:var(--success)}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15em .4em;border-radius:4px;font-size:.88em}
+  pre{background:#1c1917;color:#e7e5e4;padding:1.25rem 1.5rem;border-radius:8px;overflow-x:auto;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.6}
+  pre .comment{color:#a8a29e}pre .keyword{color:#f59e0b}pre .string{color:#86efac}pre .important{color:#fbbf24;font-weight:500}pre .dir{color:#93c5fd}
+  table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.92rem}
+  th,td{text-align:left;padding:.6rem .8rem;border-bottom:1px solid var(--border);vertical-align:top}
+  th{font-weight:500;color:var(--text-secondary);font-size:.82rem;text-transform:uppercase;letter-spacing:.04em}
+  .quiz{background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0}
+  .quiz-title{font-weight:700;margin-bottom:.75rem;color:var(--accent)}
+  .quiz-options{list-style:none;margin-left:0}.quiz-options li{padding:.5rem .75rem;margin:.35rem 0;border-radius:6px;cursor:pointer;transition:background .15s;border:1px solid transparent}
+  .quiz-options li:hover{background:#fde68a33;border-color:#fbbf24}
+  .quiz-options li.correct{background:#dcfce7;border-color:#16a34a}.quiz-options li.wrong{background:#fee2e2;border-color:#ef4444}
+  .quiz-feedback{margin-top:.75rem;padding:.75rem;border-radius:6px;display:none;font-size:.9rem}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
+  .ask-agent::before{content:'提示：'}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.3rem}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>008 本地启动与配置体系</h1>
+<p class="subtitle">用 ai-native-service 和 auto-layout-service 学会判断：一个配置到底从哪里来，谁覆盖了谁</p>
+
+<h2>1. 先记住一张地图</h2>
+<p>本地启动后端服务时，不要先猜配置。先按这条线索找：</p>
+
+<pre>
+<span class="important">JVM 参数 / 环境变量</span>
+  │  决定当前 profile 和远程配置环境
+  ▼
+<span class="dir">application.yml / bootstrap.yml</span>
+  │  基础配置，写通用默认值
+  ▼
+<span class="dir">application-dev.yml / bootstrap-sit.yml</span>
+  │  profile 专属配置，覆盖基础配置
+  ▼
+<span class="important">toad / Nacos</span>
+     运行期从远程配置中心取环境差异和 Agent 配置
+</pre>
+
+<div class="card info">
+  <div class="card-label">小白友好版</div>
+  <p><code>application.yml</code> 像默认说明书，<code>application-dev.yml</code> 像本地便签，<code>-Dspring.profiles.active=dev</code> 像告诉 Spring 先读哪张便签。toad/Nacos 则是公司统一放配置的地方。</p>
+</div>
+
+<h2>2. 本地启动最少要看这几项</h2>
+<p>两个后端仓库的 README 都给了本地启动参数。第一次启动时，先确认这些值一致：</p>
+
+<table>
+  <tr><th>配置项</th><th>作用</th><th>真实线索</th></tr>
+  <tr><td><code>-Dspring.profiles.active=dev</code><br><code>SPRING_PROFILES_ACTIVE=dev</code></td><td>让 Spring 加载 <code>application-dev.yml</code> 这一组 profile 配置。</td><td>两个仓库的 <code>_appconfig/cicd.yml</code> 都按 dev/stable/prod_test/sit/prod 设置这个参数。</td></tr>
+  <tr><td><code>-Dqunhe.toad.stage=sit</code><br><code>APP_ENV_NAME=sit</code></td><td>告诉 toad 拉哪个环境的远程配置。</td><td>README 的本地启动参数建议本地 profile 用 dev，远程配置 stage 用 sit。</td></tr>
+  <tr><td><code>-Dstage=dev</code><br><code>APP_STAGE=dev</code></td><td>给公司中间件和业务代码识别当前应用阶段。</td><td>auto-layout-service 的 Redis namespace 写了 <code>als:${APP_STAGE}:</code>。</td></tr>
+  <tr><td><code>-Dqunhe.service.version=dev_{花名}</code></td><td>本地联调时标记服务版本，方便 SOA/网关路由到自己的服务。</td><td>两个仓库 README 都给了这个占位写法。</td></tr>
+</table>
+
+<h2>3. 两个仓库的配置入口不同</h2>
+<h3>3.1 ai-native-service</h3>
+<p><code>ai-native-service-web/src/main/resources/application.yml</code> 里直接能看到服务名、Hunter trace、toad、Nacos Agent 代理：</p>
+
+<pre>
+<span class="keyword">spring.application.name</span>: <span class="string">ai-native-service</span>
+<span class="keyword">qunhe.hunter.enable-mdc</span>: <span class="string">true</span>   <span class="comment"># 日志打印 TraceId / SpanId</span>
+<span class="keyword">qunhe.toad.app-id</span>: <span class="string">khrd.i18n.ai-native-service</span>
+<span class="keyword">spring.ai.alibaba.agent.proxy.nacos.enabled</span>: <span class="string">true</span>
+</pre>
+
+<p>这说明它不只是普通 Spring Boot 服务，还会从 Nacos 读取 Agent/model/prompt/tool 相关配置。</p>
+
+<h3>3.2 auto-layout-service</h3>
+<p><code>auto-layout-service</code> 多了 <code>bootstrap.yml</code> 系列，里面声明 toad：</p>
+
+<pre>
+<span class="comment"># bootstrap.yml</span>
+<span class="keyword">qunhe.toad.app-id</span>: <span class="string">khrd.i18n.auto-layout-service</span>
+<span class="keyword">qunhe.toad.stage</span>: <span class="string">stable</span>
+
+<span class="comment"># bootstrap-sit.yml</span>
+<span class="keyword">qunhe.toad.stage</span>: <span class="string">sit</span>
+</pre>
+
+<p>它的 <code>application-dev.yml</code> 里还能看到更业务化的开关，例如 <code>layout.debug.enable</code>、<code>layout.frameless.config</code>、<code>layout.framed.config</code> 和 <code>openai.api.host</code>。</p>
+
+<h2>4. 配置覆盖顺序怎么判断</h2>
+<p>遇到“我明明改了配置，为什么没生效”，按四步查，不要跳：</p>
+
+<ol>
+  <li><strong>先看启动参数</strong>：IDE Run Configuration 里有没有 <code>-Dspring.profiles.active</code>，环境变量里有没有 <code>SPRING_PROFILES_ACTIVE</code>。</li>
+  <li><strong>再看本地文件</strong>：同一个 key 是否同时出现在 <code>application.yml</code> 和 <code>application-dev.yml</code>。</li>
+  <li><strong>再看远程中心</strong>：toad stage 是否是你以为的环境，Nacos Agent 配置是否被远程配置覆盖。</li>
+  <li><strong>最后看运行时日志</strong>：启动日志、接口日志和 traceId 能告诉你实际连到了哪个环境。</li>
+</ol>
+
+<div class="card warning">
+  <div class="card-label">最常见坑</div>
+  <p><code>spring.profiles.active=dev</code> 和 <code>qunhe.toad.stage=sit</code> 可以同时出现。前者控制本地 Spring profile，后者控制 toad 远程配置环境。它们不是同一个开关。</p>
+</div>
+
+<h2>5. Nacos、Pilot、toad 各管什么</h2>
+<table>
+  <tr><th>名字</th><th>你该怎么理解</th><th>AIHom 里的证据</th></tr>
+  <tr><td>Pilot</td><td>公司应用运行框架，README 指向 Pilot 文档，并要求改 <code>_appconfig/cicd.yml</code> 设置启动参数。</td><td>两个后端根 <code>pom.xml</code> 使用 <code>pilot-boot-dependencies</code>。</td></tr>
+  <tr><td>toad</td><td>区分环境的远程配置中心，README 明确说 Pilot 推荐把环境差异配置托管到 toad。</td><td>两个服务都有 <code>qunhe.toad.app-id</code>。</td></tr>
+  <tr><td>Nacos</td><td>ai-native-service 的 Agent 配置入口，主要影响 Agent、model、prompt、tool 这类 AI 编排配置。</td><td><code>AgentNodeFactory</code> 引入 <code>NacosAgentInjector</code>，<code>ChatModelFactory</code> 使用 Nacos model/prompt 相关类。</td></tr>
+</table>
+
+<h2>6. 30 秒排查模板</h2>
+<pre>
+<span class="comment"># 1. 我现在跑哪个 profile？</span>
+SPRING_PROFILES_ACTIVE=dev
+-Dspring.profiles.active=dev
+
+<span class="comment"># 2. 我现在拉哪个远程配置环境？</span>
+APP_ENV_NAME=sit
+-Dqunhe.toad.stage=sit
+
+<span class="comment"># 3. 这个 key 在哪里出现？</span>
+rg -n "<span class="important">layout.debug.enable</span>|<span class="important">qunhe.toad.stage</span>|<span class="important">spring.ai.alibaba.agent.proxy.nacos</span>" .
+
+<span class="comment"># 4. 如果是 Agent/prompt/tool，不只看 yml，还要去 Nacos 查。</span>
+</pre>
+
+<div class="ask-agent">问 agent：“帮我按当前 Run Configuration 判断 ai-native-service 会读哪些配置源”，把启动参数和你怀疑的 key 贴过去。</div>
+
+<h2>7. 自检 Quiz</h2>
+
+<div class="quiz" id="quiz1">
+  <div class="quiz-title">Q1: 本地想加载 application-dev.yml，最关键看哪个配置？</div>
+  <ul class="quiz-options" data-correct="0">
+    <li onclick="checkQuiz('quiz1',0)">A. spring.profiles.active</li>
+    <li onclick="checkQuiz('quiz1',1)">B. qunhe.toad.stage</li>
+    <li onclick="checkQuiz('quiz1',2)">C. qunhe.service.version</li>
+    <li onclick="checkQuiz('quiz1',3)">D. spring.application.name</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <div class="quiz-title">Q2: README 说 Pilot 推荐环境差异配置托管到哪里？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz2',0)">A. Git 仓库文件</li>
+    <li onclick="checkQuiz('quiz2',1)">B. 浏览器缓存</li>
+    <li onclick="checkQuiz('quiz2',2)">C. toad 配置中心</li>
+    <li onclick="checkQuiz('quiz2',3)">D. 本地 hosts</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <div class="quiz-title">Q3: Agent 的 prompt/model/tool 行为异常，除了 yml 还要查哪里？</div>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz3',0)">A. xxl-job 日志</li>
+    <li onclick="checkQuiz('quiz3',1)">B. Nacos Agent 配置</li>
+    <li onclick="checkQuiz('quiz3',2)">C. CSS 样式文件</li>
+    <li onclick="checkQuiz('quiz3',3)">D. 浏览器 localStorage</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+</div>
+<script>
+function checkQuiz(q,s){const o=document.getElementById(q).querySelector('.quiz-options'),c=parseInt(o.dataset.correct),i=o.querySelectorAll('li'),f=document.getElementById(q).querySelector('.quiz-feedback');i.forEach((x,n)=>{x.onclick=null;if(n===c)x.classList.add('correct');if(n===s&&n!==c)x.classList.add('wrong')});const fb={quiz1:{c:'对。spring.profiles.active 决定 Spring 加载哪组 application-*.yml。',w:'再想想：toad stage 管远程配置环境，profile 才管 application-dev.yml。'},quiz2:{c:'对。README 明确说 Pilot 推荐把区分环境的配置托管到 toad。',w:'不是这个。README 里写的是 toad。'},quiz3:{c:'对。ai-native-service 的 Agent 行为还要看 Nacos 里的 Agent 配置。',w:'不是这个。Agent/prompt/model/tool 更可能来自 Nacos 配置。'}};f.style.display='block';f.textContent=s===c?fb[q].c:fb[q].w;f.style.background=s===c?'#dcfce7':'#fee2e2'}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 008</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0007-springboot-web-layers.html">上一课：007 Spring Boot Web 三层最小闭环</a><a class="primary" href="0009-backend-local-run-and-deploy.html">下一课：009 后端本地运行与部署基础</a></div></nav>
+</body>
+</html>

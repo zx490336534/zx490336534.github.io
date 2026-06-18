@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0010 - kuai-service-py 项目概览</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:2rem}
+  .breadcrumb{color:var(--text-secondary);font-size:.85rem;margin-bottom:1.5rem}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .breadcrumb a:hover{text-decoration:underline}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.15rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem}
+  p{margin-bottom:1rem}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15rem .4rem;border-radius:4px;font-size:.88em}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;overflow-x:auto;margin:1rem 0;font-size:.88rem;line-height:1.6}
+  pre code{background:none;padding:0}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.4rem}
+  .tag{display:inline-block;padding:.1rem .4rem;border-radius:4px;font-size:.7rem;font-weight:500;margin-right:.3rem}
+  .tag.overview{background:#dbeafe;color:#2563eb}
+  .tag.deep{background:#fef3c7;color:#b45309}
+  .tag.dev{background:#dcfce7;color:#16a34a}
+  .tag.special{background:#f3e8ff;color:#7c3aed}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0}
+  .card-title{font-weight:600;margin-bottom:.5rem;font-size:1.05rem}
+  .module-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:1rem;margin:1rem 0}
+  .module-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;transition:all .2s}
+  .module-card:hover{border-color:var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .module-card h4{font-size:1rem;font-weight:600;margin-bottom:.35rem}
+  .module-card p{color:var(--text-secondary);font-size:.9rem;margin:0}
+  .quiz-section{background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:1.5rem;margin-top:2.5rem}
+  .quiz-section h2{margin-top:0;color:var(--accent)}
+  .quiz-q{margin-bottom:1.5rem}
+  .quiz-q .q-title{font-weight:600;margin-bottom:.5rem}
+  .quiz-q label{display:block;padding:.4rem .75rem;margin:.3rem 0;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s;background:var(--surface)}
+  .quiz-q label:hover{border-color:var(--accent)}
+  .quiz-q input[type="radio"]{margin-right:.5rem}
+  .quiz-q .answer{display:none;margin-top:.5rem;padding:.75rem 1rem;border-radius:6px;font-size:.9rem}
+  .quiz-q .answer.correct{background:#dcfce7;color:#166534;border:1px solid #86efac}
+  .quiz-q .answer.wrong{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
+  .ask-agent::before{content:'💡 '}
+  .nav-links{display:flex;justify-content:space-between;margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+  .nav-links a{color:var(--accent);text-decoration:none;font-weight:500}
+  .nav-links a:hover{text-decoration:underline}
+  .highlight{background:var(--accent-light);padding:.1rem .3rem;border-radius:3px}
+  table{width:100%;border-collapse:collapse;margin:1rem 0}
+  th,td{padding:.6rem .8rem;border:1px solid var(--border);text-align:left;font-size:.9rem}
+  th{background:var(--code-bg);font-weight:600}
+</style>
+<script>
+function checkAnswer(qId, correct, el){
+  var ans=el.parentElement.parentElement.querySelector('.answer');
+  if(el.value===correct){ans.className='answer correct';ans.innerHTML='✅ 正确！';ans.style.display='block'}
+  else{ans.className='answer wrong';ans.innerHTML='❌ 错误，正确答案是 '+correct+'。';ans.style.display='block'}
+}
+</script>
+</head>
+<body>
+<div class="container">
+
+<div class="breadcrumb"><a href="../index.html">课程首页</a> &gt; kuai-service-py &gt; 0010 项目概览</div>
+
+<div class="card info" style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0;font-size:.93rem">
+  <div class="card-label" style="font-weight:600;color:#2563eb;margin-bottom:.35rem">前置知识</div>
+  <p style="margin-bottom:.5rem">如果你不熟悉以下概念，建议先阅读对应教程：</p>
+  <ul style="margin:.5rem 0 0 1.5rem">
+    <li style="margin-bottom:.4rem"><a href="../../reference/fastapi-basics.html">FastAPI 基础入门</a></li>
+    <li style="margin-bottom:.4rem"><a href="../../reference/mcp-protocol.html">MCP 协议基础入门</a></li>
+  </ul>
+</div>
+
+<h1>🐍 kuai-service-py 项目概览</h1>
+<p class="subtitle"><span class="tag overview">概览</span> 了解 MCP 服务器管理平台的定位、技术栈、目录结构和核心功能</p>
+
+<!-- ============ 1. 项目定位 ============ -->
+<h2><span class="icon">🎯</span> 项目定位</h2>
+<p><strong>kuai-service-py</strong> 是 KuAI 测试平台的 <strong>Python MCP 服务</strong>，它的核心职责是充当一个 <strong>MCP（Model Context Protocol）服务器管理平台</strong>。</p>
+
+<div class="card">
+  <div class="card-title">一句话概括</div>
+  <p>一个基于 <strong>FastAPI</strong> 的服务，支持 SSE / Stdio / StreamableHTTP 三种传输协议，通过统一的 HTTP 接口管理和访问多个 MCP 服务器，让 AI Agent 能以标准化方式调用各类工具。</p>
+</div>
+
+<p>它在整个 KuAI 平台中扮演的角色是 <strong>"工具层"</strong>——前端的 Agent 通过分组接口获取 MCP 工具列表，调用工具时由本服务路由到对应的 MCP 服务器执行。</p>
+
+<!-- ============ 2. 技术栈 ============ -->
+<h2><span class="icon">🛠️</span> 技术栈</h2>
+
+<table>
+  <tr><th>层级</th><th>技术</th><th>说明</th></tr>
+  <tr><td>Web 框架</td><td><code>FastAPI</code></td><td>异步高性能 Web 框架，提供 RESTful API 和 OpenAPI 文档</td></tr>
+  <tr><td>MCP SDK</td><td><code>mcp</code> (官方 Python SDK)</td><td>提供 <code>ClientSession</code>、SSE/Stdio/StreamableHTTP 客户端</td></tr>
+  <tr><td>ASGI 服务器</td><td><code>Uvicorn</code></td><td>生产级 ASGI 服务器，运行 FastAPI 应用</td></tr>
+  <tr><td>数据模型</td><td><code>Pydantic</code></td><td>数据验证和序列化（<code>ServerConfig</code>、<code>GroupConfig</code> 等）</td></tr>
+  <tr><td>数据库</td><td>数据库持久化</td><td>通过 <code>ServerRepository</code> / <code>GroupRepository</code> 存储配置</td></tr>
+  <tr><td>AI 集成</td><td><code>LangChain</code> + <code>langgraph</code></td><td>智能路由（SmartRouter）、分组 MCP 服务器中的 AI Agent 对话</td></tr>
+  <tr><td>向量存储</td><td><code>ChromaDB</code> / 内存存储</td><td>工具向量嵌入，支持语义搜索路由</td></tr>
+  <tr><td>依赖管理</td><td><code>uv</code></td><td>Python 3.12+，推荐 uv 管理依赖</td></tr>
+</table>
+
+<!-- ============ 3. 目录结构 ============ -->
+<h2><span class="icon">📁</span> 目录结构</h2>
+
+<pre><code>kuai-service-py/
+├── main.py                           # 入口，启动 FastAPI + Uvicorn
+├── pyproject.toml                    # 依赖和项目配置
+├── log_config.yaml                   # 日志配置
+├── logs/                             # 应用日志
+└── src/
+    ├── api/                          # API 层
+    │   ├── server.py                 #   FastAPI 应用工厂 (create_app)
+    │   ├── routes.py                 #   路由注册
+    │   ├── dependencies.py           #   依赖注入 (get_mcp_service, get_smart_router)
+    │   ├── mcp_server_handler.py     #   MCP SDK Server 处理器（GroupMCPServer, SmartMCPServer）
+    │   └── endpoints/
+    │       ├── servers.py            #     服务器 CRUD + 启停 API
+    │       ├── groups.py             #     分组 CRUD + MCP SSE 端点
+    │       ├── smart_mcp.py          #     智能路由 MCP 端点
+    │       ├── evaluation.py         #     评估相关 API
+    │       ├── browser_service.py    #     浏览器服务 API
+    │       └── skillport.py          #     技能端口 API
+    ├── services/                     # 业务逻辑层
+    │   ├── mcp_service.py            #   MCP 核心服务（整合 server_manager + group_manager）
+    │   ├── server_manager.py         #   服务器生命周期管理
+    │   ├── group_manager.py          #   分组管理（创建/更新/删除/工具过滤）
+    │   ├── smart_router.py           #   智能路由（向量语义搜索）
+    │   └── evaluation_service.py     #   评估服务
+    ├── transports/                   # 传输协议层
+    │   ├── base.py                   #   BaseTransport 基类（连接/断开/工具/keep-alive）
+    │   ├── sse_transport.py          #   SSE 协议实现
+    │   ├── stdio_transport.py        #   Stdio 协议实现
+    │   ├── streamable_http_transport.py  # StreamableHTTP 协议实现
+    │   ├── agent_transport.py        #   Agent 传输协议
+    │   ├── transport_factory.py      #   传输协议工厂（根据配置创建实例）
+    │   └── session_pool.py           #   会话池管理
+    ├── models/                       # 数据类型定义
+    │   ├── server_types.py           #   ServerConfig, ServerInfo, ToolInfo, GroupConfig 等
+    │   └── routing_types.py          #   路由相关类型
+    ├── schemas/                      # API 请求/响应模型
+    │   ├── servers.py                #   服务器相关 schema
+    │   ├── groups.py                 #   分组相关 schema
+    │   └── evaluation.py             #   评估相关 schema
+    ├── database/                     # 数据库层
+    │   ├── connection.py             #   数据库连接
+    │   ├── models.py                 #   数据库模型
+    │   └── repositories.py          #   Repository（ServerRepository, GroupRepository）
+    ├── embeddings/                   # 向量嵌入
+    │   └── embeddings_service.py     #   嵌入服务
+    ├── vector_stores/                # 向量存储
+    │   ├── base.py / factory.py      #   基类和工厂
+    │   ├── chroma_store.py           #   ChromaDB 实现
+    │   └── memory_store.py           #   内存实现
+    ├── config/                       # 配置
+    │   ├── model_config.py           #   AI 模型配置
+    │   └── vector_store_config.py    #   向量存储配置
+    └── test/                         # 测试
+        ├── test_server_manager_startup.py
+        ├── test_mcp_service.py
+        └── ...</code></pre>
+
+<!-- ============ 4. 核心功能 ============ -->
+<h2><span class="icon">🧩</span> 核心功能</h2>
+
+<div class="module-grid">
+  <div class="module-card">
+    <h4>🔌 多协议支持</h4>
+    <p>支持 <strong>SSE</strong>（HTTP 单向推送）、<strong>Stdio</strong>（本地进程标准 IO）、<strong>StreamableHTTP</strong>（HTTP 流式双向通信）和 <strong>Agent</strong> 四种传输协议。通过 <code>TransportFactory</code> 工厂模式统一创建。</p>
+  </div>
+  <div class="module-card">
+    <h4>🖥️ 服务器管理</h4>
+    <p>支持动态添加、删除、配置 MCP 服务器。支持启动/停止/重启操作，自动重试和超时控制。启动时自动加载工具列表，后台并行启动 auto_start 服务器。</p>
+  </div>
+  <div class="module-card">
+    <h4>📂 分组管理</h4>
+    <p>将多个 MCP 服务器组织成逻辑分组，支持分组级别的工具访问控制（指定 <code>"all"</code> 或具体工具列表），每个分组可暴露为一个独立的 MCP Server 端点。</p>
+  </div>
+  <div class="module-card">
+    <h4>🤖 智能路由</h4>
+    <p><code>SmartRouter</code> 基于向量嵌入实现语义搜索路由，AI Agent 可用自然语言描述需求，自动匹配最合适的工具。支持语义搜索、精确匹配、模糊匹配三种策略。</p>
+  </div>
+  <div class="module-card">
+    <h4>🌐 统一 HTTP 接口</h4>
+    <p>RESTful API 设计，自动生成 OpenAPI 文档。提供服务器 CRUD、分组 CRUD、工具调用、健康检查等端点。每个分组还可通过 <code>/groups/{id}/mcp</code> 暴露 MCP SSE 端点。</p>
+  </div>
+  <div class="module-card">
+    <h4>🔄 会话池管理</h4>
+    <p><code>TransportSessionPool</code> 管理 MCP 连接的会话生命周期，避免频繁创建/销毁连接。Keep-alive 机制自动维持 SSE 和 StreamableHTTP 连接。</p>
+  </div>
+</div>
+
+<!-- ============ 5. 系统架构 ============ -->
+<h2><span class="icon">🏗️</span> 系统架构</h2>
+
+<pre><code>┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   HTTP Client   │    │   WebSocket     │    │   SSE Client    │
+└─────────┬───────┘    └─────────┬───────┘    └─────────┬───────┘
+          │                      │                      │
+          └──────────────────────┼──────────────────────┘
+                                 │
+                    ┌─────────────▼───────────────┐
+                    │      FastAPI Server        │
+                    │   (HTTP/WebSocket/SSE)     │
+                    └─────────────┬───────────────┘
+                                  │
+                    ┌─────────────▼───────────────┐
+                    │       MCPService           │
+                    │  (ServerManager + GroupMgr) │
+                    └─────────────┬───────────────┘
+                                  │
+          ┌───────────────────────┼───────────────────────┐
+          │                       │                       │
+┌─────────▼───────┐    ┌─────────▼───────┐    ┌─────────▼───────┐
+│ SSE Transport   │    │ Stdio Transport │    │StreamableHTTP   │
+└─────────┬───────┘    └─────────┬───────┘    └─────────┬───────┘
+          │                      │                      │
+┌─────────▼───────┐    ┌─────────▼───────┐    ┌─────────▼───────┐
+│  MCP Server 1   │    │  MCP Server 2   │    │  MCP Server 3   │
+└─────────────────┘    └─────────────────┘    └─────────────────┘</code></pre>
+
+<!-- ============ 6. 关键类 ============ -->
+<h2><span class="icon">🔑</span> 关键类速查</h2>
+
+<table>
+  <tr><th>类名</th><th>所在文件</th><th>职责</th></tr>
+  <tr><td><code>MCPService</code></td><td>services/mcp_service.py</td><td>核心服务门面，整合 ServerManager + GroupManager</td></tr>
+  <tr><td><code>ServerManager</code></td><td>services/server_manager.py</td><td>服务器生命周期：初始化、启动、停止、重启、工具加载</td></tr>
+  <tr><td><code>GroupManager</code></td><td>services/group_manager.py</td><td>分组 CRUD，工具过滤（all / 指定列表）</td></tr>
+  <tr><td><code>BaseTransport</code></td><td>transports/base.py</td><td>传输协议基类，定义连接/断开/工具调用/keep-alive 接口</td></tr>
+  <tr><td><code>TransportFactory</code></td><td>transports/transport_factory.py</td><td>工厂模式，根据 <code>TransportType</code> 创建对应传输实例</td></tr>
+  <tr><td><code>ServerConfig</code></td><td>models/server_types.py</td><td>服务器配置模型（name, transport, url, command...）</td></tr>
+  <tr><td><code>SmartRouter</code></td><td>services/smart_router.py</td><td>智能路由，基于向量嵌入的语义工具搜索</td></tr>
+</table>
+
+<!-- ============ Quiz ============ -->
+<div class="quiz-section">
+  <h2>📝 自检 Quiz</h2>
+
+  <div class="quiz-q">
+    <div class="q-title">Q1: kuai-service-py 支持以下哪几种 MCP 传输协议？</div>
+    <label><input type="radio" name="q1" value="A" onclick="checkAnswer('q1','C',this)"> A. HTTP 和 WebSocket</label>
+    <label><input type="radio" name="q1" value="B" onclick="checkAnswer('q1','C',this)"> B. SSE 和 gRPC</label>
+    <label><input type="radio" name="q1" value="C" onclick="checkAnswer('q1','C',this)"> C. SSE、Stdio 和 StreamableHTTP</label>
+    <label><input type="radio" name="q1" value="D" onclick="checkAnswer('q1','C',this)"> D. 只支持 SSE</label>
+    <div class="answer"></div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-title">Q2: <code>MCPService</code> 类整合了哪两个核心管理器？</div>
+    <label><input type="radio" name="q2" value="A" onclick="checkAnswer('q2','B',this)"> A. TransportFactory 和 SmartRouter</label>
+    <label><input type="radio" name="q2" value="B" onclick="checkAnswer('q2','B',this)"> B. ServerManager 和 GroupManager</label>
+    <label><input type="radio" name="q2" value="C" onclick="checkAnswer('q2','B',this)"> C. ServerRepository 和 GroupRepository</label>
+    <label><input type="radio" name="q2" value="D" onclick="checkAnswer('q2','B',this)"> D. SessionPool 和 TransportFactory</label>
+    <div class="answer"></div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-title">Q3: 分组管理中，<code>tools</code> 字段设为 <code>"all"</code> 时表示什么？</div>
+    <label><input type="radio" name="q3" value="A" onclick="checkAnswer('q3','A',this)"> A. 启用该服务器在分组中的所有工具</label>
+    <label><input type="radio" name="q3" value="B" onclick="checkAnswer('q3','A',this)"> B. 启用所有服务器的所有工具</label>
+    <label><input type="radio" name="q3" value="C" onclick="checkAnswer('q3','A',this)"> C. 禁用该服务器的所有工具</label>
+    <label><input type="radio" name="q3" value="D" onclick="checkAnswer('q3','A',this)"> D. 表示工具列表为空</label>
+    <div class="answer"></div>
+  </div>
+</div>
+
+<div class="ask-agent">
+  <strong>想深入了解？</strong>试试问 Agent："TransportFactory 是怎么根据配置创建不同传输实例的？" 或 "MCP 协议和 REST API 有什么区别？"
+</div>
+
+<div class="nav-links">
+  <a href="../front/0005-kuai-front-overview.html">← 前端项目概览</a>
+  <a href="../index.html">🗺️ 完整学习地图</a>
+  <a href="../0013-cross-repo-architecture.html">三仓库协作架构 →</a>
+</div>
+
+</div>
+</body>
+</html>

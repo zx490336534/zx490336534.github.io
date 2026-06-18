@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>038 AIHom 前端入口 07：SDK + MCP 工具桥</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--muted:#78716c;--accent:#b45309;--border:#e7e5e4;--code:#f5f5f4;--blue:#2563eb;--green:#16a34a}
+  *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.8 'Noto Sans SC',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}.container{max-width:880px;margin:0 auto;padding:3rem 1.6rem 4rem}h1{font-size:2rem;line-height:1.25;margin:.2rem 0 .5rem}h2{font-size:1.35rem;margin:2.2rem 0 .8rem}p{margin:.4rem 0 1rem}ul,ol{margin:.4rem 0 1rem 1.4rem;padding:0}li{margin:.25rem 0}a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}code{font-family:'JetBrains Mono',Menlo,Consolas,monospace;background:var(--code);border-radius:4px;padding:.1em .35em;font-size:.9em}pre{background:#1c1917;color:#e7e5e4;border-radius:8px;padding:1rem 1.1rem;overflow:auto;font:13px/1.65 'JetBrains Mono',Menlo,Consolas,monospace;margin:1rem 0}table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:1rem 0}th,td{padding:.65rem .75rem;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}th{color:var(--muted);font-size:.82rem;background:#f5f5f4}tr:last-child td{border-bottom:0}.subtitle{color:var(--muted);padding-bottom:1.3rem;border-bottom:1px solid var(--border);margin-bottom:1.8rem}.card{background:#fff;border:1px solid var(--border);border-left:4px solid var(--blue);border-radius:8px;padding:1rem 1.15rem;margin:1rem 0}.card.soft{border-left-color:var(--accent);background:#fff7ed}.label{font-size:.76rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;margin-bottom:.35rem}.quiz{background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.15rem;margin:1.4rem 0}.quiz-title{font-weight:700;margin-bottom:.55rem;color:#92400e}.quiz-options{list-style:none;margin:0;padding:0}.quiz-options li{padding:.45rem .65rem;margin:.35rem 0;border-radius:6px;border:1px solid transparent;cursor:pointer}.quiz-options li:hover{border-color:#f59e0b}.correct{background:#dcfce7!important;border-color:#16a34a!important}.wrong{background:#fee2e2!important;border-color:#ef4444!important}.quiz-feedback{display:none;margin-top:.65rem;padding:.6rem;border-radius:6px}.ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;color:#1e40af;padding:1rem;margin:1.4rem 0}.ask-agent:before{content:"提示：";font-weight:700}.learning-map-quick-nav{margin:2.5rem 0 0;padding:1rem 1.1rem;border:1px solid #d6d3d1;border-radius:8px;background:#fff;display:grid;gap:.75rem}.nav-title{font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:#78716c}.nav-links{display:flex;flex-wrap:wrap;gap:.65rem;align-items:center}.nav-links a{color:#44403c;text-decoration:none;border:1px solid #e7e5e4;border-radius:6px;padding:.35rem .65rem}.nav-links a.primary{color:#fff;border-color:#b45309;background:#b45309}.nav-links a.map{color:#2563eb;border-color:#bfdbfe;background:#eff6ff}@media(max-width:640px){.container{padding:2rem 1rem 3.5rem}h1{font-size:1.65rem}pre{font-size:.78rem}}
+</style>
+</head>
+<body>
+<main class="container">
+  <h1>038 AIHom 前端入口 07：SDK + MCP 工具桥</h1>
+  <p class="subtitle">目标：先理解一句话：有些工具不是后端自己执行，而是后端让前端页面帮它执行，再把结果送回去。</p>
+
+  <section class="card soft">
+    <div class="label">先建立画面</div>
+    <p>大模型说“我要调用一个工具”。如果这个工具需要操作浏览器里的画布、viewer 或页面状态，后端就不能自己完成。它会发一个 <code>tool_call</code> 给前端。前端执行完，再发 <code>tool_response</code> 回后端。</p>
+  </section>
+
+  <h2>1. 最小链路</h2>
+  <pre>模型决定调用工具
+  ↓
+ai-native-service 生成 tool_call
+  ↓
+WebSocket 发给 ai-home
+  ↓
+ai-home 前端执行工具
+  ↓
+tool_response 回到后端
+  ↓
+模型继续回答</pre>
+
+  <h2>2. 前端先做了什么</h2>
+  <p>在 <code>ai-home</code> 里，<code>AgentSDKService</code> 负责初始化对话 SDK。你第一次读这块时，只要记住它做两件事：</p>
+  <ol>
+    <li>建立和后端的对话连接。</li>
+    <li>把前端可执行的工具注册给 SDK。</li>
+  </ol>
+  <p>所以排查“前端工具为什么没执行”，先看 SDK 是否初始化成功，再看工具是否注册进去。</p>
+
+  <h2>3. 后端为什么知道要找前端</h2>
+  <p>后端构建 Agent 时，会把工具变成 <code>ToolCallback</code>。其中一类工具走前端执行路径，关键类名是 <code>FrontendNacosMcpGatewayToolCallback</code> 和 <code>PostMessageToolInterceptor</code>。</p>
+  <table>
+    <tr><th>代码</th><th>先理解成</th></tr>
+    <tr><td><code>CustomNacosReactAgentBuilder</code></td><td>把 Agent、模型、Prompt、Tools 装起来</td></tr>
+    <tr><td><code>CustomNacosMcpGatewayToolsInitializer</code></td><td>从 MCP Server 配置里解析工具</td></tr>
+    <tr><td><code>FrontendNacosMcpGatewayToolCallback</code></td><td>这类工具要交给前端执行</td></tr>
+    <tr><td><code>FrontendToolCallHandlerImpl</code></td><td>把前端工具调用发成 <code>tool_call</code></td></tr>
+    <tr><td><code>FrontendToolResponseHandlerImpl</code></td><td>接收前端回来的 <code>tool_response</code></td></tr>
+  </table>
+
+  <h2>4. 读问题时只问四件事</h2>
+  <ol>
+    <li><strong>工具有没有被模型看到？</strong>没有的话查 Nacos/MCP 工具配置和后端构建日志。</li>
+    <li><strong>后端有没有发 tool_call？</strong>没有的话查 <code>FrontendToolCallHandlerImpl</code>。</li>
+    <li><strong>前端有没有收到并执行？</strong>没有的话查 WebSocket 和 SDK 注册。</li>
+    <li><strong>前端有没有回 tool_response？</strong>没有的话查工具执行结果和 response id。</li>
+  </ol>
+
+  <h2>5. 这节不要先钻的细节</h2>
+  <ul>
+    <li>不要一开始就研究 MCP 协议全文。</li>
+    <li>不要一开始就追所有 ToolCallback 实现。</li>
+    <li>先把 <code>tool_call → 前端执行 → tool_response</code> 这条主线看顺。</li>
+  </ul>
+
+  <div class="quiz" id="quiz1"><div class="quiz-title">Q1：前端工具调用的核心消息是什么？</div><ul class="quiz-options" data-correct="2"><li onclick="checkQuiz('quiz1',0)">A. normal_log</li><li onclick="checkQuiz('quiz1',1)">B. page_render</li><li onclick="checkQuiz('quiz1',2)">C. tool_call</li><li onclick="checkQuiz('quiz1',3)">D. style_sync</li></ul><div class="quiz-feedback"></div></div>
+  <div class="quiz" id="quiz2"><div class="quiz-title">Q2：前端执行完工具后回什么？</div><ul class="quiz-options" data-correct="1"><li onclick="checkQuiz('quiz2',0)">A. tool_open</li><li onclick="checkQuiz('quiz2',1)">B. tool_response</li><li onclick="checkQuiz('quiz2',2)">C. tool_schema</li><li onclick="checkQuiz('quiz2',3)">D. tool_config</li></ul><div class="quiz-feedback"></div></div>
+  <div class="quiz" id="quiz3"><div class="quiz-title">Q3：工具没执行，第一步先确认什么？</div><ul class="quiz-options" data-correct="0"><li onclick="checkQuiz('quiz3',0)">A. 是否发出调用</li><li onclick="checkQuiz('quiz3',1)">B. 字体是否正确</li><li onclick="checkQuiz('quiz3',2)">C. 页面是否好看</li><li onclick="checkQuiz('quiz3',3)">D. 注释是否足够</li></ul><div class="quiz-feedback"></div></div>
+
+  <div class="ask-agent">复习时可以问 agent：用一条具体工具调用，带我从 FrontendToolCallHandlerImpl 追到 ai-home 前端执行，再追回 FrontendToolResponseHandlerImpl。</div>
+  <nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 038</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0037-viewer-iframe-postmessage.html">上一课：037 AIHom 前端入口 06：iframe/postMessage 与 viewer 边界</a><a class="primary" href="0039-async-task-state-machine.html">下一课：039 AIHom 前端入口 08：异步任务与状态机基础</a></div></nav>
+</main>
+<script>
+function checkQuiz(q,s){const box=document.getElementById(q),opts=box.querySelector('.quiz-options'),c=Number(opts.dataset.correct),items=opts.querySelectorAll('li'),fb=box.querySelector('.quiz-feedback');items.forEach((item,i)=>{item.onclick=null;if(i===c)item.classList.add('correct');if(i===s&&i!==c)item.classList.add('wrong')});const text={quiz1:['正确。后端通过 tool_call 把前端工具调用发给页面。','不对。关键消息是 tool_call。'],quiz2:['正确。前端执行完后用 tool_response 把结果送回后端。','不对。结果回传叫 tool_response。'],quiz3:['正确。先确认后端到底有没有发出 tool_call。','不对。先确认调用链路有没有走起来。']};fb.style.display='block';fb.textContent=s===c?text[q][0]:text[q][1];fb.style.background=s===c?'#dcfce7':'#fee2e2'}
+</script>
+</body>
+</html>

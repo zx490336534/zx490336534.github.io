@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0023 - 组件架构与布局系统详解</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:1rem}
+  .breadcrumb{color:var(--text-secondary);font-size:.85rem;margin-bottom:2rem}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .breadcrumb a:hover{text-decoration:underline}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.15rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem;color:var(--accent)}
+  p{margin-bottom:1rem}
+  .desc{color:var(--text-secondary);font-size:.95rem;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;overflow-x:auto;margin:1rem 0 1.5rem;font-size:.85rem;line-height:1.7}
+  code{font-family:'JetBrains Mono',monospace;font-size:.85em}
+  p code,li code{background:var(--code-bg);padding:.15rem .4rem;border-radius:4px;color:var(--accent)}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1.5rem 0}
+  .card.warn{border-color:#fbbf24;background:#fffbeb}
+  .card.info{border-color:#93c5fd;background:#eff6ff}
+  .card.success{border-color:#86efac;background:#f0fdf4}
+  .card.purple{border-color:#c4b5fd;background:#f5f3ff}
+  .card h3{margin-top:0}
+  .card ul,.card ol{margin:.5rem 0 0 1.25rem}
+  .card li{margin-bottom:.3rem}
+  .tag{display:inline-block;padding:.15rem .5rem;border-radius:4px;font-size:.75rem;font-weight:500;margin-right:.3rem}
+  .tag.deep{background:#fef3c7;color:#b45309}
+  .tag.code{background:#dbeafe;color:#2563eb}
+  .tag.arch{background:#f3e8ff;color:#7c3aed}
+  .tag.ui{background:#dcfce7;color:#16a34a}
+  .quiz{background:var(--surface);border:2px solid var(--border);border-radius:8px;padding:1.5rem;margin:1.5rem 0}
+  .quiz h3{color:var(--info);margin-top:0}
+  .quiz ol{margin-left:1.25rem}
+  .quiz li{margin-bottom:1rem}
+  .quiz .options{margin:.5rem 0 0 1rem}
+  .quiz .options div{margin-bottom:.3rem;padding:.4rem .75rem;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s}
+  .quiz .options div:hover{border-color:var(--accent);background:var(--accent-light)}
+  .quiz .options div.correct{border-color:var(--success);background:#dcfce7;color:var(--success);font-weight:600}
+  .quiz .options div.wrong{border-color:#ef4444;background:#fef2f2;color:#ef4444}
+  .quiz .answer{margin-top:.75rem;padding:.75rem 1rem;background:#f0fdf4;border:1px solid #86efac;border-radius:6px;display:none;font-size:.9rem}
+  .quiz .answer.show{display:block}
+  .quiz .show-btn{display:inline-block;margin-top:.75rem;padding:.4rem 1rem;background:var(--accent);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:.85rem}
+  .quiz .show-btn:hover{opacity:.9}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.3rem}
+  .file-ref{display:inline-block;background:var(--code-bg);border:1px solid var(--border);border-radius:4px;padding:.1rem .5rem;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--purple)}
+  table{width:100%;border-collapse:collapse;margin:1rem 0 1.5rem;font-size:.9rem}
+  th,td{padding:.6rem 1rem;border:1px solid var(--border);text-align:left}
+  th{background:var(--code-bg);font-weight:600}
+  .tree{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:2;overflow-x:auto;white-space:pre}
+  .nav-links{display:flex;justify-content:space-between;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+  .nav-links a{color:var(--accent);text-decoration:none;font-size:.9rem}
+  .nav-links a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="breadcrumb"><a href="../index.html">课程首页</a> &gt; kuai-service-front &gt; 0023 组件架构与布局系统详解</div>
+
+<h1>🧩 组件架构与布局系统详解</h1>
+<p class="subtitle">理解 AppLayout 主布局、Header/Sider/Footer 组件、Agent 对话组件、MCP 和 Prompt 管理组件</p>
+<p class="desc">本课程聚焦 <code>src/components/</code> 目录，它是 Kuai 前端的 UI 层。项目使用 Ant Design 6 + Ant Design X 作为 UI 库，采用 CSS Modules 进行样式隔离，所有组件均为 React 客户端组件。</p>
+
+<div class="card purple">
+  <h3>📚 前置知识</h3>
+  <ul>
+    <li><strong>React 基础</strong>：<code>useState</code>、<code>useEffect</code>、<code>useCallback</code>、<code>useMemo</code> 等 Hooks</li>
+    <li><strong>Redux Toolkit</strong>：<code>useSelector</code>、<code>useDispatch</code>、<code>configureStore</code>（状态管理）</li>
+    <li><strong>Ant Design 基础</strong>：<code>Layout</code>、<code>Menu</code>、<code>Button</code>、<code>Table</code> 等常用组件</li>
+    <li><strong>CSS Modules</strong>：理解 <code>import styles from './xxx.module.css'</code> 的样式隔离机制</li>
+    <li><strong>Next.js App Router</strong>：<code>'use client'</code> 指令、<code>usePathname</code>、<code>useRouter</code> 等</li>
+    <li><strong>0020 课程</strong>：kuai-service-front 项目概览（了解整体技术栈）</li>
+  </ul>
+</div>
+
+<!-- ==================== 组件目录结构 ==================== -->
+<h2><span class="icon">📁</span> 组件目录结构</h2>
+
+<div class="tree">src/components/
+├── AppLayout.jsx              # 主布局组件（整个应用的壳）
+├── layout/                    # 布局组件
+│   ├── header/                # 顶部导航栏
+│   │   ├── index.jsx          #   BasicHeader 组件
+│   │   └── index.module.css   #   样式
+│   ├── footer/                # 底部信息栏
+│   │   └── index.jsx
+│   └── sider/                 # 左侧导航
+│       └── SideNav.jsx        #   侧边栏菜单
+│
+├── features/                  # 功能组件（按业务模块组织）
+│   ├── agent/                 # Agent 相关组件
+│   │   ├── agent-common/      #   通用 Agent 组件（技能管理、使用统计）
+│   │   ├── diagram-editor/    #   Draw.io 图表编辑器
+│   │   ├── test-case-editor/  #   测试用例脑图编辑器
+│   │   ├── rating/            #   Agent 评分系统
+│   │   ├── AgentHeaderActions/#   Agent 页面头部操作
+│   │   └── AgentScheduleManager/ # 定时任务管理
+│   ├── mcp/                   # MCP 管理组件
+│   │   └── ToolDebugModal.jsx #   工具调试弹窗
+│   ├── prompt/                # 提示词管理组件
+│   └── share/                 # 分享功能
+│       └── EmbedCodeGenerator.jsx
+│
+├── common/                    # 通用组件
+│   ├── AgentChat/             # ⭐ Agent 对话组件（核心）
+│   │   ├── index.jsx          #   主组件（1845 行）
+│   │   ├── AgentChat.module.css
+│   │   └── submitKeyMode.js   #   发送快捷键配置
+│   ├── ChatMessage/           #   消息渲染
+│   ├── ChatContentWrapper/    #   内容包装
+│   ├── ClaudeCodeTracker/     #   Claude Code 执行追踪
+│   ├── TodoTracker/           #   Todo 追踪器
+│   ├── ThinkingProcess/       #   思考过程展示
+│   ├── StatusBanner/          #   状态横幅
+│   └── XmindProgressBanner/   #   XMind 进度横幅
+│
+├── ai-elements/               # AI 对话 UI 元素
+│   ├── message.jsx            #   消息组件
+│   └── tool.jsx               #   工具调用组件
+│
+└── ui/                        # 基础 UI 组件
+    ├── button.jsx
+    ├── input.jsx
+    ├── spinner.jsx
+    ├── tooltip.jsx
+    └── ...</div>
+
+<!-- ==================== AppLayout ==================== -->
+<h2><span class="icon">🏠</span> AppLayout 主布局</h2>
+
+<p><span class="tag arch">入口组件</span> <span class="file-ref">src/components/AppLayout.jsx</span> 是整个应用的布局壳，它决定了页面的整体结构。</p>
+
+<h3>布局结构</h3>
+<pre><code class="language-javascript">// src/components/AppLayout.jsx (简化)
+'use client';
+
+function AppLayoutContent({ children }) {
+  const [menuCollapsed, setMenuCollapsed] = useState(false);
+  const pathname = usePathname();
+  const fullScreen = useSelector((state) =&gt; state.config.fullScreen);
+
+  // 判断是否是特殊页面（不需要导航栏）
+  const isSharePage = pathname?.startsWith('/share');
+  const isEmbedPage = pathname?.startsWith('/metrics/embed');
+  const isAgentPage = pathname?.startsWith('/agents');
+  const useMobileAppShell = isMobile &amp;&amp; isAgentPage;
+
+  // 分享页面/嵌入页面：简洁布局
+  if (isSharePage || isEmbedPage || useMobileAppShell) {
+    return &lt;div style={{ minHeight: '100dvh' }}&gt;{children}&lt;/div&gt;;
+  }
+
+  // 标准布局：Header + Sider + Content + Footer
+  return (
+    &lt;Layout style={{ height: '100vh' }}&gt;
+      {!fullScreen &amp;&amp; &lt;Header /&gt;}           {/* 顶部导航栏 */}
+      &lt;Layout style={{ flex: 1 }}&gt;
+        {!fullScreen &amp;&amp; (                     {/* 左侧菜单 */}
+          &lt;Layout.Sider collapsible collapsed={menuCollapsed}&gt;
+            &lt;SideNav /&gt;
+          &lt;/Layout.Sider&gt;
+        )}
+        &lt;Layout&gt;
+          &lt;Footer /&gt;                          {/* 底部（绝对定位） */}
+          &lt;Layout.Content&gt;                    {/* 主内容区 */}
+            {children}
+          &lt;/Layout.Content&gt;
+        &lt;/Layout&gt;
+      &lt;/Layout&gt;
+    &lt;/Layout&gt;
+  );
+}</code></pre>
+
+<h3>布局模式对比</h3>
+<table>
+  <tr>
+    <th>页面类型</th>
+    <th>Header</th>
+    <th>Sider</th>
+    <th>Footer</th>
+    <th>判断条件</th>
+  </tr>
+  <tr>
+    <td>标准页面</td>
+    <td>显示</td>
+    <td>显示（可折叠）</td>
+    <td>显示</td>
+    <td>默认</td>
+  </tr>
+  <tr>
+    <td>全屏模式</td>
+    <td>隐藏</td>
+    <td>隐藏</td>
+    <td>显示</td>
+    <td><code>fullScreen=true</code>（ESC 退出）</td>
+  </tr>
+  <tr>
+    <td>分享页面</td>
+    <td>隐藏</td>
+    <td>隐藏</td>
+    <td>隐藏</td>
+    <td><code>/share</code> 路径</td>
+  </tr>
+  <tr>
+    <td>嵌入页面</td>
+    <td>隐藏</td>
+    <td>隐藏</td>
+    <td>隐藏</td>
+    <td><code>/metrics/embed</code> 路径</td>
+  </tr>
+  <tr>
+    <td>移动端 Agent</td>
+    <td>隐藏</td>
+    <td>隐藏</td>
+    <td>隐藏</td>
+    <td>isMobile + <code>/agents</code></td>
+  </tr>
+</table>
+
+<h3>性能优化：并行请求</h3>
+<div class="card success">
+  <p>AppLayout 在挂载时使用 <code>Promise.all()</code> <strong>并行</strong>获取所有初始化数据：</p>
+<pre><code class="language-javascript">await Promise.all([
+  dispatch(fetchUserDataAction()),  // 用户信息
+  dispatch(getMoonApps()),          // Moon 应用
+  dispatch(getAgileGroup()),        // 敏捷组
+  dispatch(getBusinessLine()),      // 业务线
+  dispatch(getGroup()),             // 组织架构
+]);</code></pre>
+  <p>这比串行请求减少 30-50% 的首屏加载时间。</p>
+</div>
+
+<!-- ==================== Header ==================== -->
+<h2><span class="icon">🔝</span> Header / Sider / Footer 组件</h2>
+
+<h3>Header（顶部导航栏）</h3>
+<p><span class="file-ref">src/components/layout/header/index.jsx</span> 包含：</p>
+<ul>
+  <li><strong>Logo</strong>：应用标识</li>
+  <li><strong>面包屑导航</strong>：自动根据路径生成中文标签（使用 <code>PATH_LABEL_MAP</code> 映射表）</li>
+  <li><strong>全屏按钮</strong>：切换全屏模式</li>
+  <li><strong>帮助按钮</strong>：跳转帮助文档</li>
+  <li><strong>用户菜单</strong>：头像 + 下拉菜单（个人资料、退出登录）</li>
+</ul>
+
+<pre><code class="language-javascript">// 路径到中文标签的映射（部分）
+const PATH_LABEL_MAP = {
+  application: 'Agent管理',
+  knowledge: '知识库',
+  'prompt-system': '提示词管理',
+  metrics: '度量指标管理',
+  rating: '评分',
+  history: '历史记录',
+  // ...
+};</code></pre>
+
+<h3>Sider（侧边栏）</h3>
+<p><span class="file-ref">src/components/layout/sider/SideNav.jsx</span> 是导航菜单组件：</p>
+<ul>
+  <li>使用 Ant Design <code>Menu</code> 组件</li>
+  <li>菜单项从 <code>src/config/navigation.js</code> 的 <code>navbarMenu</code> 配置读取</li>
+  <li>支持折叠/展开（宽度 220px → 60px）</li>
+  <li>高亮当前路径对应的菜单项</li>
+</ul>
+
+<h3>Footer（底部栏）</h3>
+<p>Footer 使用绝对定位覆盖在内容区下方，可被内容滚动覆盖。包含版本信息和版权信息。</p>
+
+<!-- ==================== AgentChat ==================== -->
+<h2><span class="icon">💬</span> Agent 对话组件</h2>
+
+<p><span class="tag ui">核心组件</span> <span class="file-ref">src/components/common/AgentChat/index.jsx</span> 是最重要的功能组件，有 1845 行代码，负责 Agent 对话的全部 UI 交互。</p>
+
+<h3>组件结构</h3>
+<div class="tree">AgentChat (index.jsx)
+├── Conversation          # 对话容器（自动滚动）
+│   ├── ConversationEmptyState   # 空状态（欢迎页 + 示例问题）
+│   └── ConversationContent      # 消息列表
+│       └── Message × N         # 每条消息
+│           ├── MessageContent   # 消息内容
+│           │   ├── ThinkingProcess    # AI 思考过程
+│           │   ├── Streamdown         # 流式 Markdown 渲染
+│           │   ├── TodoTracker        # Todo 追踪
+│           │   ├── ClaudeCodeTracker  # 代码执行追踪
+│           │   ├── UIRenderer         # 自定义 UI 渲染
+│           │   └── Tool × N          # 工具调用展示
+│           │       ├── ToolHeader     # 工具名称 + 状态
+│           │       ├── ToolInput      # 输入参数
+│           │       └── ToolOutput     # 输出结果
+│           ├── MessageActions  # 操作按钮（复制、重新生成等）
+│           └── StatusBanner    # 状态横幅（思考中、初始化等）
+├── InputArea             # 输入区域
+│   ├── 图片上传          # COS 图片上传
+│   ├── TextArea          # 文本输入
+│   └── 发送按钮          # 发送/停止
+└── ConversationScrollButton  # 回到底部按钮</div>
+
+<h3>流式渲染</h3>
+<div class="card info">
+  <p>AgentChat 使用 <strong>Streamdown</strong> 库进行流式 Markdown 渲染，支持：</p>
+  <ul>
+    <li><code>@streamdown/code</code>：代码高亮</li>
+    <li><code>@streamdown/mermaid</code>：Mermaid 图表</li>
+    <li><code>@streamdown/math</code>：数学公式（KaTeX）</li>
+    <li><code>@streamdown/cjk</code>：中日韩字符优化</li>
+  </ul>
+  <p>Streamdown 能在流式接收过程中实时渲染不完整的 Markdown，比如正在接收的代码块会显示为"正在编写代码..."。</p>
+</div>
+
+<h3>消息发送流程</h3>
+<pre><code class="language-javascript">// 简化的发送流程
+const sendMessage = async (text) => {
+  // 1. 添加用户消息到本地状态
+  addMessage({ role: 'user', content: text });
+
+  // 2. 添加 assistant 占位消息（显示"思考中..."）
+  addMessage({
+    role: 'assistant',
+    content: '',
+    isInitializing: true,
+  });
+
+  // 3. 调用 API，获取 SSE 流
+  const response = await fetch(`/api/agents/${agentId}/chat`, {
+    method: 'POST',
+    body: JSON.stringify({ message: text, sessionId }),
+  });
+
+  // 4. 消费流式响应，逐步更新 assistant 消息
+  const reader = response.body.getReader();
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    // 解析 SSE 数据，更新消息的 parts 数组
+    updateMessage(sseData);
+  }
+};</code></pre>
+
+<!-- ==================== MCP 管理 ==================== -->
+<h2><span class="icon">🔧</span> MCP 管理组件</h2>
+
+<p><span class="tag code">功能模块</span> MCP（Model Context Protocol）管理组件在 <span class="file-ref">src/components/features/mcp/</span> 目录下。</p>
+
+<h3>ToolDebugModal</h3>
+<p><span class="file-ref">ToolDebugModal.jsx</span> 是 MCP 工具调试弹窗，允许开发者：</p>
+<ul>
+  <li>选择 MCP Server 和工具</li>
+  <li>手动输入工具参数</li>
+  <li>执行工具调用并查看返回结果</li>
+  <li>调试工具的输入输出格式</li>
+</ul>
+
+<div class="card info">
+  <p>MCP 工具的 CRUD 操作通过 <span class="file-ref">src/services/modules/mcp.js</span> 调用 Java 后端 API，前端组件主要负责展示和交互。MCP Proxy API 通过 <span class="file-ref">src/app/api/proxy/mcphub/[...path]/route.js</span> 代理到 MCPHub 服务。</p>
+</div>
+
+<!-- ==================== Prompt 管理 ==================== -->
+<h2><span class="icon">📝</span> Prompt 管理组件</h2>
+
+<p>Prompt 管理组件分布在 <span class="file-ref">src/components/features/prompt/</span> 和相关页面中，核心功能包括：</p>
+
+<ul>
+  <li><strong>Prompt 列表</strong>：展示所有提示词模板，支持搜索和筛选</li>
+  <li><strong>Prompt 编辑</strong>：富文本编辑器，支持变量插入 <code>{{variable}}</code></li>
+  <li><strong>版本管理</strong>：每个 Prompt 支持多版本，可切换和回滚</li>
+  <li><strong>效果评估</strong>：对比不同版本的 Prompt 效果</li>
+  <li><strong>在线测试</strong>：直接在页面中测试 Prompt 效果</li>
+</ul>
+
+<div class="card">
+  <h3>Prompt 服务层</h3>
+  <p>Prompt 的 API 调用通过 <span class="file-ref">src/services/modules/prompt.js</span> 封装，调用 Java 后端的 Prompt API。前端的 <span class="file-ref">src/lib/agents/prompt.js</span> 则负责在 Agent 运行时管理 Prompt 的加载和缓存。</p>
+</div>
+
+<!-- ==================== 通用组件 ==================== -->
+<h2><span class="icon">🧰</span> 通用组件详解</h2>
+
+<h3>ClaudeCodeTracker</h3>
+<p><span class="file-ref">src/components/common/ClaudeCodeTracker/</span> 追踪 Claude Code 代理的执行过程，展示代码分析、文件读写等操作的实时进度。</p>
+
+<h3>TodoTracker</h3>
+<p><span class="file-ref">src/components/common/TodoTracker/</span> 展示 Agent 的 Todo 列表，Agent 可以通过 <code>write_todos</code> 工具管理任务清单，前端实时渲染进度。</p>
+
+<h3>ThinkingProcess</h3>
+<p>展示 AI 的"思考过程"（thinking/reasoning），以可折叠的方式呈现，用户可以展开查看 AI 的推理步骤。</p>
+
+<h3>ai-elements 组件库</h3>
+<p><span class="file-ref">src/components/ai-elements/</span> 提供对话 UI 的基础构建块：</p>
+<pre><code class="language-javascript">// message.jsx — 消息组件
+&lt;Message&gt;
+  &lt;MessageContent&gt;...&lt;/MessageContent&gt;
+  &lt;MessageResponse&gt;...&lt;/MessageResponse&gt;
+  &lt;MessageActions&gt;
+    &lt;MessageAction onClick={copy}&gt;复制&lt;/MessageAction&gt;
+    &lt;MessageAction onClick={regenerate}&gt;重新生成&lt;/MessageAction&gt;
+  &lt;/MessageActions&gt;
+&lt;/Message&gt;
+
+// tool.jsx — 工具调用组件
+&lt;Tool&gt;
+  &lt;ToolHeader&gt;文件读取&lt;/ToolHeader&gt;
+  &lt;ToolContent&gt;
+    &lt;ToolInput&gt;{ path: '/src/index.js' }&lt;/ToolInput&gt;
+    &lt;ToolOutput&gt;文件内容...&lt;/ToolOutput&gt;
+  &lt;/ToolContent&gt;
+&lt;/Tool&gt;</code></pre>
+
+<!-- ==================== 样式方案 ==================== -->
+<h2><span class="icon">🎨</span> 样式方案</h2>
+
+<div class="card">
+  <h3>CSS Modules</h3>
+  <p>项目使用 CSS Modules 进行样式隔离，每个组件的样式文件命名为 <code>xxx.module.css</code>：</p>
+<pre><code class="language-javascript">// 导入
+import styles from './AgentChat.module.css';
+
+// 使用（自动生成唯一类名）
+&lt;div className={styles.chatContainer}&gt;
+  &lt;div className={styles.messageList}&gt;...&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+  <p>CSS Modules 的好处是样式完全隔离，不会影响其他组件。类名在编译时会被自动转换为唯一的哈希值。</p>
+</div>
+
+<!-- ==================== Quiz ==================== -->
+<h2><span class="icon">🧪</span> 知识检验</h2>
+
+<div class="quiz" id="quiz1">
+  <h3>题目 1：布局模式</h3>
+  <p>当用户访问 <code>/share/abc123</code> 分享页面时，AppLayout 会渲染哪些布局组件？</p>
+  <div class="options">
+    <div onclick="checkAnswer(this,'quiz1',false)">A. Header + Sider + Content + Footer（完整布局）</div>
+    <div onclick="checkAnswer(this,'quiz1',false)">B. 只有 Content + Footer</div>
+    <div onclick="checkAnswer(this,'quiz1',true)">C. 只有一个简单的 div 包裹 children</div>
+    <div onclick="checkAnswer(this,'quiz1',false)">D. Header + Content（无 Sider）</div>
+  </div>
+  <button class="show-btn" onclick="toggleAnswer('quiz1')">显示解析</button>
+  <div class="answer" id="quiz1-answer">
+    <strong>答案 C</strong>。AppLayout 中有判断：<code>if (isSharePage || isEmbedPage || useMobileAppShell)</code>，满足条件时直接返回一个 <code>&lt;div style={{ minHeight: '100dvh' }}&gt;{children}&lt;/div&gt;</code>，不渲染 Header、Sider、Footer。这是因为分享页面需要全屏展示对话内容，不需要导航栏。
+  </div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <h3>题目 2：AgentChat 组件</h3>
+  <p>AgentChat 组件中，AI 回复的 Markdown 内容使用什么库进行流式渲染？</p>
+  <div class="options">
+    <div onclick="checkAnswer(this,'quiz2',false)">A. react-markdown（标准 Markdown 渲染）</div>
+    <div onclick="checkAnswer(this,'quiz2',false)">B. marked.js</div>
+    <div onclick="checkAnswer(this,'quiz2',true)">C. Streamdown（支持流式不完整 Markdown 渲染）</div>
+    <div onclick="checkAnswer(this,'quiz2',false)">D. highlight.js</div>
+  </div>
+  <button class="show-btn" onclick="toggleAnswer('quiz2')">显示解析</button>
+  <div class="answer" id="quiz2-answer">
+    <strong>答案 C</strong>。AgentChat 使用 <code>Streamdown</code> 库（从 <code>streamdown</code> 包导入），它支持在流式接收过程中实时渲染不完整的 Markdown。配合 <code>@streamdown/code</code>、<code>@streamdown/mermaid</code>、<code>@streamdown/math</code>、<code>@streamdown/cjk</code> 插件，支持代码高亮、图表、数学公式和中日韩字符。虽然 <code>react-markdown</code> 也被导入用于某些场景，但主要的流式渲染依赖 Streamdown。
+  </div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <h3>题目 3：组件组织</h3>
+  <p>项目中 <code>features/</code> 和 <code>common/</code> 目录的区别是什么？</p>
+  <div class="options">
+    <div onclick="checkAnswer(this,'quiz3',false)">A. features 放第三方库组件，common 放自定义组件</div>
+    <div onclick="checkAnswer(this,'quiz3',false)">B. features 放页面级组件，common 放布局组件</div>
+    <div onclick="checkAnswer(this,'quiz3',true)">C. features 放业务功能组件（按模块分），common 放跨模块复用的通用组件</div>
+    <div onclick="checkAnswer(this,'quiz3',false)">D. 没有区别，只是历史遗留</div>
+  </div>
+  <button class="show-btn" onclick="toggleAnswer('quiz3')">显示解析</button>
+  <div class="answer" id="quiz3-answer">
+    <strong>答案 C</strong>。<code>features/</code> 按业务模块组织（<code>agent/</code>、<code>mcp/</code>、<code>prompt/</code>、<code>share/</code>），每个模块下的组件只属于该业务。<code>common/</code> 放跨多个页面/模块复用的通用组件，如 <code>AgentChat</code>、<code>ChatMessage</code>、<code>ClaudeCodeTracker</code> 等。这种组织方式让代码更容易定位和维护。
+  </div>
+</div>
+
+<div class="nav-links">
+  <a href="0022-kuai-front-conversation-streaming.html">← 对话与流式处理</a>
+  <a href="../index.html">🗺️ 完整学习地图</a>
+  <a href="0024-kuai-front-api-routes.html">API Routes 解析 →</a>
+</div>
+
+</div>
+
+<script>
+function checkAnswer(el, quizId, correct) {
+  const options = el.parentNode.children;
+  for (let o of options) { o.style.pointerEvents = 'none'; }
+  if (correct) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    for (let o of options) {
+      if (o.onclick && o.onclick.toString().includes('true')) o.classList.add('correct');
+    }
+  }
+  document.getElementById(quizId + '-answer').classList.add('show');
+}
+function toggleAnswer(quizId) {
+  document.getElementById(quizId + '-answer').classList.toggle('show');
+}
+</script>
+</body>
+</html>

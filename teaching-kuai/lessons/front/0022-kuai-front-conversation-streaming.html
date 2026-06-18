@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0022 - 对话与流式处理详解</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:1rem}
+  .breadcrumb{color:var(--text-secondary);font-size:.85rem;margin-bottom:2rem}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .breadcrumb a:hover{text-decoration:underline}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.15rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem;color:var(--accent)}
+  p{margin-bottom:1rem}
+  .desc{color:var(--text-secondary);font-size:.95rem;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;overflow-x:auto;margin:1rem 0 1.5rem;font-size:.85rem;line-height:1.7}
+  code{font-family:'JetBrains Mono',monospace;font-size:.85em}
+  p code,li code{background:var(--code-bg);padding:.15rem .4rem;border-radius:4px;color:var(--accent)}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1.5rem 0}
+  .card.warn{border-color:#fbbf24;background:#fffbeb}
+  .card.info{border-color:#93c5fd;background:#eff6ff}
+  .card.success{border-color:#86efac;background:#f0fdf4}
+  .card.purple{border-color:#c4b5fd;background:#f5f3ff}
+  .card h3{margin-top:0}
+  .card ul,.card ol{margin:.5rem 0 0 1.25rem}
+  .card li{margin-bottom:.3rem}
+  .tag{display:inline-block;padding:.15rem .5rem;border-radius:4px;font-size:.75rem;font-weight:500;margin-right:.3rem}
+  .tag.deep{background:#fef3c7;color:#b45309}
+  .tag.code{background:#dbeafe;color:#2563eb}
+  .tag.arch{background:#f3e8ff;color:#7c3aed}
+  .quiz{background:var(--surface);border:2px solid var(--border);border-radius:8px;padding:1.5rem;margin:1.5rem 0}
+  .quiz h3{color:var(--info);margin-top:0}
+  .quiz ol{margin-left:1.25rem}
+  .quiz li{margin-bottom:1rem}
+  .quiz .options{margin:.5rem 0 0 1rem}
+  .quiz .options div{margin-bottom:.3rem;padding:.4rem .75rem;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s}
+  .quiz .options div:hover{border-color:var(--accent);background:var(--accent-light)}
+  .quiz .options div.correct{border-color:var(--success);background:#dcfce7;color:var(--success);font-weight:600}
+  .quiz .options div.wrong{border-color:#ef4444;background:#fef2f2;color:#ef4444}
+  .quiz .answer{margin-top:.75rem;padding:.75rem 1rem;background:#f0fdf4;border:1px solid #86efac;border-radius:6px;display:none;font-size:.9rem}
+  .quiz .answer.show{display:block}
+  .quiz .show-btn{display:inline-block;margin-top:.75rem;padding:.4rem 1rem;background:var(--accent);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:.85rem}
+  .quiz .show-btn:hover{opacity:.9}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.3rem}
+  .file-ref{display:inline-block;background:var(--code-bg);border:1px solid var(--border);border-radius:4px;padding:.1rem .5rem;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--purple)}
+  table{width:100%;border-collapse:collapse;margin:1rem 0 1.5rem;font-size:.9rem}
+  th,td{padding:.6rem 1rem;border:1px solid var(--border);text-align:left}
+  th{background:var(--code-bg);font-weight:600}
+  .flow-diagram{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:.8rem;line-height:2;overflow-x:auto;white-space:pre}
+  .nav-links{display:flex;justify-content:space-between;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+  .nav-links a{color:var(--accent);text-decoration:none;font-size:.9rem}
+  .nav-links a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="breadcrumb"><a href="../index.html">课程首页</a> &gt; kuai-service-front &gt; 0022 对话与流式处理详解</div>
+
+<h1>💬 对话与流式处理详解</h1>
+<p class="subtitle">深入理解 Agent 对话的流式架构、AsyncQueue 广播、后台持久化与断线恢复机制</p>
+<p class="desc">本课程聚焦 <code>src/lib/agents/</code> 目录下的核心模块，这是 Kuai 前端最复杂也最精妙的部分 — 它让 AI 对话像 ChatGPT 一样实时流式输出，同时支持浏览器关闭后任务继续运行。</p>
+
+<div class="card purple">
+  <h3>📚 前置知识</h3>
+  <ul>
+    <li><strong>JavaScript 异步编程</strong>：<code>async/await</code>、<code>Promise</code>、<code>for await...of</code> 循环</li>
+    <li><strong>AsyncIterator 协议</strong>：理解 <code>[Symbol.asyncIterator]</code> 和异步迭代器的基本概念</li>
+    <li><strong>ReadableStream / TransformStream</strong>：浏览器原生流式 API（Web Streams API）</li>
+    <li><strong>LangChain / LangGraph 基础</strong>：Agent、streamEvents、消息类型（HumanMessage/AIMessage/ToolMessage）</li>
+    <li><strong>MongoDB 基础</strong>：<code>findOneAndUpdate</code>、<code>$push</code>、<code>$set</code> 等操作符</li>
+    <li><strong>0020 课程</strong>：kuai-service-front 项目概览（了解目录结构和技术栈）</li>
+    <li><strong>0021 课程</strong>：Agent 系统架构（了解 Agent 注册和运行机制）</li>
+  </ul>
+</div>
+
+<!-- ==================== 整体架构 ==================== -->
+<h2><span class="icon">🏗️</span> 整体架构：chatStreamHandler</h2>
+
+<p><span class="tag arch">核心模块</span> 对话流处理的全部逻辑集中在 <span class="file-ref">src/lib/agents/chatStreamHandler.js</span> 中，这是一个近 1900 行的文件，是整个项目最核心的模块。</p>
+
+<h3>设计目标</h3>
+<div class="card info">
+  <ul>
+    <li><strong>解耦执行与连接</strong>：Agent 任务在后台独立运行，浏览器关闭不影响执行</li>
+    <li><strong>流式输出</strong>：用户看到文字像打字一样逐字出现（类似 ChatGPT）</li>
+    <li><strong>多消费者广播</strong>：同一个事件流同时送给前端展示和数据库持久化</li>
+    <li><strong>断线恢复</strong>：增量写入 MongoDB，用户刷新页面能恢复已完成的内容</li>
+  </ul>
+</div>
+
+<h3>核心数据流</h3>
+<div class="flow-diagram">┌─────────────────────────────────────────────────────────────────┐
+│                     chatStreamHandler 架构                       │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  前端 POST 请求                                                 │
+│       │                                                         │
+│       ▼                                                         │
+│  ┌──────────────────┐                                           │
+│  │  Agent 执行引擎   │  agent.streamEvents() — 生产者            │
+│  │  (LangGraph)     │                                           │
+│  └────────┬─────────┘                                           │
+│           │ event stream                                        │
+│           ▼                                                     │
+│  ┌──────────────────┐                                           │
+│  │  AsyncQueue      │  广播器 — 一进多出                         │
+│  │  broadcastAsync  │                                           │
+│  └──┬───────────┬───┘                                           │
+│     │           │                                               │
+│     ▼           ▼                                               │
+│  ┌──────┐  ┌──────────────┐                                     │
+│  │ 队列A │  │    队列B     │  两个独立消费者                      │
+│  └──┬───┘  └──────┬───────┘                                     │
+│     │             │                                             │
+│     ▼             ▼                                             │
+│  ┌──────┐  ┌──────────────┐                                     │
+│  │AI SDK│  │ persistIn-   │                                     │
+│  │ 流   │  │ Background() │  后台 DB 持久化                      │
+│  └──┬───┘  └──────┬───────┘                                     │
+│     │             │                                             │
+│     ▼             ▼                                             │
+│  ┌──────┐  ┌──────────────┐                                     │
+│  │ 前端  │  │   MongoDB    │                                     │
+│  │ SSE   │  │  增量写入    │                                     │
+│  └──────┘  └──────────────┘                                     │
+└─────────────────────────────────────────────────────────────────┘</div>
+
+<!-- ==================== AsyncQueue ==================== -->
+<h2><span class="icon">📡</span> AsyncQueue 广播机制</h2>
+
+<p><span class="tag code">核心设计</span> <code>AsyncQueue</code> 是一个自定义的异步队列，用于将生产者（Agent streamEvents）的事件分发给多个消费者（前端展示 + DB 持久化）。</p>
+
+<h3>AsyncQueue 实现原理</h3>
+<pre><code class="language-javascript">// src/lib/agents/chatStreamHandler.js
+
+class AsyncQueue {
+  constructor() {
+    this._queue = [];      // 待消费的事件缓冲区
+    this._resolve = null;  // 消费者的 Promise resolve 函数
+    this._done = false;    // 是否已结束
+    this._error = null;    // 错误信息
+  }
+
+  // 生产者：推入事件
+  push(value) {
+    if (this._done) return;
+    if (this._resolve) {
+      // 消费者正在等待，直接传递
+      this._resolve({ value, done: false });
+      this._resolve = null;
+    } else {
+      // 没有消费者等待，放入缓冲区
+      this._queue.push(value);
+    }
+  }
+
+  // 标记结束
+  end() {
+    this._done = true;
+    if (this._resolve) {
+      this._resolve({ value: undefined, done: true });
+    }
+  }
+
+  // 实现 AsyncIterator 协议，支持 for await...of
+  [Symbol.asyncIterator]() {
+    return {
+      next: () => {
+        if (this._queue.length > 0) {
+          return Promise.resolve({ value: this._queue.shift(), done: false });
+        }
+        if (this._done) {
+          return Promise.resolve({ value: undefined, done: true });
+        }
+        // 缓冲区为空，等待新事件
+        return new Promise((resolve, reject) => {
+          this._resolve = resolve;
+        });
+      },
+    };
+  }
+}</code></pre>
+
+<h3>广播函数</h3>
+<p><code>broadcastAsyncIterable</code> 接收一个源事件流，创建多个队列，后台循环将每个事件推入所有队列：</p>
+<pre><code class="language-javascript">function broadcastAsyncIterable(source, count) {
+  const queues = Array.from({ length: count }, () => new AsyncQueue());
+
+  // 后台消费源并分发
+  (async () => {
+    try {
+      for await (const event of source) {
+        for (const q of queues) {
+          q.push(event);  // 广播给所有消费者
+        }
+      }
+      for (const q of queues) q.end();
+    } catch (err) {
+      // 忽略前端断开导致的错误
+      if (err?.code === 'ERR_INVALID_STATE') {
+        for (const q of queues) q.end();
+        return;
+      }
+      for (const q of queues) q.throw(err);
+    }
+  })();
+
+  return queues;  // 返回两个独立的消费者队列
+}</code></pre>
+
+<div class="card success">
+  <h3>关键设计点</h3>
+  <ul>
+    <li><strong>解耦</strong>：消费者 A（前端）断开不影响消费者 B（DB持久化）继续运行</li>
+    <li><strong>背压处理</strong>：如果消费者消费慢，事件会堆积在缓冲区中</li>
+    <li><strong>错误隔离</strong>：前端断开（ERR_INVALID_STATE）会被优雅处理，不传播给 DB 管道</li>
+    <li><strong>2 个消费者</strong>：实际使用中 count=2，一个给 AI SDK 流，一个给 DB 持久化</li>
+  </ul>
+</div>
+
+<!-- ==================== 流式事件类型 ==================== -->
+<h2><span class="icon">📋</span> 流式事件类型</h2>
+
+<p><span class="tag code">事件系统</span> 定义在 <span class="file-ref">src/lib/agents/streamEventTypes.js</span> 中，统一管理所有事件类型。</p>
+
+<h3>三层事件体系</h3>
+<table>
+  <tr>
+    <th>层级</th>
+    <th>常量名</th>
+    <th>事件类型</th>
+    <th>说明</th>
+  </tr>
+  <tr>
+    <td rowspan="7"><strong>STREAM_EVENT_TYPE</strong><br>（应用层）</td>
+    <td>CONTENT</td>
+    <td><code>content</code></td>
+    <td>AI 生成的文本内容</td>
+  </tr>
+  <tr>
+    <td>TOOL_CALL</td>
+    <td><code>tool_call</code></td>
+    <td>工具调用请求</td>
+  </tr>
+  <tr>
+    <td>TOOL_START / TOOL_END</td>
+    <td><code>tool_start</code> / <code>tool_end</code></td>
+    <td>工具执行开始/结束</td>
+  </tr>
+  <tr>
+    <td>AGENT_START / AGENT_END</td>
+    <td><code>agent_start</code> / <code>agent_end</code></td>
+    <td>Agent 生命周期</td>
+  </tr>
+  <tr>
+    <td>TODO_UPDATE</td>
+    <td><code>todo_update</code></td>
+    <td>Todo 列表更新</td>
+  </tr>
+  <tr>
+    <td>DONE</td>
+    <td><code>done</code></td>
+    <td>对话完成</td>
+  </tr>
+  <tr>
+    <td>ERROR</td>
+    <td><code>error</code></td>
+    <td>执行出错</td>
+  </tr>
+  <tr>
+    <td rowspan="4"><strong>LANGCHAIN_EVENT_TYPE</strong><br>（LangChain 原生）</td>
+    <td>CHAT_MODEL_STREAM</td>
+    <td><code>on_chat_model_stream</code></td>
+    <td>LLM 流式输出（一个 token 一次）</td>
+  </tr>
+  <tr>
+    <td>TOOL_START / TOOL_END</td>
+    <td><code>on_tool_start</code> / <code>on_tool_end</code></td>
+    <td>工具调用生命周期</td>
+  </tr>
+  <tr>
+    <td>TOOL_ERROR</td>
+    <td><code>on_tool_error</code></td>
+    <td>工具执行出错</td>
+  </tr>
+  <tr>
+    <td>CHAIN_START / CHAIN_END</td>
+    <td><code>on_chain_start</code> / <code>on_chain_end</code></td>
+    <td>Agent 执行链生命周期</td>
+  </tr>
+</table>
+
+<h3>事件过滤：只处理关键事件</h3>
+<pre><code class="language-javascript">// 在 persistInBackground 中，只监听这些事件以提升性能
+const RELEVANT_EVENTS = new Set([
+  'on_chat_model_stream',  // LLM 文本输出
+  'on_tool_start',         // 工具开始
+  'on_tool_end',           // 工具结束
+  'on_tool_error',         // 工具错误
+  'on_chain_end',          // 链结束（含 todo 更新）
+]);</code></pre>
+
+<!-- ==================== 后台执行 ==================== -->
+<h2><span class="icon">⚙️</span> 后台执行与断线恢复</h2>
+
+<p><span class="tag arch">架构核心</span> 这是本项目最核心的设计 — Agent 任务与 HTTP 连接完全解耦。</p>
+
+<h3>后台持久化管道</h3>
+<p><code>persistInBackground()</code> 函数是 DB 持久化的核心，它：</p>
+<ol>
+  <li>消费 LangGraph streamEvents 流中的事件</li>
+  <li>实时累积文本内容（<code>state.content</code>）</li>
+  <li>跟踪工具调用状态（<code>state.toolCalls</code>）</li>
+  <li>维护有序的 parts 数组（交错的 text 和 tool）</li>
+  <li>节流写入 MongoDB（每 500ms 最多写一次）</li>
+</ol>
+
+<pre><code class="language-javascript">// 核心状态对象
+const state = {
+  content: '',           // AI 累积生成的文本
+  toolCalls: [],         // 工具调用记录数组
+  parts: [],             // 有序 parts（text 和 tool 交错）
+  todos: [],             // Todo 列表
+  lastDbUpdate: 0,       // 上次 DB 更新时间戳
+  currentTextSegment: '', // 当前正在累积的文本段
+};
+
+// 节流写入 DB
+const DB_UPDATE_INTERVAL_MS = 500;  // 每 500ms 最多写一次
+
+async function flushToDb(force = false) {
+  const now = Date.now();
+  if (!force && now - state.lastDbUpdate < DB_UPDATE_INTERVAL_MS) return;
+  state.lastDbUpdate = now;
+
+  await chatHistoryService.updateMessage(sessionId, messageKey, {
+    content: state.content,
+    toolCalls: state.toolCalls,
+    parts: [...state.parts],
+    todos: [...state.todos],
+    streaming: true,  // 标记为"正在流式传输中"
+  });
+}</code></pre>
+
+<h3>断线恢复流程</h3>
+<div class="flow-diagram">用户发送消息
+    │
+    ▼
+创建会话 + 消息记录（streaming: true）
+    │
+    ▼
+Agent 开始执行（后台持续运行）
+    │                          │
+    ▼                          ▼
+前端 SSE 流              DB 增量写入（streaming: true）
+    │                          │
+    ▼                          │
+用户关闭浏览器                   │
+    │                          │
+    ✗ 断开连接                  ▼
+                              Agent 继续执行...
+                              最终写入（streaming: false）
+    
+用户刷新页面
+    │
+    ▼
+从 MongoDB 加载会话
+    │
+    ▼
+最后一条消息 streaming=true？
+  → 是：显示为"正在思考..."（任务仍在后台运行）
+  → 否：显示完整结果（已完成）</div>
+
+<h3>任务注册表</h3>
+<pre><code class="language-javascript">// 全局任务注册表 — 跟踪所有正在运行的任务
+const runningTasks = new Map();
+
+// 终止任务
+export function abortTask(taskId) {
+  const task = runningTasks.get(taskId);
+  if (task) {
+    task.abortController.abort();  // 通过 AbortSignal 终止
+    runningTasks.delete(taskId);
+    return true;
+  }
+  return false;
+}
+
+// 查询运行中的任务
+export function getRunningTasks() {
+  return Array.from(runningTasks.values());
+}</code></pre>
+
+<!-- ==================== MongoDB 持久化 ==================== -->
+<h2><span class="icon">💾</span> MongoDB 增量持久化</h2>
+
+<p><span class="tag code">数据层</span> 会话持久化通过 <span class="file-ref">src/lib/agents/conversationStore.js</span> 实现，使用 MongoDB 的 <code>agent_conversations</code> 集合。</p>
+
+<h3>ConversationStore 核心操作</h3>
+<pre><code class="language-javascript">// src/lib/agents/conversationStore.js
+
+class ConversationStore {
+  constructor() {
+    this.collectionName = 'agent_conversations';
+  }
+
+  // 创建新会话
+  async createConversation(options) {
+    const conversation = {
+      id: `conv-${new ObjectId().toHexString()}`,
+      agentId: options.agentId,
+      userId: options.userId,
+      messages: [],
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    await collection.insertOne(conversation);
+    return conversation;
+  }
+
+  // 增量添加消息（$push 操作符）
+  async addMessage(conversationId, message) {
+    return await collection.findOneAndUpdate(
+      { id: conversationId },
+      {
+        $push: { messages: message },
+        $set: { updatedAt: new Date() },
+      },
+      { returnDocument: 'after' },
+    );
+  }
+
+  // 批量添加消息
+  async addMessages(conversationId, messages) {
+    return await collection.findOneAndUpdate(
+      { id: conversationId },
+      {
+        $push: { messages: { $each: messages } },
+        $set: { updatedAt: new Date() },
+      },
+      { returnDocument: 'after' },
+    );
+  }
+}</code></pre>
+
+<h3>Parts 数组：保留对话交错顺序</h3>
+<div class="card info">
+  <p>对话中的 text 和 tool_call 是<strong>交错出现</strong>的（AI 先说一段话，调用工具，再说一段话）。<code>parts</code> 数组精确记录了这个顺序：</p>
+<pre><code class="language-json">{
+  "parts": [
+    { "type": "text", "text": "让我帮你分析一下代码..." },
+    { "type": "tool", "toolName": "code_explore", "input": "...", "output": "...", "status": "done" },
+    { "type": "text", "text": "分析结果如下：..." },
+    { "type": "tool", "toolName": "file_reader", "input": "...", "output": "...", "status": "done" },
+    { "type": "text", "text": "以上是完整的分析。" }
+  ]
+}</code></pre>
+</div>
+
+<h3>Checkpointer：LangGraph 状态持久化</h3>
+<p>除了对话内容，LangGraph Agent 本身的状态也需要持久化。通过 <span class="file-ref">src/lib/agents/checkpointer.js</span> 使用官方 <code>MongoDBSaver</code>：</p>
+<pre><code class="language-javascript">// 使用官方 MongoDBSaver（单例模式）
+checkpointerInstance = new MongoDBSaver({
+  client,                    // MongoClient 实例
+  dbName: 'kuai',           // 数据库名
+  checkpointCollectionName: 'langgraph_checkpoints',
+});
+
+// 构建配置 — thread_id 关联对话线程
+const config = buildConfig({ threadId: "thread-123" });
+
+// Agent 自动加载历史状态，只传递新消息
+await agent.invoke({ messages: [newMessage] }, { ...config, checkpointer });</code></pre>
+
+<!-- ==================== 完整执行流程 ==================== -->
+<h2><span class="icon">🔄</span> 完整执行流程</h2>
+
+<p>以 <code>POST /api/agents/[id]/chat</code> 为例，完整流程如下：</p>
+
+<div class="card">
+  <ol>
+    <li><strong>接收请求</strong>：解析 agentId、message、sessionId</li>
+    <li><strong>会话管理</strong>：创建或复用 MongoDB 会话</li>
+    <li><strong>历史加载</strong>：从 DB 加载历史消息，转换为 LangChain 格式</li>
+    <li><strong>消息去重</strong>：避免重复发送相同消息</li>
+    <li><strong>Agent 执行</strong>：调用 <code>agent.streamEvents()</code> 启动流式执行</li>
+    <li><strong>事件广播</strong>：<code>broadcastAsyncIterable()</code> 创建 2 个队列</li>
+    <li><strong>前端流</strong>：队列 A → <code>toUIMessageStream()</code> → AI SDK 响应</li>
+    <li><strong>DB 持久化</strong>：队列 B → <code>persistInBackground()</code> → MongoDB</li>
+    <li><strong>HTTP 响应返回</strong>：SSE 流开始推送到前端</li>
+    <li><strong>后台继续</strong>：即使前端断开，DB 管道继续运行直到完成</li>
+  </ol>
+</div>
+
+<!-- ==================== Quiz ==================== -->
+<h2><span class="icon">🧪</span> 知识检验</h2>
+
+<div class="quiz" id="quiz1">
+  <h3>题目 1：AsyncQueue 广播</h3>
+  <p>在 chatStreamHandler 中，<code>broadcastAsyncIterable()</code> 创建了几个消费者队列？</p>
+  <div class="options">
+    <div onclick="checkAnswer(this,'quiz1',false)">A. 1 个 — 只给前端展示</div>
+    <div onclick="checkAnswer(this,'quiz1',true)">B. 2 个 — 一个给前端流，一个给 DB 持久化</div>
+    <div onclick="checkAnswer(this,'quiz1',false)">C. 3 个 — 前端、DB、日志各一个</div>
+    <div onclick="checkAnswer(this,'quiz1',false)">D. 不固定，根据连接数动态创建</div>
+  </div>
+  <button class="show-btn" onclick="toggleAnswer('quiz1')">显示解析</button>
+  <div class="answer" id="quiz1-answer">
+    <strong>答案 B</strong>。代码中 <code>broadcastAsyncIterable(source, 2)</code> 固定创建 2 个 AsyncQueue：队列 A 通过 <code>toUIMessageStream()</code> 转换为 AI SDK 响应流返回给前端，队列 B 传入 <code>persistInBackground()</code> 进行增量 DB 写入。两个消费者互相独立，前端断开不影响 DB 管道。
+  </div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <h3>题目 2：断线恢复</h3>
+  <p>当用户在 AI 生成过程中关闭浏览器，然后重新打开页面，系统如何判断消息是否还在生成中？</p>
+  <div class="options">
+    <div onclick="checkAnswer(this,'quiz2',false)">A. 检查 WebSocket 连接状态</div>
+    <div onclick="checkAnswer(this,'quiz2',false)">B. 检查 runningTasks 注册表</div>
+    <div onclick="checkAnswer(this,'quiz2',true)">C. 检查 MongoDB 中消息的 streaming 字段</div>
+    <div onclick="checkAnswer(this,'quiz2',false)">D. 检查 localStorage 中的标记</div>
+  </div>
+  <button class="show-btn" onclick="toggleAnswer('quiz2')">显示解析</button>
+  <div class="answer" id="quiz2-answer">
+    <strong>答案 C</strong>。每条消息在写入 MongoDB 时都有一个 <code>streaming</code> 字段：<code>true</code> 表示正在生成中，<code>false</code> 表示已完成。当用户刷新页面加载历史会话时，前端检查最后一条 assistant 消息的 <code>streaming</code> 值 — 如果为 <code>true</code>，说明后台可能还在执行（或异常中断），前端显示"思考中"状态。
+  </div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <h3>题目 3：节流写入</h3>
+  <p>persistInBackground 中 DB 写入的节流间隔是多少？为什么需要节流？</p>
+  <div class="options">
+    <div onclick="checkAnswer(this,'quiz3',false)">A. 100ms — 为了减少网络延迟</div>
+    <div onclick="checkAnswer(this,'quiz3',true)">B. 500ms — 减少 MongoDB 写入频率，避免压垮数据库</div>
+    <div onclick="checkAnswer(this,'quiz3',false)">C. 1000ms — 等待足够的内容积累再写入</div>
+    <div onclick="checkAnswer(this,'quiz3',false)">D. 不节流，每个事件都立即写入</div>
+  </div>
+  <button class="show-btn" onclick="toggleAnswer('quiz3')">显示解析</button>
+  <div class="answer" id="quiz3-answer">
+    <strong>答案 B</strong>。<code>DB_UPDATE_INTERVAL_MS = 500</code>，即每 500ms 最多写一次 MongoDB。LLM 每秒可能产生数十个 token 事件，如果每个事件都写 DB 会产生大量写操作。节流后写入频率降低到每秒 2 次，显著减轻 MongoDB 压力。工具开始/结束事件会强制写入（<code>flushToDb(true)</code>），确保重要状态变更立即持久化。
+  </div>
+</div>
+
+<div class="nav-links">
+  <a href="0021-kuai-front-prompt-management.html">← Prompt 管理界面</a>
+  <a href="../index.html">🗺️ 完整学习地图</a>
+  <a href="0023-kuai-front-component-architecture.html">组件架构与布局 →</a>
+</div>
+
+</div>
+
+<script>
+function checkAnswer(el, quizId, correct) {
+  const options = el.parentNode.children;
+  for (let o of options) { o.style.pointerEvents = 'none'; }
+  if (correct) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    for (let o of options) {
+      if (o.onclick && o.onclick.toString().includes('true')) o.classList.add('correct');
+    }
+  }
+  document.getElementById(quizId + '-answer').classList.add('show');
+}
+function toggleAnswer(quizId) {
+  document.getElementById(quizId + '-answer').classList.toggle('show');
+}
+</script>
+</body>
+</html>

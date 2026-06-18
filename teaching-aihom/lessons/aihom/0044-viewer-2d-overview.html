@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>044 viewer-2d 项目全景</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root { --bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb; }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:780px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:.95rem;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  h2{font-size:1.35rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem}
+  h3{font-size:1.1rem;font-weight:500;margin-top:1.5rem;margin-bottom:.75rem;color:var(--accent)}
+  p{margin-bottom:1rem}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0}
+  .card.info{border-left:3px solid var(--info)}.card.warning{border-left:3px solid var(--warning)}.card.success{border-left:3px solid var(--success)}
+  .card-label{font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+  .card.info .card-label{color:var(--info)}.card.warning .card-label{color:var(--warning)}.card.success .card-label{color:var(--success)}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15em .4em;border-radius:4px;font-size:.88em}
+  pre{background:#1c1917;color:#e7e5e4;padding:1.25rem 1.5rem;border-radius:8px;overflow-x:auto;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.6}
+  pre .comment{color:#78716c}pre .keyword{color:#f59e0b}pre .string{color:#86efac}pre .dir{color:#93c5fd}pre .file{color:#e7e5e4}pre .important{color:#fbbf24;font-weight:500}
+  table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.92rem}
+  th,td{text-align:left;padding:.6rem .8rem;border-bottom:1px solid var(--border)}
+  th{font-weight:500;color:var(--text-secondary);font-size:.82rem;text-transform:uppercase;letter-spacing:.04em}
+  .quiz{background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0}
+  .quiz-title{font-weight:700;margin-bottom:.75rem;color:var(--accent)}
+  .quiz-options{list-style:none}.quiz-options li{padding:.5rem .75rem;margin:.35rem 0;border-radius:6px;cursor:pointer;transition:background .15s;border:1px solid transparent}
+  .quiz-options li:hover{background:#fde68a33;border-color:#fbbf24}
+  .quiz-options li.correct{background:#dcfce7;border-color:#16a34a}.quiz-options li.wrong{background:#fee2e2;border-color:#ef4444}
+  .quiz-feedback{margin-top:.75rem;padding:.75rem;border-radius:6px;display:none;font-size:.9rem}
+  .flow{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin:1rem 0;font-size:.9rem}
+  .flow-step{background:var(--surface);border:1px solid var(--border);padding:.4rem .8rem;border-radius:6px;white-space:nowrap}
+  .flow-arrow{color:var(--text-secondary)}
+  .next-lesson{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+  .next-lesson a{color:var(--accent);text-decoration:none;font-weight:500}.next-lesson a:hover{text-decoration:underline}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
+  .ask-agent::before{content:'💡 '}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.3rem}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>044 viewer-2d 项目全景</h1>
+<p class="subtitle">理解 2D 户型渲染器的架构、核心系统和数据流</p>
+
+<h2>1. 这个项目是什么</h2>
+<p><code>viewer-2d</code> 是 AI Home 的 <strong>2D 户型渲染器</strong>。它在浏览器中绘制户型图 — 墙体、门窗、房间、家具、标注 — 并处理用户的选中、拖拽、缩放、旋转等交互。</p>
+
+<div class="card info">
+  <div class="card-label">一句话定位</div>
+  <p>基于 PixiJS + KAF 的 <strong>2D 场景插件</strong>，嵌入 ai-home 主应用的 iframe 中，负责"画户型图 + 处理交互"。</p>
+</div>
+
+<h2>2. 技术栈</h2>
+<table>
+  <tr><th>技术</th><th>版本</th><th>用途</th></tr>
+  <tr><td>React</td><td>16.x</td><td>UI 视图层</td></tr>
+  <tr><td>TypeScript</td><td>~3.8.3</td><td>类型安全（较老版本，注意兼容性）</td></tr>
+  <tr><td>PixiJS</td><td>@qunhe/pixi.js</td><td>2D WebGL 渲染引擎</td></tr>
+  <tr><td>KAF</td><td>@qunhe/kaf</td><td>插件化框架 + StateManager + Scene2D</td></tr>
+  <tr><td>Rspack</td><td>@rspack/core</td><td>构建工具</td></tr>
+  <tr><td>SCSS</td><td>-</td><td>样式（CSS Modules + styled-components 混用）</td></tr>
+</table>
+
+<div class="card warning">
+  <div class="card-label">注意</div>
+  <p>TypeScript 版本是 3.8，很老。不能用现代 TS 特性。禁止在仓库内直接运行 <code>tsc</code>（会污染 src/），用 <code>kjl ci:lint</code> 做检查。</p>
+</div>
+
+<h2>3. 核心架构</h2>
+<p>viewer-2d 不是一个纯 React 页面，而是 <strong>React 视图 + KAF StateManager + Scene2D 场景</strong> 的组合：</p>
+
+<pre>
+┌─────────────────────────────────────────────┐
+│  <span class="important">ai-home (父页面)</span>                           │
+│  通过 iframe 嵌入 viewer-2d                  │
+│  postMessage 双向通信                        │
+└──────────────────┬──────────────────────────┘
+                   │ postMessage
+┌──────────────────▼──────────────────────────┐
+│  <span class="important">viewer-2d</span>                                   │
+│                                              │
+│  ┌─────────────┐  ┌──────────────────────┐  │
+│  │ React 视图   │  │ Scene2D (PixiJS)     │  │
+│  │ - 左面板     │  │ - 墙体/门窗/房间     │  │
+│  │ - 尺寸标注   │  │ - 家具/标注          │  │
+│  │ - 加载态     │  │ - 拖拽/缩放/旋转     │  │
+│  └──────┬──────┘  └──────────┬───────────┘  │
+│         │                    │               │
+│  ┌──────▼────────────────────▼───────────┐  │
+│  │       RootStateManager (KAF)          │  │
+│  │  scene2D + selectedControl + layout   │  │
+│  │  + outside + leftPanel                │  │
+│  └───────────────────────────────────────┘  │
+└─────────────────────────────────────────────┘
+</pre>
+
+<h2>4. 关键目录</h2>
+<pre>
+src/
+├── <span class="dir">pages/coohom-tool-bim-ai-home-viewer-2d/</span>
+│   ├── entry.tsx          <span class="comment"># 页面入口，挂载到运行环境</span>
+│   └── plugin.ts          <span class="comment"># 插件入口，初始化 RootStateManager</span>
+├── <span class="dir">app/</span>
+│   ├── App.tsx            <span class="comment"># 主应用组件，容器尺寸 + Scene2D 挂载</span>
+│   ├── state.ts           <span class="comment"># RootStateManager（核心！）</span>
+│   ├── <span class="dir">Scene2D/</span>
+│   │   ├── DfScene2d.tsx  <span class="comment"># Scene2D 组件，注册视图/系统/推理</span>
+│   │   └── state.ts       <span class="comment"># Scene2D 状态</span>
+│   ├── <span class="dir">Entities/</span>          <span class="comment"># 领域实体（门窗/房间/标注的 2D 表现）</span>
+│   ├── <span class="dir">Tools/</span>             <span class="comment"># 交互工具（选中/拖拽/绘制）</span>
+│   └── <span class="dir">views/</span>             <span class="comment"># UI 视图（左面板/房间信息/标注）</span>
+├── <span class="dir">StateManager/</span>
+│   ├── index.ts           <span class="comment"># connect/dispatch/setRootState</span>
+│   ├── OutsideStateManager.ts  <span class="comment"># 父页面通信</span>
+│   └── LeftPanelStateManager.ts
+├── <span class="dir">modules/</span>              <span class="comment"># 横切模块（布局/推理/变换/选中）</span>
+├── <span class="dir">drawSVG/</span>              <span class="comment"># SVG → Pixi 图形绘制</span>
+├── <span class="dir">documentSource/</span>       <span class="comment"># 文档数据与房间信息同步</span>
+├── <span class="dir">helpers/</span>              <span class="comment"># 推送服务、环境桥接</span>
+└── <span class="dir">model/</span>                <span class="comment"># 领域模型</span>
+</pre>
+
+<h2>5. 核心概念</h2>
+
+<h3>RootStateManager</h3>
+<p>整个应用的"状态中枢"，组合了 <code>scene2D</code>、<code>selectedControl</code>、<code>layout</code>、<code>outside</code>、<code>leftPanel</code> 等子状态。React 通过 <code>connect()</code> 连接它。</p>
+
+<h3>Scene2D</h3>
+<p>PixiJS 驱动的 2D 场景。在 <code>DfScene2d.tsx</code> 的 <code>onInit</code> 中注册视图、系统和推理能力。所有 2D 渲染都在这里。</p>
+
+<h3>Entities（实体）</h3>
+<p>领域对象的 2D 可视化 — 门、窗、房间、标注等，每个实体有自己的 Drawable 绑定。</p>
+
+<h3>OutsideStateManager</h3>
+<p>负责与父页面（ai-home）的 postMessage 通信。同步房间信息、预览图、显示规则等。</p>
+
+<h2>6. 自检 Quiz</h2>
+
+<div class="quiz" id="quiz1">
+  <div class="quiz-title">Q1: viewer-2d 的 2D 渲染引擎是？</div>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz1',0)">A. Three.js</li>
+    <li onclick="checkQuiz('quiz1',1)">B. PixiJS</li>
+    <li onclick="checkQuiz('quiz1',2)">C. Canvas 2D API</li>
+    <li onclick="checkQuiz('quiz1',3)">D. SVG.js</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <div class="quiz-title">Q2: Scene2D 初始化的关键入口是？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz2',0)">A. App.tsx 的 componentDidMount</li>
+    <li onclick="checkQuiz('quiz2',1)">B. entry.tsx 的 render</li>
+    <li onclick="checkQuiz('quiz2',2)">C. DfScene2d.tsx 的 onInit</li>
+    <li onclick="checkQuiz('quiz2',3)">D. plugin.ts 的 setRootState</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <div class="quiz-title">Q3: viewer-2d 与 ai-home 父页面的通信方式是？</div>
+  <ul class="quiz-options" data-correct="0">
+    <li onclick="checkQuiz('quiz3',0)">A. postMessage / iframe 协议</li>
+    <li onclick="checkQuiz('quiz3',1)">B. WebSocket</li>
+    <li onclick="checkQuiz('quiz3',2)">C. HTTP REST API</li>
+    <li onclick="checkQuiz('quiz3',3)">D. 共享内存</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+
+</div>
+</div>
+<script>
+function checkQuiz(q,s){const o=document.getElementById(q).querySelector('.quiz-options'),c=parseInt(o.dataset.correct),i=o.querySelectorAll('li'),f=document.getElementById(q).querySelector('.quiz-feedback');i.forEach((x,n)=>{x.onclick=null;if(n===c)x.classList.add('correct');if(n===s&&n!==c)x.classList.add('wrong')});const fb={q1:{c:'✓ 对！viewer-2d 使用 PixiJS（@qunhe/pixi.js）作为 2D 渲染引擎。',w:'✗ 是 PixiJS。项目使用 @qunhe/pixi.js 做 WebGL 2D 渲染。'},q2:{c:'✓ 对！DfScene2d.tsx 的 onInit 是 Scene2D 初始化的关键入口，注册视图、系统和推理能力。',w:'✗ 是 DfScene2d.tsx 的 onInit。这是 Scene2D 初始化的核心入口。'},q3:{c:'✓ 对！viewer-2d 嵌入 ai-home 的 iframe 中，通过 postMessage 协议双向通信。',w:'✗ 是 postMessage / iframe 协议。viewer-2d 作为 iframe 嵌入 ai-home，通过 postMessage 同步数据。'}};f.style.display='block';f.textContent=s===c?fb[q].c:fb[q].w;f.style.background=s===c?'#dcfce7':'#fee2e2'}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 044</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0043-ai-home-frontend-overview.html">上一课：043 ai-home 前端项目全景</a><a class="primary" href="0045-render-3d-overview.html">下一课：045 render-3d 项目全景</a></div></nav>
+</body>
+</html>

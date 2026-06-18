@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spring Boot 基础入门</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:2rem}
+  .breadcrumb{color:var(--text-secondary);font-size:.85rem;margin-bottom:1.5rem}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .breadcrumb a:hover{text-decoration:underline}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.15rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem}
+  p{margin-bottom:1rem}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15rem .4rem;border-radius:4px;font-size:.88em}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;overflow-x:auto;margin:1rem 0;font-size:.88rem;line-height:1.6}
+  pre code{background:none;padding:0}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.4rem}
+  .tag{display:inline-block;padding:.1rem .4rem;border-radius:4px;font-size:.7rem;font-weight:500;margin-right:.3rem}
+  .tag.overview{background:#dbeafe;color:#2563eb}
+  .tag.concept{background:#f3e8ff;color:#7c3aed}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0}
+  .card-title{font-weight:600;margin-bottom:.5rem;font-size:1.05rem}
+  .module-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin:1rem 0}
+  .module-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;transition:all .2s}
+  .module-card:hover{border-color:var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .module-card h4{font-size:1rem;font-weight:600;margin-bottom:.35rem}
+  .module-card p{color:var(--text-secondary);font-size:.9rem;margin:0}
+  .quiz-section{background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:1.5rem;margin-top:2.5rem}
+  .quiz-section h2{margin-top:0;color:var(--accent)}
+  .quiz-q{margin-bottom:1.5rem}
+  .quiz-q .q-title{font-weight:600;margin-bottom:.5rem}
+  .quiz-q label{display:block;padding:.4rem .75rem;margin:.3rem 0;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s;background:var(--surface)}
+  .quiz-q label:hover{border-color:var(--accent)}
+  .quiz-q input[type="radio"]{margin-right:.5rem}
+  .quiz-q .answer{display:none;margin-top:.5rem;padding:.75rem 1rem;border-radius:6px;font-size:.9rem}
+  .quiz-q .answer.correct{background:#dcfce7;color:#166534;border:1px solid #86efac}
+  .quiz-q .answer.wrong{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
+  .ask-agent::before{content:'💡 '}
+  .nav-links{display:flex;justify-content:space-between;margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+  .nav-links a{color:var(--accent);text-decoration:none;font-weight:500}
+  .nav-links a:hover{text-decoration:underline}
+  .highlight{background:var(--accent-light);padding:.1rem .3rem;border-radius:3px}
+  table{width:100%;border-collapse:collapse;margin:1rem 0}
+  th,td{padding:.6rem .8rem;border:1px solid var(--border);text-align:left;font-size:.9rem}
+  th{background:var(--code-bg);font-weight:600}
+</style>
+<script>
+function checkAnswer(qId, correct, el){
+  var ans=el.parentElement.parentElement.querySelector('.answer');
+  if(el.value===correct){ans.className='answer correct';ans.innerHTML='✅ 正确！';ans.style.display='block'}
+  else{ans.className='answer wrong';ans.innerHTML='❌ 错误，正确答案是 '+correct+'。';ans.style.display='block'}
+}
+</script>
+</head>
+<body>
+<div class="container">
+
+<div class="breadcrumb"><a href="../lessons/index.html">课程首页</a> &gt; 概念教程 &gt; Spring Boot 基础入门</div>
+
+<h1>☕ Spring Boot 基础入门</h1>
+<p class="subtitle"><span class="tag concept">概念</span> 从零了解 Spring Boot，理解核心注解和配置，跑通第一个 Hello World</p>
+
+<!-- ============ 1. 什么是 Spring Boot ============ -->
+<h2><span class="icon">🤔</span> 什么是 Spring Boot？</h2>
+<p>Spring Boot 是基于 <strong>Spring 框架</strong>的快速开发工具。简单来说，它帮你<strong>省去了大量繁琐的配置</strong>，让你能专注于写业务代码。</p>
+<p>用一个生活中的比喻：</p>
+<div class="card">
+  <p class="card-title">🏠 装修比喻</p>
+  <p>传统 Spring 就像毛坯房 —— 你需要自己装水电、铺地板、刷墙，每一步都要手动配置。<br>
+  Spring Boot 就像精装修拎包入住 —— 水电、地板、墙面都帮你搞好了，你只需要把家具搬进去（写业务代码）。</p>
+</div>
+
+<h3>Spring Boot 的核心优势</h3>
+<ul>
+  <li><strong>自动配置</strong>：根据你引入的依赖，自动帮你配置好大部分东西</li>
+  <li><strong>起步依赖（Starter）</strong>：一个 <code>pom.xml</code> 依赖就能引入一整套相关库</li>
+  <li><strong>内嵌服务器</strong>：不用安装 Tomcat，直接 <code>java -jar</code> 就能运行</li>
+  <li><strong>约定大于配置</strong>：遵循默认约定，减少决策成本</li>
+</ul>
+
+<!-- ============ 2. 为什么用它 ============ -->
+<h2><span class="icon">💡</span> 为什么不用传统 Java Web？</h2>
+<p>在没有 Spring Boot 之前，搭建一个 Java Web 项目需要：</p>
+<ol>
+  <li>安装并配置 Tomcat 服务器</li>
+  <li>编写 <code>web.xml</code> 部署描述文件</li>
+  <li>手动配置 Spring 的 XML 文件（一大堆 bean 定义）</li>
+  <li>手动管理依赖版本冲突</li>
+</ol>
+<p>Spring Boot 把这些全部自动化了。来看看对比：</p>
+
+<table>
+  <tr><th>对比项</th><th>传统 Java Web</th><th>Spring Boot</th></tr>
+  <tr><td>配置方式</td><td>XML 配置文件（几十上百行）</td><td>注解 + <code>application.yml</code>（几行搞定）</td></tr>
+  <tr><td>服务器</td><td>单独安装 Tomcat</td><td>内嵌，直接运行 main 方法</td></tr>
+  <tr><td>依赖管理</td><td>手动引入，容易版本冲突</td><td>Starter 统一管理版本</td></tr>
+  <tr><td>启动一个接口</td><td>~50 行代码 + 配置</td><td>~10 行代码，零配置</td></tr>
+  <tr><td>开发效率</td><td>慢，配置多</td><td>快，约定大于配置</td></tr>
+</table>
+
+<!-- ============ 3. 核心概念 ============ -->
+<h2><span class="icon">🧩</span> 核心注解与配置</h2>
+<p>Spring Boot 中你会频繁遇到以下几个东西，先混个脸熟：</p>
+
+<h3>3.1 @SpringBootApplication —— 启动入口</h3>
+<p>这个注解放在<strong>主类</strong>上，表示"这是一个 Spring Boot 应用"。它其实是三个注解的组合：</p>
+<pre><code>@SpringBootApplication  // = @Configuration + @EnableAutoConfiguration + @ComponentScan
+public class KuaiServiceApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(KuaiServiceApplication.class, args);
+    }
+}</code></pre>
+<p><code>@ComponentScan</code> 会让 Spring 自动扫描当前包及子包下所有带注解的类（比如 <code>@RestController</code>、<code>@Service</code>），把它们注册到容器里。</p>
+
+<h3>3.2 @RestController —— 接口控制器</h3>
+<p>标记一个类为"REST 接口"，浏览器或前端发 HTTP 请求时，就会调用这个类里的方法。</p>
+<pre><code>@RestController
+public class HelloController {
+
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello, Spring Boot!";
+    }
+}</code></pre>
+<p>访问 <code>http://localhost:8080/hello</code>，浏览器就会显示 <code>Hello, Spring Boot!</code></p>
+
+<h3>3.3 @Service —— 业务逻辑层</h3>
+<p>标记一个类为"服务"，专门放业务逻辑。Controller 负责接收请求，Service 负责处理具体事情。</p>
+<pre><code>@Service
+public class UserService {
+    public String getUserName(Long id) {
+        // 这里写查询数据库等业务逻辑
+        return "用户" + id;
+    }
+}</code></pre>
+
+<h3>3.4 @Autowired / @Resource —— 自动注入</h3>
+<p>Spring 的核心功能：<strong>依赖注入（DI）</strong>。你不用自己 <code>new</code> 对象，Spring 会自动帮你创建并注入进来。</p>
+<pre><code>@RestController
+public class UserController {
+
+    @Autowired  // Spring 自动把 UserService 实例注入进来
+    private UserService userService;
+
+    @GetMapping("/user/{id}")
+    public String getUser(@PathVariable Long id) {
+        return userService.getUserName(id);
+    }
+}</code></pre>
+<div class="card">
+  <p class="card-title"><code>@Autowired</code> vs <code>@Resource</code> 区别</p>
+  <p><code>@Autowired</code>：Spring 提供的，按<strong>类型</strong>匹配<br>
+     <code>@Resource</code>：Java 标准注解，按<strong>名称</strong>匹配<br>
+     在实际项目中两者经常混用，效果类似。</p>
+</div>
+
+<h3>3.5 application.yml —— 配置文件</h3>
+<p>所有可配置项都写在这里，比如端口号、数据库连接等：</p>
+<pre><code>server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/kuai
+    username: root
+    password: 123456</code></pre>
+<p>对比传统 XML 配置动辄几百行，YAML 格式简洁直观。</p>
+
+<!-- ============ 4. Hello World ============ -->
+<h2><span class="icon">🚀</span> 动手：Hello World 示例</h2>
+<p>一个最小的 Spring Boot 项目只需要这些东西：</p>
+
+<h3>第一步：pom.xml 引入依赖</h3>
+<pre><code>&lt;parent&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
+    &lt;version&gt;3.2.0&lt;/version&gt;
+&lt;/parent&gt;
+
+&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;  &lt;!-- Web 开发起步依赖 --&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+
+<h3>第二步：写主类</h3>
+<pre><code>@SpringBootApplication
+public class DemoApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(DemoApplication.class, args);
+    }
+}</code></pre>
+
+<h3>第三步：写 Controller</h3>
+<pre><code>@RestController
+public class HelloController {
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello, Spring Boot!";
+    }
+}</code></pre>
+
+<h3>第四步：运行</h3>
+<p>运行 <code>main</code> 方法，控制台会出现 Spring Boot 的 banner，表示启动成功。打开浏览器访问 <code>http://localhost:8080/hello</code> 即可。</p>
+<p><strong>就这么简单！</strong>不需要安装 Tomcat，不需要写 XML，不需要配置 web.xml。</p>
+
+<div class="ask-agent">
+  <strong>试试问 Agent：</strong>"Spring Boot 的自动配置原理是什么？" 或者 "@Controller 和 @RestController 有什么区别？"
+</div>
+
+<!-- ============ Quiz ============ -->
+<div class="quiz-section">
+  <h2><span class="icon">📝</span> Quiz — 检验你的理解</h2>
+
+  <div class="quiz-q">
+    <div class="q-title">Q1: @SpringBootApplication 注解包含了以下哪些注解？</div>
+    <label><input type="radio" name="q1" value="A" onclick="checkAnswer('q1','A',this)"> A. @Configuration + @EnableAutoConfiguration + @ComponentScan</label>
+    <label><input type="radio" name="q1" value="B" onclick="checkAnswer('q1','B',this)"> B. @Controller + @Service + @Repository</label>
+    <label><input type="radio" name="q1" value="C" onclick="checkAnswer('q1','C',this)"> C. @Autowired + @Resource + @Bean</label>
+    <div class="answer"></div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-title">Q2: @Autowired 和 @Resource 的主要区别是什么？</div>
+    <label><input type="radio" name="q2" value="A" onclick="checkAnswer('q2','A',this)"> A. @Autowired 按类型匹配，@Resource 按名称匹配</label>
+    <label><input type="radio" name="q2" value="B" onclick="checkAnswer('q2','B',this)"> B. @Autowired 按名称匹配，@Resource 按类型匹配</label>
+    <label><input type="radio" name="q2" value="C" onclick="checkAnswer('q2','C',this)"> C. 它们完全一样，没有区别</label>
+    <div class="answer"></div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-title">Q3: Spring Boot 项目启动后，默认监听哪个端口？</div>
+    <label><input type="radio" name="q3" value="A" onclick="checkAnswer('q3','A',this)"> A. 3000</label>
+    <label><input type="radio" name="q3" value="B" onclick="checkAnswer('q3','B',this)"> B. 8080</label>
+    <label><input type="radio" name="q3" value="C" onclick="checkAnswer('q3','C',this)"> C. 80</label>
+    <div class="answer"></div>
+  </div>
+</div>
+
+<div class="nav-links">
+  <a href="../lessons/index.html">← 返回课程首页</a>
+  <a href="mybatis-plus-basics.html">下一课：MyBatis-Plus 基础 →</a>
+</div>
+
+</div>
+</body>
+</html>

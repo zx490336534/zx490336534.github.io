@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Next.js App Router 基础入门</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.5rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:2rem}
+  .desc{color:var(--text-secondary);font-size:.95rem;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.15rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem}
+  p{margin-bottom:1rem}
+  ul{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.5rem}
+  ol{margin:.5rem 0 1rem 1.5rem}ol li{margin-bottom:.5rem}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15rem .4rem;border-radius:4px;font-size:.88em}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0;overflow-x:auto;font-size:.88rem;line-height:1.6}
+  pre code{background:none;padding:0}
+  .tag{display:inline-block;padding:.1rem .4rem;border-radius:4px;font-size:.7rem;font-weight:500;margin-right:.3rem}
+  .tag.overview{background:#dbeafe;color:#2563eb}
+  .tag.concept{background:#dcfce7;color:#16a34a}
+  .tag.code{background:#fef3c7;color:#b45309}
+  .callout{border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0;font-size:.9rem}
+  .callout.info{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
+  .callout.tip{background:var(--accent-light);border:1px solid #fbbf24;color:var(--accent)}
+  .callout.warning{background:#fef2f2;border:1px solid #fecaca;color:#b91c1c}
+  .callout::before{font-weight:700;margin-right:.3rem}
+  .callout.info::before{content:'💡 '}
+  .callout.tip::before{content:'📌 '}
+  .callout.warning::before{content:'⚠️ '}
+  table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.9rem}
+  th,td{border:1px solid var(--border);padding:.6rem .8rem;text-align:left}
+  th{background:var(--code-bg);font-weight:600}
+  .quiz-section{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1.5rem 0}
+  .quiz-section h3{color:var(--accent);margin-bottom:1rem}
+  .quiz-q{margin-bottom:1.5rem}
+  .quiz-q p{font-weight:600;margin-bottom:.5rem}
+  .quiz-q label{display:block;padding:.5rem .75rem;margin:.3rem 0;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .2s;font-size:.9rem}
+  .quiz-q label:hover{border-color:var(--accent);background:var(--accent-light)}
+  .quiz-q input[type="radio"]{margin-right:.5rem}
+  .quiz-btn{background:var(--accent);color:white;border:none;padding:.6rem 1.5rem;border-radius:6px;cursor:pointer;font-size:.95rem;font-weight:500;margin-top:1rem}
+  .quiz-btn:hover{opacity:.9}
+  .quiz-result{margin-top:1rem;padding:1rem;border-radius:6px;font-weight:500;display:none}
+  .quiz-result.pass{background:#dcfce7;color:#16a34a;border:1px solid #86efac}
+  .quiz-result.fail{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}
+  .back-link{display:inline-block;margin-bottom:2rem;color:var(--accent);text-decoration:none;font-size:.9rem}
+  .back-link:hover{text-decoration:underline}
+  .breadcrumb{color:var(--text-secondary);font-size:.85rem;margin-bottom:.5rem}
+  .divider{border:none;border-top:1px solid var(--border);margin:2.5rem 0}
+  .file-tree{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.8}
+</style>
+</head>
+<body>
+<div class="container">
+
+<a class="back-link" href="../lessons/index.html">← 返回课程目录</a>
+<div class="breadcrumb">概念教程 / 前端框架</div>
+
+<h1>Next.js App Router 基础入门</h1>
+<p class="subtitle"><span class="tag overview">概念</span> 面向零基础小白的 Next.js App Router 教程</p>
+<p class="desc">本教程将带你了解 Next.js 这个 React 框架，重点讲解 App Router 的核心概念。学完后你将理解文件系统路由、布局系统以及 Server/Client Components 的区别。</p>
+
+<!-- ==================== 第一部分：什么是 Next.js ==================== -->
+<h2><span class="icon">⚡</span> 什么是 Next.js</h2>
+
+<p><strong>Next.js</strong> 是一个基于 React 的全栈框架，由 Vercel 公司开发和维护。</p>
+
+<div class="callout tip">
+<strong>一句话理解：</strong>如果 React 是一个"引擎"，那 Next.js 就是一辆"完整的汽车"——它在 React 的基础上，帮你搞定了路由、服务器渲染、打包构建等所有工程化的事情。
+</div>
+
+<h3>Next.js 解决了什么问题？</h3>
+<p>纯 React 项目（用 Create React App 创建的）有一些痛点：</p>
+<ul>
+<li><strong>没有内置路由</strong> — 需要自己装 react-router</li>
+<li><strong>只有客户端渲染</strong> — 首屏加载慢，SEO 不友好</li>
+<li><strong>没有 API 路由</strong> — 后端接口需要另外搭服务器</li>
+<li><strong>配置复杂</strong> — Webpack、Babel 等需要自己折腾</li>
+</ul>
+
+<p>Next.js 把这些都内置好了，开箱即用：</p>
+<ul>
+<li>✅ 内置文件系统路由（不用写路由配置）</li>
+<li>✅ 支持 SSR（服务器渲染）和 SSG（静态生成）</li>
+<li>✅ 内置 API Routes（前后端一体）</li>
+<li>✅ 零配置，自动优化</li>
+</ul>
+
+<hr class="divider">
+
+<!-- ==================== 第二部分：App Router vs Pages Router ==================== -->
+<h2><span class="icon">🔄</span> App Router vs Pages Router</h2>
+
+<p>Next.js 有两套路由系统，这是因为框架在不断演进：</p>
+
+<table>
+<tr><th>对比</th><th>Pages Router（旧）</th><th>App Router（新）</th></tr>
+<tr><td>引入版本</td><td>Next.js 9（2019）</td><td>Next.js 13（2022）</td></tr>
+<tr><td>目录名</td><td><code>pages/</code></td><td><code>app/</code></td></tr>
+<tr><td>组件模式</td><td>全部是客户端组件</td><td>默认 Server Components</td></tr>
+<tr><td>布局系统</td><td>需要手动实现</td><td>内置 <code>layout.js</code></td></tr>
+<tr><td>数据获取</td><td><code>getServerSideProps</code></td><td>直接在组件中 <code>async/await</code></td></tr>
+<tr><td>流式渲染</td><td>不支持</td><td>支持 <code>loading.js</code></td></tr>
+</table>
+
+<div class="callout info">
+<strong>我们的项目用的是哪个？</strong>kuai-service-front 使用的是 <strong>App Router</strong>（Next.js 16），这是 Next.js 推荐的新方案。
+</div>
+
+<hr class="divider">
+
+<!-- ==================== 第三部分：文件系统路由 ==================== -->
+<h2><span class="icon">📁</span> 文件系统路由</h2>
+
+<p>App Router 最大的特点是：<strong>文件夹结构就是 URL 路由</strong>。你不需要写任何路由配置文件，创建文件夹就是在创建页面。</p>
+
+<div class="file-tree">
+app/
+├── page.js &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ <strong>/</strong>（首页）
+├── about/
+│   └── page.js &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ <strong>/about</strong>
+├── users/
+│   ├── page.js &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ <strong>/users</strong>
+│   └── [id]/
+│       └── page.js &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ <strong>/users/123</strong>（动态路由）
+├── dashboard/
+│   ├── page.js &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ <strong>/dashboard</strong>
+│   ├── settings/
+│   │   └── page.js &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ <strong>/dashboard/settings</strong>
+│   └── [...slug]/
+│       └── page.js &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→ <strong>/dashboard/任何/路径</strong>（Catch-all）
+└── api/
+    └── hello/
+        └── route.js &nbsp;&nbsp;&nbsp;→ <strong>GET /api/hello</strong>（API 路由）
+</div>
+
+<div class="callout tip">
+<strong>规则很简单：</strong><br>
+- 每个文件夹是一个路由段<br>
+- 文件夹里的 <code>page.js</code> 是这个路由的页面内容<br>
+- <code>[参数名]</code> 是动态路由参数<br>
+- <code>[...参数名]</code> 是 Catch-all 路由
+</div>
+
+<hr class="divider">
+
+<!-- ==================== 第四部分：特殊文件 ==================== -->
+<h2><span class="icon">📄</span> layout.js / page.js / loading.js</h2>
+
+<p>App Router 中有几个特殊的文件名，它们各自有不同的职责：</p>
+
+<h3>page.js — 页面内容</h3>
+<p>每个路由的<strong>实际页面内容</strong>。访问对应 URL 时渲染的就是这个文件。</p>
+
+<pre><code>// app/dashboard/page.js
+export default function DashboardPage() {
+  return &lt;h1&gt;仪表盘页面&lt;/h1&gt;;
+}</code></pre>
+
+<h3>layout.js — 布局包装</h3>
+<p>布局组件会<strong>包裹</strong>其子路由的页面。最典型的用途是导航栏、侧边栏等公共部分。</p>
+
+<pre><code>// app/layout.js（根布局，所有页面都会被它包裹）
+export default function RootLayout({ children }) {
+  return (
+    &lt;html&gt;
+      &lt;body&gt;
+        &lt;nav&gt;导航栏&lt;/nav&gt;
+        &lt;main&gt;{children}&lt;/main&gt;  {/* 子页面渲染在这里 */}
+        &lt;footer&gt;页脚&lt;/footer&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  );
+}</code></pre>
+
+<div class="callout info">
+<strong>布局的特点：</strong>当页面切换时，布局<strong>不会重新渲染</strong>（状态会保留）。这意味着导航栏不会闪烁，用户输入的内容不会丢失。
+</div>
+
+<h3>loading.js — 加载状态</h3>
+<p>当页面数据正在加载时显示的内容，类似"骨架屏"效果。</p>
+
+<pre><code>// app/dashboard/loading.js
+export default function Loading() {
+  return &lt;div className="spinner"&gt;加载中...&lt;/div&gt;;
+}</code></pre>
+
+<p>它的工作原理是利用了 React 的 <code>Suspense</code>。当 <code>page.js</code> 中有异步操作（比如请求 API）时，Next.js 会自动显示同级的 <code>loading.js</code>。</p>
+
+<h3>其他特殊文件</h3>
+<table>
+<tr><th>文件名</th><th>作用</th></tr>
+<tr><td><code>error.js</code></td><td>错误边界，捕获子组件的错误</td></tr>
+<tr><td><code>not-found.js</code></td><td>404 页面</td></tr>
+<tr><td><code>template.js</code></td><td>类似 layout，但每次导航都重新渲染</td></tr>
+<tr><td><code>route.js</code></td><td>API 路由端点（替代 page.js）</td></tr>
+</table>
+
+<hr class="divider">
+
+<!-- ==================== 第五部分：Server vs Client Components ==================== -->
+<h2><span class="icon">🖥️</span> Server Components vs Client Components</h2>
+
+<p>这是 App Router 最重要的概念之一。在 Next.js 中，组件分为两种：</p>
+
+<h3>Server Components（服务端组件）</h3>
+<ul>
+<li><strong>默认</strong>所有组件都是 Server Components</li>
+<li>在<strong>服务器上</strong>渲染，HTML 直接发送给浏览器</li>
+<li>可以直接访问数据库、读文件、调用内部 API</li>
+<li><strong>不能</strong>使用 useState、useEffect、onClick 等浏览器功能</li>
+</ul>
+
+<pre><code>// 这是 Server Component（默认）
+// 可以直接 fetch 数据，不需要 useEffect
+async function UserList() {
+  const users = await db.query('SELECT * FROM users');
+  return (
+    &lt;ul&gt;
+      {users.map(u =&gt; &lt;li key={u.id}&gt;{u.name}&lt;/li&gt;)}
+    &lt;/ul&gt;
+  );
+}</code></pre>
+
+<h3>Client Components（客户端组件）</h3>
+<ul>
+<li>需要在文件顶部加 <code>"use client"</code> 指令</li>
+<li>在<strong>浏览器中</strong>渲染（像传统 React 一样）</li>
+<li><strong>可以</strong>使用 useState、useEffect、onClick 等</li>
+<li><strong>不能</strong>直接访问数据库等服务端资源</li>
+</ul>
+
+<pre><code>"use client";  // 加上这行就是 Client Component
+
+import { useState } from 'react';
+
+function Counter() {
+  const [count, setCount] = useState(0);
+  return (
+    &lt;button onClick={() =&gt; setCount(c =&gt; c + 1)}&gt;
+      点击了 {count} 次
+    &lt;/button&gt;
+  );
+}</code></pre>
+
+<table>
+<tr><th>对比</th><th>Server Component</th><th>Client Component</th></tr>
+<tr><td>渲染位置</td><td>服务器</td><td>浏览器</td></tr>
+<tr><td>声明方式</td><td>默认（不用加任何东西）</td><td>文件头加 <code>"use client"</code></td></tr>
+<tr><td>useState/useEffect</td><td>❌ 不能用</td><td>✅ 可以用</td></tr>
+<tr><td>访问数据库</td><td>✅ 可以</td><td>❌ 不能</td></tr>
+<tr><td>事件处理（onClick）</td><td>❌ 不能用</td><td>✅ 可以用</td></tr>
+<tr><td>发送给浏览器的 JS</td><td>更少（性能好）</td><td>更多</td></tr>
+</table>
+
+<div class="callout warning">
+<strong>最佳实践：</strong>尽量用 Server Component，只在需要交互（点击、输入、动画）时才用 Client Component。把 Client Component 放在组件树的"叶子节点"，而不是整个页面。
+</div>
+
+<hr class="divider">
+
+<!-- ==================== Quiz ==================== -->
+<div class="quiz-section">
+<h3>📝 Quiz — 检验你的学习成果</h3>
+
+<div class="quiz-q">
+<p>Q1：在 Next.js App Router 中，<code>app/users/page.js</code> 对应的 URL 路径是什么？</p>
+<label><input type="radio" name="q1" value="A"> A. /app/users</label>
+<label><input type="radio" name="q1" value="B"> B. /users</label>
+<label><input type="radio" name="q1" value="C"> C. /page/users</label>
+<label><input type="radio" name="q1" value="D"> D. /users/page</label>
+</div>
+
+<div class="quiz-q">
+<p>Q2：Next.js App Router 中，组件默认是什么类型？</p>
+<label><input type="radio" name="q2" value="A"> A. Client Component</label>
+<label><input type="radio" name="q2" value="B"> B. Server Component</label>
+<label><input type="radio" name="q2" value="C"> C. 两者都不是</label>
+<label><input type="radio" name="q2" value="D"> D. 取决于文件大小</label>
+</div>
+
+<div class="quiz-q">
+<p>Q3：以下哪个文件的作用是在页面数据加载时显示加载状态？</p>
+<label><input type="radio" name="q3" value="A"> A. page.js</label>
+<label><input type="radio" name="q3" value="B"> B. layout.js</label>
+<label><input type="radio" name="q3" value="C"> C. loading.js</label>
+<label><input type="radio" name="q3" value="D"> D. error.js</label>
+</div>
+
+<button class="quiz-btn" onclick="checkQuiz()">提交答案</button>
+<div class="quiz-result" id="quizResult"></div>
+</div>
+
+<script>
+function checkQuiz(){
+  var answers={q1:'B',q2:'B',q3:'C'};
+  var score=0,total=3;
+  for(var q in answers){
+    var selected=document.querySelector('input[name="'+q+'"]:checked');
+    if(selected && selected.value===answers[q])score++;
+  }
+  var el=document.getElementById('quizResult');
+  el.style.display='block';
+  if(score===total){
+    el.className='quiz-result pass';
+    el.innerHTML='🎉 满分！你已经掌握了 Next.js App Router 的基础知识！';
+  }else{
+    el.className='quiz-result fail';
+    el.innerHTML='答对 '+score+'/'+total+' 题，再回顾一下内容吧～ 正确答案：Q1-B, Q2-B, Q3-C';
+  }
+}
+</script>
+
+<div class="callout info" style="margin-top:2rem">
+<strong>遇到不懂的地方？</strong>直接问 Agent。比如："帮我解释 Server Component 和 Client Component 的区别" 或 "Next.js 的 layout 嵌套是怎么工作的"。
+</div>
+
+</div>
+</body>
+</html>

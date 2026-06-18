@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>057 实体系统与 Drawable 绑定</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --accent: #b45309;
+    --accent-light: #fef3c7;
+    --border: #e7e5e4;
+    --code-bg: #f5f5f4;
+    --success: #16a34a;
+    --warning: #d97706;
+    --info: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .card.info { border-left: 3px solid var(--info); }
+  .card.warning { border-left: 3px solid var(--warning); }
+  .card.success { border-left: 3px solid var(--success); }
+
+  .card-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+  .card.info .card-label { color: var(--info); }
+  .card.warning .card-label { color: var(--warning); }
+  .card.success .card-label { color: var(--success); }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    font-size: 0.88em;
+  }
+
+  pre {
+    background: #1c1917;
+    color: #e7e5e4;
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  pre .comment { color: #78716c; }
+  pre .keyword { color: #f59e0b; }
+  pre .string { color: #86efac; }
+  pre .dir { color: #93c5fd; }
+  pre .file { color: #e7e5e4; }
+  pre .important { color: #fbbf24; font-weight: 500; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.92rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .tree { margin: 1rem 0; }
+
+  .quiz {
+    background: var(--accent-light);
+    border: 1px solid #fbbf24;
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .quiz-title {
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+  .quiz-options { list-style: none; }
+  .quiz-options li {
+    padding: 0.5rem 0.75rem;
+    margin: 0.35rem 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+  }
+  .quiz-options li:hover { background: #fde68a33; border-color: #fbbf24; }
+  .quiz-options li.correct { background: #dcfce7; border-color: #16a34a; }
+  .quiz-options li.wrong { background: #fee2e2; border-color: #ef4444; }
+  .quiz-feedback {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    display: none;
+    font-size: 0.9rem;
+  }
+
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+  }
+  .flow-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .flow-arrow { color: var(--text-secondary); }
+
+  .next-lesson {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .next-lesson a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .next-lesson a:hover { text-decoration: underline; }
+
+  .ask-agent {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+    color: #1e40af;
+  }
+  .ask-agent::before { content: '💡 '; }
+
+  ul, ol { margin: 0.5rem 0 1rem 1.5rem; }
+  li { margin-bottom: 0.3rem; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>057 实体系统与 Drawable 绑定</h1>
+<p class="subtitle">理解 viewer-2d 中 Entity、Drawable、Selectable 三大核心抽象，以及实体的完整生命周期</p>
+
+<!-- ==================== Section 1 ==================== -->
+<h2>1. 为什么需要实体系统</h2>
+
+<p>viewer-2d 渲染的不是简单图形，而是<strong>领域对象</strong>：门、窗、房间、家具图例、尺寸标注……每个对象都携带业务数据（位置、尺寸、关联墙体），同时需要在画布上可视化并响应交互。实体系统就是把<strong>数据</strong>、<strong>渲染</strong>、<strong>交互</strong>三者统一封装的架构模式。</p>
+
+<div class="card info">
+  <div class="card-label">核心思路</div>
+  <p><strong>Entity（实体）</strong>持有业务数据和逻辑；<strong>Drawable</strong> 负责将数据渲染到 PixiJS 画布；<strong>Selectable</strong> 负责选中、拖拽、缩放等交互。三者通过 KAF 框架的 API 注册机制自动绑定。</p>
+</div>
+
+<!-- ==================== Section 2 ==================== -->
+<h2>2. Entity 基类</h2>
+
+<p>viewer-2d 中的实体都继承自 KAF 框架提供的 <code>Entity</code> 基类。每个 Entity 实例代表场景中的一个领域对象，持有业务模型（model）和对全局状态管理器（RootStateManager）的引用。</p>
+
+<pre>
+<span class="comment">// 典型的 Entity 类结构（以 DoorWindowEntity 为例）</span>
+<span class="keyword">import</span> { Entity, EntityAPIs } <span class="keyword">from</span> <span class="string">'@qunhe/kaf'</span>;
+
+<span class="keyword">class</span> DoorWindowEntity <span class="keyword">extends</span> Entity {
+    model: DoorWindowElement;       <span class="comment">// 门窗业务数据</span>
+    rootState: RootStateManager;    <span class="comment">// 全局状态引用</span>
+
+    <span class="keyword">constructor</span>(model, rootState) {
+        <span class="keyword">super</span>();
+        <span class="keyword">this</span>.model = model;
+        <span class="keyword">this</span>.rootState = rootState;
+    }
+}
+</pre>
+
+<p>Entity 本身不包含任何渲染或交互代码。它通过 <strong>API 注册机制</strong> 声明自己提供哪些能力（Drawable、Highlight、Inference 等），由 KAF 框架在运行时自动连接。</p>
+
+<h3>EntityTypes：实体类型注册表</h3>
+
+<p>每种实体类型都有一个唯一的 Symbol 标识，定义在 <code>entityTypes.ts</code> 中：</p>
+
+<pre>
+<span class="keyword">export const</span> EntityTypes = {
+    RoomElementEntityType:          Symbol(<span class="string">'RoomElementEntity'</span>),
+    DoorWindowEntityType:           Symbol(<span class="string">'DoorWindowEntity'</span>),
+    FloorplanEntityType:            Symbol(<span class="string">'FloorplanEntity'</span>),
+    FurnitureLegendEntityType:      Symbol(<span class="string">'FurnitureLegendEntity'</span>),
+    FurniturePlanViewEntityType:    Symbol(<span class="string">'FurniturePlanViewEntity'</span>),
+    Ksg2dContainerEntityType:       Symbol(<span class="string">'Ksg2dContainerEntity'</span>),
+    RoomCoverEntityType:            Symbol(<span class="string">'RoomCoverEntity'</span>),
+    SelectedNormalDirection:        Symbol(<span class="string">'SelectedNormalDirection'</span>),
+    <span class="comment">// ... 更多类型</span>
+};
+</pre>
+
+<!-- ==================== Section 3 ==================== -->
+<h2>3. Drawable 接口：从数据到像素</h2>
+
+<p>Drawable 是实体在 2D 画布上的"代言人"。每个实体类型都有一个对应的 <code>Drawable2D</code> 类，负责把业务数据翻译成 PixiJS 图形。</p>
+
+<pre>
+<span class="comment">// Entity 通过装饰器声明 Drawable 绑定</span>
+@provideEntityAPIs([
+    <span class="keyword">new</span> EntityAPIs.DrawableAPI2D(<span class="keyword">function</span>(<span class="keyword">this</span>: DoorWindowEntity) {
+        <span class="keyword">return new</span> Drawable2D(<span class="keyword">this</span>.model, <span class="keyword">this</span>.rootState, <span class="keyword">this</span>);
+    }),
+    <span class="comment">// ... 其他 API</span>
+])
+<span class="keyword">class</span> DoorWindowEntity <span class="keyword">extends</span> Entity { ... }
+</pre>
+
+<div class="card warning">
+  <div class="card-label">关键机制</div>
+  <p><code>DrawableAPI2D</code> 的回调是一个<strong>工厂函数</strong>。KAF 框架在实体被添加到场景时自动调用它，创建 Drawable 实例并绑定到 PixiJS 容器。回调中的 <code>this</code> 指向 Entity 实例。这是<strong>高风险改动区域</strong>——修改绑定关系可能导致实体不渲染或渲染错乱。</p>
+</div>
+
+<p>每个 <code>Drawable2D</code> 通常负责：</p>
+<ul>
+  <li><strong>创建图形</strong>：根据业务数据生成 PixiJS Graphics / Container</li>
+  <li><strong>响应数据变更</strong>：当 model 属性变化时重新绘制</li>
+  <li><strong>管理生命周期</strong>：在 destroy 时清理 PixiJS 资源</li>
+</ul>
+
+<h3>Drawable 目录结构</h3>
+<pre>
+src/app/Entities/
+├── DoorWindow/
+│   ├── index.ts              <span class="comment"># DoorWindowEntity（实体类）</span>
+│   ├── Drawable2D.ts         <span class="comment"># Drawable2D（渲染逻辑）</span>
+│   ├── TransformChecker.ts   <span class="comment"># 变换合法性校验</span>
+│   └── dwshape/              <span class="comment"># 各种门窗形状绘制</span>
+│       ├── drawDoor.ts
+│       ├── drawWindow.ts
+│       ├── drawSlidingDoor.ts
+│       ├── drawDoubleDoor.ts
+│       └── ...
+├── Floorplan/
+│   ├── index.ts
+│   └── Drawable2D.ts
+├── RoomElement/
+│   ├── index.ts
+│   └── Drawable2D.ts
+├── FurnitureLegend/
+│   ├── index.ts
+│   ├── Drawable2D.ts
+│   └── KsgFurnitureLegendEntity.ts
+└── ...
+</pre>
+
+<!-- ==================== Section 4 ==================== -->
+<h2>4. Selectable 体系：选中与交互</h2>
+
+<p>实体不仅要渲染，还要能被用户选中、拖拽、缩放。这由 <code>SystemPropertiesAPI</code> 驱动——每个实体声明自己的交互能力：</p>
+
+<pre>
+<span class="keyword">new</span> SystemPropertiesAPI(<span class="keyword">function</span>(<span class="keyword">this</span>: DoorWindowEntity) {
+    <span class="keyword">return</span> {
+        entityTypeName: <span class="string">'door-window'</span>,
+        isDeletable: () => <span class="keyword">true</span>,
+        isMovable: () => <span class="keyword">true</span>,
+        isRotatable: () => <span class="keyword">false</span>,    <span class="comment">// 门窗不能旋转</span>
+        isResizable: () => <span class="keyword">true</span>,
+        getResizeAnchorOptions: () => ({ ... }),
+        delete: () => {
+            <span class="keyword">this</span>.rootState.designDoc.removeDoorWindow(<span class="keyword">this</span>.model.getId());
+        },
+        getTransform: () => { ... },
+    };
+})
+</pre>
+
+<div class="card success">
+  <div class="card-label">设计原则</div>
+  <p>交互能力是<strong>逐实体声明</strong>的。门可以拖拽但不能旋转，家具图例可以缩放，标注只读——这些差异通过 <code>SystemPropertiesAPI</code> 的返回值控制，而非硬编码在通用逻辑中。</p>
+</div>
+
+<p>SelectedControls 模块（<code>src/modules/SelectedControls/</code>）负责统一的选中态渲染：高亮框、缩放手柄、旋转手柄等，根据实体声明的能力动态显示。</p>
+
+<!-- ==================== Section 5 ==================== -->
+<h2>5. 实体生命周期：创建 → 更新 → 销毁</h2>
+
+<div class="flow">
+  <span class="flow-step">model 数据变更</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">Entity 创建/更新</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">DrawableAPI2D 回调</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">Drawable2D 渲染</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">PixiJS 画布</span>
+</div>
+
+<h3>创建阶段</h3>
+<ol>
+  <li>业务数据变更（如用户添加一扇门）触发 <code>designDoc</code> 更新</li>
+  <li><code>EntityDocument</code> 中注册的 <code>entitiesCreator</code> 根据数据创建对应 Entity 实例</li>
+  <li>KAF 框架调用 <code>DrawableAPI2D</code> 工厂函数，创建 Drawable 并挂载到指定的 PixiJS 容器</li>
+  <li>容器按 <code>order</code> 排序，决定图层前后关系</li>
+</ol>
+
+<h3>更新阶段</h3>
+<ol>
+  <li>model 属性变化（如拖拽改变了门窗位置）</li>
+  <li>Drawable2D 监听变更，重新计算图形</li>
+  <li>PixiJS 重绘，画布自动刷新</li>
+</ol>
+
+<h3>销毁阶段</h3>
+<ol>
+  <li>用户删除实体或场景切换</li>
+  <li>KAF 框架调用 Entity 的 dispose</li>
+  <li>Drawable2D 清理 PixiJS 资源（移除 Container、释放纹理等）</li>
+  <li>Entity 从容器中移除</li>
+</ol>
+
+<div class="card warning">
+  <div class="card-label">注意事项</div>
+  <p>实体的创建和销毁由 <code>EntityDocument</code> 集中管理。不要在 Entity 或 Drawable 外部手动 new 或 dispose，否则会导致场景状态不一致。</p>
+</div>
+
+<!-- ==================== Section 6 ==================== -->
+<h2>6. 常见实体类型</h2>
+
+<table>
+  <tr><th>实体</th><th>Entity 类</th><th>职责</th><th>容器层级</th></tr>
+  <tr><td>门窗</td><td><code>DoorWindowEntity</code></td><td>嵌入墙体的门/窗/飘窗，支持拖拽调整宽度</td><td>order: 1009</td></tr>
+  <tr><td>房间</td><td><code>RoomElementEntity</code></td><td>房间区域，显示面积、名称</td><td>order: 903</td></tr>
+  <tr><td>户型图</td><td><code>FloorplanEntity</code></td><td>整体户型轮廓和墙体</td><td>（包含在 Wall 容器）</td></tr>
+  <tr><td>家具图例</td><td><code>FurnitureLegendEntity</code></td><td>2D 平面家具符号，支持拖拽/缩放</td><td>order: 1006</td></tr>
+  <tr><td>家具俯视图</td><td><code>FurniturePlanViewEntity</code></td><td>家具俯视渲染图</td><td>order: 1007</td></tr>
+  <tr><td>KSG 容器</td><td><code>Ksg2dContainerEntity</code></td><td>KSG 模型的 2D 投影容器</td><td>order: 999</td></tr>
+  <tr><td>房间铺贴</td><td><code>RoomCoverEntity</code></td><td>房间地面材质铺贴效果</td><td>order: 1200</td></tr>
+  <tr><td>选中方向</td><td><code>SelectedNormalDirection</code></td><td>选中实体的法线方向指示器</td><td>（SelectControl 容器）</td></tr>
+</table>
+
+<h3>EntityDocument：容器编排中心</h3>
+
+<p><code>EntityDocument</code> 是所有实体的"总管"。它定义了 2D 容器列表及其层序（order），以及每种数据类型对应哪个 Entity 构造器：</p>
+
+<pre>
+<span class="keyword">class</span> EntityDocument <span class="keyword">implements</span> Document {
+    <span class="comment">// 定义 2D 容器列表及层序</span>
+    <span class="keyword">readonly</span> container2DConfigs = [
+        { containerKey: WallContainerKey,         order: 1008 },
+        { containerKey: RoomElementContainerKey,   order: 903  },
+        { containerKey: DoorWindowContainerKey,    order: 1009 },
+        { containerKey: FurnitureLegendContainerKey, order: 1006 },
+        { containerKey: RoomCoverContainerKey,     order: 1200 },
+        { containerKey: SelectControlContainerKey, order: 9999 }, <span class="comment">// 最顶层</span>
+    ];
+
+    <span class="comment">// 数据 → Entity 的映射</span>
+    <span class="keyword">private</span> getDoorWindowEntities = flatEntitiesCreator(
+        dw => <span class="keyword">new</span> DoorWindowEntity(dw, <span class="keyword">this</span>.rootState)
+    );
+}
+</pre>
+
+<div class="card info">
+  <div class="card-label">层序（order）</div>
+  <p>数值越大，图层越靠前（越先被渲染在上层）。SelectControl 的 order 为 9999，确保选中态永远在最顶层。RoomCover 的 order 为 1200，覆盖在房间元素之上。</p>
+</div>
+
+<!-- ==================== Section 7 ==================== -->
+<h2>7. 完整绑定链路图</h2>
+
+<pre>
+┌─────────────────────────────────────────────────────┐
+│  <span class="important">EntityDocument</span>                                      │
+│  持有所有 Entity 实例列表 + 容器配置                   │
+└──────────────────────┬──────────────────────────────┘
+                       │ 创建 Entity
+┌──────────────────────▼──────────────────────────────┐
+│  <span class="important">Entity（如 DoorWindowEntity）</span>                       │
+│  @provideEntityAPIs([                                │
+│    DrawableAPI2D(...)      → 创建 Drawable2D         │
+│    HighlightGeometryAPI2D  → 高亮区域                 │
+│    InferenceSourceAPI2D    → 吸引/吸附数据源          │
+│    SystemPropertiesAPI     → 交互能力声明             │
+│  ])                                                  │
+└──────────────────────┬──────────────────────────────┘
+                       │
+┌──────────────────────▼──────────────────────────────┐
+│  <span class="important">Drawable2D</span>                                          │
+│  接收 model + rootState + entity                     │
+│  创建 PixiJS Graphics → 挂载到容器                    │
+│  监听数据变更 → 重绘                                  │
+└──────────────────────┬──────────────────────────────┘
+                       │
+┌──────────────────────▼──────────────────────────────┐
+│  <span class="important">PixiJS Container（按 order 排序）</span>                   │
+│  Wall(1008) → Room(903) → Door(1009) → ...          │
+│  → SelectControl(9999)                               │
+└─────────────────────────────────────────────────────┘
+</pre>
+
+<!-- ==================== Quiz ==================== -->
+<h2>8. 自检 Quiz</h2>
+
+<div class="quiz" id="quiz1">
+  <div class="quiz-title">Q1: Entity 与 Drawable 的绑定是通过什么机制实现的？</div>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz1', 0)">A. Entity 构造函数中手动 new Drawable2D 并添加到场景</li>
+    <li onclick="checkQuiz('quiz1', 1)">B. @provideEntityAPIs 装饰器注册 DrawableAPI2D 工厂函数，由 KAF 框架自动调用</li>
+    <li onclick="checkQuiz('quiz1', 2)">C. 在 EntityDocument 中手动为每个 Entity 绑定 Drawable</li>
+    <li onclick="checkQuiz('quiz1', 3)">D. Drawable 通过全局事件总线监听 Entity 的数据变更</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <div class="quiz-title">Q2: EntityDocument 中 container2DConfigs 的 order 字段决定了什么？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz2', 0)">A. Entity 的创建顺序</li>
+    <li onclick="checkQuiz('quiz2', 1)">B. Entity 的销毁顺序</li>
+    <li onclick="checkQuiz('quiz2', 2)">C. PixiJS 容器的图层先后关系，数值越大越靠前</li>
+    <li onclick="checkQuiz('quiz2', 3)">D. Entity 的更新频率</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <div class="quiz-title">Q3: 如果要让一种新实体支持拖拽但不支持旋转，应该在哪里声明？</div>
+  <ul class="quiz-options" data-correct="0">
+    <li onclick="checkQuiz('quiz3', 0)">A. 在 Entity 的 @provideEntityAPIs 中注册 SystemPropertiesAPI，返回 isMovable: true, isRotatable: false</li>
+    <li onclick="checkQuiz('quiz3', 1)">B. 在 SelectedControls 模块中添加硬编码判断</li>
+    <li onclick="checkQuiz('quiz3', 2)">C. 在 EntityDocument 的 container2DConfigs 中配置</li>
+    <li onclick="checkQuiz('quiz3', 3)">D. 在 Drawable2D 的绘制方法中控制</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<!-- ==================== Next ==================== -->
+
+
+  <h3>推荐阅读</h3>
+  <ul>
+    <li><code>src/app/Entities/EntityDocument.ts</code> — 容器编排与实体创建的入口</li>
+    <li><code>src/app/Entities/DoorWindow/index.ts</code> — 最典型的 Entity 实现，包含完整的 API 注册</li>
+    <li><code>src/app/Entities/DoorWindow/Drawable2D.ts</code> — Drawable 渲染逻辑</li>
+    <li><code>src/app/Entities/entityTypes.ts</code> — 实体类型注册表</li>
+    <li><code>src/modules/SelectedControls/</code> — 选中态交互逻辑</li>
+  </ul>
+</div>
+</div>
+
+<script>
+function checkQuiz(quizId, selected) {
+  const quiz = document.getElementById(quizId);
+  const options = quiz.querySelector('.quiz-options');
+  const correct = parseInt(options.dataset.correct);
+  const items = options.querySelectorAll('li');
+  const feedback = quiz.querySelector('.quiz-feedback');
+
+  items.forEach((item, i) => {
+    item.onclick = null;
+    if (i === correct) item.classList.add('correct');
+    if (i === selected && i !== correct) item.classList.add('wrong');
+  });
+
+  const feedbacks = {
+    quiz1: {
+      correct: '✓ 对！@provideEntityAPIs 装饰器将 DrawableAPI2D 工厂函数注册到 Entity 上，KAF 框架在实体加入场景时自动调用并绑定 Drawable。',
+      wrong: '✗ 是通过 @provideEntityAPIs 装饰器注册 DrawableAPI2D 工厂函数。KAF 框架在实体加入场景时自动调用该函数创建 Drawable 实例。'
+    },
+    quiz2: {
+      correct: '✓ 对！order 决定 PixiJS 容器的图层顺序，数值越大越靠前（越上层）。SelectControl 的 order 为 9999，确保选中态永远在最顶层。',
+      wrong: '✗ order 字段决定的是 PixiJS 容器的图层先后关系。数值越大，图层越靠前。例如 SelectControl(9999) 在最顶层，RoomElement(903) 在最底层。'
+    },
+    quiz3: {
+      correct: '✓ 对！SystemPropertiesAPI 是逐实体声明交互能力的标准方式。在工厂函数中返回 isMovable: true, isRotatable: false 即可。',
+      wrong: '✗ 应该在 Entity 的 @provideEntityAPIs 中注册 SystemPropertiesAPI。它允许每个实体独立声明自己的交互能力（可移动、可旋转、可缩放等），无需修改通用逻辑。'
+    }
+  };
+
+  feedback.style.display = 'block';
+  feedback.textContent = selected === correct
+    ? feedbacks[quizId].correct
+    : feedbacks[quizId].wrong;
+  feedback.style.background = selected === correct ? '#dcfce7' : '#fee2e2';
+}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 057</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0056-pixijs-rendering.html">上一课：056 PixiJS 渲染引擎与 Scene2D</a><a class="primary" href="0058-offline-render-pipeline.html">下一课：058 离线渲染管线详解</a></div></nav>
+</body>
+</html>

@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>002 Java 的类、对象、构造方法</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --accent: #b45309;
+    --accent-light: #fef3c7;
+    --border: #e7e5e4;
+    --code-bg: #1c1917;
+    --code-text: #f5f5f4;
+    --success: #16a34a;
+    --success-light: #dcfce7;
+    --warning: #d97706;
+    --warning-light: #fef3c7;
+    --info: #2563eb;
+    --info-light: #dbeafe;
+    --tag-java: #d97706;
+    --tag-spring: #16a34a;
+    --tag-ai: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 3rem 2rem 5rem;
+  }
+
+  .lesson-meta {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2.8rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  strong { font-weight: 700; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.25rem 0;
+  }
+  .card.info { border-left: 3px solid var(--info); background: var(--info-light); }
+  .card.warning { border-left: 3px solid var(--warning); background: var(--warning-light); }
+  .card.success { border-left: 3px solid var(--success); background: var(--success-light); }
+  .card.tip { border-left: 3px solid var(--accent); }
+
+  .card-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+  }
+
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 1.25rem 1.4rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1.25rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.86rem;
+    line-height: 1.7;
+  }
+  code { font-family: 'JetBrains Mono', monospace; }
+  p code, li code {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 0.12em 0.4em;
+    border-radius: 4px;
+    font-size: 0.85em;
+  }
+  .com { color: #a8a29e; }      /* 代码注释 */
+  .kw  { color: #fbbf24; }      /* 关键字 */
+  .ann { color: #86efac; }      /* 注解 @ */
+  .typ { color: #93c5fd; }      /* 类型 */
+  .str { color: #fda4af; }      /* 字符串 */
+
+  /* 逐行归属表 */
+  table.belong {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.25rem 0;
+    font-size: 0.9rem;
+  }
+  table.belong th, table.belong td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  table.belong th {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+  table.belong td code { font-size: 0.82em; }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.1em 0.55em;
+    border-radius: 10px;
+    color: #fff;
+    letter-spacing: 0.02em;
+  }
+  .tag.java   { background: var(--tag-java); }
+  .tag.spring { background: var(--tag-spring); }
+  .tag.ai     { background: var(--tag-ai); }
+
+  /* 学习地图 */
+  .roadmap {
+    list-style: none;
+    margin: 1.25rem 0;
+    padding: 0;
+  }
+  .roadmap li {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+  }
+  .roadmap .stage {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 0.85rem;
+    min-width: 3.2em;
+    flex-shrink: 0;
+  }
+  .roadmap .here { border-color: var(--accent); background: var(--accent-light); }
+  .roadmap .here .stage { color: var(--text); }
+
+  /* Quiz */
+  .quiz {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem 1.6rem;
+    margin: 1.5rem 0;
+  }
+  .quiz-q {
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  .quiz-opt {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--text);
+    transition: all 0.15s;
+  }
+  .quiz-opt:hover { border-color: var(--accent); }
+  .quiz-opt.correct {
+    background: var(--success-light);
+    border-color: var(--success);
+    color: #14532d;
+    font-weight: 500;
+  }
+  .quiz-opt.wrong {
+    background: #fee2e2;
+    border-color: #dc2626;
+    color: #7f1d1d;
+  }
+  .quiz-opt.disabled { cursor: default; opacity: 0.85; }
+  .quiz-fb {
+    margin-top: 0.85rem;
+    font-size: 0.9rem;
+    display: none;
+    padding: 0.7rem 0.9rem;
+    border-radius: 6px;
+    line-height: 1.7;
+  }
+  .quiz-fb.show { display: block; }
+
+  .win {
+    background: var(--success-light);
+    border-left: 3px solid var(--success);
+    border-radius: 8px;
+    padding: 1rem 1.4rem;
+    margin: 2rem 0;
+  }
+  .win .card-label { color: #14532d; }
+
+  .reading {
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.4rem;
+    margin: 1.5rem 0;
+  }
+  .reading a { color: var(--info); text-decoration: none; font-weight: 500; }
+  .reading a:hover { text-decoration: underline; }
+
+  .ask {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+  }
+
+  blockquote {
+    border-left: 3px solid var(--accent);
+    padding-left: 1rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin: 1.25rem 0;
+  }
+@media print {
+    body { background: #fff; }
+    .quiz-opt { border: 1px solid #999; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="lesson-meta">AIHom 全栈学习 · 第 002 课 · Java 基础</div>
+  <h1>002 Java 的类、对象、构造方法</h1>
+  <div class="subtitle">本节目标：拿到一段 AIHom 风格的 Java 代码，能准确指出哪些是字段、哪些是构造方法、哪些是普通方法——并理解"类是图纸、对象是按图纸造出来的实物"这层关系。</div>
+
+  <!-- 1. 用真实类开场 -->
+  <h2>从一个 AIHom 里真实存在的类说起</h2>
+  <p>上一课结尾那段 <code>ChatController</code>，你大概扫了一眼就发现：它<strong>不是流水账式的脚本</strong>，而是被装进了一个名叫 <code>ChatController</code> 的"盒子"里。这个盒子，在 Java 里就叫<strong>类（class）</strong>。</p>
+
+  <div class="card tip">
+    <div class="card-label">一句话定义"类"</div>
+    <p style="margin:0"><strong>类 = 把"数据"和"行为"打包在一起的一个黑盒。</strong>"数据"是这个类记住的东西（字段），"行为"是这个类能做的事（方法）。就像一个员工：他脑子里记住的客户名单是数据，他接电话、发邮件这些动作是行为——两者合起来就是一个完整的"人"。</p>
+  </div>
+
+  <p>我们再把那段代码拿出来，这次只看<strong>它的骨架</strong>，先不管那些 <code>@</code> 符号（下节课讲）：</p>
+
+  <pre><span class="kw">public class</span> <span class="typ">ChatController</span> {          <span class="com">// ← 类的开始，名字叫 ChatController</span>
+
+    <span class="kw">private final</span> <span class="typ">ChatClient.Builder</span> builder;  <span class="com">// ← 数据（字段）：记住一个 builder</span>
+
+    <span class="kw">public</span> <span class="typ">ChatController</span>(<span class="typ">ChatClient.Builder</span> builder) {  <span class="com">// ← 构造方法</span>
+        <span class="kw">this</span>.builder = builder;
+    }
+
+    <span class="kw">public</span> <span class="typ">String</span> ask(<span class="typ">String</span> q) {              <span class="com">// ← 行为（方法）：能回答问题</span>
+        <span class="kw">return</span> builder.build().prompt().user(q).call().content();
+    }
+}                                                 <span class="com">// ← 类的结束</span></pre>
+
+  <p>整个类被一对大括号 <code>{ }</code> 包起来，名字写在 <code>class</code> 后面。里面只住了三样东西：一个字段、一个构造方法、一个普通方法。这就是 Java 世界的<strong>最小完整单元</strong>。</p>
+
+  <!-- 2. 字段 = 状态 -->
+  <h2>字段（成员变量）= 对象记住的状态</h2>
+  <p>看这一行：</p>
+  <pre><span class="kw">private final</span> <span class="typ">ChatClient.Builder</span> builder;</pre>
+
+  <p>它声明了一个名叫 <code>builder</code> 的<strong>字段（field）</strong>，也叫<strong>成员变量</strong>。逐个词翻译：</p>
+
+  <table class="belong">
+    <thead>
+      <tr><th>写法</th><th>读法</th><th>大白话</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>private</code></td>
+        <td>私有的</td>
+        <td>这个字段是<strong>这个类自己的私事</strong>，外面的人不能直接伸手进来拿。</td>
+      </tr>
+      <tr>
+        <td><code>final</code></td>
+        <td>最终的</td>
+        <td>赋值之后<strong>不能再改</strong>。AIHom 大量用 final，是一种好习惯。</td>
+      </tr>
+      <tr>
+        <td><code>ChatClient.Builder</code></td>
+        <td>类型</td>
+        <td>这个字段<strong>是什么种类的东西</strong>。就像"这是个苹果"里的"苹果"。</td>
+      </tr>
+      <tr>
+        <td><code>builder</code></td>
+        <td>变量名</td>
+        <td>给它起个<strong>小名</strong>，方便后面叫它。就像"这个苹果叫小明"。</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card info">
+    <div class="card-label">关于"类型"这个词</div>
+    <p style="margin:0">你可能听过"类型（type）"和"类（class）"被混着用。<strong>类是定义、类型是身份。</strong>你写 <code>class ChatController</code> 是在定义一个类；当 <code>builder</code> 被标注为 <code>ChatClient.Builder</code> 时，<code>ChatClient.Builder</code> 就是 builder 这个变量的"类型"。先有这么个感觉就行。</p>
+  </div>
+
+  <p>字段的作用是<strong>让对象"记住"东西</strong>。一个 <code>ChatController</code> 对象只要活着，就一直记着那个 <code>builder</code>，下次 <code>ask()</code> 时还能用。这跟测试里你熟悉的"局部变量用完就丢"完全不同——<strong>字段跟着对象走，不跟着方法走</strong>。</p>
+
+  <!-- 3. 方法 = 行为 -->
+  <h2>方法 = 对象能做的事</h2>
+  <p>再看这段：</p>
+  <pre><span class="kw">public</span> <span class="typ">String</span> ask(<span class="typ">String</span> q) {
+    <span class="kw">return</span> builder.build().prompt().user(q).call().content();
+}</pre>
+
+  <p>这叫<strong>方法（method）</strong>，就是这个类<strong>能做的一件事</strong>。同样逐个翻译：</p>
+
+  <table class="belong">
+    <thead>
+      <tr><th>写法</th><th>读法</th><th>大白话</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>public</code></td>
+        <td>公开的</td>
+        <td>外面的人<strong>可以叫它做这件事</strong>。和 <code>private</code> 字段正好相反。</td>
+      </tr>
+      <tr>
+        <td><code>String</code>（方法名前面那个）</td>
+        <td>返回类型</td>
+        <td>做完这件事会<strong>给你一个字符串</strong>当结果。</td>
+      </tr>
+      <tr>
+        <td><code>ask</code></td>
+        <td>方法名</td>
+        <td>这件事叫"问问题"。</td>
+      </tr>
+      <tr>
+        <td><code>String q</code></td>
+        <td>参数</td>
+        <td>做这件事<strong>需要你先告诉我一个问题</strong>。<code>q</code> 是这个参数的小名。</td>
+      </tr>
+      <tr>
+        <td><code>return ...</code></td>
+        <td>返回</td>
+        <td>把算出来的结果<strong>交回去</strong>给调用它的人。</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card warning">
+    <div class="card-label">小白最常踩的坑：分不清"字段"和"参数"</div>
+    <p style="margin:0.3rem 0 0">上面同时出现了 <code>builder</code>（字段，写在类里）和 <code>q</code>（参数，写在方法括号里）。<strong>区别：字段是"对象长期记住的东西"，参数是"这次方法调用临时收到的输入"</strong>。<code>q</code> 用完这次 <code>ask()</code> 就没了；<code>builder</code> 会跟着对象一直活到对象被销毁。</p>
+  </div>
+
+  <!-- 4. 类 vs 对象 -->
+  <h2>类是图纸，对象是按图纸造的实物</h2>
+  <p>这是 Java 面向对象里<strong>最最核心</strong>的一对概念，新手一定要分清：</p>
+
+  <table class="belong">
+    <thead>
+      <tr><th>概念</th><th>比喻</th><th>在 AIHom 里</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>类（class）</strong></td>
+        <td>手机的设计图纸</td>
+        <td><code>ChatController</code> 这段代码本身</td>
+      </tr>
+      <tr>
+        <td><strong>对象（object / instance）</strong></td>
+        <td>按图纸造出来的<strong>一台真手机</strong></td>
+        <td>程序运行时，按 <code>ChatController</code> 造出来的<strong>一个个具体实例</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>图纸只能有一张，但按图纸能造<strong>很多台</strong>手机。同样，一个类只定义一次，但运行时可以造出<strong>任意多个对象</strong>——每个对象都各自记着自己的字段，互不干扰。</p>
+
+  <h3>怎么造对象？用 new</h3>
+  <p>造对象的动作叫<strong>实例化</strong>，关键字是 <code>new</code>：</p>
+  <pre><span class="com">// 假装我们手动造一个（AIHom 里实际由 Spring 自动造，下几节课讲）</span>
+<span class="typ">ChatController</span> ctrl1 = <span class="kw">new</span> <span class="typ">ChatController</span>(某个Builder);
+<span class="typ">ChatController</span> ctrl2 = <span class="kw">new</span> <span class="typ">ChatController</span>(另一个Builder);
+
+ctrl1.ask(<span class="str">"你好"</span>);   <span class="com">// 用第一个对象问问题</span>
+ctrl2.ask(<span class="str">"在吗"</span>);   <span class="com">// 用第二个对象问问题，互不影响</span></pre>
+
+  <p>这里 <code>ctrl1</code> 和 <code>ctrl2</code> 是<strong>两个独立的对象</strong>，各自记着自己的 <code>builder</code>。这就是"一个类可以 new 出很多对象"。</p>
+
+  <div class="card tip">
+    <div class="card-label">AIHom 里的真相</div>
+    <p style="margin:0">真实 AIHom 项目里，<strong>你几乎不会自己写 <code>new ChatController(...)</code></strong>。这件事由 Spring 帮你做了（叫"依赖注入"，第 4 课讲）。但理解 <code>new</code> 的存在是理解 Spring 的前提——Spring 只是把"你手动 new"这件事自动化了而已。</p>
+  </div>
+
+  <!-- 5. 构造方法 -->
+  <h2>构造方法：new 的时候自动跑一次</h2>
+  <p>回到这段代码，注意它<strong>很特殊</strong>：</p>
+  <pre><span class="kw">public</span> <span class="typ">ChatController</span>(<span class="typ">ChatClient.Builder</span> builder) {
+    <span class="kw">this</span>.builder = builder;
+}</pre>
+
+  <p>它叫<strong>构造方法（constructor）</strong>，有三条识别特征：</p>
+
+  <table class="belong">
+    <thead>
+      <tr><th>特征</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>① 名字<strong>和类同名</strong></td>
+        <td>类叫 <code>ChatController</code>，它就叫 <code>ChatController</code>。普通方法不会有这种名字。</td>
+      </tr>
+      <tr>
+        <td>② <strong>没有返回类型</strong></td>
+        <td>注意连 <code>void</code> 都没有。普通方法 <code>ask</code> 前面有 <code>String</code>，构造方法前面什么都没有。</td>
+      </tr>
+      <tr>
+        <td>③ <strong>new 的时候自动跑</strong></td>
+        <td>你写 <code>new ChatController(xxx)</code> 时，它会<strong>自动被调用一次</strong>，你不用手动调。</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>构造方法干什么用？初始化字段</h3>
+  <p>构造方法的<strong>唯一使命</strong>就是：在对象刚出生的瞬间，把它的字段<strong>填上初值</strong>。</p>
+
+  <p>看这行：</p>
+  <pre><span class="kw">this</span>.builder = builder;</pre>
+
+  <p>右边那个 <code>builder</code> 是<strong>构造方法收到的参数</strong>（括号里那个），左边那个 <code>builder</code> 是<strong>类的字段</strong>（开头声明那个）。这句话的意思是：<strong>"把外面传进来的 builder，存到我自己（this）的 builder 字段里。"</strong></p>
+
+  <div class="card info">
+    <div class="card-label">为什么需要构造方法？</div>
+    <p style="margin:0.3rem 0 0">想象你新招一个员工（造一个新对象），第一天上班就得告诉他："你的工位是 3 号、你的直属领导是老王、你的客户名单是这个"。这些信息不能等他自己猜，得<strong>入职当天就交代清楚</strong>。构造方法就是"入职当天交代清楚"的那一步。AIHom 里 <code>ChatController</code> 一出生就被告知"你的 builder 是这个"，之后每次 <code>ask()</code> 都能用上。</p>
+  </div>
+
+  <!-- 6. this -->
+  <h2>this = "当前对象自己"</h2>
+  <p>上面那行 <code>this.builder = builder;</code> 里的 <code>this</code>，是 Java 里一个特别的小词，意思是<strong>"当前正在被创建的这个对象自己"</strong>。</p>
+
+  <p>为什么要写 <code>this</code>？因为<strong>参数和字段都叫 <code>builder</code>，名字撞了</strong>。Java 默认认为"没加前缀的名字 = 最近的那一层"，也就是参数。所以：</p>
+
+  <table class="belong">
+    <thead>
+      <tr><th>写法</th><th>指的是谁</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>builder</code>（裸写）</td>
+        <td>参数 <code>builder</code>（离它最近的那层）</td>
+      </tr>
+      <tr>
+        <td><code>this.builder</code></td>
+        <td>当前对象的<strong>字段</strong> <code>builder</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>所以 <code>this.builder = builder;</code> 的完整人话翻译是：<strong>"把外面传给我的 builder 参数，赋值给我自己内部的 builder 字段。"</strong></p>
+
+  <div class="card tip">
+    <div class="card-label">this 的更直观理解</div>
+    <p style="margin:0">想象 <code>this</code> 是一根<strong>手指，指着自己</strong>。在任何一个对象的方法里，<code>this</code> 都代表"我这个对象"。AIHom 里你会看到大量 <code>this.xxx = xxx;</code>，几乎全是"把参数存进自己的字段"这个套路。</p>
+  </div>
+
+  <div class="card warning">
+    <div class="card-label">不是必须写 this</div>
+    <p style="margin:0.3rem 0 0">如果参数名和字段名<strong>不撞</strong>，比如参数叫 <code>b</code>，那写 <code>builder = b;</code> 就够了，Java 自己能认出 <code>builder</code> 是字段。AIHom 习惯让参数名和字段名一样（更清晰），所以 <code>this</code> 就成了<strong>必备</strong>。看到 <code>this.</code> 开头的赋值，十有八九就是这个意思。</p>
+  </div>
+
+  <!-- 7. 综合练习 -->
+  <h2>综合起来：给段代码你能指认吗</h2>
+  <p>下面是一个 AIHom 风格的简化类（虚构的，但写法和真实代码一致）。试着<strong>不往下看答案</strong>，先自己分一分：哪些是字段、哪个是构造方法、哪些是普通方法？</p>
+
+  <pre><span class="kw">public class</span> <span class="typ">MessageService</span> {
+
+    <span class="kw">private final</span> <span class="typ">String</span> defaultName;
+    <span class="kw">private</span> <span class="typ">int</span> count;
+
+    <span class="kw">public</span> <span class="typ">MessageService</span>(<span class="typ">String</span> defaultName) {
+        <span class="kw">this</span>.defaultName = defaultName;
+        <span class="kw">this</span>.count = <span class="str">0</span>;
+    }
+
+    <span class="kw">public</span> <span class="typ">String</span> greet() {
+        count = count + <span class="str">1</span>;
+        <span class="kw">return</span> <span class="str">"你好，"</span> + defaultName;
+    }
+
+    <span class="kw">public</span> <span class="typ">int</span> getCount() {
+        <span class="kw">return</span> count;
+    }
+}</pre>
+
+  <p>答案拆解：</p>
+
+  <table class="belong">
+    <thead>
+      <tr><th>分类</th><th>对应代码</th><th>识别依据</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="tag java">字段</span></td>
+        <td><code>private final String defaultName;</code><br><code>private int count;</code></td>
+        <td>写在类里、方法外，声明"这个对象记住的东西"。</td>
+      </tr>
+      <tr>
+        <td><span class="tag java">构造方法</span></td>
+        <td><code>public MessageService(String defaultName) {...}</code></td>
+        <td>名字和类<strong>同名</strong>，<strong>没有返回类型</strong>，负责初始化 <code>defaultName</code> 和 <code>count</code>。</td>
+      </tr>
+      <tr>
+        <td><span class="tag java">普通方法</span></td>
+        <td><code>public String greet() {...}</code><br><code>public int getCount() {...}</code></td>
+        <td>有<strong>返回类型</strong>（<code>String</code>、<code>int</code>），名字随便起，是对象"能做的事"。</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card success">
+    <div class="card-label">一个细节</div>
+    <p style="margin:0"><code>greet()</code> 里写了 <code>count = count + 1;</code>，这里<strong>没加 this</strong>——因为这一层没有叫 <code>count</code> 的参数，Java 直接认出 <code>count</code> 是字段。这也反过来说明：<code>this</code> 只在"名字撞车"时才必须写。</p>
+  </div>
+
+  <!-- 8. Quiz -->
+  <h2>小测验：确认你真的 get 到了</h2>
+
+  <div class="quiz" id="quiz1">
+    <div class="quiz-q">第 1 题：下面哪个特征<strong>最能</strong>帮你认出"这是个构造方法"？</div>
+    <button class="quiz-opt" data-correct="false">方法名以小写字母开头</button>
+    <button class="quiz-opt" data-correct="false">方法前面写了 void 返回类型</button>
+    <button class="quiz-opt" data-correct="true">方法名和类名一样且没有返回类型</button>
+    <button class="quiz-opt" data-correct="false">方法里出现了 return 语句</button>
+    <div class="quiz-fb" id="fb1"></div>
+  </div>
+
+  <div class="quiz" id="quiz2">
+    <div class="quiz-q">第 2 题：<code>this.builder = builder;</code> 这行里，左边的 <code>this.builder</code> 指的是？</div>
+    <button class="quiz-opt" data-correct="false">构造方法括号里收到的那个参数</button>
+    <button class="quiz-opt" data-correct="true">当前对象自己的 builder 字段</button>
+    <button class="quiz-opt" data-correct="false">父类里同名的某个变量</button>
+    <button class="quiz-opt" data-correct="false">整个类里所有对象共享的变量</button>
+    <div class="quiz-fb" id="fb2"></div>
+  </div>
+
+  <div class="quiz" id="quiz3">
+    <div class="quiz-q">第 3 题：关于"类"和"对象"的关系，下面哪种说法<strong>最准确</strong>？</div>
+    <button class="quiz-opt" data-correct="false">类和对象是同一个东西的两种叫法</button>
+    <button class="quiz-opt" data-correct="false">一个类运行时只能造出一个对象</button>
+    <button class="quiz-opt" data-correct="true">类是定义图纸，对象是按图纸造出的实物，一个类可造多个对象</button>
+    <button class="quiz-opt" data-correct="false">对象先存在，类是根据对象反推出来的</button>
+    <div class="quiz-fb" id="fb3"></div>
+  </div>
+
+  <!-- 9. 本节胜利 -->
+  <div class="win">
+    <div class="card-label">本节你获得的胜利</div>
+    <p style="margin:0.3rem 0 0">从今天起，你看到任何 AIHom 风格的 Java 类，都能在 5 秒内<strong>把它的骨架拆成三块</strong>：字段（对象记住什么）、构造方法（出生时初始化什么）、普通方法（对象能做什么）。这是读懂一切 Java 代码的地基，你已经踩实了第一块砖。</p>
+  </div>
+
+  <!-- 10. 推荐阅读 -->
+  <div class="reading">
+    <div class="card-label">推荐阅读</div>
+    <p style="margin:0.5rem 0 0">本节内容是纯 Java 基础，官方文档偏厚重，推荐先随手翻两个权威入口：<br>
+    • <a href="https://java2ai.com/" target="_blank">Spring AI Alibaba 官方文档</a>（★ AIHom 实际用的框架，里面的示例代码就是"类 + 构造 + 方法"的活教材）<br>
+    • <a href="https://docs.spring.io/spring-ai/reference/index.html" target="_blank">Spring AI 官方文档</a>（看 Quick Start 里的 Controller 示例，巩固本课的 <code>ChatController</code> 结构）<br>
+    重点不是读懂全部，而是<strong>带着本课的眼光去扫一眼</strong>：哪些是字段、哪个是构造方法——你会发现满屏都是你今天学的这几样东西。</p>
+  </div>
+
+  <!-- 11. 追问 -->
+  <div class="ask">
+    <p>🤔 <strong>有任何看不懂的地方，直接问我。</strong>比如："为什么字段要写 <code>final</code>"、"<code>int</code> 和 <code>String</code> 有啥区别"、"AIHom 里真有 <code>MessageService</code> 这种类吗"、"构造方法能写多个吗"……没有蠢问题，问就对了。</p>
+  </div>
+</div>
+
+<script>
+  // 简单的 quiz 即时反馈
+  const feedback = {
+    1: { ok: '✓ 对！构造方法的两条铁律：名字和类同名 + 没有返回类型（连 void 都没有）。普通方法必有返回类型，这是最可靠的区分点。',
+         no: '认构造方法看两点：① 名字和类一模一样；② 没有任何返回类型（连 void 都不能写）。普通方法 <code>ask</code> 前面有 String，构造方法 <code>ChatController</code> 前面什么都没有。' },
+    2: { ok: '✓ 对！this 永远指"当前对象自己"。this.builder 就是当前这个对象内部的 builder 字段，等号右边的 builder 才是参数。',
+         no: 'this 的定义就是"当前正在被创建/使用的这个对象自己"。所以 this.builder 一定是当前对象的字段 builder，不是参数、不是父类、更不是共享变量。' },
+    3: { ok: '✓ 对！类是一份图纸（定义），对象是按图纸造出来的实物。一份图纸可以造出任意多个对象，每个对象各自记着自己的字段。',
+         no: '记住这个比喻：类 = 手机设计图纸，对象 = 按图纸造出来的真手机。图纸一张，手机可以很多台。一个类能 new 出任意多个对象。' }
+  };
+
+  function wireQuiz(id) {
+    const quiz = document.getElementById('quiz' + id);
+    const fb = document.getElementById('fb' + id);
+    const opts = quiz.querySelectorAll('.quiz-opt');
+    opts.forEach(opt => {
+      opt.addEventListener('click', () => {
+        const correct = opt.dataset.correct === 'true';
+        opts.forEach(o => o.classList.add('disabled'));
+        if (correct) {
+          opt.classList.add('correct');
+          fb.style.background = 'var(--success-light)';
+          fb.style.color = '#14532d';
+          fb.textContent = feedback[id].ok;
+        } else {
+          opt.classList.add('wrong');
+          // 同时点亮正确答案
+          opts.forEach(o => { if (o.dataset.correct === 'true') o.classList.add('correct'); });
+          fb.style.background = '#fee2e2';
+          fb.style.color = '#7f1d1d';
+          fb.innerHTML = feedback[id].no;
+        }
+        fb.classList.add('show');
+      });
+    });
+  }
+  [1,2,3].forEach(wireQuiz);
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 002</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0001-spring-ai-overview.html">上一课：001 Spring AI 是什么 + AIHom 技术地图</a><a class="primary" href="0003-java-annotation-interface-generic.html">下一课：003 Java 注解、接口、泛型、lambda</a></div></nav>
+</body>
+</html>

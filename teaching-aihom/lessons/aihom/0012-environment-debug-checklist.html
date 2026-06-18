@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>012 端到端环境排查清单</title>
+<style>
+  :root{--bg:#f8fafc;--surface:#fff;--text:#111827;--muted:#64748b;--accent:#2563eb;--border:#dbe3ee;--code:#f1f5f9;--warn:#b45309;--ok:#16a34a}
+  *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.78 -apple-system,BlinkMacSystemFont,"Noto Sans SC","Segoe UI",sans-serif}.container{max-width:840px;margin:0 auto;padding:3rem 2rem}h1{font-size:2rem;margin:.2rem 0 .5rem}.subtitle{color:var(--muted);padding-bottom:1.5rem;border-bottom:1px solid var(--border);margin-bottom:2rem}h2{font-size:1.35rem;margin:2.2rem 0 .9rem}p{margin:.35rem 0 1rem}code{background:var(--code);border-radius:4px;padding:.12em .35em;font-family:Menlo,Consolas,monospace;font-size:.9em}pre{background:#111827;color:#e5e7eb;border-radius:8px;padding:1rem 1.2rem;overflow:auto;font:14px/1.65 Menlo,Consolas,monospace}.card{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:8px;padding:1rem 1.15rem;margin:1rem 0}.card.warn{border-left-color:var(--warn)}table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:1rem 0}th,td{padding:.65rem .75rem;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}th{font-size:.82rem;color:var(--muted);background:#f1f5f9}tr:last-child td{border-bottom:0}.checklist{background:#fff;border:1px solid var(--border);border-radius:8px;padding:1rem 1.2rem}.checklist li{margin:.45rem 0}.ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;color:#1e40af;padding:1rem;margin:1.4rem 0}.ask-agent:before{content:"提示：";font-weight:700}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>012 端到端环境排查清单</h1>
+<p class="subtitle">目标：前后端都跑起来后，用固定顺序排查“页面能开但 AIHom 功能不通”的问题。</p>
+
+<h2>1. 先确认你在测哪种组合</h2>
+<table>
+  <tr><th>组合</th><th>典型用途</th><th>风险</th></tr>
+  <tr><td>本地前端 + 环境后端</td><td>改 UI、SDK、前端 Tool，后端不动。</td><td>前端资源本地，后端配置在环境里，问题容易跨层。</td></tr>
+  <tr><td>环境前端 + 本地后端</td><td>改 ai-native-service / auto-layout-service，验证接口和 WebSocket。</td><td>需要服务版本路由、toad stage、Nacos 配置都对。</td></tr>
+  <tr><td>本地前端 + 本地后端</td><td>完整联调新协议、新 Tool、新状态。</td><td>最灵活，也最容易出现配置不一致。</td></tr>
+  <tr><td>环境前端 + 环境后端</td><td>回归、验收、发布前验证。</td><td>不要把本地修复误判为环境已修复。</td></tr>
+</table>
+
+<div class="card">
+  <p>排查第一句话应该是：“我现在测的是哪几个仓库、哪个分支、哪个环境、哪个服务版本”。这句话说不清，后面所有判断都会漂。</p>
+</div>
+
+<h2>2. 15 分钟排查顺序</h2>
+<ol class="checklist">
+  <li><strong>前端入口</strong>：Console 第一条红错是什么？入口 JS/CSS 是否 404？</li>
+  <li><strong>目标环境</strong>：<code>kjl dev -T</code> 指向哪里？页面实际接口域名是什么？</li>
+  <li><strong>登录态/权限</strong>：接口 401/403 先处理账号、cookie、权限，不要先看业务代码。</li>
+  <li><strong>WebSocket</strong>：destination 接口是否成功？WS 是否 connected？是否有 inbound/outbound frame？</li>
+  <li><strong>后端路由</strong>：请求是否打到你的 <code>dev_{花名}</code> 服务版本？</li>
+  <li><strong>配置</strong>：<code>spring.profiles.active</code>、<code>qunhe.toad.stage</code>、Nacos graph/prompt/tool 是否一致？</li>
+  <li><strong>Agent 执行</strong>：Langfuse/trace 里是否进入预期 Agent、节点、Tool？</li>
+  <li><strong>中间件</strong>：Redis 锁、队列、TDDL 数据、RocketMQ 消费、OSS 资源是否正常？</li>
+  <li><strong>前端展示</strong>：消息到了但没展示，再看 React state、reactive-framework、iframe/postMessage。</li>
+</ol>
+
+<h2>3. 常见症状对照</h2>
+<table>
+  <tr><th>症状</th><th>优先怀疑</th><th>第一证据</th></tr>
+  <tr><td>页面白屏</td><td>前端资源、运行时 JS 错误。</td><td>Console 第一条 error；Network 404/500。</td></tr>
+  <tr><td>能打开但发不了消息</td><td>登录态、WebSocket destination、SDK 初始化。</td><td>接口状态码；WS 是否 connected。</td></tr>
+  <tr><td>消息发出但没回复</td><td>后端 handler、Graph、模型调用、Redis 锁。</td><td>traceId；后端日志；Langfuse trace。</td></tr>
+  <tr><td>模型说完成但画面没变</td><td>MCP Tool、前端工具回调、viewer 通信。</td><td>tool_call/tool_response；Console；postMessage。</td></tr>
+  <tr><td>生成/渲染一直排队</td><td>Redis 队列、异步任务、worker 并发。</td><td>queuePos/queueSize；Redis key；任务状态。</td></tr>
+  <tr><td>只在某环境失败</td><td>toad、Nacos、OSS bucket、服务版本。</td><td>环境变量；配置中心；实际请求域名。</td></tr>
+</table>
+
+<h2>4. 最小信息包</h2>
+<p>向别人求助或让 Agent 排查时，直接给这个信息包：</p>
+<pre>现象：
+复现步骤：
+前端仓库/分支：
+后端仓库/分支：
+目标环境：
+服务版本：
+graphId/version：
+conversationId / requestId：
+traceId：
+Console 第一条红错：
+Network 失败请求：
+WebSocket frame 关键消息：
+是否涉及 viewer-2d/render-3d：
+是否涉及 Redis 队列/锁/OSS/扣费：</pre>
+
+<div class="card warn">
+  <p>不要只发“坏了”。AIHom 是跨仓系统，没有分支、环境、traceId、WS frame，很难快速定位。</p>
+</div>
+
+<div class="ask-agent">问 agent：“根据这个最小信息包，帮我判断下一步应该查前端、后端、配置还是中间件”。</div>
+</div>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 012</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0011-coops-agent-mcp-injection.html">上一课：011 Coops Agent 配置与 MCP 注入</a><a class="primary" href="0013-git-kaptain-release-flow.html">下一课：013 Git、Kaptain 与发布分支基础</a></div></nav>
+</body>
+</html>

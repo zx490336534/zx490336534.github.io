@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0007 - MCP 工具集成 | Kuai 前端课程</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1rem;margin-bottom:.5rem}
+  .breadcrumb{color:var(--text-secondary);font-size:.85rem;margin-bottom:2rem}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .breadcrumb a:hover{text-decoration:underline}
+  h2{font-size:1.35rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;padding-bottom:.4rem;border-bottom:2px solid var(--accent-light);display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.3rem}
+  h3{font-size:1.1rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem;color:var(--accent)}
+  p{margin-bottom:1rem}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.4rem}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15rem .4rem;border-radius:4px;font-size:.88em;color:var(--accent)}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;overflow-x:auto;margin:1rem 0;font-size:.88rem;line-height:1.6}
+  pre code{background:none;padding:0;color:var(--text)}
+  .highlight{background:var(--accent-light);border-left:4px solid var(--accent);padding:1rem 1.25rem;border-radius:0 8px 8px 0;margin:1rem 0}
+  .info-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:.93rem}
+  .info-box::before{content:'💡 '}
+  .warn-box{background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:.93rem}
+  .warn-box::before{content:'⚠️ '}
+  .tag{display:inline-block;padding:.15rem .5rem;border-radius:4px;font-size:.75rem;font-weight:500;margin-right:.3rem}
+  .tag.deep{background:#fef3c7;color:#b45309}
+  table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.9rem}
+  th,td{border:1px solid var(--border);padding:.6rem .8rem;text-align:left}
+  th{background:var(--accent-light);font-weight:600}
+  .quiz-section{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:1.5rem 2rem;margin-top:2.5rem}
+  .quiz-section h2{border:none;margin-top:0}
+  .quiz-q{margin-bottom:1.5rem;padding:1rem 1.25rem;background:var(--bg);border-radius:8px}
+  .quiz-q strong{color:var(--accent)}
+  .quiz-q label{display:block;margin:.3rem 0;cursor:pointer;padding:.3rem .5rem;border-radius:4px;transition:background .15s}
+  .quiz-q label:hover{background:var(--accent-light)}
+  .quiz-q input[type="radio"]{margin-right:.5rem}
+  .quiz-answer{margin-top:.75rem;padding:.75rem 1rem;background:#dcfce7;border-radius:6px;display:none;font-size:.9rem}
+  .quiz-answer.show{display:block}
+  .quiz-btn{background:var(--accent);color:#fff;border:none;padding:.6rem 1.5rem;border-radius:6px;font-size:.9rem;cursor:pointer;margin-top:1rem;font-weight:500}
+  .quiz-btn:hover{opacity:.9}
+  .nav-footer{display:flex;justify-content:space-between;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+  .nav-footer a{color:var(--accent);text-decoration:none;font-weight:500}
+  .nav-footer a:hover{text-decoration:underline}
+  .arch-diagram{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.7;overflow-x:auto;white-space:pre}
+  .card{border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0;font-size:.93rem}
+  .card.info{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
+  .card-label{font-weight:600;font-size:.85rem;margin-bottom:.5rem;color:var(--accent)}
+  .card ul{margin:.5rem 0 0 1.25rem}
+  .card a{color:var(--accent);text-decoration:none}
+  .card a:hover{text-decoration:underline}
+.nav-links{max-width:900px;margin:2.5rem auto 0;padding:1.5rem 2rem;border-top:1px solid #e7e5e4;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem}.nav-links a{color:#b45309;text-decoration:none;font-weight:500}.nav-links a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="container">
+
+<p class="breadcrumb"><a href="../index.html">课程首页</a> &rsaquo; kuai-service-front &rsaquo; 0007 MCP 工具集成</p>
+
+<div class="card info">
+  <div class="card-label">前置知识</div>
+  <p>如果你不熟悉以下概念，建议先阅读对应教程：</p>
+  <ul>
+    <li><a href="../../reference/nextjs-app-router.html">Next.js App Router 基础入门</a></li>
+    <li><a href="../../reference/langchain-basics.html">LangChain 基础入门</a></li>
+    <li><a href="../../reference/mcp-protocol.html">MCP 协议基础入门</a></li>
+  </ul>
+</div>
+
+<h1>🔧 MCP 工具集成</h1>
+<p class="subtitle"><span class="tag deep">深度</span> 理解 MCP 协议、mcpLoader 加载器、工具缓存与各类工具实现</p>
+
+<!-- ============================== -->
+<h2><span class="icon">📖</span> 1. MCP 协议基础</h2>
+
+<p><strong>MCP (Model Context Protocol)</strong> 是 Anthropic 提出的开放协议，用于标准化 AI Agent 与外部工具/数据源之间的通信。在 kuai-service-front 中，MCP 是 Agent 获取外部能力的核心通道。</p>
+
+<h3>1.1 什么是 MCP？</h3>
+<p>MCP 定义了一套标准化的工具描述和调用协议，让 AI 模型能够：</p>
+<ul>
+  <li><strong>发现工具</strong> — 自动获取服务器提供的工具列表及其参数描述</li>
+  <li><strong>调用工具</strong> — 通过统一接口调用远程工具，获取结构化结果</li>
+  <li><strong>多服务器支持</strong> — 同时连接多个 MCP 服务器，工具自动聚合</li>
+</ul>
+
+<h3>1.2 项目中的 MCP 角色</h3>
+<div class="arch-diagram">┌─────────────┐    MCP 协议     ┌──────────────────┐
+│  LangChain   │ ◄──────────► │  MCP Server(s)    │
+│  Agent       │               │  (HTTP/Stdio/SSE) │
+│              │               └──────────────────┘
+│  ┌─────────┐ │
+│  │ Tools   │ │  ← mcpLoader.js 负责将 MCP 工具转换为
+│  └─────────┘ │    LangChain 兼容的 Tool 对象
+└─────────────┘</div>
+
+<h3>1.3 传输方式</h3>
+<table>
+  <tr><th>传输方式</th><th>配置 key</th><th>说明</th></tr>
+  <tr><td>HTTP (StreamableHTTP)</td><td><code>transport: 'http'</code></td><td>最常用，通过 URL 连接远程 MCP 服务</td></tr>
+  <tr><td>Stdio</td><td><code>transport: 'stdio'</code></td><td>本地进程通信，适合 CLI 工具</td></tr>
+  <tr><td>SSE</td><td><code>transport: 'sse'</code></td><td>Server-Sent Events，流式传输</td></tr>
+</table>
+
+<h3>1.4 MCP 服务器配置示例</h3>
+<pre><code>// Agent 中配置 MCP 服务器
+const MCP_SERVERS = {
+  confluence_mcp: {
+    transport: 'http',
+    url: 'https://kuai-mcp.example.com/groups/confluence/mcp',
+  },
+  kaptain_mcp: {
+    transport: 'http',
+    url: 'https://kuai-mcp.example.com/groups/kaptain/mcp',
+  },
+};</code></pre>
+
+<!-- ============================== -->
+<h2><span class="icon">⚙️</span> 2. mcpLoader 工具加载器</h2>
+
+<p><code>src/agents/tools/mcpLoader.js</code> 是项目中最核心的工具加载模块，它将 MCP 协议的工具转换为 LangChain 兼容的 Tool 对象，并提供缓存、过滤、转换等高级能力。</p>
+
+<h3>2.1 核心函数：getMCPTools()</h3>
+<pre><code>import { getMCPTools } from '@/agents/tools';
+
+// 基本用法
+const tools = await getMCPTools(MCP_SERVERS, {
+  agentName: 'MyAgent',          // 日志标识
+  useCache: true,                 // 使用缓存（默认 true）
+  includeTools: ['create_page'],  // 仅暴露指定工具
+  excludeTools: ['dangerous_*'],  // 排除指定工具
+  descriptionOverrides: {         // 覆盖冗长描述，减少 token
+    some_tool: '更简洁的描述',
+  },
+  resultTransformers: {           // 转换工具返回结果
+    some_tool: (result) => result.slice(0, 500),
+  },
+  handleRuntimeErrors: true,      // 将异常转为可恢复结果（默认 true）
+});</code></pre>
+
+<h3>2.2 后处理管道</h3>
+<p>mcpLoader 在获取原始工具后，会依次执行 5 步后处理：</p>
+<div class="arch-diagram">原始 MCP 工具
+    │
+    ▼
+① applyToolFilters     — includeTools / excludeTools 过滤
+    │
+    ▼
+② applyDescriptionOverrides  — 覆盖冗长描述，减少 token
+    │
+    ▼
+③ applyResultTransformers    — 转换工具返回结果
+    │
+    ▼
+④ applyInvokeWrappings       — 入参转换 + 串行排队（合并为单层包装）
+    │
+    ▼
+⑤ applyRuntimeErrorHandling  — MCP 异常转为 ToolMessage(status: 'error')
+    │
+    ▼
+最终可用工具列表</div>
+
+<h3>2.3 工具名规范化</h3>
+<p>OpenAI 兼容 API 要求工具名仅允许 <code>[a-zA-Z0-9_-]</code>。mcpLoader 通过 <code>sanitizeToolName()</code> 自动将不合规的工具名转换为安全格式，并保证唯一性。</p>
+<pre><code>// 原始工具名 "confluence/get-page" → 规范化为 "confluence_get-page"
+// 冲突时自动追加后缀：tool, tool_1, tool_2 ...</code></pre>
+
+<!-- ============================== -->
+<h2><span class="icon">💾</span> 3. 工具缓存机制</h2>
+
+<p>mcpLoader 使用 <strong>永久缓存</strong> 策略（当前版本已从 2 分钟改为不过期），避免重复创建 MCP 客户端连接。</p>
+
+<h3>3.1 缓存结构</h3>
+<pre><code>// 内部缓存 Map
+const cache = new Map();
+// key: JSON.stringify(排序后的 { mcpServers, loadOptions })
+// value: { tools: Array, client: MultiServerMCPClient, timestamp: number }
+
+// 并发去重
+const loadingPromises = new Map();
+// 同时发起相同配置的加载请求，只会实际创建一次 MCP 客户端</code></pre>
+
+<h3>3.2 缓存 Key 生成</h3>
+<p>缓存 key 基于 <code>mcpServers</code> 配置和 <code>loadOptions</code> 的 JSON 序列化（对象 key 排序），确保语义相同的配置命中同一缓存。</p>
+
+<div class="highlight">
+  <strong>设计要点：</strong>缓存是永久的，不过期。如果 MCP 服务端更新了工具列表，需要调用 <code>clearMCPCache()</code> 手动清除缓存。
+</div>
+
+<h3>3.3 Stdio 重试机制</h3>
+<p>对于 Stdio 类型的 MCP 服务，mcpLoader 内置了重试机制：</p>
+<ul>
+  <li>重试次数：<code>STDIO_RETRY_COUNT = 2</code></li>
+  <li>重试间隔：<code>STDIO_RETRY_DELAY_MS = 800ms</code></li>
+  <li>可重试错误：<code>connection closed</code>、<code>ECONNRESET</code>、<code>socket hang up</code>、<code>timed out</code></li>
+</ul>
+
+<!-- ============================== -->
+<h2><span class="icon">🧰</span> 4. 各工具类型详解</h2>
+
+<p>项目在 <code>src/agents/tools/</code> 目录下提供了丰富的工具集，统一从 <code>index.js</code> 导出。以下是核心工具类型的详细说明：</p>
+
+<h3>4.1 GitClone 工具</h3>
+<p><code>gitClone.js</code> — 将 Git 克隆操作封装为 LangChain Tool。</p>
+<pre><code>import { getGitCloneTools } from '@/agents/tools';
+
+const gitTools = await getGitCloneTools();
+// 提供 git_clone 工具，Agent 可自动克隆仓库</code></pre>
+<table>
+  <tr><th>特性</th><th>说明</th></tr>
+  <tr><td>认证方式</td><td>HTTPS 认证（默认 username: qacenter）</td></tr>
+  <tr><td>克隆目录</td><td>自动选择 <code>$GIT_CLONE_BASE_DIR</code> 或 <code>~/repos</code></td></tr>
+  <tr><td>超时时间</td><td>5 分钟（300000ms）</td></tr>
+  <tr><td>权限处理</td><td>克隆后自动 <code>chmod -R 777</code></td></tr>
+</table>
+
+<h3>4.2 ClaudeCode 工具</h3>
+<p><code>claudecodeTools.js</code> — 基于 Claude Agent SDK 的深度代码分析工具。</p>
+<pre><code>import { getClaudecodeTools } from '@/agents/tools';
+
+const claudecodeTools = await getClaudecodeTools();
+// 提供 ask_claudecode 工具</code></pre>
+<table>
+  <tr><th>特性</th><th>说明</th></tr>
+  <tr><td>默认模型</td><td>deepseek-v4-pro</td></tr>
+  <tr><td>支持模型</td><td>deepseek-v4-pro, gpt-5.5, gpt-5.4, glm-5.1</td></tr>
+  <tr><td>超时时间</td><td>20 分钟（1200000ms）</td></tr>
+  <tr><td>参数</td><td><code>prompt</code>(必填)、<code>workDir</code>、<code>taskType</code>、<code>model</code>、<code>timeout</code></td></tr>
+  <tr><td>技能集成</td><td>自动加载 <code>~/.claude/skills/</code> 目录下的技能文件</td></tr>
+</table>
+
+<h3>4.3 XMind 工具</h3>
+<p><code>xmindTools.js</code> — 服务端 XMind 脑图编辑工具集，提供完整的脑图 CRUD 操作。</p>
+<pre><code>import { getXmindTools } from '@/agents/tools';
+
+const xmindTools = await getXmindTools();
+// 提供多个工具：get_current_data, load_xmind_data, add_nodes,
+// update_node, delete_node, move_node, find_node_by_path, clear_data</code></pre>
+<table>
+  <tr><th>工具名</th><th>功能</th></tr>
+  <tr><td><code>get_current_data</code></td><td>获取当前脑图数据</td></tr>
+  <tr><td><code>load_xmind_data</code></td><td>加载 XMind 文件</td></tr>
+  <tr><td><code>add_nodes</code></td><td>添加节点</td></tr>
+  <tr><td><code>update_node</code></td><td>更新节点内容</td></tr>
+  <tr><td><code>delete_node</code></td><td>删除节点</td></tr>
+  <tr><td><code>move_node</code></td><td>移动节点位置</td></tr>
+  <tr><td><code>find_node_by_path</code></td><td>按路径查找节点</td></tr>
+  <tr><td><code>clear_data</code></td><td>清空脑图数据</td></tr>
+</table>
+
+<h3>4.4 DrawIO 工具</h3>
+<p><code>drawioTools.js</code> — DrawIO 图表编辑工具，支持加载、编辑、导出和验证图表。</p>
+<pre><code>import { getDrawioTools } from '@/agents/tools';
+
+const drawioTools = await getDrawioTools();
+// 提供：load_diagram, get_current_diagram, clear_diagram,
+//        export_diagram, validate_diagram, suggest_optimization</code></pre>
+<div class="info-box">
+  <strong>DrawIO vs XMind：</strong>DrawIO 工具用于流程图/架构图等图表编辑，需配合 <code>requiresDrawio: true</code> 配置启用分屏布局；XMind 工具用于思维导图编辑，需配合 <code>requiresXmind: true</code>。
+</div>
+
+<h3>4.5 其他工具一览</h3>
+<table>
+  <tr><th>工具</th><th>导入函数</th><th>说明</th></tr>
+  <tr><td>脚本执行</td><td><code>getScriptRunnerTools()</code></td><td>执行服务端脚本</td></tr>
+  <tr><td>Bash</td><td><code>getBashTools()</code></td><td>Bash 命令执行</td></tr>
+  <tr><td>文件写入</td><td><code>getFileWriterTools()</code></td><td>写入文件到服务端</td></tr>
+  <tr><td>文件读取</td><td><code>getFileReaderTools()</code></td><td>读取服务端文件</td></tr>
+  <tr><td>文件删除</td><td><code>getFileDeleteTools()</code></td><td>删除服务端文件</td></tr>
+  <tr><td>文件上传</td><td><code>getFileUploadTools()</code></td><td>上传文件</td></tr>
+  <tr><td>GitLab MR</td><td><code>getGitLabMergeRequestTools()</code></td><td>创建合并请求</td></tr>
+  <tr><td>知识库检索</td><td><code>getKnowledgeTools()</code></td><td>从知识库检索信息</td></tr>
+  <tr><td>知识库管理</td><td><code>getKnowledgeManagerTools()</code></td><td>Gaea 知识库搜索</td></tr>
+  <tr><td>Kaptain API</td><td><code>getKaptainTools()</code></td><td>Kaptain 项目管理</td></tr>
+  <tr><td>HTTP 请求</td><td><code>getHttpRequestTools()</code></td><td>Agent 调用外部 API</td></tr>
+  <tr><td>Grep</td><td><code>getGrepTools()</code></td><td>内容搜索</td></tr>
+  <tr><td>Glob</td><td><code>getGlobTools()</code></td><td>文件名模式匹配</td></tr>
+  <tr><td>Edit</td><td><code>getEditTools()</code></td><td>文件编辑</td></tr>
+  <tr><td>Web</td><td><code>getWebTools()</code></td><td>网页抓取和搜索</td></tr>
+  <tr><td>子 Agent</td><td><code>getSubagentTools()</code></td><td>子 Agent 调度</td></tr>
+  <tr><td>技能加载</td><td><code>getSkillTools()</code></td><td>LangChain Skills 加载</td></tr>
+</table>
+
+<h3>4.6 在 Agent 中组合使用</h3>
+<pre><code>// 推荐：使用 Promise.all 并行加载所有工具
+const [mcpTools, gitTools, claudecodeTools, xmindTools] = await Promise.all([
+  getMCPTools(MCP_SERVERS, {
+    agentName: 'CodeAssistant',
+    useCache: true,
+    descriptionOverrides: { 'confluence_get_page': '获取 Confluence 页面内容' },
+  }),
+  getGitCloneTools(),
+  getClaudecodeTools(),
+  getXmindTools(),
+]);
+
+return createReactAgent({
+  llm: model,
+  tools: [...mcpTools, ...gitTools, ...claudecodeTools, ...xmindTools],
+});</code></pre>
+
+<!-- ============================== -->
+<h2><span class="icon">🛡️</span> 5. 错误处理与容错</h2>
+
+<p>mcpLoader 内置了完善的错误处理机制，确保单个工具失败不会中断整个 Agent 流程：</p>
+
+<ul>
+  <li><strong>加载失败容错</strong>：MCP 工具加载失败时返回空数组，不阻塞 Agent 启动</li>
+  <li><strong>运行期错误降级</strong>：工具执行异常时，自动转换为 <code>ToolMessage(status: 'error')</code>，让模型决定下一步</li>
+  <li><strong>AbortError 不拦截</strong>：用户主动取消时直接抛出，不做降级处理</li>
+  <li><strong>串行排队</strong>：对需要串行执行的工具（如 Confluence 页面创建），通过 <code>serializeTools</code> 配置避免并发冲突</li>
+</ul>
+
+<pre><code>// 错误降级示例
+// MCP 工具执行失败后，模型收到的不是异常，而是：
+// "MCP 工具 xxx 执行失败，但这不是 Agent 流程终止条件。
+//  请把这次工具失败当作可恢复的工具结果处理：可以调整参数后重试、
+//  改用其他工具/资料继续，或在缺少关键信息时向用户简短说明需要补充什么。"</code></pre>
+
+<!-- ============================== -->
+<div class="quiz-section">
+<h2><span class="icon">📝</span> Quiz — 测测你理解了多少</h2>
+
+<div class="quiz-q" id="q1">
+  <strong>Q1：mcpLoader 的缓存策略是什么？</strong><br>
+  <label><input type="radio" name="q1" value="a"> A. 每次请求都重新创建 MCP 客户端</label>
+  <label><input type="radio" name="q1" value="b"> B. 永久缓存，不过期（需手动 clearMCPCache 清除）</label>
+  <label><input type="radio" name="q1" value="c"> C. 缓存 30 秒后自动过期</label>
+  <label><input type="radio" name="q1" value="d"> D. 缓存 24 小时后自动过期</label>
+  <div class="quiz-answer" id="a1"><strong>✅ 正确答案：B</strong><br>mcpLoader 使用永久缓存策略。缓存 key 基于 mcpServers 配置的 JSON 序列化，相同配置会命中缓存。如果 MCP 服务端更新了工具列表，需要调用 <code>clearMCPCache()</code> 手动清除。</div>
+</div>
+
+<div class="quiz-q" id="q2">
+  <strong>Q2：MCP 工具加载失败时，Agent 会怎样？</strong><br>
+  <label><input type="radio" name="q2" value="a"> A. Agent 启动失败，抛出异常</label>
+  <label><input type="radio" name="q2" value="b"> B. 返回空数组，Agent 仍可正常运行（只是没有该工具能力）</label>
+  <label><input type="radio" name="q2" value="c"> C. 自动重试 10 次后失败</label>
+  <label><input type="radio" name="q2" value="d"> D. 使用默认工具替代</label>
+  <div class="quiz-answer" id="a2"><strong>✅ 正确答案：B</strong><br>mcpLoader 的设计原则是"不阻塞 Agent 启动"。加载失败时返回空数组，Agent 仍可提供基础问答能力。运行期工具异常也会被转换为可恢复的 ToolMessage，不会中断 Agent 流程。</div>
+</div>
+
+<div class="quiz-q" id="q3">
+  <strong>Q3：以下哪个工具用于深度代码分析？</strong><br>
+  <label><input type="radio" name="q3" value="a"> A. getGitCloneTools()</label>
+  <label><input type="radio" name="q3" value="b"> B. getXmindTools()</label>
+  <label><input type="radio" name="q3" value="c"> C. getClaudecodeTools()</label>
+  <label><input type="radio" name="q3" value="d"> D. getDrawioTools()</label>
+  <div class="quiz-answer" id="a3"><strong>✅ 正确答案：C</strong><br><code>getClaudecodeTools()</code> 基于 Claude Agent SDK 提供 <code>ask_claudecode</code> 工具，支持深度代码分析、技术设计文档生成等。GitClone 用于克隆仓库，XMind 用于脑图编辑，DrawIO 用于图表编辑。</div>
+</div>
+
+<button class="quiz-btn" onclick="showAnswers()">查看答案</button>
+</div>
+
+<div class="nav-links">
+  <a href="0006-kuai-front-agent-system.html">← Agent 系统深度追踪</a>
+  <a href="../index.html">🗺️ 完整学习地图</a>
+  <a href="0008-kuai-front-state-management.html">状态管理与数据流 →</a>
+</div>
+
+</div>
+
+<script>
+function showAnswers(){
+  document.querySelectorAll('.quiz-answer').forEach(el=>el.classList.add('show'));
+}
+</script>
+</body>
+</html>

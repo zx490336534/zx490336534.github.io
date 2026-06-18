@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>037 AIHom 前端入口 06：iframe/postMessage 与 viewer 边界</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--muted:#78716c;--accent:#b45309;--border:#e7e5e4;--code:#f5f5f4;--blue:#2563eb;--green:#16a34a}
+  *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.8 'Noto Sans SC',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}.container{max-width:880px;margin:0 auto;padding:3rem 1.6rem 4rem}h1{font-size:2rem;line-height:1.25;margin:.2rem 0 .5rem}h2{font-size:1.35rem;margin:2.2rem 0 .8rem}p{margin:.4rem 0 1rem}ul,ol{margin:.4rem 0 1rem 1.4rem;padding:0}li{margin:.25rem 0}a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}code{font-family:'JetBrains Mono',Menlo,Consolas,monospace;background:var(--code);border-radius:4px;padding:.1em .35em;font-size:.9em}pre{background:#1c1917;color:#e7e5e4;border-radius:8px;padding:1rem 1.1rem;overflow:auto;font:13px/1.65 'JetBrains Mono',Menlo,Consolas,monospace;margin:1rem 0}table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:1rem 0}th,td{padding:.65rem .75rem;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}th{color:var(--muted);font-size:.82rem;background:#f5f5f4}tr:last-child td{border-bottom:0}.subtitle{color:var(--muted);padding-bottom:1.3rem;border-bottom:1px solid var(--border);margin-bottom:1.8rem}.card{background:#fff;border:1px solid var(--border);border-left:4px solid var(--blue);border-radius:8px;padding:1rem 1.15rem;margin:1rem 0}.card.soft{border-left-color:var(--accent);background:#fff7ed}.label{font-size:.76rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;margin-bottom:.35rem}.quiz{background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.15rem;margin:1.4rem 0}.quiz-title{font-weight:700;margin-bottom:.55rem;color:#92400e}.quiz-options{list-style:none;margin:0;padding:0}.quiz-options li{padding:.45rem .65rem;margin:.35rem 0;border-radius:6px;border:1px solid transparent;cursor:pointer}.quiz-options li:hover{border-color:#f59e0b}.correct{background:#dcfce7!important;border-color:#16a34a!important}.wrong{background:#fee2e2!important;border-color:#ef4444!important}.quiz-feedback{display:none;margin-top:.65rem;padding:.6rem;border-radius:6px}.ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;color:#1e40af;padding:1rem;margin:1.4rem 0}.ask-agent:before{content:"提示：";font-weight:700}.learning-map-quick-nav{margin:2.5rem 0 0;padding:1rem 1.1rem;border:1px solid #d6d3d1;border-radius:8px;background:#fff;display:grid;gap:.75rem}.nav-title{font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:#78716c}.nav-links{display:flex;flex-wrap:wrap;gap:.65rem;align-items:center}.nav-links a{color:#44403c;text-decoration:none;border:1px solid #e7e5e4;border-radius:6px;padding:.35rem .65rem}.nav-links a.primary{color:#fff;border-color:#b45309;background:#b45309}.nav-links a.map{color:#2563eb;border-color:#bfdbfe;background:#eff6ff}@media(max-width:640px){.container{padding:2rem 1rem 3.5rem}h1{font-size:1.65rem}pre{font-size:.78rem}}
+</style>
+</head>
+<body>
+<main class="container">
+  <h1>037 AIHom 前端入口 06：iframe/postMessage 与 viewer 边界</h1>
+  <p class="subtitle">目标：遇到 2D/3D viewer 问题时，先知道边界在哪里，再决定看 ai-home、viewer-2d 还是 render-3d。</p>
+
+  <section class="card soft">
+    <div class="label">先分清角色</div>
+    <p><code>ai-home</code> 是宿主页面，负责对话、状态和整体布局。<code>viewer-2d</code> 负责 2D 户型展示。<code>render-3d</code> 负责 3D 场景和截图/离线渲染。它们不是一个页面里的普通 div，而是通过 iframe 和消息协作。</p>
+  </section>
+
+  <h2>1. 最小结构</h2>
+  <pre>ai-home 主页面
+  ├─ 嵌入 viewer-2d iframe
+  ├─ 嵌入 render-3d iframe
+  └─ 通过 postMessage / SDK / 状态管理传递指令和结果</pre>
+
+  <h2>2. iframe 是边界</h2>
+  <p>iframe 可以先理解成“页面里嵌了另一个小浏览器”。所以宿主和 viewer 之间不是直接互相改变量，而是发消息。</p>
+  <table>
+    <tr><th>如果问题是</th><th>优先看哪里</th></tr>
+    <tr><td>ai-home 没有把参数传进去</td><td><code>ai-home</code> 的 viewer 组件和 iframe URL</td></tr>
+    <tr><td>viewer 收到消息但没处理</td><td><code>viewer-2d</code> 或 <code>render-3d</code> 的消息监听</td></tr>
+    <tr><td>viewer 处理完没有回传</td><td>回传的 message type 和 payload</td></tr>
+    <tr><td>页面状态没更新</td><td><code>ViewerStateManager</code> 或对应 connect 组件</td></tr>
+  </table>
+
+  <h2>3. viewer-2d 先理解成“数据变图形”</h2>
+  <p>2D 里看到的户型不是 DOM 一行行画出来的。更合理的读法是：</p>
+  <pre>designDoc 数据
+  ↓
+EntityDocument / Entity
+  ↓
+Drawable
+  ↓
+PixiJS 画到 2D 画布</pre>
+  <p>所以 2D 显示不对，先问：数据有没有进来？Entity 有没有创建？Drawable 有没有画？</p>
+
+  <h2>4. render-3d 先理解成“场景 + 任务状态”</h2>
+  <p>3D 不只是显示模型，还会做刷新、截图、离线渲染。读它时先看状态名：<code>WAITING</code>、<code>IN_PROCESS</code>、<code>COMPLETED</code>、<code>FAILED</code>、<code>CANCELLED</code>。</p>
+  <p>如果截图失败，不要先看 CSS。先看任务是否创建、是否轮询、是否进入终态、是否把结果回传给宿主。</p>
+
+  <h2>5. 排查决策卡</h2>
+  <table>
+    <tr><th>现象</th><th>第一反应</th></tr>
+    <tr><td>iframe 空白</td><td>看 URL、加载报错、资源构建</td></tr>
+    <tr><td>2D 数据不对</td><td>看 designDoc、Entity、Drawable</td></tr>
+    <tr><td>3D 不刷新</td><td>看消息有没有发到 render-3d</td></tr>
+    <tr><td>截图没回来</td><td>看离线渲染任务状态和回传消息</td></tr>
+  </table>
+
+  <div class="quiz" id="quiz1"><div class="quiz-title">Q1：iframe 最接近什么？</div><ul class="quiz-options" data-correct="0"><li onclick="checkQuiz('quiz1',0)">A. 嵌入页面</li><li onclick="checkQuiz('quiz1',1)">B. 后端接口</li><li onclick="checkQuiz('quiz1',2)">C. 数据库表</li><li onclick="checkQuiz('quiz1',3)">D. Git 分支</li></ul><div class="quiz-feedback"></div></div>
+  <div class="quiz" id="quiz2"><div class="quiz-title">Q2：2D 显示不对，优先确认什么？</div><ul class="quiz-options" data-correct="2"><li onclick="checkQuiz('quiz2',0)">A. 字体大小</li><li onclick="checkQuiz('quiz2',1)">B. 发布日期</li><li onclick="checkQuiz('quiz2',2)">C. 数据实体</li><li onclick="checkQuiz('quiz2',3)">D. 分支名称</li></ul><div class="quiz-feedback"></div></div>
+  <div class="quiz" id="quiz3"><div class="quiz-title">Q3：截图失败先看什么？</div><ul class="quiz-options" data-correct="1"><li onclick="checkQuiz('quiz3',0)">A. 卡片圆角</li><li onclick="checkQuiz('quiz3',1)">B. 任务状态</li><li onclick="checkQuiz('quiz3',2)">C. 标题字号</li><li onclick="checkQuiz('quiz3',3)">D. 注释数量</li></ul><div class="quiz-feedback"></div></div>
+
+  <div class="ask-agent">复习时可以问 agent：给我一个 3D 截图失败的排查路线，从 ai-home iframe 到 render-3d 任务状态一路追。</div>
+  <nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 037</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0036-websocket-message-basics.html">上一课：036 AIHom 前端入口 05：WebSocket 消息入门</a><a class="primary" href="0038-agent-conversation-sdk-mcp.html">下一课：038 AIHom 前端入口 07：SDK + MCP 工具桥</a></div></nav>
+</main>
+<script>
+function checkQuiz(q,s){const box=document.getElementById(q),opts=box.querySelector('.quiz-options'),c=Number(opts.dataset.correct),items=opts.querySelectorAll('li'),fb=box.querySelector('.quiz-feedback');items.forEach((item,i)=>{item.onclick=null;if(i===c)item.classList.add('correct');if(i===s&&i!==c)item.classList.add('wrong')});const text={quiz1:['正确。iframe 可以先理解成嵌入页面。','不对。iframe 是嵌入另一个页面的边界。'],quiz2:['正确。2D 问题先确认数据和 Entity/Drawable 链路。','不对。先看数据有没有变成正确实体。'],quiz3:['正确。截图失败先追任务状态。','不对。截图是任务链路，先看状态。']};fb.style.display='block';fb.textContent=s===c?text[q][0]:text[q][1];fb.style.background=s===c?'#dcfce7':'#fee2e2'}
+</script>
+</body>
+</html>

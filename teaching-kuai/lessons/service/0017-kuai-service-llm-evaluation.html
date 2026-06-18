@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0017 - LLM 评估系统详解</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:2rem}
+  .breadcrumb{color:var(--text-secondary);font-size:.85rem;margin-bottom:1.5rem}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .breadcrumb a:hover{text-decoration:underline}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.15rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem}
+  p{margin-bottom:1rem}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15rem .4rem;border-radius:4px;font-size:.88em}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;overflow-x:auto;margin:1rem 0;font-size:.88rem;line-height:1.6}
+  pre code{background:none;padding:0}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.4rem}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0}
+  .card.info{background:#eff6ff;border-color:#bfdbfe}
+  .card-label{font-weight:600;font-size:.85rem;color:#2563eb;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.05em}
+  .flow-box{background:var(--surface);border:2px solid var(--accent);border-radius:12px;padding:1.5rem;margin:1.5rem 0;text-align:center}
+  .flow-arrow{font-size:1.3rem;color:var(--accent);margin:0 .5rem;font-weight:700}
+  .flow-step{display:inline-block;background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:.4rem 1rem;font-weight:600;font-size:.95rem}
+  .flow-step.mongo{background:#dcfce7;border-color:#86efac;color:#166534}
+  .flow-step.mysql{background:#dbeafe;border-color:#93c5fd;color:#1e40af}
+  .flow-step.ext{background:#f3e8ff;border-color:#c4b5fd;color:#6d28d9}
+  .call-chain{font-family:'JetBrains Mono',monospace;font-size:.85rem;background:var(--code-bg);padding:1rem 1.25rem;border-radius:8px;border:1px solid var(--border);margin:1rem 0;line-height:2}
+  .call-chain .cls{color:#b45309;font-weight:600}
+  .call-chain .method{color:#2563eb}
+  .call-chain .arrow{color:#78716c;margin:0 .25rem}
+  .quiz-section{background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:1.5rem;margin-top:2.5rem}
+  .quiz-section h2{margin-top:0;color:var(--accent)}
+  .quiz-q{margin-bottom:1.5rem}
+  .quiz-q .q-title{font-weight:600;margin-bottom:.5rem}
+  .quiz-q label{display:block;padding:.4rem .75rem;margin:.3rem 0;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s;background:var(--surface)}
+  .quiz-q label:hover{border-color:var(--accent)}
+  .quiz-q input[type="radio"]{margin-right:.5rem}
+  .quiz-q .answer{display:none;margin-top:.5rem;padding:.75rem 1rem;border-radius:6px;font-size:.9rem}
+  .quiz-q .answer.correct{background:#dcfce7;color:#166534;border:1px solid #86efac}
+  .quiz-q .answer.wrong{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
+  .ask-agent::before{content:'💡 '}
+  .nav-links{display:flex;justify-content:space-between;margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+  .nav-links a{color:var(--accent);text-decoration:none;font-weight:500}
+  .nav-links a:hover{text-decoration:underline}
+  table{width:100%;border-collapse:collapse;margin:1rem 0}
+  th,td{padding:.6rem .8rem;border:1px solid var(--border);text-align:left;font-size:.9rem}
+  th{background:var(--code-bg);font-weight:600}
+  .tag{display:inline-block;padding:.1rem .4rem;border-radius:4px;font-size:.7rem;font-weight:500;margin-right:.3rem}
+  .tag.deep{background:#fef3c7;color:#b45309}
+  .status-badge{display:inline-block;padding:.15rem .5rem;border-radius:12px;font-size:.75rem;font-weight:500}
+  .status-badge.running{background:#dbeafe;color:#2563eb}
+  .status-badge.success{background:#dcfce7;color:#16a34a}
+  .status-badge.failed{background:#fee2e2;color:#991b1b}
+  .status-badge.canceled{background:#f3f4f6;color:#6b7280}
+</style>
+<script>
+function checkAnswer(qId, correct, el){
+  var ans=el.parentElement.parentElement.querySelector('.answer');
+  if(el.value===correct){ans.className='answer correct';ans.innerHTML='✅ 正确！';ans.style.display='block'}
+  else{ans.className='answer wrong';ans.innerHTML='❌ 错误，正确答案是 '+correct+'。';ans.style.display='block'}
+}
+</script>
+</head>
+<body>
+<div class="container">
+
+<div class="breadcrumb"><a href="../index.html">课程首页</a> &gt; kuai-service &gt; 0017 LLM 评估系统详解</div>
+
+<h1>🧪 LLM 评估系统详解</h1>
+<p class="subtitle"><span class="tag deep">深度</span> LLM 评估 &amp; DeepEval 集成 · 批量评估 · 异步任务 · 进度追踪</p>
+
+<div class="card info">
+  <div class="card-label">前置知识</div>
+  <p>本课程假设你已了解以下内容：</p>
+  <ul>
+    <li><strong>Spring Boot 基础</strong>：<code>@Async</code> 异步方法、<code>@Qualifier</code> 注入指定 Bean、<code>Executor</code> 线程池</li>
+    <li><strong>Java 并发基础</strong>：<code>CompletableFuture</code>、<code>Semaphore</code>、<code>AtomicInteger</code> 的基本用法</li>
+    <li>kuai-service 项目概览（课程 0001）和架构追踪（课程 0002）</li>
+  </ul>
+  <p>如果不熟悉 Spring Boot 异步编程，建议先学习：<a href="https://spring.io/guides/gs/async-method/" target="_blank">Spring 异步方法官方指南</a></p>
+</div>
+
+<!-- ===== 1. 系统概览 ===== -->
+<h2><span class="icon">🏗️</span> 1. LLM 评估系统架构总览</h2>
+
+<p>LLM 评估系统是 kuai-service 的「AI 质检中心」。它的核心任务是：<strong>用 AI 来评估 AI 的回答质量</strong>。</p>
+
+<p>系统提供两套评估引擎：</p>
+<ul>
+  <li><strong>LLM 评估</strong>（<code>LLMEvaluationService</code>）：调用自定义 LLM 模型对 QA 对进行打分</li>
+  <li><strong>DeepEval 评估</strong>（<code>DeepEvalEvaluationService</code>）：集成开源 DeepEval 框架，支持更丰富的评估指标</li>
+</ul>
+
+<h3>核心数据模型</h3>
+
+<pre><code>application_info（应用信息表）
+  ├── appId, appName, appType
+  ├── owner（负责人）
+  └── customLlmModel（自定义评估模型）
+
+llm_task（LLM 批量评估任务表）
+  ├── id, taskId, appId
+  ├── totalCount（总评估条数）
+  ├── doneCount（已完成条数）
+  ├── status: 0=待开始, 1=运行中, 2=成功, 3=失败, 4=已取消
+  ├── avgScore（平均分）
+  └── startTime, endTime
+
+deep_eval_task（DeepEval 批量评估任务表，结构类似 llm_task）
+
+llm_evaluation_record（评估记录表）
+  ├── taskId, appId, chatId
+  ├── question, answer（问题和答案）
+  ├── llmAnswer（LLM 的评估回答原文）
+  ├── llmScore（LLM 打分）
+  ├── deepEvalScore（DeepEval 打分）
+  ├── satisfaction（人工满意度）
+  └── category1, category2（分类标签）
+
+evaluation_result（评估结果汇总表，MySQL）</code></pre>
+
+<div class="flow-box">
+  <span class="flow-step mysql">application_info</span>
+  <span class="flow-arrow">→ 关联 →</span>
+  <span class="flow-step mysql">llm_task / deep_eval_task</span>
+  <span class="flow-arrow">→ 一对多 →</span>
+  <span class="flow-step mysql">llm_evaluation_record</span>
+</div>
+
+<!-- ===== 2. 评估任务创建流程 ===== -->
+<h2><span class="icon">🚀</span> 2. 评估任务创建流程</h2>
+
+<h3>2.1 单次评估</h3>
+<p>单次评估适用于快速测试，同步执行：</p>
+
+<div class="call-chain">
+  <span class="cls">LLMEvaluationController</span><span class="method">.evaluateApplicationDialog()</span> <span class="arrow">→</span>
+  <span class="cls">LLMEvaluationService</span><span class="method">.getLLMEvaluation()</span> <span class="arrow">→</span>
+  <span class="cls">evaluateSingleAnswer()</span>（并发评估每条 QA）
+</div>
+
+<p>单次评估使用<strong>数据库锁</strong>防止同一 chatId 被重复评估：</p>
+
+<pre><code>// 释放超时锁（超过60分钟的锁自动释放）
+llmEvalLockMapper.releaseTimeoutLockByChatId(chatId, 60);
+// 检查是否已锁定
+if (llmEvalLockMapper.isLocked(chatId) > 0) {
+    throw new RuntimeException("该对话的 LLM 评估任务正在执行中");
+}
+// 新建锁
+llmEvalLockMapper.insertLock(chatId, new Date(), totalCount, 1);</code></pre>
+
+<h3>2.2 批量评估</h3>
+<p>批量评估是系统的核心功能，流程如下：</p>
+
+<ol>
+  <li><strong>创建任务</strong>：计算总评估条数，插入 <code>llm_task</code> 记录，获取自增 ID 作为 taskId</li>
+  <li><strong>异步执行</strong>：通过 <code>CompletableFuture.runAsync()</code> 提交到 <code>taskExecutor</code> 线程池</li>
+  <li><strong>并发评估</strong>：为每条 QA 创建独立的 <code>CompletableFuture</code>，提交到 <code>workerExecutor</code> 线程池</li>
+  <li><strong>进度追踪</strong>：通过 <code>BatchTaskProgressTracker</code> 实时更新 <code>doneCount</code></li>
+  <li><strong>结果汇总</strong>：所有任务完成后计算平均分，更新任务状态</li>
+</ol>
+
+<pre><code>// 创建任务记录
+LlmTask task = LlmTask.builder()
+        .appId(appId)
+        .totalCount(totalCount)
+        .doneCount(0)
+        .status(0) // 待开始
+        .build();
+llmTaskMapper.insertTask(task);
+String taskId = String.valueOf(task.getId());
+
+// 异步执行
+CompletableFuture.runAsync(
+    () -> executeBatchLLMEvaluationAsync(taskId, requests),
+    taskExecutor
+);</code></pre>
+
+<h3>2.3 按筛选条件批量评估</h3>
+<p>除了手动指定 QA 列表，系统还支持通过筛选条件自动拉取 QA 并评估：</p>
+<pre><code>POST /kuai/evaluation-app/llmEvaluate/batch-by-filter
+// 请求体：BatchEvaluationFilterRequest 包含 appId、分类、满意度等筛选条件</code></pre>
+
+<!-- ===== 3. 异步任务处理机制 ===== -->
+<h2><span class="icon">⚡</span> 3. 异步任务处理机制</h2>
+
+<h3>3.1 双层线程池架构</h3>
+<p>系统使用两层线程池来控制并发：</p>
+
+<table>
+  <tr><th>线程池</th><th>Bean 名称</th><th>用途</th></tr>
+  <tr><td><strong>任务执行器</strong></td><td><code>llmTaskExecutor</code> / <code>deepEvalTaskExecutor</code></td><td>执行整个批量任务（只运行 1 个任务）</td></tr>
+  <tr><td><strong>工作执行器</strong></td><td><code>llmEvalWorkerExecutor</code> / <code>deepEvalWorkerExecutor</code></td><td>执行单条 QA 评估（并发多个）</td></tr>
+</table>
+
+<p>这种设计的好处：外层线程池控制任务级别并发（避免同时跑太多批量任务），内层线程池控制单条评估的并发（避免打爆 LLM API）。</p>
+
+<h3>3.2 任务状态机</h3>
+
+<div class="flow-box">
+  <span class="flow-step">0: 待开始</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step mysql">1: 运行中</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step mongo">2: 成功</span>
+  <br><br>
+  <span class="flow-step mysql">1: 运行中</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step ext">3: 失败</span>
+  <br><br>
+  <span class="flow-step">0 或 1</span>
+  <span class="flow-arrow">→ cancel →</span>
+  <span class="flow-step ext">4: 已取消</span>
+</div>
+
+<h3>3.3 任务取消机制</h3>
+<p>系统通过 <code>shouldStopTask()</code> 方法检查任务是否被取消。在每个评估步骤前后都会检查：</p>
+
+<pre><code>// 在遍历请求和评估单个答案前都检查
+if (shouldStopTask(taskId)) {
+    return; // 跳过执行
+}</code></pre>
+
+<!-- ===== 4. 进度追踪 ===== -->
+<h2><span class="icon">📊</span> 4. 进度追踪 — BatchTaskProgressTracker</h2>
+
+<p><code>BatchTaskProgressTracker</code> 是一个精巧的进度追踪工具，核心设计：</p>
+
+<pre><code>public class BatchTaskProgressTracker {
+    private static final int FLUSH_INTERVAL = 5;  // 每完成5条刷一次数据库
+    private static final int MAX_DB_RETRY = 5;     // 最多重试5次
+
+    public void onItemComplete() {
+        int done = doneCounter.incrementAndGet();
+        // 每完成5条 或 全部完成时，才写数据库
+        if (done - lastFlushed >= FLUSH_INTERVAL || done >= totalCount) {
+            flushProgress(done);
+        }
+    }
+}</code></pre>
+
+<p><strong>设计亮点：</strong></p>
+<ul>
+  <li><strong>批量刷盘</strong>：不是每完成 1 条就写数据库，而是每 5 条刷一次，大幅减少数据库压力</li>
+  <li><strong>重试机制</strong>：数据库写入失败时自动重试（最多 5 次），识别瞬态错误（连接超时、连接池不可用等）</li>
+  <li><strong>线程安全</strong>：使用 <code>AtomicInteger</code> 计数，<code>synchronized</code> 刷盘</li>
+</ul>
+
+<!-- ===== 5. DeepEval 集成 ===== -->
+<h2><span class="icon">🔬</span> 5. DeepEval 集成详解</h2>
+
+<h3>5.1 什么是 DeepEval？</h3>
+<p>DeepEval 是一个开源的 LLM 评估框架，提供多种评估指标（如 AnswerRelevancyMetric、GEval_Coherence）。kuai-service 通过 HTTP 调用 kuai-service-py（Python MCP 服务）来执行 DeepEval 评估。</p>
+
+<h3>5.2 同步 vs 异步模式</h3>
+<p>DeepEval 支持两种调用模式，通过 <code>kuai.deepeval.async-enabled</code> 配置切换：</p>
+
+<table>
+  <tr><th>模式</th><th>调用方式</th><th>适用场景</th></tr>
+  <tr><td><strong>同步模式</strong></td><td>直接 POST 到 <code>/evaluation/evaluate/direct</code></td><td>单条评估、快速响应</td></tr>
+  <tr><td><strong>异步模式</strong></td><td>先提交到 <code>/evaluation/evaluate/async</code>，再轮询任务状态</td><td>批量评估、耗时较长</td></tr>
+</table>
+
+<h3>5.3 异步轮询机制</h3>
+<p>异步模式下，Java 端通过轮询检查 Python 服务的任务状态：</p>
+
+<pre><code>while (System.currentTimeMillis() < deadline) {
+    // 1. 检查是否需要取消
+    if (taskId != null && shouldStopTask(taskId)) {
+        cancelDeepEvalTask(pyTaskId);
+        return null;
+    }
+    // 2. 等待 pollInterval（默认 2 秒）
+    TimeUnit.MILLISECONDS.sleep(deepEvalPollIntervalMs);
+    // 3. 查询状态
+    HttpClientResult statusResult = getDeepEvalStatus(statusUrl);
+    // 4. 解析状态：completed/failed/canceled/running
+}</code></pre>
+
+<h3>5.4 评估请求体构建</h3>
+<p>DeepEval 请求体包含问题、答案、上下文、人工标注等信息：</p>
+
+<pre><code>{
+  "q": "用户问题",
+  "a": "AI回答",
+  "context": "上下文信息",
+  "humanWeight": 2.0,
+  "alignmentWeight": 1.0,
+  "humanAnnotations": [
+    {"answer": "历史标准答案", "score": 8.0}
+  ],
+  "scenario": "rag",
+  "metrics": ["AnswerRelevancyMetric", "GEval_Coherence"]
+}</code></pre>
+
+<!-- ===== 6. LLM 评估提示词构建 ===== -->
+<h2><span class="icon">✍️</span> 6. LLM 评估提示词构建</h2>
+
+<p>LLM 评估的核心是 <code>buildLLMEvaluationPrompt()</code> 方法，它构建了一个详细的评估提示词：</p>
+
+<pre><code># 任务说明
+你是 AI 回答质量评估专家。请结合人工标注信息，判断待评估答案是否满足用户预期。
+
+# 待评估问答
+**问题**: {question}
+**答案**: {answer}
+
+# 当前条目人工标注（优先参考）
+- 人工满意度: 非常满意/满意/一般/不满意
+- 人工标准答案: ...
+- 人工备注: ...
+
+# 同类问题历史人工标注（参考）
+**历史样本 1**: ...
+
+# 评分标准
+- 非常满意/满意：7-10 分
+- 一般：4-6 分
+- 不满意：0-4 分
+
+# 输出要求
+仅输出一个 0-10 的数字分数</code></pre>
+
+<p>这个提示词的设计非常精妙：</p>
+<ul>
+  <li>结合人工标注来校准 AI 评分</li>
+  <li>参考同类问题的历史标注（最多 5 条）</li>
+  <li>明确的评分区间约束</li>
+  <li>要求只输出数字，方便解析</li>
+</ul>
+
+<!-- ===== 7. 评估结果查询 ===== -->
+<h2><span class="icon">📋</span> 7. 评估结果查询与导出</h2>
+
+<h3>7.1 API 接口一览</h3>
+
+<table>
+  <tr><th>接口</th><th>说明</th></tr>
+  <tr><td><code>GET /llmEvaluate/tasks</code></td><td>获取任务列表（分页）</td></tr>
+  <tr><td><code>GET /llmEvaluate/task/{taskId}</code></td><td>查询单个任务状态和统计</td></tr>
+  <tr><td><code>GET /llmEvaluate/task/{taskId}/details</code></td><td>获取任务下所有评估记录</td></tr>
+  <tr><td><code>POST /llmEvaluate/task/{taskId}/details/page</code></td><td>分页查询评分明细（支持筛选排序）</td></tr>
+  <tr><td><code>POST /llmEvaluate/task/{taskId}/exportCsv</code></td><td>导出评分明细为 CSV 文件</td></tr>
+  <tr><td><code>POST /llmEvaluate/task/{taskId}/cancel</code></td><td>取消正在运行的任务</td></tr>
+  <tr><td><code>POST /llmEvaluate/task/{taskId}/delete</code></td><td>删除任务及其评估记录</td></tr>
+</table>
+
+<h3>7.2 CSV 导出</h3>
+<p>CSV 导出功能会生成包含以下字段的文件：</p>
+<ul>
+  <li>会话链接、会话 ID、应用 ID</li>
+  <li>一级分类、二级分类、人工满意度</li>
+  <li>问题、AI 回答、LLM 得分、DeepEval 得分</li>
+</ul>
+<p>注意 CSV 文件使用 UTF-8 BOM 编码（<code>\uFEFF</code>），确保 Excel 正确识别中文。</p>
+
+<!-- ===== Quiz ===== -->
+<div class="quiz-section">
+  <h2>🧠 Quiz — 检验你的理解</h2>
+
+  <div class="quiz-q">
+    <div class="q-title">Q1: 批量 LLM 评估任务使用哪种方式执行？</div>
+    <label><input type="radio" name="q1" value="A" onchange="checkAnswer('q1','B',this)"> A. 同步阻塞，在请求线程中执行</label>
+    <label><input type="radio" name="q1" value="B" onchange="checkAnswer('q1','B',this)"> B. 异步执行，通过 CompletableFuture 提交到线程池</label>
+    <label><input type="radio" name="q1" value="C" onchange="checkAnswer('q1','B',this)"> C. 使用 @Scheduled 定时任务执行</label>
+    <label><input type="radio" name="q1" value="D" onchange="checkAnswer('q1','B',this)"> D. 发送消息到消息队列执行</label>
+    <div class="answer"></div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-title">Q2: BatchTaskProgressTracker 为什么不是每完成 1 条就写数据库？</div>
+    <label><input type="radio" name="q2" value="A" onchange="checkAnswer('q2','C',this)"> A. 因为代码写错了</label>
+    <label><input type="radio" name="q2" value="B" onchange="checkAnswer('q2','C',this)"> B. 因为数据库不支持并发写入</label>
+    <label><input type="radio" name="q2" value="C" onchange="checkAnswer('q2','C',this)"> C. 为了减少数据库压力，每 5 条批量刷盘</label>
+    <label><input type="radio" name="q2" value="D" onchange="checkAnswer('q2','C',this)"> D. 因为进度不重要</label>
+    <div class="answer"></div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-title">Q3: DeepEval 异步模式下，Java 端如何获取评估结果？</div>
+    <label><input type="radio" name="q3" value="A" onchange="checkAnswer('q3','B',this)"> A. 等待 Python 服务回调通知</label>
+    <label><input type="radio" name="q3" value="B" onchange="checkAnswer('q3','B',this)"> B. 主动轮询 Python 服务的任务状态接口</label>
+    <label><input type="radio" name="q3" value="C" onchange="checkAnswer('q3','B',this)"> C. 通过 WebSocket 实时推送</label>
+    <label><input type="radio" name="q3" value="D" onchange="checkAnswer('q3','B',this)"> D. 直接读取 Python 服务的数据库</label>
+    <div class="answer"></div>
+  </div>
+</div>
+
+<div class="ask-agent">
+  <strong>想深入了解？</strong>试试问 Agent："LLMEvaluationService 的 buildLLMEvaluationPrompt 方法是如何构建评估提示词的？" 或 "BatchTaskProgressTracker 的重试机制是怎样的？"
+</div>
+
+<div class="nav-links">
+  <a href="0016-kuai-service-prompt-system.html">← Prompt 管理系统</a>
+  <a href="../index.html">🗺️ 完整学习地图</a>
+  <a href="0018-kuai-service-wechat-robot.html">微信机器人集成 →</a>
+</div>
+
+</div>
+</body>
+</html>

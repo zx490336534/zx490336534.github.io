@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>019 RAG 检索增强生成</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --accent: #b45309;
+    --accent-light: #fef3c7;
+    --border: #e7e5e4;
+    --code-bg: #1c1917;
+    --code-text: #f5f5f4;
+    --success: #16a34a;
+    --success-light: #dcfce7;
+    --warning: #d97706;
+    --warning-light: #fef3c7;
+    --info: #2563eb;
+    --info-light: #dbeafe;
+    --tag-java: #d97706;
+    --tag-spring: #16a34a;
+    --tag-ai: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 3rem 2rem 5rem;
+  }
+
+  .lesson-meta {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2.8rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  strong { font-weight: 700; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.25rem 0;
+  }
+  .card.info { border-left: 3px solid var(--info); background: var(--info-light); }
+  .card.warning { border-left: 3px solid var(--warning); background: var(--warning-light); }
+  .card.success { border-left: 3px solid var(--success); background: var(--success-light); }
+  .card.tip { border-left: 3px solid var(--accent); }
+
+  .card-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+  }
+
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 1.25rem 1.4rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1.25rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.86rem;
+    line-height: 1.7;
+  }
+  code { font-family: 'JetBrains Mono', monospace; }
+  p code, li code {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 0.12em 0.4em;
+    border-radius: 4px;
+    font-size: 0.85em;
+  }
+  .com { color: #a8a29e; }      /* 代码注释 */
+  .kw  { color: #fbbf24; }      /* 关键字 */
+  .ann { color: #86efac; }      /* 注解 @ */
+  .typ { color: #93c5fd; }      /* 类型 */
+  .str { color: #fda4af; }      /* 字符串 */
+
+  /* 逐行归属表 */
+  table.belong {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.25rem 0;
+    font-size: 0.9rem;
+  }
+  table.belong th, table.belong td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  table.belong th {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+  table.belong td code { font-size: 0.82em; }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.1em 0.55em;
+    border-radius: 10px;
+    color: #fff;
+    letter-spacing: 0.02em;
+  }
+  .tag.java   { background: var(--tag-java); }
+  .tag.spring { background: var(--tag-spring); }
+  .tag.ai     { background: var(--tag-ai); }
+
+  /* 学习地图 */
+  .roadmap {
+    list-style: none;
+    margin: 1.25rem 0;
+    padding: 0;
+  }
+  .roadmap li {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+  }
+  .roadmap .stage {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 0.85rem;
+    min-width: 3.2em;
+    flex-shrink: 0;
+  }
+  .roadmap .here { border-color: var(--accent); background: var(--accent-light); }
+  .roadmap .here .stage { color: var(--text); }
+
+  /* Quiz */
+  .quiz {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem 1.6rem;
+    margin: 1.5rem 0;
+  }
+  .quiz-q {
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  .quiz-opt {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--text);
+    transition: all 0.15s;
+  }
+  .quiz-opt:hover { border-color: var(--accent); }
+  .quiz-opt.correct {
+    background: var(--success-light);
+    border-color: var(--success);
+    color: #14532d;
+    font-weight: 500;
+  }
+  .quiz-opt.wrong {
+    background: #fee2e2;
+    border-color: #dc2626;
+    color: #7f1d1d;
+  }
+  .quiz-opt.disabled { cursor: default; opacity: 0.85; }
+  .quiz-fb {
+    margin-top: 0.85rem;
+    font-size: 0.9rem;
+    display: none;
+    padding: 0.7rem 0.9rem;
+    border-radius: 6px;
+    line-height: 1.7;
+  }
+  .quiz-fb.show { display: block; }
+
+  .win {
+    background: var(--success-light);
+    border-left: 3px solid var(--success);
+    border-radius: 8px;
+    padding: 1rem 1.4rem;
+    margin: 2rem 0;
+  }
+  .win .card-label { color: #14532d; }
+
+  .reading {
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.4rem;
+    margin: 1.5rem 0;
+  }
+  .reading a { color: var(--info); text-decoration: none; font-weight: 500; }
+  .reading a:hover { text-decoration: underline; }
+
+  .ask {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+  }
+
+  blockquote {
+    border-left: 3px solid var(--accent);
+    padding-left: 1rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin: 1.25rem 0;
+  }
+@media print {
+    body { background: #fff; }
+    .quiz-opt { border: 1px solid #999; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="lesson-meta">AIHom 全栈学习 · 第 019 课 · RAG</div>
+  <h1>019 RAG 检索增强生成</h1>
+  <div class="subtitle">本节目标：搞懂为什么直接问大模型常常"一本正经胡说"，以及 RAG 如何用"先查资料再答"的两段式流程解决它。课后你能用自己的话讲清楚这两段流程各自干什么。</div>
+
+  <!-- 1. 痛点 -->
+  <h2>为什么需要 RAG：大模型其实在"凭记忆答"</h2>
+  <p>先想一个你会遇到的真实现象：你问通义千问"我们公司 AIHom 项目的户型校验规则是什么"，它大概率会一本正经地<strong>编</strong>一个看起来很合理、实际完全不存在的答案。</p>
+  <p>这不是模型坏掉了，是因为它的训练数据里<strong>根本就没有你们公司的私有资料</strong>——户型规范、内部知识库、最新的产品文档，它统统没见过。它只能"凭着自己读过的相似东西"硬猜，这就是业内说的<strong>"幻觉"（hallucination）</strong>：一本正经地胡说八道。</p>
+
+  <div class="card warning">
+    <div class="card-label">直接问大模型的两个硬伤</div>
+    <p style="margin:0"><strong>① 不知道私有数据</strong>——你公司内部的资料，它从没学过。<br>
+    <strong>② 不知道最新知识</strong>——模型有训练截止日期，之后发生的事它都不知道。<br>
+    硬把私有资料全塞进 prompt？一是塞不下（上下文窗口有限），二是太贵（每次都把整本规范传一遍）。</p>
+  </div>
+
+  <div class="card tip">
+    <div class="card-label">RAG 一句话定义</div>
+    <p style="margin:0"><strong>RAG = Retrieval-Augmented Generation，检索增强生成。</strong>大白话：回答之前，先<strong>去你的资料库里把相关的那几段查出来</strong>，然后把这几段连同问题一起交给大模型，让它"看着资料"作答。就像你考试允许翻书——不是背全本，是按问题翻到对应页再答。</p>
+  </div>
+
+  <!-- 2. 两段式流程 -->
+  <h2>RAG 全流程：两段，务必画清</h2>
+  <p>RAG 分成<strong>两段完全不同</strong>的阶段，新人最容易混。一段是<strong>提前把资料存进去</strong>（离线，做一次或偶尔做），一段是<strong>每次提问时实时查</strong>（在线，每个用户请求都走）。</p>
+
+  <h3>第一段：写入（离线，提前准备资料）</h3>
+  <pre><span class="com">把你的私有资料"消化"进向量库，只做一次（或资料更新时再做）</span>
+
+  你的文档（户型规范.pdf / 素材库.md / 内部 wiki）
+        │
+        ▼
+  ┌──────────────┐
+  │ ① 分块 Chunk │   <span class="com">// 把长文档切成一小段一小段（如每段 500 字）</span>
+  └──────────────┘
+        │
+        ▼
+  ┌───────────────────┐
+  │ ② Embedding 向量化 │  <span class="com">// 用向量模型把每段文字变成一串数字（向量）</span>
+  └───────────────────┘
+        │
+        ▼
+  ┌────────────────────┐
+  │ ③ 存进 VectorStore │  <span class="com">// 把"文字 + 向量"一起存进向量数据库</span>
+  └────────────────────┘</pre>
+
+  <h3>第二段：查询（在线，每次提问都走）</h3>
+  <pre><span class="com">用户每次提问，实时走这条链路</span>
+
+  用户问题："小户型能用岛台吗？"
+        │
+        ▼
+  ┌───────────────────┐
+  │ ④ Embedding 向量化 │  <span class="com">// 把问题也变成向量（和写入时用同一个模型！）</span>
+  └───────────────────┘
+        │
+        ▼
+  ┌─────────────────────────┐
+  │ ⑤ 相似度检索 top-k       │ <span class="com">// 在向量库里找和问题最接近的 k 个片段</span>
+  │   （比如 top-3 最相关）   │
+  └─────────────────────────┘
+        │
+        ▼
+  ┌─────────────────────────┐
+  │ ⑥ 拼进 Prompt            │ <span class="com">// 把检索到的片段 + 问题一起塞给大模型</span>
+  └─────────────────────────┘
+        │
+        ▼
+  ┌──────────────┐
+  │ ⑦ 大模型生成 │   <span class="com">// 看着资料，生成靠谱回答</span>
+  └──────────────┘</pre>
+
+  <div class="card info">
+    <div class="card-label">最关键的一句话</div>
+    <p style="margin:0">写入和查询<strong>必须用同一个 Embedding 模型</strong>。否则问题变成的向量和资料变成的向量不在同一个"坐标系"里，相似度就比不了——就像拿中文地址和英文地址比"远近"，没法比。</p>
+  </div>
+
+  <!-- 3. 关键组件 -->
+  <h2>两个关键组件，缺一不可</h2>
+
+  <table class="belong">
+    <thead>
+      <tr><th>组件</th><th>干什么</th><th>AIHom 对应</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="tag ai">EmbeddingModel</span></td>
+        <td>把一段文本变成一个<strong>高维向量</strong>（一串数字）。文本越相似，向量越接近。</td>
+        <td><strong>DashScope</strong> 提供的向量模型（通义千问体系内，如 <code>text-embedding-v2</code>）</td>
+      </tr>
+      <tr>
+        <td><span class="tag ai">VectorStore</span></td>
+        <td>把"文本 + 向量"存起来，并支持<strong>按相似度检索 top-k</strong>（给一个向量，返回最像的几个）。</td>
+        <td>常见选型：<strong>PgVector</strong>（Postgres 插件）/ <strong>Milvus</strong> / <strong>Redis Stack</strong>。Spring AI 都有 starter。</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card tip">
+    <div class="card-label">这两个名字记牢</div>
+    <p style="margin:0">以后看 AIHom 代码，只要出现 <code>EmbeddingModel</code> / <code>VectorStore</code> 这两个类型，<strong>基本就是在做 RAG</strong>。这是 Spring AI 1.1.x 里 RAG 的两个核心抽象。</p>
+  </div>
+
+  <!-- 4. 相似度检索直觉 -->
+  <h2>"相似度检索"的直觉：文本变成空间里的点</h2>
+  <p>把一段文字变成向量，本质是把它<strong>放到一个高维空间里某个点</strong>。语义相近的文字，点就靠得近。</p>
+
+  <pre><span class="com">想象一个简化的二维空间（真实是上千维，但直觉一样）：</span>
+
+        "小户型怎么设计收纳"
+              ●  <span class="com">← 用户问题</span>
+             ╱
+            ╱   <span class="com">← 距离近 = 相关</span>
+           ●  "小户型收纳技巧十条"      <span class="com">★ top-1</span>
+          ●  "60平米的储物方案"         <span class="com">★ top-2</span>
+
+                                                  ●  "汽车发动机保养"
+                                                  <span class="com">← 距离远 = 不相关，检索不到</span></pre>
+
+  <p>检索 top-k，就是<strong>在空间里找离问题最近的 k 个点</strong>，把它们对应的原文片段捞出来。模型不需要"懂"语义，几何距离替它懂了。</p>
+
+  <!-- 5. 配置长啥样 -->
+  <h2>Spring AI 里它长什么样（只需感受，不必记）</h2>
+  <p>下面是配置的样子，重点感受"DashScope 提供向量模型 + 某个 VectorStore 存"这个组合，不用背 API：</p>
+
+  <pre><span class="com"># application.yml —— 配 DashScope 向量模型 + PgVector 向量库</span>
+spring:
+  ai:
+    dashscope:                       <span class="com"># 通义千问（提供文本模型 + 向量模型）</span>
+      api-key: <span class="str">${DASHSCOPE_API_KEY}</span>
+    vectorstore:
+      pgvector:                      <span class="com"># 用 Postgres 的 PgVector 插件当向量库</span>
+        dimensions: <span class="str">1536</span>            <span class="com"># 向量维度，要和向量模型对齐</span>
+        distance-type: <span class="str">COSINE_DISTANCE</span>  <span class="com"># 用余弦相似度比远近</span></pre>
+
+  <pre><span class="com">// Java 侧：注入两个核心抽象，Spring AI 自动装配好实现</span>
+<span class="ann">@RestController</span>
+<span class="kw">public class</span> <span class="typ">RagController</span> {
+
+    <span class="kw">private final</span> <span class="typ">EmbeddingModel</span> embeddingModel;   <span class="com">// 文本 → 向量（DashScope 实现）</span>
+    <span class="kw">private final</span> <span class="typ">VectorStore</span> vectorStore;        <span class="com">// 存向量 + 相似度检索（PgVector 实现）</span>
+    <span class="kw">private final</span> <span class="typ">ChatClient</span> chatClient;           <span class="com">// 最后负责生成回答</span>
+
+    <span class="com">// 构造方法注入，省略</span>
+
+    <span class="ann">@GetMapping</span>(<span class="str">"/rag"</span>)
+    <span class="kw">public</span> <span class="typ">String</span> ask(<span class="ann">@RequestParam</span> <span class="typ">String</span> q) {
+        <span class="com">// ⑤⑥ Spring AI 把"检索 + 拼 prompt"封装成了简洁的链式调用</span>
+        <span class="kw">return</span> chatClient.prompt()
+            .user(q)
+            .defaultAdvisors(<span class="kw">new</span> <span class="typ">QuestionAnswerAdvisor</span>(vectorStore))
+            .call()
+            .content();
+    }
+}</pre>
+
+  <div class="card info">
+    <div class="card-label">这里你只需记住一件事</div>
+    <p style="margin:0"><code>QuestionAnswerAdvisor(vectorStore)</code> 这一行，就是 Spring AI 把"⑤ 检索 + ⑥ 拼 Prompt"两步<strong>打包好</strong>的开关。加上它，每次提问就自动先去向量库查资料、再喂给模型。具体细节后面的实战课（<code>0061-aihom-hands-on</code>）会动手跑。</p>
+  </div>
+
+  <!-- 6. AIHom 联想 -->
+  <h2>联想 AIHom：哪类功能会用到 RAG</h2>
+  <p>用 RAG 的判断标准很简单：<strong>"这个答案大模型本来不知道，但在我们公司资料里有"</strong>。AIHom 里大概率出现的场景：</p>
+  <ul>
+    <li><strong>知识库问答</strong>——运营整理的常见问题、设计规范，让 AI 查着答，而不是凭空编。</li>
+    <li><strong>素材库检索</strong>——给一段需求描述，去素材库里找匹配的模型/贴图/案例。</li>
+    <li><strong>户型 / 设计规范</strong>——"这个户型能不能放双人床"，先查规范条款，再让模型基于条款作答。</li>
+    <li><strong>历史工单 / case 复用</strong>——相似问题找历史解决方案。</li>
+  </ul>
+  <p>反过来，<strong>"常识问答""翻译""润色"</strong>这类大模型本来就会的，就不需要 RAG，直接问更快更便宜。</p>
+
+  <!-- 7. Quiz -->
+  <h2>小测验：确认你真的 get 到了</h2>
+
+  <div class="quiz" id="quiz1">
+    <div class="quiz-q">第 1 题：大模型对你们公司的私有资料"产生幻觉"，最根本的原因是？</div>
+    <button class="quiz-opt" data-correct="false">模型本身有 bug，厂商正在修</button>
+    <button class="quiz-opt" data-correct="true">它的训练数据里根本没有这些私有资料，只能凭相似内容硬猜</button>
+    <button class="quiz-opt" data-correct="false">你提问时 prompt 写得不够礼貌</button>
+    <button class="quiz-opt" data-correct="false">Java 版本太低导致模型降智</button>
+    <div class="quiz-fb" id="fb1"></div>
+  </div>
+
+  <div class="quiz" id="quiz2">
+    <div class="quiz-q">第 2 题：RAG 写入阶段和查询阶段，<strong>必须</strong>满足哪个条件相似度才有意义？</div>
+    <button class="quiz-opt" data-correct="false">两次都用同一个大语言模型生成回答</button>
+    <button class="quiz-opt" data-correct="true">两次都用同一个 Embedding 模型把文本变向量</button>
+    <button class="quiz-opt" data-correct="false">两次都在同一个时区执行</button>
+    <button class="quiz-opt" data-correct="false">VectorStore 里只能存不超过 100 条数据</button>
+    <div class="quiz-fb" id="fb2"></div>
+  </div>
+
+  <div class="quiz" id="quiz3">
+    <div class="quiz-q">第 3 题：下面四个功能，哪个<strong>最适合</strong>用 RAG 来做？</div>
+    <button class="quiz-opt" data-correct="false">把一段中文翻译成英文</button>
+    <button class="quiz-opt" data-correct="false">给一段产品文案润色让它更有网感</button>
+    <button class="quiz-opt" data-correct="true">基于公司内部户型设计规范，回答"这种户型能放岛台吗"</button>
+    <button class="quiz-opt" data-correct="false">生成一首关于秋天的现代诗</button>
+    <div class="quiz-fb" id="fb3"></div>
+  </div>
+
+  <!-- 8. 本节胜利 -->
+  <div class="win">
+    <div class="card-label">本节你获得的胜利</div>
+    <p style="margin:0.3rem 0 0">现在你能用自己的话回答两件事了：<strong>① 为什么 RAG 比直接问大模型更准</strong>——因为先查了私有资料再答，不靠记忆硬猜；<strong>② 两段流程各干什么</strong>——写入阶段把资料分块、向量化、存进 VectorStore，查询阶段把问题向量化、检索 top-k、拼进 Prompt 交给模型。这就是 RAG 的全部骨架，剩下的都是工程细节。</p>
+  </div>
+
+  <!-- 9. 推荐阅读 -->
+  <div class="reading">
+    <div class="card-label">推荐一手资料</div>
+    <p style="margin:0.5rem 0 0">两个权威入口，按需查阅：<br>
+    • <a href="https://docs.spring.io/spring-ai/reference/api/vectorstore.html" target="_blank">Spring AI 官方文档 · VectorStore</a>（看 EmbeddingModel / VectorStore 两个抽象的接口长什么样）<br>
+    • <a href="https://java2ai.com/" target="_blank">java2ai.com · Spring AI Alibaba 官方文档</a>（重点看 DashScope 向量模型接入、RAG 相关示例）<br>
+    现在不用啃，知道"哪里能查到"就行。真正动手是 <code>0061-aihom-hands-on</code> 的事。</p>
+  </div>
+
+  <div class="card warning">
+    <div class="card-label">版本对齐提醒</div>
+    <p style="margin:0">本课所有抽象（<code>EmbeddingModel</code>、<code>VectorStore</code>、<code>QuestionAnswerAdvisor</code>）均基于 <strong>Spring AI 1.1.x + Spring AI Alibaba 1.1.2.0.5-qh</strong>，配合 <strong>DashScope</strong> 向量模型。⚠️ 网上若看到 Spring AI 2.x 的 RAG 写法（API 有变动），<strong>和你的项目无关</strong>，认准 1.1.x + java2ai.com。</p>
+  </div>
+
+  <!-- 10. 追问 -->
+  <div class="ask">
+    <p>🤔 <strong>有任何看不懂的地方，直接问我。</strong>比如："为什么要分块，整篇存不行吗"、"top-k 的 k 怎么定"、"AIHom 里实际用的是 PgVector 还是 Milvus"、"向量的维度 1536 是哪来的"……没有蠢问题，问就对了。</p>
+  </div>
+</div>
+
+<script>
+  // 简单的 quiz 即时反馈
+  const feedback = {
+    1: { ok: '✓ 对！幻觉的根因就是"训练数据里没见过"。RAG 的解法正是把这些私有资料现查现喂，让模型有据可依。',
+         no: '幻觉不是 bug，也不是模型"降智"。根因是：你公司的私有资料它从没在训练时见过，只能凭读过的相似内容硬猜。RAG 就是把资料现场查给它看。' },
+    2: { ok: '✓ 对！写入和查询必须用同一个 Embedding 模型，否则两批向量不在同一坐标系里，相似度没法比。',
+         no: '关键在 Embedding 模型要一致。写入时用什么模型把资料变向量，查询时就得用同一个模型把问题变向量，距离才有意义。' },
+    3: { ok: '✓ 对！查规范答规范正是 RAG 的典型场景——答案在私有资料里，大模型本来不知道。',
+         no: '翻译、润色、写诗这些大模型本来就会，不用 RAG。只有"答案在私有资料里、模型本来不知道"的（如查公司规范），才是 RAG 的主场。' }
+  };
+
+  function wireQuiz(id) {
+    const quiz = document.getElementById('quiz' + id);
+    const fb = document.getElementById('fb' + id);
+    const opts = quiz.querySelectorAll('.quiz-opt');
+    opts.forEach(opt => {
+      opt.addEventListener('click', () => {
+        const correct = opt.dataset.correct === 'true';
+        opts.forEach(o => o.classList.add('disabled'));
+        if (correct) {
+          opt.classList.add('correct');
+          fb.style.background = 'var(--success-light)';
+          fb.style.color = '#14532d';
+          fb.textContent = feedback[id].ok;
+        } else {
+          opt.classList.add('wrong');
+          // 同时点亮正确答案
+          opts.forEach(o => { if (o.dataset.correct === 'true') o.classList.add('correct'); });
+          fb.style.background = '#fee2e2';
+          fb.style.color = '#7f1d1d';
+          fb.textContent = feedback[id].no;
+        }
+        fb.classList.add('show');
+      });
+    });
+  }
+  [1,2,3].forEach(wireQuiz);
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 019</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0018-tool-calling-mcp.html">上一课：018 Tool Calling + MCP</a><a class="primary" href="0020-agent-stategraph.html">下一课：020 Agent + StateGraph / Graph</a></div></nav>
+</body>
+</html>

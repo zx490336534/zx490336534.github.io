@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>016 ChatClient + Prompt + 消息体系</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --accent: #b45309;
+    --accent-light: #fef3c7;
+    --border: #e7e5e4;
+    --code-bg: #1c1917;
+    --code-text: #f5f5f4;
+    --success: #16a34a;
+    --success-light: #dcfce7;
+    --warning: #d97706;
+    --warning-light: #fef3c7;
+    --info: #2563eb;
+    --info-light: #dbeafe;
+    --tag-java: #d97706;
+    --tag-spring: #16a34a;
+    --tag-ai: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 3rem 2rem 5rem;
+  }
+
+  .lesson-meta {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2.8rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  strong { font-weight: 700; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.25rem 0;
+  }
+  .card.info { border-left: 3px solid var(--info); background: var(--info-light); }
+  .card.warning { border-left: 3px solid var(--warning); background: var(--warning-light); }
+  .card.success { border-left: 3px solid var(--success); background: var(--success-light); }
+  .card.tip { border-left: 3px solid var(--accent); }
+
+  .card-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+  }
+
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 1.25rem 1.4rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1.25rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.86rem;
+    line-height: 1.7;
+  }
+  code { font-family: 'JetBrains Mono', monospace; }
+  p code, li code {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 0.12em 0.4em;
+    border-radius: 4px;
+    font-size: 0.85em;
+  }
+  .com { color: #a8a29e; }      /* 代码注释 */
+  .kw  { color: #fbbf24; }      /* 关键字 */
+  .ann { color: #86efac; }      /* 注解 @ */
+  .typ { color: #93c5fd; }      /* 类型 */
+  .str { color: #fda4af; }      /* 字符串 */
+
+  /* 逐行归属表 */
+  table.belong {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.25rem 0;
+    font-size: 0.9rem;
+  }
+  table.belong th, table.belong td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  table.belong th {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+  table.belong td code { font-size: 0.82em; }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.1em 0.55em;
+    border-radius: 10px;
+    color: #fff;
+    letter-spacing: 0.02em;
+  }
+  .tag.java   { background: var(--tag-java); }
+  .tag.spring { background: var(--tag-spring); }
+  .tag.ai     { background: var(--tag-ai); }
+
+  /* 学习地图 */
+  .roadmap {
+    list-style: none;
+    margin: 1.25rem 0;
+    padding: 0;
+  }
+  .roadmap li {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+  }
+  .roadmap .stage {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 0.85rem;
+    min-width: 3.2em;
+    flex-shrink: 0;
+  }
+  .roadmap .here { border-color: var(--accent); background: var(--accent-light); }
+  .roadmap .here .stage { color: var(--text); }
+
+  /* Quiz */
+  .quiz {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem 1.6rem;
+    margin: 1.5rem 0;
+  }
+  .quiz-q {
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  .quiz-opt {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--text);
+    transition: all 0.15s;
+  }
+  .quiz-opt:hover { border-color: var(--accent); }
+  .quiz-opt.correct {
+    background: var(--success-light);
+    border-color: var(--success);
+    color: #14532d;
+    font-weight: 500;
+  }
+  .quiz-opt.wrong {
+    background: #fee2e2;
+    border-color: #dc2626;
+    color: #7f1d1d;
+  }
+  .quiz-opt.disabled { cursor: default; opacity: 0.85; }
+  .quiz-fb {
+    margin-top: 0.85rem;
+    font-size: 0.9rem;
+    display: none;
+    padding: 0.7rem 0.9rem;
+    border-radius: 6px;
+    line-height: 1.7;
+  }
+  .quiz-fb.show { display: block; }
+
+  .win {
+    background: var(--success-light);
+    border-left: 3px solid var(--success);
+    border-radius: 8px;
+    padding: 1rem 1.4rem;
+    margin: 2rem 0;
+  }
+  .win .card-label { color: #14532d; }
+
+  .reading {
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.4rem;
+    margin: 1.5rem 0;
+  }
+  .reading a { color: var(--info); text-decoration: none; font-weight: 500; }
+  .reading a:hover { text-decoration: underline; }
+
+  .ask {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+  }
+
+  blockquote {
+    border-left: 3px solid var(--accent);
+    padding-left: 1rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin: 1.25rem 0;
+  }
+@media print {
+    body { background: #fff; }
+    .quiz-opt { border: 1px solid #999; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="lesson-meta">AIHom 全栈学习 · 第 016 课 · ChatClient 与 Prompt</div>
+  <h1>016 ChatClient + Prompt + 消息体系</h1>
+  <div class="subtitle">本节目标：第一次写出<strong>能跑的聊天逻辑</strong>。看懂 001 课那串 <code>.prompt().user().call().content()</code> 每一环在干嘛，学会用 SystemMessage 给 AI 定人设，最后自己写出一个 <code>/chat</code> 接口。</div>
+
+  <!-- 1. 回顾与今天主角 -->
+  <h2>从一段熟悉的代码说起</h2>
+  <p>还记得 001 课我们看的那段"读代码"吗？就是它：</p>
+
+  <pre><span class="kw">return</span> builder.build()            <span class="com">// ① 造一个聊天客户端</span>
+               .prompt()            <span class="com">// ② 开始组装一次提问</span>
+               .user(q)             <span class="com">// ③ 把用户的问题塞进去</span>
+               .call()              <span class="com">// ④ 真正去调大模型</span>
+               .content();          <span class="com">// ⑤ 取出回答的文字</span></pre>
+
+  <p>当时我们说"看不懂很正常，重点不是记住"。这一课，我们要把这一串<strong>彻底讲透</strong>。讲完你就能照葫芦画瓢，写出带人设的聊天接口。</p>
+
+  <div class="card info">
+    <div class="card-label">今天三个主角</div>
+    <p style="margin:0"><strong>ChatClient</strong>（聊天客户端，谁去调模型）+ <strong>三种消息角色</strong>（SystemMessage / UserMessage / AssistantMessage，一次提问里装什么）+ <strong>Prompt</strong>（把消息打包成"一次提问"）。记住这三个词，今天的课就拿下了。</p>
+  </div>
+
+  <!-- 2. ChatClient -->
+  <h2>主角一：ChatClient —— Spring AI 统一的聊天入口 <span class="tag ai">Spring AI</span></h2>
+  <p>调大模型最原始的方式是直接 new 一个 <code>ChatModel</code>，然后手动拼参数。但 Spring AI 官方明确推荐：<strong>业务代码请用 <code>ChatClient</code></strong>，而不是底层那个 <code>ChatModel</code>。</p>
+
+  <div class="card tip">
+    <div class="card-label">一句话区分</div>
+    <p style="margin:0"><code>ChatModel</code> 是"裸"的模型调用，要自己处理更多细节；<code>ChatClient</code> 是在它之上封装的<strong>流式 API（Fluent API）</strong>——也就是那种 <code>.prompt().user().call()</code> 一路点下去的写法，更顺手、更适合先学。AIHom 真实代码里，Agent 构建链路会把 <code>ChatModel</code> 包成 <code>ChatClient</code> 使用，但模型创建、摘要、标题生成等地方也会直接使用 <code>ChatModelFactory</code> / <code>ChatModel</code>。</p>
+  </div>
+
+  <p>所谓 <strong>Fluent API</strong>（流式 API），大白话就是"<strong>一路点下去</strong>"：每一步都返回一个新对象，你接着往下点，像流水线一样把一件事串起来。前面那串 <code>.prompt().user().call().content()</code> 就是典型的 Fluent API。你不用记术语，记住"一路点"就行。</p>
+
+  <h3>怎么拿到一个 ChatClient？两种方式</h3>
+  <p>Spring 会把 <code>ChatClient.Builder</code> 这个"构造器"自动注入进来（004 课讲的依赖注入）。拿到 Builder 后，有两种写法：</p>
+
+  <pre><span class="com">// 写法 A：需要时临时 build 一个（适合偶尔用一次）</span>
+<span class="ann">@RestController</span>
+<span class="kw">public class</span> <span class="typ">ChatController</span> {
+    <span class="kw">private final</span> <span class="typ">ChatClient.Builder</span> builder;   <span class="com">// Spring 自动注入</span>
+
+    <span class="kw">public</span> <span class="typ">ChatController</span>(<span class="typ">ChatClient.Builder</span> builder) {
+        <span class="kw">this</span>.builder = builder;
+    }
+
+    <span class="kw">public</span> <span class="typ">String</span> chat(<span class="typ">String</span> q) {
+        <span class="typ">ChatClient</span> client = builder.build();   <span class="com">// ← 每次现造一个</span>
+        <span class="kw">return</span> client.prompt().user(q).call().content();
+    }
+}
+
+<span class="com">// 写法 B：启动时造好，全局复用（推荐，更高效）</span>
+<span class="ann">@RestController</span>
+<span class="kw">public class</span> <span class="typ">ChatController</span> {
+    <span class="kw">private final</span> <span class="typ">ChatClient</span> chatClient;       <span class="com">// 直接注入成品</span>
+
+    <span class="kw">public</span> <span class="typ">ChatController</span>(<span class="typ">ChatClient</span> chatClient) {
+        <span class="kw">this</span>.chatClient = chatClient;
+    }
+}</pre>
+
+  <div class="card warning">
+    <div class="card-label">写法 B 的前提</div>
+    <p style="margin:0">要让 Spring 能直接注入一个 <code>ChatClient</code> 成品（而不是 Builder），你得在某个 <code>@Configuration</code> 类里声明一个 <code>@Bean</code>，告诉 Spring"请帮我 build 一个"。这一步我们放在本课最后讲<strong>默认配置</strong>时一起做——它也是你本节的"小胜利"之一。</p>
+  </div>
+
+  <!-- 3. 三种消息角色 -->
+  <h2>主角二：三种消息角色 <span class="tag ai">Spring AI</span></h2>
+  <p>大模型对话不是只有"你一句它一句"这么简单。一次完整的提问里，可以装<strong>三种不同角色的消息</strong>，它们各自的作用完全不同：</p>
+
+  <table class="belong">
+    <thead>
+      <tr><th>消息类</th><th>中文叫法</th><th>作用（大白话）</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>SystemMessage</code></td>
+        <td>系统消息</td>
+        <td><strong>给 AI 定人设 / 角色 / 规矩</strong>。比如"你是资深室内设计师，用专业但通俗的语言回答"。这一条优先级最高，模型会一直遵守。</td>
+      </tr>
+      <tr>
+        <td><code>UserMessage</code></td>
+        <td>用户消息</td>
+        <td><strong>用户本次问的问题</strong>。比如"小户型怎么显大？"。这是每次提问都要有的核心内容。</td>
+      </tr>
+      <tr>
+        <td><code>AssistantMessage</code></td>
+        <td>助手消息</td>
+        <td><strong>AI 之前的回复</strong>。把历史对话塞回去，模型才"记得"前面聊过啥——这就是<strong>多轮对话</strong>的底层原理。</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card info">
+    <div class="card-label">为什么要有 SystemMessage？</div>
+    <p style="margin:0">同样一个问题"怎么设计客厅"，没有 SystemMessage 时，AI 会给出一个泛泛的回答；加上 <code>SystemMessage("你是群核的资深软装设计师，回答里要点出可执行的搭配建议")</code> 后，回答立刻专业、聚焦、带品牌口吻。<strong>人设 = 你给 AI 的"岗位职责说明书"</strong>。</p>
+  </div>
+
+  <div class="card warning">
+    <div class="card-label">多轮对话的本质（重要，为下一课铺垫）</div>
+    <p style="margin:0.3rem 0 0">大模型本身是<strong>无记忆</strong>的——每次提问都是独立的。它"记得"上一轮，是因为我们<strong>把上一轮的对话（UserMessage + AssistantMessage）整段重新塞进了下一次提问</strong>里。所以在代码层面，多轮对话 = 每次都拼一长串历史消息。<strong>这件事怎么做优雅，是下一课《流式 / 结构化 / 记忆》的主题</strong>，今天先有个印象。</p>
+  </div>
+
+  <!-- 4. Prompt -->
+  <h2>主角三：Prompt —— 把消息打包成"一次提问" <span class="tag ai">Spring AI</span></h2>
+  <p>三种消息有了，但大模型一次只接受<strong>一坨完整的请求</strong>。这坨请求要包含：哪些消息、用什么参数（比如温度 temperature、最大长度 max-tokens）。<strong>Prompt 就是把这坨东西打包好的容器</strong>。</p>
+
+  <div class="card tip">
+    <div class="card-label">一个生活类比</div>
+    <p style="margin:0.3rem 0 0">想象你寄快递：三种消息是<strong>三样物品</strong>，<strong>Prompt 是那个快递箱</strong>——把物品装好、贴上运单（参数）、交给快递员（<code>.call()</code>）。模型收到的是整个箱子，不是散落的物品。</p>
+  </div>
+
+  <p>在代码里，<code>Prompt</code> 本质是一个对象，内部就是 <code>List&lt;Message&gt;</code> 加上一些可选参数。但好消息是——<strong>你几乎从不手动 new Prompt</strong>。Spring AI 提供的 Fluent API（就是 <code>.prompt()</code> 这一步）会自动帮你组装。所以你日常只需要理解它的概念，不用关心它的构造细节。</p>
+
+  <!-- 5. 核心链式写法 -->
+  <h2>核心：链式写法拆解 <span class="tag ai">Spring AI</span></h2>
+  <p>现在我们把这串代码每一环彻底讲透——这是本课最核心的部分，务必看懂：</p>
+
+  <pre>chatClient
+    .prompt()                              <span class="com">// ① 开门：进入"组装提问"模式，返回一个 PromptBuilder</span>
+    .system(<span class="str">"你是资深设计师，用通俗语言回答"</span>)  <span class="com">// ② 加 SystemMessage（定人设，可省略）</span>
+    .user(<span class="str">"小户型怎么显大？"</span>)              <span class="com">// ③ 加 UserMessage（必填，本次的问题）</span>
+    .call()                                <span class="com">// ④ 真正发起调用！把 Prompt 打包发给大模型，拿到响应</span>
+    .content();                            <span class="com">// ⑤ 从响应里取出"纯文本"回答</span></pre>
+
+  <table class="belong">
+    <thead>
+      <tr><th>环节</th><th>做什么</th><th>返回什么</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>.prompt()</code></td>
+        <td>开门进入提问组装模式</td>
+        <td>一个能继续往下点的 builder</td>
+      </tr>
+      <tr>
+        <td><code>.system(...)</code></td>
+        <td>追加一条 SystemMessage（定人设）</td>
+        <td>同一个 builder（继续点）</td>
+      </tr>
+      <tr>
+        <td><code>.user(...)</code></td>
+        <td>追加一条 UserMessage（你的问题）</td>
+        <td>同一个 builder（继续点）</td>
+      </tr>
+      <tr>
+        <td><code>.call()</code></td>
+        <td><strong>真正调大模型</strong>，阻塞等待结果</td>
+        <td>一个 ChatResponse（完整响应）</td>
+      </tr>
+      <tr>
+        <td><code>.content()</code></td>
+        <td>从响应里取出纯文本回答</td>
+        <td>String（直接 return 给前端）</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card info">
+    <div class="card-label">.call() vs .content() 一定要分清</div>
+    <p style="margin:0.3rem 0 0"><code>.call()</code> 返回的是<strong>完整的响应对象</strong> <code>ChatResponse</code>，里面有回答文本、token 用量、模型名等一堆信息；<code>.content()</code> 是从里面<strong>只抠出回答的纯文本</strong>。<strong>如果你只想拿回答，就 .call().content()；如果你想看 token 用量、做监控，就只 .call() 然后自己取字段。</strong>测试工程师排查接口耗时/费用时，盯的就是 <code>ChatResponse</code> 里的 token 信息。</p>
+  </div>
+
+  <div class="card success">
+    <div class="card-label">这一串你已经看懂了！</div>
+    <p style="margin:0.3rem 0 0">回头看 001 课那段 <code>.prompt().user(q).call().content()</code>——少了 <code>.system(...)</code>，意味着没定人设，其它完全一样。恭喜，从"看不懂"到"讲得透"，你只用了几节课。</p>
+  </div>
+
+  <!-- 6. 默认配置技巧 -->
+  <h2>进阶：用 @Configuration 设默认人设 <span class="tag spring">Spring</span> <span class="tag ai">Spring AI</span></h2>
+  <p>问题来了：如果你的项目里<strong>每个接口都要用同一个"你是 XX 助手"的人设</strong>，难道每次都要写 <code>.system("你是 XX 助手")</code> 吗？当然不用。Spring AI 支持你在<strong>启动时</strong>就把默认人设烤进 <code>ChatClient</code>，业务代码直接用，人设自动生效。</p>
+
+  <pre><span class="ann">@Configuration</span>                              <span class="com">// 告诉 Spring：这是一个配置类（005 课讲的）</span>
+<span class="kw">public class</span> <span class="typ">ChatClientConfig</span> {
+
+    <span class="ann">@Bean</span>                                       <span class="com">// 告诉 Spring：把这个方法的返回值注册成一个全局可注入对象</span>
+    <span class="typ">ChatClient</span> chatClient(<span class="typ">ChatClient.Builder</span> builder) {
+        <span class="kw">return</span> builder
+                .defaultSystem(<span class="str">"你是群核 AIHom 的智能助手，回答专业、简洁、友好。"</span>)  <span class="com">// ← 默认人设</span>
+                .build();                     <span class="com">// 一次性 build 好</span>
+    }
+}</pre>
+
+  <p>这样一来，所有 Controller 里注入的 <code>ChatClient</code> 都<strong>自带这个人设</strong>。业务代码直接 <code>chatClient.prompt().user(q).call().content()</code> 就行，不用重复写 <code>.system(...)</code>：</p>
+
+  <pre><span class="ann">@RestController</span>
+<span class="kw">public class</span> <span class="typ">ChatController</span> {
+    <span class="kw">private final</span> <span class="typ">ChatClient</span> chatClient;   <span class="com">// 注入的是上面 @Bean 造好的、带默认人设的</span>
+
+    <span class="kw">public</span> <span class="typ">ChatController</span>(<span class="typ">ChatClient</span> chatClient) {
+        <span class="kw">this</span>.chatClient = chatClient;
+    }
+
+    <span class="ann">@GetMapping</span>(<span class="str">"/ask"</span>)
+    <span class="kw">public</span> <span class="typ">String</span> ask(<span class="typ">String</span> q) {
+        <span class="com">// 人设已在 @Configuration 里设好，这里不用再写 .system(...)</span>
+        <span class="kw">return</span> chatClient.prompt().user(q).call().content();
+    }
+}</pre>
+
+  <div class="card warning">
+    <div class="card-label">@Bean 速记（新手容易卡这里）</div>
+    <p style="margin:0.3rem 0 0"><code>@Bean</code> 标在方法上，意思是"<strong>这个方法返回的对象，请 Spring 帮我管理，以后谁要注入就给谁</strong>"。配合 <code>@Configuration</code>，就实现了"全局只造一次、到处都能用"。这比每次自己 <code>builder.build()</code> 高效得多，也统一得多。AIHom 的配置类里这种写法很常见。</p>
+  </div>
+
+  <!-- 7. 完整示例 ChatController -->
+  <h2>本节胜利：一个完整的 /chat 接口 <span class="tag ai">Spring AI</span></h2>
+  <p>把上面学的全部拼起来，写一个真正能跑的接口——访问 <code>/chat?q=你好</code>，通义千问会以"AIHom 助手"的身份回答你。AIHom 的模型方向是 <strong>DashScope / 通义千问 / Alibaba Agent</strong>，但代码里也会出现 Spring AI 的 <code>OpenAiChatModel</code> 与 <code>spring.ai.openai.*</code> 配置，这是用 OpenAI-compatible 适配层去接模型服务，不代表业务栈切成了 OpenAI。</p>
+
+  <h3>第 1 步：pom.xml 依赖（015 课已配好，这里仅确认）</h3>
+  <pre><span class="com">&lt;!-- Spring AI Alibaba DashScope 起步依赖（Spring AI 被它传递引入） --&gt;</span>
+&lt;<span class="typ">dependency</span>&gt;
+    &lt;<span class="typ">groupId</span>&gt;com.alibaba.cloud.ai&lt;/<span class="typ">groupId</span>&gt;
+    &lt;<span class="typ">artifactId</span>&gt;spring-ai-alibaba-starter-dashscope&lt;/<span class="typ">artifactId</span>&gt;
+&lt;/<span class="typ">dependency</span>&gt;</pre>
+
+  <h3>第 2 步：application.yml 配置（通义千问）</h3>
+  <pre>spring:
+  ai:
+    dashscope:
+      api-key: <span class="str">${AI_DASHSCOPE_API_KEY}</span>     <span class="com"># 从环境变量读，别硬编码</span>
+      chat:
+        options:
+          model: qwen-plus            <span class="com"># 通义千问模型名（qwen-plus / qwen-max 等）</span>
+          temperature: <span class="str">0.7</span>           <span class="com"># 0~2，越大越发散，越小越确定</span></pre>
+
+  <h3>第 3 步：默认人设的配置类</h3>
+  <pre><span class="kw">package</span> <span class="typ">com.qunhe.aihom.config</span>;
+
+<span class="kw">import</span> <span class="typ">org.springframework.context.annotation.Bean</span>;
+<span class="kw">import</span> <span class="typ">org.springframework.context.annotation.Configuration</span>;
+<span class="kw">import</span> <span class="typ">org.springframework.ai.chat.client.ChatClient</span>;
+
+<span class="ann">@Configuration</span>
+<span class="kw">public class</span> <span class="typ">ChatClientConfig</span> {
+
+    <span class="ann">@Bean</span>
+    <span class="typ">ChatClient</span> chatClient(<span class="typ">ChatClient.Builder</span> builder) {
+        <span class="kw">return</span> builder
+                .defaultSystem(<span class="str">"你是群核 AIHom 的智能助手。回答专业、简洁、友好，遇到不确定要坦诚说明。"</span>)
+                .build();
+    }
+}</pre>
+
+  <h3>第 4 步：ChatController —— 真正的接口</h3>
+  <pre><span class="kw">package</span> <span class="typ">com.qunhe.aihom.controller</span>;
+
+<span class="kw">import</span> <span class="typ">org.springframework.ai.chat.client.ChatClient</span>;
+<span class="kw">import</span> <span class="typ">org.springframework.web.bind.annotation.*</span>;
+
+<span class="ann">@RestController</span>                                <span class="com">// 这是 HTTP 接口类</span>
+<span class="ann">@RequestMapping</span>(<span class="str">"/chat"</span>)                       <span class="com">// 类级别路径 /chat</span>
+<span class="kw">public class</span> <span class="typ">ChatController</span> {
+
+    <span class="kw">private final</span> <span class="typ">ChatClient</span> chatClient;         <span class="com">// 注入带默认人设的 ChatClient</span>
+
+    <span class="kw">public</span> <span class="typ">ChatController</span>(<span class="typ">ChatClient</span> chatClient) {
+        <span class="kw">this</span>.chatClient = chatClient;
+    }
+
+    <span class="ann">@GetMapping</span>                                   <span class="com">// GET /chat?q=你的问题</span>
+    <span class="kw">public</span> <span class="typ">String</span> chat(<span class="ann">@RequestParam</span> <span class="typ">String</span> q) {
+        <span class="kw">return</span> chatClient
+                .prompt()                         <span class="com">// ① 组装提问</span>
+                .user(q)                          <span class="com">// ② 用户的问题（人设已在 @Configuration 里默认设好）</span>
+                .call()                           <span class="com">// ③ 调通义千问</span>
+                .content();                       <span class="com">// ④ 取出纯文本回答</span>
+    }
+
+    <span class="ann">@GetMapping</span>(<span class="str">"/design"</span>)                       <span class="com">// GET /chat/design?q=...</span>
+    <span class="kw">public</span> <span class="typ">String</span> design(<span class="ann">@RequestParam</span> <span class="typ">String</span> q) {
+        <span class="com">// 演示：覆盖默认人设，给这次提问一个更聚焦的角色</span>
+        <span class="kw">return</span> chatClient
+                .prompt()
+                .system(<span class="str">"你是群核的资深软装设计师，回答要给 3 条可执行的搭配建议。"</span>)
+                .user(q)
+                .call()
+                .content();
+    }
+}</pre>
+
+  <p>启动后访问：</p>
+  <ul>
+    <li><code>http://localhost:8080/chat?q=你好</code> → 走默认人设</li>
+    <li><code>http://localhost:8080/chat/design?q=小户型客厅怎么搭</code> → 走设计师人设</li>
+  </ul>
+
+  <div class="card success">
+    <div class="card-label">这就是你的第一个 AI 接口</div>
+    <p style="margin:0.3rem 0 0">短短几行，你已经完成了一件几年前要让后端苦哈哈对接好几天的事——而且人设、模型切换、参数都在配置里，业务代码干净得像诗。这就是 Spring AI 的威力。</p>
+  </div>
+
+  <div class="card tip">
+    <div class="card-label">测试工程师的视角</div>
+    <p style="margin:0.3rem 0 0">你现在能<strong>从代码层面</strong>理解一个 AI 接口的构成：入参 <code>q</code> → ChatClient → 通义千问 → 文本回答。以后写自动化测试、压测、回归用例，你都知道往哪里塞数据、断言什么、监控哪个环节。这正是 AIHom 项目里真实 Controller 的最小骨架。</p>
+  </div>
+
+  <!-- 8. Quiz -->
+  <h2>小测验：确认你真的 get 到了</h2>
+
+  <div class="quiz" id="quiz1">
+    <div class="quiz-q">第 1 题：在 <code>.prompt().system(...).user(...).call().content()</code> 这串里，<strong>真正发起网络请求、调用大模型</strong>的是哪一环？</div>
+    <button class="quiz-opt" data-correct="false"><code>.prompt()</code></button>
+    <button class="quiz-opt" data-correct="false"><code>.system(...)</code></button>
+    <button class="quiz-opt" data-correct="true"><code>.call()</code></button>
+    <button class="quiz-opt" data-correct="false"><code>.content()</code></button>
+    <div class="quiz-fb" id="fb1"></div>
+  </div>
+
+  <div class="quiz" id="quiz2">
+    <div class="quiz-q">第 2 题：你想让 AI 始终以"群核资深设计师"的身份回答，最合适的做法是？</div>
+    <button class="quiz-opt" data-correct="false">每次提问都在 <code>.user(...)</code> 里写"你是设计师"</button>
+    <button class="quiz-opt" data-correct="true">在 <code>@Configuration</code> 里用 <code>builder.defaultSystem("你是群核资深设计师")</code> 设默认人设</button>
+    <button class="quiz-opt" data-correct="false">把人设写进 <code>.content()</code></button>
+    <button class="quiz-opt" data-correct="false">人设无法配置，每次必须手动传</button>
+    <div class="quiz-fb" id="fb2"></div>
+  </div>
+
+  <div class="quiz" id="quiz3">
+    <div class="quiz-q">第 3 题：关于三种消息角色，下面哪种说法<strong>正确</strong>？</div>
+    <button class="quiz-opt" data-correct="false">SystemMessage 是用户本次问的问题</button>
+    <button class="quiz-opt" data-correct="false">UserMessage 用来给 AI 定人设</button>
+    <button class="quiz-opt" data-correct="true">AssistantMessage 是 AI 之前的回复，用于让模型"记住"历史</button>
+    <button class="quiz-opt" data-correct="false">三种消息每次都必须全部出现，缺一不可</button>
+    <div class="quiz-fb" id="fb3"></div>
+  </div>
+
+  <!-- 9. 本节胜利 -->
+  <div class="win">
+    <div class="card-label">本节你获得的胜利</div>
+    <p style="margin:0.3rem 0 0">你能<strong>独立写出一个带人设的 /chat 接口</strong>，并且彻底看懂 <code>.prompt().system().user().call().content()</code> 每一环的职责。你还掌握了"启动时设默认人设"的工程技巧。从"读代码"到"写代码"，你迈出了关键一步——下一课我们就让这个接口更强：流式输出、结构化返回、多轮记忆。</p>
+  </div>
+
+  <!-- 10. 推荐阅读 -->
+  <div class="reading">
+    <div class="card-label">推荐 primary source（高质量一手资料）</div>
+    <p style="margin:0.5rem 0 0">本课内容都能在官方文档查到，建议动手时对照：<br>
+    • <a href="https://docs.spring.io/spring-ai/reference/api/chatclient.html" target="_blank">Spring AI 官方文档 · ChatClient</a>（Fluent API、defaultSystem 都在这里）<br>
+    • <a href="https://docs.spring.io/spring-ai/reference/api/chat/messages.html" target="_blank">Spring AI 官方文档 · Messages（消息体系）</a><br>
+    • <a href="https://java2ai.com/" target="_blank">Spring AI Alibaba 官方文档 java2ai.com</a>（★ AIHom 实际用的框架，搜 ChatClient / DashScope）<br>
+    先读 Spring AI 的 ChatClient 一节，对照本课代码看，会非常顺。</p>
+  </div>
+
+  <!-- 11. 追问 -->
+  <div class="ask">
+    <p>🤔 <strong>有任何看不懂的地方，直接问我。</strong>比如："<code>.call()</code> 报错怎么办"、"temperature 到底调多少合适"、"AIHom 里的 Controller 真长这样吗"、"默认人设能根据接口动态换吗"……没有蠢问题，我是你的私教，问就对了。</p>
+  </div>
+</div>
+
+<script>
+  // 简单的 quiz 即时反馈
+  const feedback = {
+    1: { ok: '✓ 对！.call() 才是真正发起网络请求、调用大模型的环节。前面 .prompt()/.system()/.user() 都只是在"组装快递箱"，.call() 才是"交给快递员"。.content() 是事后取文本。',
+         no: '仔细看——.prompt() 是开门进入组装模式，.system()/.user() 是往箱子里装消息，.content() 是从结果里抠文本。真正"发请求、调模型"的只有 .call() 这一步。' },
+    2: { ok: '✓ 对！在 @Configuration 里用 builder.defaultSystem(...) 设默认人设，是 Spring AI 官方推荐的工程做法——一次配置，全局生效，业务代码不用每次重复写。',
+         no: '人设属于 SystemMessage，不该塞进 user 或 content。最优雅的做法是在 @Configuration 里用 builder.defaultSystem(...) 设全局默认人设，业务代码直接用。' },
+    3: { ok: '✓ 对！AssistantMessage 代表 AI 之前的回复。把历史对话（User+Assistant）拼回新提问里，模型才能"记得"上下文——这正是多轮对话的底层原理，下一课会讲怎么优雅实现。',
+         no: '记住对应关系：SystemMessage=定人设，UserMessage=本次提问，AssistantMessage=AI 之前的回复（用于多轮记忆）。三种消息并非每次都要全有，比如简单一问可以只有 user。' }
+  };
+
+  function wireQuiz(id) {
+    const quiz = document.getElementById('quiz' + id);
+    const fb = document.getElementById('fb' + id);
+    const opts = quiz.querySelectorAll('.quiz-opt');
+    opts.forEach(opt => {
+      opt.addEventListener('click', () => {
+        const correct = opt.dataset.correct === 'true';
+        opts.forEach(o => o.classList.add('disabled'));
+        if (correct) {
+          opt.classList.add('correct');
+          fb.style.background = 'var(--success-light)';
+          fb.style.color = '#14532d';
+          fb.textContent = feedback[id].ok;
+        } else {
+          opt.classList.add('wrong');
+          // 同时点亮正确答案
+          opts.forEach(o => { if (o.dataset.correct === 'true') o.classList.add('correct'); });
+          fb.style.background = '#fee2e2';
+          fb.style.color = '#7f1d1d';
+          fb.textContent = feedback[id].no;
+        }
+        fb.classList.add('show');
+      });
+    });
+  }
+  [1,2,3].forEach(wireQuiz);
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 016</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0015-spring-ai-vs-alibaba-dashscope.html">上一课：015 Spring AI vs Spring AI Alibaba + DashScope</a><a class="primary" href="0017-streaming-structured-memory.html">下一课：017 流式响应 + 结构化输出 + 会话记忆</a></div></nav>
+</body>
+</html>

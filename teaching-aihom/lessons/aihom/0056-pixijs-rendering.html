@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>056 PixiJS 渲染引擎与 Scene2D</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --accent: #b45309;
+    --accent-light: #fef3c7;
+    --border: #e7e5e4;
+    --code-bg: #f5f5f4;
+    --success: #16a34a;
+    --warning: #d97706;
+    --info: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .card.info { border-left: 3px solid var(--info); }
+  .card.warning { border-left: 3px solid var(--warning); }
+  .card.success { border-left: 3px solid var(--success); }
+
+  .card-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+  .card.info .card-label { color: var(--info); }
+  .card.warning .card-label { color: var(--warning); }
+  .card.success .card-label { color: var(--success); }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    font-size: 0.88em;
+  }
+
+  pre {
+    background: #1c1917;
+    color: #e7e5e4;
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  pre .comment { color: #78716c; }
+  pre .keyword { color: #f59e0b; }
+  pre .string { color: #86efac; }
+  pre .dir { color: #93c5fd; }
+  pre .file { color: #e7e5e4; }
+  pre .important { color: #fbbf24; font-weight: 500; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.92rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .quiz {
+    background: var(--accent-light);
+    border: 1px solid #fbbf24;
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .quiz-title {
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+  .quiz-options { list-style: none; }
+  .quiz-options li {
+    padding: 0.5rem 0.75rem;
+    margin: 0.35rem 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+  }
+  .quiz-options li:hover { background: #fde68a33; border-color: #fbbf24; }
+  .quiz-options li.correct { background: #dcfce7; border-color: #16a34a; }
+  .quiz-options li.wrong { background: #fee2e2; border-color: #ef4444; }
+  .quiz-feedback {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    display: none;
+    font-size: 0.9rem;
+  }
+
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+  }
+  .flow-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .flow-arrow { color: var(--text-secondary); }
+
+  .next-lesson {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .next-lesson a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .next-lesson a:hover { text-decoration: underline; }
+
+  .ask-agent {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+    color: #1e40af;
+  }
+  .ask-agent::before { content: '💡 '; }
+
+  ul, ol { margin: 0.5rem 0 1rem 1.5rem; }
+  li { margin-bottom: 0.3rem; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>056 PixiJS 渲染引擎与 Scene2D</h1>
+<p class="subtitle">掌握 viewer-2d 项目中 PixiJS 核心概念、Scene2D 渲染管线与视图注册机制</p>
+
+<!-- ==================== Section 1 ==================== -->
+<h2>1. PixiJS 基础概念</h2>
+
+<p>PixiJS 是一个基于 WebGL（自动回退 Canvas 2D）的高性能 2D 渲染引擎。在 viewer-2d 项目中，我们使用内部封装的 <code>@qunhe/pixi.js</code>，它负责将户型数据渲染为可视化的 2D 图形。</p>
+
+<div class="card info">
+  <div class="card-label">为什么选 PixiJS</div>
+  <p>相比较原生 Canvas 2D API，PixiJS 提供了<strong>场景树</strong>（类似 DOM 树）、<strong>GPU 加速</strong>、<strong>内置交互</strong>（点击/拖拽）和<strong>纹理管理</strong>，非常适合渲染复杂户型图这种包含大量图元、需要频繁交互的场景。</p>
+</div>
+
+<h3>1.1 Stage — 舞台</h3>
+<p><code>Stage</code> 是整个 PixiJS 场景树的<strong>根节点</strong>。所有要显示的对象都必须挂载到 Stage 的子树上。你可以把它想象成 HTML 中的 <code>&lt;body&gt;</code>，是渲染的起点。</p>
+
+<h3>1.2 Container — 容器</h3>
+<p><code>Container</code> 是一个可以包含子节点的"分组"对象。它本身不直接绘制像素，但能：</p>
+<ul>
+  <li>对子节点做<strong>统一变换</strong>（平移、旋转、缩放）</li>
+  <li>控制子节点的<strong>渲染顺序</strong>（z-index 由 children 数组顺序决定）</li>
+  <li>作为逻辑分组（例如把所有门窗放在一个 Container，房间放在另一个）</li>
+</ul>
+
+<pre>
+<span class="comment">// Container 的层级关系示意</span>
+Stage
+├── RoomContainer        <span class="comment">// 房间图元层</span>
+│   ├── room_01 (Graphics)
+│   └── room_02 (Graphics)
+├── DoorWindowContainer  <span class="comment">// 门窗图元层</span>
+│   ├── door_01 (Sprite)
+│   └── window_01 (Sprite)
+└── AnnotationContainer  <span class="comment">// 标注层</span>
+    └── dimension_line (Graphics)
+</pre>
+
+<h3>1.3 Sprite — 精灵</h3>
+<p><code>Sprite</code> 是基于<strong>纹理（Texture）</strong>的显示对象，用来渲染图片、图标等位图内容。在 viewer-2d 中，门窗图标、家具图例等通常用 Sprite 渲染。Sprite 是最轻量的显示对象，渲染性能最优。</p>
+
+<h3>1.4 Graphics — 矢量图形</h3>
+<p><code>Graphics</code> 用于绘制<strong>程序化矢量图形</strong>：线段、矩形、圆弧、多边形、贝塞尔曲线等。在 viewer-2d 中，房间轮廓、墙体、尺寸标注线等都通过 Graphics API 绘制。</p>
+
+<pre>
+<span class="comment">// 典型用法：绘制一个房间轮廓</span>
+<span class="keyword">const</span> room = <span class="keyword">new</span> PIXI.Graphics();
+room.lineStyle(2, 0x333333);
+room.beginFill(0xf0f0f0);
+room.moveTo(0, 0);
+room.lineTo(200, 0);
+room.lineTo(200, 150);
+room.lineTo(0, 150);
+room.closePath();
+room.endFill();
+</pre>
+
+<table>
+  <tr><th>类型</th><th>用途</th><th>性能</th><th>示例</th></tr>
+  <tr><td>Container</td><td>分组 / 变换</td><td>无渲染开销</td><td>房间层、门窗层</td></tr>
+  <tr><td>Sprite</td><td>位图渲染</td><td>最优</td><td>门窗图标、家具图例</td></tr>
+  <tr><td>Graphics</td><td>矢量绘图</td><td>中等（路径复杂时较慢）</td><td>房间轮廓、标注线</td></tr>
+  <tr><td>Text</td><td>文字渲染</td><td>中等</td><td>房间名称、尺寸数值</td></tr>
+</table>
+
+<!-- ==================== Section 2 ==================== -->
+<h2>2. Scene2D 渲染管线</h2>
+
+<p>在 viewer-2d 中，<code>Scene2D</code> 不是一个普通的 PixiJS 场景，而是基于 KAF 框架的<strong>场景管理系统</strong>。它将 PixiJS 渲染能力与状态管理、实体系统、交互系统整合在一起。</p>
+
+<div class="card warning">
+  <div class="card-label">关键入口文件</div>
+  <p><code>src/app/Scene2D/DfScene2d.tsx</code> 是 Scene2D 的 React 组件入口。它的 <code>onInit</code> 回调中完成视图注册、系统注册和推理能力注册，是排查场景初始化问题的<strong>第一入口</strong>。</p>
+</div>
+
+<h3>2.1 渲染管线总览</h3>
+
+<div class="flow">
+  <span class="flow-step">数据变化 (rootState)</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">StateManager 分发</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">Entity 响应</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">Drawable 更新</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">PixiJS 渲染</span>
+</div>
+
+<p>整个管线的核心理念是<strong>数据驱动</strong>：React 视图层和 KAF StateManager 管理业务状态，状态变化触发 Entity（实体）更新，实体负责将自己的数据映射为 PixiJS 的显示对象（Drawable），最终由 PixiJS 完成 GPU 渲染。</p>
+
+<h3>2.2 状态与场景的桥梁</h3>
+
+<p><code>RootStateManager</code>（<code>src/app/state.ts</code>）是全局状态的聚合点，它组合了多个子状态：</p>
+
+<ul>
+  <li><code>scene2D</code> — 场景相关状态（缩放比、偏移量、激活工具等）</li>
+  <li><code>selectedControl</code> — 当前选中的图元与变换状态</li>
+  <li><code>layout</code> — 布局与自动排列状态</li>
+  <li><code>outside</code> — 与父页面/外部容器的通信状态</li>
+  <li><code>leftPanel</code> — 左侧面板 UI 状态</li>
+</ul>
+
+<p>React 组件通过 <code>connect()</code> 函数订阅状态变化，而 Scene2D 内部的 Entity 和 System 则直接读取 StateManager 的数据来驱动渲染。</p>
+
+<pre>
+<span class="comment">// 简化的数据流向</span>
+┌──────────────────────────────────────────┐
+│  React 层 (App.tsx, views/)              │
+│  connect() ← RootStateManager            │
+└──────────────┬───────────────────────────┘
+               │ dispatch / setRootState
+┌──────────────▼───────────────────────────┐
+│  RootStateManager (src/app/state.ts)      │
+│  ┌─────────┬──────────┬────────┐         │
+│  │scene2D  │selected  │layout  │ ...     │
+│  └────┬────┴─────┬────┴───┬───┘         │
+└───────┼──────────┼────────┼─────────────┘
+        │          │        │
+┌───────▼──────────▼────────▼─────────────┐
+│  Scene2D / Entity / Drawable              │
+│  PixiJS Stage → Container → Graphics     │
+└──────────────────────────────────────────┘
+</pre>
+
+<!-- ==================== Section 3 ==================== -->
+<h2>3. 视图注册与更新</h2>
+
+<p>Scene2D 使用 KAF 框架的<strong>视图（View）</strong>概念来组织渲染逻辑。每个 View 负责一类图元的创建、更新和销毁。</p>
+
+<h3>3.1 视图注册</h3>
+<p>在 <code>DfScene2d.tsx</code> 的 <code>onInit</code> 中，各种视图被注册到场景中：</p>
+
+<pre>
+<span class="comment">// DfScene2d.tsx onInit 中的典型注册</span>
+<span class="keyword">protected</span> onInit() {
+  <span class="comment">// 注册房间视图</span>
+  <span class="keyword">this</span>.registerView(RoomView);
+  <span class="comment">// 注册门窗视图</span>
+  <span class="keyword">this</span>.registerView(DoorWindowView);
+  <span class="comment">// 注册标注视图</span>
+  <span class="keyword">this</span>.registerView(DimensionView);
+  <span class="comment">// 注册系统（交互逻辑）</span>
+  <span class="keyword">this</span>.registerSystem(SelectSystem);
+  <span class="keyword">this</span>.registerSystem(TransformSystem);
+  <span class="comment">// 注册推理能力</span>
+  <span class="keyword">this</span>.registerInference(...);
+}
+</pre>
+
+<h3>3.2 View 的生命周期</h3>
+
+<table>
+  <tr><th>阶段</th><th>方法</th><th>职责</th></tr>
+  <tr><td>初始化</td><td><code>onInit</code></td><td>创建 PixiJS 对象、设置默认样式、注册事件监听</td></tr>
+  <tr><td>更新</td><td><code>onUpdate</code></td><td>根据 Entity 数据变化更新 Drawable 的位置、样式、可见性</td></tr>
+  <tr><td>销毁</td><td><code>onDestroy</code></td><td>移除 PixiJS 对象、解绑事件、释放资源</td></tr>
+</table>
+
+<h3>3.3 实体与 Drawable 的绑定</h3>
+<p>每个业务实体（房间、门窗、标注）在 Scene2D 中对应一个或多个 Drawable（PixiJS 显示对象）。实体数据变化时，View 负责同步更新对应的 Drawable。</p>
+
+<div class="card warning">
+  <div class="card-label">高风险提醒</div>
+  <p>修改实体类与 Drawable 的绑定关系属于<strong>高风险改动</strong>。绑定断裂会导致图元不显示或数据不同步。改动后必须手动验证：图元是否正常渲染、选中/拖拽是否正常、数据回写是否正确。</p>
+</div>
+
+<!-- ==================== Section 4 ==================== -->
+<h2>4. 性能优化</h2>
+
+<p>2D 户型渲染涉及大量图元，性能优化是开发中必须关注的重点。</p>
+
+<h3>4.1 渲染层面</h3>
+<ul>
+  <li><strong>脏标记（Dirty Flag）</strong>：只在数据真正变化时才触发 Drawable 更新，避免每帧全量重绘</li>
+  <li><strong>Container 分层</strong>：将不同更新频率的图元放在不同 Container 中，只重绘变化层</li>
+  <li><strong>Graphics 缓存</strong>：对不常变化的矢量图形使用 <code>cacheAsBitmap</code>，减少 GPU 绘制调用</li>
+  <li><strong>纹理图集</strong>：将小图标合并为纹理图集（Sprite Sheet），减少纹理切换次数</li>
+</ul>
+
+<h3>4.2 交互层面</h3>
+<ul>
+  <li><strong>碰撞检测优化</strong>：使用 <code>hitArea</code> 自定义碰撞区域，避免 PixiJS 遍历复杂路径</li>
+  <li><strong>事件节流</strong>：对 mousemove 等高频事件做节流处理，减少不必要的状态更新</li>
+  <li><strong>可见性裁剪</strong>：视口外的图元设置 <code>visible = false</code>，跳过渲染</li>
+</ul>
+
+<h3>4.3 状态层面</h3>
+<ul>
+  <li><strong>批量更新</strong>：多处数据变化合并为一次 dispatch，避免连锁触发多次渲染</li>
+  <li><strong>浅比较</strong>：StateManager 使用浅比较判断是否需要通知订阅者，减少无效重渲染</li>
+</ul>
+
+<div class="card success">
+  <div class="card-label">最佳实践</div>
+  <p>新增图元时，优先考虑：1) 是否可以复用已有的 Container 层级；2) Drawable 更新是否可以在 <code>onUpdate</code> 中做增量 diff 而非全量重建；3) 事件监听是否可以挂在父 Container 而非每个子节点上。</p>
+</div>
+
+<div class="ask-agent">
+  想了解具体某个 Entity 的 Drawable 绑定细节？可以问 agent："帮我查看 RoomEntity 的 2D 绘制逻辑"
+</div>
+
+<!-- ==================== Quiz ==================== -->
+<h2>Quiz</h2>
+
+<div class="quiz" id="q1">
+  <div class="quiz-title">Q1: PixiJS 中，用来绘制矩形、线段等程序化矢量图形的显示对象是？</div>
+  <ul class="quiz-options">
+    <li data-correct="false" onclick="checkQuiz(1, this)">A. Container</li>
+    <li data-correct="false" onclick="checkQuiz(1, this)">B. Sprite</li>
+    <li data-correct="true" onclick="checkQuiz(1, this)">C. Graphics</li>
+    <li data-correct="false" onclick="checkQuiz(1, this)">D. Text</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="q2">
+  <div class="quiz-title">Q2: 在 viewer-2d 中，Scene2D 初始化时注册视图和系统的入口文件是？</div>
+  <ul class="quiz-options">
+    <li data-correct="false" onclick="checkQuiz(2, this)">A. src/app/App.tsx</li>
+    <li data-correct="true" onclick="checkQuiz(2, this)">B. src/app/Scene2D/DfScene2d.tsx</li>
+    <li data-correct="false" onclick="checkQuiz(2, this)">C. src/app/state.ts</li>
+    <li data-correct="false" onclick="checkQuiz(2, this)">D. src/StateManager/index.ts</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="q3">
+  <div class="quiz-title">Q3: 以下哪种做法<strong>不属于</strong> PixiJS 场景的性能优化手段？</div>
+  <ul class="quiz-options">
+    <li data-correct="false" onclick="checkQuiz(3, this)">A. 使用 cacheAsBitmap 缓存静态矢量图形</li>
+    <li data-correct="false" onclick="checkQuiz(3, this)">B. 将视口外的图元设置 visible = false</li>
+    <li data-correct="true" onclick="checkQuiz(3, this)">C. 在每帧都全量重建所有 Graphics 对象</li>
+    <li data-correct="false" onclick="checkQuiz(3, this)">D. 使用 hitArea 自定义碰撞区域</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+</div>
+
+<script>
+function checkQuiz(qNum, el) {
+  const quiz = document.getElementById('q' + qNum);
+  const options = quiz.querySelectorAll('.quiz-options li');
+  const feedback = quiz.querySelector('.quiz-feedback');
+  const alreadyAnswered = quiz.querySelector('.correct, .wrong');
+  if (alreadyAnswered) return;
+
+  const isCorrect = el.dataset.correct === 'true';
+  options.forEach(opt => {
+    if (opt.dataset.correct === 'true') opt.classList.add('correct');
+    else opt.classList.add('wrong');
+  });
+  feedback.style.display = 'block';
+  if (isCorrect) {
+    feedback.style.background = '#dcfce7';
+    feedback.style.color = '#166534';
+    feedback.textContent = '✅ 正确！';
+  } else {
+    feedback.style.background = '#fee2e2';
+    feedback.style.color = '#991b1b';
+    feedback.textContent = '❌ 不正确，请查看上方标记的正确答案。';
+  }
+}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 056</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0055-viewer-integration.html">上一课：055 2D/3D Viewer 集成与通信</a><a class="primary" href="0057-entity-system.html">下一课：057 实体系统与 Drawable 绑定</a></div></nav>
+</body>
+</html>

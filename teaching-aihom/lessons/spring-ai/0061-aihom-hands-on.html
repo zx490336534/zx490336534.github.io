@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>061 回到 AIHom：重读 ai-native-service + 新增功能</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --accent: #b45309;
+    --accent-light: #fef3c7;
+    --border: #e7e5e4;
+    --code-bg: #1c1917;
+    --code-text: #f5f5f4;
+    --success: #16a34a;
+    --success-light: #dcfce7;
+    --warning: #d97706;
+    --warning-light: #fef3c7;
+    --info: #2563eb;
+    --info-light: #dbeafe;
+    --tag-java: #d97706;
+    --tag-spring: #16a34a;
+    --tag-ai: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 3rem 2rem 5rem;
+  }
+
+  .lesson-meta {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2.8rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  strong { font-weight: 700; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.25rem 0;
+  }
+  .card.info { border-left: 3px solid var(--info); background: var(--info-light); }
+  .card.warning { border-left: 3px solid var(--warning); background: var(--warning-light); }
+  .card.success { border-left: 3px solid var(--success); background: var(--success-light); }
+  .card.tip { border-left: 3px solid var(--accent); }
+
+  .card-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+  }
+
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 1.25rem 1.4rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1.25rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.86rem;
+    line-height: 1.7;
+  }
+  code { font-family: 'JetBrains Mono', monospace; }
+  p code, li code {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 0.12em 0.4em;
+    border-radius: 4px;
+    font-size: 0.85em;
+  }
+  .com { color: #a8a29e; }
+  .kw  { color: #fbbf24; }
+  .ann { color: #86efac; }
+  .typ { color: #93c5fd; }
+  .str { color: #fda4af; }
+
+  table.belong {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.25rem 0;
+    font-size: 0.9rem;
+  }
+  table.belong th, table.belong td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  table.belong th {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+  table.belong td code { font-size: 0.82em; }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.1em 0.55em;
+    border-radius: 10px;
+    color: #fff;
+    letter-spacing: 0.02em;
+  }
+  .tag.java   { background: var(--tag-java); }
+  .tag.spring { background: var(--tag-spring); }
+  .tag.ai     { background: var(--tag-ai); }
+
+  .roadmap {
+    list-style: none;
+    margin: 1.25rem 0;
+    padding: 0;
+  }
+  .roadmap li {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+  }
+  .roadmap .stage {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 0.85rem;
+    min-width: 3.2em;
+    flex-shrink: 0;
+  }
+  .roadmap .here { border-color: var(--accent); background: var(--accent-light); }
+  .roadmap .here .stage { color: var(--text); }
+  .roadmap .done { opacity: 0.75; }
+  .roadmap .done .stage { color: var(--success); }
+
+  .quiz {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem 1.6rem;
+    margin: 1.5rem 0;
+  }
+  .quiz-q {
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  .quiz-opt {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--text);
+    transition: all 0.15s;
+  }
+  .quiz-opt:hover { border-color: var(--accent); }
+  .quiz-opt.correct {
+    background: var(--success-light);
+    border-color: var(--success);
+    color: #14532d;
+    font-weight: 500;
+  }
+  .quiz-opt.wrong {
+    background: #fee2e2;
+    border-color: #dc2626;
+    color: #7f1d1d;
+  }
+  .quiz-opt.disabled { cursor: default; opacity: 0.85; }
+  .quiz-fb {
+    margin-top: 0.85rem;
+    font-size: 0.9rem;
+    display: none;
+    padding: 0.7rem 0.9rem;
+    border-radius: 6px;
+    line-height: 1.7;
+  }
+  .quiz-fb.show { display: block; }
+
+  .win {
+    background: var(--success-light);
+    border-left: 3px solid var(--success);
+    border-radius: 8px;
+    padding: 1rem 1.4rem;
+    margin: 2rem 0;
+  }
+  .win .card-label { color: #14532d; }
+
+  .reading {
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.4rem;
+    margin: 1.5rem 0;
+  }
+  .reading a { color: var(--info); text-decoration: none; font-weight: 500; }
+  .reading a:hover { text-decoration: underline; }
+
+  .ask {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+  }
+
+  blockquote {
+    border-left: 3px solid var(--accent);
+    padding-left: 1rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin: 1.25rem 0;
+  }
+ol.steps {
+    counter-reset: step;
+    list-style: none;
+    padding-left: 0;
+    margin: 1.25rem 0;
+  }
+  ol.steps > li {
+    counter-increment: step;
+    position: relative;
+    padding: 0.8rem 1rem 0.8rem 3rem;
+    margin-bottom: 0.6rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  ol.steps > li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0.9rem;
+    top: 0.85rem;
+    width: 1.6rem;
+    height: 1.6rem;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 50%;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media print {
+    body { background: #fff; }
+    .quiz-opt { border: 1px solid #999; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="lesson-meta">AIHom 全栈学习 · 第 060 课 · 实战过渡</div>
+  <h1>061 回到 AIHom：重读 ai-native-service + 新增功能</h1>
+  <div class="subtitle">本节目标：把前面学过的 Java、Spring、Spring AI、Agent、前端和工程运行知识串起来，建立一条"从读代码到加功能"的清晰路径。读完这节，你会知道自己下一步该做什么。</div>
+
+  <!-- 1. 回顾地图 -->
+  <h2>先回头看看，你走了多远</h2>
+  <p>还记得第 1 课那张地图吗？现在每一站都被你踩过了。我们把地图重新铺开，但这次每一站后面，都标上<strong>"你现在能干嘛"</strong>：</p>
+
+  <ul class="roadmap">
+    <li class="done"><span class="stage">基础</span><span><strong>Java + Spring + 工程运行</strong>（001-014）<br>现在：看到 <code>@RestController</code>、<code>@Service</code>、Maven 模块、Nacos 配置、本地启动参数和日志链路，你能知道它们各自负责什么。</span></li>
+    <li class="done"><span class="stage">AI</span><span><strong>Spring AI + Alibaba + Agent</strong>（015-020）<br>现在：<code>ChatClient</code>、Prompt、流式、结构化输出、Tool/MCP、RAG、StateGraph 这些词不再是黑盒。</span></li>
+    <li class="done"><span class="stage">前端</span><span><strong>浏览器 + React + AIHom 前端入口</strong>（021-039）<br>现在：你能从浏览器调试、TSX 组件、状态管理、SDK/MCP 工具桥和 viewer 通信角度理解前端链路。</span></li>
+    <li class="done"><span class="stage">深入</span><span><strong>核心工程专项机制</strong>（040-059）<br>现在：你已经看过 ai-native-service、auto-layout-service、ai-home、viewer-2d、render-3d 的全景和关键深挖主题。</span></li>
+    <li class="here"><span class="stage">现在</span><span><strong>你站在实战过渡点。</strong> 接下来不是继续堆概念，而是用学过的东西，<strong>动手改真实代码</strong>。</span></li>
+  </ul>
+
+  <div class="card info">
+    <div class="card-label">一个被低估的事实</div>
+    <p style="margin:0">从"Java / 前端代码怎么看"到"能沿着 AIHom 的真实链路定位问题和改功能"，你已经走完了大部分准备路径。后面的重点是把这些知识用在具体需求上。</p>
+  </div>
+
+  <!-- 2. 怎么重读 ai-native-service -->
+  <h2>怎么用所学重读 ai-native-service</h2>
+  <p>第一次打开 <code>ai-native-service/</code> 时，它是一团迷雾。现在不是了。给你一条<strong>固定的阅读路径</strong>，从外到内，每一层都映射回你已经学过的课：</p>
+
+  <table class="belong">
+    <thead>
+      <tr><th>阅读层</th><th>看到什么</th><th>对应哪节课</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>第 1 层 · HTTP 入口</strong></td>
+        <td><code>@RestController</code> + <code>@PostMapping/@GetMapping</code>，定义对外的接口路径</td>
+        <td><span class="tag spring">0004</span> Spring 注解</td>
+      </tr>
+      <tr>
+        <td><strong>第 2 层 · 业务编排</strong></td>
+        <td><code>@Service</code> 类，接收请求、组装参数、调用下层、返回结果</td>
+        <td><span class="tag spring">0004</span> + <span class="tag java">0002</span></td>
+      </tr>
+      <tr>
+        <td><strong>第 3 层 · 调通义千问</strong></td>
+        <td><code>ChatClient</code> / <code>ChatModel</code> / <code>Agent</code>，把问题发给模型服务，拿回回答</td>
+        <td><span class="tag ai">016</span> ChatClient + <span class="tag ai">017</span> 流式/结构化</td>
+      </tr>
+      <tr>
+        <td><strong>第 4 层 · Agent 编排</strong></td>
+        <td><strong>StateGraph / Graph</strong>（Alibaba 核心），把多个节点串成一条流程</td>
+        <td><span class="tag ai">020</span> StateGraph</td>
+      </tr>
+      <tr>
+        <td><strong>第 5 层 · 配置与 Tool</strong></td>
+        <td>yml / Nacos 动态配置；Tool 通过 MCP 委托给前端执行</td>
+        <td><span class="tag spring">005</span> + <span class="tag ai">018</span> Tool/MCP</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card tip">
+    <div class="card-label">阅读姿势</div>
+    <p style="margin:0.3rem 0 0">找一个最简单的接口（比如一个"问问答答"的 <code>/chat</code>），从 Controller 开始，<strong>顺着调用一层层点进去</strong>。每点开一个类，先问自己："这是第几层？对应哪一课？"——你会发现，很多层都已经在前面的课程里见过。</p>
+  </div>
+
+  <div class="card warning">
+    <div class="card-label">第一次重读，别贪多</div>
+    <p style="margin:0">不要试图一次读懂整个 StateGraph 流程图。先把第 1、2、3 层彻底吃透（这三层占了日常 80% 的改动），StateGraph 留到你想加"多步推理"功能时再深挖。地基扎实，上面怎么盖都不慌。</p>
+  </div>
+
+  <!-- 3. 新增功能方法论 -->
+  <h2>新增一个 AI 小功能：五步方法论</h2>
+  <p>下面这套流程，是你在 AIHom 里加任何 AI 功能的<strong>通用套路</strong>。记住顺序，按部就班：</p>
+
+  <ol class="steps">
+    <li><strong>定需求（一句话能说清）</strong><br>先想清楚：这个功能解决谁的什么问题？输入是什么、输出是什么。写不出一句话，说明需求还没想清，别动手。</li>
+    <li><strong>加配置（yml / Nacos）</strong><br>模型选哪个（通义千问哪个型号）、Agent 用哪个、温度参数……这些都在 <code>application.yml</code> 或 Nacos 里配。对应 <span class="tag spring">005</span>、<span class="tag spring">008</span>、<span class="tag spring">037</span>。</li>
+    <li><strong>写 @Service 业务层</strong><br>简单实验可以用 <code>ChatClient</code>；对齐 AIHom 真实链路时，常见的是 <code>ChatModelFactory</code> 创建 <code>ChatModel</code>，再交给 <code>Agent</code> / <code>StateGraph</code>。对应 <span class="tag ai">016</span> / <span class="tag ai">020</span>。</li>
+    <li><strong>写 @RestController 接口</strong><br>把 Service 暴露成 HTTP 接口，让前端能调。对应 <span class="tag spring">004</span>、<span class="tag spring">007</span>。</li>
+    <li><strong>自己测（你的主场）</strong><br>这一步是你的强项，详见下面。</li>
+  </ol>
+
+  <div class="card info">
+    <div class="card-label">什么时候用 ChatClient，什么时候用 Agent/StateGraph</div>
+    <p style="margin:0.3rem 0 0">简单的一问一答或学习实验 → <code>ChatClient</code>（016）最容易上手。AIHom 真实业务里，若涉及"先查资料再回答""多轮推理""调用工具""Supervisor 路由" → 通常看 <code>ChatModelFactory</code>、<code>Agent</code> / <code>StateGraph</code>（020、050）。<strong>别为了用而用</strong>——先按需求复杂度选层级。</p>
+  </div>
+
+  <!-- 4. 测试工程师优势 -->
+  <h2>测试工程师的独特优势：别丢</h2>
+  <p>这一点我必须单独拎出来讲，因为很多转开发的测试工程师会<strong>忘掉自己最大的优势</strong>。</p>
+
+  <div class="card success">
+    <div class="card-label">你的超能力</div>
+    <p style="margin:0.3rem 0 0">写代码时，你会<strong>天然地</strong>考虑：这个输入是空怎么办？模型超时怎么办？返回结构不对怎么办？这些边界和异常，很多纯开发<strong>事后才想起来</strong>，而你会<strong>事前就想到</strong>。</p>
+  </div>
+
+  <p>在第 ⑤ 步"自己测"时，把这个优势用满：</p>
+  <ul>
+    <li><strong>先想验证，再写代码</strong>：动手前先问自己——这个功能做完，我<strong>用什么证明它对了</strong>？正常 case、空输入、超长输入、模型报错……列出来。</li>
+    <li><strong>异常路径当一等公民</strong>：大模型会超时、会返回脏数据、会拒绝回答。你的 Service 里有没有 <code>try/catch</code>？有没有给前端一个友好的错误？</li>
+    <li><strong>可验证性写进设计</strong>：如果一个功能你自己都说不清"怎么算成功"，那它就是不可测的——不可测的功能，上线就是定时炸弹。</li>
+  </ul>
+
+  <blockquote>很多开发写完代码才问"怎么测"。你会先问"怎么测"再写代码——这一个顺序的差别，就是工程质量的天壤之别。</blockquote>
+
+  <!-- 5. 下一步深入方向 -->
+  <h2>下一步：往哪深入</h2>
+  <p>前面的课是<strong>地基</strong>，不是终点。下面三个方向，按兴趣和项目需要挑：</p>
+
+  <ol class="steps">
+    <li><strong>读 StateGraph 源码（StateGraphFactory）</strong><br>搞懂一个 Graph 是怎么从配置"被造出来"的。这是理解 Alibaba Agent 框架内部机理的钥匙。</li>
+    <li><strong>学 Graph 高级编排</strong><br>条件分支（根据模型回答走不同路）、人机交互（中间停下来等人工确认）、多 Agent 协作（多个 Agent 分工）。这些是 AIHom 未来会越用越多的模式。</li>
+    <li><strong>前后端联调 MCP Tool</strong><br>AIHom 的特色是 Tool 委托前端执行。搞懂一个 Tool 调用怎么从后端发起、前端怎么接住、结果怎么回传——你能打通整条链路，价值就翻倍。</li>
+  </ol>
+
+  <div class="card tip">
+    <div class="card-label">选方向的建议</div>
+    <p style="margin:0">别三个一起冲。先看<strong>手头项目最需要哪个</strong>——如果你最近要改的就是某个 Agent 的流程，就先啃 StateGraph；如果要加新接口，就先练五步方法论。需求驱动学习，永远比"系统性学完"高效。</p>
+  </div>
+
+  <!-- 6. Quiz -->
+  <h2>小测验：实战前综合回顾</h2>
+
+  <div class="quiz" id="quiz1">
+    <div class="quiz-q">第 1 题：在 ai-native-service 里，你看到一段 <code>ChatClient.prompt().user(q).call().content()</code>。按阅读路径分层，它属于第几层、对应哪一课？</div>
+    <button class="quiz-opt" data-correct="false">第 1 层 HTTP 入口，对应 0004</button>
+    <button class="quiz-opt" data-correct="true">第 3 层 调通义千问，对应 0007 ChatClient</button>
+    <button class="quiz-opt" data-correct="false">第 4 层 Agent 编排，对应 0011 StateGraph</button>
+    <button class="quiz-opt" data-correct="false">第 5 层 配置，对应 0005 yml</button>
+    <div class="quiz-fb" id="fb1"></div>
+  </div>
+
+  <div class="quiz" id="quiz2">
+    <div class="quiz-q">第 2 题：新增一个 AI 功能时，正确的顺序是？</div>
+    <button class="quiz-opt" data-correct="false">先写 Controller，再想需求，最后配 yml</button>
+    <button class="quiz-opt" data-correct="true">先定需求，再加配置，然后写 Service，再写 Controller，最后测</button>
+    <button class="quiz-opt" data-correct="false">先上 StateGraph，再套 ChatClient，最后想测试</button>
+    <button class="quiz-opt" data-correct="false">先写测试，再随便写写 Service，配置最后再说</button>
+    <div class="quiz-fb" id="fb2"></div>
+  </div>
+
+  <div class="quiz" id="quiz3">
+    <div class="quiz-q">第 3 题：作为测试工程师转 AI 开发，你最该保持的习惯是？</div>
+    <button class="quiz-opt" data-correct="false">尽快忘掉测试思维，专注写功能代码</button>
+    <button class="quiz-opt" data-correct="false">只测 Happy Path，异常交给运维处理</button>
+    <button class="quiz-opt" data-correct="true">先想"怎么验证"再写代码，把边界和异常当一等公民</button>
+    <button class="quiz-opt" data-correct="false">等功能全部写完，最后再统一考虑怎么测</button>
+    <div class="quiz-fb" id="fb3"></div>
+  </div>
+
+  <!-- 7. 本节胜利 -->
+  <div class="win">
+    <div class="card-label">本节你获得的胜利</div>
+    <p style="margin:0.3rem 0 0">你现在拥有一条清晰的路径：<strong>从读 ai-native-service 的一层代码，到给它加一个小功能，再到自己验证它</strong>。后续 061-065 会把这个路径拆到各个工程的实战任务里。</p>
+  </div>
+
+  <!-- 8. 推荐阅读 -->
+  <div class="reading">
+    <div class="card-label">推荐一手资料（深入用）</div>
+    <p style="margin:0.5rem 0 0">收官不是结束，是深入的开始。两个权威入口你早就该收藏了：<br>
+    • <a href="https://java2ai.com/" target="_blank">Spring AI Alibaba 官方文档（java2ai.com）</a> ★ 重点看 Agent / Graph / DashScope / MCP，这是 AIHom 的真身<br>
+    • <a href="https://docs.spring.io/spring-ai/reference/" target="_blank">Spring AI 官方参考文档</a> 底层抽象，读 Alibaba 文档卡住时回来查<br>
+    除此之外，AIHom 相关工程本身就是最好的教材——读真实代码，比只读文档更容易建立工程判断。</p>
+  </div>
+
+  <div class="card warning">
+    <div class="card-label">版本提醒（最后强调一次）</div>
+    <p style="margin:0">你的真实栈：<strong>Java 21 + Spring Boot 3（Jetty）+ Spring AI 1.1.2 + Spring AI Alibaba 1.1.2.0.5-qh（群核定制版）+ 通义千问 DashScope + MCP Server（Tool 委托前端）+ Nacos + MySQL（状态图配置）</strong>。查任何资料都先对齐 <strong>1.1.x + Alibaba</strong>，别被网上 Spring AI 2.x 的教程带偏。</p>
+  </div>
+
+  <!-- 9. 追问 -->
+  <div class="ask">
+    <p><strong>到这里，你已经具备进入实战课的前置能力。</strong>但遇到具体问题别硬扛——比如"这个 StateGraph 怎么读""我这个 Service 为啥调不通通义千问""Nacos 配置改了不生效"——直接问我。从读代码到加功能，我陪你走完最后这一段实操。</p>
+  </div>
+</div>
+
+<script>
+  const feedback = {
+    1: { ok: '✓ 对！ChatClient 这串链式调用是"调通义千问"的核心，属于第 3 层，正是 0007 讲的 ChatClient。HTTP 入口（第1层）和 Agent 编排（第4层）是另外两回事。',
+         no: '想想这串代码在干什么：组装提问、调模型、取结果——这是"调通义千问"，第 3 层，对应 0007 的 ChatClient。@RestController 才是第 1 层。' },
+    2: { ok: '✓ 对！需求→配置→Service→Controller→测试，是顺序最稳的套路。先想清要做什么，再想怎么验证，中间才是填代码。',
+         no: '正确顺序是：先定需求，再配 yml/Nacos，然后写 Service 调模型，再写 Controller 暴露接口，最后用你的测试功底验证。需求不清就动手最容易返工。' },
+    3: { ok: '✓ 对！"先想怎么验证再写代码"是测试工程师的金字招牌，别丢。边界和异常不是事后补救，是设计的一部分。',
+         no: '你的优势恰恰是测试思维：先想清楚怎么验证、边界在哪、异常怎么处理，再动手写。很多纯开发是事后才想起这些的——而你是事前。别丢掉它。' }
+  };
+
+  function wireQuiz(id) {
+    const quiz = document.getElementById('quiz' + id);
+    const fb = document.getElementById('fb' + id);
+    const opts = quiz.querySelectorAll('.quiz-opt');
+    opts.forEach(opt => {
+      opt.addEventListener('click', () => {
+        const correct = opt.dataset.correct === 'true';
+        opts.forEach(o => o.classList.add('disabled'));
+        if (correct) {
+          opt.classList.add('correct');
+          fb.style.background = 'var(--success-light)';
+          fb.style.color = '#14532d';
+          fb.textContent = feedback[id].ok;
+        } else {
+          opt.classList.add('wrong');
+          opts.forEach(o => { if (o.dataset.correct === 'true') o.classList.add('correct'); });
+          fb.style.background = '#fee2e2';
+          fb.style.color = '#7f1d1d';
+          fb.textContent = feedback[id].no;
+        }
+        fb.classList.add('show');
+      });
+    });
+  }
+  [1,2,3].forEach(wireQuiz);
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 061</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="../aihom/0060-cross-repo-integration.html">上一课：060 跨仓库集成指南</a><a class="primary" href="../aihom/0062-ai-native-dev-guide.html">下一课：062 ai-native-service 开发实战</a></div></nav>
+</body>
+</html>

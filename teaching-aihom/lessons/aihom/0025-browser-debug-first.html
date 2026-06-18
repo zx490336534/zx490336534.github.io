@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>025 前端零基础 05：浏览器调试先看三块</title>
+<style>
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--muted:#78716c;--accent:#b45309;--border:#e7e5e4;--soft:#fef3c7;--info:#2563eb;--ok:#16a34a;--bad:#ef4444}
+  *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.8 -apple-system,BlinkMacSystemFont,"Noto Sans SC","Segoe UI",sans-serif}.container{max-width:760px;margin:0 auto;padding:3rem 1.4rem}h1{font-size:1.9rem;margin:.2rem 0 .5rem}.subtitle{color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:1.2rem;margin-bottom:1.8rem}h2{font-size:1.25rem;margin:2rem 0 .7rem}code{background:#f5f5f4;padding:.12em .35em;border-radius:4px}table{width:100%;border-collapse:collapse;margin:1rem 0}th,td{border-bottom:1px solid var(--border);padding:.55rem;text-align:left;vertical-align:top}.card{background:#fff;border:1px solid var(--border);border-left:3px solid var(--info);border-radius:8px;padding:1rem 1.2rem;margin:1rem 0}.quiz{background:var(--soft);border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.2rem;margin:1.5rem 0}.quiz-options{list-style:none;margin:0;padding:0}.quiz-options li{padding:.45rem .65rem;margin:.35rem 0;border:1px solid transparent;border-radius:6px;cursor:pointer}.correct{background:#dcfce7!important;border-color:var(--ok)!important}.wrong{background:#fee2e2!important;border-color:var(--bad)!important}.quiz-feedback{display:none;margin-top:.6rem;padding:.6rem;border-radius:6px}.nav{margin-top:2rem;border:1px solid var(--border);border-radius:8px;background:#fff;padding:1rem}.nav a{display:inline-block;margin:.25rem;color:#444;text-decoration:none;border:1px solid var(--border);border-radius:6px;padding:.35rem .65rem}.nav a.map{background:#eff6ff;border-color:#bfdbfe;color:var(--info)}.nav a.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+</style>
+</head>
+<body><div class="container">
+<h1>025 前端零基础 05：浏览器调试先看三块</h1>
+<p class="subtitle">目标：前端出问题时，不乱猜。先看 Console、Network、Elements 三块。</p>
+
+<h2>1. 三个面板各看什么</h2>
+<table>
+  <tr><th>面板</th><th>用途</th><th>常见问题</th></tr>
+  <tr><td>Console</td><td>看 JS 报错和日志</td><td>点击后红色报错</td></tr>
+  <tr><td>Network</td><td>看 HTTP / WebSocket 请求</td><td>请求失败、消息没回来</td></tr>
+  <tr><td>Elements</td><td>看 DOM 和 CSS</td><td>按钮不见、弹窗被挡</td></tr>
+</table>
+
+<h2>2. 固定排查顺序</h2>
+<ol>
+  <li>先看 Console 有没有红色错误。</li>
+  <li>再看 Network 请求有没有发出去。</li>
+  <li>最后看 Elements 里元素是否存在、样式是否异常。</li>
+</ol>
+
+<h2>3. AIHom 里多看 WebSocket</h2>
+<p>AI 对话不是普通一次 HTTP 请求结束。它会通过 WebSocket 持续收消息。Network 里点开 WebSocket，再看 Frames，可以看到前后端来回发的消息。</p>
+
+<div class="card">后面学习 SDK、MCP、viewer 截图时，都要回到这个排查顺序：Console 看报错，Network 看消息，Elements 看页面结果。</div>
+
+<h2>4. 前端问题先分类</h2>
+<table>
+  <tr><th>现象</th><th>优先看</th><th>常见判断</th></tr>
+  <tr><td>点击后没反应</td><td>Console</td><td>是否有 JavaScript 报错</td></tr>
+  <tr><td>接口没有返回</td><td>Network</td><td>HTTP 状态码、请求参数、响应体</td></tr>
+  <tr><td>AI 回复断了</td><td>Network / WS Frames</td><td>WebSocket 是否收到消息帧</td></tr>
+  <tr><td>数据到了但页面不变</td><td>Elements + React 状态</td><td>DOM 是否存在，状态是否触发渲染</td></tr>
+</table>
+
+<h2>5. 本课练习：保留一个最小问题包</h2>
+<p>遇到前端问题时，先收集四样东西再问 agent 或同事：</p>
+<ol>
+  <li>Console 第一条红色错误。</li>
+  <li>Network 里失败请求的 URL、状态码、响应体。</li>
+  <li>如果是对话问题，WebSocket Frames 里最后一条消息。</li>
+  <li>页面上预期看到什么、实际看到什么。</li>
+</ol>
+
+<div class="quiz" id="quiz1"><strong>Q: 消息发出后没有回复，优先看哪里？</strong>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz1',0)">A. Git branch</li>
+    <li onclick="checkQuiz('quiz1',1)">B. Network / WebSocket</li>
+    <li onclick="checkQuiz('quiz1',2)">C. 字体大小</li>
+  </ul><div class="quiz-feedback"></div>
+</div>
+
+</div>
+<script>
+function checkQuiz(id,s){const q=document.getElementById(id),o=q.querySelector('.quiz-options'),c=Number(o.dataset.correct),items=o.querySelectorAll('li'),f=q.querySelector('.quiz-feedback');items.forEach((x,i)=>{x.onclick=null;if(i===c)x.classList.add('correct');if(i===s&&i!==c)x.classList.add('wrong')});f.style.display='block';f.textContent=s===c?'对。对话消息优先看 Network 里的 WebSocket Frames。':'不对。消息链路问题先看 Network / WebSocket。';f.style.background=s===c?'#dcfce7':'#fee2e2'}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 025</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0024-javascript-first.html">上一课：024 前端零基础 04：JavaScript 变量、函数、事件</a><a class="primary" href="0026-javascript-runtime-basics.html">下一课：026 前端基础 06：JavaScript 异步运行模型</a></div></nav>
+</body></html>

@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0009 - 开发实战指南 | Kuai 前端课程</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1rem;margin-bottom:.5rem}
+  .breadcrumb{color:var(--text-secondary);font-size:.85rem;margin-bottom:2rem}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .breadcrumb a:hover{text-decoration:underline}
+  h2{font-size:1.35rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;padding-bottom:.4rem;border-bottom:2px solid var(--accent-light);display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.3rem}
+  h3{font-size:1.1rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem;color:var(--accent)}
+  p{margin-bottom:1rem}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.4rem}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15rem .4rem;border-radius:4px;font-size:.88em;color:var(--accent)}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;overflow-x:auto;margin:1rem 0;font-size:.88rem;line-height:1.6}
+  pre code{background:none;padding:0;color:var(--text)}
+  .highlight{background:var(--accent-light);border-left:4px solid var(--accent);padding:1rem 1.25rem;border-radius:0 8px 8px 0;margin:1rem 0}
+  .info-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:.93rem}
+  .info-box::before{content:'💡 '}
+  .warn-box{background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:.93rem}
+  .warn-box::before{content:'⚠️ '}
+  .error-box{background:#fee2e2;border:1px solid #fca5a5;border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:.93rem}
+  .error-box::before{content:'❌ '}
+  .success-box{background:#dcfce7;border:1px solid #86efac;border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:.93rem}
+  .success-box::before{content:'✅ '}
+  .tag{display:inline-block;padding:.15rem .5rem;border-radius:4px;font-size:.75rem;font-weight:500;margin-right:.3rem}
+  .tag.dev{background:#dcfce7;color:#16a34a}
+  table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.9rem}
+  th,td{border:1px solid var(--border);padding:.6rem .8rem;text-align:left}
+  th{background:var(--accent-light);font-weight:600}
+  .step-num{display:inline-block;background:var(--accent);color:#fff;width:1.6rem;height:1.6rem;border-radius:50%;text-align:center;line-height:1.6rem;font-size:.8rem;font-weight:700;margin-right:.4rem;flex-shrink:0}
+  .step{display:flex;align-items:flex-start;margin-bottom:.5rem}
+  .step .step-num{margin-top:.15rem}
+  .quiz-section{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:1.5rem 2rem;margin-top:2.5rem}
+  .quiz-section h2{border:none;margin-top:0}
+  .quiz-q{margin-bottom:1.5rem;padding:1rem 1.25rem;background:var(--bg);border-radius:8px}
+  .quiz-q strong{color:var(--accent)}
+  .quiz-q label{display:block;margin:.3rem 0;cursor:pointer;padding:.3rem .5rem;border-radius:4px;transition:background .15s}
+  .quiz-q label:hover{background:var(--accent-light)}
+  .quiz-q input[type="radio"]{margin-right:.5rem}
+  .quiz-answer{margin-top:.75rem;padding:.75rem 1rem;background:#dcfce7;border-radius:6px;display:none;font-size:.9rem}
+  .quiz-answer.show{display:block}
+  .quiz-btn{background:var(--accent);color:#fff;border:none;padding:.6rem 1.5rem;border-radius:6px;font-size:.9rem;cursor:pointer;margin-top:1rem;font-weight:500}
+  .quiz-btn:hover{opacity:.9}
+  .nav-footer{display:flex;justify-content:space-between;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+  .nav-footer a{color:var(--accent);text-decoration:none;font-weight:500}
+  .nav-footer a:hover{text-decoration:underline}
+  .checklist{list-style:none;margin-left:0}
+  .checklist li{padding:.3rem 0}
+  .checklist li::before{content:'☐ '}
+.nav-links{max-width:900px;margin:2.5rem auto 0;padding:1.5rem 2rem;border-top:1px solid #e7e5e4;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem}.nav-links a{color:#b45309;text-decoration:none;font-weight:500}.nav-links a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="container">
+
+<p class="breadcrumb"><a href="../index.html">课程首页</a> &rsaquo; kuai-service-front &rsaquo; 0009 开发实战指南</p>
+
+<h1>🚀 kuai-service-front 开发实战指南</h1>
+<p class="subtitle"><span class="tag dev">实战</span> 新增 Agent、新增页面、新增 MCP 工具、导航配置、API Route 开发</p>
+
+<!-- ============================== -->
+<h2><span class="icon">🤖</span> 1. 如何新增 Agent（3 步）</h2>
+
+<p>新增 Agent 是最常见的开发任务，必须完成以下 3 个步骤（第 2 步最容易忘记！）：</p>
+
+<h3>步骤 1：创建 Agent 定义文件</h3>
+<p>在 <code>src/agents/</code> 目录下创建 Agent 文件，使用 <code>defineAgent</code> 辅助函数：</p>
+<pre><code>// src/agents/my-new-agent.js
+import { defineAgent } from '@/lib/agents/define';
+import { createReactAgent } from '@langchain/langgraph/prebuilt';
+import { ChatOpenAI } from '@langchain/openai';
+import { MODEL_CONFIG } from '@/config/modelConfig';
+import { getMCPTools, getGitCloneTools } from '@/agents/tools';
+
+export default defineAgent({
+  // === 元数据 ===
+  id: 'my-new-agent',           // 可选，默认从文件名推断
+  name: '我的新助手',
+  description: '这个 Agent 做什么...',
+  isPublic: true,                // 是否在前端列表中显示
+
+  // === UI 布局 ===
+  requiresDrawio: false,         // 需要 DrawIO 编辑器分屏？
+  requiresXmind: false,          // 需要 XMind 脑图分屏？
+  allowAddKnowledge: false,      // 允许添加知识库？
+
+  // === 示例问题 ===
+  examples: [
+    { key: 'ex1', icon: 'BulbOutlined', label: '示例问题 1' },
+    { key: 'ex2', icon: 'CodeOutlined', label: '示例问题 2' },
+  ],
+
+  // === Agent 创建函数 ===
+  createAgent: async (options = {}) => {
+    const { formData = {} } = options;
+
+    const model = new ChatOpenAI({
+      model: MODEL_CONFIG.defaultModel,
+      temperature: 0.3,
+      apiKey: MODEL_CONFIG.defaultApiKey,
+      configuration: { baseURL: MODEL_CONFIG.defaultBaseHost },
+    });
+
+    // 并行加载工具
+    const [mcpTools, gitTools] = await Promise.all([
+      getMCPTools({
+        my_server: {
+          transport: 'http',
+          url: 'https://kuai-mcp.example.com/groups/xxx/mcp',
+        },
+      }, { agentName: 'MyNewAgent' }),
+      getGitCloneTools(),
+    ]);
+
+    return createReactAgent({
+      llm: model,
+      tools: [...mcpTools, ...gitTools],
+    });
+  },
+});</code></pre>
+
+<h3>步骤 2：在 scanner.js 中注册 ⚠️ 必须！</h3>
+<p>由于 Next.js 的动态导入限制，所有 Agent 必须手动在 <code>scanner.js</code> 中注册：</p>
+<pre><code>// src/lib/agents/scanner.js
+// 1. 添加 import
+import myNewAgent from '@/agents/my-new-agent';
+
+// 2. 在 AGENT_MODULES 数组中添加
+const AGENT_MODULES = [
+  // ... 现有 agents
+  { filename: 'my-new-agent.js', module: myNewAgent },  // ← 新增这一行
+];</code></pre>
+
+<div class="error-box">
+  <strong>最常见的错误：</strong>忘记在 scanner.js 中注册！Agent 文件写好了但不出现在列表中，99% 是因为漏了这一步。
+</div>
+
+<h3>步骤 3：验证</h3>
+<pre><code># 1. 启动开发服务器
+pnpm dev
+
+# 2. 检查控制台日志，应看到：
+# [AgentScanner] Registered agent: my-new-agent (我的新助手)
+
+# 3. 验证 API 返回
+curl http://localhost:3000/api/agents | grep "my-new-agent"
+
+# 4. 在浏览器中访问测试
+# http://localhost:3000/agents?agent=my-new-agent</code></pre>
+
+<h3>defineAgent 配置速查</h3>
+<table>
+  <tr><th>配置项</th><th>类型</th><th>说明</th></tr>
+  <tr><td><code>id</code></td><td>string</td><td>Agent ID（可选，默认从文件名推断）</td></tr>
+  <tr><td><code>name</code></td><td>string</td><td>显示名称（必填）</td></tr>
+  <tr><td><code>description</code></td><td>string</td><td>描述（必填）</td></tr>
+  <tr><td><code>isPublic</code></td><td>boolean</td><td>是否在前端列表显示</td></tr>
+  <tr><td><code>requiresDrawio</code></td><td>boolean</td><td>启用 DrawIO 编辑器分屏布局</td></tr>
+  <tr><td><code>requiresXmind</code></td><td>boolean</td><td>启用 XMind 脑图分屏布局</td></tr>
+  <tr><td><code>allowAddKnowledge</code></td><td>boolean</td><td>启用知识库导入功能</td></tr>
+  <tr><td><code>initialForm</code></td><td>object</td><td>对话前收集信息的表单配置</td></tr>
+  <tr><td><code>examples</code></td><td>Array</td><td>示例问题列表</td></tr>
+  <tr><td><code>createAgent</code></td><td>Function</td><td>创建 LangGraph Agent 的函数（必填）</td></tr>
+</table>
+
+<!-- ============================== -->
+<h2><span class="icon">📄</span> 2. 如何新增页面</h2>
+
+<p>项目使用 Next.js 16 App Router 的文件系统路由，新增页面只需在 <code>src/app/</code> 下创建对应文件。</p>
+
+<h3>2.1 创建页面文件</h3>
+<pre><code>src/app/
+├── my-feature/
+│   ├── page.js           # 页面组件（必需）
+│   ├── layout.js         # 可选：页面布局
+│   ├── loading.js        # 可选：加载状态
+│   └── error.js          # 可选：错误处理</code></pre>
+
+<h3>2.2 页面组件模板</h3>
+<pre><code>// src/app/my-feature/page.js
+'use client';  // 如需使用 hooks
+
+import { useSelector } from 'react-redux';
+import { MyComponent } from '@/components/features/my-feature';
+
+export default function MyFeaturePage() {
+  // 获取 Redux 状态
+  const { data } = useSelector(state => state.config);
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;我的功能&lt;/h1&gt;
+      &lt;MyComponent data={data} /&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+<h3>2.3 组件组织规范</h3>
+<table>
+  <tr><th>类型</th><th>目录</th><th>说明</th></tr>
+  <tr><td>功能组件</td><td><code>src/components/features/[功能名]/</code></td><td>业务相关的组件</td></tr>
+  <tr><td>通用组件</td><td><code>src/components/common/</code></td><td>可复用的基础组件</td></tr>
+  <tr><td>布局组件</td><td><code>src/components/layout/</code></td><td>Header、Footer、Sider 等</td></tr>
+</table>
+
+<!-- ============================== -->
+<h2><span class="icon">🔧</span> 3. 如何新增 MCP 工具</h2>
+
+<p>如果需要让 Agent 使用新的 MCP 工具，有两种方式：</p>
+
+<h3>3.1 使用已有 MCP 服务器的工具</h3>
+<p>只需在 Agent 的 <code>createAgent</code> 中配置 MCP 服务器 URL，工具会自动加载：</p>
+<pre><code>const tools = await getMCPTools({
+  my_server: {
+    transport: 'http',
+    url: 'https://kuai-mcp.example.com/groups/my-group/mcp',
+  },
+}, {
+  agentName: 'MyAgent',
+  // 可选：只暴露部分工具
+  includeTools: ['tool_a', 'tool_b'],
+  // 可选：排除某些工具
+  excludeTools: ['dangerous_tool'],
+  // 可选：覆盖冗长描述
+  descriptionOverrides: {
+    tool_a: '更简洁的描述',
+  },
+});</code></pre>
+
+<h3>3.2 使用自定义工具（非 MCP）</h3>
+<p>如果需要添加非 MCP 的自定义工具，使用 LangChain 的 <code>tool()</code> 函数：</p>
+<pre><code>import { tool } from '@langchain/core/tools';
+import { z } from 'zod';
+
+const myCustomTool = tool(
+  async (input) => {
+    // 工具逻辑
+    const { param1, param2 } = input;
+    const result = await doSomething(param1, param2);
+    return JSON.stringify(result);
+  },
+  {
+    name: 'my_custom_tool',
+    description: '工具描述，告诉 Agent 什么时候使用这个工具',
+    schema: z.object({
+      param1: z.string().describe('参数1的描述'),
+      param2: z.number().optional().describe('参数2的描述（可选）'),
+    }),
+  }
+);
+
+// 在 createAgent 中使用
+return createReactAgent({
+  llm: model,
+  tools: [...mcpTools, myCustomTool],
+});</code></pre>
+
+<h3>3.3 注册为可复用工具</h3>
+<p>如果工具需要在多个 Agent 中复用，在 <code>src/agents/tools/</code> 创建独立文件并从 <code>index.js</code> 导出：</p>
+<pre><code>// src/agents/tools/myTools.js
+import { tool } from '@langchain/core/tools';
+import { z } from 'zod';
+
+export function createMyTool(options = {}) {
+  return tool(async (input) => { /* ... */ }, {
+    name: 'my_tool',
+    description: '...',
+    schema: z.object({ /* ... */ }),
+  });
+}
+
+export function getMyTools() {
+  return [createMyTool()];
+}
+
+// src/agents/tools/index.js — 添加导出
+export { createMyTool, getMyTools } from './myTools';</code></pre>
+
+<!-- ============================== -->
+<h2><span class="icon">🧭</span> 4. 导航配置</h2>
+
+<p>侧边栏导航在 <code>src/config/navigation.js</code> 中集中管理。新增页面后，需要在这里添加对应的导航项。</p>
+
+<h3>4.1 导航配置结构</h3>
+<pre><code>// src/config/navigation.js
+export const navbarMenu = [
+  {
+    label: '工作台',
+    key: 'dashboard',
+    icon: &lt;HomeOutlined /&gt;,
+    path: '/dashboard',
+  },
+  {
+    label: 'Agent管理',
+    key: 'application',
+    icon: &lt;AppstoreOutlined /&gt;,
+    children: [
+      { label: 'Agent列表', key: 'app-list', path: '/application/list' },
+      { label: '会话历史', key: 'chat-history', path: '/application/chat-history' },
+    ],
+  },
+  {
+    label: 'MCP管理',
+    key: 'mcp',
+    icon: &lt;ApiOutlined /&gt;,
+    children: [
+      { label: 'MCP服务器', key: 'mcp-servers', path: '/mcp/servers' },
+    ],
+  },
+  // ... 更多导航项
+];</code></pre>
+
+<h3>4.2 添加新导航项</h3>
+<pre><code>// 示例：添加"我的功能"导航项
+{
+  label: '我的功能',
+  key: 'my-feature',
+  icon: &lt;ToolOutlined /&gt;,
+  path: '/my-feature',
+},
+// 或者作为子菜单
+{
+  label: '工具箱',
+  key: 'toolbox',
+  icon: &lt;ToolOutlined /&gt;,
+  children: [
+    { label: '我的功能', key: 'my-feature', path: '/my-feature' },
+    { label: '另一个功能', key: 'another', path: '/another' },
+  ],
+},</code></pre>
+
+<div class="warn-box">
+  <strong>注意：</strong><code>key</code> 必须全局唯一，不能与其他导航项重复。<code>path</code> 必须与 <code>src/app/</code> 下的文件系统路由匹配。
+</div>
+
+<!-- ============================== -->
+<h2><span class="icon">🔌</span> 5. API Route 开发</h2>
+
+<p>项目使用 Next.js API Routes 实现服务端逻辑，并通过 <code>rewrites</code> 代理后端请求。新增 API Route 有<strong>两个必须步骤</strong>。</p>
+
+<h3>5.1 创建 API Route</h3>
+<pre><code>// src/app/api/my-feature/route.js
+import { NextResponse } from 'next/server';
+
+export async function GET(request) {
+  // 处理 GET 请求
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get('id');
+
+  return NextResponse.json({ data: { id, name: 'test' } });
+}
+
+export async function POST(request) {
+  // 处理 POST 请求
+  const body = await request.json();
+  // ... 业务逻辑
+  return NextResponse.json({ success: true });
+}</code></pre>
+
+<h3>5.2 添加 rewrites 排除规则 ⚠️ 必须！</h3>
+<p>在 <code>next.config.js</code> 的 <code>rewrites</code> 数组<strong>前面</strong>添加排除规则：</p>
+<pre><code>// next.config.js
+async rewrites() {
+  return [
+    // ✅ 新增：排除新的 API Route（放在最前面！）
+    {
+      source: '/api/my-feature/:path*',
+      destination: '/api/my-feature/:path*',
+    },
+
+    // 现有排除规则
+    { source: '/api/agents/:path*', destination: '/api/agents/:path*' },
+    { source: '/api/health/:path*', destination: '/api/health/:path*' },
+    // ...
+
+    // ⚠️ 通用代理规则（必须放在最后！）
+    {
+      source: '/api/:path*',
+      destination: 'http://backend.com/api/:path*',
+    },
+  ];
+}</code></pre>
+
+<div class="error-box">
+  <strong>为什么需要排除规则？</strong>Next.js 的 rewrites 按顺序匹配。如果没有排除规则，<code>/api/my-feature/*</code> 会被最后的通用规则 <code>/api/:path*</code> 代理到后端，导致本地 API Route 不生效。
+</div>
+
+<h3>5.3 API Route 开发检查清单</h3>
+<ul class="checklist">
+  <li>在 <code>src/app/api/[feature]/route.js</code> 创建文件</li>
+  <li>在 <code>next.config.js</code> 的 rewrites 数组<strong>前面</strong>添加排除规则</li>
+  <li>使用 <code>NextResponse</code> 返回响应（不是 <code>res.json()</code>）</li>
+  <li>测试 API 是否被错误代理到后端</li>
+</ul>
+
+<h3>5.4 现有 API Routes 一览</h3>
+<table>
+  <tr><th>路径</th><th>说明</th></tr>
+  <tr><td><code>/api/agents/*</code></td><td>Agent 元数据和对话 API</td></tr>
+  <tr><td><code>/api/health/*</code></td><td>健康检查</td></tr>
+  <tr><td><code>/api/share/*</code></td><td>分享功能</td></tr>
+  <tr><td><code>/api/chat-history/*</code></td><td>聊天历史</td></tr>
+  <tr><td><code>/api/proxy/*</code></td><td>代理请求</td></tr>
+  <tr><td><code>/api/agui/*</code></td><td>AG-UI 协议</td></tr>
+  <tr><td><code>/api/metrics/*</code></td><td>指标监控</td></tr>
+  <tr><td><code>/api/ai/*</code></td><td>AI 相关 API</td></tr>
+</table>
+
+<!-- ============================== -->
+<h2><span class="icon">📋</span> 6. 开发流程总结</h2>
+
+<h3>6.1 新功能开发流程</h3>
+<ol>
+  <li><strong>创建页面</strong>：在 <code>src/app/</code> 创建路由文件</li>
+  <li><strong>添加导航</strong>：在 <code>src/config/navigation.js</code> 添加配置</li>
+  <li><strong>创建组件</strong>：在 <code>src/components/features/</code> 组织组件</li>
+  <li><strong>API 集成</strong>：在 <code>src/services/modules/</code> 添加 API 服务</li>
+  <li><strong>状态管理</strong>：复杂状态用 Redux，简单状态用 React hooks</li>
+</ol>
+
+<h3>6.2 Agent 开发流程</h3>
+<ol>
+  <li><strong>定义 Agent</strong>：在 <code>src/agents/</code> 创建 Agent 文件</li>
+  <li><strong>注册 Agent</strong>：在 <code>src/lib/agents/scanner.js</code> 中添加</li>
+  <li><strong>测试 Agent</strong>：访问 <code>/agents?agent=my-agent</code> 测试</li>
+  <li><strong>集成工具</strong>：MCP / ClaudeCode / Git Clone / XMind / DrawIO</li>
+  <li><strong>优化提示词</strong>：调整系统提示词和技能描述</li>
+</ol>
+
+<h3>6.3 技能开发流程</h3>
+<ol>
+  <li><strong>创建技能目录</strong>：在 <code>src/agents/skills/</code> 创建目录（kebab-case）</li>
+  <li><strong>编写 SKILL.md</strong>：包含 YAML frontmatter（name + description）</li>
+  <li><strong>添加参考资料</strong>：在 <code>references/</code> 添加最佳实践和示例</li>
+  <li><strong>测试技能</strong>：在 Agent 中使用 <code>getSkillTools({ skills: ['my-skill'] })</code></li>
+</ol>
+
+<!-- ============================== -->
+<h2><span class="icon">🐛</span> 7. 常见问题速查</h2>
+
+<table>
+  <tr><th>问题</th><th>原因</th><th>解决方案</th></tr>
+  <tr><td>Agent 不显示</td><td>未在 scanner.js 注册</td><td>添加 import 和 AGENT_MODULES 条目</td></tr>
+  <tr><td>API 被代理到后端</td><td>缺少 rewrites 排除规则</td><td>在 rewrites 数组前面添加排除规则</td></tr>
+  <tr><td>Module not found: stream</td><td>LangChain 需要 Node.js polyfill</td><td>在 turbopack.resolveAlias 中配置</td></tr>
+  <tr><td>MCP 工具加载失败</td><td>MCP 服务不可达或 CORS 问题</td><td>验证 URL、检查 CORS 配置</td></tr>
+  <tr><td>Redux 状态刷新丢失</td><td>数据仅在内存中</td><td>使用 localStorage 或 redux-persist</td></tr>
+  <tr><td>ClaudeCode 连接失败</td><td>CLI/SDK 不可用或配置错误</td><td>检查模型、API Key、workDir 配置</td></tr>
+</table>
+
+<!-- ============================== -->
+<div class="quiz-section">
+<h2><span class="icon">📝</span> Quiz — 测测你理解了多少</h2>
+
+<div class="quiz-q" id="q1">
+  <strong>Q1：新增 Agent 必须完成的 3 个步骤中，最容易忘记的是哪个？</strong><br>
+  <label><input type="radio" name="q1" value="a"> A. 在 src/agents/ 创建 Agent 文件</label>
+  <label><input type="radio" name="q1" value="b"> B. 在 src/lib/agents/scanner.js 中注册</label>
+  <label><input type="radio" name="q1" value="c"> C. 编写 createAgent 函数</label>
+  <label><input type="radio" name="q1" value="d"> D. 配置 MCP 服务器</label>
+  <div class="quiz-answer" id="a1"><strong>✅ 正确答案：B</strong><br>在 scanner.js 中注册是最容易忘记的步骤。由于 Next.js 的动态导入限制，Agent 必须手动在 <code>AGENT_MODULES</code> 数组中注册，否则不会出现在 Agent 列表中。</div>
+</div>
+
+<div class="quiz-q" id="q2">
+  <strong>Q2：新增 API Route 时，为什么要在 rewrites 数组前面添加排除规则？</strong><br>
+  <label><input type="radio" name="q2" value="a"> A. 提高 API 响应速度</label>
+  <label><input type="radio" name="q2" value="b"> B. Next.js rewrites 按顺序匹配，通用规则会拦截所有 /api/* 请求</label>
+  <label><input type="radio" name="q2" value="c"> C. 防止 CORS 错误</label>
+  <label><input type="radio" name="q2" value="d"> D. 这是可选步骤，不加也可以</label>
+  <div class="quiz-answer" id="a2"><strong>✅ 正确答案：B</strong><br>Next.js 的 rewrites 按顺序匹配。如果排除规则放在通用规则 <code>/api/:path*</code> 后面，新 Route 会被通用规则代理到后端，导致本地 API Route 不生效。必须放在前面。</div>
+</div>
+
+<div class="quiz-q" id="q3">
+  <strong>Q3：以下哪个不是 defineAgent 的有效配置项？</strong><br>
+  <label><input type="radio" name="q3" value="a"> A. requiresDrawio</label>
+  <label><input type="radio" name="q3" value="b"> B. requiresXmind</label>
+  <label><input type="radio" name="q3" value="c"> C. requiresRedux</label>
+  <label><input type="radio" name="q3" value="d"> D. allowAddKnowledge</label>
+  <div class="quiz-answer" id="a3"><strong>✅ 正确答案：C</strong><br><code>requiresRedux</code> 不是 defineAgent 的有效配置项。有效的配置包括 <code>requiresDrawio</code>（DrawIO 分屏）、<code>requiresXmind</code>（XMind 分屏）、<code>allowAddKnowledge</code>（知识库导入）等。Redux 是全局状态管理，与 Agent 定义无关。</div>
+</div>
+
+<button class="quiz-btn" onclick="showAnswers()">查看答案</button>
+</div>
+
+<div class="nav-links">
+  <a href="0008-kuai-front-state-management.html">← 状态管理与数据流</a>
+  <a href="../index.html">🗺️ 完整学习地图</a>
+  <a href="../py/0011-kuai-py-mcp-service.html">MCP 服务架构 →</a>
+</div>
+
+</div>
+
+<script>
+function showAnswers(){
+  document.querySelectorAll('.quiz-answer').forEach(el=>el.classList.add('show'));
+}
+</script>
+</body>
+</html>

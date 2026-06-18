@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>034 AIHom 前端入口 03：一次页面动作的数据流</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--muted:#78716c;--accent:#b45309;--border:#e7e5e4;--code:#f5f5f4;--blue:#2563eb}
+  *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.8 'Noto Sans SC',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}.container{max-width:880px;margin:0 auto;padding:3rem 1.6rem 4rem}h1{font-size:2rem;line-height:1.25;margin:.2rem 0 .5rem}h2{font-size:1.35rem;margin:2.2rem 0 .8rem}p{margin:.4rem 0 1rem}ul,ol{margin:.4rem 0 1rem 1.4rem;padding:0}li{margin:.25rem 0}a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}code{font-family:'JetBrains Mono',Menlo,Consolas,monospace;background:var(--code);border-radius:4px;padding:.1em .35em;font-size:.9em}pre{background:#1c1917;color:#e7e5e4;border-radius:8px;padding:1rem 1.1rem;overflow:auto;font:13px/1.65 'JetBrains Mono',Menlo,Consolas,monospace;margin:1rem 0}table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:1rem 0}th,td{padding:.65rem .75rem;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}th{color:var(--muted);font-size:.82rem;background:#f5f5f4}tr:last-child td{border-bottom:0}.subtitle{color:var(--muted);padding-bottom:1.3rem;border-bottom:1px solid var(--border);margin-bottom:1.8rem}.card{background:#fff;border:1px solid var(--border);border-left:4px solid var(--blue);border-radius:8px;padding:1rem 1.15rem;margin:1rem 0}.card.soft{border-left-color:var(--accent);background:#fff7ed}.label{font-size:.76rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;margin-bottom:.35rem}.quiz{background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.15rem;margin:1.4rem 0}.quiz-title{font-weight:700;margin-bottom:.55rem;color:#92400e}.quiz-options{list-style:none;margin:0;padding:0}.quiz-options li{padding:.45rem .65rem;margin:.35rem 0;border-radius:6px;border:1px solid transparent;cursor:pointer}.quiz-options li:hover{border-color:#f59e0b}.correct{background:#dcfce7!important;border-color:#16a34a!important}.wrong{background:#fee2e2!important;border-color:#ef4444!important}.quiz-feedback{display:none;margin-top:.65rem;padding:.6rem;border-radius:6px}.ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;color:#1e40af;padding:1rem;margin:1.4rem 0}.ask-agent:before{content:"提示：";font-weight:700}.learning-map-quick-nav{margin:2.5rem 0 0;padding:1rem 1.1rem;border:1px solid #d6d3d1;border-radius:8px;background:#fff;display:grid;gap:.75rem}.nav-title{font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:#78716c}.nav-links{display:flex;flex-wrap:wrap;gap:.65rem;align-items:center}.nav-links a{color:#44403c;text-decoration:none;border:1px solid #e7e5e4;border-radius:6px;padding:.35rem .65rem}.nav-links a.primary{color:#fff;border-color:#b45309;background:#b45309}.nav-links a.map{color:#2563eb;border-color:#bfdbfe;background:#eff6ff}@media(max-width:640px){.container{padding:2rem 1rem 3.5rem}h1{font-size:1.65rem}pre{font-size:.78rem}}
+</style>
+</head>
+<body>
+<main class="container">
+  <h1>034 AIHom 前端入口 03：一次页面动作的数据流</h1>
+  <p class="subtitle">目标：用“用户点了一下发送”这件小事，看懂 AIHom 前端里数据怎么从页面流向状态、服务、后端，再回到页面。</p>
+
+  <section class="card soft">
+    <div class="label">先不要急着看框架</div>
+    <p>新手读前端最容易被文件名和类名吓住。先把每次交互都看成一条线：<strong>用户做动作 → 组件收到动作 → 调用服务 → 改状态 → 页面重新显示</strong>。</p>
+  </section>
+
+  <h2>1. 一次发送消息，大概经过谁</h2>
+  <pre>用户在输入框里点“发送”
+  ↓
+InputArea / Chat 相关组件收到 onClick
+  ↓
+ConversationManager 记录“正在发送、当前消息”
+  ↓
+AgentSDKService 或对话 SDK 把消息送出去
+  ↓
+WebSocket 连接到 ai-native-service
+  ↓
+后端持续返回消息片段、排队信息、工具调用
+  ↓
+ConversationManager 更新消息列表
+  ↓
+AIChatDrawer / 消息组件重新渲染</pre>
+
+  <h2>2. 每一层只先记一个职责</h2>
+  <table>
+    <tr><th>层</th><th>新手先理解成</th><th>排查时看什么</th></tr>
+    <tr><td>组件</td><td>负责显示和接收点击</td><td><code>onClick</code>、<code>onChange</code>、props</td></tr>
+    <tr><td>Manager</td><td>负责保存页面状态</td><td>消息列表、loading、当前选中项</td></tr>
+    <tr><td>Service / SDK</td><td>负责和外部通信</td><td>初始化、发送方法、回调注册</td></tr>
+    <tr><td>WebSocket</td><td>负责持续传消息</td><td>Frames 里的 <code>type</code>、<code>key</code>、<code>data</code></td></tr>
+    <tr><td>后端</td><td>负责 Agent、工具、模型和任务</td><td>handler、traceId、日志</td></tr>
+  </table>
+
+  <h2>3. 读代码时从“动作词”开始</h2>
+  <p>不要一上来全文搜索某个类。先找动作词：</p>
+  <ol>
+    <li>用户点按钮，就搜 <code>onClick</code> 或按钮文案附近的组件。</li>
+    <li>输入框变化，就搜 <code>onChange</code>、<code>value</code>、<code>placeholder</code>。</li>
+    <li>发送消息，就搜 <code>send</code>、<code>message</code>、<code>conversation</code>。</li>
+    <li>画布变化，就搜 <code>viewer</code>、<code>designDoc</code>、<code>postMessage</code>。</li>
+  </ol>
+
+  <h2>4. “状态变了”不等于“页面立刻变了”</h2>
+  <p>前端页面通常不是手动刷新出来的。组件会读取状态；状态变化后，React 和状态框架让组件重新渲染。你排查时要分开问：</p>
+  <ul>
+    <li>数据有没有回来？看 Network / WebSocket。</li>
+    <li>状态有没有改？看 Manager 里的字段。</li>
+    <li>组件有没有读这个状态？看 props、connect、observer。</li>
+    <li>页面有没有被 CSS 遮住？看 Elements 和样式。</li>
+  </ul>
+
+  <h2>5. 新手练习：只追一条线</h2>
+  <p>打开 ai-home 时，给自己一个很小的问题：“点击发送后，第一处改变 loading 的代码在哪里？”你只需要找到第一处，不需要一次追完所有异步回调。</p>
+
+  <div class="quiz" id="quiz1"><div class="quiz-title">Q1：一次页面动作的第一步通常看什么？</div><ul class="quiz-options" data-correct="1"><li onclick="checkQuiz('quiz1',0)">A. 发布分支</li><li onclick="checkQuiz('quiz1',1)">B. 事件入口</li><li onclick="checkQuiz('quiz1',2)">C. 字体配置</li><li onclick="checkQuiz('quiz1',3)">D. 数据库表</li></ul><div class="quiz-feedback"></div></div>
+  <div class="quiz" id="quiz2"><div class="quiz-title">Q2：Manager 最常见的职责是什么？</div><ul class="quiz-options" data-correct="0"><li onclick="checkQuiz('quiz2',0)">A. 保存状态</li><li onclick="checkQuiz('quiz2',1)">B. 编译代码</li><li onclick="checkQuiz('quiz2',2)">C. 购买域名</li><li onclick="checkQuiz('quiz2',3)">D. 生成字体</li></ul><div class="quiz-feedback"></div></div>
+  <div class="quiz" id="quiz3"><div class="quiz-title">Q3：页面没变时，不应该只看哪一层？</div><ul class="quiz-options" data-correct="2"><li onclick="checkQuiz('quiz3',0)">A. 网络消息</li><li onclick="checkQuiz('quiz3',1)">B. 状态字段</li><li onclick="checkQuiz('quiz3',2)">C. 单一层级</li><li onclick="checkQuiz('quiz3',3)">D. 组件读取</li></ul><div class="quiz-feedback"></div></div>
+
+  <div class="ask-agent">复习时可以问 agent：带我用“点击发送”这条线，在 ai-home 里从 onClick 追到 ConversationManager，再追到 WebSocket。</div>
+  <nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 034</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0033-reactive-framework-state.html">上一课：033 AIHom 前端入口 02：状态管理基础</a><a class="primary" href="0035-api-data-contract.html">下一课：035 AIHom 前端入口 04：接口请求与数据契约</a></div></nav>
+</main>
+<script>
+function checkQuiz(q,s){const box=document.getElementById(q),opts=box.querySelector('.quiz-options'),c=Number(opts.dataset.correct),items=opts.querySelectorAll('li'),fb=box.querySelector('.quiz-feedback');items.forEach((item,i)=>{item.onclick=null;if(i===c)item.classList.add('correct');if(i===s&&i!==c)item.classList.add('wrong')});const text={quiz1:['正确。先找事件入口，再顺着调用链往下追。','不对。页面动作先找事件入口，比如 onClick。'],quiz2:['正确。Manager 通常保存和修改页面状态。','不对。Manager 先理解成状态管理者。'],quiz3:['正确。页面没变要分层看，不能只盯一个地方。','不对。要同时拆开网络、状态、组件和样式。']};fb.style.display='block';fb.textContent=s===c?text[q][0]:text[q][1];fb.style.background=s===c?'#dcfce7':'#fee2e2'}
+</script>
+</body>
+</html>

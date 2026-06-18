@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MCP 协议基础入门</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.5rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:2rem}
+  .desc{color:var(--text-secondary);font-size:.95rem;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.1rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem}
+  p{margin-bottom:1rem}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}
+  li{margin-bottom:.5rem}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15rem .4rem;border-radius:4px;font-size:.85rem}
+  pre{background:#1e293b;color:#e2e8f0;padding:1.25rem 1.5rem;border-radius:8px;overflow-x:auto;margin:1rem 0;font-size:.85rem;line-height:1.6}
+  pre code{background:none;padding:0;color:inherit}
+  .info-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0}
+  .info-box h3{color:var(--info);margin-top:0}
+  .warn-box{background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0}
+  .warn-box h3{color:var(--warning);margin-top:0}
+  .success-box{background:#dcfce7;border:1px solid #86efac;border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0}
+  .success-box h3{color:var(--success);margin-top:0}
+  table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.9rem}
+  th,td{border:1px solid var(--border);padding:.6rem .8rem;text-align:left}
+  th{background:var(--code-bg);font-weight:600}
+  .quiz-section{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1.5rem 0}
+  .quiz-section h3{color:var(--purple);margin-top:0}
+  .quiz-q{margin-bottom:1.5rem}
+  .quiz-q strong{display:block;margin-bottom:.5rem}
+  .quiz-opt{list-style:upper-alpha;margin-left:1.5rem}
+  .quiz-opt li{margin-bottom:.3rem;cursor:pointer;padding:.25rem .5rem;border-radius:4px;transition:background .2s}
+  .quiz-opt li:hover{background:var(--code-bg)}
+  .answer{display:none;background:#dcfce7;border:1px solid #86efac;border-radius:6px;padding:.75rem 1rem;margin-top:.75rem;font-size:.9rem}
+  .answer.show{display:block}
+  .show-answers{background:var(--accent);color:white;border:none;padding:.5rem 1rem;border-radius:6px;cursor:pointer;font-size:.9rem;margin-top:1rem}
+  .show-answers:hover{opacity:.9}
+  .diagram{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1rem 0;text-align:center;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.4;overflow-x:auto}
+  .tag{display:inline-block;padding:.1rem .4rem;border-radius:4px;font-size:.7rem;font-weight:500;margin-right:.3rem}
+  .tag.overview{background:#dbeafe;color:#2563eb}
+  .back-link{display:inline-block;margin-bottom:2rem;color:var(--accent);text-decoration:none;font-size:.9rem}
+  .back-link:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="container">
+
+<a class="back-link" href="../lessons/index.html">&larr; 返回课程目录</a>
+
+<h1>🔌 MCP 协议基础入门</h1>
+<p class="subtitle">理解 Model Context Protocol 的核心概念与工作原理</p>
+<p class="desc">MCP（Model Context Protocol）是 AI 领域的一个重要协议标准，它让 AI 模型能够安全、标准化地调用外部工具和访问外部数据。本课程将从零开始，带你理解 MCP 的核心概念。</p>
+
+<!-- ==================== 第一章 ==================== -->
+<h2><span class="icon">📖</span> 一、什么是 MCP？</h2>
+
+<p>MCP 的全称是 <strong>Model Context Protocol</strong>（模型上下文协议），由 Anthropic 公司在 2024 年底提出并开源。</p>
+
+<p>简单来说，MCP 是一个<strong>开放标准</strong>，它定义了 AI 模型（如 Claude、GPT 等）如何与外部世界进行交互。你可以把它想象成 AI 世界的 "USB 接口" —— 任何符合 MCP 标准的工具，都可以被任何支持 MCP 的 AI 模型使用。</p>
+
+<div class="info-box">
+  <h3>💡 一句话理解 MCP</h3>
+  <p>MCP 就是 AI 的 "万能插头"：不管是什么工具（查数据库、读文件、调 API），只要按 MCP 标准包装一下，AI 就能直接使用。</p>
+</div>
+
+<!-- ==================== 第二章 ==================== -->
+<h2><span class="icon">🤔</span> 二、为什么需要 MCP？</h2>
+
+<p>在 MCP 出现之前，让 AI 使用外部工具是一件很麻烦的事情：</p>
+
+<h3>没有 MCP 之前的问题</h3>
+<ul>
+  <li><strong>每个 AI 平台各搞一套</strong>：OpenAI 有自己的 Function Calling，Claude 有自己的 Tool Use，格式完全不同</li>
+  <li><strong>每个工具要适配每个平台</strong>：如果你开发了一个 "查天气" 的工具，要分别写 OpenAI 版、Claude 版、Gemini 版……</li>
+  <li><strong>没有统一标准</strong>：工具的描述方式、调用方式、返回格式都不一样</li>
+  <li><strong>安全性难以保障</strong>：AI 直接访问系统资源，缺乏统一的权限控制</li>
+</ul>
+
+<h3>MCP 解决了什么</h3>
+
+<table>
+  <tr><th>问题</th><th>MCP 的解决方案</th></tr>
+  <tr><td>工具开发重复</td><td>一次开发，所有 AI 平台通用</td></tr>
+  <tr><td>接口不统一</td><td>统一的协议标准（JSON-RPC 2.0）</td></tr>
+  <tr><td>安全性差</td><td>标准化的权限控制和沙箱机制</td></tr>
+  <tr><td>难以发现工具</td><td>内置工具发现机制（tools/list）</td></tr>
+</table>
+
+<div class="warn-box">
+  <h3>⚠️ 类比理解</h3>
+  <p>想象一下，如果每个品牌的手机都要用不同的充电器（Micro-USB、Lightning、USB-C……），那多麻烦！MCP 就像 USB-C 标准 —— 统一了接口，一插就能用。</p>
+</div>
+
+<!-- ==================== 第三章 ==================== -->
+<h2><span class="icon">🏗️</span> 三、MCP 的三大核心概念</h2>
+
+<p>MCP 架构中有三个核心角色：</p>
+
+<h3>1. MCP Host（宿主）</h3>
+<p>Host 是发起连接的一方，通常是 AI 应用或 AI 模型的运行环境。比如：</p>
+<ul>
+  <li>Claude Desktop 应用</li>
+  <li>Cursor、VS Code 等 IDE</li>
+  <li>你自己开发的 AI 应用</li>
+</ul>
+
+<h3>2. MCP Client（客户端）</h3>
+<p>Client 是 Host 内部用来与 MCP Server 通信的组件。每个 Client 与一个 Server 建立一对一的连接。</p>
+
+<h3>3. MCP Server（服务器）</h3>
+<p>Server 是提供工具和数据的一方。它把自己拥有的能力（比如读文件、查数据库、调 API）通过 MCP 协议暴露出来，供 AI 使用。</p>
+
+<div class="diagram">
+<pre style="background:none;color:var(--text);text-align:left">
+┌─────────────────────────────────────────┐
+│              MCP Host (宿主)             │
+│  ┌──────────┐  ┌──────────┐             │
+│  │ Client A │  │ Client B │  ...        │
+│  └────┬─────┘  └────┬─────┘             │
+└───────┼──────────────┼──────────────────┘
+        │              │
+        ▼              ▼
+  ┌───────────┐  ┌───────────┐
+  │ Server A  │  │ Server B  │
+  │ (读文件)   │  │ (查数据库) │
+  └───────────┘  └───────────┘
+</pre>
+</div>
+
+<h3>MCP Server 能提供什么？</h3>
+<table>
+  <tr><th>能力类型</th><th>说明</th><th>示例</th></tr>
+  <tr><td><strong>Tools（工具）</strong></td><td>AI 可以调用的函数</td><td>查天气、读文件、发邮件</td></tr>
+  <tr><td><strong>Resources（资源）</strong></td><td>AI 可以读取的数据</td><td>数据库内容、文件内容</td></tr>
+  <tr><td><strong>Prompts（提示词）</strong></td><td>预定义的提示词模板</td><td>代码审查模板、翻译模板</td></tr>
+</table>
+
+<!-- ==================== 第四章 ==================== -->
+<h2><span class="icon">🔌</span> 四、三种传输方式</h2>
+
+<p>MCP 定义了三种通信传输方式，适用于不同的场景：</p>
+
+<h3>1. Stdio（标准输入输出）</h3>
+<div class="info-box">
+  <h3>💡 最简单的方式</h3>
+  <p>通过进程的标准输入（stdin）和标准输出（stdout）通信，就像两个程序通过管道连接。</p>
+</div>
+<ul>
+  <li><strong>工作方式</strong>：Host 启动一个子进程（Server），通过 stdin/stdout 交换 JSON-RPC 消息</li>
+  <li><strong>适用场景</strong>：本地工具、CLI 工具、桌面应用</li>
+  <li><strong>优点</strong>：简单、无需网络、安全性高（进程隔离）</li>
+  <li><strong>缺点</strong>：只能本地使用，不支持远程</li>
+</ul>
+<pre><code># 示例：Host 通过 stdio 启动 MCP Server
+npx @modelcontextprotocol/server-filesystem /path/to/dir</code></pre>
+
+<h3>2. SSE（Server-Sent Events）</h3>
+<div class="info-box">
+  <h3>💡 HTTP 长连接</h3>
+  <p>基于 HTTP 的单向流式通信，Server 可以持续向 Client 推送消息。</p>
+</div>
+<ul>
+  <li><strong>工作方式</strong>：Client 通过 HTTP POST 发送请求，Server 通过 SSE 流返回响应</li>
+  <li><strong>适用场景</strong>：远程服务、Web 应用、云端部署</li>
+  <li><strong>优点</strong>：支持远程、基于标准 HTTP</li>
+  <li><strong>缺点</strong>：需要维护长连接，部署相对复杂</li>
+</ul>
+<pre><code># SSE 端点示例
+POST http://localhost:8000/messages    # Client 发送请求
+GET  http://localhost:8000/sse         # Client 接收事件流</code></pre>
+
+<h3>3. StreamableHTTP（可流式 HTTP）</h3>
+<div class="warn-box">
+  <h3>⚠️ 最新标准</h3>
+  <p>这是 MCP 协议最新推荐的远程传输方式，是对 SSE 的改进和替代。</p>
+</div>
+<ul>
+  <li><strong>工作方式</strong>：所有通信通过一个 HTTP 端点完成，支持流式和非流式响应</li>
+  <li><strong>适用场景</strong>：现代 Web 应用、生产环境部署</li>
+  <li><strong>优点</strong>：更简洁、兼容性更好、支持无状态部署</li>
+  <li><strong>缺点</strong>：较新，部分旧客户端可能不支持</li>
+</ul>
+
+<h3>三种方式对比</h3>
+<table>
+  <tr><th>特性</th><th>Stdio</th><th>SSE</th><th>StreamableHTTP</th></tr>
+  <tr><td>网络支持</td><td>仅本地</td><td>支持远程</td><td>支持远程</td></tr>
+  <tr><td>复杂度</td><td>低</td><td>中</td><td>低</td></tr>
+  <tr><td>部署方式</td><td>本地进程</td><td>HTTP 服务</td><td>HTTP 服务</td></tr>
+  <tr><td>流式支持</td><td>是</td><td>是</td><td>是</td></tr>
+  <tr><td>推荐场景</td><td>本地 CLI 工具</td><td>旧系统兼容</td><td>新项目首选</td></tr>
+</table>
+
+<!-- ==================== 第五章 ==================== -->
+<h2><span class="icon">⚖️</span> 五、MCP vs REST API</h2>
+
+<p>你可能会问："我已经有 REST API 了，为什么还需要 MCP？" 这是个好问题！</p>
+
+<table>
+  <tr><th>对比维度</th><th>REST API</th><th>MCP</th></tr>
+  <tr><td>设计目标</td><td>人/程序之间的通信</td><td>AI 模型与工具之间的通信</td></tr>
+  <tr><td>发现机制</td><td>无（需要文档）</td><td>内置（tools/list）</td></tr>
+  <tr><td>工具描述</td><td>靠 Swagger/OpenAPI 文档</td><td>协议内置 schema 描述</td></tr>
+  <tr><td>调用方式</td><td>HTTP 方法 + URL</td><td>JSON-RPC 2.0 统一调用</td></tr>
+  <tr><td>上下文感知</td><td>无</td><td>有（Resources、Prompts）</td></tr>
+  <tr><td>AI 友好度</td><td>需要额外适配</td><td>专为 AI 设计</td></tr>
+</table>
+
+<div class="success-box">
+  <h3>✅ 核心区别</h3>
+  <p><strong>REST API 是为人类和程序设计的</strong>，AI 要使用它需要额外的适配层。<strong>MCP 是专为 AI 设计的</strong>，AI 可以自动发现、理解和调用 MCP 工具，无需额外适配。</p>
+</div>
+
+<p>简单来说：</p>
+<ul>
+  <li>REST API 像是 "给程序员看的说明书" —— 人读了文档才知道怎么调用</li>
+  <li>MCP 像是 "给 AI 用的遥控器" —— AI 按一下按钮就知道有什么功能、怎么用</li>
+</ul>
+
+<!-- ==================== Quiz ==================== -->
+<h2><span class="icon">🧠</span> Quiz — 检验你的理解</h2>
+
+<div class="quiz-section">
+  <h3>📝 选择题</h3>
+
+  <div class="quiz-q">
+    <strong>1. MCP 的全称是什么？</strong>
+    <ul class="quiz-opt">
+      <li onclick="this.style.background='#dcfce7'">Model Context Protocol</li>
+      <li onclick="this.style.background='#fee2e2'">Model Communication Protocol</li>
+      <li onclick="this.style.background='#fee2e2'">Machine Context Protocol</li>
+      <li onclick="this.style.background='#fee2e2'">Model Control Protocol</li>
+    </ul>
+    <button class="show-answers" onclick="this.nextElementSibling.classList.toggle('show')">显示答案</button>
+    <div class="answer"><strong>答案：A</strong> — MCP 全称是 Model Context Protocol（模型上下文协议），由 Anthropic 提出。</div>
+  </div>
+
+  <div class="quiz-q">
+    <strong>2. 以下哪种传输方式最适合本地 CLI 工具？</strong>
+    <ul class="quiz-opt">
+      <li onclick="this.style.background='#fee2e2'">SSE</li>
+      <li onclick="this.style.background='#fee2e2'">StreamableHTTP</li>
+      <li onclick="this.style.background='#dcfce7'">Stdio</li>
+      <li onclick="this.style.background='#fee2e2'">WebSocket</li>
+    </ul>
+    <button class="show-answers" onclick="this.nextElementSibling.classList.toggle('show')">显示答案</button>
+    <div class="answer"><strong>答案：C</strong> — Stdio 通过标准输入输出通信，最简单，适合本地进程间通信，无需网络。</div>
+  </div>
+
+  <div class="quiz-q">
+    <strong>3. MCP 相比 REST API 最大的优势是什么？</strong>
+    <ul class="quiz-opt">
+      <li onclick="this.style.background='#fee2e2'">速度更快</li>
+      <li onclick="this.style.background='#fee2e2'">安全性更高</li>
+      <li onclick="this.style.background='#dcfce7'">内置工具发现机制，AI 可以自动理解和调用</li>
+      <li onclick="this.style.background='#fee2e2'">支持更多编程语言</li>
+    </ul>
+    <button class="show-answers" onclick="this.nextElementSibling.classList.toggle('show')">显示答案</button>
+    <div class="answer"><strong>答案：C</strong> — MCP 内置了工具发现机制（tools/list），AI 可以自动发现、理解并调用工具，无需额外的文档适配。</div>
+  </div>
+</div>
+
+<div class="info-box">
+  <h3>💡 下一步学习</h3>
+  <p>理解了 MCP 的基础概念后，可以继续学习：</p>
+  <ul>
+    <li><a href="../lessons/py/0011-kuai-py-mcp-service.html">MCP 服务架构深度追踪</a> — 看看实际项目中 MCP Server 是怎么实现的</li>
+    <li><a href="../lessons/front/0007-kuai-front-mcp-tools.html">MCP 工具集成</a> — 看看前端是如何加载和使用 MCP 工具的</li>
+  </ul>
+</div>
+
+</div>
+</body>
+</html>

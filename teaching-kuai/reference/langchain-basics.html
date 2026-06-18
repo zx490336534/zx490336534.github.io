@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LangChain 基础入门</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.5rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:2rem}
+  .desc{color:var(--text-secondary);font-size:.95rem;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.15rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem}
+  p{margin-bottom:1rem}
+  ul{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.5rem}
+  ol{margin:.5rem 0 1rem 1.5rem}ol li{margin-bottom:.5rem}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15rem .4rem;border-radius:4px;font-size:.88em}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0;overflow-x:auto;font-size:.88rem;line-height:1.6}
+  pre code{background:none;padding:0}
+  .tag{display:inline-block;padding:.1rem .4rem;border-radius:4px;font-size:.7rem;font-weight:500;margin-right:.3rem}
+  .tag.overview{background:#dbeafe;color:#2563eb}
+  .tag.concept{background:#dcfce7;color:#16a34a}
+  .tag.code{background:#fef3c7;color:#b45309}
+  .callout{border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0;font-size:.9rem}
+  .callout.info{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
+  .callout.tip{background:var(--accent-light);border:1px solid #fbbf24;color:var(--accent)}
+  .callout.warning{background:#fef2f2;border:1px solid #fecaca;color:#b91c1c}
+  .callout::before{font-weight:700;margin-right:.3rem}
+  .callout.info::before{content:'💡 '}
+  .callout.tip::before{content:'📌 '}
+  .callout.warning::before{content:'⚠️ '}
+  table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.9rem}
+  th,td{border:1px solid var(--border);padding:.6rem .8rem;text-align:left}
+  th{background:var(--code-bg);font-weight:600}
+  .quiz-section{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1.5rem 0}
+  .quiz-section h3{color:var(--accent);margin-bottom:1rem}
+  .quiz-q{margin-bottom:1.5rem}
+  .quiz-q p{font-weight:600;margin-bottom:.5rem}
+  .quiz-q label{display:block;padding:.5rem .75rem;margin:.3rem 0;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .2s;font-size:.9rem}
+  .quiz-q label:hover{border-color:var(--accent);background:var(--accent-light)}
+  .quiz-q input[type="radio"]{margin-right:.5rem}
+  .quiz-btn{background:var(--accent);color:white;border:none;padding:.6rem 1.5rem;border-radius:6px;cursor:pointer;font-size:.95rem;font-weight:500;margin-top:1rem}
+  .quiz-btn:hover{opacity:.9}
+  .quiz-result{margin-top:1rem;padding:1rem;border-radius:6px;font-weight:500;display:none}
+  .quiz-result.pass{background:#dcfce7;color:#16a34a;border:1px solid #86efac}
+  .quiz-result.fail{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}
+  .back-link{display:inline-block;margin-bottom:2rem;color:var(--accent);text-decoration:none;font-size:.9rem}
+  .back-link:hover{text-decoration:underline}
+  .breadcrumb{color:var(--text-secondary);font-size:.85rem;margin-bottom:.5rem}
+  .divider{border:none;border-top:1px solid var(--border);margin:2.5rem 0}
+  .diagram{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:2rem;margin:1.5rem 0;text-align:center;font-size:.9rem}
+  .diagram .arrow{color:var(--accent);font-weight:700;font-size:1.2rem}
+  .diagram .box{display:inline-block;padding:.4rem 1rem;border-radius:6px;margin:.3rem .2rem;font-weight:500}
+  .diagram .box.model{background:#dbeafe;color:#2563eb}
+  .diagram .box.prompt{background:#fef3c7;color:#b45309}
+  .diagram .box.chain{background:#dcfce7;color:#16a34a}
+  .diagram .box.agent{background:#f3e8ff;color:#7c3aed}
+  .diagram .box.tool{background:#fce7f3;color:#be185d}
+</style>
+</head>
+<body>
+<div class="container">
+
+<a class="back-link" href="../lessons/index.html">← 返回课程目录</a>
+<div class="breadcrumb">概念教程 / AI 开发</div>
+
+<h1>LangChain 基础入门</h1>
+<p class="subtitle"><span class="tag overview">概念</span> 面向零基础小白的 LangChain 入门教程</p>
+<p class="desc">本教程将带你了解 LangChain 这个 AI 应用开发框架。学完后你将理解核心概念（Model、Prompt、Chain、Agent、Tool），以及 ReAct 模式和 createReactAgent 的工作原理。</p>
+
+<!-- ==================== 第一部分：什么是 LangChain ==================== -->
+<h2><span class="icon">🦜</span> 什么是 LangChain</h2>
+
+<p><strong>LangChain</strong> 是一个用于构建 AI 应用的开源框架，它让你可以方便地把大语言模型（LLM）和外部工具、数据源组合起来，构建强大的 AI 应用。</p>
+
+<div class="callout tip">
+<strong>一句话理解：</strong>如果大语言模型（如 ChatGPT）是一个"超级大脑"，那 LangChain 就是帮这个大脑连接"手脚"（工具）和"记忆"（知识库）的框架。
+</div>
+
+<h3>为什么需要 LangChain？</h3>
+<p>直接调用 LLM API（比如 OpenAI API）只能做简单的"问答"。但如果你想：</p>
+<ul>
+<li>让 AI 帮你<strong>查数据库</strong>再回答问题</li>
+<li>让 AI 帮你<strong>调用 API</strong>（比如发邮件、查天气）</li>
+<li>让 AI <strong>读取文档</strong>后回答问题（RAG）</li>
+<li>让 AI <strong>多步推理</strong>，自主决定下一步做什么</li>
+</ul>
+
+<p>这些场景下，直接用 API 会非常复杂。LangChain 提供了一套工具和抽象，让这些变得简单。</p>
+
+<hr class="divider">
+
+<!-- ==================== 第二部分：核心概念 ==================== -->
+<h2><span class="icon">🧩</span> 核心概念</h2>
+
+<p>LangChain 有 5 个核心概念，理解了它们就理解了整个框架：</p>
+
+<div class="diagram">
+  <span class="box model">Model</span> <span class="arrow">+</span>
+  <span class="box prompt">Prompt</span> <span class="arrow">→</span>
+  <span class="box chain">Chain</span> <span class="arrow">→</span>
+  <span class="box agent">Agent</span> <span class="arrow">→</span>
+  <span class="box tool">Tool</span>
+</div>
+
+<h3>1. Model（模型）</h3>
+<p>Model 是 LangChain 的"大脑"，就是你调用的大语言模型。LangChain 支持对接各种 LLM：</p>
+<ul>
+<li><strong>OpenAI</strong>（GPT-4、GPT-3.5）</li>
+<li><strong>Anthropic</strong>（Claude）</li>
+<li><strong>Google</strong>（Gemini）</li>
+<li><strong>本地模型</strong>（Ollama 等）</li>
+</ul>
+
+<pre><code>import { ChatOpenAI } from "@langchain/openai";
+
+const model = new ChatOpenAI({
+  modelName: "gpt-4",
+  temperature: 0.7,  // 0=确定性高，1=更有创意
+});</code></pre>
+
+<div class="callout info">
+<strong>类比：</strong>Model 就像一个员工的大脑。你可以换不同的"大脑"（GPT-4、Claude 等），但接口是一样的。
+</div>
+
+<h3>2. Prompt（提示词模板）</h3>
+<p>Prompt 是你给 LLM 的"指令"。LangChain 提供了模板系统，可以动态生成提示词：</p>
+
+<pre><code>import { ChatPromptTemplate } from "@langchain/core/prompts";
+
+// 定义一个模板，{product} 是变量
+const prompt = ChatPromptTemplate.fromMessages([
+  ["system", "你是一个产品分析师"],
+  ["user", "请分析这个产品的优缺点：{product}"]
+]);
+
+// 使用时填入变量
+const message = await prompt.invoke({
+  product: "iPhone 16"
+});</code></pre>
+
+<h3>3. Chain（链）</h3>
+<p>Chain 是把 Model 和 Prompt <strong>串联</strong>起来的管道。最简单的 Chain = Prompt + Model + 输出解析。</p>
+
+<pre><code>import { ChatOpenAI } from "@langchain/openai";
+import { ChatPromptTemplate } from "@langchain/core/prompts";
+import { StringOutputParser } from "@langchain/core/output_parsers";
+
+const model = new ChatOpenAI({ modelName: "gpt-4" });
+const prompt = ChatPromptTemplate.fromMessages([
+  ["user", "用一句话解释什么是{concept}"]
+]);
+const parser = new StringOutputParser();
+
+// 用 | 管道符把它们串起来
+const chain = prompt | model | parser;
+
+// 调用链
+const result = await chain.invoke({ concept: "量子计算" });
+console.log(result);  // "量子计算是利用量子力学原理进行计算的技术..."</code></pre>
+
+<div class="callout tip">
+<strong>管道符 <code>|</code> 的理解：</strong>就像 Unix 的管道 <code>cat file | grep "hello" | sort</code>，数据从左到右流过每一步。
+</div>
+
+<h3>4. Agent（智能体）</h3>
+<p>Agent 是 LangChain 最强大的概念。它让 LLM 能够<strong>自主决策</strong>——根据用户的问题，自己决定要不要调用工具、调用哪个工具。</p>
+
+<div class="callout info">
+<strong>Chain vs Agent 的区别：</strong><br>
+- <strong>Chain</strong>：固定的流程，A → B → C，每次都是同样的步骤<br>
+- <strong>Agent</strong>：动态的流程，LLM 自己决定下一步做什么
+</div>
+
+<h3>5. Tool（工具）</h3>
+<p>Tool 是 Agent 可以使用的"工具"，比如搜索、查数据库、调 API 等。你可以自定义工具：</p>
+
+<pre><code>import { tool } from "@langchain/core/tools";
+import { z } from "zod";
+
+// 定义一个"查天气"工具
+const weatherTool = tool(
+  async ({ city }) =&gt; {
+    // 调用天气 API
+    const weather = await fetchWeather(city);
+    return `${city}今天天气：${weather.temp}°C，${weather.desc}`;
+  },
+  {
+    name: "get_weather",
+    description: "查询指定城市的天气信息",
+    schema: z.object({
+      city: z.string().describe("城市名称"),
+    }),
+  }
+);</code></pre>
+
+<hr class="divider">
+
+<!-- ==================== 第三部分：ReAct 模式 ==================== -->
+<h2><span class="icon">🧠</span> ReAct 模式（推理 + 行动）</h2>
+
+<p><strong>ReAct</strong>（Reasoning + Acting）是 Agent 的核心工作模式。它的名字来自两个词的组合：</p>
+<ul>
+<li><strong>Re</strong>asoning（推理）：思考当前应该做什么</li>
+<li><strong>Act</strong>ing（行动）：执行具体的工具调用</li>
+</ul>
+
+<h3>ReAct 的工作流程</h3>
+<p>当用户提出一个问题时，Agent 会按照以下步骤工作：</p>
+
+<div class="diagram">
+  <p><strong>用户问题：</strong>"北京今天天气怎么样？适合穿什么？"</p>
+  <br>
+  <p>🔄 <strong>第 1 轮：推理 + 行动</strong></p>
+  <p>🤔 <strong>思考：</strong>用户问的是北京天气，我需要调用天气工具</p>
+  <p>🔧 <strong>行动：</strong>调用 get_weather("北京")</p>
+  <p>📋 <strong>观察：</strong>北京今天 28°C，晴天</p>
+  <br>
+  <p>🔄 <strong>第 2 轮：推理 + 行动</strong></p>
+  <p>🤔 <strong>思考：</strong>已获取天气，28°C 晴天，可以给出穿衣建议</p>
+  <p>✅ <strong>最终回答：</strong>北京今天 28°C 晴天，建议穿短袖、注意防晒。
+</div>
+
+<div class="callout tip">
+<strong>ReAct 就像人类解决问题的方式：</strong>先想（推理），再做（行动），看看结果（观察），然后继续想...直到找到答案。
+</div>
+
+<h3>ReAct vs 普通对话</h3>
+<table>
+<tr><th>对比</th><th>普通 ChatGPT 对话</th><th>ReAct Agent</th></tr>
+<tr><td>能力</td><td>只能用训练数据回答</td><td>可以调用外部工具获取实时数据</td></tr>
+<tr><td>推理</td><td>一步到位</td><td>多步推理，逐步解决</td></tr>
+<tr><td>准确性</td><td>可能编造（幻觉）</td><td>基于工具返回的真实数据</td></tr>
+<tr><td>灵活性</td><td>固定</td><td>根据情况动态选择工具</td></tr>
+</table>
+
+<hr class="divider">
+
+<!-- ==================== 第四部分：createReactAgent ==================== -->
+<h2><span class="icon">🤖</span> createReactAgent 是什么</h2>
+
+<p><code>createReactAgent</code> 是 LangChain 提供的一个<strong>开箱即用</strong>的函数，用来快速创建一个使用 ReAct 模式的 Agent。</p>
+
+<pre><code>import { createReactAgent } from "@langchain/langgraph/prebuilt";
+import { ChatOpenAI } from "@langchain/openai";
+
+// 1. 准备模型
+const model = new ChatOpenAI({ modelName: "gpt-4" });
+
+// 2. 准备工具
+const tools = [weatherTool, searchTool, calculatorTool];
+
+// 3. 创建 ReAct Agent
+const agent = createReactAgent({
+  llm: model,        // 用哪个大脑
+  tools: tools,      // 有哪些工具可用
+});
+
+// 4. 使用 Agent
+const result = await agent.invoke({
+  messages: [{ role: "user", content: "北京今天适合穿什么？" }]
+});</code></pre>
+
+<h3>createReactAgent 帮你做了什么？</h3>
+<p>这个函数内部自动做了很多工作：</p>
+
+<ol>
+<li><strong>生成系统提示词</strong>：告诉 LLM "你是一个 Agent，可以用这些工具..."</li>
+<li><strong>解析工具调用</strong>：当 LLM 决定调用工具时，自动执行并返回结果</li>
+<li><strong>管理对话状态</strong>：维护多轮对话的消息历史</li>
+<li><strong>循环执行</strong>：自动实现"推理 → 行动 → 观察"的循环，直到得到最终答案</li>
+</ol>
+
+<div class="callout info">
+<strong>在我们的项目中：</strong>kuai-service-front 使用 <code>createReactAgent</code> 来创建 AI 助手 Agent，它集成了 MCP 工具，可以帮你查数据、执行操作等。
+</div>
+
+<hr class="divider">
+
+<!-- ==================== Quiz ==================== -->
+<div class="quiz-section">
+<h3>📝 Quiz — 检验你的学习成果</h3>
+
+<div class="quiz-q">
+<p>Q1：LangChain 的核心作用是什么？</p>
+<label><input type="radio" name="q1" value="A"> A. 训练大语言模型</label>
+<label><input type="radio" name="q1" value="B"> B. 构建和编排 AI 应用，连接 LLM 与外部工具</label>
+<label><input type="radio" name="q1" value="C"> C. 替代 ChatGPT 的对话功能</label>
+<label><input type="radio" name="q1" value="D"> D. 数据库管理工具</label>
+</div>
+
+<div class="quiz-q">
+<p>Q2：ReAct 模式中的 "Re" 和 "Act" 分别代表什么？</p>
+<label><input type="radio" name="q2" value="A"> A. Read（读取）+ Act（执行）</label>
+<label><input type="radio" name="q2" value="B"> B. Response（响应）+ Action（动作）</label>
+<label><input type="radio" name="q2" value="C"> C. Reasoning（推理）+ Acting（行动）</label>
+<label><input type="radio" name="q2" value="D"> D. React（反应）+ Activate（激活）</label>
+</div>
+
+<div class="quiz-q">
+<p>Q3：Chain 和 Agent 的主要区别是什么？</p>
+<label><input type="radio" name="q3" value="A"> A. Chain 更快，Agent 更慢</label>
+<label><input type="radio" name="q3" value="B"> B. Chain 是固定流程，Agent 可以自主决策动态选择工具</label>
+<label><input type="radio" name="q3" value="C"> C. Chain 只能用 GPT-4，Agent 可以用任何模型</label>
+<label><input type="radio" name="q3" value="D"> D. 没有区别，只是名字不同</label>
+</div>
+
+<button class="quiz-btn" onclick="checkQuiz()">提交答案</button>
+<div class="quiz-result" id="quizResult"></div>
+</div>
+
+<script>
+function checkQuiz(){
+  var answers={q1:'B',q2:'C',q3:'B'};
+  var score=0,total=3;
+  for(var q in answers){
+    var selected=document.querySelector('input[name="'+q+'"]:checked');
+    if(selected && selected.value===answers[q])score++;
+  }
+  var el=document.getElementById('quizResult');
+  el.style.display='block';
+  if(score===total){
+    el.className='quiz-result pass';
+    el.innerHTML='🎉 满分！你已经掌握了 LangChain 的基础知识！';
+  }else{
+    el.className='quiz-result fail';
+    el.innerHTML='答对 '+score+'/'+total+' 题，再回顾一下内容吧～ 正确答案：Q1-B, Q2-C, Q3-B';
+  }
+}
+</script>
+
+<div class="callout info" style="margin-top:2rem">
+<strong>遇到不懂的地方？</strong>直接问 Agent。比如："帮我解释 createReactAgent 的内部实现" 或 "ReAct 模式和 Function Calling 有什么区别"。
+</div>
+
+</div>
+</body>
+</html>

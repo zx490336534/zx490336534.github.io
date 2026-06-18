@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>032 AIHom 前端入口 01：读 TSX 组件</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--muted:#78716c;--accent:#b45309;--border:#e7e5e4;--code:#f5f5f4;--blue:#2563eb;--green:#16a34a}
+  *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.8 'Noto Sans SC',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}.container{max-width:880px;margin:0 auto;padding:3rem 1.6rem 4rem}h1{font-size:2rem;line-height:1.25;margin:.2rem 0 .5rem}h2{font-size:1.35rem;margin:2.2rem 0 .8rem}h3{font-size:1.08rem;margin:1.4rem 0 .5rem;color:var(--accent)}p{margin:.4rem 0 1rem}ul,ol{margin:.4rem 0 1rem 1.4rem;padding:0}li{margin:.25rem 0}a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}code{font-family:'JetBrains Mono',Menlo,Consolas,monospace;background:var(--code);border-radius:4px;padding:.1em .35em;font-size:.9em}pre{background:#1c1917;color:#e7e5e4;border-radius:8px;padding:1rem 1.1rem;overflow:auto;font:13px/1.65 'JetBrains Mono',Menlo,Consolas,monospace;margin:1rem 0}table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:1rem 0}th,td{padding:.65rem .75rem;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}th{color:var(--muted);font-size:.82rem;background:#f5f5f4}tr:last-child td{border-bottom:0}.subtitle{color:var(--muted);padding-bottom:1.3rem;border-bottom:1px solid var(--border);margin-bottom:1.8rem}.card{background:#fff;border:1px solid var(--border);border-left:4px solid var(--blue);border-radius:8px;padding:1rem 1.15rem;margin:1rem 0}.card.soft{border-left-color:var(--accent);background:#fff7ed}.label{font-size:.76rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;margin-bottom:.35rem}.steps{display:grid;gap:.5rem}.step{background:#fff;border:1px solid var(--border);border-radius:8px;padding:.75rem}.quiz{background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.15rem;margin:1.4rem 0}.quiz-title{font-weight:700;margin-bottom:.55rem;color:#92400e}.quiz-options{list-style:none;margin:0;padding:0}.quiz-options li{padding:.45rem .65rem;margin:.35rem 0;border-radius:6px;border:1px solid transparent;cursor:pointer}.quiz-options li:hover{border-color:#f59e0b}.correct{background:#dcfce7!important;border-color:#16a34a!important}.wrong{background:#fee2e2!important;border-color:#ef4444!important}.quiz-feedback{display:none;margin-top:.65rem;padding:.6rem;border-radius:6px}.ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;color:#1e40af;padding:1rem;margin:1.4rem 0}.ask-agent:before{content:"提示：";font-weight:700}.learning-map-quick-nav{margin:2.5rem 0 0;padding:1rem 1.1rem;border:1px solid #d6d3d1;border-radius:8px;background:#fff;display:grid;gap:.75rem}.nav-title{font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:#78716c}.nav-links{display:flex;flex-wrap:wrap;gap:.65rem;align-items:center}.nav-links a{color:#44403c;text-decoration:none;border:1px solid #e7e5e4;border-radius:6px;padding:.35rem .65rem}.nav-links a.primary{color:#fff;border-color:#b45309;background:#b45309}.nav-links a.map{color:#2563eb;border-color:#bfdbfe;background:#eff6ff}@media(max-width:640px){.container{padding:2rem 1rem 3.5rem}h1{font-size:1.65rem}pre{font-size:.78rem}}
+</style>
+</head>
+<body>
+<main class="container">
+  <h1>032 AIHom 前端入口 01：读 TSX 组件</h1>
+  <p class="subtitle">目标：打开一个 TSX 文件时，不再被语法吓住；能先分清“输入是什么、页面画什么、点击后做什么”。</p>
+
+  <section class="card soft">
+    <div class="label">先别急着懂全部</div>
+    <p>TSX 文件就是“TypeScript 代码 + React 页面结构”。第一次读只抓三件事：<strong>props 是外部传进来的数据</strong>，<strong>state 是组件自己记住的数据</strong>，<strong>return 里的 JSX 是最终画出来的页面</strong>。</p>
+  </section>
+
+  <h2>1. 读 TSX 的固定顺序</h2>
+  <div class="steps">
+    <div class="step"><strong>第一步：看文件名和导出。</strong>例如 <code>AIChatDrawer.tsx</code> 大概率就是聊天抽屉。</div>
+    <div class="step"><strong>第二步：看 Props。</strong><code>interface XxxProps</code> 告诉你这个组件需要别人传什么。</div>
+    <div class="step"><strong>第三步：看 render 或 return。</strong>这里决定页面上画什么。</div>
+    <div class="step"><strong>第四步：看 onClick / onChange。</strong>这些地方通常是用户操作入口。</div>
+  </div>
+
+  <h2>2. Props：别人递给组件的东西</h2>
+  <p>看到这种代码，不要先纠结类型细节。先翻译成人话：这个组件需要 <code>open</code>、<code>documentReady</code>、<code>rootState</code> 这些输入。</p>
+  <pre>interface AIChatDrawerProps {
+  aiChatDrawerOpen: boolean;
+  documentReady: boolean;
+  rootState: RootStateManager;
+}</pre>
+  <p>读法：<code>boolean</code> 表示真假，<code>RootStateManager</code> 表示一个对象。对象里面还有更多状态，下一课会讲。</p>
+
+  <h2>3. JSX：页面长什么样</h2>
+  <p>JSX 很像 HTML，但可以嵌入变量。看到 <code>{...}</code> 就读成“这里放一个 JS 表达式的结果”。</p>
+  <pre>return (
+  &lt;div className={styles.drawer}&gt;
+    {isLoading &amp;&amp; &lt;span&gt;thinking...&lt;/span&gt;}
+    &lt;InputArea isLoading={isLoading} /&gt;
+  &lt;/div&gt;
+);</pre>
+  <p>这段不用背语法。你只要知道：<code>isLoading</code> 为真时显示 loading，并把 <code>isLoading</code> 继续传给 <code>InputArea</code>。</p>
+
+  <h2>4. class component 和 function component</h2>
+  <table>
+    <tr><th>形态</th><th>怎么看</th><th>AIHom 例子</th></tr>
+    <tr><td><code>class Xxx extends React.Component</code></td><td>重点看 <code>render()</code>、<code>componentDidMount</code>、类方法</td><td><code>AIChatDrawer</code>、<code>InputArea</code></td></tr>
+    <tr><td><code>function Xxx()</code></td><td>重点看 <code>return</code>、<code>useState</code>、<code>useEffect</code></td><td>一些新写的小组件</td></tr>
+  </table>
+  <p>不要因为看到 class 就以为它过时不能读。AIHom 里 class component 很多，能读懂它很重要。</p>
+
+  <h2>5. 看到 hooks 先只认两个</h2>
+  <table>
+    <tr><th>hook</th><th>小白版解释</th><th>你要问的问题</th></tr>
+    <tr><td><code>useState</code></td><td>组件自己记一个值</td><td>这个值影响页面哪里？</td></tr>
+    <tr><td><code>useEffect</code></td><td>组件加载后做一件事</td><td>它是在请求数据、监听事件，还是清理资源？</td></tr>
+  </table>
+
+  <h2>6. 第一次进 ai-home，从这几个文件开始</h2>
+  <table>
+    <tr><th>文件</th><th>作用</th><th>先看什么</th></tr>
+    <tr><td><code>src/app/components/AIChatDrawer/AIChatDrawer.tsx</code></td><td>聊天抽屉</td><td>读 <code>render()</code> 里显示哪些区域</td></tr>
+    <tr><td><code>src/app/components/InputArea/index.tsx</code></td><td>输入框</td><td>看发送按钮、loading、排队提示</td></tr>
+    <tr><td><code>src/app/components/MainPage/index.tsx</code></td><td>主页面</td><td>看它组合了哪些大块组件</td></tr>
+    <tr><td><code>src/app/state.ts</code></td><td>根状态</td><td>下一课再细看</td></tr>
+  </table>
+
+  <h2>7. 读代码小练习</h2>
+  <p>如果你想知道“输入框为什么显示 thinking...”，先不要全局乱搜。按这个路线：</p>
+  <ol>
+    <li>打开 <code>InputArea/index.tsx</code>。</li>
+    <li>搜索 <code>thinking</code> 或 <code>isLoading</code>。</li>
+    <li>看 <code>isLoading</code> 是 props 传入，还是组件自己算出来。</li>
+    <li>如果是 props，回到父组件继续追。</li>
+  </ol>
+
+  <div class="quiz" id="quiz1">
+    <div class="quiz-title">Q1：Props 最接近什么？</div>
+    <ul class="quiz-options" data-correct="1"><li onclick="checkQuiz('quiz1',0)">A. 文件路径</li><li onclick="checkQuiz('quiz1',1)">B. 外部输入</li><li onclick="checkQuiz('quiz1',2)">C. 构建产物</li><li onclick="checkQuiz('quiz1',3)">D. 数据库表</li></ul>
+    <div class="quiz-feedback"></div>
+  </div>
+  <div class="quiz" id="quiz2">
+    <div class="quiz-title">Q2：JSX 主要告诉你什么？</div>
+    <ul class="quiz-options" data-correct="2"><li onclick="checkQuiz('quiz2',0)">A. 分支策略</li><li onclick="checkQuiz('quiz2',1)">B. 后端协议</li><li onclick="checkQuiz('quiz2',2)">C. 页面结构</li><li onclick="checkQuiz('quiz2',3)">D. 发布环境</li></ul>
+    <div class="quiz-feedback"></div>
+  </div>
+  <div class="quiz" id="quiz3">
+    <div class="quiz-title">Q3：按钮点击逻辑优先搜什么？</div>
+    <ul class="quiz-options" data-correct="0"><li onclick="checkQuiz('quiz3',0)">A. onClick</li><li onclick="checkQuiz('quiz3',1)">B. package</li><li onclick="checkQuiz('quiz3',2)">C. README</li><li onclick="checkQuiz('quiz3',3)">D. favicon</li></ul>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <div class="ask-agent">复习时可以问 agent：带我读 InputArea/index.tsx，只看 props、render、onClick 三件事。</div>
+
+  <nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 032</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0031-frontend-build-debug-test.html">上一课：031 前端基础 11：工程化、调试与测试</a><a class="primary" href="0033-reactive-framework-state.html">下一课：033 AIHom 前端入口 02：状态管理基础</a></div></nav>
+</main>
+<script>
+function checkQuiz(q,s){const box=document.getElementById(q),opts=box.querySelector('.quiz-options'),c=Number(opts.dataset.correct),items=opts.querySelectorAll('li'),fb=box.querySelector('.quiz-feedback');items.forEach((item,i)=>{item.onclick=null;if(i===c)item.classList.add('correct');if(i===s&&i!==c)item.classList.add('wrong')});const text={quiz1:['正确。Props 就是父组件传给当前组件的外部输入。','不对。Props 不是路径或表，它是组件的外部输入。'],quiz2:['正确。JSX 最直接告诉你页面结构和条件显示。','不对。JSX 不是协议或发布信息，它描述页面结构。'],quiz3:['正确。点击逻辑通常从 onClick 往下追。','不对。按钮点击优先找 onClick。']};fb.style.display='block';fb.textContent=s===c?text[q][0]:text[q][1];fb.style.background=s===c?'#dcfce7':'#fee2e2'}
+</script>
+</body>
+</html>

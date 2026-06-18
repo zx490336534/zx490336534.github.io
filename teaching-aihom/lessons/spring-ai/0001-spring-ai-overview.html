@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>001 Spring AI 是什么 + AIHom 技术地图</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --accent: #b45309;
+    --accent-light: #fef3c7;
+    --border: #e7e5e4;
+    --code-bg: #1c1917;
+    --code-text: #f5f5f4;
+    --success: #16a34a;
+    --success-light: #dcfce7;
+    --warning: #d97706;
+    --warning-light: #fef3c7;
+    --info: #2563eb;
+    --info-light: #dbeafe;
+    --tag-java: #d97706;
+    --tag-spring: #16a34a;
+    --tag-ai: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 3rem 2rem 5rem;
+  }
+
+  .lesson-meta {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2.8rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  strong { font-weight: 700; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.25rem 0;
+  }
+  .card.info { border-left: 3px solid var(--info); background: var(--info-light); }
+  .card.warning { border-left: 3px solid var(--warning); background: var(--warning-light); }
+  .card.success { border-left: 3px solid var(--success); background: var(--success-light); }
+  .card.tip { border-left: 3px solid var(--accent); }
+
+  .card-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+  }
+
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 1.25rem 1.4rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1.25rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.86rem;
+    line-height: 1.7;
+  }
+  code { font-family: 'JetBrains Mono', monospace; }
+  p code, li code {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 0.12em 0.4em;
+    border-radius: 4px;
+    font-size: 0.85em;
+  }
+  .com { color: #a8a29e; }      /* 代码注释 */
+  .kw  { color: #fbbf24; }      /* 关键字 */
+  .ann { color: #86efac; }      /* 注解 @ */
+  .typ { color: #93c5fd; }      /* 类型 */
+  .str { color: #fda4af; }      /* 字符串 */
+
+  /* 逐行归属表 */
+  table.belong {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.25rem 0;
+    font-size: 0.9rem;
+  }
+  table.belong th, table.belong td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  table.belong th {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+  table.belong td code { font-size: 0.82em; }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.1em 0.55em;
+    border-radius: 10px;
+    color: #fff;
+    letter-spacing: 0.02em;
+  }
+  .tag.java   { background: var(--tag-java); }
+  .tag.spring { background: var(--tag-spring); }
+  .tag.ai     { background: var(--tag-ai); }
+
+  /* 学习地图 */
+  .roadmap {
+    list-style: none;
+    margin: 1.25rem 0;
+    padding: 0;
+  }
+  .roadmap li {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+  }
+  .roadmap .stage {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 0.85rem;
+    min-width: 3.2em;
+    flex-shrink: 0;
+  }
+  .roadmap .here { border-color: var(--accent); background: var(--accent-light); }
+  .roadmap .here .stage { color: var(--text); }
+
+  /* Quiz */
+  .quiz {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem 1.6rem;
+    margin: 1.5rem 0;
+  }
+  .quiz-q {
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  .quiz-opt {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--text);
+    transition: all 0.15s;
+  }
+  .quiz-opt:hover { border-color: var(--accent); }
+  .quiz-opt.correct {
+    background: var(--success-light);
+    border-color: var(--success);
+    color: #14532d;
+    font-weight: 500;
+  }
+  .quiz-opt.wrong {
+    background: #fee2e2;
+    border-color: #dc2626;
+    color: #7f1d1d;
+  }
+  .quiz-opt.disabled { cursor: default; opacity: 0.85; }
+  .quiz-fb {
+    margin-top: 0.85rem;
+    font-size: 0.9rem;
+    display: none;
+    padding: 0.7rem 0.9rem;
+    border-radius: 6px;
+    line-height: 1.7;
+  }
+  .quiz-fb.show { display: block; }
+
+  .win {
+    background: var(--success-light);
+    border-left: 3px solid var(--success);
+    border-radius: 8px;
+    padding: 1rem 1.4rem;
+    margin: 2rem 0;
+  }
+  .win .card-label { color: #14532d; }
+
+  .reading {
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.4rem;
+    margin: 1.5rem 0;
+  }
+  .reading a { color: var(--info); text-decoration: none; font-weight: 500; }
+  .reading a:hover { text-decoration: underline; }
+
+  .ask {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+  }
+
+  blockquote {
+    border-left: 3px solid var(--accent);
+    padding-left: 1rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin: 1.25rem 0;
+  }
+@media print {
+    body { background: #fff; }
+    .quiz-opt { border: 1px solid #999; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="lesson-meta">AIHom 全栈学习 · 第 001 课 · 起点</div>
+  <h1>001 Spring AI 是什么 + AIHom 技术地图</h1>
+  <div class="subtitle">本节目标：用一句话讲清 Spring AI 解决什么问题，第一次看 Spring AI 代码时能分清"哪部分是 Java、哪部分是 Spring、哪部分才是 Spring AI"，并看清接下来要走的路。</div>
+
+  <!-- 1. 痛点开场 -->
+  <h2>先讲一个你会感同身受的痛点</h2>
+  <p>作为测试工程师，你大概率见过这样的后端代码：业务要调大模型，于是开发同事去对接 <code>OpenAI</code> 的接口。过几天又要接国产的<strong>通义千问</strong>，再过几天接 <strong>智谱</strong>、<strong>DeepSeek</strong>……每家模型的请求格式、返回结构、鉴权方式都不一样。</p>
+  <p>结果就是：代码里塞满了 <code>if (provider.equals("openai")) {...} else if (...)</code>，换一个模型要改一堆地方，测试用例也得重写一遍。这就是<strong>"没有统一抽象"</strong>带来的混乱。</p>
+
+  <div class="card tip">
+    <div class="card-label">Spring AI 一句话定位</div>
+    <p style="margin:0"><strong>Spring AI 是一个 Java 框架，把"调用各种大模型"这件事统一成一套相同的写法。</strong>你换模型，基本只改一行配置；业务代码不动。就像 JDBC 统一了各种数据库、Spring Data 统一了各种数据访问一样——Spring AI 统一了各种大模型。</p>
+  </div>
+
+  <!-- 2. 技术栈位置 -->
+  <h2>它在技术栈里的位置</h2>
+  <p>从底到顶是层层依赖的关系。你写的业务代码站在最顶层，脚下踩着的就是这一串：</p>
+  <pre><span class="com"># 从底层到顶层（标注 AIHom 真实版本）</span>
+<span class="typ">JDK</span>                     <span class="com"># Java 21</span>
+  └── <span class="typ">Spring Boot</span>            <span class="com"># 3.x（用 Jetty，不是 Tomcat）</span>
+        └── <span class="typ">Spring AI</span>        <span class="com"># 1.1.2 — 统一的大模型调用抽象</span>
+              └── <span class="typ">Spring AI Alibaba</span> <span class="com"># 1.1.2.0.5-qh ★ AIHom 真正的核心</span>
+                    └── <span class="typ">AIHom 业务代码</span> <span class="com"># 你最终要读写的地方</span></pre>
+
+  <div class="card info">
+    <div class="card-label">关键认知：AIHom 真正用的是 Spring AI Alibaba</div>
+    <p style="margin:0">注意多出来的那一层 <strong>Spring AI Alibaba</strong>。它是阿里巴巴在 Spring AI 之上做的扩展，专干两件事：① <strong>国产模型接入</strong>——你的项目用的是<strong>通义千问 / DashScope</strong>，不是 OpenAI；② <strong>Agent 编排</strong>——AIHom 里大量出现的 <strong>StateGraph / Graph、Agent、Tool / MCP</strong> 都来自这一层。所以严格说，你要学的是 "Spring AI + Spring AI Alibaba"，<strong>后者更是重点</strong>。</p>
+  </div>
+
+  <div class="card warning">
+    <div class="card-label">这就是为什么要先补地基</div>
+    <p style="margin:0">看清楚了吗？<strong>Spring AI 上面叠着 Spring Boot，Spring Boot 上面叠着 Java。</strong>三层你都不熟，直接冲最顶层的 AIHom 代码，当然看不懂。我们要做的，就是从下面一层层往上补——但每层<strong>只补够用的最小子集</strong>，不贪多。</p>
+  </div>
+
+  <!-- 3. 读代码 -->
+  <h2>第一次看 Spring AI 代码：分清三层</h2>
+  <p>下面是一段<strong>真正能跑</strong>的 Spring AI 代码——一个 HTTP 接口，你访问 <code>/ask?q=你好</code>，它就把问题丢给大模型，返回回答。现在看不懂很正常，重点不是记住，而是<strong>感受它的结构</strong>。</p>
+
+  <pre><span class="ann">@RestController</span>                          <span class="com">// 告诉 Spring：这是一个 HTTP 接口类</span>
+<span class="kw">public class</span> <span class="typ">ChatController</span> {
+
+    <span class="kw">private final</span> <span class="typ">ChatClient.Builder</span> builder;  <span class="com">// Spring AI 提供的"聊天客户端"</span>
+
+    <span class="kw">public</span> <span class="typ">ChatController</span>(<span class="typ">ChatClient.Builder</span> builder) {
+        <span class="kw">this</span>.builder = builder;            <span class="com">// Spring 自动把 builder 传进来（依赖注入）</span>
+    }
+
+    <span class="ann">@GetMapping</span>(<span class="str">"/ask"</span>)                    <span class="com">// 把方法映射成 GET /ask</span>
+    <span class="kw">public</span> <span class="typ">String</span> ask(<span class="ann">@RequestParam</span> <span class="typ">String</span> q) {
+        <span class="kw">return</span> builder.build()            <span class="com">// ① 造一个聊天客户端</span>
+                       .prompt()            <span class="com">// ② 开始组装一次提问</span>
+                       .user(q)             <span class="com">// ③ 把用户的问题塞进去</span>
+                       .call()              <span class="com">// ④ 真正去调大模型</span>
+                       .content();          <span class="com">// ⑤ 取出回答的文字</span>
+    }
+}</pre>
+
+  <p>关键来了——这段代码里的东西，分属三个不同的"主人"。认清这一点，你以后看任何 Spring AI 代码都不会慌：</p>
+
+  <table class="belong">
+    <thead>
+      <tr><th>代码</th><th>归谁管</th><th>大白话</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>public class ChatController</code>、构造方法、<code>this.builder = ...</code></td>
+        <td><span class="tag java">Java</span></td>
+        <td>这是 Java 的"类"和"构造方法"——面向对象的基本功。阶段 0 补。</td>
+      </tr>
+      <tr>
+        <td><code>@RestController</code>、<code>@GetMapping</code>、<code>@RequestParam</code>、<code>builder 自动被传进来</code></td>
+        <td><span class="tag spring">Spring</span></td>
+        <td>带 <code>@</code> 的叫"注解"，是 Spring 的魔法；对象不用自己 new、自动传进来叫"依赖注入"。阶段 1 补。</td>
+      </tr>
+      <tr>
+        <td><code>ChatClient.Builder</code>、<code>.prompt().user().call().content()</code></td>
+        <td><span class="tag ai">Spring AI</span></td>
+        <td>这才是 Spring AI 本体——怎么提问、怎么调模型、怎么取结果。015-020 重点学。</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card info">
+    <div class="card-label">测试工程师视角的提醒</div>
+    <p style="margin:0">注意第 ④ 步 <code>.call()</code>——这是真正发起网络请求、去调大模型的地方。以后你做接口测试、看耗时、排查"为什么回答很慢"，盯的就是这一步。先记住它。</p>
+  </div>
+
+  <!-- 4. 学习地图 -->
+  <h2>你的学习地图</h2>
+  <p>我们会按下面的顺序走。每一站都<strong>只为下一站服务</strong>，绝不跑偏：</p>
+
+  <ul class="roadmap">
+    <li class="here"><span class="stage">阶段0</span><span><strong>Java 够用就好</strong> — 类 / 接口 / 注解 / 泛型 / lambda。只学读懂 AIHom 代码必需的最小 Java。</span></li>
+    <li><span class="stage">阶段1</span><span><strong>Spring Boot 够用就好</strong> — 依赖注入、自动配置、starter、三层注解（@Controller/@Service/...）、application.yml。</span></li>
+    <li><span class="stage">阶段2</span><span><strong>Spring AI + Alibaba 核心 ★</strong> — 先学 ChatClient / Prompt / 流式 / 结构化输出，再进 AIHom 真正的核心：<strong>Spring AI Alibaba 的 Agent 框架、StateGraph/Graph 编排、Tool/MCP、DashScope 接入、Nacos 配置</strong>。</span></li>
+    <li><span class="stage">阶段3</span><span><strong>回到 AIHom 实战</strong> — 用学到的知识重新读 ai-native-service，这次能看懂、能改、能加新功能。</span></li>
+  </ul>
+
+  <p>你现在站在<strong>阶段 0 的起点</strong>。下一课我们就从"Java 里什么是类、什么是注解"开始，但会全程用"这段代码在 AIHom 里长这样"来锚定，绝不讲成枯燥的 Java 课本。</p>
+
+  <!-- 5. Quiz -->
+  <h2>小测验：确认你真的 get 到了</h2>
+
+  <div class="quiz" id="quiz1">
+    <div class="quiz-q">第 1 题：下面哪句话对 Spring AI 的描述<strong>最准确</strong>？</div>
+    <button class="quiz-opt" data-correct="true">统一各种大模型调用方式的 Java 框架</button>
+    <button class="quiz-opt" data-correct="false">让 Java 程序运行得更快的性能工具</button>
+    <button class="quiz-opt" data-correct="false">用来存储海量数据的分布式数据库</button>
+    <button class="quiz-opt" data-correct="false">专门做网页前端界面的 UI 组件库</button>
+    <div class="quiz-fb" id="fb1"></div>
+  </div>
+
+  <div class="quiz" id="quiz2">
+    <div class="quiz-q">第 2 题：代码里 <code>.prompt().user(q).call().content()</code> 这串，归谁管？</div>
+    <button class="quiz-opt" data-correct="false">Java 语言本身的基础语法</button>
+    <button class="quiz-opt" data-correct="false">Spring 框架的依赖注入机制</button>
+    <button class="quiz-opt" data-correct="true">Spring AI 提供的大模型调用 API</button>
+    <button class="quiz-opt" data-correct="false">操作系统底层的网络协议</button>
+    <div class="quiz-fb" id="fb2"></div>
+  </div>
+
+  <div class="quiz" id="quiz3">
+    <div class="quiz-q">第 3 题：为什么我们要先补 Java、再补 Spring Boot、最后才深入 Spring AI？</div>
+    <button class="quiz-opt" data-correct="false">因为 Java 比 Spring AI 更难学</button>
+    <button class="quiz-opt" data-correct="true">因为三层是从底到顶层层依赖的</button>
+    <button class="quiz-opt" data-correct="false">因为 Spring AI 已经被淘汰了</button>
+    <button class="quiz-opt" data-correct="false">因为测试工程师不配直接学 AI</button>
+    <div class="quiz-fb" id="fb3"></div>
+  </div>
+
+  <!-- 6. 本节胜利 -->
+  <div class="win">
+    <div class="card-label">本节你获得的胜利</div>
+    <p style="margin:0.3rem 0 0">现在你能用一句话向同事解释 Spring AI 是什么、它在技术栈哪一层、以及为什么你要先补地基。这个"全局地图"比任何代码细节都重要——你不会再迷路了。</p>
+  </div>
+
+  <!-- 7. 推荐阅读 -->
+  <div class="reading">
+    <div class="card-label">推荐 primary source（高质量一手资料）</div>
+    <p style="margin:0.5rem 0 0">两个权威入口，先收藏：<br>
+    • <a href="https://docs.spring.io/spring-ai/reference/index.html" target="_blank">Spring AI 官方文档</a>（底层抽象）<br>
+    • <a href="https://java2ai.com/" target="_blank">Spring AI Alibaba 官方文档</a>（★ AIHom 实际用的框架，重点看 Agent / Graph / DashScope）<br>
+    现在不用读，先点开 Alibaba 文档首页扫一眼目录，看到 "Agent / Graph" 这类词——那就是你 015-020 的地图。陌生不用慌，一站站拿下。</p>
+  </div>
+
+  <div class="card warning">
+    <div class="card-label">关于版本（重要，已从代码核实）</div>
+    <p style="margin:0">你的 AIHom 真实栈：<strong>Java 21 + Spring Boot 3 + Spring AI 1.1.2 + Spring AI Alibaba 1.1.2.0.5-qh（群核定制版）+ 通义千问（DashScope）</strong>。⚠️ 社区 Spring AI 虽已发到 2.0.0（2026-06-12，Boot 4.x），<strong>但和你的项目无关</strong>——查文档请对齐 <strong>1.1.x + Alibaba</strong>，别被网上 2.x 教程带偏。本课讲的定位与三层结构完全通用。</p>
+  </div>
+
+  <!-- 8. 追问 -->
+  <div class="ask">
+    <p>🤔 <strong>有任何看不懂的地方，直接问我。</strong>比如："依赖注入到底是啥"、"为什么是 <code>.call()</code> 不是直接调"、"AIHom 里真有这种 ChatController 吗"……没有蠢问题，我是你的私教，问就对了。</p>
+  </div>
+</div>
+
+<script>
+  // 简单的 quiz 即时反馈
+  const feedback = {
+    1: { ok: '✓ 对！Spring AI 的核心价值就是"统一"——换模型不改业务代码，就像 JDBC 统一了各种数据库。',
+         no: '想想本课一句话定位：它统一的是"各种大模型的调用方式"。不是性能工具、不是数据库、也不是前端库。' },
+    2: { ok: '✓ 对！这串链式调用（prompt→user→call→content）正是 Spring AI 的大模型调用 API。带 @ 的注解和对象自动传入才归 Spring。',
+         no: '这串 .prompt().user().call().content() 是 Spring AI 提供的，专门用来组装提问、调用大模型、取出结果。' },
+    3: { ok: '✓ 对！JDK → Spring Boot → Spring AI → 业务，是从底到顶层层依赖的。底下不懂，上面就是空中楼阁。',
+         no: '关键在"层层依赖"：Spring AI 跑在 Spring Boot 上，Spring Boot 跑在 Java 上。不分难度，只分先后。' }
+  };
+
+  function wireQuiz(id) {
+    const quiz = document.getElementById('quiz' + id);
+    const fb = document.getElementById('fb' + id);
+    const opts = quiz.querySelectorAll('.quiz-opt');
+    opts.forEach(opt => {
+      opt.addEventListener('click', () => {
+        const correct = opt.dataset.correct === 'true';
+        opts.forEach(o => o.classList.add('disabled'));
+        if (correct) {
+          opt.classList.add('correct');
+          fb.style.background = 'var(--success-light)';
+          fb.style.color = '#14532d';
+          fb.textContent = feedback[id].ok;
+        } else {
+          opt.classList.add('wrong');
+          // 同时点亮正确答案
+          opts.forEach(o => { if (o.dataset.correct === 'true') o.classList.add('correct'); });
+          fb.style.background = '#fee2e2';
+          fb.style.color = '#7f1d1d';
+          fb.textContent = feedback[id].no;
+        }
+        fb.classList.add('show');
+      });
+    });
+  }
+  [1,2,3].forEach(wireQuiz);
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 001</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a class="primary" href="0002-java-class-object.html">下一课：002 Java 的类、对象、构造方法</a></div></nav>
+</body>
+</html>

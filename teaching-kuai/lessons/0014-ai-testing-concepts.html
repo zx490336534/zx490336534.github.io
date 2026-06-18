@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0014 - AI 测试核心概念</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.5rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:2rem}
+  .desc{color:var(--text-secondary);font-size:.95rem;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.15rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem;color:var(--accent)}
+  p{margin-bottom:1rem}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;overflow-x:auto;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.6}
+  code{font-family:'JetBrains Mono',monospace;font-size:.85em;background:var(--code-bg);padding:.15rem .4rem;border-radius:4px}
+  pre code{background:none;padding:0}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.4rem}
+  .lesson-num{display:inline-block;background:var(--accent-light);color:var(--accent);padding:.2rem .6rem;border-radius:4px;font-size:.8rem;font-weight:500;margin-bottom:.5rem}
+  .step{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0}
+  .step-title{font-weight:600;color:var(--accent);margin-bottom:.5rem}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
+  .ask-agent::before{content:'💡 '}
+  .warn{background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:.9rem}
+  .warn::before{content:'⚠️ '}
+  .success{background:#dcfce7;border:1px solid #86efac;border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:.9rem}
+  .success::before{content:'✅ '}
+  .tag{display:inline-block;padding:.1rem .4rem;border-radius:4px;font-size:.7rem;font-weight:500;margin-right:.3rem}
+  .tag.special{background:#f3e8ff;color:#7c3aed}
+  .quiz{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1rem 0}
+  .quiz-q{font-weight:600;margin-bottom:.5rem}
+  .quiz-options{margin:.5rem 0 .5rem 1rem}
+  .quiz-options li{margin-bottom:.3rem}
+  .quiz-answer{color:var(--success);font-weight:500;margin-top:.75rem;padding-top:.75rem;border-top:1px dashed var(--border)}
+  nav{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:.9rem}
+  nav a{color:var(--accent);text-decoration:none}
+  nav a:hover{text-decoration:underline}
+  table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.9rem}
+  th,td{border:1px solid var(--border);padding:.6rem .8rem;text-align:left}
+  th{background:var(--code-bg);font-weight:600}
+  .info{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:.9rem}
+  .info::before{content:'ℹ️ '}
+</style>
+</head>
+<body>
+<div class="container">
+
+<span class="lesson-num">0014</span>
+<h1>🧪 AI 测试核心概念</h1>
+<p class="subtitle"><span class="tag special">专题</span> Prompt 管理 · LLM 评估 · 知识库</p>
+<p class="desc">Kuai 测试平台的核心价值在于 AI 测试能力。本课深入讲解三大核心概念：Prompt 管理（版本化、A/B 测试）、LLM 评估（DeepEval、自动评分）、知识库（RAG、向量检索），帮助你理解平台的 AI 测试方法论。</p>
+
+<!-- ==================== 1. Prompt 管理 ==================== -->
+<h2><span class="icon">📝</span> 一、Prompt 管理</h2>
+
+<p>Prompt 是 AI 应用的核心资产。Kuai 平台提供了完整的 Prompt 生命周期管理能力。</p>
+
+<h3>1.1 Prompt 版本化</h3>
+<p>每个 Prompt 都有版本历史，支持回滚、对比和审计。</p>
+
+<div class="step">
+  <div class="step-title">版本化的核心概念</div>
+  <table>
+    <tr><th>概念</th><th>说明</th></tr>
+    <tr><td><strong>Prompt 模板</strong></td><td>包含变量占位符的文本，如 <code>{{user_input}}</code></td></tr>
+    <tr><td><strong>版本号</strong></td><td>每次修改自动递增，支持语义化版本（v1.0.0）</td></tr>
+    <tr><td><strong>标签</strong></td><td>标记版本用途：<code>production</code>、<code>staging</code>、<code>experiment</code></td></tr>
+    <tr><td><strong>变更日志</strong></td><td>每次修改的说明，记录改了什么、为什么改</td></tr>
+  </table>
+</div>
+
+<pre><code>// kuai-service 中的 Prompt 版本模型
+public class PromptVersion {
+    private Long id;
+    private Long promptId;        // 所属 Prompt
+    private Integer version;      // 版本号
+    private String content;       // Prompt 内容（支持模板变量）
+    private String label;         // 标签：production / staging
+    private String changeLog;     // 变更说明
+    private Date createTime;
+}
+
+// API 示例
+GET  /api/prompt/{id}/versions           // 获取所有版本
+POST /api/prompt/{id}/versions           // 创建新版本
+GET  /api/prompt/{id}/versions/latest    // 获取最新版本</code></pre>
+
+<h3>1.2 A/B 测试</h3>
+<p>通过同时运行多个 Prompt 版本，用数据驱动决策哪个版本效果更好。</p>
+
+<div class="step">
+  <div class="step-title">A/B 测试流程</div>
+  <ol>
+    <li><strong>创建实验</strong>：选择基准版本（A）和实验版本（B）</li>
+    <li><strong>分配流量</strong>：如 50/50 或 80/20 的流量分配</li>
+    <li><strong>收集数据</strong>：记录每个版本的用户满意度、准确率、响应时间</li>
+    <li><strong>统计分析</strong>：使用统计检验判断差异是否显著</li>
+    <li><strong>决策上线</strong>：胜出版本标记为 <code>production</code></li>
+  </ol>
+</div>
+
+<pre><code>// A/B 测试配置
+{
+  "experimentName": "customer-service-v2-test",
+  "promptId": 42,
+  "variants": [
+    { "version": 3, "label": "control",   "weight": 50 },
+    { "version": 4, "label": "treatment", "weight": 50 }
+  ],
+  "metrics": ["accuracy", "user_satisfaction", "latency"],
+  "sampleSize": 1000,
+  "status": "running"
+}</code></pre>
+
+<div class="success">
+  <strong>最佳实践：</strong>每次只改一个变量（如系统提示 vs 用户提示前缀），这样才能准确归因。同时测试多个变量会混淆结果。
+</div>
+
+<!-- ==================== 2. LLM 评估 ==================== -->
+<h2><span class="icon">📊</span> 二、LLM 评估</h2>
+
+<p>LLM 的输出是非确定性的，传统测试方法（断言精确匹配）不适用。Kuai 平台采用多层次评估体系。</p>
+
+<h3>2.1 评估维度</h3>
+<table>
+  <tr><th>维度</th><th>说明</th><th>评估方法</th></tr>
+  <tr><td><strong>相关性</strong></td><td>回答是否切题</td><td>LLM-as-Judge / 人工评分</td></tr>
+  <tr><td><strong>准确性</strong></td><td>事实是否正确</td><td>与标准答案对比</td></tr>
+  <tr><td><strong>安全性</strong></td><td>是否包含有害内容</td><td>安全检测规则 + LLM 审查</td></tr>
+  <tr><td><strong>幻觉率</strong></td><td>是否编造不存在的信息</td><td>DeepEval FaithfulnessMetric</td></tr>
+  <tr><td><strong>格式合规</strong></td><td>输出格式是否符合要求</td><td>正则 / JSON Schema 校验</td></tr>
+</table>
+
+<h3>2.2 DeepEval 集成</h3>
+<p>DeepEval 是 Kuai 平台使用的核心 LLM 评估框架，提供开箱即用的评估指标。</p>
+
+<pre><code># DeepEval 评估示例
+from deepeval import evaluate
+from deepeval.metrics import (
+    FaithfulnessMetric,      # 幻觉检测
+    AnswerRelevancyMetric,   # 回答相关性
+    ContextualPrecisionMetric,  # 上下文精确度
+)
+from deepeval.test_case import LLMTestCase
+
+# 定义测试用例
+test_case = LLMTestCase(
+    input="什么是 RAG？",
+    actual_output="RAG 是检索增强生成...",
+    retrieval_context=["RAG (Retrieval-Augmented Generation) 是一种..."]
+)
+
+# 运行评估
+metric = FaithfulnessMetric(threshold=0.7)
+evaluate([test_case], [metric])</code></pre>
+
+<h3>2.3 自动评分机制</h3>
+<div class="step">
+  <div class="step-title">Kuai 平台的自动评分流程</div>
+  <ol>
+    <li><strong>准备测试集</strong>：input + expected_output 对，存储在评估数据集中</li>
+    <li><strong>批量运行</strong>：将测试集发送给目标 LLM，收集 actual_output</li>
+    <li><strong>自动评分</strong>：使用 DeepEval 指标自动打分（0-1）</li>
+    <li><strong>生成报告</strong>：汇总各维度得分，标注异常用例</li>
+    <li><strong>回归对比</strong>：与历史版本对比，检测质量退化</li>
+  </ol>
+</div>
+
+<pre><code>// kuai-service 评估 API
+POST /api/evaluate/run
+{
+  "promptId": 42,
+  "version": 3,
+  "model": "gpt-4",
+  "datasetId": "customer-faq-v1",
+  "metrics": ["faithfulness", "relevancy", "format"]
+}
+
+// 返回评估报告
+{
+  "runId": "eval-20240101-001",
+  "scores": {
+    "faithfulness": 0.92,
+    "relevancy": 0.87,
+    "format": 0.95
+  },
+  "totalCases": 100,
+  "passedCases": 88,
+  "failedCases": [
+    { "caseId": 23, "issue": "hallucination", "score": 0.3 }
+  ]
+}</code></pre>
+
+<div class="warn">
+  <strong>注意：</strong>LLM-as-Judge 本身也可能出错。建议对评估结果进行人工抽检，尤其是低分用例和边界用例。
+</div>
+
+<!-- ==================== 3. 知识库 ==================== -->
+<h2><span class="icon">📚</span> 三、知识库（RAG）</h2>
+
+<p>RAG（Retrieval-Augmented Generation）是让 LLM 基于外部知识回答问题的关键技术。Kuai 平台内置了知识库管理功能。</p>
+
+<h3>3.1 RAG 工作原理</h3>
+
+<pre><code>┌──────────────┐     ┌──────────────────┐     ┌──────────────┐
+│  用户提问     │────▶│  向量检索         │────▶│  Top-K 文档   │
+│ "什么是X?"   │     │  (Embedding +    │     │  相关片段     │
+│              │     │   相似度搜索)     │     │              │
+└──────────────┘     └──────────────────┘     └──────┬───────┘
+                                                     │
+                                                     ▼
+                     ┌──────────────────┐     ┌──────────────┐
+                     │  LLM 生成回答     │◀────│  组装 Prompt  │
+                     │  (基于检索结果)   │     │  "根据以下    │
+                     │                  │     │   内容回答"   │
+                     └──────────────────┘     └──────────────┘</code></pre>
+
+<h3>3.2 向量检索流程</h3>
+
+<div class="step">
+  <div class="step-title">Step 1：文档入库（Indexing）</div>
+  <p>将文档切分为 chunks，通过 Embedding 模型转为向量，存入向量数据库。</p>
+  <pre><code>// 文档处理流程
+原始文档 → 分块（Chunk） → Embedding → 向量数据库
+
+// 分块策略
+- 按段落分块（推荐，保持语义完整性）
+- 每个 chunk 约 500-1000 tokens
+- chunk 之间有 10-20% 的重叠，避免信息丢失</code></pre>
+</div>
+
+<div class="step">
+  <div class="step-title">Step 2：查询检索（Retrieval）</div>
+  <p>用户提问时，将问题转为向量，在向量数据库中搜索最相似的 Top-K 个 chunks。</p>
+  <pre><code># 检索示例
+query_embedding = embed_model.encode("什么是 RAG？")
+results = vector_db.search(query_embedding, top_k=5)
+
+# 返回最相关的 5 个文档片段
+[
+  { "content": "RAG 是检索增强生成...", "score": 0.95 },
+  { "content": "RAG 的核心思想是...",   "score": 0.89 },
+  ...
+]</code></pre>
+</div>
+
+<div class="step">
+  <div class="step-title">Step 3：增强生成（Generation）</div>
+  <p>将检索到的文档片段注入到 Prompt 中，让 LLM 基于这些内容生成回答。</p>
+  <pre><code>// 组装 RAG Prompt
+system: "你是一个知识助手。请根据以下参考内容回答用户问题。
+         如果参考内容中没有相关信息，请明确说明。"
+
+context: "
+[来源1] RAG 是 Retrieval-Augmented Generation 的缩写...
+[来源2] RAG 的核心组件包括：检索器、生成器...
+"
+
+user: "什么是 RAG？它的核心组件有哪些？"</code></pre>
+</div>
+
+<h3>3.3 Kuai 平台知识库 API</h3>
+<pre><code>// 知识库管理 API
+POST /api/kb/create              // 创建知识库
+POST /api/kb/{id}/documents      // 上传文档
+POST /api/kb/{id}/query          // 查询知识库
+GET  /api/kb/{id}/documents      // 获取文档列表
+DELETE /api/kb/{id}/documents/{docId}  // 删除文档</code></pre>
+
+<div class="info">
+  <strong>RAG 调优要点：</strong>
+  <ul>
+    <li><strong>分块大小</strong>：太小丢失上下文，太大引入噪声</li>
+    <li><strong>Top-K 值</strong>：通常 3-10，太多会超出 LLM 上下文窗口</li>
+    <li><strong>Embedding 模型选择</strong>：中文场景推荐 text2vec 或 BGE 系列</li>
+    <li><strong>混合检索</strong>：向量检索 + 关键词检索（BM25）结合效果更好</li>
+  </ul>
+</div>
+
+<div class="ask-agent">
+  <strong>遇到不懂的地方？</strong>直接问 Agent。比如：「DeepEval 的 FaithfulnessMetric 是怎么计算的？」或「RAG 的分块策略应该怎么选择？」
+</div>
+
+<!-- ==================== Quiz ==================== -->
+<h2><span class="icon">📝</span> Quiz</h2>
+
+<div class="quiz">
+  <p class="quiz-q">Q1：Prompt A/B 测试中，为什么每次只建议改一个变量？</p>
+  <ul class="quiz-options">
+    <li>A. 因为系统限制只能改一个</li>
+    <li>B. 因为同时改多个变量无法准确归因效果差异</li>
+    <li>C. 因为改多个变量会导致 API 报错</li>
+    <li>D. 因为 LLM 只能理解单变量的 Prompt</li>
+  </ul>
+  <p class="quiz-answer">✅ 答案：B — 控制变量法是实验设计的基本原则，同时改多个变量会导致无法判断是哪个变量引起的效果变化。</p>
+</div>
+
+<div class="quiz">
+  <p class="quiz-q">Q2：DeepEval 的 FaithfulnessMetric 主要检测什么问题？</p>
+  <ul class="quiz-options">
+    <li>A. 回答是否流畅</li>
+    <li>B. 回答是否包含幻觉（编造的信息）</li>
+    <li>C. 回答是否安全</li>
+    <li>D. 回答是否快速</li>
+  </ul>
+  <p class="quiz-answer">✅ 答案：B — FaithfulnessMetric 检测 LLM 输出是否忠于给定的上下文/检索结果，即是否产生了幻觉。</p>
+</div>
+
+<div class="quiz">
+  <p class="quiz-q">Q3：RAG 系统中，文档分块（Chunking）时为什么要设置重叠（Overlap）？</p>
+  <ul class="quiz-options">
+    <li>A. 为了增加存储空间利用率</li>
+    <li>B. 为了加快检索速度</li>
+    <li>C. 为了防止分块边界处的信息丢失</li>
+    <li>D. 为了让 Embedding 模型更准确</li>
+  </ul>
+  <p class="quiz-answer">✅ 答案：C — 分块边界处的关键信息可能被切断，设置 10-20% 的重叠可以确保跨块的语义完整性。</p>
+</div>
+
+<div class="nav-links">
+  <a href="0013-cross-repo-architecture.html">← 三仓库协作架构</a>
+  <a href="index.html">🗺️ 完整学习地图</a>
+  <a href="service/0002-kuai-service-architecture.html">后端架构深度追踪 →</a>
+</div>
+
+</div>
+</body>
+</html>

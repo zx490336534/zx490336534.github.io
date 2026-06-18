@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>018 Tool Calling + MCP</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --accent: #b45309;
+    --accent-light: #fef3c7;
+    --border: #e7e5e4;
+    --code-bg: #1c1917;
+    --code-text: #f5f5f4;
+    --success: #16a34a;
+    --success-light: #dcfce7;
+    --warning: #d97706;
+    --warning-light: #fef3c7;
+    --info: #2563eb;
+    --info-light: #dbeafe;
+    --tag-java: #d97706;
+    --tag-spring: #16a34a;
+    --tag-ai: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 3rem 2rem 5rem;
+  }
+
+  .lesson-meta {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2.8rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  strong { font-weight: 700; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.25rem 0;
+  }
+  .card.info { border-left: 3px solid var(--info); background: var(--info-light); }
+  .card.warning { border-left: 3px solid var(--warning); background: var(--warning-light); }
+  .card.success { border-left: 3px solid var(--success); background: var(--success-light); }
+  .card.tip { border-left: 3px solid var(--accent); }
+
+  .card-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+  }
+
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 1.25rem 1.4rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1.25rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.86rem;
+    line-height: 1.7;
+  }
+  code { font-family: 'JetBrains Mono', monospace; }
+  p code, li code {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 0.12em 0.4em;
+    border-radius: 4px;
+    font-size: 0.85em;
+  }
+  .com { color: #a8a29e; }      /* 代码注释 */
+  .kw  { color: #fbbf24; }      /* 关键字 */
+  .ann { color: #86efac; }      /* 注解 @ */
+  .typ { color: #93c5fd; }      /* 类型 */
+  .str { color: #fda4af; }      /* 字符串 */
+
+  /* 逐行归属表 */
+  table.belong {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.25rem 0;
+    font-size: 0.9rem;
+  }
+  table.belong th, table.belong td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  table.belong th {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+  table.belong td code { font-size: 0.82em; }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.1em 0.55em;
+    border-radius: 10px;
+    color: #fff;
+    letter-spacing: 0.02em;
+  }
+  .tag.java   { background: var(--tag-java); }
+  .tag.spring { background: var(--tag-spring); }
+  .tag.ai     { background: var(--tag-ai); }
+
+  /* 学习地图 */
+  .roadmap {
+    list-style: none;
+    margin: 1.25rem 0;
+    padding: 0;
+  }
+  .roadmap li {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+  }
+  .roadmap .stage {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 0.85rem;
+    min-width: 3.2em;
+    flex-shrink: 0;
+  }
+  .roadmap .here { border-color: var(--accent); background: var(--accent-light); }
+  .roadmap .here .stage { color: var(--text); }
+
+  /* Quiz */
+  .quiz {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem 1.6rem;
+    margin: 1.5rem 0;
+  }
+  .quiz-q {
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  .quiz-opt {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--text);
+    transition: all 0.15s;
+  }
+  .quiz-opt:hover { border-color: var(--accent); }
+  .quiz-opt.correct {
+    background: var(--success-light);
+    border-color: var(--success);
+    color: #14532d;
+    font-weight: 500;
+  }
+  .quiz-opt.wrong {
+    background: #fee2e2;
+    border-color: #dc2626;
+    color: #7f1d1d;
+  }
+  .quiz-opt.disabled { cursor: default; opacity: 0.85; }
+  .quiz-fb {
+    margin-top: 0.85rem;
+    font-size: 0.9rem;
+    display: none;
+    padding: 0.7rem 0.9rem;
+    border-radius: 6px;
+    line-height: 1.7;
+  }
+  .quiz-fb.show { display: block; }
+
+  .win {
+    background: var(--success-light);
+    border-left: 3px solid var(--success);
+    border-radius: 8px;
+    padding: 1rem 1.4rem;
+    margin: 2rem 0;
+  }
+  .win .card-label { color: #14532d; }
+
+  .reading {
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.4rem;
+    margin: 1.5rem 0;
+  }
+  .reading a { color: var(--info); text-decoration: none; font-weight: 500; }
+  .reading a:hover { text-decoration: underline; }
+
+  .ask {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+  }
+
+  blockquote {
+    border-left: 3px solid var(--accent);
+    padding-left: 1rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin: 1.25rem 0;
+  }
+@media print {
+    body { background: #fff; }
+    .quiz-opt { border: 1px solid #999; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="lesson-meta">AIHom 全栈学习 · 第 018 课 · Tool Calling 与 MCP</div>
+  <h1>018 Tool Calling + MCP</h1>
+  <div class="subtitle">本节目标：搞懂大模型为什么只会"说话"不会"动手"，Tool Calling 怎么补上这个能力；MCP 是什么、为什么像 USB-C；以及 AIHom 为什么把 Tool 委托给前端执行——一个非常有意思的架构选择。</div>
+
+  <!-- 1. 痛点：模型只会说话 -->
+  <h2>大模型有个致命短板：它只会"说话"</h2>
+  <p>前面几课你已经能让通义千问聊天、流式输出、返回结构化 JSON 了。但想象一个真实场景：用户在 AIHom 里问 <strong>"帮我看一下订单 1024 的状态"</strong>。</p>
+  <p>大模型能干啥？它只能<strong>猜</strong>——"订单 1024 可能是已发货、也可能是待付款……"。它<strong>查不到</strong>你的真实数据库，<strong>调不了</strong>公司内部的订单接口，更<strong>画不出</strong>一张 2D 户型图。</p>
+  <p>说白了：大模型是一个被关在小黑屋里、只读过公开互联网的超级大脑。它没有手、没有眼睛、够不着你公司的任何系统。</p>
+
+  <div class="card tip">
+    <div class="card-label">Tool Calling 一句话定位</div>
+    <p style="margin:0"><strong>Tool Calling（函数调用）让你把自己的 Java 方法"递"给大模型，模型自己判断什么时候要调、传什么参数。</strong>模型负责决策，你的方法负责执行，结果再喂回模型继续生成回答。模型从"只会说"升级成"会动手"。</p>
+  </div>
+
+  <!-- 2. @Tool 注解 -->
+  <h2>第一步：用 @Tool 声明一个工具</h2>
+  <p>在 Spring AI 1.1.x 里，声明一个工具非常直白——写一个普通 Java 方法，加上 <code>@Tool</code> 注解，写清楚<strong>这个工具是干嘛的</strong>（这句话很关键，模型就是靠它决定要不要调用）。</p>
+
+  <pre><span class="kw">import</span> org.springframework.ai.tool.annotation.<span class="typ">Tool</span>;
+
+<span class="kw">public class</span> <span class="typ">OrderTools</span> {
+
+    <span class="ann">@Tool</span>(description = <span class="str">"根据订单号查询订单的当前状态。输入订单号(数字)，返回状态文字。"</span>)
+    <span class="kw">public</span> <span class="typ">String</span> getOrderStatus(<span class="kw">long</span> orderId) {
+        <span class="com">// 这里是普通的 Java 代码：查数据库、调接口，随你</span>
+        <span class="kw">return</span> orderService.findById(orderId).getStatus();
+    }
+
+    <span class="ann">@Tool</span>(description = <span class="str">"根据房间尺寸生成一张 2D 平面图。输入宽和高(米)，返回图片地址。"</span>)
+    <span class="kw">public</span> <span class="typ">String</span> generateFloorPlan(<span class="kw">double</span> width, <span class="kw">double</span> height) {
+        <span class="com">// 实际的画图逻辑</span>
+        <span class="kw">return</span> renderService.draw(width, height);
+    }
+}</pre>
+
+  <div class="card info">
+    <div class="card-label">小白关键点：description 是写给模型看的</div>
+    <p style="margin:0"><code>description</code> 不是写给人看的注释，而是<strong>模型的说明书</strong>。模型用它判断"用户这句话要不要调这个工具、参数怎么填"。描述写得越清楚、越具体，模型调用就越准。这叫 <strong>Prompt Engineering for Tools</strong>——一种新的提示词工程。</p>
+  </div>
+
+  <p>然后在使用 <code>ChatClient</code> 时，把这个工具挂上去：</p>
+
+  <pre><span class="typ">String</span> answer = chatClient.prompt()
+    .user(<span class="str">"帮我查一下订单 1024 发货了没"</span>)
+    .tools(<span class="kw">new</span> <span class="typ">OrderTools</span>())          <span class="com">// ★ 把工具交给模型</span>
+    .call()
+    .content();</pre>
+
+  <p>注意：你<strong>没有</strong>写任何 <code>if (问题提到订单) { 调 getOrderStatus }</code>。要不要调、怎么调，<strong>模型自己决定</strong>。这就是 Tool Calling 的魔力。</p>
+
+  <!-- 3. 工作流 -->
+  <h2>Tool Calling 的回路：画清这五步</h2>
+  <p>模型调用工具不是一步到位的，而是一个<strong>回路</strong>。理解这个回路，是本课的核心。想象用户问"订单 1024 发货了没"：</p>
+
+  <pre><span class="com">用户提问</span>                          <span class="com">① "订单 1024 发货了没"</span>
+   │
+   ▼
+<span class="typ">大模型思考</span> ────────────────────────  <span class="com">② 模型判断：这问题我答不了，需要查订单</span>
+   │                                  <span class="com">   决定调用工具 getOrderStatus(orderId=1024)</span>
+   ▼
+<span class="typ">你的 Java 方法被执行</span> ──────────────  <span class="com">③ Spring AI 自动调用你的 getOrderStatus(1024)</span>
+   │                                  <span class="com">   返回结果："已发货，顺丰 SF1234"</span>
+   ▼
+<span class="typ">结果喂回大模型</span> ────────────────────  <span class="com">④ Spring AI 把工具结果再丢给模型</span>
+   │
+   ▼
+<span class="typ">模型生成最终回答</span> ──────────────────  <span class="com">⑤ "您的订单 1024 已经发货啦，顺丰单号 SF1234"</span></pre>
+
+  <div class="card warning">
+    <div class="card-label">测试工程师视角的提醒</div>
+    <p style="margin:0">注意第 ③ 步——<strong>真正的业务逻辑（查数据库、调接口）发生在你自己的 Java 方法里，不在大模型那</strong>。以后你排查"为什么工具没被调用""为什么结果不对"，要分清是<strong>模型决策错</strong>（第②步）还是<strong>方法执行错</strong>（第③步），这两类 bug 的排查方向完全不同。</p>
+  </div>
+
+  <div class="card tip">
+    <div class="card-label">回路可以转好几圈</div>
+    <p style="margin:0">模型不限于调一个工具。它可能调 A，看结果不够，再调 B，甚至调 A 好几次。这个"思考→调用→看结果→再思考"的循环，就是后面 <strong>Agent</strong>（0011 课）的本质。现在先记住这个回路，Agent 只是把它放大了。</p>
+  </div>
+
+  <!-- 4. MCP -->
+  <h2>MCP：把工具标准化，像 USB-C 一样</h2>
+  <p>Tool Calling 解决了"模型能不能调你的方法"。但很快出现一个新问题：</p>
+  <blockquote>每个项目都在重复造工具。A 项目写了个查天气工具，B 项目想要同样的功能，得复制一遍代码。换成 Python 写的应用想用？对不起，Java 工具它用不了。</blockquote>
+
+  <p><strong>MCP（Model Context Protocol，模型上下文协议）</strong>就是为了解决这个。它把"工具/资源"标准化成一套<strong>统一协议</strong>，让工具能跨应用、跨语言复用。</p>
+
+  <div class="card tip">
+    <div class="card-label">最好的类比：USB-C</div>
+    <p style="margin:0; margin-bottom:0.6rem">想想 USB-C 接口出来之前有多乱——安卓 Micro-USB、苹果 Lightning、相机各种专用口，充电器互不通用。USB-C 一统江湖后，一根线充手机、充笔记本、接显示器都行。</p>
+    <p style="margin:0">MCP 之于 AI 工具，就是 USB-C 之于电子设备：<strong>任何 MCP Server（提供工具的一方）都能被任何 MCP Client（使用工具的大模型应用）直接调用</strong>，不用关心对方用什么语言写的。</p>
+  </div>
+
+  <table class="belong">
+    <thead>
+      <tr><th>概念</th><th>类比</th><th>在 MCP 里的角色</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>MCP Server</strong></td>
+        <td>USB-C 设备（比如 U 盘）</td>
+        <td>提供工具/资源的一方。把能力按 MCP 协议暴露出去。</td>
+      </tr>
+      <tr>
+        <td><strong>MCP Client</strong></td>
+        <td>USB-C 接口的电脑</td>
+        <td>使用工具的一方。大模型应用（比如你的 AIHom）作为 Client，去连 Server 拿工具。</td>
+      </tr>
+      <tr>
+        <td><strong>MCP 协议</strong></td>
+        <td>USB-C 电气标准</td>
+        <td>双方遵守的统一通信规则。具体在 Spring AI 里走 HTTP（SSE/WebMVC）或 stdio 传输。</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card info">
+    <div class="card-label">Spring AI 1.1.x 里 MCP 的位置</div>
+    <p style="margin:0">Spring AI 把 MCP 当成一等公民：你可以写一个 <code>@Tool</code> 方法，然后通过 starter 自动把它<strong>暴露成 MCP Server</strong>；也可以让 ChatClient 作为 <strong>MCP Client</strong> 去连远端的 MCP Server。Tool Calling 和 MCP 在 API 层面是打通的——模型不关心工具是本地方法还是远端 MCP 服务，调用方式一样。</p>
+  </div>
+
+  <!-- 5. AIHom 特色 -->
+  <h2>★ AIHom 的架构选择：部分 Tool 由前端执行</h2>
+  <p>这是本课最值得讲的部分，也是 AIHom 区别于普通 Spring AI 项目的关键设计。先看 AIHom 的真实加载方式：</p>
+
+  <pre><span class="com">Coops / Nacos 配置</span>
+  agent-base.json
+  model.json
+  prompt-{promptKey}.json
+  mcp-servers.json
+  agent-skill.json
+
+<span class="com">后端构建 Agent 时加载工具</span>
+CustomNacosReactAgentBuilder
+  -> CustomNacosMcpGatewayToolsInitializer
+  -> ToolCallback 列表
+  -> AgentLlmNode / AgentToolNode</pre>
+
+  <p>更准确地说：AIHom 后端 Agent 会从 Coops/Nacos 读取 MCP Server 配置，把工具转换成 <code>ToolCallback</code>。普通 MCP 工具由后端 callback 执行；如果工具协议是 <code>postmessage</code>，就会创建 <code>FrontendNacosMcpGatewayToolCallback</code>，真正执行交给前端页面。</p>
+
+  <p>整个回路长这样：</p>
+
+  <pre><span class="com">用户在 AIHom 前端输入</span>           <span class="com">"帮我把这间卧室的墙刷成浅蓝色"</span>
+   │
+   ▼
+<span class="typ">前端</span> ──WebSocket/HTTP──▶ <span class="typ">AIHom 后端 Agent</span>
+                    │
+                    │  AgentLlmNode 把工具的 name/description/inputSchema 发给大模型
+                    ▼
+               <span class="typ">大模型 (通义千问)</span>
+                    │
+                    │  模型决定调用工具 paintWall(room, color)
+                    ▼
+               <span class="typ">AIHom 后端</span>
+                    │
+                    │  AgentToolNode 匹配到 postmessage ToolCallback
+                    │  PostMessageToolInterceptor 抛出 POST_MESSAGE 中断
+                    ▼
+<span class="typ">前端 (浏览器)</span> ◀──WebSocket tool_call──  收到"执行 paintWall"指令
+   │
+   │  前端真正执行：操作 Canvas / WebGL 渲染、改 3D 场景材质
+   ▼
+<span class="typ">执行结果</span> ──WebSocket tool_response──▶ <span class="typ">后端续跑 Agent</span> ──▶ <span class="typ">大模型</span> ──▶ <span class="typ">最终回答给用户</span></pre>
+
+  <div class="card warning">
+    <div class="card-label">为什么这么设计？这是本课最关键的理解</div>
+    <p style="margin:0; margin-bottom:0.6rem">因为<strong>渲染 2D/3D、操作画布的能力只在前端有</strong>。后端是 Java 进程，它<strong>画不了图、动不了浏览器里的画布</strong>。用户说"把墙刷蓝"，真正能让墙变蓝的代码在前端的 Canvas/WebGL 里。</p>
+    <p style="margin:0">所以 AIHom 的做法是：大模型仍然只看见普通 ToolDefinition；后端 Agent 负责加载工具、暴露工具定义、匹配 tool_call；遇到 <code>postmessage</code> 工具时，执行体<strong>跨越网络边界，落到前端浏览器里</strong>。WebSocket 负责承载 <code>tool_call</code> 和 <code>tool_response</code>。</p>
+  </div>
+
+  <div class="card info">
+    <div class="card-label">测试工程师视角：这个架构对测试意味着什么</div>
+    <p style="margin:0; margin-bottom:0.6rem">这个设计影响你的测试策略：<br>
+    • 工具的<strong>定义和描述</strong>来自 Coops/Nacos 与 MCP Server 详情（要测：模型能不能正确识别工具）；<br>
+    • <code>postmessage</code> 工具的<strong>真正执行</strong>在前端（要测：前端收到 WebSocket 指令后渲染对不对）；<br>
+    • 中间的 <strong>WebSocket 通道</strong>是新的测试重点（断线重连、消息格式、超时）。</p>
+    <p style="margin:0">这比传统的"接口测试"复杂一层——你要测的是一个<strong>跨前后端、跨网络的工具调用链路</strong>。这也是 AIHom 这类 AI Native 应用和普通 Web 应用最大的区别。</p>
+  </div>
+
+  <!-- 6. Quiz -->
+  <h2>小测验：确认你真的 get 到了</h2>
+
+  <div class="quiz" id="quiz1">
+    <div class="quiz-q">第 1 题：大模型本身为什么不能直接"查订单状态"？</div>
+    <button class="quiz-opt" data-correct="false">因为大模型算力不够，查数据库太慢</button>
+    <button class="quiz-opt" data-correct="true">因为大模型够不着你公司的数据库和内部接口，只能基于训练数据回答</button>
+    <button class="quiz-opt" data-correct="false">因为 Spring AI 不允许模型直接访问数据库</button>
+    <button class="quiz-opt" data-correct="false">因为订单数据太大，大模型装不下</button>
+    <div class="quiz-fb" id="fb1"></div>
+  </div>
+
+  <div class="quiz" id="quiz2">
+    <div class="quiz-q">第 2 题：在 Tool Calling 的回路里，"决定要不要调工具、传什么参数"这一步是谁做的？</div>
+    <button class="quiz-opt" data-correct="false">你的 Java 工具方法自己判断</button>
+    <button class="quiz-opt" data-correct="false">Spring AI 框架写死的规则</button>
+    <button class="quiz-opt" data-correct="true">大模型自己判断</button>
+    <button class="quiz-opt" data-correct="false">前端用户手动选择</button>
+    <div class="quiz-fb" id="fb2"></div>
+  </div>
+
+  <div class="quiz" id="quiz3">
+    <div class="quiz-q">第 3 题：AIHom 为什么把 Tool 的真正执行放在前端，而不是后端直接执行？</div>
+    <button class="quiz-opt" data-correct="false">因为后端 Java 性能太差，跑不动工具</button>
+    <button class="quiz-opt" data-correct="true">因为渲染 2D/3D、操作画布的能力只在前端浏览器里有</button>
+    <button class="quiz-opt" data-correct="false">因为 MCP 协议规定工具必须在浏览器执行</button>
+    <button class="quiz-opt" data-correct="false">因为前端代码更安全，不会被攻击</button>
+    <div class="quiz-fb" id="fb3"></div>
+  </div>
+
+  <!-- 7. 本节胜利 -->
+  <div class="win">
+    <div class="card-label">本节你获得的胜利</div>
+    <p style="margin:0.3rem 0 0">现在你能向同事讲清三件事：<strong>Tool Calling 让模型从"只会说"变成"会动手"</strong>；<strong>MCP 像 USB-C，把工具标准化成跨应用复用的协议</strong>；<strong>AIHom 的 postmessage Tool 会委托给前端执行，因为真正的渲染能力只在前端</strong>。这三句话就是 AIHom 整个 AI 能力链路的地基——下一课讲 RAG，再下一课讲 Agent，都会反复用到这套"模型决策 + 工具执行"的模式。</p>
+  </div>
+
+  <!-- 8. 推荐阅读 -->
+  <div class="reading">
+    <div class="card-label">推荐 primary source（高质量一手资料）</div>
+    <p style="margin:0.5rem 0 0">两个权威入口，对照看：<br>
+    • <a href="https://docs.spring.io/spring-ai/reference/1.0/tool-calling.html" target="_blank">Spring AI 官方文档 · Tool Calling</a>（底层抽象，1.1.x 路径）<br>
+    • <a href="https://java2ai.com/" target="_blank">Spring AI Alibaba 官方文档</a>（★ 重点看 MCP / Tool / DashScope 部分，AIHom 实际用的框架）<br>
+    现在不用全读，先在两个文档里搜 "Tool" 和 "MCP" 这两个词，扫一眼目录和示例代码长什么样——熟悉一下"地形"，下一站我们就会真正动手写。</p>
+  </div>
+
+  <div class="card warning">
+    <div class="card-label">关于版本（重要，对齐 AIHom 真实栈）</div>
+    <p style="margin:0">AIHom 真实栈：<strong>Spring AI 1.1.2 + Spring AI Alibaba 1.1.2.0.5-qh + spring-ai-starter-mcp-server-webmvc</strong>。⚠️ 社区 Spring AI 已发到 2.0.0，<strong>但和你的项目无关</strong>——查文档请锁定 <strong>1.1.x + Alibaba</strong>，别被 2.x 的 <code>@Tool</code> 写法变化带偏。本课讲的回路和 MCP 思想在 1.x / 2.x 完全通用。</p>
+  </div>
+
+  <!-- 9. 追问 -->
+  <div class="ask">
+    <p>🤔 <strong>有任何看不懂的地方，直接问我。</strong>比如："description 写得不好会怎样""postmessage 工具为什么要中断再续跑""MCP Server 和普通 HTTP 接口有啥区别""AIHom 里真的有 paintWall 这种工具吗"……没有蠢问题，我是你的私教，问就对了。</p>
+  </div>
+</div>
+
+<script>
+  // 简单的 quiz 即时反馈
+  const feedback = {
+    1: { ok: '✓ 对！大模型是"关在小黑屋里的超级大脑"——它只能基于训练时见过的数据说话，够不着你公司的实时数据库和内部接口。Tool Calling 就是给它"伸出手"的能力。',
+         no: '想想小黑屋的比喻：模型不是算力不够，也不是被谁禁止，而是它根本没有连接到你公司系统的通道——它"够不着"。Tool Calling 就是搭这条通道。' },
+    2: { ok: '✓ 对！这正是 Tool Calling 最魔幻的地方——你只写方法 + 描述，要不要调、传什么参数，全是模型自己判断的。你不用写任何 if-else。',
+         no: '记住：工具方法自己不会主动跑，Spring AI 也没有写死规则。是"大模型读了你写的 description，自己决定"调不调、怎么调。这就是 Tool Calling 的核心。' },
+    3: { ok: '✓ 对！这是 AIHom postmessage 工具设计的关键——渲染 2D/3D、操作 Canvas/WebGL 画布的能力只存在于前端浏览器，Java 后端根本没有这些能力。所以这类工具的执行体必须落在前端，后端通过 WebSocket 承载 tool_call 和 tool_response。',
+         no: '核心在"能力在哪"：画图、渲染、操作画布这些能力前端浏览器才有，后端 Java 没有。不是性能问题，不是协议规定，更不是安全问题——纯粹是"谁有能力干这事"。' }
+  };
+
+  function wireQuiz(id) {
+    const quiz = document.getElementById('quiz' + id);
+    const fb = document.getElementById('fb' + id);
+    const opts = quiz.querySelectorAll('.quiz-opt');
+    opts.forEach(opt => {
+      opt.addEventListener('click', () => {
+        const correct = opt.dataset.correct === 'true';
+        opts.forEach(o => o.classList.add('disabled'));
+        if (correct) {
+          opt.classList.add('correct');
+          fb.style.background = 'var(--success-light)';
+          fb.style.color = '#14532d';
+          fb.textContent = feedback[id].ok;
+        } else {
+          opt.classList.add('wrong');
+          // 同时点亮正确答案
+          opts.forEach(o => { if (o.dataset.correct === 'true') o.classList.add('correct'); });
+          fb.style.background = '#fee2e2';
+          fb.style.color = '#7f1d1d';
+          fb.textContent = feedback[id].no;
+        }
+        fb.classList.add('show');
+      });
+    });
+  }
+  [1,2,3].forEach(wireQuiz);
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 018</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0017-streaming-structured-memory.html">上一课：017 流式响应 + 结构化输出 + 会话记忆</a><a class="primary" href="0019-rag.html">下一课：019 RAG 检索增强生成</a></div></nav>
+</body>
+</html>

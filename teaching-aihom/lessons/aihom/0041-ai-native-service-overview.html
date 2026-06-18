@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>041 ai-native-service 项目全景</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --accent: #b45309;
+    --accent-light: #fef3c7;
+    --border: #e7e5e4;
+    --code-bg: #f5f5f4;
+    --success: #16a34a;
+    --warning: #d97706;
+    --info: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .card.info { border-left: 3px solid var(--info); }
+  .card.warning { border-left: 3px solid var(--warning); }
+  .card.success { border-left: 3px solid var(--success); }
+
+  .card-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+  .card.info .card-label { color: var(--info); }
+  .card.warning .card-label { color: var(--warning); }
+  .card.success .card-label { color: var(--success); }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    font-size: 0.88em;
+  }
+
+  pre {
+    background: #1c1917;
+    color: #e7e5e4;
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  pre .comment { color: #78716c; }
+  pre .keyword { color: #f59e0b; }
+  pre .string { color: #86efac; }
+  pre .dir { color: #93c5fd; }
+  pre .file { color: #e7e5e4; }
+  pre .important { color: #fbbf24; font-weight: 500; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.92rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .tree { margin: 1rem 0; }
+
+  .quiz {
+    background: var(--accent-light);
+    border: 1px solid #fbbf24;
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .quiz-title {
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+  .quiz-options { list-style: none; }
+  .quiz-options li {
+    padding: 0.5rem 0.75rem;
+    margin: 0.35rem 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+  }
+  .quiz-options li:hover { background: #fde68a33; border-color: #fbbf24; }
+  .quiz-options li.correct { background: #dcfce7; border-color: #16a34a; }
+  .quiz-options li.wrong { background: #fee2e2; border-color: #ef4444; }
+  .quiz-feedback {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    display: none;
+    font-size: 0.9rem;
+  }
+
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+  }
+  .flow-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .flow-arrow { color: var(--text-secondary); }
+
+  .next-lesson {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .next-lesson a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .next-lesson a:hover { text-decoration: underline; }
+
+  .ask-agent {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+    color: #1e40af;
+  }
+  .ask-agent::before { content: '💡 '; }
+
+  ul, ol { margin: 0.5rem 0 1rem 1.5rem; }
+  li { margin-bottom: 0.3rem; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>041 ai-native-service 项目全景</h1>
+<p class="subtitle">理解后端核心仓库的结构、架构和关键入口 — 为后续功能开发打下基础</p>
+
+<!-- ==================== Section 1 ==================== -->
+<h2>1. 这个项目是什么</h2>
+
+<p><code>ai-native-service</code> 是 AI Home 产品的<strong>后端大脑</strong>。它接收用户在前端对话框中发送的消息，通过 AI Agent 决策路由，调用各种工具（户型识别、自动布局、图像生成等），最终把结果返回给前端。</p>
+
+<div class="card info">
+  <div class="card-label">一句话定位</div>
+  <p>Spring Boot 3 + Spring AI 驱动的 <strong>Multi-Agent 对话服务</strong>，负责"用户说了什么 → AI 怎么理解 → 调用什么工具 → 返回什么结果"这条完整链路。</p>
+</div>
+
+<!-- ==================== Section 2 ==================== -->
+<h2>2. 三模块结构</h2>
+
+<p>项目是一个 Maven 多模块工程，共三个子模块：</p>
+
+<table>
+  <tr><th>模块</th><th>JDK</th><th>职责</th></tr>
+  <tr><td><code>ai-native-service-common</code></td><td>Java 8</td><td>公共常量、枚举、VO — 跨模块共享的数据结构</td></tr>
+  <tr><td><code>ai-native-service-client</code></td><td>Java 8</td><td>SOA 客户端接口定义 — 让其他服务能调用 ai-native</td></tr>
+  <tr><td><code>ai-native-service-web</code></td><td>Java 21</td><td><strong>核心业务</strong> — Controller、Agent、Service、Tool 全在这里</td></tr>
+</table>
+
+<div class="card warning">
+  <div class="card-label">开发重点</div>
+  <p>你 90% 的开发工作都在 <code>ai-native-service-web</code> 模块里。common 和 client 只在需要新增跨服务接口或共享类型时才动。</p>
+</div>
+
+<!-- ==================== Section 3 ==================== -->
+<h2>3. 核心架构：四层协作</h2>
+
+<pre>
+┌─────────────────────────────────────────────────────┐
+│  <span class="important">前端 (ai-home)</span>                                      │
+│  React + agent-conversation-sdk                      │
+│  通过 WebSocket 发消息、收流式响应、执行前端 MCP 工具     │
+└──────────────────────┬──────────────────────────────┘
+                       │ WebSocket / STOMP 帧 + RawSocketMessage 业务体
+┌──────────────────────▼──────────────────────────────┐
+│  <span class="important">Controller 层</span>                                       │
+│  WebSocketController → SocketService → Handler       │
+│  ConversationController / ImageController / ...       │
+└──────────────────────┬──────────────────────────────┘
+                       │
+┌──────────────────────▼──────────────────────────────┐
+│  <span class="important">Agent 层 (核心)</span>                                     │
+│  StateGraph → Supervisor Agent → 子 Agent            │
+│  Nacos 配置驱动 → 动态路由 → 工具调用                   │
+└──────────────────────┬──────────────────────────────┘
+                       │
+┌──────────────────────▼──────────────────────────────┐
+│  <span class="important">Tool 层</span>                                             │
+│  本地工具: FloorplanToStructure, LayoutFloorplan,     │
+│           MatchFurniture, EditImage, ...              │
+│  前端工具: 通过 MCP 协议让前端执行 3D 渲染等操作         │
+│  外部服务: auto-layout-service (自动布局引擎)           │
+└─────────────────────────────────────────────────────┘
+</pre>
+
+<!-- ==================== Section 4 ==================== -->
+<h2>4. 一条消息的完整旅程</h2>
+
+<p>当用户在 AI Home 前端输入 "帮我设计一个现代风格的客厅"，这条消息经历了什么？</p>
+
+<div class="flow">
+  <span class="flow-step">用户发消息</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">WebSocket</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">SendMessageHandler</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">MessageProcessService</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">StateGraph 执行</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">Supervisor 路由</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">子 Agent</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">Tool 调用</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">流式返回</span>
+</div>
+
+<p>关键步骤拆解：</p>
+<ol>
+  <li><strong>WebSocket 接收</strong> — <code>WebSocketController</code> 收到消息，转给 <code>SocketService</code></li>
+  <li><strong>消息处理</strong> — <code>SendMessageHandlerImpl</code> 加并发锁（同一用户同时只能有一个对话），调用 <code>MessageProcessService</code></li>
+  <li><strong>StateGraph 执行</strong> — 从数据库加载图配置，构建状态图，执行 Agent 节点</li>
+  <li><strong>Supervisor 路由</strong> — <code>CustomSupervisorAgent</code> 根据用户意图，决定路由到哪个子 Agent（如 <code>Floorplan_to_Design</code>、<code>Image_Editor</code>）</li>
+  <li><strong>Tool 调用</strong> — 子 Agent 调用具体工具（如 <code>FloorplanToStructureTool</code> 识别户型图）</li>
+  <li><strong>流式返回</strong> — 结果通过 WebSocket 流式推送给前端</li>
+</ol>
+
+<div class="ask-agent">
+  不理解某个步骤？随时问我。比如 "StateGraph 是什么" 或 "Supervisor 怎么决定路由到哪个子 Agent"。
+</div>
+
+<!-- ==================== Section 5 ==================== -->
+<h2>5. 你需要认识的核心目录</h2>
+
+<pre>
+ai-native-service-web/src/main/java/.../web/
+├── <span class="dir">controller/</span>      <span class="comment"># REST + WebSocket 入口</span>
+│   ├── WebSocketController.java      <span class="comment"># WebSocket 连接管理</span>
+│   ├── ConversationController.java   <span class="comment"># 对话 HTTP API</span>
+│   ├── StateGraphController.java     <span class="comment"># 状态图管理 API</span>
+│   ├── ImageController.java          <span class="comment"># 图像生成 API</span>
+│   └── CreditController.java         <span class="comment"># 积分/额度 API</span>
+│
+├── <span class="dir">agent/</span>           <span class="comment"># AI Agent 实现</span>
+│   ├── CustomSupervisorAgent.java    <span class="comment"># Supervisor 主代理</span>
+│   ├── CustomNacosAgentBuilderFactory.java  <span class="comment"># Nacos 配置驱动的 Agent 工厂</span>
+│   └── CustomSupervisorEdgeAction.java      <span class="comment"># Supervisor 路由决策</span>
+│
+├── <span class="dir">service/</span>         <span class="comment"># 业务服务层</span>
+│   ├── impl/MessageProcessService.java  <span class="comment"># 消息处理核心（入口）</span>
+│   ├── impl/StateGraphServiceImpl.java  <span class="comment"># 状态图执行引擎</span>
+│   ├── socket/impl/SendMessageHandlerImpl.java  <span class="comment"># 发消息处理</span>
+│   └── socket/impl/SocketServiceImpl.java       <span class="comment"># WebSocket 服务</span>
+│
+├── <span class="dir">tool/</span>            <span class="comment"># 本地工具（Agent 可调用）</span>
+│   ├── FloorplanToStructureTool.java <span class="comment"># 户型图 → 结构识别</span>
+│   ├── LayoutFloorplanTool.java      <span class="comment"># 布局生成</span>
+│   ├── MatchFurnitureTool.java       <span class="comment"># 商品匹配</span>
+│   ├── EditImageTool.java            <span class="comment"># 图片编辑</span>
+│   └── OptimizeRenderingTool.java    <span class="comment"># 渲染优化</span>
+│
+├── <span class="dir">factory/</span>         <span class="comment"># 工厂模式（创建 Agent/Graph/Tool）</span>
+│   ├── StateGraphFactory.java        <span class="comment"># 状态图工厂</span>
+│   ├── AgentNodeFactory.java         <span class="comment"># Agent 节点工厂</span>
+│   └── ToolCallBackFactory.java      <span class="comment"># 工具回调工厂</span>
+│
+├── <span class="dir">processor/</span>       <span class="comment"># 异步任务处理器</span>
+│   └── base/BaseRedisTaskAsyncProcessor.java  <span class="comment"># Redis 异步任务基类</span>
+│
+├── <span class="dir">po/</span>              <span class="comment"># 数据库实体（持久化对象）</span>
+│   ├── ConversationPo.java
+│   ├── MessagePo.java
+│   ├── StateGraphPo.java
+│   └── GraphNodesPo.java
+│
+└── <span class="dir">enums/</span>           <span class="comment"># 枚举定义</span>
+    ├── AgentStatus.java              <span class="comment"># Agent 状态</span>
+    ├── SocketMessageType.java        <span class="comment"># WebSocket 消息类型</span>
+    └── ToolEnum.java                 <span class="comment"># 工具枚举</span>
+</pre>
+
+<!-- ==================== Section 6 ==================== -->
+<h2>6. 核心概念速查</h2>
+
+<h3>StateGraph（状态图）</h3>
+<p>不是简单的 if-else 流程，而是一个<strong>可配置的工作流图</strong>。每个节点是一个 Agent 或 Tool，边定义了节点间的流转逻辑。配置存在数据库里，支持动态更新、版本控制。</p>
+
+<h3>Supervisor Agent（监督代理）</h3>
+<p>整个系统的"调度员"。收到用户消息后，Supervisor 根据意图决定路由到哪个子 Agent。比如"设计户型图"路由到 <code>Floorplan_to_Design</code>，"编辑图片"路由到 <code>Image_Editor</code>。</p>
+
+<h3>MCP 工具桥接</h3>
+<p>后端需要动前端资源时（如 3D 渲染），不走 HTTP 轮询，而是通过 WebSocket 发 Tool Call 让前端执行再回传。这就是"前端 MCP 工具"。</p>
+
+<h3>Nacos 配置驱动</h3>
+<p>Agent 的 prompt、模型参数、工具列表等都存在 Nacos 配置中心，支持热更新，不需要重启服务。</p>
+
+<!-- ==================== Quiz ==================== -->
+<h2>7. 自检 Quiz</h2>
+
+<div class="quiz" id="quiz1">
+  <div class="quiz-title">Q1: 用户发消息后，第一个处理消息的类是？</div>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz1', 0)">A. CustomSupervisorAgent</li>
+    <li onclick="checkQuiz('quiz1', 1)">B. SendMessageHandlerImpl</li>
+    <li onclick="checkQuiz('quiz1', 2)">C. MessageProcessService</li>
+    <li onclick="checkQuiz('quiz1', 3)">D. StateGraphFactory</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <div class="quiz-title">Q2: ai-native-service-web 模块需要的最低 JDK 版本是？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz2', 0)">A. Java 8</li>
+    <li onclick="checkQuiz('quiz2', 1)">B. Java 17</li>
+    <li onclick="checkQuiz('quiz2', 2)">C. Java 21</li>
+    <li onclick="checkQuiz('quiz2', 3)">D. Java 22</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <div class="quiz-title">Q3: Supervisor Agent 决定路由到哪个子 Agent 的配置存储在哪里？</div>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz3', 0)">A. application.yml</li>
+    <li onclick="checkQuiz('quiz3', 1)">B. Nacos 配置中心</li>
+    <li onclick="checkQuiz('quiz3', 2)">C. MySQL 数据库</li>
+    <li onclick="checkQuiz('quiz3', 3)">D. 代码硬编码</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<!-- ==================== Next ==================== -->
+
+
+  <h3>推荐阅读</h3>
+  <ul>
+    <li><a href="https://docs.spring.io/spring-ai/reference/">Spring AI 官方文档</a> — 理解 Agent、Tool、ChatModel 等核心概念</li>
+    <li><code>ai-native-service-web/AGENTS.md</code> — 项目自身的架构文档</li>
+  </ul>
+</div>
+</div>
+
+<script>
+function checkQuiz(quizId, selected) {
+  const quiz = document.getElementById(quizId);
+  const options = quiz.querySelector('.quiz-options');
+  const correct = parseInt(options.dataset.correct);
+  const items = options.querySelectorAll('li');
+  const feedback = quiz.querySelector('.quiz-feedback');
+
+  items.forEach((item, i) => {
+    item.onclick = null;
+    if (i === correct) item.classList.add('correct');
+    if (i === selected && i !== correct) item.classList.add('wrong');
+  });
+
+  const feedbacks = {
+    quiz1: {
+      correct: '✓ 对！WebSocket 收到消息后，由 SendMessageHandlerImpl 先处理（加锁），再交给 MessageProcessService。',
+      wrong: '✗ 实际上是 SendMessageHandlerImpl。WebSocket → SendMessageHandlerImpl（加并发锁）→ MessageProcessService → StateGraph。'
+    },
+    quiz2: {
+      correct: '✓ 对！web 模块使用 Java 21（Spring Boot 3 要求），而 common 和 client 模块仍用 Java 8。',
+      wrong: '✗ 是 Java 21。Spring Boot 3 要求 Java 17+，这个项目选了 Java 21。'
+    },
+    quiz3: {
+      correct: '✓ 对！Agent 配置（prompt、模型、工具列表）存在 Nacos 配置中心，支持热更新不重启。',
+      wrong: '✗ 是 Nacos 配置中心。这是项目的一大特色 — 所有 Agent 配置都可以动态调整。'
+    }
+  };
+
+  feedback.style.display = 'block';
+  feedback.textContent = selected === correct
+    ? feedbacks[quizId].correct
+    : feedbacks[quizId].wrong;
+  feedback.style.background = selected === correct ? '#dcfce7' : '#fee2e2';
+}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 041</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0040-cross-repo-development-flow.html">上一课：040 AIHom 前端入口 09：跨仓开发工作流</a><a class="primary" href="0042-auto-layout-service-overview.html">下一课：042 auto-layout-service 项目全景</a></div></nav>
+</body>
+</html>

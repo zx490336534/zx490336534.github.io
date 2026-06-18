@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>015 Spring AI vs Spring AI Alibaba + DashScope</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --accent: #b45309;
+    --accent-light: #fef3c7;
+    --border: #e7e5e4;
+    --code-bg: #1c1917;
+    --code-text: #f5f5f4;
+    --success: #16a34a;
+    --success-light: #dcfce7;
+    --warning: #d97706;
+    --warning-light: #fef3c7;
+    --info: #2563eb;
+    --info-light: #dbeafe;
+    --tag-java: #d97706;
+    --tag-spring: #16a34a;
+    --tag-ai: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 3rem 2rem 5rem;
+  }
+
+  .lesson-meta {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2.8rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  strong { font-weight: 700; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.25rem 0;
+  }
+  .card.info { border-left: 3px solid var(--info); background: var(--info-light); }
+  .card.warning { border-left: 3px solid var(--warning); background: var(--warning-light); }
+  .card.success { border-left: 3px solid var(--success); background: var(--success-light); }
+  .card.tip { border-left: 3px solid var(--accent); }
+
+  .card-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+  }
+
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 1.25rem 1.4rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1.25rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.86rem;
+    line-height: 1.7;
+  }
+  code { font-family: 'JetBrains Mono', monospace; }
+  p code, li code {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 0.12em 0.4em;
+    border-radius: 4px;
+    font-size: 0.85em;
+  }
+  .com { color: #a8a29e; }      /* 代码注释 */
+  .kw  { color: #fbbf24; }      /* 关键字 */
+  .ann { color: #86efac; }      /* 注解 @ */
+  .typ { color: #93c5fd; }      /* 类型 */
+  .str { color: #fda4af; }      /* 字符串 */
+
+  /* 逐行归属表 */
+  table.belong {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.25rem 0;
+    font-size: 0.9rem;
+  }
+  table.belong th, table.belong td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  table.belong th {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+  table.belong td code { font-size: 0.82em; }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.1em 0.55em;
+    border-radius: 10px;
+    color: #fff;
+    letter-spacing: 0.02em;
+  }
+  .tag.java   { background: var(--tag-java); }
+  .tag.spring { background: var(--tag-spring); }
+  .tag.ai     { background: var(--tag-ai); }
+
+  /* 学习地图 */
+  .roadmap {
+    list-style: none;
+    margin: 1.25rem 0;
+    padding: 0;
+  }
+  .roadmap li {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+  }
+  .roadmap .stage {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 0.85rem;
+    min-width: 3.2em;
+    flex-shrink: 0;
+  }
+  .roadmap .here { border-color: var(--accent); background: var(--accent-light); }
+  .roadmap .here .stage { color: var(--text); }
+
+  /* Quiz */
+  .quiz {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem 1.6rem;
+    margin: 1.5rem 0;
+  }
+  .quiz-q {
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  .quiz-opt {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--text);
+    transition: all 0.15s;
+  }
+  .quiz-opt:hover { border-color: var(--accent); }
+  .quiz-opt.correct {
+    background: var(--success-light);
+    border-color: var(--success);
+    color: #14532d;
+    font-weight: 500;
+  }
+  .quiz-opt.wrong {
+    background: #fee2e2;
+    border-color: #dc2626;
+    color: #7f1d1d;
+  }
+  .quiz-opt.disabled { cursor: default; opacity: 0.85; }
+  .quiz-fb {
+    margin-top: 0.85rem;
+    font-size: 0.9rem;
+    display: none;
+    padding: 0.7rem 0.9rem;
+    border-radius: 6px;
+    line-height: 1.7;
+  }
+  .quiz-fb.show { display: block; }
+
+  .win {
+    background: var(--success-light);
+    border-left: 3px solid var(--success);
+    border-radius: 8px;
+    padding: 1rem 1.4rem;
+    margin: 2rem 0;
+  }
+  .win .card-label { color: #14532d; }
+
+  .reading {
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.4rem;
+    margin: 1.5rem 0;
+  }
+  .reading a { color: var(--info); text-decoration: none; font-weight: 500; }
+  .reading a:hover { text-decoration: underline; }
+
+  .ask {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+  }
+
+  blockquote {
+    border-left: 3px solid var(--accent);
+    padding-left: 1rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin: 1.25rem 0;
+  }
+@media print {
+    body { background: #fff; }
+    .quiz-opt { border: 1px solid #999; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="lesson-meta">AIHom 全栈学习 · 第 015 课 · Spring AI 与 DashScope</div>
+  <h1>015 Spring AI vs Spring AI Alibaba + DashScope</h1>
+  <div class="subtitle">本节目标：彻底讲清"Spring AI"和"Spring AI Alibaba"是什么关系、谁包含谁，看懂 DashScope 为什么是 AIHom 的模型入口，并把"换模型只改配置"这句话在你脑子里真正落地。</div>
+
+  <!-- 1. 承上启下 -->
+  <h2>从这里开始，进入 Spring AI 与 Agent 主线</h2>
+  <p>前五课你补完了 Java 的类/注解/泛型（<a href="./0002-java-class-object.html">0002</a>、<a href="./0003-java-annotation-interface-generic.html">0003</a>），又补完了 Spring 的依赖注入、注解、自动配置和 yml（<a href="./0004-spring-di-and-annotations.html">0004</a>、<a href="./0005-spring-autoconfig-yml.html">0005</a>）。地基打完了。</p>
+  <p>从这节课开始，我们踩进 AIHom 真正的核心。还记得 <a href="./0001-spring-ai-overview.html">0001</a> 课那张写明"AIHom 真正用的是 Spring AI Alibaba"的卡片吗？这里就把它彻底展开。</p>
+
+  <div class="card tip">
+    <div class="card-label">一句话先压住全场</div>
+    <p style="margin:0"><strong>Spring AI 是底层统一抽象（造标准），Spring AI Alibaba 是阿里在它上面做的扩展层（加国产模型 + Agent + Graph + Nacos）。</strong>AIHom 站在扩展层之上，所以你以后查资料、写代码，盯的都是 Alibaba 这一层的 API。</p>
+  </div>
+
+  <!-- 2. 关系图 -->
+  <h2>先看清：谁包含谁、谁依赖谁</h2>
+  <p>把三者画成一张图就一目了然。<strong>下面的每一层都"不知道"上面有什么，而上面的层"依赖"下面的层</strong>——这正是分层架构的本质：</p>
+
+  <pre><span class="com">┌─────────────────────────────────────────────┐</span>
+<span class="com">│  AIHom 业务代码（你最终要写的地方）         │</span>   <span class="com">← 最顶层</span>
+<span class="com">└───────────────────────┬─────────────────────┘</span>
+                        <span class="kw">依赖</span>
+<span class="com">┌───────────────────────▼─────────────────────┐</span>
+<span class="com">│  </span><span class="typ">Spring AI Alibaba</span> <span class="str">1.1.2.0.5-qh</span>        <span class="com">★ 核心</span>
+<span class="com">│  ├─ </span><span class="ann">DashScope</span><span class="com"> 适配（通义千问接入）        │</span>
+<span class="com">│  ├─ </span><span class="ann">Agent</span><span class="com"> 框架（多步推理 + 工具调用）   │</span>
+<span class="com">│  ├─ </span><span class="ann">StateGraph</span><span class="com"> / Graph（流程编排）        │</span>
+<span class="com">│  └─ </span><span class="ann">Nacos</span><span class="com"> 集成（配置中心 / 注册中心）     │</span>
+<span class="com">└───────────────────────┬─────────────────────┘</span>
+                        <span class="kw">扩展 / 依赖</span>
+<span class="com">┌───────────────────────▼─────────────────────┐</span>
+<span class="com">│  </span><span class="typ">Spring AI</span> <span class="str">1.1.2</span>                          <span class="com">← 底层标准</span>
+<span class="com">│  统一抽象：ChatClient / Prompt / Memory …   │</span>
+<span class="com">└───────────────────────┬─────────────────────┘</span>
+                        <span class="kw">跑在</span>
+<span class="com">┌───────────────────────▼─────────────────────┐</span>
+<span class="com">│  </span><span class="typ">Spring Boot</span> <span class="str">3</span>（Jetty）+ <span class="typ">Java</span> <span class="str">21</span>         <span class="com">← 地基</span>
+<span class="com">└─────────────────────────────────────────────┘</span></pre>
+
+  <div class="card info">
+    <div class="card-label">关键认知：Alibaba "包含于" Spring AI 体系，又"多包了"一层</div>
+    <p style="margin:0">准确说：<strong>Spring AI Alibaba 是 Spring AI 生态里的一个扩展项目</strong>，它必须依赖 Spring AI 才能跑（所以是"包含于"生态、站在 Spring AI 肩上）；同时它又<strong>额外包了一层</strong>国产模型适配和 Agent 编排能力，AIHom 直接调的就是这一层的 API。换句话说——<strong>Spring AI 给了"统一接口"，Alibaba 给了"通义千问的实现 + Agent 编排工具"</strong>。</p>
+  </div>
+
+  <!-- 3. Alibaba 多做了什么 -->
+  <h2>Alibaba 在 Spring AI 之上，多做了这四件事</h2>
+  <p>你可能会问：既然 Spring AI 已经统一了大模型调用，为什么还要 Alibaba？因为 Spring AI 原生只"懂"OpenAI 那一套协议，国产模型、Agent 编排、配置中心这些它不管。Alibaba 专门补上：</p>
+
+  <table class="belong">
+    <thead>
+      <tr><th>能力</th><th>Spring AI 有吗</th><th>Alibaba 额外做了什么（AIHom 直接用）</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>DashScope / 通义千问接入</strong></td>
+        <td>没有原生支持</td>
+        <td>把通义千问的 DashScope API 适配成 Spring AI 的统一接口，让你用 <code>ChatClient</code> 就能调国产模型</td>
+      </tr>
+      <tr>
+        <td><strong>Agent 框架</strong></td>
+        <td>只有基础工具调用</td>
+        <td>提供 <code>Agent</code> 抽象，支持多步推理、自动决定调用哪个工具，是 AIHom 智能体的骨架</td>
+      </tr>
+      <tr>
+        <td><strong>StateGraph / Graph 编排</strong></td>
+        <td>没有</td>
+        <td>用"节点 + 连线"的方式编排复杂 AI 流程（先检索→再判断→再生成），AIHom 大量靠它</td>
+      </tr>
+      <tr>
+        <td><strong>Nacos 集成</strong></td>
+        <td>没有</td>
+        <td>把模型配置、Prompt 模板等放到 Nacos 配置中心，动态刷新不用重启</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card warning">
+    <div class="card-label">这就是 AIHom 选 Alibaba 而非纯 Spring AI 的根本原因</div>
+    <p style="margin:0">纯 Spring AI 接不了通义千问，也没有 Agent/Graph 编排能力。AIHom 是群核的国产化项目，必须用通义千问 + 需要复杂流程编排，<strong>所以只能选 Alibaba 这一层</strong>。这也是为什么 0011 课（Agent/StateGraph）和 0009 课（Tool/MCP）会大量出现 Alibaba 特有的 API。</p>
+  </div>
+
+  <!-- 4. DashScope -->
+  <h2>DashScope 是什么：AIHom 的模型入口</h2>
+  <p>这里有个最容易混淆的点，先帮你掰开：</p>
+
+  <ul>
+    <li><strong>通义千问（Qwen）</strong>——阿里训练出来的大语言模型本身，是一堆神经网络权重。</li>
+    <li><strong>DashScope</strong>——阿里提供的<strong>模型服务 API 网关</strong>。你不可能直接"调用模型权重"，而是通过 DashScope 这个 HTTP 接口去调它。通义千问、通义万相（图像）等模型都挂在 DashScope 后面。</li>
+  </ul>
+
+  <div class="card tip">
+    <div class="card-label">打个比方，立刻懂</div>
+    <p style="margin:0">通义千问 = <strong>后厨的厨师</strong>（真正做饭的人）；DashScope = <strong>餐厅的菜单 + 服务台</strong>（你点单、传菜、结账都走这里）。你作为顾客（AIHom 代码）永远不会直接冲进后厨，而是通过服务台下单。<strong>AIHom 的模型入口就是 DashScope，不是 OpenAI，也不是直连模型。</strong></p>
+  </div>
+
+  <div class="card info">
+    <div class="card-label">为什么反复强调"不是 OpenAI"</div>
+    <p style="margin:0">网上 90% 的 Spring AI 教程默认接 OpenAI，配置项是 <code>spring.ai.openai.api-key</code>。但你的 AIHom 是国内项目，接的是 DashScope，配置项是 <code>spring.ai.dashscope.*</code>。<strong>照搬 OpenAI 教程会直接跑不起来</strong>——这就是为什么要专门讲这一课。</p>
+  </div>
+
+  <!-- 5. 怎么接通义千问 -->
+  <h2>怎么把通义千问接进项目：依赖 + yml 配置</h2>
+  <p>核心就两步：<strong>① 引入 Alibaba 的 DashScope starter 依赖；② 在 yml 里填 api-key。</strong>记牢一个铁律——<strong>密钥永远写在配置里，绝不写死在 Java 代码中</strong>（这既是安全要求，也是"换环境只改配置"的基础）。</p>
+
+  <h3>第 ① 步：pom.xml 加依赖</h3>
+  <pre><span class="com">&lt;!-- Spring AI Alibaba 的 DashScope 自动配置 starter --&gt;</span>
+<span class="kw">&lt;dependency&gt;</span>
+    <span class="kw">&lt;groupId&gt;</span><span class="typ">com.alibaba.cloud.ai</span><span class="kw">&lt;/groupId&gt;</span>
+    <span class="kw">&lt;artifactId&gt;</span><span class="typ">spring-ai-alibaba-autoconfigure-dashscope</span><span class="kw">&lt;/artifactId&gt;</span>
+    <span class="kw">&lt;version&gt;</span><span class="str">1.1.2.0.5-qh</span><span class="kw">&lt;/version&gt;</span>   <span class="com">&lt;!-- 群核定制版，对齐 AIHom --&gt;</span>
+<span class="kw">&lt;/dependency&gt;</span>
+
+<span class="com">&lt;!-- 通常还需要 Spring AI 的 BOM 统一版本 --&gt;</span>
+<span class="kw">&lt;dependencyManagement&gt;</span>
+    <span class="kw">&lt;dependencies&gt;</span>
+        <span class="kw">&lt;dependency&gt;</span>
+            <span class="kw">&lt;groupId&gt;</span><span class="typ">org.springframework.ai</span><span class="kw">&lt;/groupId&gt;</span>
+            <span class="kw">&lt;artifactId&gt;</span><span class="typ">spring-ai-bom</span><span class="kw">&lt;/artifactId&gt;</span>
+            <span class="kw">&lt;version&gt;</span><span class="str">1.1.2</span><span class="kw">&lt;/version&gt;</span>
+            <span class="kw">&lt;type&gt;</span><span class="typ">pom</span><span class="kw">&lt;/type&gt;</span>
+            <span class="kw">&lt;scope&gt;</span><span class="typ">import</span><span class="kw">&lt;/scope&gt;</span>
+        <span class="kw">&lt;/dependency&gt;</span>
+    <span class="kw">&lt;/dependencies&gt;</span>
+<span class="kw">&lt;/dependencyManagement&gt;</span></pre>
+
+  <div class="card info">
+    <div class="card-label">starter 名字要记牢</div>
+    <p style="margin:0">关键 artifactId 是 <code>spring-ai-alibaba-autoconfigure-dashscope</code>。看到 <code>-autoconfigure-</code> 后缀，就回忆 <a href="./0005-spring-autoconfig-yml.html">0005</a> 课讲的：<strong>它会自动往 Spring 容器里塞好 DashScope 的客户端 Bean，你直接用 <code>ChatClient</code> 就行，不用手动 new</strong>。这是 Spring Boot 自动配置的又一次实战。</p>
+  </div>
+
+  <h3>第 ② 步：application.yml 配 api-key</h3>
+  <pre><span class="ann">spring</span><span class="kw">:</span>
+  <span class="ann">ai</span><span class="kw">:</span>
+    <span class="ann">dashscope</span><span class="kw">:</span>
+      <span class="com"># 通义千问的 API Key，从阿里云 DashScope 控制台申请</span>
+      <span class="com"># 绝不写死在 Java 代码里！用环境变量注入更安全</span>
+      <span class="typ">api-key</span><span class="kw">:</span> <span class="str">${DASHSCOPE_API_KEY}</span>
+      <span class="com"># 指定用哪个模型，换模型只改这里</span>
+      <span class="typ">model</span><span class="kw">:</span> <span class="str">qwen-plus</span>
+      <span class="com"># 可选：其他参数</span>
+      <span class="typ">temperature</span><span class="kw">:</span> <span class="str">0.7</span></pre>
+
+  <div class="card success">
+    <div class="card-label">"换模型只改配置"在这里就落地了</div>
+    <p style="margin:0">想从 <code>qwen-plus</code> 换成 <code>qwen-max</code>（更强的模型）？<strong>只改 yml 里的 <code>model: qwen-max</code>，Java 业务代码一行都不用动</strong>。想从通义千问换到另一个 DashScope 上的模型？同样只改配置。这就是 0001 课说的"统一抽象"带来的实际红利——你第一次摸到了它。</p>
+  </div>
+
+  <div class="card warning">
+    <div class="card-label">安全提醒（测试工程师尤其要记住）</div>
+    <p style="margin:0"><code>${DASHSCOPE_API_KEY}</code> 这种写法表示<strong>从环境变量读</strong>，yml 里不出现明文 key。这是公司安全规范，也是你做测试时检查代码的安全红线——<strong>看到代码里硬编码 api-key 字符串，要立刻报问题</strong>。密钥泄漏 = 别人拿你的钱调模型。</p>
+  </div>
+
+  <!-- 6. 对比 OpenAI -->
+  <h2>对比一下：如果接 OpenAI 会怎样</h2>
+  <p>为了让你彻底分清，把两套配置摆在一起比：</p>
+
+  <pre><span class="com"># 接通义千问（AIHom 真实方案）          # 接 OpenAI（网上教程常见，AIHom 不用）</span>
+<span class="ann">spring</span><span class="kw">:</span>                                  <span class="ann">spring</span><span class="kw">:</span>
+  <span class="ann">ai</span><span class="kw">:</span>                                     <span class="ann">ai</span><span class="kw">:</span>
+    <span class="ann">dashscope</span><span class="kw">:</span>                              <span class="ann">openai</span><span class="kw">:</span>
+      <span class="typ">api-key</span><span class="kw">:</span> <span class="str">${DASHSCOPE_API_KEY}</span>          <span class="typ">api-key</span><span class="kw">:</span> <span class="str">${OPENAI_API_KEY}</span>
+      <span class="typ">model</span><span class="kw">:</span> <span class="str">qwen-plus</span>                     <span class="typ">model</span><span class="kw">:</span> <span class="str">gpt-4o</span></pre>
+
+  <p>看，结构几乎一样，只是<strong>配置前缀</strong>从 <code>dashscope</code> 换成 <code>openai</code>、模型名换成对应的。而<strong>上层调用的 Java 代码完全相同</strong>（都是 <code>ChatClient.prompt().user(q).call()</code>）。这就是 Spring AI 抽象层的威力——Alibaba 只是把"通义千问这一侧"补齐了。</p>
+
+  <!-- 7. Quiz -->
+  <h2>小测验：确认你真的 get 到了</h2>
+
+  <div class="quiz" id="quiz1">
+    <div class="quiz-q">第 1 题：Spring AI 和 Spring AI Alibaba 的关系，下面哪句<strong>最准确</strong>？</div>
+    <button class="quiz-opt" data-correct="false">两者是完全独立的竞争框架，二选一</button>
+    <button class="quiz-opt" data-correct="true">Alibaba 是 Spring AI 生态里的扩展层，依赖 Spring AI，额外加了国产模型和 Agent 能力</button>
+    <button class="quiz-opt" data-correct="false">Spring AI 是 Alibaba 的子项目</button>
+    <button class="quiz-opt" data-correct="false">它们只是同一个东西的两个名字</button>
+    <div class="quiz-fb" id="fb1"></div>
+  </div>
+
+  <div class="quiz" id="quiz2">
+    <div class="quiz-q">第 2 题：AIHom 要接通义千问，yml 里的配置前缀应该是？</div>
+    <button class="quiz-opt" data-correct="false"><code>spring.ai.openai</code></button>
+    <button class="quiz-opt" data-correct="true"><code>spring.ai.dashscope</code></button>
+    <button class="quiz-opt" data-correct="false"><code>spring.ai.qwen</code></button>
+    <button class="quiz-opt" data-correct="false"><code>spring.ai.alibaba</code></button>
+    <div class="quiz-fb" id="fb2"></div>
+  </div>
+
+  <div class="quiz" id="quiz3">
+    <div class="quiz-q">第 3 题：为什么 AIHom 选 Spring AI Alibaba，而不是直接用纯 Spring AI？</div>
+    <button class="quiz-opt" data-correct="false">因为纯 Spring AI 已经被淘汰</button>
+    <button class="quiz-opt" data-correct="false">因为 Alibaba 比 Spring AI 便宜</button>
+    <button class="quiz-opt" data-correct="true">因为纯 Spring AI 原生不支持通义千问，也没有 Agent/Graph 编排能力</button>
+    <button class="quiz-opt" data-correct="false">因为公司规定不许用 Spring AI</button>
+    <div class="quiz-fb" id="fb3"></div>
+  </div>
+
+  <!-- 8. 本节胜利 -->
+  <div class="win">
+    <div class="card-label">本节你获得的胜利</div>
+    <p style="margin:0.3rem 0 0">现在你能向同事讲清楚三件事：① Spring AI 是底层抽象、Alibaba 是扩展层、AIHom 站在扩展层上；② DashScope 是通义千问的 API 网关，是 AIHom 的模型入口而非 OpenAI；③ 换模型在 Alibaba 里就是改 yml 一行 <code>model</code>，业务代码不动。这个"分层认知"是接下来所有课的基础，你已经在正确的地图上了。</p>
+  </div>
+
+  <!-- 9. 推荐阅读 -->
+  <div class="reading">
+    <div class="card-label">推荐 primary source（权威一手）</div>
+    <p style="margin:0.5rem 0 0">三个入口，按顺序扫：<br>
+    • <a href="https://java2ai.com/" target="_blank">Spring AI Alibaba 官方文档（java2ai.com）</a> ★ 重点看首页目录里的 "DashScope / 通义千问接入" 和 "Agent / Graph"，那就是 AIHom 的核心地图<br>
+    • <a href="https://docs.spring.io/spring-ai/reference/" target="_blank">Spring AI 官方文档（docs.spring.io/spring-ai/reference）</a> 查 <code>ChatClient</code>、<code>Prompt</code>、<code>Memory</code> 等底层抽象的准确定义<br>
+    • <a href="https://help.aliyun.com/zh/model-studio/" target="_blank">阿里云百炼 / DashScope 控制台文档</a> 想申请 api-key、看通义千问有哪些模型（qwen-plus / qwen-max / qwen-turbo…）时来这里<br>
+    现在不用细读，先收藏。下节课我们会真正写第一个 <code>ChatClient</code> 调用。</p>
+  </div>
+
+  <div class="card warning">
+    <div class="card-label">版本对齐（重要，已从 AIHom 代码核实）</div>
+    <p style="margin:0">AIHom 真实栈：<strong>Spring AI 1.1.2 + Spring AI Alibaba 1.1.2.0.5-qh（群核定制版）+ 通义千问 DashScope</strong>。⚠️ 社区 Spring AI 已发到 2.0.0（2026-06-12，Boot 4.x），<strong>但和你的项目无关</strong>——查文档务必对齐 <strong>1.1.x + Alibaba</strong>，别被网上 2.x 教程带偏。本课讲的分层关系在 1.x / 2.x 都通用，但具体 starter 名字、配置项以 java2ai.com 为准。</p>
+  </div>
+
+  <!-- 10. 追问 -->
+  <div class="ask">
+    <p>🤔 <strong>有任何看不懂的地方，直接问我。</strong>比如："为什么要分两层，合成一层不好吗"、"StateGraph 和 Agent 到底啥区别，先学哪个"、"我本地没有 api-key 能不能跑起来"……没有蠢问题，我是你的私教，问就对了。</p>
+  </div>
+</div>
+
+<script>
+  // 简单的 quiz 即时反馈
+  const feedback = {
+    1: { ok: '✓ 对！Alibaba 站在 Spring AI 肩上，是生态里的扩展层——它依赖 Spring AI，又额外补了国产模型（DashScope）和 Agent/Graph 编排能力。所以是"包含于生态、又多包一层"的关系。',
+         no: '回忆本课的关系图：Spring AI 在下、Alibaba 在上。Alibaba 必须依赖 Spring AI 才能跑，又在它上面加了通义千问适配和 Agent 编排——这是"扩展层"，不是独立竞争产品。' },
+    2: { ok: '✓ 对！AIHom 接通义千问用 spring.ai.dashscope 这个前缀，api-key、model 都挂在这下面。',
+         no: '通义千问走 DashScope 网关，配置前缀是 spring.ai.dashscope。spring.ai.openai 是接 OpenAI 的，AIHom 不用；qwen 和 alibaba 不是有效前缀。' },
+    3: { ok: '✓ 对！纯 Spring AI 原生只懂 OpenAI 协议，接不了通义千问，也没有 Agent/Graph 编排。AIHom 是国产化项目，必须用通义千问 + 需要复杂流程编排，所以只能选 Alibaba。',
+         no: '关键在能力差距：纯 Spring AI 接不了通义千问、没有 Agent/Graph 编排。不是因为淘汰、不是因为价格、也不是公司禁用——是技术上 Alibaba 才能满足 AIHom 的需求。' }
+  };
+
+  function wireQuiz(id) {
+    const quiz = document.getElementById('quiz' + id);
+    const fb = document.getElementById('fb' + id);
+    const opts = quiz.querySelectorAll('.quiz-opt');
+    opts.forEach(opt => {
+      opt.addEventListener('click', () => {
+        const correct = opt.dataset.correct === 'true';
+        opts.forEach(o => o.classList.add('disabled'));
+        if (correct) {
+          opt.classList.add('correct');
+          fb.style.background = 'var(--success-light)';
+          fb.style.color = '#14532d';
+          fb.textContent = feedback[id].ok;
+        } else {
+          opt.classList.add('wrong');
+          // 同时点亮正确答案
+          opts.forEach(o => { if (o.dataset.correct === 'true') o.classList.add('correct'); });
+          fb.style.background = '#fee2e2';
+          fb.style.color = '#7f1d1d';
+          fb.textContent = feedback[id].no;
+        }
+        fb.classList.add('show');
+      });
+    });
+  }
+  [1,2,3].forEach(wireQuiz);
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 015</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="../aihom/0014-debugging-logs-trace.html">上一课：014 日志、Trace、断点与 WebSocket 排查</a><a class="primary" href="0016-chatclient-prompt.html">下一课：016 ChatClient + Prompt + 消息体系</a></div></nav>
+</body>
+</html>

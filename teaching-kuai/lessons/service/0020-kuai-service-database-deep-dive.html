@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0020 - 数据库设计深度解析</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:2rem}
+  .breadcrumb{color:var(--text-secondary);font-size:.85rem;margin-bottom:1.5rem}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .breadcrumb a:hover{text-decoration:underline}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.15rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem}
+  p{margin-bottom:1rem}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15rem .4rem;border-radius:4px;font-size:.88em}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;overflow-x:auto;margin:1rem 0;font-size:.88rem;line-height:1.6}
+  pre code{background:none;padding:0}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.4rem}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0}
+  .card.info{background:#eff6ff;border-color:#bfdbfe}
+  .card-label{font-weight:600;font-size:.85rem;color:#2563eb;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.05em}
+  .flow-box{background:var(--surface);border:2px solid var(--accent);border-radius:12px;padding:1.5rem;margin:1.5rem 0;text-align:center}
+  .flow-arrow{font-size:1.3rem;color:var(--accent);margin:0 .5rem;font-weight:700}
+  .flow-step{display:inline-block;background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:.4rem 1rem;font-weight:600;font-size:.95rem}
+  .flow-step.mongo{background:#dcfce7;border-color:#86efac;color:#166534}
+  .flow-step.mysql{background:#dbeafe;border-color:#93c5fd;color:#1e40af}
+  .flow-step.ext{background:#f3e8ff;border-color:#c4b5fd;color:#6d28d9}
+  .call-chain{font-family:'JetBrains Mono',monospace;font-size:.85rem;background:var(--code-bg);padding:1rem 1.25rem;border-radius:8px;border:1px solid var(--border);margin:1rem 0;line-height:2}
+  .call-chain .cls{color:#b45309;font-weight:600}
+  .call-chain .method{color:#2563eb}
+  .call-chain .arrow{color:#78716c;margin:0 .25rem}
+  .quiz-section{background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:1.5rem;margin-top:2.5rem}
+  .quiz-section h2{margin-top:0;color:var(--accent)}
+  .quiz-q{margin-bottom:1.5rem}
+  .quiz-q .q-title{font-weight:600;margin-bottom:.5rem}
+  .quiz-q label{display:block;padding:.4rem .75rem;margin:.3rem 0;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s;background:var(--surface)}
+  .quiz-q label:hover{border-color:var(--accent)}
+  .quiz-q input[type="radio"]{margin-right:.5rem}
+  .quiz-q .answer{display:none;margin-top:.5rem;padding:.75rem 1rem;border-radius:6px;font-size:.9rem}
+  .quiz-q .answer.correct{background:#dcfce7;color:#166534;border:1px solid #86efac}
+  .quiz-q .answer.wrong{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
+  .ask-agent::before{content:'💡 '}
+  .nav-links{display:flex;justify-content:space-between;margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+  .nav-links a{color:var(--accent);text-decoration:none;font-weight:500}
+  .nav-links a:hover{text-decoration:underline}
+  table{width:100%;border-collapse:collapse;margin:1rem 0}
+  th,td{padding:.6rem .8rem;border:1px solid var(--border);text-align:left;font-size:.9rem}
+  th{background:var(--code-bg);font-weight:600}
+  .tag{display:inline-block;padding:.1rem .4rem;border-radius:4px;font-size:.7rem;font-weight:500;margin-right:.3rem}
+  .tag.deep{background:#fef3c7;color:#b45309}
+</style>
+<script>
+function checkAnswer(qId, correct, el){
+  var ans=el.parentElement.parentElement.querySelector('.answer');
+  if(el.value===correct){ans.className='answer correct';ans.innerHTML='✅ 正确！';ans.style.display='block'}
+  else{ans.className='answer wrong';ans.innerHTML='❌ 错误，正确答案是 '+correct+'。';ans.style.display='block'}
+}
+</script>
+</head>
+<body>
+<div class="container">
+
+<div class="breadcrumb"><a href="../index.html">课程首页</a> &gt; kuai-service &gt; 0020 数据库设计深度解析</div>
+
+<h1>🗃️ 数据库设计深度解析</h1>
+<p class="subtitle"><span class="tag deep">深度</span> MySQL 表设计 · MongoDB 集合设计 · 双数据库架构 · TDDL 配置</p>
+
+<div class="card info">
+  <div class="card-label">前置知识</div>
+  <p>本课程假设你已了解以下内容：</p>
+  <ul>
+    <li><strong>SQL 基础</strong>：<code>SELECT</code>、<code>INSERT</code>、<code>UPDATE</code>、<code>WHERE</code> 条件查询</li>
+    <li><strong>Java ORM 概念</strong>：知道 <code>@Table</code>、<code>@Column</code> 等注解的作用</li>
+    <li><strong>MongoDB 基础</strong>：文档、集合的概念，<code>@Document</code> 注解（参考课程 0019）</li>
+    <li>kuai-service 项目概览（课程 0001）和架构追踪（课程 0002）</li>
+  </ul>
+  <p>如果对 MyBatis 不太熟，建议先看：<a href="https://mybatis.org/mybatis-3/zh/getting-started.html" target="_blank">MyBatis 入门指南</a></p>
+</div>
+
+<!-- ===== 1. 双数据库架构 ===== -->
+<h2><span class="icon">🏛️</span> 1. 双数据库架构总览</h2>
+
+<p>kuai-service 同时使用 <strong>MySQL</strong> 和 <strong>MongoDB</strong> 两种数据库，各有分工：</p>
+
+<div class="flow-box">
+  <span class="flow-step mysql">MySQL — 结构化数据</span>
+  <span class="flow-arrow">+</span>
+  <span class="flow-step mongo">MongoDB — 文档型数据</span>
+  <span class="flow-arrow">=</span>
+  <span class="flow-step ext">kuai-service 数据层</span>
+</div>
+
+<table>
+  <tr><th>数据库</th><th>存储内容</th><th>访问方式</th><th>典型表/集合</th></tr>
+  <tr>
+    <td><strong>MySQL</strong></td>
+    <td>评估结果、任务状态、机器人配置等<strong>结构化业务数据</strong></td>
+    <td>MyBatis-Plus（<code>BaseMapper</code>）+ XML/注解 SQL</td>
+    <td><code>evaluation_result</code>、<code>llm_task</code>、<code>workaiwechatrobot</code></td>
+  </tr>
+  <tr>
+    <td><strong>MongoDB</strong></td>
+    <td>应用信息、会话记录、用户数据等<strong>来自 FastGPT 平台的数据</strong></td>
+    <td>Spring Data MongoDB（<code>MongoTemplate</code> + <code>MongoRepository</code>）</td>
+    <td><code>apps</code>、<code>chats</code>、<code>chatitems</code>、<code>teams</code>、<code>users</code></td>
+  </tr>
+</table>
+
+<div class="card info">
+  <div class="card-label">设计思路</div>
+  <p><strong>MongoDB</strong> 中的数据大多来自 FastGPT 平台（共享同一个 MongoDB 实例），kuai-service 通过 <strong>TDDL</strong>（阿里的分布式数据库中间件）直连读取。<strong>MySQL</strong> 中的数据是 kuai-service 自己产生的业务数据（评估记录、任务管理等）。</p>
+</div>
+
+<!-- ===== 2. MySQL 表设计详解 ===== -->
+<h2><span class="icon">🐬</span> 2. MySQL 表设计详解</h2>
+
+<h3>2.1 evaluation_result 表（评估结果表）</h3>
+
+<p>这是系统最核心的 MySQL 表，存储每条 QA 对的评估数据：</p>
+
+<pre><code>-- evaluation_result 表结构
+CREATE TABLE evaluation_result (
+    id              INT AUTO_INCREMENT PRIMARY KEY,  -- 自增主键
+    app_id          VARCHAR(64),      -- 应用ID
+    chat_id         VARCHAR(64),      -- 会话ID
+    _id             VARCHAR(64),      -- 关联 MongoDB chatitems 的 _id
+    q               TEXT,             -- 用户问题（Question）
+    a               TEXT,             -- AI 回答（Answer）
+    satisfaction    VARCHAR(32),      -- 人工满意度：very_satisfied/satisfied/neutral/unsatisfied/invalid
+    standard_answer TEXT,             -- 标准答案
+    llm_score       DOUBLE,           -- LLM 自动评分
+    deepEval_result TEXT,             -- DeepEval 评估结果详情
+    deepEval_score  DOUBLE,           -- DeepEval 评分
+    comment         TEXT,             -- 人工评论
+    created         DATETIME,         -- 创建时间
+    lastmodified    DATETIME          -- 最后修改时间
+);</code></pre>
+
+<h3>对应实体类与 Mapper</h3>
+
+<pre><code>// Entity: 使用 @Table 注解映射 MySQL 表
+@Table(name = "evaluation_result")
+public class EvaluationResult extends BaseDo {
+    private Integer id;
+    private String appId;
+    private String chatId;
+    private String _id;
+    private String q;
+    private String a;
+    private String satisfaction;
+    private String standardAnswer;
+    private Double llmScore;
+    private String deepEvalResult;
+    private Double deepEvalScore;
+    private String comment;
+}
+
+// Mapper: 使用 @Select 注解写 SQL
+@Mapper
+public interface EvaluationResultMapper extends BaseMapper&lt;EvaluationResult&gt; {
+
+    @Select("SELECT id, app_id AS appId, chat_id AS chatId, _id, q, a, "
+          + "satisfaction, standard_answer AS standardAnswer, ... "
+          + "FROM evaluation_result "
+          + "WHERE app_id = #{appId} AND chat_id = #{chatId}")
+    List&lt;EvaluationResult&gt; selectByAppIdAndChatId(
+        @Param("appId") String appId,
+        @Param("chatId") String chatId);
+}</code></pre>
+
+<h3>2.2 llm_task 表（LLM 评估任务表）</h3>
+
+<pre><code>-- llm_task 表结构
+CREATE TABLE llm_task (
+    id           INT AUTO_INCREMENT PRIMARY KEY,
+    task_id      VARCHAR(64),      -- 任务唯一标识（插入后由代码更新）
+    app_id       VARCHAR(64),      -- 应用ID
+    total_count  INT,              -- 总评估条数
+    done_count   INT DEFAULT 0,    -- 已完成条数
+    status       INT DEFAULT 0,    -- 状态：0=待开始, 1=运行中, 2=完成, 3=失败, 4=取消
+    avg_score    DOUBLE,           -- 平均分数
+    start_time   DATETIME,         -- 开始时间
+    end_time     DATETIME,         -- 结束时间
+    create_time  DATETIME,         -- 创建时间
+    update_time  DATETIME          -- 更新时间
+);</code></pre>
+
+<pre><code>// Entity
+@Table(name = "llm_task")
+public class LlmTask extends BaseDo implements Serializable {
+    private Integer id;
+    private String taskId;
+    private String appId;
+    private Integer totalCount;
+    private Integer doneCount;
+    private Integer status;       // 0=待开始, 1=进行中, 2=已完成, 3=失败, 4=已取消
+    private Double avgScore;
+    private Date startTime;
+    private Date endTime;
+
+    @Transient                   // 不存入数据库，由代码聚合填充
+    private Map&lt;String, Integer&gt; satisfactionDistribution;
+
+    @Transient
+    private String category1;    // 一级分类（从评估记录聚合）
+
+    @Transient
+    private String category2;    // 二级分类（从评估记录聚合）
+}</code></pre>
+
+<h3>2.3 workaiwechatrobot 表（企微机器人配置表）</h3>
+
+<pre><code>// Entity
+@Table(name = "workaiwechatrobot")
+public class WorkaiWechatRobot extends BaseDo {
+    private Integer id;
+    private String botId;              // 机器人 ID
+    private String robotName;          // 机器人名称
+    private String digitalEmployeeId;  // 数字员工 ID
+    private String executorLdapId;     // 执行人 LDAP
+    private String ownerLdapId;        // 负责人 LDAP
+    private String connectMode;        // 连接模式（LONG_CONNECTION 等）
+    private String botSecret;          // 机器人密钥
+    private String connectionStatus;   // 连接状态
+    private Date lastConnectedAt;      // 最后连接时间
+    private String lastError;          // 最后错误信息
+    private Boolean enabled;           // 是否启用
+    private String remark;             // 备注
+}</code></pre>
+
+<h3>2.4 Mapper 中的高级 SQL 技巧</h3>
+
+<p><code>EvaluationResultMapper</code> 中有一些值得学习的 SQL 模式：</p>
+
+<pre><code>// 动态 SQL（MyBatis XML 语法嵌入注解）
+@Select({
+    "&lt;script&gt;",
+    "SELECT",
+    "  IFNULL(AVG(llm_score), 0) AS avgLlmScore,",
+    "  SUM(IF(satisfaction = 'very_satisfied', 1, 0)) AS verySatisfiedCount,",
+    "  SUM(IF(satisfaction = 'satisfied', 1, 0)) AS satisfiedCount,",
+    "  ...",
+    "FROM evaluation_result",
+    "WHERE 1 = 1",
+    "&lt;if test='appId != null and appId != \"\"'&gt;",
+    "  AND app_id = #{appId}",
+    "&lt;/if&gt;",
+    "&lt;if test='chatId != null and chatId != \"\"'&gt;",
+    "  AND chat_id = #{chatId}",
+    "&lt;/if&gt;",
+    "&lt;/script&gt;"
+})
+EvaluationStats selectEvaluationStats(@Param("appId") String appId,
+                                      @Param("chatId") String chatId);</code></pre>
+
+<p>这段 SQL 用了几个高级技巧：</p>
+<ul>
+  <li><strong><code>IFNULL(AVG(...), 0)</code></strong>：如果没数据返回 0 而不是 NULL</li>
+  <li><strong><code>IF(condition, 1, 0)</code></strong>：条件计数，统计各满意度等级的数量</li>
+  <li><strong><code>&lt;if&gt;</code> 动态 SQL</strong>：根据参数是否为空动态拼接 WHERE 条件</li>
+  <li><strong><code>&lt;foreach&gt;</code> 集合遍历</strong>：将 List 参数转为 SQL 的 IN 子句</li>
+</ul>
+
+<div class="ask-agent">问问 Agent：MyBatis 的 @Select 注解和 XML Mapper 文件各有什么优缺点？项目中为什么选择用注解方式？</div>
+
+<!-- ===== 3. MongoDB 集合设计 ===== -->
+<h2><span class="icon">🍃</span> 3. MongoDB 集合设计</h2>
+
+<p>MongoDB 中的集合大多由 FastGPT 平台创建，kuai-service 通过 <strong>MongoRepository</strong> 和 <strong>MongoTemplate</strong> 两种方式访问。</p>
+
+<h3>3.1 主要集合一览</h3>
+
+<table>
+  <tr><th>集合名</th><th>对应 Repository</th><th>用途</th></tr>
+  <tr><td><code>apps</code></td><td><code>AppsSetRepository</code></td><td>应用信息（名称、团队、配置）</td></tr>
+  <tr><td><code>chats</code></td><td><code>ChatRepository</code></td><td>会话记录（标题、变量、时间）</td></tr>
+  <tr><td><code>chatitems</code></td><td><code>ChatItemRepository</code></td><td>会话中的每条消息（Q&A）</td></tr>
+  <tr><td><code>teams</code></td><td><code>TeamsRepository</code></td><td>团队信息</td></tr>
+  <tr><td><code>users</code></td><td><code>NewUsersRepository</code></td><td>用户信息</td></tr>
+  <tr><td><code>openApis</code></td><td><code>OpenApisSetRepository</code></td><td>API 分享配置</td></tr>
+  <tr><td><code>outlinks</code></td><td><code>OutlinksRepository</code></td><td>页面分享链接</td></tr>
+  <tr><td><code>teamMembers</code></td><td><code>TeamMemberRepository</code></td><td>团队成员关系</td></tr>
+  <tr><td><code>app_versions</code></td><td><code>AppVersionRepository</code></td><td>应用版本历史</td></tr>
+  <tr><td><code>datasets</code></td><td><code>DataSetRepository</code></td><td>知识库数据集</td></tr>
+  <tr><td><code>collections</code></td><td><code>CollectionRepository</code></td><td>知识库集合</td></tr>
+</table>
+
+<h3>3.2 Repository 接口示例</h3>
+
+<pre><code>// Spring Data MongoDB 的 Repository 接口
+public interface AppsSetRepository extends MongoRepository&lt;Apps, String&gt; {
+
+    // 方法名自动生成查询：按 _id 列表查找
+    List&lt;Apps&gt; findByObjectIdIn(List&lt;ObjectId&gt; ids);
+
+    // 自定义查询
+    @Query("{ 'teamId': ?0 }")
+    List&lt;Apps&gt; findByTeamId(String teamId);
+}
+
+public interface ChatRepository extends MongoRepository&lt;Chats, String&gt; {
+    List&lt;Chats&gt; findByAppId(ObjectId appId);
+
+    @Query("{ 'appId': ?0, 'chatId': ?1 }")
+    Chats findByAppIdAndChatId(ObjectId appId, String chatId);
+}</code></pre>
+
+<h3>3.3 Chats 集合文档结构详解</h3>
+
+<pre><code>// MongoDB 中的 chats 文档
+{
+  "_id": ObjectId("65a4f..."),
+  "__v": 0,
+  "appId": ObjectId("6582c..."),       // 关联 apps 集合
+  "chatId": "chat_abc123",             // 业务层面的会话ID
+  "title": "用户关于价格的咨询",
+  "source": "wechat",                  // 来源渠道
+  "teamId": "6582b...",                // 团队ID
+  "tmblId": "6582d...",                // 团队成员ID
+  "top": false,                        // 是否置顶
+  "metadata": { ... },                 // 元数据（自由结构）
+  "variables": {                       // 业务变量
+    "wBf9rrpa": "售前咨询",            // 一级分类
+    "gzcXRBWd": "产品功能"             // 二级分类
+  },
+  "updateTime": ISODate("2024-01-15T10:30:00Z")
+}</code></pre>
+
+<h3>3.4 ObjectId 类型处理</h3>
+
+<p>一个需要注意的细节：MongoDB 的 <code>_id</code> 是 <code>ObjectId</code> 类型，但在 Java 中经常用 <code>String</code> 接收。代码中经常需要互相转换：</p>
+
+<pre><code>// String → ObjectId（查询时）
+ObjectId appObjectId = new ObjectId(query.getAppId());
+
+// ObjectId → String（DTO 输出时）
+List&lt;ObjectId&gt; objectIds = sharedAppIds.stream()
+    .map(ObjectId::new)      // String → ObjectId
+    .collect(Collectors.toList());
+
+List&lt;Apps&gt; apps = appsSetRepository.findByObjectIdIn(objectIds);</code></pre>
+
+<div class="ask-agent">问问 Agent：为什么 MongoDB 的 appId 用 ObjectId 类型而不是简单的 String？ObjectId 有什么优势？</div>
+
+<!-- ===== 4. TDDL 配置与数据源 ===== -->
+<h2><span class="icon">⚙️</span> 4. TDDL 配置与数据源</h2>
+
+<p><strong>TDDL</strong>（Taobao Distributed Data Layer）是阿里巴巴开源的分布式数据库中间件，在 kuai-service 中负责管理数据库连接。</p>
+
+<h3>4.1 数据源架构</h3>
+
+<div class="flow-box">
+  <span class="flow-step ext">kuai-service</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step mysql">TDDL</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step mysql">MySQL 主库</span>
+  <span class="flow-arrow">/</span>
+  <span class="flow-step mysql">MySQL 从库</span>
+</div>
+
+<p>TDDL 提供了以下核心能力：</p>
+<ul>
+  <li><strong>读写分离</strong>：写操作走主库，读操作走从库</li>
+  <li><strong>分库分表</strong>：数据量大时自动路由到不同的库/表</li>
+  <li><strong>连接池管理</strong>：复用数据库连接，避免频繁建连</li>
+  <li><strong>故障转移</strong>：主库故障时自动切换到从库</li>
+</ul>
+
+<h3>4.2 application.yml 配置</h3>
+
+<pre><code># application.yml 中的关键配置
+qunhe:
+  service:
+    vip: com.qunhe.instdeco.service.qa.qa_gpt  # TDDL 数据源标识
+    server-port: 8080
+
+server:
+  port: 8080
+  jetty:
+    threads:
+      acceptor: 16        # 接收连接线程数
+      selector: 16        # I/O selector 线程数
+      max: 500            # 最大 Worker 线程数
+      min: 8              # 最小空闲线程数
+
+# MongoDB 通过 TDDL 连接
+# FastGPT MongoDB 实例的连接信息由 TDDL 统一管理</code></pre>
+
+<h3>4.3 BaseMapper 与 BaseDo</h3>
+
+<p>项目使用了内部框架 <code>fj-base</code> 提供的基类：</p>
+
+<pre><code>// 所有 MySQL 实体的基类
+public class BaseDo {
+    private Integer createUser;
+    private Date createTime;
+    private Integer updateUser;
+    private Date updateTime;
+    private Integer isDeleted;     // 软删除标记：0=正常, 1=已删除
+}
+
+// 所有 MySQL Mapper 的基类
+public interface BaseMapper&lt;T&gt; extends com.baomidou.mybatisplus.core.mapper.BaseMapper&lt;T&gt; {
+    // 提供通用的 CRUD 方法：
+    // selectById(), insert(), updateById(), deleteById() 等
+}</code></pre>
+
+<div class="card info">
+  <div class="card-label">软删除设计</div>
+  <p>所有表都有 <code>isDeleted</code> 字段。删除数据时并不真正删除，而是将 <code>isDeleted</code> 设为 1。查询时需要加 <code>WHERE isDeleted = 0</code> 条件，如：</p>
+  <pre><code>@Select("SELECT ... FROM workaiwechatrobot WHERE isDeleted = 0 ORDER BY updateTime DESC")
+List&lt;WorkaiWechatRobot&gt; findActive();</code></pre>
+</div>
+
+<h3>4.4 MySQL 与 MongoDB 的字段映射对比</h3>
+
+<table>
+  <tr><th>特性</th><th>MySQL（MyBatis-Plus）</th><th>MongoDB（Spring Data）</th></tr>
+  <tr><td>实体注解</td><td><code>@Table(name="...")</code></td><td><code>@Document(collection="...")</code></td></tr>
+  <tr><td>主键</td><td><code>@TableId</code> + 自增 INT</td><td><code>@Id</code> + ObjectId String</td></tr>
+  <tr><td>映射基类</td><td><code>BaseDo</code>（含 createUser 等审计字段）</td><td>无统一基类</td></tr>
+  <tr><td>非持久化字段</td><td><code>@Transient</code>（JPA 注解）</td><td><code>@Transient</code>（Spring Data 注解）</td></tr>
+  <tr><td>查询方式</td><td>注解 SQL 或 XML SQL</td><td><code>MongoTemplate</code> + <code>Criteria</code></td></tr>
+  <tr><td>分页</td><td><code>LIMIT offset, size</code></td><td><code>.skip().limit()</code></td></tr>
+  <tr><td>排序</td><td><code>ORDER BY field DESC</code></td><td><code>new Sort(Direction.DESC, "field")</code></td></tr>
+</table>
+
+<div class="ask-agent">问问 Agent：在同一个项目中混用 MySQL 和 MongoDB 会带来哪些挑战？如何保证两边数据的一致性？</div>
+
+<!-- ===== Quiz ===== -->
+<div class="quiz-section">
+<h2><span class="icon">✏️</span> Quiz — 检验你的理解</h2>
+
+<div class="quiz-q">
+  <div class="q-title">Q1：kuai-service 中 MySQL 和 MongoDB 各自存储什么类型的数据？</div>
+  <label><input type="radio" name="q1" value="A" onclick="checkAnswer('q1','B',this)"> A. MySQL 存所有数据，MongoDB 做缓存</label>
+  <label><input type="radio" name="q1" value="B" onclick="checkAnswer('q1','B',this)"> B. MySQL 存评估结果等业务数据，MongoDB 存来自 FastGPT 的应用/会话数据</label>
+  <label><input type="radio" name="q1" value="C" onclick="checkAnswer('q1','B',this)"> C. MySQL 存用户数据，MongoDB 存机器人配置</label>
+  <label><input type="radio" name="q1" value="D" onclick="checkAnswer('q1','B',this)"> D. 两者存完全相同的数据，互为备份</label>
+  <div class="answer"></div>
+</div>
+
+<div class="quiz-q">
+  <div class="q-title">Q2：evaluation_result 表中的 satisfaction 字段，"very_satisfied" 代表什么？</div>
+  <label><input type="radio" name="q2" value="A" onclick="checkAnswer('q2','C',this)"> A. LLM 给出的自动评分</label>
+  <label><input type="radio" name="q2" value="B" onclick="checkAnswer('q2','C',this)"> B. 系统自动计算的满意度</label>
+  <label><input type="radio" name="q2" value="C" onclick="checkAnswer('q2','C',this)"> C. 人工标注的"非常满意"等级</label>
+  <label><input type="radio" name="q2" value="D" onclick="checkAnswer('q2','C',this)"> D. DeepEval 的评估结果</label>
+  <div class="answer"></div>
+</div>
+
+<div class="quiz-q">
+  <div class="q-title">Q3：BaseDo 中的 isDeleted 字段体现了什么数据库设计模式？</div>
+  <label><input type="radio" name="q3" value="A" onclick="checkAnswer('q3','B',this)"> A. 硬删除（物理删除）</label>
+  <label><input type="radio" name="q3" value="B" onclick="checkAnswer('q3','B',this)"> B. 软删除（逻辑删除），通过标记位来"删除"数据</label>
+  <label><input type="radio" name="q3" value="C" onclick="checkAnswer('q3','B',this)"> C. 分表标记，用于路由到不同的分表</label>
+  <label><input type="radio" name="q3" value="D" onclick="checkAnswer('q3','B',this)"> D. 缓存失效标记</label>
+  <div class="answer"></div>
+</div>
+</div>
+
+<!-- ===== Navigation ===== -->
+<div class="nav-links">
+  <a href="0019-kuai-service-knowledge-base.html">← 知识库与分享应用</a>
+  <a href="../index.html">🗺️ 完整学习地图</a>
+  <a href="../front/0021-kuai-front-prompt-management.html">Prompt 管理界面 →</a>
+</div>
+
+</div>
+</body>
+</html>

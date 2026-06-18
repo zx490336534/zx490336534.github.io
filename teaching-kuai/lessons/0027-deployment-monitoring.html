@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 27: 部署与监控实战</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:780px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:.95rem;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  h2{font-size:1.35rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem}
+  h3{font-size:1.1rem;font-weight:500;margin-top:1.5rem;margin-bottom:.75rem;color:var(--accent)}
+  p{margin-bottom:1rem}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0}
+  .card.info{border-left:3px solid var(--info)}.card.warning{border-left:3px solid var(--warning)}.card.success{border-left:3px solid var(--success)}
+  .card-label{font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+  .card.info .card-label{color:var(--info)}.card.warning .card-label{color:var(--warning)}.card.success .card-label{color:var(--success)}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15em .4em;border-radius:4px;font-size:.88em}
+  pre{background:#1c1917;color:#e7e5e4;padding:1.25rem 1.5rem;border-radius:8px;overflow-x:auto;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.6}
+  pre .comment{color:#78716c}pre .keyword{color:#f59e0b}pre .string{color:#86efac}
+  table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.92rem}
+  th,td{text-align:left;padding:.6rem .8rem;border-bottom:1px solid var(--border)}
+  th{font-weight:500;color:var(--text-secondary);font-size:.82rem;text-transform:uppercase;letter-spacing:.04em}
+  .quiz{background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0}
+  .quiz-title{font-weight:700;margin-bottom:.75rem;color:var(--accent)}
+  .quiz-options{list-style:none}.quiz-options li{padding:.5rem .75rem;margin:.35rem 0;border-radius:6px;cursor:pointer;transition:background .15s;border:1px solid transparent}
+  .quiz-options li:hover{background:#fde68a33;border-color:#fbbf24}
+  .quiz-options li.correct{background:#dcfce7;border-color:#16a34a}.quiz-options li.wrong{background:#fee2e2;border-color:#ef4444}
+  .quiz-feedback{margin-top:.75rem;padding:.75rem;border-radius:6px;display:none;font-size:.9rem}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
+  .ask-agent::before{content:'💡 '}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.3rem}
+.nav-links{max-width:900px;margin:2.5rem auto 0;padding:1.5rem 2rem;border-top:1px solid #e7e5e4;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem}.nav-links a{color:#b45309;text-decoration:none;font-weight:500}.nav-links a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Lesson 27: 部署与监控实战</h1>
+<p class="subtitle">三个仓库的部署流程、CI/CD 配置和运行时监控</p>
+
+<div class="card info">
+  <div class="card-label">前置知识</div>
+  <p>如果你不熟悉以下概念，建议先阅读对应教程：</p>
+  <ul>
+    <li><a href="../reference/spring-boot-basics.html">Spring Boot 基础入门</a></li>
+    <li><a href="../reference/redis-basics.html">Redis 基础入门</a></li>
+  </ul>
+</div>
+
+<h2>1. kuai-service（Java 后端）部署</h2>
+
+<h3>1.1 构建</h3>
+<pre>
+<span class="comment"># 编译打包（跳过测试）</span>
+mvn clean package -DskipTests
+
+<span class="comment"># 产出物</span>
+target/kuai-service-*.war
+</pre>
+
+<h3>1.2 部署配置</h3>
+<p>项目使用 <code>_appconfig/</code> 目录管理部署配置：</p>
+<table>
+  <tr><th>文件</th><th>用途</th></tr>
+  <tr><td><code>cicd.yml</code></td><td>CI/CD 环境配置（JVM 参数、环境变量）</td></tr>
+  <tr><td><code>postStart.sh</code></td><td>容器启动后脚本（健康检查、服务注册）</td></tr>
+  <tr><td><code>preStop.sh</code></td><td>容器停止前脚本（优雅关闭）</td></tr>
+</table>
+
+<h3>1.3 环境变量</h3>
+<table>
+  <tr><th>变量</th><th>用途</th><th>示例</th></tr>
+  <tr><td><code>SPRING_PROFILES_ACTIVE</code></td><td>激活的配置文件</td><td>dev / sit / prod</td></tr>
+  <tr><td><code>stage</code></td><td>部署阶段</td><td>dev / sit / prod</td></tr>
+  <tr><td><code>service.version.default.global</code></td><td>服务版本</td><td>dev_tingbai</td></tr>
+</table>
+
+<h2>2. kuai-service-front（前端）部署</h2>
+
+<h3>2.1 构建</h3>
+<pre>
+<span class="comment"># 安装依赖</span>
+pnpm install
+
+<span class="comment"># 构建生产版本</span>
+pnpm build
+
+<span class="comment"># 产出物</span>
+.next/ 目录
+</pre>
+
+<h3>2.2 部署方式</h3>
+<p>Next.js 支持两种部署模式：</p>
+<table>
+  <tr><th>模式</th><th>命令</th><th>适用场景</th></tr>
+  <tr><td>Node.js 服务器</td><td><code>pnpm start</code></td><td>需要 API Routes、SSR</td></tr>
+  <tr><td>静态导出</td><td><code>next export</code></td><td>纯静态页面，CDN 部署</td></tr>
+</table>
+
+<h3>2.3 环境变量</h3>
+<table>
+  <tr><th>变量</th><th>用途</th></tr>
+  <tr><td><code>NEXT_PUBLIC_API_BASE</code></td><td>后端 API 地址</td></tr>
+  <tr><td><code>MONGODB_URI</code></td><td>MongoDB 连接字符串</td></tr>
+  <tr><td><code>OPENAI_API_KEY</code></td><td>OpenAI API 密钥</td></tr>
+  <tr><td><code>OPENAI_BASE_URL</code></td><td>OpenAI API 代理地址</td></tr>
+</table>
+
+<h2>3. kuai-service-py（Python 服务）部署</h2>
+
+<h3>3.1 构建</h3>
+<pre>
+<span class="comment"># 安装依赖</span>
+uv sync
+
+<span class="comment"># 启动服务</span>
+uv run python main.py
+
+<span class="comment"># 或使用 uvicorn</span>
+uvicorn main:app --host 0.0.0.0 --port 8000
+</pre>
+
+<h3>3.2 Docker 部署</h3>
+<pre>
+<span class="comment"># 构建镜像</span>
+docker build -t kuai-mcp-service .
+
+<span class="comment"># 运行容器</span>
+docker run -d -p 8000:8000 \
+  -e MCP_SERVERS_CONFIG=/app/config/servers.json \
+  kuai-mcp-service
+</pre>
+
+<h2>4. 监控与日志</h2>
+
+<h3>4.1 健康检查</h3>
+<table>
+  <tr><th>服务</th><th>健康检查端点</th></tr>
+  <tr><td>kuai-service</td><td><code>/status/health</code></td></tr>
+  <tr><td>kuai-service-front</td><td><code>/api/health</code></td></tr>
+  <tr><td>kuai-service-py</td><td><code>/status/health</code></td></tr>
+</table>
+
+<h3>4.2 日志规范</h3>
+<pre>
+<span class="comment"># Java 日志</span>
+<span class="keyword">private static final</span> QHLogger LOG = QHLogger.getLogger(MethodHandles.lookup().lookupClass());
+LOG.message(<span class="string">"操作描述"</span>).with(<span class="string">"key"</span>, value).info();
+
+<span class="comment"># Python 日志</span>
+<span class="keyword">import</span> logging
+logger = logging.getLogger(__name__)
+logger.info(<span class="string">"操作描述"</span>, extra={<span class="string">"key"</span>: value})
+
+<span class="comment"># 前端日志</span>
+console.log(<span class="string">"[AgentName]"</span>, <span class="string">"操作描述"</span>, data)
+</pre>
+
+<h3>4.3 Langfuse 可观测性</h3>
+<p>AI 调用通过 Langfuse 追踪：</p>
+<ul>
+  <li><strong>Prompt 版本</strong> — 每次调用记录使用的 prompt 版本</li>
+  <li><strong>Token 用量</strong> — 输入/输出 token 数量和成本</li>
+  <li><strong>延迟</strong> — 首 token 时间、总响应时间</li>
+  <li><strong>错误</strong> — 异常堆栈和上下文</li>
+</ul>
+
+<h2>5. 常见运维问题</h2>
+
+<table>
+  <tr><th>问题</th><th>排查步骤</th></tr>
+  <tr><td>服务启动失败</td><td>检查环境变量 → 检查数据库连接 → 查看启动日志</td></tr>
+  <tr><td>API 超时</td><td>检查网络 → 检查下游服务 → 检查数据库慢查询</td></tr>
+  <tr><td>内存溢出</td><td>检查 JVM 参数 → 检查 MongoDB 连接池 → 检查大对象</td></tr>
+  <tr><td>Agent 响应慢</td><td>检查 Langfuse trace → 检查 LLM API 延迟 → 检查工具调用</td></tr>
+</table>
+
+<h2>6. 自检 Quiz</h2>
+
+<div class="quiz" id="quiz1">
+  <div class="quiz-title">Q1: kuai-service 使用什么连接 MySQL？</div>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz1',0)">A. 直接 JDBC</li>
+    <li onclick="checkQuiz('quiz1',1)">B. TDDL (tddl-min)</li>
+    <li onclick="checkQuiz('quiz1',2)">C. HikariCP</li>
+    <li onclick="checkQuiz('quiz1',3)">D. Druid</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <div class="quiz-title">Q2: AI 调用的可观性通过什么工具追踪？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz2',0)">A. Prometheus</li>
+    <li onclick="checkQuiz('quiz2',1)">B. Grafana</li>
+    <li onclick="checkQuiz('quiz2',2)">C. Langfuse</li>
+    <li onclick="checkQuiz('quiz2',3)">D. Jaeger</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <div class="quiz-title">Q3: kuai-service-py 的健康检查端点是？</div>
+  <ul class="quiz-options" data-correct="0">
+    <li onclick="checkQuiz('quiz3',0)">A. /status/health</li>
+    <li onclick="checkQuiz('quiz3',1)">B. /health</li>
+    <li onclick="checkQuiz('quiz3',2)">C. /api/health</li>
+    <li onclick="checkQuiz('quiz3',3)">D. /ping</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="ask-agent">
+  <strong>遇到不懂的地方？</strong>直接问 Agent。比如："如何配置 TDDL 读写分离？" 或 "Langfuse 怎么接入 Spring Boot？"
+</div>
+
+</div>
+<script>
+function checkQuiz(q,s){const o=document.getElementById(q).querySelector('.quiz-options'),c=parseInt(o.dataset.correct),i=o.querySelectorAll('li'),f=document.getElementById(q).querySelector('.quiz-feedback');i.forEach((x,n)=>{x.onclick=null;if(n===c)x.classList.add('correct');if(n===s&&n!==c)x.classList.add('wrong')});const fb={q1:{c:'✓ 对！kuai-service 使用 TDDL (tddl-min) 连接 MySQL，支持读写分离。',w:'✗ 是 TDDL (tddl-min)。这是公司内部的数据库中间件。'},q2:{c:'✓ 对！Langfuse 用于追踪 AI 调用的 prompt、token、延迟和错误。',w:'✗ 是 Langfuse。这是专门用于 AI 应用可观测性的工具。'},q3:{c:'✓ 对！kuai-service-py 的健康检查端点是 /status/health。',w:'✗ 是 /status/health。这是 FastAPI 服务的标准健康检查端点。'}};f.style.display='block';f.textContent=s===c?fb[q].c:fb[q].w;f.style.background=s===c?'#dcfce7':'#fee2e2'}
+</script>
+<div class="nav-links">
+  <a href="0015-full-stack-dev-guide.html">← 全栈开发实战</a>
+  <a href="index.html">🗺️ 完整学习地图</a>
+  <a href="index.html">返回学习地图 →</a>
+</div>
+</body>
+</html>

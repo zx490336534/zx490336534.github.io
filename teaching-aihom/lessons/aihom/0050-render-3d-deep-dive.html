@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>050 render-3d 深度追踪</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --accent: #b45309;
+    --accent-light: #fef3c7;
+    --border: #e7e5e4;
+    --code-bg: #f5f5f4;
+    --success: #16a34a;
+    --warning: #d97706;
+    --info: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .card.info { border-left: 3px solid var(--info); }
+  .card.warning { border-left: 3px solid var(--warning); }
+  .card.success { border-left: 3px solid var(--success); }
+
+  .card-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+  .card.info .card-label { color: var(--info); }
+  .card.warning .card-label { color: var(--warning); }
+  .card.success .card-label { color: var(--success); }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    font-size: 0.88em;
+  }
+
+  pre {
+    background: #1c1917;
+    color: #e7e5e4;
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  pre .comment { color: #78716c; }
+  pre .keyword { color: #f59e0b; }
+  pre .string { color: #86efac; }
+  pre .dir { color: #93c5fd; }
+  pre .file { color: #e7e5e4; }
+  pre .important { color: #fbbf24; font-weight: 500; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.92rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .quiz {
+    background: var(--accent-light);
+    border: 1px solid #fbbf24;
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .quiz-title {
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+  .quiz-options { list-style: none; }
+  .quiz-options li {
+    padding: 0.5rem 0.75rem;
+    margin: 0.35rem 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+  }
+  .quiz-options li:hover { background: #fde68a33; border-color: #fbbf24; }
+  .quiz-options li.correct { background: #dcfce7; border-color: #16a34a; }
+  .quiz-options li.wrong { background: #fee2e2; border-color: #ef4444; }
+  .quiz-feedback {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    display: none;
+    font-size: 0.9rem;
+  }
+
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+  }
+  .flow-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .flow-arrow { color: var(--text-secondary); }
+
+  .ask-agent {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+    color: #1e40af;
+  }
+  .ask-agent::before { content: '💡 '; }
+
+  .next-lesson {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .next-lesson a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .next-lesson a:hover { text-decoration: underline; }
+
+  ul, ol { margin: 0.5rem 0 1rem 1.5rem; }
+  li { margin-bottom: 0.3rem; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>050 render-3d 深度追踪</h1>
+<p class="subtitle">拆解 3D 渲染容器的核心状态机 — 模板缓存、父页面同步、渲染轮询与房间自动出图</p>
+
+<!-- ==================== Section 1 ==================== -->
+<h2>1. render-3d 是什么</h2>
+
+<p><code>render-3d</code> 是 AI Home 的 <strong>3D 渲染与离线出图容器</strong>。它不是一个独立页面，而是一个嵌在 iframe 里的 3D 工作台，负责加载设计方案、维护实时模板与相机状态、同步父页面显示规则、提交离线渲染任务，并驱动图册和房间自动出图。</p>
+
+<div class="card info">
+  <div class="card-label">一句话定位</div>
+  <p>React 16 + TypeScript 前端容器，核心状态挂在 KAF 状态树和多个 <code>StateManager</code> 里，其中 <code>OfflineRenderStateManager</code> 是整个渲染业务的中枢。</p>
+</div>
+
+<div class="card warning">
+  <div class="card-label">关键特征</div>
+  <p>页面不是普通 React 预览页。入口启动后会先初始化 3D 场景、相机视角、可见楼层和离线渲染配置，再把 UI 和场景状态联动起来。很多看起来像按钮的小组件，实际上直接挂着渲染任务、相机切换和跨 iframe 协议。</p>
+</div>
+
+<!-- ==================== Section 2 ==================== -->
+<h2>2. 状态总线：RootStateManager</h2>
+
+<p><code>RootStateManager</code> 是根状态中心，负责把场景与实时层串起来。它从 URL 读取 <code>designId</code>、<code>levelId</code>，初始化所有子状态：</p>
+
+<pre>
+RootStateManager
+├── <span class="dir">room</span>              <span class="comment"># 房间状态</span>
+├── <span class="dir">cameraView</span>        <span class="comment"># 相机视角</span>
+├── <span class="dir">scene3D</span>           <span class="comment"># 3D 场景实体</span>
+├── <span class="dir">visibilityResources</span> <span class="comment"># 可见模块/楼层</span>
+├── <span class="dir">realtime</span>          <span class="comment"># 实时模板 & 渲染状态</span>
+├── <span class="dir">offlineRender</span>     <span class="comment"># 离线渲染状态机 ★</span>
+├── <span class="dir">outside</span>           <span class="comment"># 外部状态</span>
+└── <span class="dir">selectControl</span>     <span class="comment"># 选中控制</span>
+</pre>
+
+<p>它还维护 <code>__onSceneUpdatingStart</code> 回调，通过 <strong>debounce / cooldown</strong> 控制 <code>realtime.syncSceneData()</code> 的兜底同步，避免"替换布局先删后加"时在错误时机触发同步。</p>
+
+<!-- ==================== Section 3 ==================== -->
+<h2>3. 核心：OfflineRenderStateManager 状态机</h2>
+
+<p><code>OfflineRenderStateManager</code> 看起来是一个普通状态类，实际上是<strong>离线渲染、模板缓存、自动出图和轮询的业务中枢</strong>。</p>
+
+<h3>3.1 初始化流程</h3>
+
+<div class="flow">
+  <span class="flow-step">init()</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">拉 snapshotList</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">取当前模板 obsId</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">初始化灯光/背景配置</span>
+</div>
+
+<h3>3.2 关键状态字段</h3>
+
+<table>
+  <tr><th>字段</th><th>类型</th><th>含义</th></tr>
+  <tr><td><code>snapshotList</code></td><td>Array</td><td>历史快照列表</td></tr>
+  <tr><td><code>lightStyleId</code></td><td>string</td><td>当前灯光样式 ID</td></tr>
+  <tr><td><code>hdriBackgroundId</code></td><td>string</td><td>当前 HDRI 背景 ID</td></tr>
+  <tr><td><code>backgroundConfig</code></td><td>object</td><td>背景配置</td></tr>
+  <tr><td><code>objectShowRuleMap</code></td><td>Map</td><td>对象显示规则（来自父页面同步）</td></tr>
+  <tr><td><code>renderTasks</code></td><td>Array</td><td>当前渲染任务列表</td></tr>
+  <tr><td><code>hasNewRender</code></td><td>boolean</td><td>图册红点 & 新结果提示</td></tr>
+  <tr><td><code>isSubmitting</code></td><td>boolean</td><td>是否正在提交渲染</td></tr>
+  <tr><td><code>hdPermission</code></td><td>object</td><td>高清渲染权限</td></tr>
+  <tr><td><code>currentObsId</code></td><td>string</td><td>当前模板 ID</td></tr>
+</table>
+
+<div class="card warning">
+  <div class="card-label">容易踩的坑</div>
+  <p><code>hasNewRender</code> 不是展示层临时状态，而是图册红点和新结果提示的<strong>共享业务状态</strong>。改渲染结果展示时必须连着它一起看。</p>
+</div>
+
+<!-- ==================== Section 4 ==================== -->
+<h2>4. 模板缓存机制</h2>
+
+<p><code>fetchAndCacheObsConfig(obsId)</code> 是模板配置的核心方法。它会把灯光样式映射与背景配置缓存到 <code>obsConfigCache</code>，同一模板重复切换时优先走缓存。</p>
+
+<div class="flow">
+  <span class="flow-step">切换模板 obsId</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">检查 obsConfigCache</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">命中? 直接用 : 发请求</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">写入缓存</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">更新灯光/背景</span>
+</div>
+
+<div class="card info">
+  <div class="card-label">静默回退</div>
+  <p>初始化失败时会回退到 <code>DEFAULT_TEMPLATE_CONFIG.backgroundConfigData</code>。所以有些错误不会直接炸页面，而是表现成<strong>渲染风格悄悄回到默认值</strong>。</p>
+</div>
+
+<div class="ask-agent">
+  改模板切换逻辑时，必须同时检查 <code>currentObsId</code>、<code>obsConfigCache</code>、实时模板来源和默认背景回退这四条路径。
+</div>
+
+<!-- ==================== Section 5 ==================== -->
+<h2>5. 父页面同步协议</h2>
+
+<p>render-3d 嵌在 iframe 里，很多关键数据不是自己算的，而是通过 <code>postMessage</code> 从父页面同步过来。</p>
+
+<h3>5.1 对象显示规则</h3>
+
+<p><code>objectShowRuleMap</code> 来自父层同步。离线渲染会基于这些外部显示规则决定最终提交参数。如果规则没同步到位，渲染结果会出现"多余物体"或"缺少家具"。</p>
+
+<h3>5.2 协议注意事项</h3>
+
+<div class="card warning">
+  <div class="card-label">改协议时必须同步核对</div>
+  <ul>
+    <li>显示规则（<code>objectShowRuleMap</code>）</li>
+    <li>渲染任务回写</li>
+    <li>图册入口状态</li>
+    <li>父页面接收端</li>
+  </ul>
+  <p>最常见的症状是：<strong>页面还能渲染，但离线参数或图册结果已经和父层脱节</strong>。</p>
+</div>
+
+<h3>5.3 iframe 协议代码位置</h3>
+
+<pre>
+utils/iframeHelper/*
+├── <span class="file">postMessage 消息定义</span>
+├── <span class="file">父页面 → 子页面: 显示规则同步</span>
+├── <span class="file">子页面 → 父页面: 渲染结果回写</span>
+└── <span class="file">双向: 图册状态同步</span>
+</pre>
+
+<!-- ==================== Section 6 ==================== -->
+<h2>6. 渲染任务轮询</h2>
+
+<p>渲染任务提交后，系统会自动轮询任务状态，直到完成或超时。</p>
+
+<div class="card info">
+  <div class="card-label">轮询策略</div>
+  <p><strong>6 秒一次，最长 10 分钟</strong>。轮询目标是 <code>SnapshotTaskStatus</code> 接口。</p>
+</div>
+
+<div class="flow">
+  <span class="flow-step">提交渲染任务</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">任务加入 renderTasks</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">每 6s 轮询状态</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">完成/超时</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">更新 hasNewRender</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">图册红点</span>
+</div>
+
+<div class="card warning">
+  <div class="card-label">改渲染权限时</div>
+  <p>不要只看按钮可点性。<code>hdPermission</code>、轮询状态和父层同步结果都会影响最终行为。</p>
+</div>
+
+<!-- ==================== Section 7 ==================== -->
+<h2>7. 房间自动出图</h2>
+
+<p>自动出图不是简单的按钮行为，它依赖<strong>房间类型、智能视角结果和当前场景相机状态</strong>三条链路。</p>
+
+<h3>7.1 核心函数</h3>
+
+<p><code>generateGellarys()</code> 按指定 <code>RoomType</code> 过滤房间，然后为每个房间生成渲染图。</p>
+
+<h3>7.2 视角选择策略</h3>
+
+<div class="flow">
+  <span class="flow-step">按 RoomType 过滤房间</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">查 smartCameraViewMap</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">有智能视角? 用它 : renderRoomCenterView()</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">生成渲染图</span>
+</div>
+
+<div class="card success">
+  <div class="card-label">两条分支</div>
+  <ul>
+    <li><strong>优先</strong>：使用 <code>smartCameraViewMap</code> 的智能视角（服务端返回的最佳视角）</li>
+    <li><strong>兜底</strong>：退回 <code>renderRoomCenterView()</code>，用房间中心和当前相机方向计算新相机属性</li>
+  </ul>
+  <p>改自动出图逻辑时，必须确认两条分支都还成立。</p>
+</div>
+
+<!-- ==================== Section 8 ==================== -->
+<h2>8. 关键文件速查</h2>
+
+<table>
+  <tr><th>文件</th><th>职责</th></tr>
+  <tr><td><code>app/state.ts</code></td><td>根状态中心 — 场景、模板、子状态装配</td></tr>
+  <tr><td><code>StateManager/OfflineRenderStateManager.ts</code></td><td>离线渲染状态机 — 模板缓存、轮询、自动出图</td></tr>
+  <tr><td><code>StateManager/realtime/*</code></td><td>实时模板和实时渲染状态</td></tr>
+  <tr><td><code>app/Scene3D/RenderButton/*</code></td><td>渲染主入口和参数装配（表面是 UI，实际是入口）</td></tr>
+  <tr><td><code>utils/iframeHelper/*</code></td><td>跨 iframe 消息和父页面协作协议</td></tr>
+  <tr><td><code>utils/errorReporter.ts</code></td><td>错误归一化与上报中心</td></tr>
+  <tr><td><code>utils/batchCaptureManager.ts</code></td><td>批量出图任务保护</td></tr>
+  <tr><td><code>app/components/BrandIpLoading/*</code></td><td>品牌化 loading 层</td></tr>
+</table>
+
+<!-- ==================== Quiz ==================== -->
+<h2>9. 自检 Quiz</h2>
+
+<div class="quiz" id="quiz1">
+  <div class="quiz-title">Q1: OfflineRenderStateManager 初始化时，模板配置加载失败会怎样？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz1', 0)">A. 页面白屏报错</li>
+    <li onclick="checkQuiz('quiz1', 1)">B. 跳过模板，不加载任何配置</li>
+    <li onclick="checkQuiz('quiz1', 2)">C. 静默回退到 DEFAULT_TEMPLATE_CONFIG.backgroundConfigData</li>
+    <li onclick="checkQuiz('quiz1', 3)">D. 弹窗提示用户手动重试</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <div class="quiz-title">Q2: 渲染任务提交后的轮询策略是什么？</div>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz2', 0)">A. 每 1 秒轮询一次，最长 5 分钟</li>
+    <li onclick="checkQuiz('quiz2', 1)">B. 每 6 秒轮询一次，最长 10 分钟</li>
+    <li onclick="checkQuiz('quiz2', 2)">C. 每 10 秒轮询一次，最长 15 分钟</li>
+    <li onclick="checkQuiz('quiz2', 3)">D. 每 30 秒轮询一次，最长 30 分钟</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <div class="quiz-title">Q3: 房间自动出图时，没有智能视角的情况下系统会怎么做？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz3', 0)">A. 跳过该房间，不生成图片</li>
+    <li onclick="checkQuiz('quiz3', 1)">B. 使用默认的全局视角</li>
+    <li onclick="checkQuiz('quiz3', 2)">C. 调用 renderRoomCenterView() 用房间中心和当前相机方向计算视角</li>
+    <li onclick="checkQuiz('quiz3', 3)">D. 随机生成一个相机位置</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<!-- ==================== Next ==================== -->
+
+
+  <h3>推荐阅读</h3>
+  <ul>
+    <li><code>render-3d/AGENTS.md</code> — 仓库自身的架构文档</li>
+    <li><code>StateManager/OfflineRenderStateManager.ts</code> — 离线渲染状态机源码</li>
+    <li><code>utils/iframeHelper/*</code> — 父页面同步协议实现</li>
+  </ul>
+</div>
+</div>
+
+<script>
+function checkQuiz(quizId, selected) {
+  const quiz = document.getElementById(quizId);
+  const options = quiz.querySelector('.quiz-options');
+  const correct = parseInt(options.dataset.correct);
+  const items = options.querySelectorAll('li');
+  const feedback = quiz.querySelector('.quiz-feedback');
+
+  items.forEach((item, i) => {
+    item.onclick = null;
+    if (i === correct) item.classList.add('correct');
+    if (i === selected && i !== correct) item.classList.add('wrong');
+  });
+
+  const feedbacks = {
+    quiz1: {
+      correct: '✓ 对！初始化失败时会静默回退到 DEFAULT_TEMPLATE_CONFIG.backgroundConfigData，渲染风格悄悄回到默认值，页面不会崩溃。',
+      wrong: '✗ 是静默回退到默认配置。这个设计让错误不容易被发现，排查时要注意"渲染风格变了但页面没报错"的情况。'
+    },
+    quiz2: {
+      correct: '✓ 对！6 秒一次、最长 10 分钟，轮询 SnapshotTaskStatus 接口。超时后任务视为失败。',
+      wrong: '✗ 是每 6 秒轮询一次，最长 10 分钟。这是 render-3d 的标准轮询策略。'
+    },
+    quiz3: {
+      correct: '✓ 对！没有智能视角时，系统会用房间中心点和当前相机方向计算新的相机属性，然后出图。两条分支必须都正常工作。',
+      wrong: '✗ 是调用 renderRoomCenterView()，用房间中心和当前相机方向计算视角。这是智能视角的兜底方案。'
+    }
+  };
+
+  feedback.style.display = 'block';
+  feedback.textContent = selected === correct
+    ? feedbacks[quizId].correct
+    : feedbacks[quizId].wrong;
+  feedback.style.background = selected === correct ? '#dcfce7' : '#fee2e2';
+}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 050</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0049-viewer-2d-deep-dive.html">上一课：049 viewer-2d 深度追踪</a><a class="primary" href="0051-stategraph-internals.html">下一课：051 StateGraph 内部机制</a></div></nav>
+</body>
+</html>

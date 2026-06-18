@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0026 - MCP 服务器生命周期管理</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:1rem}
+  .breadcrumb{color:var(--text-secondary);font-size:.85rem;margin-bottom:2rem}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .breadcrumb a:hover{text-decoration:underline}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.15rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem;color:var(--accent)}
+  p{margin-bottom:1rem}
+  .desc{color:var(--text-secondary);font-size:.95rem;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;overflow-x:auto;margin:1rem 0 1.5rem;font-size:.85rem;line-height:1.7}
+  code{font-family:'JetBrains Mono',monospace;font-size:.85em}
+  p code,li code{background:var(--code-bg);padding:.15rem .4rem;border-radius:4px;color:var(--accent)}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1.5rem 0}
+  .card.warn{border-color:#fbbf24;background:#fffbeb}
+  .card.info{border-color:#93c5fd;background:#eff6ff}
+  .card.success{border-color:#86efac;background:#f0fdf4}
+  .card.purple{border-color:#c4b5fd;background:#f5f3ff}
+  .card h3{margin-top:0}
+  .card ul,.card ol{margin:.5rem 0 0 1.25rem}
+  .card li{margin-bottom:.3rem}
+  .tag{display:inline-block;padding:.15rem .5rem;border-radius:4px;font-size:.75rem;font-weight:500;margin-right:.3rem}
+  .tag.deep{background:#fef3c7;color:#b45309}
+  .tag.code{background:#dbeafe;color:#2563eb}
+  .tag.arch{background:#f3e8ff;color:#7c3aed}
+  .quiz{background:var(--surface);border:2px solid var(--border);border-radius:8px;padding:1.5rem;margin:1.5rem 0}
+  .quiz h3{color:var(--info);margin-top:0}
+  .quiz ol{margin-left:1.25rem}
+  .quiz li{margin-bottom:1rem}
+  .quiz .options{margin:.5rem 0 0 1rem}
+  .quiz .options div{margin-bottom:.3rem;padding:.4rem .75rem;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s}
+  .quiz .options div:hover{border-color:var(--accent);background:var(--accent-light)}
+  .quiz .options div.correct{border-color:var(--success);background:#dcfce7;color:var(--success);font-weight:600}
+  .quiz .options div.wrong{border-color:#ef4444;background:#fef2f2;color:#ef4444}
+  .quiz .answer{margin-top:.75rem;padding:.75rem 1rem;background:#f0fdf4;border:1px solid #86efac;border-radius:6px;display:none;font-size:.9rem}
+  .quiz .answer.show{display:block}
+  .quiz .show-btn{display:inline-block;margin-top:.75rem;padding:.4rem 1rem;background:var(--accent);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:.85rem}
+  .quiz .show-btn:hover{opacity:.9}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.3rem}
+  .file-ref{display:inline-block;background:var(--code-bg);border:1px solid var(--border);border-radius:4px;padding:.1rem .5rem;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--purple)}
+  table{width:100%;border-collapse:collapse;margin:1rem 0 1.5rem;font-size:.9rem}
+  th,td{padding:.6rem 1rem;border:1px solid var(--border);text-align:left}
+  th{background:var(--code-bg);font-weight:600}
+  .flow-diagram{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:.8rem;line-height:2;overflow-x:auto;white-space:pre}
+  .nav-links{display:flex;justify-content:space-between;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+  .nav-links a{color:var(--accent);text-decoration:none;font-size:.9rem}
+  .nav-links a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="breadcrumb"><a href="../index.html">课程首页</a> &gt; kuai-service-py &gt; 0026 MCP 服务器生命周期管理</div>
+
+<h1>🔄 MCP 服务器生命周期管理</h1>
+<p class="subtitle">服务器状态机、启动流程、健康检查、自动重启与连接池管理</p>
+<p class="desc">本课程聚焦 <code>src/services/server_manager.py</code> 和 <code>src/models/server_types.py</code>，深入解析 Kuai MCP 服务如何管理数十个 MCP 服务器的完整生命周期 — 从配置加载到并行启动，从健康检查到故障恢复。</p>
+
+<div class="card purple">
+  <h3>📚 前置知识</h3>
+  <ul>
+    <li><strong>Python 异步编程</strong>：<code>asyncio</code>、<code>asyncio.gather</code>、<code>asyncio.wait_for</code>、<code>asyncio.create_task</code></li>
+    <li><strong>状态机概念</strong>：理解有限状态机（FSM）的基本概念 — 状态、事件、转换</li>
+    <li><strong>Pydantic 基础</strong>：<code>BaseModel</code>、<code>Field</code>、数据验证</li>
+    <li><strong>枚举类型</strong>：Python <code>enum.Enum</code> 和 <code>str, Enum</code> 多重继承</li>
+    <li><strong>0025 课程</strong>：MCP 传输协议（了解 SSE/Stdio/StreamableHTTP 的区别）</li>
+    <li><strong>0011 课程</strong>：MCP 服务架构（了解服务器管理和分组概念）</li>
+  </ul>
+</div>
+
+<!-- ==================== 服务器状态机 ==================== -->
+<h2><span class="icon">🎯</span> 服务器状态机</h2>
+
+<p><span class="tag arch">核心模型</span> 每个 MCP 服务器都有一个明确的状态，由 <code>ServerStatus</code> 枚举定义。理解状态机是理解整个生命周期管理的基础。</p>
+
+<h3>六种服务器状态</h3>
+<pre><code class="language-python"># src/models/server_types.py
+
+class ServerStatus(str, Enum):
+    """服务器状态"""
+    DISCONNECTED = "disconnected"  # 已断开（初始状态 / 已停止）
+    CONNECTING   = "connecting"    # 正在连接
+    CONNECTED    = "connected"     # 已连接（正常运行）
+    ERROR        = "error"         # 出错
+    STARTING     = "starting"      # 正在启动
+    STOPPING     = "stopping"      # 正在停止</code></pre>
+
+<h3>状态转换图</h3>
+<div class="flow-diagram">                    ┌─────────────────────────────────┐
+                    │          服务器状态机            │
+                    └─────────────────────────────────┘
+
+  DISCONNECTED ──start()──▶ STARTING ──success──▶ CONNECTED
+       ▲                      │                     │
+       │                      │ failure             │ stop()
+       │                      ▼                     ▼
+       │                   ERROR              STOPPING
+       │                      │                     │
+       │                      └─────────────────────┘
+       │                              │
+       └──────────────────────────────┘
+                   disconnect()
+
+  关键转换规则：
+  • DISCONNECTED → STARTING：调用 start_server()
+  • STARTING → CONNECTED：传输连接成功 + 工具加载完成
+  • STARTING → ERROR：连接失败或超时
+  • CONNECTED → STOPPING：调用 stop_server()
+  • STOPPING → DISCONNECTED：资源清理完成
+  • ERROR → DISCONNECTED：手动重置或自动清理</div>
+
+<h3>服务器运行时数据模型</h3>
+<pre><code class="language-python"># src/models/server_types.py
+
+class ServerConfig(BaseModel):
+    """MCP服务器配置（持久化到数据库）"""
+    name: str                              # 服务器名称（唯一标识）
+    description: Optional[str] = None      # 描述
+    transport: TransportType               # 传输协议类型
+    command: Optional[str] = None          # Stdio 启动命令
+    args: Optional[List[str]] = None       # 命令参数
+    env: Optional[Dict[str, str]] = None   # 环境变量
+    url: Optional[str] = None              # 远程 URL
+    headers: Optional[Dict[str, str]] = None  # HTTP 请求头
+    owner: str = "admin"                   # 拥有者
+    auto_start: bool = True                # 是否随服务启动
+    enabled: bool = True                   # 是否启用
+    timeout: int = 30000                   # 超时时间（毫秒）
+    keep_alive_interval: int = 60000       # 保活间隔（毫秒）
+
+class ServerInfo(BaseModel):
+    """服务器运行时信息（内存中）"""
+    config: ServerConfig                   # 配置
+    status: ServerStatus = ServerStatus.DISCONNECTED  # 当前状态
+    tools: List[ToolInfo] = []             # 可用工具列表
+    last_ping: Optional[datetime] = None   # 最后心跳时间
+    error_message: Optional[str] = None    # 错误信息
+    process_id: Optional[int] = None       # 进程 ID（Stdio）
+    start_time: Optional[datetime] = None  # 启动时间</code></pre>
+
+<div class="card info">
+  <h3>ServerConfig vs ServerInfo</h3>
+  <ul>
+    <li><strong>ServerConfig</strong>：持久化配置，存储在数据库中，描述「服务器应该怎样」</li>
+    <li><strong>ServerInfo</strong>：运行时信息，保存在内存中，描述「服务器现在怎样」</li>
+    <li>一个 ServerConfig 对应一个 ServerInfo，后者包含前者</li>
+  </ul>
+</div>
+
+<!-- ==================== 启动流程 ==================== -->
+<h2><span class="icon">🚀</span> 启动流程详解</h2>
+
+<p><span class="tag deep">核心流程</span> <code>ServerManager</code> 负责管理所有 MCP 服务器的生命周期，启动流程是其中最关键的环节。</p>
+
+<h3>ServerManager 初始化</h3>
+<pre><code class="language-python"># src/services/server_manager.py
+
+class ServerManager:
+    """MCP服务器管理器"""
+
+    def __init__(self):
+        self._servers: Dict[str, ServerInfo] = {}       # 内存中的服务器信息
+        self._transports: Dict[str, BaseTransport] = {}  # 活跃的传输连接
+        self._status_callbacks: List[Callable] = []      # 状态变更回调
+        self._tool_callbacks: List[Callable] = []        # 工具变更回调
+        self._startup_tasks: List[asyncio.Task] = []     # 后台启动任务
+        self._server_repo = ServerRepository()           # 数据库仓库
+
+    async def initialize(self) -> None:
+        """初始化管理器，从数据库加载服务器配置"""
+        # 1. 从数据库加载所有服务器配置
+        server_data_list = await self._server_repo.get_all_servers()
+
+        # 2. 创建 ServerInfo 对象
+        auto_start_servers = []
+        for server_data in server_data_list:
+            config = self._server_repo.to_server_config(server_data)
+            server_info = ServerInfo(config=config)
+            self._servers[config.name] = server_info
+
+            if config.auto_start and config.enabled:
+                auto_start_servers.append(config.name)
+
+        # 3. 并行启动所有需要自动启动的服务器
+        if auto_start_servers:
+            task = asyncio.create_task(
+                self._start_servers_parallel(auto_start_servers),
+                name="mcp_auto_start_servers",
+            )
+            self._startup_tasks.append(task)</code></pre>
+
+<h3>单个服务器启动流程</h3>
+<pre><code class="language-python">async def start_server(self, name: str) -> bool:
+    """启动MCP服务器"""
+    server_info = self._servers[name]
+
+    # 1. 前置检查
+    if not server_info.config.enabled:
+        server_info.error_message = "服务器未启用"
+        return False
+
+    if server_info.status == ServerStatus.CONNECTED:
+        return True  # 已经在运行
+
+    # 2. 设置状态为"启动中"
+    await self._set_server_status(name, ServerStatus.STARTING)
+
+    # 3. 创建传输协议实例
+    transport = TransportFactory.create_transport(server_info.config)
+
+    # 4. 设置回调（状态变更、错误通知）
+    transport.on_status_change = lambda status: asyncio.create_task(
+        self._on_transport_status_change(name, status)
+    )
+
+    # 5. 建立连接（带超时）
+    timeout_seconds = max((server_info.config.timeout or 30000) / 1000.0, 1.0)
+    success = await asyncio.wait_for(transport.connect(), timeout=timeout_seconds)
+
+    if success:
+        # 6. 连接成功，保存传输实例
+        self._transports[name] = transport
+        server_info.start_time = datetime.now()
+
+        # 7. 加载工具列表
+        await self._refresh_server_tools(name)
+
+        # 8. 设置状态为"已连接"
+        await self._set_server_status(name, ServerStatus.CONNECTED)
+        return True
+    else:
+        await self._set_server_status(name, ServerStatus.ERROR)
+        return False</code></pre>
+
+<h3>启动流程图</h3>
+<div class="flow-diagram">start_server(name)
+    │
+    ▼
+检查 enabled ──No──▶ 返回 false
+    │ Yes
+    ▼
+检查已连接 ──Yes──▶ 返回 true
+    │ No
+    ▼
+状态 → STARTING
+    │
+    ▼
+TransportFactory.create_transport(config)
+    │
+    ▼
+transport.connect() ──带超时──
+    │
+    ├── 超时/失败 ──▶ 状态 → ERROR, 清理资源
+    │
+    └── 成功
+        │
+        ▼
+    _refresh_server_tools()
+    │
+    ▼
+状态 → CONNECTED ✅
+    │
+    ▼
+通知所有回调函数</div>
+
+<!-- ==================== 并行启动与重试 ==================== -->
+<h2><span class="icon">⚡</span> 并行启动与自动重试</h2>
+
+<p><span class="tag code">性能优化</span> 服务启动时需要同时启动多个 MCP 服务器，<code>ServerManager</code> 使用 <code>asyncio.gather</code> 实现并行启动。</p>
+
+<h3>并行启动实现</h3>
+<pre><code class="language-python">async def _start_servers_parallel(self, server_names: List[str],
+                                   timeout: float = 120.0,
+                                   max_retries: int = 2) -> None:
+    """并行启动多个MCP服务器"""
+    # 为每个服务器创建独立的启动任务
+    tasks = []
+    for name in server_names:
+        task = asyncio.create_task(
+            self._start_server_with_timeout(name, timeout, max_retries),
+            name=f"start_server_{name}"
+        )
+        tasks.append(task)
+
+    # 等待所有任务完成（一个失败不影响其他）
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+
+    # 统计结果
+    successful = sum(1 for r in results if r is True)
+    failed = len(results) - successful
+    logger.info(f"并行启动完成: 成功 {successful}/{len(server_names)}")</code></pre>
+
+<h3>带重试的启动</h3>
+<pre><code class="language-python">async def _start_server_with_timeout(self, name: str, timeout: float,
+                                      max_retries: int = 2) -> bool:
+    """带超时和重试的启动单个服务器"""
+    last_error = None
+
+    for attempt in range(max_retries + 1):
+        try:
+            # 重试前先清理之前失败的连接
+            if attempt > 0:
+                await self._cleanup_failed_server(name)
+                await asyncio.sleep(min(1.0 * attempt, 3.0))  # 递增延迟
+
+            return await asyncio.wait_for(
+                self.start_server(name),
+                timeout=timeout
+            )
+
+        except asyncio.TimeoutError:
+            last_error = f"启动超时 ({timeout}秒)"
+        except Exception as e:
+            last_error = str(e)
+
+    # 所有重试都失败了
+    logger.error(f"服务器 {name} 经过 {max_retries + 1} 次尝试后启动失败")
+    await self._set_server_status(name, ServerStatus.ERROR)
+    return False</code></pre>
+
+<div class="card success">
+  <h3>重试策略要点</h3>
+  <ul>
+    <li><strong>递增延迟</strong>：第 1 次重试等 1 秒，第 2 次等 2 秒（最多 3 秒）</li>
+    <li><strong>清理前置</strong>：每次重试前先清理上一次失败的连接和资源</li>
+    <li><strong>超时控制</strong>：默认 120 秒，可通过 <code>KUAI_MCP_AUTOSTART_TIMEOUT</code> 环境变量配置</li>
+    <li><strong>最大重试次数</strong>：默认 2 次（即总共尝试 3 次），可通过 <code>KUAI_MCP_AUTOSTART_RETRIES</code> 配置</li>
+    <li><strong>可跳过</strong>：设置 <code>KUAI_SKIP_MCP_AUTOSTART=true</code> 可完全跳过自动启动</li>
+  </ul>
+</div>
+
+<!-- ==================== 健康检查 ==================== -->
+<h2><span class="icon">💓</span> 健康检查</h2>
+
+<p><span class="tag code">运维保障</span> 服务器启动后需要持续监控其健康状态，确保工具可用。</p>
+
+<h3>状态回调机制</h3>
+<pre><code class="language-python"># 启动服务器时注册回调
+transport.on_status_change = lambda status: asyncio.create_task(
+    self._on_transport_status_change(name, status)
+)
+transport.on_error = lambda error: asyncio.create_task(
+    self._on_transport_error(name, error)
+)
+
+# 状态变更处理
+async def _on_transport_status_change(self, name: str, new_status):
+    """传输层状态变更时同步更新服务器状态"""
+    if name in self._servers:
+        # 将传输层状态映射到服务器状态
+        status_map = {
+            'connected': ServerStatus.CONNECTED,
+            'disconnected': ServerStatus.DISCONNECTED,
+            'error': ServerStatus.ERROR,
+        }
+        mapped_status = status_map.get(new_status)
+        if mapped_status:
+            await self._set_server_status(name, mapped_status)</code></pre>
+
+<h3>工具刷新</h3>
+<pre><code class="language-python">async def _refresh_server_tools(self, name: str) -> None:
+    """刷新服务器的工具列表"""
+    if name not in self._transports:
+        return
+
+    transport = self._transports[name]
+    if not transport.session:
+        return
+
+    # 通过 MCP 协议获取工具列表
+    tools_result = await transport.session.list_tools()
+
+    # 更新服务器信息中的工具列表
+    self._servers[name].tools = [
+        ToolInfo(
+            name=tool.name,
+            description=tool.description,
+            input_schema=tool.inputSchema,
+            enabled=True,
+        )
+        for tool in tools_result.tools
+    ]
+
+    # 通知工具变更回调
+    for callback in self._tool_callbacks:
+        callback(name, self._servers[name].tools)</code></pre>
+
+<!-- ==================== 配置更新与自动重启 ==================== -->
+<h2><span class="icon">🔧</span> 配置更新与自动重启</h2>
+
+<p><span class="tag deep">运维功能</span> 当服务器配置变更时，<code>ServerManager</code> 会智能判断是否需要重启。</p>
+
+<pre><code class="language-python">async def update_server_config(self, name: str, config: ServerConfig) -> bool:
+    """更新服务器配置"""
+    old_config = self._servers[name].config
+    was_connected = self._servers[name].status == ServerStatus.CONNECTED
+
+    # 智能判断：哪些字段变更需要重启？
+    needs_restart = (
+        was_connected and (
+            old_config.transport != config.transport or  # 传输协议变了
+            old_config.command != config.command or       # 启动命令变了
+            old_config.args != config.args or             # 参数变了
+            old_config.env != config.env or               # 环境变量变了
+            old_config.url != config.url                  # URL 变了
+        )
+    )
+
+    if needs_restart:
+        await self.stop_server(name)   # 先停
+
+    self._servers[name].config = config  # 更新配置
+
+    if needs_restart and config.enabled:
+        await self.start_server(name)  # 再启
+
+    return True</code></pre>
+
+<div class="card info">
+  <h3>哪些变更需要重启？</h3>
+  <table>
+    <tr>
+      <th>变更字段</th>
+      <th>需要重启？</th>
+      <th>原因</th>
+    </tr>
+    <tr>
+      <td><code>transport</code></td>
+      <td>✅ 是</td>
+      <td>传输协议完全不同</td>
+    </tr>
+    <tr>
+      <td><code>command</code> / <code>args</code></td>
+      <td>✅ 是</td>
+      <td>需要启动新的子进程</td>
+    </tr>
+    <tr>
+      <td><code>url</code></td>
+      <td>✅ 是</td>
+      <td>连接目标变了</td>
+    </tr>
+    <tr>
+      <td><code>env</code></td>
+      <td>✅ 是</td>
+      <td>环境变量影响进程行为</td>
+    </tr>
+    <tr>
+      <td><code>description</code></td>
+      <td>❌ 否</td>
+      <td>只是描述文本</td>
+    </tr>
+    <tr>
+      <td><code>enabled</code></td>
+      <td>❌ 否</td>
+      <td>由其他逻辑处理</td>
+    </tr>
+    <tr>
+      <td><code>timeout</code></td>
+      <td>❌ 否</td>
+      <td>下次启动时生效</td>
+    </tr>
+  </table>
+</div>
+
+<!-- ==================== 连接池管理 ==================== -->
+<h2><span class="icon">🏊</span> 连接池管理</h2>
+
+<p><span class="tag arch">高级特性</span> <code>TransportFactory</code> 支持会话池模式，复用已建立的 MCP 连接，避免重复创建。</p>
+
+<h3>会话池 vs 直接创建</h3>
+<pre><code class="language-python"># 方式 1：直接创建（每次新建连接）
+transport = TransportFactory.create_transport(config)
+# 适合：一次性调用、Agent 类型
+
+# 方式 2：会话池模式（复用连接）
+session_info = await TransportFactory.get_or_create_session(
+    config,
+    session_id="my-session",  # 可选，不传则创建新会话
+    group="tool-group",       # 可选，会话分组
+)
+# 适合：频繁调用、需要保持连接的场景</code></pre>
+
+<div class="card">
+  <h3>会话池的优势</h3>
+  <ul>
+    <li><strong>连接复用</strong>：多个请求共享同一个 MCP 连接，减少握手开销</li>
+    <li><strong>自动管理</strong>：会话池自动处理连接的创建、回收和清理</li>
+    <li><strong>分组支持</strong>：通过 <code>group</code> 参数将会话组织到不同组中</li>
+    <li><strong>Agent 不支持</strong>：<code>AgentTransport</code> 不能使用会话池，只能直接创建</li>
+  </ul>
+</div>
+
+<!-- ==================== 完整生命周期 ==================== -->
+<h2><span class="icon">📖</span> 完整生命周期总结</h2>
+
+<div class="flow-diagram">应用启动
+    │
+    ▼
+ServerManager.initialize()
+    │
+    ├── 从数据库加载 ServerConfig 列表
+    ├── 创建 ServerInfo 对象（状态 = DISCONNECTED）
+    └── 收集 auto_start=true 的服务器
+        │
+        ▼
+_start_servers_parallel()
+    │
+    ├── asyncio.gather() 并行启动
+    │   ├── _start_server_with_timeout("server-A", 120, 2)
+    │   │   ├── 第 1 次尝试 → 失败
+    │   │   ├── 等待 1 秒，清理
+    │   │   ├── 第 2 次尝试 → 失败
+    │   │   ├── 等待 2 秒，清理
+    │   │   └── 第 3 次尝试 → 成功 ✅
+    │   │
+    │   └── _start_server_with_timeout("server-B", 120, 2)
+    │       └── 第 1 次尝试 → 成功 ✅
+    │
+    ▼
+所有服务器启动完成
+    │
+    ├── DISCONNECTED → STARTING → CONNECTED（成功的）
+    └── DISCONNECTED → STARTING → ERROR（失败的）
+        │
+        ▼
+运行期间
+    │
+    ├── 健康检查（状态回调、工具刷新）
+    ├── 配置更新（智能判断是否需要重启）
+    └── API 请求处理（通过已连接的服务器调用工具）
+        │
+        ▼
+应用关闭
+    │
+    └── stop_server() → STOPPING → DISCONNECTED（逐个停止）</div>
+
+<!-- ==================== Quiz ==================== -->
+<h2><span class="icon">🧪</span> 知识检验</h2>
+
+<div class="quiz" id="quiz1">
+  <h3>题目 1：服务器状态</h3>
+  <p>一个 MCP 服务器启动成功后，最终状态是什么？</p>
+  <div class="options">
+    <div onclick="checkAnswer(this,'quiz1',false)">A. STARTING</div>
+    <div onclick="checkAnswer(this,'quiz1',false)">B. CONNECTING</div>
+    <div onclick="checkAnswer(this,'quiz1',true)">C. CONNECTED</div>
+    <div onclick="checkAnswer(this,'quiz1',false)">D. DISCONNECTED</div>
+  </div>
+  <button class="show-btn" onclick="toggleAnswer('quiz1')">显示解析</button>
+  <div class="answer" id="quiz1-answer">
+    <strong>答案 C</strong>。启动流程是：DISCONNECTED → STARTING → CONNECTED。只有当传输连接建立成功<strong>并且</strong>工具列表加载完成后，状态才会变为 CONNECTED。即使工具加载失败，状态也会设为 CONNECTED（只是工具列表为空）。
+  </div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <h3>题目 2：并行启动重试</h3>
+  <p>默认配置下，一个 MCP 服务器启动失败后最多会尝试几次？重试之间的延迟策略是什么？</p>
+  <div class="options">
+    <div onclick="checkAnswer(this,'quiz2',false)">A. 2 次，固定延迟 1 秒</div>
+    <div onclick="checkAnswer(this,'quiz2',true)">B. 3 次（1 次初始 + 2 次重试），递增延迟（最多 3 秒）</div>
+    <div onclick="checkAnswer(this,'quiz2',false)">C. 5 次，指数退避</div>
+    <div onclick="checkAnswer(this,'quiz2',false)">D. 无限重试，每 10 秒一次</div>
+  </div>
+  <button class="show-btn" onclick="toggleAnswer('quiz2')">显示解析</button>
+  <div class="answer" id="quiz2-answer">
+    <strong>答案 B</strong>。代码中 <code>max_retries=2</code>，循环 <code>range(max_retries + 1)</code> 即 3 次尝试。延迟为 <code>min(1.0 * attempt, 3.0)</code>：第 1 次重试等 1 秒，第 2 次等 2 秒（不超过 3 秒上限）。这个递增延迟策略避免了对故障服务器的频繁重试。
+  </div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <h3>题目 3：配置更新</h3>
+  <p>修改一个已连接服务器的 <code>description</code>（描述）字段，会触发服务器重启吗？</p>
+  <div class="options">
+    <div onclick="checkAnswer(this,'quiz3',false)">A. 会，任何配置变更都会重启</div>
+    <div onclick="checkAnswer(this,'quiz3',true)">B. 不会，description 不在需要重启的字段列表中</div>
+    <div onclick="checkAnswer(this,'quiz3',false)">C. 取决于服务器类型</div>
+    <div onclick="checkAnswer(this,'quiz3',false)">D. 取决于 auto_start 配置</div>
+  </div>
+  <button class="show-btn" onclick="toggleAnswer('quiz3')">显示解析</button>
+  <div class="answer" id="quiz3-answer">
+    <strong>答案 B</strong>。<code>update_server_config()</code> 中的 <code>needs_restart</code> 判断只检查 <code>transport</code>、<code>command</code>、<code>args</code>、<code>env</code>、<code>url</code> 这 5 个字段。<code>description</code> 只是人类可读的描述文本，不影响服务器的运行行为，所以不需要重启。这种智能判断避免了不必要的服务中断。
+  </div>
+</div>
+
+<div class="nav-links">
+  <a href="0025-kuai-py-transport-protocols.html">← MCP 传输协议</a>
+  <a href="../index.html">🗺️ 完整学习地图</a>
+  <a href="../0015-full-stack-dev-guide.html">全栈开发实战 →</a>
+</div>
+
+</div>
+
+<script>
+function checkAnswer(el, quizId, correct) {
+  const options = el.parentNode.children;
+  for (let o of options) { o.style.pointerEvents = 'none'; }
+  if (correct) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    for (let o of options) {
+      if (o.onclick && o.onclick.toString().includes('true')) o.classList.add('correct');
+    }
+  }
+  document.getElementById(quizId + '-answer').classList.add('show');
+}
+function toggleAnswer(quizId) {
+  document.getElementById(quizId + '-answer').classList.toggle('show');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0001 - kuai-service 项目概览</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:2rem}
+  .breadcrumb{color:var(--text-secondary);font-size:.85rem;margin-bottom:1.5rem}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .breadcrumb a:hover{text-decoration:underline}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.15rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem}
+  p{margin-bottom:1rem}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15rem .4rem;border-radius:4px;font-size:.88em}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;overflow-x:auto;margin:1rem 0;font-size:.88rem;line-height:1.6}
+  pre code{background:none;padding:0}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.4rem}
+  .tag{display:inline-block;padding:.1rem .4rem;border-radius:4px;font-size:.7rem;font-weight:500;margin-right:.3rem}
+  .tag.overview{background:#dbeafe;color:#2563eb}
+  .tag.deep{background:#fef3c7;color:#b45309}
+  .tag.dev{background:#dcfce7;color:#16a34a}
+  .tag.special{background:#f3e8ff;color:#7c3aed}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0}
+  .card.info{background:#eff6ff;border-color:#bfdbfe}
+  .card-label{font-weight:600;font-size:.85rem;color:#2563eb;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.05em}
+  .card-title{font-weight:600;margin-bottom:.5rem;font-size:1.05rem}
+  .module-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:1rem;margin:1rem 0}
+  .module-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;transition:all .2s}
+  .module-card:hover{border-color:var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .module-card h4{font-size:1rem;font-weight:600;margin-bottom:.35rem}
+  .module-card p{color:var(--text-secondary);font-size:.9rem;margin:0}
+  .quiz-section{background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:1.5rem;margin-top:2.5rem}
+  .quiz-section h2{margin-top:0;color:var(--accent)}
+  .quiz-q{margin-bottom:1.5rem}
+  .quiz-q .q-title{font-weight:600;margin-bottom:.5rem}
+  .quiz-q label{display:block;padding:.4rem .75rem;margin:.3rem 0;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s;background:var(--surface)}
+  .quiz-q label:hover{border-color:var(--accent)}
+  .quiz-q input[type="radio"]{margin-right:.5rem}
+  .quiz-q .answer{display:none;margin-top:.5rem;padding:.75rem 1rem;border-radius:6px;font-size:.9rem}
+  .quiz-q .answer.correct{background:#dcfce7;color:#166534;border:1px solid #86efac}
+  .quiz-q .answer.wrong{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
+  .ask-agent::before{content:'💡 '}
+  .nav-links{display:flex;justify-content:space-between;margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+  .nav-links a{color:var(--accent);text-decoration:none;font-weight:500}
+  .nav-links a:hover{text-decoration:underline}
+  .highlight{background:var(--accent-light);padding:.1rem .3rem;border-radius:3px}
+  table{width:100%;border-collapse:collapse;margin:1rem 0}
+  th,td{padding:.6rem .8rem;border:1px solid var(--border);text-align:left;font-size:.9rem}
+  th{background:var(--code-bg);font-weight:600}
+</style>
+<script>
+function checkAnswer(qId, correct, el){
+  var ans=el.parentElement.parentElement.querySelector('.answer');
+  if(el.value===correct){ans.className='answer correct';ans.innerHTML='✅ 正确！';ans.style.display='block'}
+  else{ans.className='answer wrong';ans.innerHTML='❌ 错误，正确答案是 '+correct+'。';ans.style.display='block'}
+}
+</script>
+</head>
+<body>
+<div class="container">
+
+<div class="breadcrumb"><a href="../index.html">课程首页</a> &gt; kuai-service &gt; 0001 项目概览</div>
+
+<div class="card info">
+  <div class="card-label">前置知识</div>
+  <p>如果你不熟悉以下概念，建议先阅读对应教程：</p>
+  <ul>
+    <li><a href="../../reference/spring-boot-basics.html">Spring Boot 基础入门</a></li>
+    <li><a href="../../reference/mybatis-plus-basics.html">MyBatis-Plus 基础入门</a></li>
+    <li><a href="../../reference/tddl-basics.html">TDDL 数据库中间件入门</a></li>
+  </ul>
+</div>
+
+<h1>☕ kuai-service 项目概览</h1>
+<p class="subtitle"><span class="tag overview">概览</span> 了解项目的定位、技术栈、目录结构和核心模块</p>
+
+<!-- ============ 1. 项目定位 ============ -->
+<h2><span class="icon">🎯</span> 项目定位</h2>
+<p><strong>kuai-service</strong> 是酷家乐测试平台（Kuai）的 <strong>Java 后端服务</strong>。它为前端和 Python MCP 服务提供核心 API，支撑整个 AI 测试平台的运转。</p>
+
+<div class="card">
+  <div class="card-title">一句话概括</div>
+  <p>一个 <strong>Spring Boot</strong> 应用，集成了 Prompt 管理、LLM 评估、微信机器人对话、知识库等能力，是 Kuai 测试平台的"大脑"。</p>
+</div>
+
+<!-- ============ 2. 技术栈 ============ -->
+<h2><span class="icon">🛠️</span> 技术栈</h2>
+
+<table>
+  <tr><th>层级</th><th>技术</th><th>说明</th></tr>
+  <tr><td>框架</td><td><code>Spring Boot</code></td><td>基于公司内部 <code>pilot-boot-dependencies 2.3.9</code> 脚手架</td></tr>
+  <tr><td>ORM</td><td><code>MyBatis-Plus</code> + 原生 MyBatis 注解</td><td>Mapper 层使用 <code>@Select</code>/<code>@Insert</code> 注解 + <code>BaseMapper</code> 泛型基类</td></tr>
+  <tr><td>数据库</td><td>MySQL (TDDL) + MongoDB</td><td>MySQL 通过 <code>tddl-min</code> 连接；MongoDB 通过 <code>spring-boot-starter-data-mongodb</code></td></tr>
+  <tr><td>缓存</td><td>Caffeine</td><td>本地内存缓存，<code>spring-boot-starter-cache</code> + Caffeine</td></tr>
+  <tr><td>HTTP</td><td>OkHttp + Apache HttpClient</td><td>调用外部 FastGPT、企业微信等 API</td></tr>
+  <tr><td>认证</td><td>authnet-sso-client</td><td>公司内部 SSO 单点登录</td></tr>
+  <tr><td>定时任务</td><td>Spring Scheduling + Quartz</td><td>批量评估任务调度、文章推送等</td></tr>
+  <tr><td>异步</td><td><code>@EnableAsync</code> + CompletableFuture</td><td>LLM 评估并发执行</td></tr>
+  <tr><td>模板</td><td>Thymeleaf</td><td>服务端渲染页面（评分结果、表单等）</td></tr>
+  <tr><td>其他</td><td>Lombok / Fastjson / Jsoup / POI</td><td>工具类库</td></tr>
+</table>
+
+<!-- ============ 3. 目录结构 ============ -->
+<h2><span class="icon">📁</span> 目录结构</h2>
+
+<pre><code>kuai-service/
+├── pom.xml                          # Maven 依赖管理
+└── src/main/java/com/qunhe/kuai/
+    ├── CommonServiceApplication.java # Spring Boot 启动类
+    ├── controller/                   # REST 控制器层
+    │   ├── PromptController.java         # 提示词 CRUD
+    │   ├── PromptVersionController.java  # 版本管理
+    │   ├── PromptEvaluationController.java # 评估记录
+    │   ├── LLMEvaluationController.java  # LLM 批量评估
+    │   ├── DeepEvalEvaluationController.java # DeepEval 评估
+    │   ├── WeChatRobotController.java    # 微信机器人回调
+    │   ├── SharedAppController.java      # 分享应用管理
+    │   ├── MentorRouteController.java    # 导师路由
+    │   ├── KnowOpenApiController.java    # 知识库 OpenAPI
+    │   └── ...
+    ├── Service/                      # 业务逻辑层
+    │   ├── LLMEvaluationService.java     # LLM 评估核心逻辑
+    │   ├── NewRobotService.java          # 机器人 Token 管理
+    │   ├── RobotChatService.java         # 机器人对话
+    │   ├── SharedAppService.java         # 分享应用（2700+ 行核心服务）
+    │   ├── ChatService.java              # 对话调用
+    │   ├── MentorRouteService.java       # 导师路由
+    │   └── ...
+    ├── mapper/                       # 数据访问层
+    │   ├── fastGpt/                      # FastGPT 相关 Mapper
+    │   │   ├── LlmTaskMapper.java
+    │   │   ├── LlmEvaluationRecordMapper.java
+    │   │   └── ...
+    │   ├── ChatRepository.java           # MongoDB 会话
+    │   ├── AppsSetRepository.java        # MongoDB 应用集
+    │   └── ...
+    ├── entity/                       # 实体类
+    │   ├── fastGpt/                      # LLM 评估相关实体
+    │   ├── dto/                          # 数据传输对象
+    │   ├── query/                        # 查询参数对象
+    │   └── ...
+    ├── config/                       # 配置类
+    ├── constant/                     # 常量定义
+    ├── scheduled/                    # 定时任务
+    └── utils/                        # 工具类</code></pre>
+
+<!-- ============ 4. 核心模块 ============ -->
+<h2><span class="icon">🧩</span> 核心模块</h2>
+
+<div class="module-grid">
+  <div class="module-card">
+    <h4>📝 Prompt 管理</h4>
+    <p>提示词的创建、编辑、版本管理、发布/下线、评估记录。支持分类和关键词搜索。</p>
+    <p style="margin-top:.5rem"><code>PromptController</code> → <code>PromptService</code> → <code>PromptMapper</code></p>
+  </div>
+  <div class="module-card">
+    <h4>🤖 LLM 评估</h4>
+    <p>对 AI 应用的回答质量进行自动评分。支持单次评估和批量评估（并发执行），可自定义评估模型。</p>
+    <p style="margin-top:.5rem"><code>LLMEvaluationController</code> → <code>LLMEvaluationService</code> → <code>LlmTaskMapper</code></p>
+  </div>
+  <div class="module-card">
+    <h4>💬 微信机器人</h4>
+    <p>企业微信机器人对话管理。支持群聊/私聊 Token 注册、FastGPT 代理调用、长连接管理。</p>
+    <p style="margin-top:.5rem"><code>WeChatRobotController</code> → <code>RobotChatService</code> → <code>NewRobotMapper</code></p>
+  </div>
+  <div class="module-card">
+    <h4>📚 知识库 / 分享应用</h4>
+    <p>管理 AI 应用的分享配置、对话历史、标签分类、评估统计。MongoDB 存储大量非结构化对话数据。</p>
+    <p style="margin-top:.5rem"><code>SharedAppController</code> → <code>SharedAppService</code> → <code>MongoTemplate</code></p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">其他重要模块</div>
+  <ul>
+    <li><strong>DeepEval 评估</strong> — 基于 DeepEval 框架的另一种 LLM 评估方式</li>
+    <li><strong>导师路由</strong> — MentorRoute，将用户问题转发给合适的导师</li>
+    <li><strong>Know OpenAPI</strong> — 知识库对外 API，供 AI 诊断助手等调用</li>
+    <li><strong>定时任务</strong> — FastGPT 任务调度、文章推送、消息清理等</li>
+  </ul>
+</div>
+
+<!-- ============ 5. 启动配置 ============ -->
+<h2><span class="icon">⚙️</span> 启动配置</h2>
+<p>项目启动类 <code>CommonServiceApplication</code> 使用了多个 Spring 注解：</p>
+<pre><code>@MapperScan("com.qunhe.kuai.*")    // MyBatis Mapper 扫描
+@SpringBootApplication               // Spring Boot 自动配置
+@EnableAsync                         // 异步方法支持
+@EnableScheduling                    // 定时任务支持
+@EnableCaching                       // 缓存支持
+@EnableRetry                         // Spring Retry 重试机制</code></pre>
+<p>服务默认运行在 <strong>8080 端口</strong>，使用 Jetty 作为嵌入式容器。</p>
+
+<!-- ============ Quiz ============ -->
+<div class="quiz-section">
+  <h2>📝 自检 Quiz</h2>
+
+  <div class="quiz-q">
+    <div class="q-title">Q1: kuai-service 项目使用的是哪个数据库连接中间件？</div>
+    <label><input type="radio" name="q1" value="A" onclick="checkAnswer('q1','B',this)"> A. Druid</label>
+    <label><input type="radio" name="q1" value="B" onclick="checkAnswer('q1','B',this)"> B. TDDL (tddl-min)</label>
+    <label><input type="radio" name="q1" value="C" onclick="checkAnswer('q1','B',this)"> C. HikariCP</label>
+    <label><input type="radio" name="q1" value="D" onclick="checkAnswer('q1','B',this)"> D. C3P0</label>
+    <div class="answer"></div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-title">Q2: 下列哪个不是 kuai-service 的核心模块？</div>
+    <label><input type="radio" name="q2" value="A" onclick="checkAnswer('q2','D',this)"> A. Prompt 管理</label>
+    <label><input type="radio" name="q2" value="B" onclick="checkAnswer('q2','D',this)"> B. LLM 评估</label>
+    <label><input type="radio" name="q2" value="C" onclick="checkAnswer('q2','D',this)"> C. 微信机器人</label>
+    <label><input type="radio" name="q2" value="D" onclick="checkAnswer('q2','D',this)"> D. CI/CD 流水线</label>
+    <div class="answer"></div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-title">Q3: kuai-service 同时使用了哪两种数据库？</div>
+    <label><input type="radio" name="q3" value="A" onclick="checkAnswer('q3','C',this)"> A. MySQL + Redis</label>
+    <label><input type="radio" name="q3" value="B" onclick="checkAnswer('q3','C',this)"> B. PostgreSQL + MongoDB</label>
+    <label><input type="radio" name="q3" value="C" onclick="checkAnswer('q3','C',this)"> C. MySQL + MongoDB</label>
+    <label><input type="radio" name="q3" value="D" onclick="checkAnswer('q3','C',this)"> D. MySQL + Elasticsearch</label>
+    <div class="answer"></div>
+  </div>
+</div>
+
+<div class="ask-agent">
+  <strong>想深入了解？</strong>试试问 Agent："kuai-service 的 SharedAppService 做了什么？" 或 "TDDL 和普通 JDBC 连接池有什么区别？"
+</div>
+
+<div class="nav-links">
+  <a href="../index.html">← 返回学习地图</a>
+  <a href="../index.html">🗺️ 完整学习地图</a>
+  <a href="../front/0005-kuai-front-overview.html">前端项目概览 →</a>
+</div>
+
+</div>
+</body>
+</html>

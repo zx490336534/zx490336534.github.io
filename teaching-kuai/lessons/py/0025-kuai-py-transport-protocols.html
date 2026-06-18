@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0025 - MCP 传输协议深度解析</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:1rem}
+  .breadcrumb{color:var(--text-secondary);font-size:.85rem;margin-bottom:2rem}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .breadcrumb a:hover{text-decoration:underline}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.15rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem;color:var(--accent)}
+  p{margin-bottom:1rem}
+  .desc{color:var(--text-secondary);font-size:.95rem;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;overflow-x:auto;margin:1rem 0 1.5rem;font-size:.85rem;line-height:1.7}
+  code{font-family:'JetBrains Mono',monospace;font-size:.85em}
+  p code,li code{background:var(--code-bg);padding:.15rem .4rem;border-radius:4px;color:var(--accent)}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1.5rem 0}
+  .card.warn{border-color:#fbbf24;background:#fffbeb}
+  .card.info{border-color:#93c5fd;background:#eff6ff}
+  .card.success{border-color:#86efac;background:#f0fdf4}
+  .card.purple{border-color:#c4b5fd;background:#f5f3ff}
+  .card h3{margin-top:0}
+  .card ul,.card ol{margin:.5rem 0 0 1.25rem}
+  .card li{margin-bottom:.3rem}
+  .tag{display:inline-block;padding:.15rem .5rem;border-radius:4px;font-size:.75rem;font-weight:500;margin-right:.3rem}
+  .tag.deep{background:#fef3c7;color:#b45309}
+  .tag.code{background:#dbeafe;color:#2563eb}
+  .tag.arch{background:#f3e8ff;color:#7c3aed}
+  .quiz{background:var(--surface);border:2px solid var(--border);border-radius:8px;padding:1.5rem;margin:1.5rem 0}
+  .quiz h3{color:var(--info);margin-top:0}
+  .quiz ol{margin-left:1.25rem}
+  .quiz li{margin-bottom:1rem}
+  .quiz .options{margin:.5rem 0 0 1rem}
+  .quiz .options div{margin-bottom:.3rem;padding:.4rem .75rem;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s}
+  .quiz .options div:hover{border-color:var(--accent);background:var(--accent-light)}
+  .quiz .options div.correct{border-color:var(--success);background:#dcfce7;color:var(--success);font-weight:600}
+  .quiz .options div.wrong{border-color:#ef4444;background:#fef2f2;color:#ef4444}
+  .quiz .answer{margin-top:.75rem;padding:.75rem 1rem;background:#f0fdf4;border:1px solid #86efac;border-radius:6px;display:none;font-size:.9rem}
+  .quiz .answer.show{display:block}
+  .quiz .show-btn{display:inline-block;margin-top:.75rem;padding:.4rem 1rem;background:var(--accent);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:.85rem}
+  .quiz .show-btn:hover{opacity:.9}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.3rem}
+  .file-ref{display:inline-block;background:var(--code-bg);border:1px solid var(--border);border-radius:4px;padding:.1rem .5rem;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--purple)}
+  table{width:100%;border-collapse:collapse;margin:1rem 0 1.5rem;font-size:.9rem}
+  th,td{padding:.6rem 1rem;border:1px solid var(--border);text-align:left}
+  th{background:var(--code-bg);font-weight:600}
+  .flow-diagram{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:.8rem;line-height:2;overflow-x:auto;white-space:pre}
+  .nav-links{display:flex;justify-content:space-between;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+  .nav-links a{color:var(--accent);text-decoration:none;font-size:.9rem}
+  .nav-links a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="breadcrumb"><a href="../index.html">课程首页</a> &gt; kuai-service-py &gt; 0025 MCP 传输协议深度解析</div>
+
+<h1>🔌 MCP 传输协议深度解析</h1>
+<p class="subtitle">SSE、Stdio、StreamableHTTP 三种传输协议的实现原理与选择指南</p>
+<p class="desc">本课程聚焦 <code>src/transports/</code> 目录下的传输协议实现，深入解析 Kuai MCP 服务如何通过不同的传输协议连接各种 MCP 服务器。理解传输协议是理解整个 MCP 架构的基础。</p>
+
+<div class="card purple">
+  <h3>📚 前置知识</h3>
+  <ul>
+    <li><strong>Python 异步编程</strong>：<code>async/await</code>、<code>asyncio</code>、上下文管理器（<code>__aenter__</code>/<code>__aexit__</code>）</li>
+    <li><strong>MCP 协议基础</strong>：了解 MCP（Model Context Protocol）的基本概念 — Client、Server、Tool</li>
+    <li><strong>HTTP 基础</strong>：了解 HTTP 请求/响应模型、SSE（Server-Sent Events）的基本概念</li>
+    <li><strong>进程间通信</strong>：了解 stdin/stdout 管道通信的基本概念</li>
+    <li><strong>0010 课程</strong>：kuai-service-py 项目概览（了解目录结构和技术栈）</li>
+    <li><strong>0011 课程</strong>：MCP 服务架构（了解服务器管理和分组概念）</li>
+  </ul>
+</div>
+
+<!-- ==================== 传输协议总览 ==================== -->
+<h2><span class="icon">🗺️</span> 传输协议总览</h2>
+
+<p><span class="tag arch">架构设计</span> Kuai MCP 服务支持 4 种传输协议，每种对应不同的通信场景。所有协议都继承自 <code>BaseTransport</code> 基类。</p>
+
+<h3>四种传输协议</h3>
+<table>
+  <tr>
+    <th>协议</th>
+    <th>类型</th>
+    <th>通信方式</th>
+    <th>典型场景</th>
+    <th>实现文件</th>
+  </tr>
+  <tr>
+    <td><strong>SSE</strong></td>
+    <td>远程</td>
+    <td>HTTP 单向推送</td>
+    <td>老版本 MCP 服务器</td>
+    <td><span class="file-ref">sse_transport.py</span></td>
+  </tr>
+  <tr>
+    <td><strong>Stdio</strong></td>
+    <td>本地</td>
+    <td>进程 stdin/stdout 管道</td>
+    <td>本地 CLI 工具</td>
+    <td><span class="file-ref">stdio_transport.py</span></td>
+  </tr>
+  <tr>
+    <td><strong>StreamableHTTP</strong></td>
+    <td>远程</td>
+    <td>HTTP 流式双向</td>
+    <td>推荐的远程协议</td>
+    <td><span class="file-ref">streamable_http_transport.py</span></td>
+  </tr>
+  <tr>
+    <td><strong>Agent</strong></td>
+    <td>自定义</td>
+    <td>自定义实现</td>
+    <td>非标准 MCP 服务器</td>
+    <td><span class="file-ref">agent_transport.py</span></td>
+  </tr>
+</table>
+
+<h3>传输协议工厂</h3>
+<p><span class="file-ref">transport_factory.py</span> 是创建传输实例的统一入口，根据配置自动选择正确的协议：</p>
+
+<pre><code class="language-python"># src/transports/transport_factory.py
+
+class TransportFactory:
+    """传输协议工厂，支持会话池管理"""
+
+    # 传输类型 → 实现类的映射
+    transport_classes = {
+        TransportType.STDIO: StdioTransport,
+        TransportType.STREAMABLE_HTTP: StreamableHttpTransport,
+        TransportType.SSE: SseTransport,
+        TransportType.AGENT: AgentTransport,
+    }
+
+    @classmethod
+    def create_transport(cls, config: ServerConfig) -> BaseTransport:
+        """根据配置创建对应的传输实例"""
+        if config.transport not in cls.transport_classes:
+            raise ValueError(f"不支持的传输协议类型: {config.transport}")
+
+        transport_class = cls.transport_classes[config.transport]
+        return transport_class(config)
+
+    @classmethod
+    async def get_or_create_session(cls, config, session_id=None, group=""):
+        """获取或创建会话（使用会话池）"""
+        session_pool = get_session_pool()
+        return await session_pool.get_or_create_session(
+            session_id, config, group
+        )</code></pre>
+
+<div class="flow-diagram">ServerConfig（来自数据库）
+        │
+        │  config.transport 字段决定协议类型
+        ▼
+┌──────────────────────┐
+│   TransportFactory   │
+│                      │
+│  config.transport:   │
+│    "sse"             │──▶ SseTransport
+│    "stdio"           │──▶ StdioTransport
+│    "streamable_http" │──▶ StreamableHttpTransport
+│    "agent"           │──▶ AgentTransport
+└──────────────────────┘</div>
+
+<!-- ==================== SSE 协议 ==================== -->
+<h2><span class="icon">📡</span> SSE 协议详解</h2>
+
+<p><span class="tag deep">远程协议</span> SSE（Server-Sent Events）是 MCP 协议最早支持的传输方式，基于 HTTP 的单向推送机制。</p>
+
+<h3>什么是 SSE？</h3>
+<div class="card info">
+  <p>SSE 是 HTML5 标准的一部分，允许服务器通过 HTTP 连接持续向客户端推送数据。特点：</p>
+  <ul>
+    <li><strong>单向推送</strong>：只能服务器→客户端推送，客户端→服务器需要额外的 HTTP POST</li>
+    <li><strong>基于 HTTP</strong>：不需要特殊协议，穿透防火墙和代理</li>
+    <li><strong>自动重连</strong>：浏览器原生支持断线重连</li>
+    <li><strong>文本格式</strong>：数据以文本形式传输（<code>text/event-stream</code>）</li>
+  </ul>
+</div>
+
+<h3>SSE 传输实现</h3>
+<pre><code class="language-python"># src/transports/sse_transport.py
+
+class SseTransport(BaseTransport):
+    """SSE传输协议，用于远程服务器单向推送通信"""
+
+    def __init__(self, config: ServerConfig):
+        if config.transport != TransportType.SSE:
+            raise ValueError(f"配置的传输类型不是SSE: {config.transport}")
+        super().__init__(config)
+        self._context_manager = None
+        self._streams = None
+
+    async def _do_connect(self) -> bool:
+        """执行SSE连接，建立HTTP SSE事件流"""
+        if not self.config.url:
+            raise Exception("SSE需要指定URL")
+
+        # 验证URL格式
+        parsed = urlparse(self.config.url)
+        if not parsed.scheme or not parsed.netloc:
+            raise ValueError(f"无效的URL: {self.config.url}")
+
+        # 准备headers（支持自定义认证头等）
+        headers = dict(self.config.headers) if self.config.headers else {}
+
+        # 使用 MCP SDK 的 sse_client 建立连接
+        self._context_manager = sse_client(
+            url=self.config.url,
+            headers=headers
+        )
+
+        # 进入上下文管理器，获取读写流
+        read_stream, write_stream = await self._context_manager.__aenter__()
+        self._streams = (read_stream, write_stream)
+
+        # 创建 MCP 会话并初始化
+        self.session = ClientSession(read_stream, write_stream)
+        await self.session.__aenter__()
+        await self.session.initialize()
+
+        self.session_id = f"sse-{id(self.session)}"
+        return True</code></pre>
+
+<h3>SSE 连接流程</h3>
+<div class="flow-diagram">客户端（Kuai MCP 服务）
+        │
+        │  1. HTTP GET /sse（建立 SSE 事件流）
+        ▼
+远程 MCP 服务器
+        │
+        │  2. 返回 Content-Type: text/event-stream
+        │     保持长连接，持续推送事件
+        │
+        │  3. 客户端通过 HTTP POST 发送请求
+        │
+        │  4. 服务器通过 SSE 流返回响应
+        ▼
+双向通信建立完成（读流 + 写流）</div>
+
+<!-- ==================== Stdio 协议 ==================== -->
+<h2><span class="icon">⌨️</span> Stdio 协议详解</h2>
+
+<p><span class="tag deep">本地协议</span> Stdio 通过标准输入/输出管道与本地子进程通信，是连接本地 MCP 服务器（如 CLI 工具）的标准方式。</p>
+
+<h3>什么是 Stdio？</h3>
+<div class="card info">
+  <ul>
+    <li><strong>进程管道</strong>：父进程启动子进程，通过 stdin（标准输入）写入，stdout（标准输出）读取</li>
+    <li><strong>零网络开销</strong>：不走网络，直接内存管道通信，延迟极低</li>
+    <li><strong>安全隔离</strong>：子进程运行在独立的地址空间中</li>
+    <li><strong>自动管理</strong>：MCP SDK 自动处理进程启动、停止和清理</li>
+  </ul>
+</div>
+
+<h3>Stdio 传输实现</h3>
+<pre><code class="language-python"># src/transports/stdio_transport.py
+
+class StdioTransport(BaseTransport):
+    """Stdio传输协议，用于本地进程通信"""
+
+    async def _do_connect(self) -> bool:
+        """执行Stdio连接，启动子进程并建立通信"""
+        if not self.config.command:
+            raise Exception("Stdio需要指定command")
+
+        # 准备环境变量（继承当前环境 + 配置的环境）
+        env = dict(os.environ)
+        if self.config.env:
+            for key, value in self.config.env.items():
+                env[key] = os.path.expandvars(str(value))
+
+        # 构建 Stdio 服务器参数
+        server_params = StdioServerParameters(
+            command=self.config.command,   # 如 "python"
+            args=self.config.args or [],   # 如 ["-m", "my_mcp_server"]
+            env=env
+        )
+
+        # 使用 MCP SDK 的 stdio_client 建立连接
+        self._context_manager = stdio_client(server_params)
+        read_stream, write_stream = await self._context_manager.__aenter__()
+        self._streams = (read_stream, write_stream)
+
+        # 创建 MCP 会话并初始化
+        self.session = ClientSession(read_stream, write_stream)
+        await self.session.__aenter__()
+        await self.session.initialize()  # SDK 自动处理 MCP 初始化握手
+
+        self.session_id = f"stdio-{id(self.session)}"
+        return True
+
+    def get_process_info(self) -> Optional[dict]:
+        """获取进程信息"""
+        return {
+            'command': self.config.command,
+            'args': self.config.args,
+            'env_count': len(self.config.env) if self.config.env else 0,
+            'session_id': self.session_id
+        }</code></pre>
+
+<h3>Stdio 通信流程</h3>
+<div class="flow-diagram">Kuai MCP 服务（父进程）
+        │
+        │  1. subprocess.Popen(command, args, stdin=PIPE, stdout=PIPE)
+        ▼
+本地 MCP 服务器（子进程）
+        │
+        │  2. 父进程通过 stdin 管道发送 JSON-RPC 请求
+        │     → {"jsonrpc":"2.0","method":"tools/list","id":1}
+        │
+        │  3. 子进程通过 stdout 管道返回 JSON-RPC 响应
+        │     ← {"jsonrpc":"2.0","result":{"tools":[...]},"id":1}
+        ▼
+通信完成（双向管道）</div>
+
+<div class="card warn">
+  <h3>Stdio 注意事项</h3>
+  <ul>
+    <li><strong>命令路径</strong>：<code>config.command</code> 必须是可执行文件的路径或在 PATH 中</li>
+    <li><strong>环境变量</strong>：支持 <code>os.path.expandvars</code> 展开（如 <code>$HOME</code>、<code>${API_KEY}</code>）</li>
+    <li><strong>进程清理</strong>：断开时 SDK 自动关闭子进程，但异常退出可能残留僵尸进程</li>
+    <li><strong>只限本地</strong>：Stdio 只能连接本机的进程，不能跨网络</li>
+  </ul>
+</div>
+
+<!-- ==================== StreamableHTTP 协议 ==================== -->
+<h2><span class="icon">🌊</span> StreamableHTTP 协议详解</h2>
+
+<p><span class="tag deep">推荐协议</span> StreamableHTTP 是 MCP 协议推荐的远程传输方式，结合了 HTTP 的通用性和流式传输的实时性。</p>
+
+<h3>为什么推荐 StreamableHTTP？</h3>
+<div class="card success">
+  <ul>
+    <li><strong>双向通信</strong>：通过 HTTP 实现请求-响应的同时支持服务端推送</li>
+    <li><strong>流式传输</strong>：支持分块传输（chunked transfer），数据实时到达</li>
+    <li><strong>兼容性好</strong>：基于标准 HTTP，与 CDN、负载均衡器、反向代理兼容</li>
+    <li><strong>Session 管理</strong>：支持会话标识，可以维护有状态的连接</li>
+    <li><strong>是 SSE 的升级版</strong>：MCP 官方推荐的新一代传输协议</li>
+  </ul>
+</div>
+
+<h3>StreamableHTTP 传输实现</h3>
+<pre><code class="language-python"># src/transports/streamable_http_transport.py
+
+class StreamableHttpTransport(BaseTransport):
+    """StreamableHTTP传输协议，用于HTTP流式双向通信"""
+
+    async def _do_connect(self) -> bool:
+        """执行StreamableHTTP连接，建立HTTP流式通信"""
+        if not self.config.url:
+            raise Exception("StreamableHTTP需要指定URL")
+
+        # 验证URL
+        parsed = urlparse(self.config.url)
+        if not parsed.scheme or not parsed.netloc:
+            raise ValueError(f"无效的URL: {self.config.url}")
+
+        # 准备headers
+        headers = dict(self.config.headers) if self.config.headers else {}
+
+        # 使用 MCP SDK 的 streamablehttp_client
+        self._context_manager = streamablehttp_client(
+            url=self.config.url,
+            headers=headers
+        )
+
+        # 建立连接 — 注意返回值多了 connection_info
+        read_stream, write_stream, connection_info = \
+            await self._context_manager.__aenter__()
+        self._streams = (read_stream, write_stream)
+        self._connection_info = connection_info  # 保存连接信息
+
+        # 创建会话并初始化
+        self.session = ClientSession(read_stream, write_stream)
+        await self.session.__aenter__()
+        await self.session.initialize()
+
+        self.session_id = f"http-{id(self.session)}"
+        return True</code></pre>
+
+<h3>StreamableHTTP vs SSE 的区别</h3>
+<table>
+  <tr>
+    <th>特性</th>
+    <th>SSE</th>
+    <th>StreamableHTTP</th>
+  </tr>
+  <tr>
+    <td>通信方向</td>
+    <td>单向推送 + 额外 POST</td>
+    <td>双向流式</td>
+  </tr>
+  <tr>
+    <td>连接信息</td>
+    <td>无</td>
+    <td>返回 <code>connection_info</code></td>
+  </tr>
+  <tr>
+    <td>会话管理</td>
+    <td>无原生支持</td>
+    <td>内置 Session ID</td>
+  </tr>
+  <tr>
+    <td>错误处理</td>
+    <td>基础</td>
+    <td>详细错误诊断</td>
+  </tr>
+  <tr>
+    <td>推荐程度</td>
+    <td>兼容旧服务器</td>
+    <td>⭐ 推荐使用</td>
+  </tr>
+</table>
+
+<h3>高级功能：动态更新 Headers</h3>
+<pre><code class="language-python"># StreamableHTTP 支持运行时更新 HTTP 头（如刷新 Token）
+
+async def update_headers(self, new_headers: dict) -> bool:
+    """更新HTTP头（需要重新连接）"""
+    if not self.config.headers:
+        self.config.headers = {}
+    self.config.headers.update(new_headers)
+
+    # 重新连接以应用新headers
+    if self.status.value == "connected":
+        await self.disconnect()
+        return await self.connect()
+    return True</code></pre>
+
+<!-- ==================== 协议选择指南 ==================== -->
+<h2><span class="icon">🧭</span> 协议选择指南</h2>
+
+<p>选择哪种传输协议取决于你的 MCP 服务器在哪里、怎么运行：</p>
+
+<div class="flow-diagram">你的 MCP 服务器在哪里？
+        │
+        ├── 本地机器上（CLI 工具、本地脚本）
+        │       → 使用 <strong>Stdio</strong>
+        │
+        └── 远程服务器上（HTTP 服务）
+                │
+                ├── 服务器支持 StreamableHTTP？
+                │       → 使用 <strong>StreamableHTTP</strong> ⭐ 推荐
+                │
+                └── 只支持 SSE（老版本服务器）
+                        → 使用 <strong>SSE</strong></div>
+
+<div class="card">
+  <h3>配置示例</h3>
+  <pre><code class="language-python"># Stdio 配置（本地 MCP 服务器）
+ServerConfig(
+    name="local-tool",
+    transport=TransportType.STDIO,
+    command="python",
+    args=["-m", "my_mcp_server"],
+    env={"API_KEY": "${MY_API_KEY}"},
+)
+
+# StreamableHTTP 配置（远程 MCP 服务器）
+ServerConfig(
+    name="remote-tool",
+    transport=TransportType.STREAMABLE_HTTP,
+    url="https://mcp.example.com/mcp",
+    headers={"Authorization": "Bearer xxx"},
+)
+
+# SSE 配置（老版本远程服务器）
+ServerConfig(
+    name="legacy-tool",
+    transport=TransportType.SSE,
+    url="https://legacy-mcp.example.com/sse",
+    headers={"X-API-Key": "xxx"},
+)</code></pre>
+</div>
+
+<div class="card warn">
+  <h3>常见误区</h3>
+  <ul>
+    <li><strong>不要混淆 SSE 和 StreamableHTTP</strong>：虽然都走 HTTP，但协议细节不同，不能混用</li>
+    <li><strong>Stdio 的 command 不是 URL</strong>：Stdio 的 <code>command</code> 是可执行文件路径，不是 HTTP 地址</li>
+    <li><strong>Agent 协议不支持会话池</strong>：<code>AgentTransport</code> 是自定义协议，只能用 <code>create_transport()</code> 直接创建</li>
+    <li><strong>所有协议都需要 MCP SDK</strong>：除了 Agent 类型，其他三种都依赖官方 <code>mcp</code> Python 包</li>
+  </ul>
+</div>
+
+<!-- ==================== Quiz ==================== -->
+<h2><span class="icon">🧪</span> 知识检验</h2>
+
+<div class="quiz" id="quiz1">
+  <h3>题目 1：SSE vs StreamableHTTP</h3>
+  <p>StreamableHTTP 相比 SSE 的主要优势是什么？</p>
+  <div class="options">
+    <div onclick="checkAnswer(this,'quiz1',false)">A. StreamableHTTP 速度更快</div>
+    <div onclick="checkAnswer(this,'quiz1',true)">B. StreamableHTTP 支持双向流式通信和原生会话管理</div>
+    <div onclick="checkAnswer(this,'quiz1',false)">C. StreamableHTTP 不需要 HTTP 协议</div>
+    <div onclick="checkAnswer(this,'quiz1',false)">D. StreamableHTTP 可以连接本地进程</div>
+  </div>
+  <button class="show-btn" onclick="toggleAnswer('quiz1')">显示解析</button>
+  <div class="answer" id="quiz1-answer">
+    <strong>答案 B</strong>。StreamableHTTP 返回 3 个值（<code>read_stream, write_stream, connection_info</code>），支持双向流式通信，并且内置 Session ID 管理。SSE 是单向推送（服务器→客户端），客户端发送请求需要额外的 HTTP POST。StreamableHTTP 是 MCP 官方推荐的新一代远程传输协议。
+  </div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <h3>题目 2：Stdio 协议</h3>
+  <p>Stdio 传输协议通过什么方式与 MCP 服务器通信？</p>
+  <div class="options">
+    <div onclick="checkAnswer(this,'quiz2',false)">A. 通过 HTTP 请求</div>
+    <div onclick="checkAnswer(this,'quiz2',false)">B. 通过 WebSocket</div>
+    <div onclick="checkAnswer(this,'quiz2',true)">C. 通过子进程的 stdin/stdout 管道</div>
+    <div onclick="checkAnswer(this,'quiz2',false)">D. 通过 TCP Socket</div>
+  </div>
+  <button class="show-btn" onclick="toggleAnswer('quiz2')">显示解析</button>
+  <div class="answer" id="quiz2-answer">
+    <strong>答案 C</strong>。Stdio 传输通过 <code>StdioServerParameters(command, args, env)</code> 启动一个子进程，然后通过 <code>stdin</code> 管道写入 JSON-RPC 请求，通过 <code>stdout</code> 管道读取 JSON-RPC 响应。这种方式零网络开销、延迟极低，但只能用于本机进程。
+  </div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <h3>题目 3：传输协议工厂</h3>
+  <p>哪种传输协议不支持会话池模式（<code>get_or_create_session</code>）？</p>
+  <div class="options">
+    <div onclick="checkAnswer(this,'quiz3',false)">A. SSE</div>
+    <div onclick="checkAnswer(this,'quiz3',false)">B. Stdio</div>
+    <div onclick="checkAnswer(this,'quiz3',false)">C. StreamableHTTP</div>
+    <div onclick="checkAnswer(this,'quiz3',true)">D. Agent</div>
+  </div>
+  <button class="show-btn" onclick="toggleAnswer('quiz3')">显示解析</button>
+  <div class="answer" id="quiz3-answer">
+    <strong>答案 D</strong>。代码中明确说明 <code>"Agent传输协议不支持会话池模式，请使用create_transport方法"</code>。Agent 传输是自定义协议，不依赖官方 MCP SDK，因此不能使用基于 SDK 的会话池管理。其他三种协议（SSE、Stdio、StreamableHTTP）都支持会话池。
+  </div>
+</div>
+
+<div class="nav-links">
+  <a href="../front/0034-kuai-front-ant-design-usage.html">← Ant Design 与 AI 组件库</a>
+  <a href="../index.html">🗺️ 完整学习地图</a>
+  <a href="0026-kuai-py-server-lifecycle.html">MCP 服务器生命周期 →</a>
+</div>
+
+</div>
+
+<script>
+function checkAnswer(el, quizId, correct) {
+  const options = el.parentNode.children;
+  for (let o of options) { o.style.pointerEvents = 'none'; }
+  if (correct) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    for (let o of options) {
+      if (o.onclick && o.onclick.toString().includes('true')) o.classList.add('correct');
+    }
+  }
+  document.getElementById(quizId + '-answer').classList.add('show');
+}
+function toggleAnswer(quizId) {
+  document.getElementById(quizId + '-answer').classList.toggle('show');
+}
+</script>
+</body>
+</html>

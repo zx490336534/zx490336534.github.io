@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>030 前端基础 10：React 渲染模型</title>
+<style>
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--muted:#78716c;--accent:#b45309;--soft:#fef3c7;--border:#e7e5e4;--code:#f5f5f4;--info:#2563eb;--ok:#16a34a;--bad:#ef4444}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.8 -apple-system,BlinkMacSystemFont,"Noto Sans SC","Segoe UI",sans-serif}.container{max-width:780px;margin:0 auto;padding:3rem 2rem}h1{font-size:2rem;margin:.2rem 0 .5rem}.subtitle{color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:1.4rem;margin-bottom:2rem}h2{font-size:1.35rem;margin:2rem 0 .8rem}code{font-family:Menlo,Consolas,monospace;background:var(--code);padding:.15em .35em;border-radius:4px}pre{background:#1c1917;color:#e7e5e4;padding:1rem 1.2rem;border-radius:8px;overflow:auto}.kw{color:#f59e0b}.s{color:#86efac}.c{color:#a8a29e}.card{background:#fff;border:1px solid var(--border);border-left:3px solid var(--info);border-radius:8px;padding:1rem 1.2rem;margin:1rem 0}.label{font-size:.75rem;color:var(--info);font-weight:700;text-transform:uppercase}table{width:100%;border-collapse:collapse;margin:1rem 0}th,td{border-bottom:1px solid var(--border);padding:.55rem;text-align:left;vertical-align:top}th{color:var(--muted)}.quiz{background:var(--soft);border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.2rem;margin:1.5rem 0}.quiz-options{list-style:none;margin:0;padding:0}.quiz-options li{padding:.45rem .65rem;margin:.35rem 0;border:1px solid transparent;border-radius:6px;cursor:pointer}.correct{background:#dcfce7!important;border-color:var(--ok)!important}.wrong{background:#fee2e2!important;border-color:var(--bad)!important}.quiz-feedback{display:none;margin-top:.6rem;padding:.6rem;border-radius:6px}.nav{margin-top:2.5rem;border:1px solid var(--border);border-radius:8px;background:#fff;padding:1rem}.nav a{display:inline-block;margin:.25rem;color:#444;text-decoration:none;border:1px solid var(--border);border-radius:6px;padding:.35rem .65rem}.nav a.primary{background:var(--accent);border-color:var(--accent);color:#fff}.nav a.map{background:#eff6ff;border-color:#bfdbfe;color:var(--info)}
+</style></head><body><div class="container">
+<h1>030 前端基础 10：React 渲染模型</h1>
+<p class="subtitle">目标：知道 props、state、render、effect、class lifecycle 的关系，能解释“为什么状态变了 UI 会变”。</p>
+
+<h2>1. React 组件就是“数据 → UI”的函数</h2>
+<p>无论是 class component 还是 function component，都可以先按这个模型读：</p>
+<pre>props + state
+  -> render()
+  -> JSX
+  -> React 更新页面</pre>
+
+<h2>2. props 和 state 的区别</h2>
+<table>
+  <tr><th>概念</th><th>谁拥有</th><th>AIHom 读法</th></tr>
+  <tr><td>props</td><td>父组件或 connect 注入</td><td>这个组件从外面收到什么</td></tr>
+  <tr><td>state</td><td>组件自己或 manager</td><td>这个组件/业务当前记住了什么</td></tr>
+  <tr><td>render</td><td>React 调用</td><td>根据数据画出什么 UI</td></tr>
+</table>
+
+<h2>3. class component 和 hooks 对照</h2>
+<pre><span class="c">// class 写法</span>
+componentDidMount() { start(); }
+componentWillUnmount() { stop(); }
+
+<span class="c">// hooks 写法</span>
+useEffect(() =&gt; {
+  start();
+  <span class="kw">return</span> () =&gt; stop();
+}, []);</pre>
+<p>读法：组件出现时做初始化，组件销毁时清理订阅、计时器、消息监听。</p>
+
+<h2>4. AIHom 里别把所有状态都塞 useState</h2>
+<div class="card"><div class="label">项目特征</div><p>ai-home 有自己的状态管理：<code>ConversationManager</code>、<code>ViewerStateManager</code>、<code>RootStateManager</code>、<code>@qunhe/reactive-framework</code>。小组件临时状态用 <code>useState</code>；跨组件业务状态优先找 manager。</p></div>
+
+<h2>5. 排查 UI 不更新的三问</h2>
+<ol>
+  <li>状态真的变了吗？看 manager 字段或 React DevTools。</li>
+  <li>组件真的读了这个状态吗？看 props / connect / observer。</li>
+  <li>读状态的组件是否被响应式系统包住？看 <code>@observer</code> 或 <code>connect</code>。</li>
+</ol>
+
+<div class="quiz" id="quiz1"><strong>Q1: 一个组件 UI 是否变化，最核心取决于什么？</strong>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz1',0)">A. 文件名是否很短</li>
+    <li onclick="checkQuiz('quiz1',1)">B. CSS 是否都写成红色</li>
+    <li onclick="checkQuiz('quiz1',2)">C. 它读取的数据是否变化</li>
+  </ul><div class="quiz-feedback"></div>
+</div>
+
+<div class="card"><div class="label">主资料</div><p>React 17 项目可先读旧版 React 文档的 <a href="https://legacy.reactjs.org/docs/components-and-props.html" target="_blank" rel="noopener">Components and Props</a>、<a href="https://legacy.reactjs.org/docs/state-and-lifecycle.html" target="_blank" rel="noopener">State and Lifecycle</a>。</p></div>
+</div><script>
+function checkQuiz(id,s){const q=document.getElementById(id),o=q.querySelector('.quiz-options'),c=Number(o.dataset.correct),items=o.querySelectorAll('li'),f=q.querySelector('.quiz-feedback');items.forEach((x,i)=>{x.onclick=null;if(i===c)x.classList.add('correct');if(i===s&&i!==c)x.classList.add('wrong')});f.style.display='block';f.textContent=s===c?'对。React UI 是数据的结果，状态/props 变了才有重新渲染的理由。':'再想想：UI 是 props + state 渲染出来的结果。';f.style.background=s===c?'#dcfce7':'#fee2e2'}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 030</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0029-css-layout-basics.html">上一课：029 前端基础 09：CSS 布局与样式排查</a><a class="primary" href="0031-frontend-build-debug-test.html">下一课：031 前端基础 11：工程化、调试与测试</a></div></nav>
+</body></html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>035 AIHom 前端入口 04：接口请求与数据契约</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--muted:#78716c;--accent:#b45309;--border:#e7e5e4;--code:#f5f5f4;--blue:#2563eb}
+  *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.8 'Noto Sans SC',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}.container{max-width:880px;margin:0 auto;padding:3rem 1.6rem 4rem}h1{font-size:2rem;line-height:1.25;margin:.2rem 0 .5rem}h2{font-size:1.35rem;margin:2.2rem 0 .8rem}p{margin:.4rem 0 1rem}ul,ol{margin:.4rem 0 1rem 1.4rem;padding:0}li{margin:.25rem 0}a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}code{font-family:'JetBrains Mono',Menlo,Consolas,monospace;background:var(--code);border-radius:4px;padding:.1em .35em;font-size:.9em}pre{background:#1c1917;color:#e7e5e4;border-radius:8px;padding:1rem 1.1rem;overflow:auto;font:13px/1.65 'JetBrains Mono',Menlo,Consolas,monospace;margin:1rem 0}table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:1rem 0}th,td{padding:.65rem .75rem;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}th{color:var(--muted);font-size:.82rem;background:#f5f5f4}tr:last-child td{border-bottom:0}.subtitle{color:var(--muted);padding-bottom:1.3rem;border-bottom:1px solid var(--border);margin-bottom:1.8rem}.card{background:#fff;border:1px solid var(--border);border-left:4px solid var(--blue);border-radius:8px;padding:1rem 1.15rem;margin:1rem 0}.card.soft{border-left-color:var(--accent);background:#fff7ed}.label{font-size:.76rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;margin-bottom:.35rem}.quiz{background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.15rem;margin:1.4rem 0}.quiz-title{font-weight:700;margin-bottom:.55rem;color:#92400e}.quiz-options{list-style:none;margin:0;padding:0}.quiz-options li{padding:.45rem .65rem;margin:.35rem 0;border-radius:6px;border:1px solid transparent;cursor:pointer}.quiz-options li:hover{border-color:#f59e0b}.correct{background:#dcfce7!important;border-color:#16a34a!important}.wrong{background:#fee2e2!important;border-color:#ef4444!important}.quiz-feedback{display:none;margin-top:.65rem;padding:.6rem;border-radius:6px}.ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;color:#1e40af;padding:1rem;margin:1.4rem 0}.ask-agent:before{content:"提示：";font-weight:700}.learning-map-quick-nav{margin:2.5rem 0 0;padding:1rem 1.1rem;border:1px solid #d6d3d1;border-radius:8px;background:#fff;display:grid;gap:.75rem}.nav-title{font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:#78716c}.nav-links{display:flex;flex-wrap:wrap;gap:.65rem;align-items:center}.nav-links a{color:#44403c;text-decoration:none;border:1px solid #e7e5e4;border-radius:6px;padding:.35rem .65rem}.nav-links a.primary{color:#fff;border-color:#b45309;background:#b45309}.nav-links a.map{color:#2563eb;border-color:#bfdbfe;background:#eff6ff}@media(max-width:640px){.container{padding:2rem 1rem 3.5rem}h1{font-size:1.65rem}pre{font-size:.78rem}}
+</style>
+</head>
+<body>
+<main class="container">
+  <h1>035 AIHom 前端入口 04：接口请求与数据契约</h1>
+  <p class="subtitle">目标：理解前端和后端怎么“说同一种话”：字段名、类型、枚举、状态码必须对齐。</p>
+
+  <section class="card soft">
+    <div class="label">先记住一句话</div>
+    <p>接口不是“前端随便传、后端随便收”。接口是一份约定：前端按约定传参数，后端按约定返回数据。约定对不上，就会出现页面空白、字段 undefined、状态判断失效。</p>
+  </section>
+
+  <h2>1. 一个接口请求由四部分组成</h2>
+  <table>
+    <tr><th>部分</th><th>新手理解</th><th>例子</th></tr>
+    <tr><td>URL</td><td>请求发到哪里</td><td><code>/api/xxx</code></td></tr>
+    <tr><td>Method</td><td>这次动作类型</td><td><code>GET</code> / <code>POST</code></td></tr>
+    <tr><td>Request</td><td>前端传给后端的数据</td><td><code>designId</code>、<code>message</code></td></tr>
+    <tr><td>Response</td><td>后端返回给前端的数据</td><td><code>code</code>、<code>data</code>、<code>msg</code></td></tr>
+  </table>
+
+  <h2>2. TypeScript 类型和 Java DTO 要对齐</h2>
+  <p>前端常用 TypeScript 描述数据长什么样；后端常用 Java DTO / VO 描述请求和响应。它们名字可以不完全一样，但字段含义必须一致。</p>
+  <pre>// 前端 TypeScript
+interface SendMessageRequest {
+  sessionId: string;
+  message: string;
+}
+
+// 后端 Java
+class SendMessageRequestDTO {
+  private String sessionId;
+  private String message;
+}</pre>
+  <p>读接口问题时，先把前端类型和后端 DTO 摆在一起看：字段名是否一致、是否必填、类型是否一致、枚举值是否一致。</p>
+
+  <h2>3. 最常见的四类对不齐</h2>
+  <table>
+    <tr><th>问题</th><th>表现</th><th>排查</th></tr>
+    <tr><td>字段名不一致</td><td>后端收到 null，前端读到 undefined</td><td>对比 TS interface 和 Java DTO</td></tr>
+    <tr><td>类型不一致</td><td>数字当字符串、字符串当对象</td><td>看 Network 真实 payload</td></tr>
+    <tr><td>枚举不一致</td><td>状态分支走错</td><td>找 enum / constant 定义</td></tr>
+    <tr><td>包装层不一致</td><td>前端读错 data 层级</td><td>确认响应是 <code>data.xxx</code> 还是 <code>xxx</code></td></tr>
+  </table>
+
+  <h2>4. WebSocket 也是数据契约</h2>
+  <p>AIHom 里不只有 HTTP。WebSocket 消息同样有契约：<code>type</code> 表示消息大类，<code>key</code> 表示具体动作，<code>data</code> 是业务数据。下一课会专门看 WebSocket。</p>
+
+  <h2>5. 全栈开发时的最小检查顺序</h2>
+  <ol>
+    <li>浏览器 Network / WS 里看真实请求和真实响应。</li>
+    <li>前端找到对应 TypeScript 类型或调用方法。</li>
+    <li>后端找到 Controller / Handler / DTO / VO。</li>
+    <li>确认字段名、类型、枚举、包装层是否一致。</li>
+    <li>再看业务逻辑，不要一开始就猜。</li>
+  </ol>
+
+  <div class="quiz" id="quiz1"><div class="quiz-title">Q1：接口契约首先约定什么？</div><ul class="quiz-options" data-correct="0"><li onclick="checkQuiz('quiz1',0)">A. 数据格式</li><li onclick="checkQuiz('quiz1',1)">B. 字体大小</li><li onclick="checkQuiz('quiz1',2)">C. 页面颜色</li><li onclick="checkQuiz('quiz1',3)">D. 文件图标</li></ul><div class="quiz-feedback"></div></div>
+  <div class="quiz" id="quiz2"><div class="quiz-title">Q2：字段对不齐时优先看哪里？</div><ul class="quiz-options" data-correct="2"><li onclick="checkQuiz('quiz2',0)">A. README 标题</li><li onclick="checkQuiz('quiz2',1)">B. CSS 圆角</li><li onclick="checkQuiz('quiz2',2)">C. 真实请求</li><li onclick="checkQuiz('quiz2',3)">D. 终端主题</li></ul><div class="quiz-feedback"></div></div>
+  <div class="quiz" id="quiz3"><div class="quiz-title">Q3：WebSocket 消息是否也有契约？</div><ul class="quiz-options" data-correct="1"><li onclick="checkQuiz('quiz3',0)">A. 没有</li><li onclick="checkQuiz('quiz3',1)">B. 有的</li><li onclick="checkQuiz('quiz3',2)">C. 随机</li><li onclick="checkQuiz('quiz3',3)">D. 不看</li></ul><div class="quiz-feedback"></div></div>
+
+  <div class="ask-agent">复习时可以问 agent：帮我选一个 AIHom 接口，把前端 TypeScript 类型、Network payload、后端 DTO/VO 放在一起对齐。</div>
+  <nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 035</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0034-aihome-frontend-data-flow.html">上一课：034 AIHom 前端入口 03：一次页面动作的数据流</a><a class="primary" href="0036-websocket-message-basics.html">下一课：036 AIHom 前端入口 05：WebSocket 消息入门</a></div></nav>
+</main>
+<script>
+function checkQuiz(q,s){const box=document.getElementById(q),opts=box.querySelector('.quiz-options'),c=Number(opts.dataset.correct),items=opts.querySelectorAll('li'),fb=box.querySelector('.quiz-feedback');items.forEach((item,i)=>{item.onclick=null;if(i===c)item.classList.add('correct');if(i===s&&i!==c)item.classList.add('wrong')});const text={quiz1:['正确。接口契约最核心是请求和响应的数据格式。','不对。接口契约先约定数据格式。'],quiz2:['正确。真实请求和响应比猜测可靠。','不对。先看 Network / WS 里的真实数据。'],quiz3:['正确。WebSocket 的 type、key、data 也是契约。','不对。WebSocket 消息也有固定结构。']};fb.style.display='block';fb.textContent=s===c?text[q][0]:text[q][1];fb.style.background=s===c?'#dcfce7':'#fee2e2'}
+</script>
+</body>
+</html>

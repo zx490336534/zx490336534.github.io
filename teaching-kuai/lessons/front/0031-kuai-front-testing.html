@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 31: 测试与质量保障</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:780px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:.95rem;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  h2{font-size:1.35rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem}
+  h3{font-size:1.1rem;font-weight:500;margin-top:1.5rem;margin-bottom:.75rem;color:var(--accent)}
+  p{margin-bottom:1rem}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0}
+  .card.info{border-left:3px solid var(--info)}.card.warning{border-left:3px solid var(--warning)}.card.success{border-left:3px solid var(--success)}
+  .card-label{font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+  .card.info .card-label{color:var(--info)}.card.warning .card-label{color:var(--warning)}.card.success .card-label{color:var(--success)}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15em .4em;border-radius:4px;font-size:.88em}
+  pre{background:#1c1917;color:#e7e5e4;padding:1.25rem 1.5rem;border-radius:8px;overflow-x:auto;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.6}
+  pre .comment{color:#78716c}pre .keyword{color:#f59e0b}pre .string{color:#86efac}
+  table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.92rem}
+  th,td{text-align:left;padding:.6rem .8rem;border-bottom:1px solid var(--border)}
+  th{font-weight:500;color:var(--text-secondary);font-size:.82rem;text-transform:uppercase;letter-spacing:.04em}
+  .quiz{background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0}
+  .quiz-title{font-weight:700;margin-bottom:.75rem;color:var(--accent)}
+  .quiz-options{list-style:none}.quiz-options li{padding:.5rem .75rem;margin:.35rem 0;border-radius:6px;cursor:pointer;transition:background .15s;border:1px solid transparent}
+  .quiz-options li:hover{background:#fde68a33;border-color:#fbbf24}
+  .quiz-options li.correct{background:#dcfce7;border-color:#16a34a}.quiz-options li.wrong{background:#fee2e2;border-color:#ef4444}
+  .quiz-feedback{margin-top:.75rem;padding:.75rem;border-radius:6px;display:none;font-size:.9rem}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
+  .ask-agent::before{content:'💡 '}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.3rem}
+.nav-links{max-width:900px;margin:2.5rem auto 0;padding:1.5rem 2rem;border-top:1px solid #e7e5e4;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem}.nav-links a{color:#b45309;text-decoration:none;font-weight:500}.nav-links a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Lesson 31: 测试与质量保障</h1>
+<p class="subtitle">前端项目的单元测试、E2E 测试、代码检查与测试策略</p>
+
+<div class="card info">
+  <div class="card-label">前置知识</div>
+  <p>如果你不熟悉以下概念，建议先阅读对应教程：</p>
+  <ul>
+    <li><a href="0005-kuai-front-overview.html">kuai-service-front 项目概览</a> — 了解项目技术栈和目录结构</li>
+    <li><a href="0023-kuai-front-component-architecture.html">组件架构</a> — 了解 React 组件组织方式</li>
+    <li>JavaScript ES6+ 基础 — 了解 import/export、Promise、async/await</li>
+  </ul>
+</div>
+
+<h2>1. 测试概览</h2>
+
+<p>kuai-service-front 项目当前使用以下工具保障代码质量：</p>
+
+<table>
+  <tr><th>工具</th><th>用途</th><th>命令</th><th>当前状态</th></tr>
+  <tr><td><strong>ESLint</strong></td><td>代码静态检查</td><td><code>pnpm lint</code></td><td>已配置 ✅</td></tr>
+  <tr><td><strong>Vitest</strong></td><td>单元测试</td><td><code>pnpm test</code></td><td>框架可用，待完善</td></tr>
+  <tr><td><strong>Playwright</strong></td><td>E2E 端到端测试</td><td><code>pnpm test:e2e</code></td><td>框架可用，待完善</td></tr>
+</table>
+
+<div class="card warning">
+  <div class="card-label">项目现状</div>
+  <p>由于项目是 AI Agent 平台，很多功能依赖外部服务（LLM API、MCP 服务等），因此当前以 ESLint 代码检查为主，单元测试和 E2E 测试作为补充。下面介绍各工具的配置和使用方法。</p>
+</div>
+
+<h2>2. ESLint 代码检查</h2>
+
+<p>ESLint 是项目中<strong>最常用</strong>的代码质量工具，每次提交前都应该运行。</p>
+
+<h3>2.1 配置文件</h3>
+<p>配置位于项目根目录 <code>.eslintrc.js</code>：</p>
+
+<pre>
+<span class="comment">// .eslintrc.js 核心配置</span>
+module.exports = {
+  root: <span class="keyword">true</span>,
+  env: {
+    browser: <span class="keyword">true</span>,
+    es2021: <span class="keyword">true</span>,
+    node: <span class="keyword">true</span>,
+  },
+  extends: [<span class="string">'eslint:recommended'</span>, <span class="string">'plugin:react/recommended'</span>],
+  plugins: [<span class="string">'react'</span>],
+  rules: {
+    <span class="string">'no-var'</span>: <span class="string">'error'</span>,           <span class="comment">// 禁止 var，必须用 let/const</span>
+    eqeqeq: <span class="string">'error'</span>,             <span class="comment">// 必须用 === 而非 ==</span>
+    <span class="string">'no-unused-vars'</span>: <span class="string">'warn'</span>,   <span class="comment">// 未使用的变量给警告</span>
+    <span class="string">'no-undef'</span>: <span class="string">'error'</span>,         <span class="comment">// 未定义的变量报错</span>
+    <span class="string">'no-console'</span>: <span class="string">'off'</span>,         <span class="comment">// 允许 console.log（项目需要调试）</span>
+    <span class="string">'react/prop-types'</span>: <span class="string">'off'</span>,  <span class="comment">// 不使用 PropTypes</span>
+  },
+};
+</pre>
+
+<h3>2.2 关键规则解读</h3>
+<table>
+  <tr><th>规则</th><th>级别</th><th>含义</th></tr>
+  <tr><td><code>no-var</code></td><td>error</td><td>禁止使用 <code>var</code>，防止变量提升带来的 bug</td></tr>
+  <tr><td><code>eqeqeq</code></td><td>error</td><td>强制使用 <code>===</code>，避免隐式类型转换</td></tr>
+  <tr><td><code>no-unused-vars</code></td><td>warn</td><td>未使用的变量给警告（<code>_</code> 开头的变量豁免）</td></tr>
+  <tr><td><code>no-redeclare</code></td><td>error</td><td>禁止重复声明变量</td></tr>
+  <tr><td><code>default-case</code></td><td>error</td><td>switch 语句必须有 default 分支</td></tr>
+  <tr><td><code>max-params</code></td><td>error</td><td>函数最多 10 个参数（超过说明函数太复杂）</td></tr>
+  <tr><td><code>no-console</code></td><td>off</td><td>允许 console.log（项目调试需要）</td></tr>
+</table>
+
+<h3>2.3 忽略文件</h3>
+<p><code>.eslintignore</code> 配置了忽略目录：</p>
+<pre>
+node_modules/
+build/
+.next/
+craco.config.js
+</pre>
+
+<h3>2.4 使用方法</h3>
+<pre>
+<span class="comment"># 检查所有文件</span>
+pnpm lint
+
+<span class="comment"># 检查特定文件（VS Code 自动集成）</span>
+<span class="comment"># 保存时自动检查，无需手动运行</span>
+</pre>
+
+<div class="card success">
+  <div class="card-label">最佳实践</div>
+  <p>建议在 VS Code 中安装 ESLint 扩展，实现<strong>保存时自动检查</strong>。这样在写代码时就能实时发现错误，而不是等到提交时才看到一堆警告。</p>
+</div>
+
+<h2>3. 单元测试（Vitest）</h2>
+
+<p><a href="https://vitest.dev/" target="_blank">Vitest</a> 是一个基于 Vite 的极速测试框架，兼容 Jest API。适合测试纯函数、工具类、Hooks 等。</p>
+
+<h3>3.1 为什么选择 Vitest</h3>
+<table>
+  <tr><th>特性</th><th>Vitest</th><th>Jest</th></tr>
+  <tr><td>速度</td><td>极快（基于 Vite）</td><td>较快</td></tr>
+  <tr><td>配置</td><td>零配置（与 Vite 共享）</td><td>需要额外配置</td></tr>
+  <tr><td>ESM 支持</td><td>原生支持</td><td>需要额外配置</td></tr>
+  <tr><td>API 兼容</td><td>兼容 Jest</td><td>标准</td></tr>
+  <tr><td>与 Next.js 16</td><td>推荐（Turbopack 兼容）</td><td>需要额外适配</td></tr>
+</table>
+
+<h3>3.2 测试文件规范</h3>
+<p>测试文件命名约定：</p>
+<ul>
+  <li>文件名：<code>*.test.js</code> 或 <code>*.spec.js</code></li>
+  <li>位置：与被测文件同目录，或在 <code>__tests__/</code> 子目录</li>
+</ul>
+
+<pre>
+<span class="comment">// 示例：测试工具函数</span>
+<span class="comment">// src/lib/utils.test.js</span>
+<span class="keyword">import</span> { describe, it, expect } <span class="keyword">from</span> <span class="string">'vitest'</span>;
+<span class="keyword">import</span> { maskSecret } <span class="keyword">from</span> <span class="string">'./utils'</span>;
+
+describe(<span class="string">'maskSecret'</span>, () => {
+  it(<span class="string">'应该脱敏长字符串'</span>, () => {
+    expect(maskSecret(<span class="string">'sk-1234567890abcdef'</span>))
+      .toBe(<span class="string">'sk-1***cdef'</span>);
+  });
+
+  it(<span class="string">'短字符串返回 ***'</span>, () => {
+    expect(maskSecret(<span class="string">'short'</span>)).toBe(<span class="string">'***'</span>);
+  });
+
+  it(<span class="string">'空值返回 (empty)'</span>, () => {
+    expect(maskSecret(undefined)).toBe(<span class="string">'(empty)'</span>);
+  });
+});
+</pre>
+
+<h3>3.3 适合单元测试的模块</h3>
+<table>
+  <tr><th>模块</th><th>测试重点</th></tr>
+  <tr><td><code>claudecodeTools.js</code></td><td><code>normalizeModelChoice</code>、<code>normalizeTimeout</code>、<code>maskSecret</code>、<code>shouldFallbackToDefaultModel</code></td></tr>
+  <tr><td><code>skillTools.js</code></td><td>YAML frontmatter 解析、技能过滤逻辑</td></tr>
+  <tr><td><code>streamEventTypes.js</code></td><td>事件类型常量、事件格式化</td></tr>
+  <tr><td><code>streamUtils.js</code></td><td>流处理辅助函数</td></tr>
+  <tr><td><code>modelConfig.js</code></td><td>模型配置导出</td></tr>
+</table>
+
+<div class="card info">
+  <div class="card-label">注意</div>
+  <p>Agent 核心逻辑（如 <code>createReactAgent</code>、MCP 工具加载）依赖外部服务，不适合纯单元测试，应该用集成测试或 E2E 测试覆盖。</p>
+</div>
+
+<h2>4. E2E 测试（Playwright）</h2>
+
+<p><a href="https://playwright.dev/" target="_blank">Playwright</a> 是 Microsoft 出品的端到端测试工具，支持 Chromium、Firefox、WebKit 三大浏览器引擎。</p>
+
+<h3>4.1 为什么选择 Playwright</h3>
+<ul>
+  <li><strong>自动等待</strong> — 不需要手动 sleep，自动等元素出现</li>
+  <li><strong>多浏览器</strong> — 一套代码测试 Chromium/Firefox/WebKit</li>
+  <li><strong>API 测试</strong> — 可以同时测试前端页面和后端 API</li>
+  <li><strong>调试友好</strong> — 自带 Trace Viewer 录制测试过程</li>
+</ul>
+
+<h3>4.2 测试场景示例</h3>
+
+<pre>
+<span class="comment">// 示例：测试 Agent 对话页面</span>
+<span class="keyword">import</span> { test, expect } <span class="keyword">from</span> <span class="string">'@playwright/test'</span>;
+
+test(<span class="string">'Agent 列表页应该显示所有 Agent'</span>, <span class="keyword">async</span> ({ page }) => {
+  <span class="keyword">await</span> page.goto(<span class="string">'/application/list'</span>);
+
+  <span class="comment">// 等待 Agent 卡片加载</span>
+  <span class="keyword">const</span> cards = page.locator(<span class="string">'.agent-card'</span>);
+  <span class="keyword">await</span> expect(cards.first()).toBeVisible();
+
+  <span class="comment">// 至少应该有一个 Agent</span>
+  <span class="keyword">const</span> count = <span class="keyword">await</span> cards.count();
+  expect(count).toBeGreaterThan(0);
+});
+
+test(<span class="string">'应该能发送消息并收到回复'</span>, <span class="keyword">async</span> ({ page }) => {
+  <span class="keyword">await</span> page.goto(<span class="string">'/agents?agent=code-assistant'</span>);
+
+  <span class="comment">// 输入消息</span>
+  <span class="keyword">await</span> page.fill(<span class="string">'textarea'</span>, <span class="string">'你好'</span>);
+  <span class="keyword">await</span> page.click(<span class="string">'button[type="submit"]'</span>);
+
+  <span class="comment">// 等待 AI 回复出现</span>
+  <span class="keyword">const</span> reply = page.locator(<span class="string">'.message-assistant'</span>);
+  <span class="keyword">await</span> expect(reply.first()).toBeVisible({ timeout: 30000 });
+});
+</pre>
+
+<h3>4.3 适合 E2E 测试的场景</h3>
+<table>
+  <tr><th>场景</th><th>测试内容</th></tr>
+  <tr><td>Agent 列表</td><td>页面加载、Agent 卡片渲染、点击跳转</td></tr>
+  <tr><td>对话页面</td><td>消息发送、流式回复、历史加载</td></tr>
+  <tr><td>MCP 管理</td><td>工具列表展示、配置编辑</td></tr>
+  <tr><td>分享页面</td><td>访客模式访问、内容渲染</td></tr>
+  <tr><td>导航</td><td>侧边栏展开收起、路由跳转</td></tr>
+</table>
+
+<div class="card warning">
+  <div class="card-label">注意</div>
+  <p>E2E 测试涉及真实 AI 调用时，建议使用 <strong>Mock 服务</strong>或<strong>录制回放</strong>，避免测试依赖外部 API 的可用性和费用。Playwright 的 <code>page.route()</code> 可以拦截网络请求。</p>
+</div>
+
+<h2>5. 测试策略</h2>
+
+<h3>5.1 测试金字塔</h3>
+<pre>
+          /\
+         /  \        E2E 测试（少量，覆盖核心流程）
+        /    \
+       /------\      集成测试（中量，覆盖模块交互）
+      /        \
+     /----------\    单元测试（大量，覆盖工具函数和逻辑）
+    /            \
+</pre>
+
+<h3>5.2 项目测试优先级</h3>
+
+<table>
+  <tr><th>优先级</th><th>测试类型</th><th>覆盖范围</th></tr>
+  <tr><td>P0（必须）</td><td>ESLint</td><td>所有代码提交前检查</td></tr>
+  <tr><td>P1（重要）</td><td>单元测试</td><td>工具函数、配置解析、错误处理</td></tr>
+  <tr><td>P2（补充）</td><td>E2E 测试</td><td>核心用户流程（登录→选 Agent→对话）</td></tr>
+  <tr><td>P3（可选）</td><td>视觉回归</td><td>关键页面截图对比</td></tr>
+</table>
+
+<h3>5.3 AI 项目的特殊挑战</h3>
+
+<div class="card warning">
+  <div class="card-label">难点</div>
+  <ul>
+    <li><strong>LLM 输出不确定</strong> — 同样的输入可能得到不同的输出，不能用精确匹配</li>
+    <li><strong>外部依赖多</strong> — MCP 服务、LLM API、Git 服务都可能不可用</li>
+    <li><strong>流式响应</strong> — 需要测试流式事件的完整性和顺序</li>
+    <li><strong>长时间任务</strong> — Agent 任务可能运行数分钟，E2E 测试需要设置足够超时</li>
+  </ul>
+</div>
+
+<h3>5.4 推荐做法</h3>
+
+<ol>
+  <li><strong>ESLint 优先</strong> — 配合 VS Code 扩展，保存时自动检查</li>
+  <li><strong>工具函数写单元测试</strong> — 纯函数最容易测试，回报最高</li>
+  <li><strong>关键路径写 E2E</strong> — 登录、Agent 列表、对话发送</li>
+  <li><strong>Mock 外部服务</strong> — 用 <code>page.route()</code> 拦截 API 请求</li>
+  <li><strong>集成到 CI</strong> — 提交时自动运行 ESLint 和单元测试</li>
+</ol>
+
+<h2>6. 自检 Quiz</h2>
+
+<div class="quiz" id="quiz1">
+  <div class="quiz-title">Q1: 项目 ESLint 配置中，为什么关闭了 no-console 规则？</div>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz1',0)">A. 因为 console 是全局对象</li>
+    <li onclick="checkQuiz('quiz1',1)">B. 因为项目需要 console.log 调试 Agent 运行日志</li>
+    <li onclick="checkQuiz('quiz1',2)">C. 因为 Next.js 要求关闭</li>
+    <li onclick="checkQuiz('quiz1',3)">D. 因为 React 组件需要 console</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <div class="quiz-title">Q2: 对于 claudecodeTools.js 中的 normalizeModelChoice 函数，最适合用什么方式测试？</div>
+  <ul class="quiz-options" data-correct="0">
+    <li onclick="checkQuiz('quiz2',0)">A. 单元测试（Vitest）</li>
+    <li onclick="checkQuiz('quiz2',1)">B. E2E 测试（Playwright）</li>
+    <li onclick="checkQuiz('quiz2',2)">C. 手动测试</li>
+    <li onclick="checkQuiz('quiz2',3)">D. 不需要测试</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <div class="quiz-title">Q3: E2E 测试中如何避免依赖外部 LLM API？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz3',0)">A. 安装本地 LLM</li>
+    <li onclick="checkQuiz('quiz3',1)">B. 禁用网络请求</li>
+    <li onclick="checkQuiz('quiz3',2)">C. 使用 Playwright 的 page.route() 拦截并 Mock API 响应</li>
+    <li onclick="checkQuiz('quiz3',3)">D. 只测试不需要 AI 的页面</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="ask-agent">
+  <strong>遇到不懂的地方？</strong>直接问 Agent。比如："如何给 claudecodeTools.js 写单元测试？" 或 "Playwright 的 page.route() 怎么用？"
+</div>
+
+</div>
+<script>
+function checkQuiz(q,s){const o=document.getElementById(q).querySelector('.quiz-options'),c=parseInt(o.dataset.correct),i=o.querySelectorAll('li'),f=document.getElementById(q).querySelector('.quiz-feedback');i.forEach((x,n)=>{x.onclick=null;if(n===c)x.classList.add('correct');if(n===s&&n!==c)x.classList.add('wrong')});const fb={q1:{c:'✓ 对！项目注释明确说明 "console.log 临时保留所有日志（用于调试循环依赖问题）"，Agent 系统的调试高度依赖控制台输出。',w:'✗ 是因为项目需要 console.log 调试 Agent 运行日志。AGENTS.md 中有明确说明。'},q2:{c:'✓ 对！normalizeModelChoice 是纯函数，输入确定→输出确定，最适合用 Vitest 做单元测试。',w:'✗ 应该用单元测试。这是一个纯函数，输入输出完全确定，不需要浏览器环境。'},q3:{c:'✓ 对！page.route() 可以拦截网络请求，返回预设的 Mock 数据，这样测试不依赖外部服务。',w:'✗ 是使用 page.route() 拦截并 Mock API 响应。这是 Playwright 的核心功能之一。'}};f.style.display='block';f.textContent=s===c?fb[q].c:fb[q].w;f.style.background=s===c?'#dcfce7':'#fee2e2'}
+</script>
+<div class="nav-links">
+  <a href="0030-kuai-front-claudecode-integration.html">← Claude Code 集成</a>
+  <a href="../index.html">🗺️ 完整学习地图</a>
+  <a href="0032-kuai-front-http-client.html">HTTP 请求封装 →</a>
+</div>
+</body>
+</html>

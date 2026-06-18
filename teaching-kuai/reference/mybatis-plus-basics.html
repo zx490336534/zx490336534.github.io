@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyBatis-Plus 基础入门</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:2rem}
+  .breadcrumb{color:var(--text-secondary);font-size:.85rem;margin-bottom:1.5rem}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .breadcrumb a:hover{text-decoration:underline}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.15rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem}
+  p{margin-bottom:1rem}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15rem .4rem;border-radius:4px;font-size:.88em}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;overflow-x:auto;margin:1rem 0;font-size:.88rem;line-height:1.6}
+  pre code{background:none;padding:0}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.4rem}
+  .tag{display:inline-block;padding:.1rem .4rem;border-radius:4px;font-size:.7rem;font-weight:500;margin-right:.3rem}
+  .tag.overview{background:#dbeafe;color:#2563eb}
+  .tag.concept{background:#f3e8ff;color:#7c3aed}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0}
+  .card-title{font-weight:600;margin-bottom:.5rem;font-size:1.05rem}
+  .module-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin:1rem 0}
+  .module-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;transition:all .2s}
+  .module-card:hover{border-color:var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .module-card h4{font-size:1rem;font-weight:600;margin-bottom:.35rem}
+  .module-card p{color:var(--text-secondary);font-size:.9rem;margin:0}
+  .quiz-section{background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:1.5rem;margin-top:2.5rem}
+  .quiz-section h2{margin-top:0;color:var(--accent)}
+  .quiz-q{margin-bottom:1.5rem}
+  .quiz-q .q-title{font-weight:600;margin-bottom:.5rem}
+  .quiz-q label{display:block;padding:.4rem .75rem;margin:.3rem 0;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s;background:var(--surface)}
+  .quiz-q label:hover{border-color:var(--accent)}
+  .quiz-q input[type="radio"]{margin-right:.5rem}
+  .quiz-q .answer{display:none;margin-top:.5rem;padding:.75rem 1rem;border-radius:6px;font-size:.9rem}
+  .quiz-q .answer.correct{background:#dcfce7;color:#166534;border:1px solid #86efac}
+  .quiz-q .answer.wrong{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
+  .ask-agent::before{content:'💡 '}
+  .nav-links{display:flex;justify-content:space-between;margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+  .nav-links a{color:var(--accent);text-decoration:none;font-weight:500}
+  .nav-links a:hover{text-decoration:underline}
+  .highlight{background:var(--accent-light);padding:.1rem .3rem;border-radius:3px}
+  table{width:100%;border-collapse:collapse;margin:1rem 0}
+  th,td{padding:.6rem .8rem;border:1px solid var(--border);text-align:left;font-size:.9rem}
+  th{background:var(--code-bg);font-weight:600}
+</style>
+<script>
+function checkAnswer(qId, correct, el){
+  var ans=el.parentElement.parentElement.querySelector('.answer');
+  if(el.value===correct){ans.className='answer correct';ans.innerHTML='✅ 正确！';ans.style.display='block'}
+  else{ans.className='answer wrong';ans.innerHTML='❌ 错误，正确答案是 '+correct+'。';ans.style.display='block'}
+}
+</script>
+</head>
+<body>
+<div class="container">
+
+<div class="breadcrumb"><a href="../lessons/index.html">课程首页</a> &gt; 概念教程 &gt; MyBatis-Plus 基础入门</div>
+
+<h1>🗃️ MyBatis-Plus 基础入门</h1>
+<p class="subtitle"><span class="tag concept">概念</span> 理解 ORM 思想，掌握 MyBatis-Plus 的注解和 CRUD 操作</p>
+
+<!-- ============ 1. 什么是 ORM ============ -->
+<h2><span class="icon">🤔</span> 什么是 ORM？</h2>
+<p>ORM（Object-Relational Mapping，对象关系映射）的核心思想很简单：</p>
+<div class="card">
+  <p class="card-title">🔄 一句话理解 ORM</p>
+  <p><strong>用 Java 对象来代替 SQL 语句操作数据库。</strong><br>
+  一张数据库表 → 一个 Java 类<br>
+  表中一行数据 → 一个 Java 对象<br>
+  表中的字段 → 对象的属性</p>
+</div>
+
+<p>没有 ORM 时，你需要这样查数据库：</p>
+<pre><code>// 传统 JDBC：手写 SQL，手动映射字段
+String sql = "SELECT * FROM user WHERE id = ?";
+PreparedStatement ps = conn.prepareStatement(sql);
+ps.setLong(1, 1L);
+ResultSet rs = ps.executeQuery();
+while (rs.next()) {
+    String name = rs.getString("name");  // 手动取值
+    // ...
+}</code></pre>
+
+<p>有了 ORM 之后：</p>
+<pre><code>// MyBatis-Plus：一行代码搞定
+User user = userMapper.selectById(1L);</code></pre>
+
+<!-- ============ 2. MyBatis vs MyBatis-Plus ============ -->
+<h2><span class="icon">⚖️</span> MyBatis vs MyBatis-Plus</h2>
+<p><strong>MyBatis</strong> 是一个半自动的 ORM 框架 —— 你需要自己写 SQL 语句，MyBatis 帮你执行并映射结果。</p>
+<p><strong>MyBatis-Plus</strong> 是 MyBatis 的增强版 —— 简单的 CRUD 操作不需要写 SQL，框架自动生成。</p>
+
+<table>
+  <tr><th>对比项</th><th>MyBatis</th><th>MyBatis-Plus</th></tr>
+  <tr><td>CRUD 操作</td><td>每个都要写 SQL</td><td>单表 CRUD 零 SQL</td></tr>
+  <tr><td>分页</td><td>手写分页 SQL 或用插件</td><td>内置分页插件</td></tr>
+  <tr><td>条件查询</td><td>拼接 XML 或注解 SQL</td><td>Wrapper 链式构建</td></tr>
+  <tr><td>代码生成</td><td>无</td><td>内置代码生成器</td></tr>
+  <tr><td>学习成本</td><td>需要会写 SQL</td><td>会调方法就行</td></tr>
+</table>
+
+<div class="ask-agent">
+  <strong>简单说：</strong>MyBatis-Plus = MyBatis + 自动 CRUD + 分页 + 条件构造器 + 代码生成器。它不会替代 MyBatis，而是在 MyBatis 基础上做加法。
+</div>
+
+<!-- ============ 3. 核心注解 ============ -->
+<h2><span class="icon">🏷️</span> 核心注解：@TableName 和 @TableId</h2>
+
+<h3>3.1 @TableName —— 表名映射</h3>
+<p>告诉 MyBatis-Plus 这个类对应数据库的哪张表：</p>
+<pre><code>@TableName("user")  // 对应数据库的 user 表
+public class User {
+    private Long id;
+    private String name;
+    private String email;
+}</code></pre>
+<p>如果你的类名和表名遵循命名规则（类名 <code>User</code> → 表名 <code>user</code>），可以不加这个注解。</p>
+
+<h3>3.2 @TableId —— 主键映射</h3>
+<p>标记哪个字段是主键，以及主键的生成策略：</p>
+<pre><code>@TableName("user")
+public class User {
+    @TableId(type = IdType.AUTO)  // 数据库自增
+    private Long id;
+    private String name;
+}</code></pre>
+
+<div class="card">
+  <p class="card-title">常用 IdType 策略</p>
+  <ul>
+    <li><code>AUTO</code> —— 数据库自增（最常用）</li>
+    <li><code>ASSIGN_ID</code> —— 雪花算法生成 Long 类型 ID</li>
+    <li><code>ASSIGN_UUID</code> —— 生成 UUID 字符串</li>
+    <li><code>NONE</code> —— 不做任何处理</li>
+  </ul>
+</div>
+
+<!-- ============ 4. BaseMapper 常用方法 ============ -->
+<h2><span class="icon">🔧</span> BaseMapper 常用方法</h2>
+<p>MyBatis-Plus 最核心的类就是 <code>BaseMapper&lt;T&gt;</code>。你只需要写一个 Mapper 接口继承它，就能获得大量现成的 CRUD 方法：</p>
+
+<pre><code>@Mapper
+public interface UserMapper extends BaseMapper&lt;User&gt; {
+    // 什么都不用写！已经自动拥有了增删改查方法
+}</code></pre>
+
+<h3>4.1 selectById —— 根据 ID 查询</h3>
+<pre><code>User user = userMapper.selectById(1L);
+// 生成的 SQL: SELECT * FROM user WHERE id = 1</code></pre>
+
+<h3>4.2 insert —— 插入数据</h3>
+<pre><code>User user = new User();
+user.setName("张三");
+user.setEmail("zhangsan@example.com");
+int rows = userMapper.insert(user);
+// 生成的 SQL: INSERT INTO user (name, email) VALUES ('张三', 'zhangsan@example.com')</code></pre>
+
+<h3>4.3 updateById —— 根据 ID 更新</h3>
+<pre><code>User user = new User();
+user.setId(1L);
+user.setName("李四");  // 只更新 name，其他字段不动
+userMapper.updateById(user);
+// 生成的 SQL: UPDATE user SET name='李四' WHERE id = 1</code></pre>
+<p><strong>注意：</strong><code>updateById</code> 只更新非 null 的字段，null 字段不会被更新。</p>
+
+<h3>4.4 deleteById —— 根据 ID 删除</h3>
+<pre><code>userMapper.deleteById(1L);
+// 生成的 SQL: DELETE FROM user WHERE id = 1</code></pre>
+
+<h3>4.5 常用方法速查</h3>
+<table>
+  <tr><th>方法</th><th>作用</th><th>示例</th></tr>
+  <tr><td><code>selectById(id)</code></td><td>按 ID 查一条</td><td><code>selectById(1L)</code></td></tr>
+  <tr><td><code>selectList(wrapper)</code></td><td>条件查多条</td><td><code>selectList(null)</code> 查全部</td></tr>
+  <tr><td><code>selectCount(wrapper)</code></td><td>统计条数</td><td><code>selectCount(null)</code></td></tr>
+  <tr><td><code>insert(entity)</code></td><td>插入一条</td><td><code>insert(user)</code></td></tr>
+  <tr><td><code>updateById(entity)</code></td><td>按 ID 更新</td><td><code>updateById(user)</code></td></tr>
+  <tr><td><code>deleteById(id)</code></td><td>按 ID 删除</td><td><code>deleteById(1L)</code></td></tr>
+  <tr><td><code>deleteBatchIds(ids)</code></td><td>批量删除</td><td><code>deleteBatchIds(Arrays.asList(1,2,3))</code></td></tr>
+</table>
+
+<!-- ============ 5. @Select 自定义 SQL ============ -->
+<h2><span class="icon">✍️</span> @Select 自定义 SQL</h2>
+<p>当 BaseMapper 的方法不够用时（比如多表联查），你可以用 <code>@Select</code> 注解写自定义 SQL：</p>
+
+<pre><code>@Mapper
+public interface UserMapper extends BaseMapper&lt;User&gt; {
+
+    // 自定义查询：查某个部门的所有用户
+    @Select("SELECT u.* FROM user u " +
+            "JOIN department d ON u.dept_id = d.id " +
+            "WHERE d.name = #{deptName}")
+    List&lt;User&gt; selectByDeptName(@Param("deptName") String deptName);
+}</code></pre>
+
+<p>这就是 MyBatis 的"半自动"体现 —— 简单操作用 Plus 自动生成，复杂操作你手写 SQL。</p>
+
+<div class="card">
+  <p class="card-title">三种写 SQL 的方式</p>
+  <ul>
+    <li><code>@Select</code> 注解 —— 简单 SQL 直接写在方法上</li>
+    <li>XML 文件 —— 复杂 SQL 写在 <code>*Mapper.xml</code> 里</li>
+    <li><code>Wrapper</code> 条件构造器 —— 链式调用，不用写 SQL 字符串</li>
+  </ul>
+</div>
+
+<div class="ask-agent">
+  <strong>试试问 Agent：</strong>"MyBatis-Plus 的 LambdaQueryWrapper 怎么用？" 或者 "@TableField 注解有什么作用？"
+</div>
+
+<!-- ============ Quiz ============ -->
+<div class="quiz-section">
+  <h2><span class="icon">📝</span> Quiz — 检验你的理解</h2>
+
+  <div class="quiz-q">
+    <div class="q-title">Q1: ORM 的核心思想是什么？</div>
+    <label><input type="radio" name="q1" value="A" onclick="checkAnswer('q1','A',this)"> A. 用 Java 对象映射数据库表，用对象操作代替 SQL</label>
+    <label><input type="radio" name="q1" value="B" onclick="checkAnswer('q1','B',this)"> B. 直接在 Java 里运行 SQL 语句</label>
+    <label><input type="radio" name="q1" value="C" onclick="checkAnswer('q1','C',this)"> C. 把数据库数据导出为 Excel</label>
+    <div class="answer"></div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-title">Q2: BaseMapper 的 updateById 方法有什么特点？</div>
+    <label><input type="radio" name="q2" value="A" onclick="checkAnswer('q2','A',this)"> A. 只更新非 null 的字段</label>
+    <label><input type="radio" name="q2" value="B" onclick="checkAnswer('q2','B',this)"> B. 会把所有字段都更新（包括 null）</label>
+    <label><input type="radio" name="q2" value="C" onclick="checkAnswer('q2','C',this)"> C. 只能更新主键字段</label>
+    <div class="answer"></div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-title">Q3: 当需要做多表联查时，应该怎么写 SQL？</div>
+    <label><input type="radio" name="q3" value="A" onclick="checkAnswer('q3','A',this)"> A. 用 @Select 注解或 XML 文件写自定义 SQL</label>
+    <label><input type="radio" name="q3" value="B" onclick="checkAnswer('q3','B',this)"> B. 只能用 BaseMapper 的方法</label>
+    <label><input type="radio" name="q3" value="C" onclick="checkAnswer('q3','C',this)"> C. 直接修改 MyBatis-Plus 源码</label>
+    <div class="answer"></div>
+  </div>
+</div>
+
+<div class="nav-links">
+  <a href="spring-boot-basics.html">← 上一课：Spring Boot 基础</a>
+  <a href="tddl-basics.html">下一课：TDDL 数据库中间件 →</a>
+</div>
+
+</div>
+</body>
+</html>

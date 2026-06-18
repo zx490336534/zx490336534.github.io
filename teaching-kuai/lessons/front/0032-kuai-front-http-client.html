@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0032 - HTTP 请求封装与 API 服务层</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:1rem}
+  .breadcrumb{color:var(--text-secondary);font-size:.85rem;margin-bottom:2rem}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .breadcrumb a:hover{text-decoration:underline}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.15rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem;color:var(--accent)}
+  p{margin-bottom:1rem}
+  .desc{color:var(--text-secondary);font-size:.95rem;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;overflow-x:auto;margin:1rem 0 1.5rem;font-size:.85rem;line-height:1.7}
+  code{font-family:'JetBrains Mono',monospace;font-size:.85em}
+  p code,li code{background:var(--code-bg);padding:.15rem .4rem;border-radius:4px;color:var(--accent)}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1.5rem 0}
+  .card.warn{border-color:#fbbf24;background:#fffbeb}
+  .card.info{border-color:#93c5fd;background:#eff6ff}
+  .card.success{border-color:#86efac;background:#f0fdf4}
+  .card.purple{border-color:#c4b5fd;background:#f5f3ff}
+  .card h3{margin-top:0}
+  .card ul,.card ol{margin:.5rem 0 0 1.25rem}
+  .card li{margin-bottom:.3rem}
+  .tag{display:inline-block;padding:.15rem .5rem;border-radius:4px;font-size:.75rem;font-weight:500;margin-right:.3rem}
+  .tag.deep{background:#fef3c7;color:#b45309}
+  .tag.code{background:#dbeafe;color:#2563eb}
+  .tag.arch{background:#f3e8ff;color:#7c3aed}
+  .tag.ui{background:#dcfce7;color:#16a34a}
+  .quiz{background:var(--surface);border:2px solid var(--border);border-radius:8px;padding:1.5rem;margin:1.5rem 0}
+  .quiz h3{color:var(--info);margin-top:0}
+  .quiz ol{margin-left:1.25rem}
+  .quiz li{margin-bottom:1rem}
+  .quiz .options{margin:.5rem 0 0 1rem}
+  .quiz .options div{margin-bottom:.3rem;padding:.4rem .75rem;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s}
+  .quiz .options div:hover{border-color:var(--accent);background:var(--accent-light)}
+  .quiz .options div.correct{border-color:var(--success);background:#dcfce7;color:var(--success);font-weight:600}
+  .quiz .options div.wrong{border-color:#ef4444;background:#fef2f2;color:#ef4444}
+  .quiz .answer{margin-top:.75rem;padding:.75rem 1rem;background:#f0fdf4;border:1px solid #86efac;border-radius:6px;display:none;font-size:.9rem}
+  .quiz .answer.show{display:block}
+  .quiz .show-btn{display:inline-block;margin-top:.75rem;padding:.4rem 1rem;background:var(--accent);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:.85rem}
+  .quiz .show-btn:hover{opacity:.9}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.3rem}
+  .file-ref{display:inline-block;background:var(--code-bg);border:1px solid var(--border);border-radius:4px;padding:.1rem .5rem;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--purple)}
+  table{width:100%;border-collapse:collapse;margin:1rem 0 1.5rem;font-size:.9rem}
+  th,td{padding:.6rem 1rem;border:1px solid var(--border);text-align:left}
+  th{background:var(--code-bg);font-weight:600}
+  .tree{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:2;overflow-x:auto;white-space:pre}
+  .nav-links{display:flex;justify-content:space-between;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+  .nav-links a{color:var(--accent);text-decoration:none;font-size:.9rem}
+  .nav-links a:hover{text-decoration:underline}
+  .flow-diagram{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1rem 0;text-align:center;font-size:.9rem;line-height:2.2}
+  .flow-arrow{color:var(--accent);font-weight:700}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="breadcrumb"><a href="../index.html">课程首页</a> &gt; kuai-service-front &gt; 0032 HTTP 请求封装与 API 服务层</div>
+
+<h1>🌐 HTTP 请求封装与 API 服务层</h1>
+<p class="subtitle">理解 request 封装、{data, err} 返回结构、模块化 API 服务和统一错误处理</p>
+<p class="desc">本课程聚焦 <code>src/services/</code> 目录，它是 Kuai 前端与后端通信的唯一通道。所有 HTTP 请求都通过统一封装的 <code>request</code> 函数发出，各业务模块的 API 按功能拆分到独立文件中。</p>
+
+<div class="card purple">
+  <h3>📚 前置知识</h3>
+  <ul>
+    <li><strong>Fetch API 基础</strong>：理解 <code>fetch()</code> 函数、<code>Request</code>/<code>Response</code> 对象、Promise</li>
+    <li><strong>HTTP 基础</strong>：GET/POST/PUT/DELETE 方法、状态码（200/401/500）、请求头 Content-Type</li>
+    <li><strong>JavaScript Promise</strong>：<code>async/await</code>、<code>.then()</code>、<code>.catch()</code> 链式调用</li>
+    <li><strong>ES Module</strong>：<code>import/export</code> 模块导入导出语法</li>
+    <li><strong>0005 课程</strong>：kuai-service-front 项目概览（了解整体技术栈和目录结构）</li>
+  </ul>
+</div>
+
+<!-- ==================== 服务层目录结构 ==================== -->
+<h2><span class="icon">📁</span> 服务层目录结构</h2>
+
+<div class="tree">src/services/
+├── index.js                 # 统一入口（导出 request + 所有模块）
+├── request/
+│   └── index.js             # HTTP 请求封装（基于 fetch）
+└── modules/
+    ├── user.js              # 用户相关 API
+    ├── mcp.js               # MCP 服务器管理 API
+    ├── prompt.js            # 提示词管理 API
+    ├── moon.js              # Moon AI 服务 API
+    ├── kaptain.js           # Kaptain 项目管理 API
+    ├── kuai.js              # Kuai 平台 API
+    ├── kuafu.js             # Kuafu 服务 API
+    ├── publicAgent.js       # 公共 Agent API
+    ├── metrics.js           # 度量指标 API
+    ├── analytics.js         # 数据分析 API
+    ├── diagram.js           # 图表 API
+    ├── cfOrganization.js    # 组织管理 API
+    ├── kurepeater.js        # Kurepeater API
+    └── promptTestService.js # 提示词测试 API</div>
+
+<p>整个服务层采用 <strong>两层架构</strong>：底层是通用的 HTTP 请求封装（<code>request/</code>），上层是按业务模块划分的 API 函数（<code>modules/</code>）。</p>
+
+<!-- ==================== request 封装 ==================== -->
+<h2><span class="icon">🔧</span> request 请求封装详解</h2>
+
+<p><span class="tag code">核心文件</span> <span class="file-ref">src/services/request/index.js</span> 是整个前端的 HTTP 请求基础，基于浏览器原生 <code>fetch</code> API 进行封装。</p>
+
+<h3>核心设计：直接返回数据</h3>
+
+<pre><code class="language-javascript">// src/services/request/index.js (简化)
+export default function request(url, options, style) {
+  // 兼容旧版调用方式：request(url, 'json')
+  let actualOptions = options;
+  let actualResponseType = style;
+
+  if (typeof options === 'string') {
+    actualOptions = {};
+    actualResponseType = options;
+  } else if (!options) {
+    actualOptions = {};
+  }
+
+  const finalResponseType = actualResponseType || RESPONSE_TYPE.JSON;
+
+  const defaultOptions = {
+    credentials: 'include',  // 自动携带 Cookie（SSO 认证）
+  };
+
+  const newOptions = { ...defaultOptions, ...actualOptions };
+  setHeadersForBody(newOptions);  // 自动设置 Content-Type
+
+  // 直接返回接口数据
+  return fetch(url, newOptions)
+    .then(checkStatus)           // 检查状态码
+    .then(response => parseResponse(response, finalResponseType));
+}</code></pre>
+
+<div class="card info">
+  <h3>💡 关键设计决策</h3>
+  <p><code>request</code> 函数直接返回解析后的数据，而不是包装成 <code>{ data, err }</code>。错误处理通过 Promise 的 reject（throw）机制完成。这意味着调用方需要使用 <code>try/catch</code> 或 <code>.catch()</code> 来捕获错误。</p>
+</div>
+
+<h3>请求流程</h3>
+
+<div class="flow-diagram">
+  <strong>组件调用 API 函数</strong><br>
+  <span class="flow-arrow">↓</span><br>
+  <strong>request(url, options)</strong> — 合并默认配置<br>
+  <span class="flow-arrow">↓</span><br>
+  <strong>setHeadersForBody()</strong> — 自动设置 Content-Type / JSON 序列化<br>
+  <span class="flow-arrow">↓</span><br>
+  <strong>fetch(url, options)</strong> — 发起 HTTP 请求（credentials: 'include'）<br>
+  <span class="flow-arrow">↓</span><br>
+  <strong>checkStatus(response)</strong> — 检查状态码，401 跳转 SSO<br>
+  <span class="flow-arrow">↓</span><br>
+  <strong>parseResponse()</strong> — 根据 responseType 解析（JSON/Text/Blob）<br>
+  <span class="flow-arrow">↓</span><br>
+  <strong>返回解析后的数据</strong>
+</div>
+
+<h3>三种响应类型</h3>
+
+<table>
+  <tr><th>类型</th><th>常量</th><th>用途</th><th>示例</th></tr>
+  <tr><td>JSON</td><td><code>RESPONSE_TYPE.JSON</code></td><td>默认，API 返回 JSON 数据</td><td>用户信息、列表数据</td></tr>
+  <tr><td>Text</td><td><code>RESPONSE_TYPE.TEXT</code></td><td>返回纯文本</td><td>流式响应、日志</td></tr>
+  <tr><td>Blob</td><td><code>RESPONSE_TYPE.BLOB</code></td><td>返回二进制数据</td><td>文件下载、图片</td></tr>
+</table>
+
+<pre><code class="language-javascript">// 使用不同的响应类型
+import request, { RESPONSE_TYPE } from '@/services/request';
+
+// 默认 JSON
+const userData = await request('/api/user/current');
+
+// 纯文本
+const logText = await request('/api/logs', {}, RESPONSE_TYPE.TEXT);
+
+// 二进制文件
+const fileBlob = await request('/api/export', {}, RESPONSE_TYPE.BLOB);</code></pre>
+
+<!-- ==================== 错误处理 ==================== -->
+<h2><span class="icon">⚠️</span> 统一错误处理</h2>
+
+<h3>HTTP 状态码处理</h3>
+
+<p><code>checkStatus</code> 函数是错误处理的核心，它对每种 HTTP 状态码都有对应的处理逻辑：</p>
+
+<table>
+  <tr><th>状态码</th><th>处理方式</th><th>说明</th></tr>
+  <tr><td>200-299</td><td>正常返回</td><td>成功响应，继续解析数据</td></tr>
+  <tr><td>401</td><td><strong>自动跳转 SSO 登录</strong></td><td>认证失败，重定向到登录页</td></tr>
+  <tr><td>403</td><td>抛出错误</td><td>无权限访问</td></tr>
+  <tr><td>404</td><td>抛出错误</td><td>接口不存在</td></tr>
+  <tr><td>500+</td><td>抛出错误</td><td>服务器内部错误</td></tr>
+</table>
+
+<pre><code class="language-javascript">// src/services/request/index.js — checkStatus 核心逻辑
+function checkStatus(response) {
+  // 401 未授权：自动跳转 SSO 登录
+  if (response.status === 401) {
+    if (isGuestMode()) {
+      return response;  // 访客模式不跳转
+    }
+    redirectToLogin();  // 跳转到 SSO 登录页
+    throw new Error('Unauthorized - redirecting to login');
+  }
+
+  // 成功响应 (2xx)
+  if (response.status >= 200 && response.status < 300) {
+    return response;
+  }
+
+  // 其他错误
+  const errorMessage = STATUS_MESSAGES[response.status] || response.statusText;
+  const error = new Error(errorMessage);
+  error.name = response.status;
+  error.response = response;
+  throw error;
+}</code></pre>
+
+<h3>访客模式</h3>
+
+<div class="card warn">
+  <h3>🔑 访客模式（免登录）</h3>
+  <p>当 URL 同时满足以下两个条件时，进入访客模式：</p>
+  <ul>
+    <li>路径以 <code>/share</code> 开头（分享页面）</li>
+    <li>URL 参数包含 <code>?mode=guest</code></li>
+  </ul>
+  <p>访客模式下，401 错误不会触发跳转，而是直接返回响应，让页面自行处理。</p>
+</div>
+
+<h3>JSON 解析的容错处理</h3>
+
+<pre><code class="language-javascript">// 解析响应数据，支持大数字和容错
+async function parseResponse(response, responseType) {
+  switch (responseType) {
+    case RESPONSE_TYPE.JSON: {
+      const clonedResponse = response.clone();
+      const text = await clonedResponse.text();
+      if (!text || text.trim().length === 0) {
+        return null;  // 空响应返回 null
+      }
+      try {
+        return JSONBig.parse(text);  // 使用 json-bigint 处理大数字
+      } catch (err) {
+        console.warn('[request] JSON parse failed, returning text');
+        return text;  // 解析失败返回原始文本
+      }
+    }
+    case RESPONSE_TYPE.TEXT:
+      return response.text();
+    case RESPONSE_TYPE.BLOB:
+      return response.blob();
+  }
+}</code></pre>
+
+<div class="card">
+  <h3>🔍 为什么用 JSONBig？</h3>
+  <p>JavaScript 原生 <code>JSON.parse</code> 无法正确处理超过 <code>Number.MAX_SAFE_INTEGER</code>（2^53 - 1）的整数。后端返回的 ID 或时间戳可能是大数字，使用 <code>json-bigint</code> 库可以避免精度丢失。</p>
+</div>
+
+<!-- ==================== 模块化 API ==================== -->
+<h2><span class="icon">📦</span> 模块化 API 服务</h2>
+
+<p>每个业务模块在 <code>src/services/modules/</code> 下有自己的 API 文件，遵循统一的编码规范：</p>
+
+<h3>模块编写规范</h3>
+
+<pre><code class="language-javascript">// src/services/modules/user.js — 标准模块示例
+import request from '@/services';
+
+// 1. 定义 API 端点常量
+const API_USER_CURRENT = '/api/user/current';
+const API_USER_LOGOUT = '/api/user/logout';
+const API_USER_STATIC_MAP = '/api/user/static-map';
+
+// 2. 导出 API 函数
+export async function queryCurrentUser() {
+  return request(API_USER_CURRENT);
+}
+
+export async function queryUserLogout() {
+  return request(API_USER_LOGOUT);
+}
+
+export async function queryStaticUserMap() {
+  return request(API_USER_STATIC_MAP);
+}</code></pre>
+
+<h3>带参数的 API</h3>
+
+<pre><code class="language-javascript">// src/services/modules/mcp.js — 带参数的 API 示例
+const MCP_BASE_PATH = '/api/proxy/mcphub';
+
+// 动态路径用函数生成
+const SERVER_BY_NAME = (name) => `${MCP_BASE_PATH}/servers/${name}`;
+const TOOL_CALL_SERVER = (serverName, toolName) =>
+  `${MCP_BASE_PATH}/tools/servers/${serverName}/${toolName}/call`;
+
+// GET 请求
+export async function getServers() {
+  return request(SERVERS_LIST);
+}
+
+// POST 请求（带请求体）
+export async function addServer(serverData) {
+  return request(SERVERS_LIST, {
+    method: 'POST',
+    body: serverData,  // 自动 JSON 序列化
+  });
+}
+
+// PUT 请求
+export async function updateServer(name, serverData) {
+  return request(SERVER_BY_NAME(name), {
+    method: 'PUT',
+    body: serverData,
+  });
+}
+
+// DELETE 请求
+export async function deleteServer(name) {
+  return request(SERVER_BY_NAME(name), {
+    method: 'DELETE',
+  });
+}</code></pre>
+
+<h3>统一入口文件</h3>
+
+<pre><code class="language-javascript">// src/services/index.js — 所有模块的统一导出
+import request from './request';
+
+export default request;           // 默认导出 request 函数
+
+export * from './modules/user';   // 用户服务
+export * from './modules/mcp';    // MCP 服务
+export * from './modules/prompt'; // 提示词服务
+export * from './modules/moon';   // Moon 服务
+// ... 更多模块</code></pre>
+
+<p>这样，页面中只需一行就能导入所需的 API：</p>
+
+<pre><code class="language-javascript">// 在页面组件中使用
+import request from '@/services';                    // 导入 request 函数
+import { queryCurrentUser } from '@/services';       // 导入用户 API
+import { getServers, addServer } from '@/services';  // 导入 MCP API</code></pre>
+
+<!-- ==================== 实际使用模式 ==================== -->
+<h2><span class="icon">🎯</span> 实际使用模式</h2>
+
+<h3>在页面组件中调用 API</h3>
+
+<pre><code class="language-javascript">// 页面组件中使用 API 的典型模式
+'use client';
+import { useState, useEffect } from 'react';
+import { getServers } from '@/services';
+
+export default function McpServersPage() {
+  const [servers, setServers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadServers() {
+      try {
+        const data = await getServers();  // 直接获取数据
+        setServers(data || []);
+      } catch (err) {
+        console.error('加载服务器列表失败:', err);
+        // request 内部已处理 401 跳转，这里处理其他错误
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadServers();
+  }, []);
+
+  if (loading) return &lt;div&gt;加载中...&lt;/div&gt;;
+
+  return (
+    &lt;div&gt;
+      {servers.map(server =&gt; (
+        &lt;div key={server.name}&gt;{server.name}&lt;/div&gt;
+      ))}
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+<h3>不同后端的 API 代理</h3>
+
+<div class="card info">
+  <h3>🔀 API 代理规则</h3>
+  <p>不同模块的 API 前缀指向不同的后端服务：</p>
+  <ul>
+    <li><code>/api/user/*</code> → Kuai 后端（用户认证）</li>
+    <li><code>/api/proxy/mcphub/*</code> → Python MCP 服务（MCP 管理）</li>
+    <li><code>/ai/api/*</code> → AI 后端（提示词管理）</li>
+    <li><code>/api/moon/*</code> → Moon 服务</li>
+    <li><code>/kaptain/api/*</code> → Kaptain 服务</li>
+  </ul>
+  <p>这些代理规则在 <code>next.config.js</code> 的 <code>rewrites</code> 中配置（详见 0024 课程）。</p>
+</div>
+
+<h3>请求头自动处理</h3>
+
+<pre><code class="language-javascript">// setHeadersForBody 自动处理请求头
+function setHeadersForBody(options) {
+  const { method, body, headers } = options;
+
+  // 只对有请求体的方法设置头部
+  if (!['POST', 'PUT', 'DELETE'].includes(method) || !body) {
+    return;
+  }
+
+  if (body instanceof FormData) {
+    // 文件上传：不设置 Content-Type（浏览器自动设置 boundary）
+    options.headers = { Accept: 'application/json', ...headers };
+  } else {
+    // 普通 JSON 请求
+    options.headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json; charset=utf-8',
+      ...headers,
+    };
+    options.body = JSONBig.stringify(body);  // JSON 序列化
+  }
+}</code></pre>
+
+<!-- ==================== Quiz ==================== -->
+<h2><span class="icon">🧪</span> 知识检验</h2>
+
+<div class="quiz" id="quiz1">
+  <h3>题目 1：请求封装</h3>
+  <p>当后端返回 HTTP 401 状态码时，<code>request</code> 函数会如何处理？</p>
+  <div class="options">
+    <div onclick="checkAnswer(this,'quiz1',false)">A. 抛出错误，让调用方自行处理</div>
+    <div onclick="checkAnswer(this,'quiz1',false)">B. 返回 null 数据</div>
+    <div onclick="checkAnswer(this,'quiz1',true)">C. 自动重定向到 SSO 登录页面（访客模式除外）</div>
+    <div onclick="checkAnswer(this,'quiz1',false)">D. 自动刷新当前页面</div>
+  </div>
+  <button class="show-btn" onclick="toggleAnswer('quiz1')">显示解析</button>
+  <div class="answer" id="quiz1-answer">
+    <strong>答案 C</strong>。<code>checkStatus</code> 函数检测到 401 状态码后，会先判断是否处于访客模式（<code>/share?mode=guest</code>）。如果不是访客模式，调用 <code>redirectToLogin()</code> 将用户重定向到 SSO 登录页。这是统一的认证处理机制，所有页面都不需要单独处理 401。
+  </div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <h3>题目 2：模块组织</h3>
+  <p>为什么 <code>src/services/modules/mcp.js</code> 中的 API 端点使用函数而不是字符串常量？</p>
+  <div class="options">
+    <div onclick="checkAnswer(this,'quiz2',false)">A. 为了代码好看</div>
+    <div onclick="checkAnswer(this,'quiz2',true)">B. 因为端点包含动态参数（如服务器名称），需要用函数拼接路径</div>
+    <div onclick="checkAnswer(this,'quiz2',false)">C. 因为 JavaScript 不支持字符串模板</div>
+    <div onclick="checkAnswer(this,'quiz2',false)">D. 这是团队的代码规范，没有实际意义</div>
+  </div>
+  <button class="show-btn" onclick="toggleAnswer('quiz2')">显示解析</button>
+  <div class="answer" id="quiz2-answer">
+    <strong>答案 B</strong>。MCP 模块的很多端点包含动态参数，如 <code>/api/proxy/mcphub/servers/${name}</code>。使用函数可以安全地拼接路径：<code>const SERVER_BY_NAME = (name) => `/api/proxy/mcphub/servers/${name}`</code>。调用时 <code>request(SERVER_BY_NAME('my-server'))</code>。对于没有动态参数的端点（如列表接口），则直接使用字符串常量。
+  </div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <h3>题目 3：统一入口</h3>
+  <p><code>src/services/index.js</code> 文件的作用是什么？</p>
+  <div class="options">
+    <div onclick="checkAnswer(this,'quiz3',false)">A. 定义所有 API 的具体实现</div>
+    <div onclick="checkAnswer(this,'quiz3',false)">B. 配置 HTTP 请求的超时时间和重试策略</div>
+    <div onclick="checkAnswer(this,'quiz3',true)">C. 作为统一入口，重新导出 request 函数和所有模块的 API</div>
+    <div onclick="checkAnswer(this,'quiz3',false)">D. 处理所有 API 的请求拦截和响应拦截</div>
+  </div>
+  <button class="show-btn" onclick="toggleAnswer('quiz3')">显示解析</button>
+  <div class="answer" id="quiz3-answer">
+    <strong>答案 C</strong>。<code>src/services/index.js</code> 是服务层的统一入口文件。它做两件事：(1) 默认导出 <code>request</code> 函数；(2) 通过 <code>export * from './modules/xxx'</code> 重新导出所有模块的 API 函数。这样页面组件只需 <code>import { getServers } from '@/services'</code> 就能使用任何 API，不需要记住具体模块路径。
+  </div>
+</div>
+
+<div class="nav-links">
+  <a href="0031-kuai-front-testing.html">← 测试与质量保障</a>
+  <a href="../index.html">🗺️ 完整学习地图</a>
+  <a href="0033-kuai-front-navigation-routing.html">导航与路由系统 →</a>
+</div>
+
+</div>
+
+<script>
+function checkAnswer(el, quizId, correct) {
+  const options = el.parentNode.children;
+  for (let o of options) { o.style.pointerEvents = 'none'; }
+  if (correct) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    for (let o of options) {
+      if (o.onclick && o.onclick.toString().includes('true')) o.classList.add('correct');
+    }
+  }
+  document.getElementById(quizId + '-answer').classList.add('show');
+}
+function toggleAnswer(quizId) {
+  document.getElementById(quizId + '-answer').classList.toggle('show');
+}
+</script>
+</body>
+</html>

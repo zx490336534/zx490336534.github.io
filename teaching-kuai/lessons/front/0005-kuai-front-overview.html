@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0005 - kuai-service-front 项目概览</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.5rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:2rem}
+  .desc{color:var(--text-secondary);font-size:.95rem;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.15rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem;color:var(--accent)}
+  p{margin-bottom:1rem}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;overflow-x:auto;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.6}
+  code{font-family:'JetBrains Mono',monospace;font-size:.85em;background:var(--code-bg);padding:.15rem .4rem;border-radius:4px}
+  pre code{background:none;padding:0}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.4rem}
+  .lesson-num{display:inline-block;background:var(--accent-light);color:var(--accent);padding:.2rem .6rem;border-radius:4px;font-size:.8rem;font-weight:500;margin-bottom:.5rem}
+  .tag{display:inline-block;padding:.1rem .4rem;border-radius:4px;font-size:.7rem;font-weight:500;margin-right:.3rem}
+  .tag.overview{background:#dbeafe;color:#2563eb}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
+  .ask-agent::before{content:'💡 '}
+  .warn{background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:.9rem}
+  .warn::before{content:'⚠️ '}
+  .info{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:.9rem;color:#1e40af}
+  .info::before{content:'ℹ️ '}
+  .stats{display:flex;gap:2rem;margin:1.5rem 0;padding:1rem 1.5rem;background:var(--surface);border:1px solid var(--border);border-radius:8px}
+  .stat{text-align:center}
+  .stat-num{font-size:1.8rem;font-weight:700;color:var(--accent)}
+  .stat-label{font-size:.8rem;color:var(--text-secondary)}
+  .quiz{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1rem 0}
+  .quiz-q{font-weight:600;margin-bottom:.5rem}
+  .quiz-options{margin:.5rem 0 .5rem 1rem}
+  .quiz-options li{margin-bottom:.3rem}
+  .quiz-answer{color:var(--success);font-weight:500;margin-top:.75rem;padding-top:.75rem;border-top:1px dashed var(--border)}
+  table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.9rem}
+  th,td{border:1px solid var(--border);padding:.6rem .8rem;text-align:left}
+  th{background:var(--code-bg);font-weight:600}
+  nav{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:.9rem}
+  nav a{color:var(--accent);text-decoration:none}
+  nav a:hover{text-decoration:underline}
+  .card{border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0;font-size:.93rem}
+  .card.info{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
+  .card-label{font-weight:600;font-size:.85rem;margin-bottom:.5rem;color:var(--accent)}
+  .card ul{margin:.5rem 0 0 1.25rem}
+  .card a{color:var(--accent);text-decoration:none}
+  .card a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="card info">
+  <div class="card-label">前置知识</div>
+  <p>如果你不熟悉以下概念，建议先阅读对应教程：</p>
+  <ul>
+    <li><a href="../../reference/nextjs-app-router.html">Next.js App Router 基础入门</a></li>
+    <li><a href="../../reference/langchain-basics.html">LangChain 基础入门</a></li>
+    <li><a href="../../reference/mcp-protocol.html">MCP 协议基础入门</a></li>
+  </ul>
+</div>
+
+<span class="lesson-num">0005</span>
+<h1>⚛️ kuai-service-front 项目概览</h1>
+<p class="subtitle"><span class="tag overview">概览</span> AI 测试平台前端 - Next.js 16 + LangChain + Ant Design</p>
+<p class="desc">这是 Kuai 测试平台的前端应用，核心特性是集成 LangChain Agent 系统、MCP 工具管理和提示词管理系统。采用 Agent-First 架构，所有功能通过 AI Agent 暴露。</p>
+
+<div class="stats">
+  <div class="stat"><div class="stat-num">Next.js 16</div><div class="stat-label">框架</div></div>
+  <div class="stat"><div class="stat-num">LangChain</div><div class="stat-label">AI 引擎</div></div>
+  <div class="stat"><div class="stat-num">Ant Design 6</div><div class="stat-label">UI 库</div></div>
+  <div class="stat"><div class="stat-num">21+</div><div class="stat-label">Agent</div></div>
+</div>
+
+<!-- ==================== 项目定位 ==================== -->
+<h2><span class="icon">🎯</span> 一、项目定位</h2>
+
+<p>kuai-service-front 是一个 <strong>AI 测试平台前端</strong>，核心使命是：</p>
+<ul>
+  <li><strong>Agent 驱动</strong>：所有功能通过 LangChain Agent 暴露，用户与 AI 对话完成任务</li>
+  <li><strong>工具集成</strong>：集成 MCP 协议、Claude Code、XMind、DrawIO 等多种工具</li>
+  <li><strong>后台执行</strong>：Agent 任务与浏览器连接解耦，关闭页面后任务继续运行</li>
+  <li><strong>增量持久化</strong>：流式响应实时写入 MongoDB，支持断线恢复</li>
+</ul>
+
+<div class="info">
+  <strong>Agent-First 架构</strong>意味着：不是"页面调用 API"，而是"用户与 Agent 对话 → Agent 调用工具 → 结果流式返回"。这是与传统前端最大的区别。
+</div>
+
+<!-- ==================== 技术栈 ==================== -->
+<h2><span class="icon">🧰</span> 二、技术栈</h2>
+
+<table>
+  <tr><th>类别</th><th>技术</th><th>版本</th><th>用途</th></tr>
+  <tr><td>框架</td><td>Next.js</td><td>16.x</td><td>App Router + Turbopack</td></tr>
+  <tr><td>UI 库</td><td>Ant Design + Ant Design X</td><td>6.x / 2.x</td><td>通用组件 + AI 组件库</td></tr>
+  <tr><td>状态管理</td><td>Redux Toolkit</td><td>1.9.x</td><td>全局状态（configureStore）</td></tr>
+  <tr><td>AI 引擎</td><td>LangChain + LangGraph</td><td>1.x / 1.x</td><td>Agent 构建和运行</td></tr>
+  <tr><td>MCP 适配</td><td>@langchain/mcp-adapters</td><td>1.1+</td><td>MCP 工具集成</td></tr>
+  <tr><td>HTTP</td><td>原生 fetch（自定义封装）</td><td>-</td><td>API 请求</td></tr>
+  <tr><td>样式</td><td>CSS Modules</td><td>-</td><td>组件级样式隔离</td></tr>
+  <tr><td>构建</td><td>Turbopack</td><td>内置</td><td>比 Webpack 快 5-10 倍</td></tr>
+  <tr><td>包管理</td><td>pnpm</td><td>-</td><td>依赖管理</td></tr>
+</table>
+
+<h3>数据库</h3>
+<ul>
+  <li><strong>MongoDB</strong>：存储聊天会话（<code>agent_conversations</code> 集合）</li>
+  <li><strong>PostgreSQL</strong>：存储关系型数据（用户配置、业务数据）</li>
+</ul>
+
+<!-- ==================== 目录结构 ==================== -->
+<h2><span class="icon">📁</span> 三、目录结构</h2>
+
+<pre><code>src/
+├── app/                    # Next.js App Router (路由 + API)
+│   ├── (routes)/          # 页面路由（基于文件系统）
+│   ├── api/               # API Routes（本地 API）
+│   ├── layout.js          # 根布局（包含 Redux Provider）
+│   └── providers.js       # Redux Store 配置
+│
+├── agents/                # LangChain Agent 定义 ⭐
+│   ├── chart-agent.js     # 图表生成助手 (Mermaid)
+│   ├── code-assistant-agent.js    # 代码助手
+│   ├── test-case-agent.js         # 测试用例助手
+│   ├── langfuse-analysis-agent.js # Langfuse 分析助手
+│   ├── ...                # 共 21+ 个 Agent
+│   ├── skills/            # 技能系统（渐进式披露）
+│   ├── tools/             # 工具集（MCP, Git, XMind...）
+│   └── middleware/        # Agent 中间件
+│
+├── lib/                   # 核心业务逻辑
+│   ├── agents/            # Agent 运行时 ⭐
+│   │   ├── define.js      # defineAgent 辅助函数
+│   │   ├── scanner.js     # Agent 扫描和自动注册
+│   │   ├── registry.js    # Agent 注册中心（TTL 缓存）
+│   │   ├── chatStreamHandler.js  # 流处理器（后台执行核心）
+│   │   ├── conversationStore.js  # 会话存储（MongoDB）
+│   │   └── prompt.js      # 提示词管理
+│   ├── db/                # 数据库封装
+│   └── logger.js          # 日志系统
+│
+├── components/            # UI 组件
+│   ├── features/          # 功能组件（agent/, mcp/, prompt/）
+│   └── common/            # 通用组件
+│
+├── services/              # API 服务层（fetch 封装）
+├── store/                 # Redux 状态管理
+├── config/                # 配置文件（导航、模型）
+├── hooks/                 # 自定义 Hooks
+└── styles/                # 样式文件</code></pre>
+
+<h3>关键路径速查</h3>
+<table>
+  <tr><th>用途</th><th>路径</th></tr>
+  <tr><td>Agent 定义</td><td><code>src/agents/</code></td></tr>
+  <tr><td>Agent 注册</td><td><code>src/lib/agents/scanner.js</code></td></tr>
+  <tr><td>API Routes</td><td><code>src/app/api/</code></td></tr>
+  <tr><td>导航配置</td><td><code>src/config/navigation.js</code></td></tr>
+  <tr><td>构建配置</td><td><code>next.config.js</code></td></tr>
+  <tr><td>AI 模型配置</td><td><code>src/config/modelConfig.js</code></td></tr>
+</table>
+
+<!-- ==================== 核心架构 ==================== -->
+<h2><span class="icon">🏗️</span> 四、核心架构：Agent-First</h2>
+
+<h3>1. Agent 系统</h3>
+<p>使用 LangChain + LangGraph 构建 AI Agent，通过 MCP 协议集成外部工具。核心流程：</p>
+<ol>
+  <li><strong>定义 Agent</strong>：在 <code>src/agents/</code> 使用 <code>defineAgent()</code> 创建</li>
+  <li><strong>注册 Agent</strong>：在 <code>src/lib/agents/scanner.js</code> 手动注册</li>
+  <li><strong>自动发现</strong>：<code>AgentScanner</code> 启动时加载，通过 <code>/api/agents</code> 暴露元数据</li>
+  <li><strong>用户对话</strong>：前端调用 <code>/api/agents/[id]/chat</code>，流式返回结果</li>
+  <li><strong>后台执行</strong>：Agent 任务与 HTTP 连接解耦，浏览器关闭后继续运行</li>
+</ol>
+
+<h3>2. 后台执行架构</h3>
+<p>这是项目最核心的设计之一：</p>
+<ul>
+  <li><strong>AsyncQueue 广播</strong>：一个 Agent 事件流可同时推送给多个消费者</li>
+  <li><strong>增量 DB 持久化</strong>：流式响应每 500ms 节流写入 MongoDB</li>
+  <li><strong>断线恢复</strong>：用户重新进入聊天页面可查看已完成或进行中的任务</li>
+  <li><strong>任务管理</strong>：<code>abortTask()</code> / <code>getRunningTasks()</code> 管理后台任务</li>
+</ul>
+
+<h3>3. API 代理配置</h3>
+<p>使用 Next.js <code>rewrites</code> 实现 API 代理，优先级从高到低：</p>
+<ol>
+  <li><strong>本地 API Routes</strong>（排除代理）：<code>/api/agents/*</code>, <code>/api/proxy/*</code> 等</li>
+  <li><strong>特殊后端</strong>：<code>/ai/*</code> → qaigc, <code>/api/moon/*</code> → Moon</li>
+  <li><strong>默认后端</strong>：<code>/api/*</code> → 后端服务器</li>
+</ol>
+
+<div class="warn">
+  <strong>易错点：</strong>新增 API Route 时必须在 <code>next.config.js</code> 的 <code>rewrites</code> 数组<strong>前面</strong>添加排除规则，否则会被通用规则代理到后端。
+</div>
+
+<h3>4. 工具集成</h3>
+<table>
+  <tr><th>工具</th><th>函数</th><th>用途</th></tr>
+  <tr><td>MCP 工具</td><td><code>getMCPTools()</code></td><td>通过 MCP 协议加载外部工具（2 分钟缓存）</td></tr>
+  <tr><td>Claude Code</td><td><code>getClaudecodeTools()</code></td><td>深度代码分析</td></tr>
+  <tr><td>Git Clone</td><td><code>getGitCloneTools()</code></td><td>Git 仓库克隆</td></tr>
+  <tr><td>XMind</td><td><code>getXmindTools()</code></td><td>脑图编辑</td></tr>
+  <tr><td>DrawIO</td><td><code>getDrawioTools()</code></td><td>图表绘制</td></tr>
+  <tr><td>脚本执行</td><td><code>getScriptRunnerTools()</code></td><td>运行自定义脚本</td></tr>
+</table>
+
+<h3>5. 技能系统（Skills）</h3>
+<p>基于 LangChain Skills 的渐进式披露架构：</p>
+<ul>
+  <li><strong>渐进式披露</strong>：系统提示中只包含技能名称和描述</li>
+  <li><strong>按需加载</strong>：Agent 先调用 <code>list_skills</code> 查看列表，再用 <code>get_skill_content</code> 读取详情</li>
+  <li><strong>技能目录</strong>：<code>src/agents/skills/</code> 下每个子目录为一个技能</li>
+  <li><strong>技能文件</strong>：每个技能必须包含 <code>SKILL.md</code>（带 YAML frontmatter）</li>
+</ul>
+
+<h3>6. 导航与页面</h3>
+<ul>
+  <li><strong>导航配置</strong>：集中在 <code>src/config/navigation.js</code> 的 <code>navbarMenu</code> 数组</li>
+  <li><strong>页面路由</strong>：基于 <code>src/app/</code> 文件系统自动生成</li>
+  <li><strong>组件组织</strong>：<code>components/features/</code> 按业务模块，<code>components/common/</code> 通用组件</li>
+</ul>
+
+<div class="ask-agent">
+  <strong>遇到不懂的地方？</strong>直接问 Agent。比如："Agent-First 架构是什么意思" 或 "MCP 协议和 REST API 有什么区别"。
+</div>
+
+<!-- ==================== Quiz ==================== -->
+<h2><span class="icon">📝</span> Quiz</h2>
+
+<div class="quiz">
+  <p class="quiz-q">Q1：kuai-service-front 的核心架构设计理念是什么？</p>
+  <ul class="quiz-options">
+    <li>A. MVC 架构</li>
+    <li>B. Agent-First 架构 — 所有功能通过 LangChain Agent 暴露</li>
+    <li>C. 微前端架构</li>
+    <li>D. 纯 REST API 驱动</li>
+  </ul>
+  <p class="quiz-answer">✅ 答案：B — Agent-First 是该项目最核心的设计，用户通过与 AI Agent 对话来完成任务。</p>
+</div>
+
+<div class="quiz">
+  <p class="quiz-q">Q2：Agent 任务在浏览器关闭后会怎样？</p>
+  <ul class="quiz-options">
+    <li>A. 任务立即终止</li>
+    <li>B. 任务继续在后台运行，支持断线恢复</li>
+    <li>C. 任务暂停，需要手动恢复</li>
+    <li>D. 任务丢失，需要重新开始</li>
+  </ul>
+  <p class="quiz-answer">✅ 答案：B — Agent 任务与 HTTP 连接完全解耦，通过 AsyncQueue 广播和 MongoDB 增量持久化实现后台执行。</p>
+</div>
+
+<div class="quiz">
+  <p class="quiz-q">Q3：新增 API Route 时为什么需要在 <code>rewrites</code> 数组前面添加排除规则？</p>
+  <ul class="quiz-options">
+    <li>A. 这是可选步骤，不加也行</li>
+    <li>B. Next.js rewrites 按顺序匹配，不排除会被通用规则代理到后端</li>
+    <li>C. 为了提高性能</li>
+    <li>D. 为了安全认证</li>
+  </ul>
+  <p class="quiz-answer">✅ 答案：B — Next.js rewrites 按数组顺序匹配，<code>/api/:path*</code> 通用规则会拦截所有请求，必须在它前面排除本地 Route。</p>
+</div>
+
+<div class="nav-links">
+  <a href="../service/0001-kuai-service-overview.html">← 项目概览</a>
+  <a href="../index.html">🗺️ 完整学习地图</a>
+  <a href="../py/0010-kuai-py-overview.html">Python 项目概览 →</a>
+</div>
+
+</div>
+</body>
+</html>

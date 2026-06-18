@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>031 前端基础 11：工程化、调试与测试</title>
+<style>
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--muted:#78716c;--accent:#b45309;--soft:#fef3c7;--border:#e7e5e4;--code:#f5f5f4;--info:#2563eb;--ok:#16a34a;--bad:#ef4444}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.8 -apple-system,BlinkMacSystemFont,"Noto Sans SC","Segoe UI",sans-serif}.container{max-width:780px;margin:0 auto;padding:3rem 2rem}h1{font-size:2rem;margin:.2rem 0 .5rem}.subtitle{color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:1.4rem;margin-bottom:2rem}h2{font-size:1.35rem;margin:2rem 0 .8rem}code{font-family:Menlo,Consolas,monospace;background:var(--code);padding:.15em .35em;border-radius:4px}pre{background:#1c1917;color:#e7e5e4;padding:1rem 1.2rem;border-radius:8px;overflow:auto}.card{background:#fff;border:1px solid var(--border);border-left:3px solid var(--info);border-radius:8px;padding:1rem 1.2rem;margin:1rem 0}.label{font-size:.75rem;color:var(--info);font-weight:700;text-transform:uppercase}table{width:100%;border-collapse:collapse;margin:1rem 0}th,td{border-bottom:1px solid var(--border);padding:.55rem;text-align:left;vertical-align:top}th{color:var(--muted)}.quiz{background:var(--soft);border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.2rem;margin:1.5rem 0}.quiz-options{list-style:none;margin:0;padding:0}.quiz-options li{padding:.45rem .65rem;margin:.35rem 0;border:1px solid transparent;border-radius:6px;cursor:pointer}.correct{background:#dcfce7!important;border-color:var(--ok)!important}.wrong{background:#fee2e2!important;border-color:var(--bad)!important}.quiz-feedback{display:none;margin-top:.6rem;padding:.6rem;border-radius:6px}.nav{margin-top:2.5rem;border:1px solid var(--border);border-radius:8px;background:#fff;padding:1rem}.nav a{display:inline-block;margin:.25rem;color:#444;text-decoration:none;border:1px solid var(--border);border-radius:6px;padding:.35rem .65rem}.nav a.primary{background:var(--accent);border-color:var(--accent);color:#fff}.nav a.map{background:#eff6ff;border-color:#bfdbfe;color:var(--info)}
+</style></head><body><div class="container">
+<h1>031 前端基础 11：工程化、调试与测试</h1>
+<p class="subtitle">目标：知道 package.json、构建器、source map、DevTools、前端测试在开发链路里各自负责什么。</p>
+
+<h2>1. package.json 是前端工程入口</h2>
+<p>读一个前端仓库，先看 <code>package.json</code>：脚本、依赖、React/TypeScript 版本、构建工具都在这里。</p>
+<table>
+  <tr><th>字段</th><th>读法</th></tr>
+  <tr><td><code>scripts</code></td><td>怎么启动、构建、测试</td></tr>
+  <tr><td><code>dependencies</code></td><td>线上运行需要什么</td></tr>
+  <tr><td><code>devDependencies</code></td><td>开发和构建需要什么</td></tr>
+  <tr><td><code>resolutions</code></td><td>强制依赖版本，排查依赖冲突时要看</td></tr>
+</table>
+
+<h2>2. 构建器：把 TSX/CSS/资源变成浏览器能跑的文件</h2>
+<p>ai-home 使用 Rspack 相关构建链路。构建器负责处理 TypeScript、JSX、CSS、图片、代码拆分和开发服务器。</p>
+<pre>源码 TSX / CSS / 图片
+  -> Rspack 编译
+  -> 浏览器加载 JS / CSS
+  -> DevTools 通过 source map 映射回源码</pre>
+
+<h2>3. 前端调试四件套</h2>
+<table>
+  <tr><th>工具</th><th>用来查什么</th></tr>
+  <tr><td>Console</td><td>运行时错误、日志、对象结构</td></tr>
+  <tr><td>Network</td><td>HTTP、WebSocket、响应体、耗时</td></tr>
+  <tr><td>Elements</td><td>DOM、CSS、布局、z-index</td></tr>
+  <tr><td>Sources</td><td>断点、调用栈、source map</td></tr>
+</table>
+
+<h2>4. 测试：前端也要分层</h2>
+<table>
+  <tr><th>层级</th><th>适合测什么</th></tr>
+  <tr><td>单元测试</td><td>纯函数、状态转换、工具方法</td></tr>
+  <tr><td>组件测试</td><td>输入、按钮、局部 UI 状态</td></tr>
+  <tr><td>E2E</td><td>真实浏览器里的完整流程，viewer-2d 已有 Playwright 方向</td></tr>
+</table>
+
+<div class="card"><div class="label">全栈排查顺序</div><p>先复现，再看 Console/Network；有请求就拿 traceId 去后端查；没有请求就回到 React 事件、状态和按钮可用条件。这样不会在前后端之间来回乱跳。</p></div>
+
+<div class="quiz" id="quiz1"><strong>Q1: 前端请求发出去了但后端报错，最该拿什么去串日志？</strong>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz1',0)">A. CSS 类名</li>
+    <li onclick="checkQuiz('quiz1',1)">B. traceId / request id</li>
+    <li onclick="checkQuiz('quiz1',2)">C. 按钮圆角</li>
+  </ul><div class="quiz-feedback"></div>
+</div>
+
+<div class="card"><div class="label">主资料</div><p>优先看 Chrome DevTools 的 <a href="https://developer.chrome.com/docs/devtools" target="_blank" rel="noopener">官方文档</a>，以及 Rspack 的 <a href="https://rspack.rs/guide/start/introduction" target="_blank" rel="noopener">Introduction</a>。</p></div>
+</div><script>
+function checkQuiz(id,s){const q=document.getElementById(id),o=q.querySelector('.quiz-options'),c=Number(o.dataset.correct),items=o.querySelectorAll('li'),f=q.querySelector('.quiz-feedback');items.forEach((x,i)=>{x.onclick=null;if(i===c)x.classList.add('correct');if(i===s&&i!==c)x.classList.add('wrong')});f.style.display='block';f.textContent=s===c?'对。跨前后端排查时，traceId/request id 是把日志串起来的钥匙。':'不是。前后端联调要用 traceId 或 request id 串联请求。';f.style.background=s===c?'#dcfce7':'#fee2e2'}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 031</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0030-react-rendering-mental-model.html">上一课：030 前端基础 10：React 渲染模型</a><a class="primary" href="0032-typescript-react-aihome-basics.html">下一课：032 AIHom 前端入口 01：读 TSX 组件</a></div></nav>
+</body></html>

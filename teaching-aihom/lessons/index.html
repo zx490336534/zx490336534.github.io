@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIHom 完整学习地图</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#f8fafc;--surface:#fff;--text:#111827;--muted:#6b7280;--border:#d7dee8;--accent:#0f766e;--accent-2:#b45309;--info:#2563eb;--soft:#ecfeff;--warm:#fff7ed}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:'Noto Sans SC',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.75;font-size:16px}
+  .wrap{max-width:980px;margin:0 auto;padding:3rem 1.5rem 5rem}
+  .eyebrow{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700}
+  h1{font-size:2.25rem;line-height:1.25;margin:.4rem 0 .7rem}
+  h2{font-size:1.45rem;margin:.2rem 0 .35rem}
+  h3{font-size:1.02rem;margin:1.35rem 0 .55rem;color:#374151}
+  p{margin:.4rem 0 1rem}
+  .lead{max-width:800px;color:#374151}
+  .toolbar{position:sticky;top:0;z-index:2;margin:1.5rem 0 2rem;padding:.85rem;background:rgba(248,250,252,.94);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:8px;display:grid;gap:.75rem}
+  input{width:100%;border:1px solid var(--border);border-radius:6px;padding:.7rem .85rem;font:inherit;background:#fff}
+  .jump{display:flex;flex-wrap:wrap;gap:.5rem}
+  .jump a{color:#fff;background:var(--accent);text-decoration:none;border-radius:6px;padding:.35rem .65rem;font-size:.9rem}
+  .jump a.secondary{background:var(--info)}
+  .map{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.1rem 1.25rem;border-top:4px solid var(--accent)}
+  .hint{color:var(--muted);font-size:.92rem}
+  .stage{border-top:1px solid var(--border);margin-top:1.15rem;padding-top:.45rem;scroll-margin-top:8rem}
+  .stage:first-of-type{border-top:0;margin-top:.5rem}
+  .lesson-list{list-style:none;margin:.3rem 0 0;padding:0}
+  .lesson-list li{border-top:1px solid #edf2f7}
+  .lesson-list li:first-child{border-top:0}
+  .lesson-list a{display:grid;grid-template-columns:3.3rem 1fr;gap:.85rem;padding:.7rem .2rem;color:var(--text);text-decoration:none;border-radius:6px}
+  .lesson-list a:hover{background:#f1f5f9}
+  .num{font-family:'JetBrains Mono',monospace;color:var(--accent-2);font-weight:700;min-width:3rem}
+  .meta{display:grid;gap:.08rem}
+  .meta small{color:var(--muted);font-size:.86rem}
+  .resources{margin-top:1.25rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem 1.25rem}
+  .resources a{color:var(--info);text-decoration:none}
+  .resources a:hover{text-decoration:underline}
+  .empty{display:none;color:var(--muted);padding:.7rem .2rem}
+  .hidden{display:none!important}
+  @media(max-width:640px){.wrap{padding:2rem 1rem 4rem}.lesson-list a{grid-template-columns:2.8rem 1fr}h1{font-size:1.85rem}}
+  @media print{.toolbar{position:static}.jump,input{display:none}.wrap{padding:1rem}.stage{break-inside:avoid}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="eyebrow">AIHom Teaching Workspace</div>
+  <h1>完整学习地图</h1>
+  <p class="lead">这是一条统一的 AIHom 全栈学习路径。按 <strong>后端基础 → 工程运行 → Spring AI → 前端零基础 → AIHom 前端入口 → 核心工程深入 → 实战</strong> 依次展开。课程编号和文件名编号保持一致，都是建议学习顺序。</p>
+
+  <div class="toolbar" aria-label="快速跳转">
+    <input id="filter" type="search" placeholder="快速搜索：输入课程编号、Java、React、StateGraph、WebSocket、MCP、render-3d..." autocomplete="off">
+    <div class="jump">
+      <a href="#stage-foundation">基础</a>
+      <a href="#stage-advanced">进阶</a>
+      <a href="#stage-frontend">前端零基础</a>
+      <a href="#stage-aihome-frontend">AIHom 前端</a>
+      <a href="#stage-deep">深入</a>
+      <a href="#stage-practice">实战</a>
+    </div>
+  </div>
+
+  <article class="map" id="learning-map">
+    <h2>AIHom 全栈课程体系</h2>
+    <p class="hint">每节课都是一个独立 HTML。建议从上往下学；前端小白不要跳过“前端零基础”和“AIHom 前端入口”两段。已经熟悉的内容可以用搜索快速跳过。</p>
+
+    <section class="stage" id="stage-foundation">
+      <h3>阶段 1 · 后端与工程运行基础：先把服务跑起来、问题查清楚</h3>
+      <ol class="lesson-list">
+        <li data-title="001 spring ai 是什么 + aihom 技术地图 spring ai 总览 java spring aihom"><a href="spring-ai/0001-spring-ai-overview.html"><span class="num">001</span><span class="meta"><strong>Spring AI 是什么 + AIHom 技术地图</strong><small>先知道 Java、Spring、Spring AI、AIHom 分别站在哪一层。</small></span></a></li>
+        <li data-title="002 java 的类、对象、构造方法 java 类 对象 构造方法 字段 方法"><a href="spring-ai/0002-java-class-object.html"><span class="num">002</span><span class="meta"><strong>Java 的类、对象、构造方法</strong><small>读懂后端代码里的 class、字段、构造方法、普通方法。</small></span></a></li>
+        <li data-title="003 java 注解、接口、泛型、lambda java 注解 接口 泛型 lambda 链式调用"><a href="spring-ai/0003-java-annotation-interface-generic.html"><span class="num">003</span><span class="meta"><strong>Java 注解、接口、泛型、lambda</strong><small>拿下 Spring / Spring AI 代码里最常见的 Java 符号。</small></span></a></li>
+        <li data-title="004 spring 依赖注入 di + 三层注解 spring 依赖注入 di controller service bean"><a href="spring-ai/0004-spring-di-and-annotations.html"><span class="num">004</span><span class="meta"><strong>Spring 依赖注入 DI + 三层注解</strong><small>理解对象为什么不用自己 new，以及 Controller / Service / Bean 怎么连起来。</small></span></a></li>
+        <li data-title="005 spring boot 自动配置 + starter + yml spring boot 自动配置 starter yml"><a href="spring-ai/0005-spring-autoconfig-yml.html"><span class="num">005</span><span class="meta"><strong>Spring Boot 自动配置 + starter + yml</strong><small>读懂 starter、自动配置和 application.yml 在项目启动时做什么。</small></span></a></li>
+        <li data-title="006 maven 多模块 + java 工程读法 maven 多模块 java pom"><a href="aihom/0006-maven-multimodule-java-project.html"><span class="num">006</span><span class="meta"><strong>Maven 多模块 + Java 工程读法</strong><small>理解 common / client / web、父子 POM、依赖版本和 Java 8/21 边界。</small></span></a></li>
+        <li data-title="007 spring boot web 三层最小闭环 spring web controller service dto vo"><a href="aihom/0007-springboot-web-layers.html"><span class="num">007</span><span class="meta"><strong>Spring Boot Web 三层最小闭环</strong><small>把 Controller、Service、Factory/Manager、Client/Mapper、DTO/VO 串起来。</small></span></a></li>
+        <li data-title="008 本地启动与配置体系 本地启动 配置 nacos pilot toad"><a href="aihom/0008-local-config-nacos-pilot.html"><span class="num">008</span><span class="meta"><strong>本地启动与配置体系</strong><small>理解 application.yml、profile、Nacos、Pilot/toad 和配置覆盖顺序。</small></span></a></li>
+        <li data-title="009 后端本地运行与部署基础 后端 本地运行 部署 maven pilot toad"><a href="aihom/0009-backend-local-run-and-deploy.html"><span class="num">009</span><span class="meta"><strong>后端本地运行与部署基础</strong><small>理解 ai-native-service / auto-layout-service 怎么启动、构建、发布产物，以及 Pilot/toad 在部署中负责什么。</small></span></a></li>
+        <li data-title="010 前端本地运行与部署基础 前端 本地运行 部署 kjl pub deploy build"><a href="aihom/0010-frontend-local-run-and-deploy.html"><span class="num">010</span><span class="meta"><strong>前端本地运行与部署基础</strong><small>理解 ai-home、viewer-2d、render-3d 的 dev/build/pub:deploy 边界。</small></span></a></li>
+        <li data-title="011 coops agent 配置与 mcp 注入 coops agent mcp 注入 nacos stategraph supervisor subagent tool prompt"><a href="aihom/0011-coops-agent-mcp-injection.html"><span class="num">011</span><span class="meta"><strong>Coops Agent 配置与 MCP 注入</strong><small>理解 Coops/Nacos/StateGraph 如何决定 Agent、Prompt、MCP Server、Skill 和工具注入。</small></span></a></li>
+        <li data-title="012 端到端环境排查清单 端到端 环境 排查 checklist websocket graph tool redis db"><a href="aihom/0012-environment-debug-checklist.html"><span class="num">012</span><span class="meta"><strong>端到端环境排查清单</strong><small>用固定顺序排查前端、后端、配置、WebSocket、Agent、Tool、基础设施依赖和 viewer 展示问题。</small></span></a></li>
+        <li data-title="013 git、kaptain 与发布分支基础 git kaptain release 分支 日期 上线 worktree cherry-pick revert"><a href="aihom/0013-git-kaptain-release-flow.html"><span class="num">013</span><span class="meta"><strong>Git、Kaptain 与发布分支基础</strong><small>理解从 Kaptain 事项拉功能分支、提 MR、合入 release/日期分支、上线和回滚的路径。</small></span></a></li>
+        <li data-title="014 日志、trace、断点与 websocket 排查 日志 trace 断点 websocket 排查"><a href="aihom/0014-debugging-logs-trace.html"><span class="num">014</span><span class="meta"><strong>日志、Trace、断点与 WebSocket 排查</strong><small>从浏览器 Network/WebSocket 到 QHLogger、traceId、handler、Agent 和 Tool。</small></span></a></li>
+      </ol>
+    </section>
+
+    <section class="stage" id="stage-advanced">
+      <h3>阶段 2 · Spring AI 与 Agent：理解 AIHom 智能能力</h3>
+      <ol class="lesson-list">
+        <li data-title="015 spring ai vs spring ai alibaba + dashscope spring ai alibaba dashscope"><a href="spring-ai/0015-spring-ai-vs-alibaba-dashscope.html"><span class="num">015</span><span class="meta"><strong>Spring AI vs Spring AI Alibaba + DashScope</strong><small>理解 AIHom 为什么是 Spring AI + Alibaba + DashScope 这一套。</small></span></a></li>
+        <li data-title="016 chatclient + prompt + 消息体系 chatclient prompt message"><a href="spring-ai/0016-chatclient-prompt.html"><span class="num">016</span><span class="meta"><strong>ChatClient + Prompt + 消息体系</strong><small>第一次写出能跑的聊天逻辑，理解 prompt/user/system/call/content。</small></span></a></li>
+        <li data-title="017 流式响应 + 结构化输出 + 会话记忆 stream structured memory"><a href="spring-ai/0017-streaming-structured-memory.html"><span class="num">017</span><span class="meta"><strong>流式响应 + 结构化输出 + 会话记忆</strong><small>理解聊天页面为什么能流式输出、返回结构化结果和支持多轮。</small></span></a></li>
+        <li data-title="018 tool calling + mcp tool calling mcp"><a href="spring-ai/0018-tool-calling-mcp.html"><span class="num">018</span><span class="meta"><strong>Tool Calling + MCP</strong><small>理解大模型如何动手，以及为什么 AIHom 会把部分 Tool 委托给前端。</small></span></a></li>
+        <li data-title="019 rag 检索增强生成 rag 检索 向量"><a href="spring-ai/0019-rag.html"><span class="num">019</span><span class="meta"><strong>RAG 检索增强生成</strong><small>理解先查资料再回答的两段式流程。</small></span></a></li>
+        <li data-title="020 agent + stategraph / graph agent stategraph graph supervisor"><a href="spring-ai/0020-agent-stategraph.html"><span class="num">020</span><span class="meta"><strong>Agent + StateGraph / Graph</strong><small>理解 AIHom 的 Agent 编排：节点、边、状态、路由和 Supervisor。</small></span></a></li>
+      </ol>
+    </section>
+
+    <section class="stage" id="stage-frontend">
+      <h3>阶段 3 · 前端零基础：先补浏览器和页面地基</h3>
+      <ol class="lesson-list">
+        <li data-title="021 前端零基础 01：网页由什么组成 前端 html css javascript react typescript"><a href="aihom/0021-frontend-big-picture.html"><span class="num">021</span><span class="meta"><strong>前端零基础 01：网页由什么组成</strong><small>分清 HTML、CSS、JavaScript、React、TypeScript、Rspack 的角色。</small></span></a></li>
+        <li data-title="022 前端零基础 02：html 与 dom html dom elements"><a href="aihom/0022-html-dom-first.html"><span class="num">022</span><span class="meta"><strong>前端零基础 02：HTML 与 DOM</strong><small>知道页面元素从哪里来，能看懂浏览器 Elements 面板。</small></span></a></li>
+        <li data-title="023 前端零基础 03：css 先看布局 css 布局 flex position z-index"><a href="aihom/0023-css-first.html"><span class="num">023</span><span class="meta"><strong>前端零基础 03：CSS 先看布局</strong><small>先学会看尺寸、间距、flex、position、z-index、overflow。</small></span></a></li>
+        <li data-title="024 前端零基础 04：javascript 变量、函数、事件 javascript 变量 函数 事件"><a href="aihom/0024-javascript-first.html"><span class="num">024</span><span class="meta"><strong>前端零基础 04：JavaScript 变量、函数、事件</strong><small>看懂存一个值、定义一个动作、点击时执行。</small></span></a></li>
+        <li data-title="025 前端零基础 05：浏览器调试先看三块 浏览器 调试 console network elements"><a href="aihom/0025-browser-debug-first.html"><span class="num">025</span><span class="meta"><strong>前端零基础 05：浏览器调试先看三块</strong><small>固定 Console、Network、Elements 的排查顺序。</small></span></a></li>
+        <li data-title="026 前端基础 06：javascript 异步运行模型 javascript promise async await 事件循环"><a href="aihom/0026-javascript-runtime-basics.html"><span class="num">026</span><span class="meta"><strong>前端基础 06：JavaScript 异步运行模型</strong><small>理解 Promise、async/await、事件循环和回调为什么会晚点执行。</small></span></a></li>
+        <li data-title="027 前端基础 07：typescript 类型系统 typescript interface type union generic"><a href="aihom/0027-typescript-type-system-basics.html"><span class="num">027</span><span class="meta"><strong>前端基础 07：TypeScript 类型系统</strong><small>读懂 interface、type、union、generic，以及类型和运行时数据的边界。</small></span></a></li>
+        <li data-title="028 前端基础 08：浏览器、网络与 dom 浏览器 network dom websocket iframe postmessage"><a href="aihom/0028-browser-network-dom-basics.html"><span class="num">028</span><span class="meta"><strong>前端基础 08：浏览器、网络与 DOM</strong><small>知道 DOM、Network、WebSocket、iframe/postMessage 各自负责什么。</small></span></a></li>
+        <li data-title="029 前端基础 09：css 布局与样式排查 css 盒模型 flex overflow"><a href="aihom/0029-css-layout-basics.html"><span class="num">029</span><span class="meta"><strong>前端基础 09：CSS 布局与样式排查</strong><small>用盒模型、flex、position、overflow、z-index 排查常见布局问题。</small></span></a></li>
+        <li data-title="030 前端基础 10：react 渲染模型 react props state render effect"><a href="aihom/0030-react-rendering-mental-model.html"><span class="num">030</span><span class="meta"><strong>前端基础 10：React 渲染模型</strong><small>理解 props、state、render、effect/lifecycle，以及 UI 为什么会随数据变化。</small></span></a></li>
+        <li data-title="031 前端基础 11：工程化、调试与测试 前端工程 package rspack sourcemap devtools"><a href="aihom/0031-frontend-build-debug-test.html"><span class="num">031</span><span class="meta"><strong>前端基础 11：工程化、调试与测试</strong><small>理解 package.json、Rspack、source map、DevTools 和前端测试分层。</small></span></a></li>
+      </ol>
+    </section>
+
+    <section class="stage" id="stage-aihome-frontend">
+      <h3>阶段 4 · AIHom 前端入口：从一个动作进入项目机制</h3>
+      <ol class="lesson-list">
+        <li data-title="032 aihom 前端入口 01：读 tsx 组件 aihome tsx react props state hooks"><a href="aihom/0032-typescript-react-aihome-basics.html"><span class="num">032</span><span class="meta"><strong>AIHom 前端入口 01：读 TSX 组件</strong><small>先会看 props、JSX、render、onClick，读懂一个组件在画什么。</small></span></a></li>
+        <li data-title="033 aihom 前端入口 02：状态管理基础 状态管理 conversation manager viewer state connect"><a href="aihom/0033-reactive-framework-state.html"><span class="num">033</span><span class="meta"><strong>AIHom 前端入口 02：状态管理基础</strong><small>从页面现象倒推：数据在哪里、谁改了它、哪个组件读了它。</small></span></a></li>
+        <li data-title="034 aihom 前端入口 03：一次页面动作的数据流 aihome 前端 数据流 onclick manager service websocket"><a href="aihom/0034-aihome-frontend-data-flow.html"><span class="num">034</span><span class="meta"><strong>AIHom 前端入口 03：一次页面动作的数据流</strong><small>用“点击发送”串起组件、Manager、Service、WebSocket 和后端。</small></span></a></li>
+        <li data-title="035 aihom 前端入口 04：接口请求与数据契约 接口 请求 response dto vo typescript java contract"><a href="aihom/0035-api-data-contract.html"><span class="num">035</span><span class="meta"><strong>AIHom 前端入口 04：接口请求与数据契约</strong><small>理解前端 TypeScript 类型和后端 DTO/VO 如何对齐。</small></span></a></li>
+        <li data-title="036 aihom 前端入口 05：websocket 消息入门 websocket type key data rawsocketmessage"><a href="aihom/0036-websocket-message-basics.html"><span class="num">036</span><span class="meta"><strong>AIHom 前端入口 05：WebSocket 消息入门</strong><small>先会在浏览器里看 type、key、data，判断消息属于哪条链路。</small></span></a></li>
+        <li data-title="037 aihom 前端入口 06：iframe/postmessage 与 viewer 边界 viewer 2d 3d iframe postmessage entity"><a href="aihom/0037-viewer-iframe-postmessage.html"><span class="num">037</span><span class="meta"><strong>AIHom 前端入口 06：iframe/postMessage 与 viewer 边界</strong><small>先把 ai-home、viewer-2d、render-3d 的页面边界和消息边界分清楚。</small></span></a></li>
+        <li data-title="038 aihom 前端入口 07：sdk + mcp 工具桥 agent conversation sdk mcp tool_call tool_response"><a href="aihom/0038-agent-conversation-sdk-mcp.html"><span class="num">038</span><span class="meta"><strong>AIHom 前端入口 07：SDK + MCP 工具桥</strong><small>看懂 tool_call 到前端执行，再回 tool_response 的主线。</small></span></a></li>
+        <li data-title="039 aihom 前端入口 08：异步任务与状态机基础 异步任务 状态机 processor render"><a href="aihom/0039-async-task-state-machine.html"><span class="num">039</span><span class="meta"><strong>AIHom 前端入口 08：异步任务与状态机基础</strong><small>用“提交任务、查状态、拿结果”理解布局、截图和渲染任务。</small></span></a></li>
+        <li data-title="040 aihom 前端入口 09：跨仓开发工作流 跨仓 开发 联调 ai-home viewer render backend"><a href="aihom/0040-cross-repo-development-flow.html"><span class="num">040</span><span class="meta"><strong>AIHom 前端入口 09：跨仓开发工作流</strong><small>接需求时先判断影响仓库、接口边界和联调顺序。</small></span></a></li>
+      </ol>
+    </section>
+
+    <section class="stage" id="stage-deep">
+      <h3>阶段 5 · 核心工程深入：进入真实代码专项机制</h3>
+      <ol class="lesson-list">
+        <li data-title="041 ai-native-service 项目全景 ai-native-service 项目全景"><a href="aihom/0041-ai-native-service-overview.html"><span class="num">041</span><span class="meta"><strong>ai-native-service 项目全景</strong><small>理解后端核心仓库结构、架构和关键入口。</small></span></a></li>
+        <li data-title="042 auto-layout-service 项目全景 auto-layout-service 项目全景"><a href="aihom/0042-auto-layout-service-overview.html"><span class="num">042</span><span class="meta"><strong>auto-layout-service 项目全景</strong><small>理解 AI 自动布局引擎、Processor 模式和核心数据流。</small></span></a></li>
+        <li data-title="043 ai-home 前端项目全景 ai-home 前端 项目全景"><a href="aihom/0043-ai-home-frontend-overview.html"><span class="num">043</span><span class="meta"><strong>ai-home 前端项目全景</strong><small>理解主前端从 App.tsx 到画布、对话和 Viewer 的完整链路。</small></span></a></li>
+        <li data-title="044 viewer-2d 项目全景 viewer-2d 项目全景"><a href="aihom/0044-viewer-2d-overview.html"><span class="num">044</span><span class="meta"><strong>viewer-2d 项目全景</strong><small>理解 2D 户型渲染器的架构、核心系统和数据流。</small></span></a></li>
+        <li data-title="045 render-3d 项目全景 render-3d 项目全景"><a href="aihom/0045-render-3d-overview.html"><span class="num">045</span><span class="meta"><strong>render-3d 项目全景</strong><small>理解 3D 渲染容器、离线出图流程和父页面同步机制。</small></span></a></li>
+        <li data-title="046 ai-native-service 深度追踪 ai-native-service 深度追踪"><a href="aihom/0046-ai-native-deep-dive.html"><span class="num">046</span><span class="meta"><strong>ai-native-service 深度追踪</strong><small>从 WebSocket 到 Tool 调用，逐层追踪一条消息的完整代码路径。</small></span></a></li>
+        <li data-title="047 auto-layout-service 深度追踪 auto-layout-service 深度追踪"><a href="aihom/0047-auto-layout-deep-dive.html"><span class="num">047</span><span class="meta"><strong>auto-layout-service 深度追踪</strong><small>深入自动布局引擎的 Processor 模式、数据流与双通道并行架构。</small></span></a></li>
+        <li data-title="048 ai-home 前端深度追踪 ai-home 深度追踪"><a href="aihom/0048-ai-home-deep-dive.html"><span class="num">048</span><span class="meta"><strong>ai-home 前端深度追踪</strong><small>追踪 URL 路由、状态管理、MCP 工具桥接和 AI 对话通信。</small></span></a></li>
+        <li data-title="049 viewer-2d 深度追踪 viewer-2d 深度追踪"><a href="aihom/0049-viewer-2d-deep-dive.html"><span class="num">049</span><span class="meta"><strong>viewer-2d 深度追踪</strong><small>从 DfScene2d 初始化到外部同步机制的完整追踪。</small></span></a></li>
+        <li data-title="050 render-3d 深度追踪 render-3d 深度追踪"><a href="aihom/0050-render-3d-deep-dive.html"><span class="num">050</span><span class="meta"><strong>render-3d 深度追踪</strong><small>拆解 3D 渲染容器的状态机、模板缓存、父页面同步和渲染轮询。</small></span></a></li>
+        <li data-title="051 stategraph 内部机制 stategraph 内部机制"><a href="aihom/0051-stategraph-internals.html"><span class="num">051</span><span class="meta"><strong>StateGraph 内部机制</strong><small>深入 StateGraph 的数据结构、编译过程、执行引擎、检查点和条件路由。</small></span></a></li>
+        <li data-title="052 双通道并行布局算法 双通道 布局 rag product_config"><a href="aihom/0052-dual-channel-layout.html"><span class="num">052</span><span class="meta"><strong>双通道并行布局算法</strong><small>理解 auto-layout-service 如何通过 RAG + PRODUCT_CONFIG 并行执行布局任务。</small></span></a></li>
+        <li data-title="053 ai 服务集成与模型调用 ai 服务 模型调用"><a href="aihom/0053-ai-service-integration.html"><span class="num">053</span><span class="meta"><strong>AI 服务集成与模型调用</strong><small>理解 auto-layout-service 中大模型服务的接入方式和调用边界。</small></span></a></li>
+        <li data-title="054 reactive-framework 深入 reactive-framework 深入"><a href="aihom/0054-reactive-framework.html"><span class="num">054</span><span class="meta"><strong>reactive-framework 深入</strong><small>深入 observable、observer、computed、combine 与 connect 的协作。</small></span></a></li>
+        <li data-title="055 2d/3d viewer 集成与通信 viewer 集成 通信"><a href="aihom/0055-viewer-integration.html"><span class="num">055</span><span class="meta"><strong>2D/3D Viewer 集成与通信</strong><small>理解 ai-home 如何嵌入 viewer-2d/render-3d，以及 postMessage/MCP 协作。</small></span></a></li>
+        <li data-title="056 pixijs 渲染引擎与 scene2d pixijs scene2d"><a href="aihom/0056-pixijs-rendering.html"><span class="num">056</span><span class="meta"><strong>PixiJS 渲染引擎与 Scene2D</strong><small>掌握 viewer-2d 的 PixiJS 核心概念、Scene2D 渲染管线和视图注册。</small></span></a></li>
+        <li data-title="057 实体系统与 drawable 绑定 entity drawable selectable"><a href="aihom/0057-entity-system.html"><span class="num">057</span><span class="meta"><strong>实体系统与 Drawable 绑定</strong><small>理解 Entity、Drawable、Selectable 三大抽象和实体生命周期。</small></span></a></li>
+        <li data-title="058 离线渲染管线详解 离线渲染 pipeline"><a href="aihom/0058-offline-render-pipeline.html"><span class="num">058</span><span class="meta"><strong>离线渲染管线详解</strong><small>从渲染任务提交到结果回写，理解 OfflineRenderStateManager 的出图链路。</small></span></a></li>
+        <li data-title="059 模板系统与灯光/背景管理 模板 灯光 背景"><a href="aihom/0059-template-system.html"><span class="num">059</span><span class="meta"><strong>模板系统与灯光/背景管理</strong><small>理解模板配置、obsConfigCache、灯光样式映射、背景配置和默认回退。</small></span></a></li>
+        <li data-title="060 跨仓库集成指南 跨仓 集成 数据流"><a href="aihom/0060-cross-repo-integration.html"><span class="num">060</span><span class="meta"><strong>跨仓库集成指南</strong><small>理解核心工程如何协作，以及数据如何在它们之间流动。</small></span></a></li>
+      </ol>
+    </section>
+
+    <section class="stage" id="stage-practice">
+      <h3>阶段 6 · 实战：开始做真实开发任务</h3>
+      <ol class="lesson-list">
+        <li data-title="061 回到 aihom：重读 ai-native-service + 新增功能 aihom hands on"><a href="spring-ai/0061-aihom-hands-on.html"><span class="num">061</span><span class="meta"><strong>回到 AIHom：重读 ai-native-service + 新增功能</strong><small>把 Spring AI 地基串起来，建立从读代码到加功能的路径。</small></span></a></li>
+        <li data-title="062 ai-native-service 开发实战 ai-native-service 开发实战"><a href="aihom/0062-ai-native-dev-guide.html"><span class="num">062</span><span class="meta"><strong>ai-native-service 开发实战</strong><small>后端核心仓库常见开发任务的 step-by-step 指南。</small></span></a></li>
+        <li data-title="063 auto-layout-service 开发实战 auto-layout-service 开发实战"><a href="aihom/0063-auto-layout-dev-guide.html"><span class="num">063</span><span class="meta"><strong>auto-layout-service 开发实战</strong><small>手把手新增 Processor、Manager，接入 AI 服务，并做本地调试。</small></span></a></li>
+        <li data-title="064 ai-home 前端开发实战 ai-home 前端开发实战"><a href="aihom/0064-ai-home-dev-guide.html"><span class="num">064</span><span class="meta"><strong>ai-home 前端开发实战</strong><small>掌握页面组件开发、MCP Tool 接入和团队开发规范。</small></span></a></li>
+        <li data-title="065 viewer-2d 开发实战 viewer-2d 开发实战"><a href="aihom/0065-viewer-2d-dev-guide.html"><span class="num">065</span><span class="meta"><strong>viewer-2d 开发实战</strong><small>掌握新增实体、修改交互、自动化测试和问题排查。</small></span></a></li>
+        <li data-title="066 render-3d 开发实战 render-3d 开发实战"><a href="aihom/0066-render-3d-dev-guide.html"><span class="num">066</span><span class="meta"><strong>render-3d 开发实战</strong><small>掌握渲染引擎参数扩展、iframe 通信协议和常见问题排查。</small></span></a></li>
+      </ol>
+    </section>
+
+    <div class="empty">没有匹配的课程。</div>
+  </article>
+
+  <section class="resources">
+    <h2>工作区资料</h2>
+    <p><a href="../MISSION.md">MISSION.md</a> · <a href="../RESOURCES.md">RESOURCES.md</a> · <a href="../NOTES.md">NOTES.md</a> · <a href="../MAINTAINING.md">MAINTAINING.md</a> · <a href="../reference/internal-concepts.html">公司内部概念速查</a></p>
+  </section>
+</main>
+
+<script>
+  const input = document.getElementById('filter');
+  const map = document.getElementById('learning-map');
+  const toolbar = document.querySelector('.toolbar');
+  document.querySelectorAll('.jump a[href^="#"]').forEach(link => {
+    link.addEventListener('click', event => {
+      const target = document.querySelector(link.getAttribute('href'));
+      if (!target) return;
+      event.preventDefault();
+      const offset = (toolbar?.offsetHeight || 0) + 18;
+      const top = target.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
+      history.replaceState(null, '', link.getAttribute('href'));
+    });
+  });
+  input.addEventListener('input', () => {
+    const q = input.value.trim().toLowerCase();
+    let visible = 0;
+    map.querySelectorAll('.lesson-list li').forEach(li => {
+      const hit = !q || li.dataset.title.includes(q);
+      li.classList.toggle('hidden', !hit);
+      if (hit) visible++;
+    });
+    map.querySelector('.empty').style.display = visible ? 'none' : 'block';
+    map.querySelectorAll('.stage').forEach(stage => {
+      const hasVisible = [...stage.querySelectorAll('li')].some(li => !li.classList.contains('hidden'));
+      stage.classList.toggle('hidden', !hasVisible);
+    });
+  });
+</script>
+</body>
+</html>

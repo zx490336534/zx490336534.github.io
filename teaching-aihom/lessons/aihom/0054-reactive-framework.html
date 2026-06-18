@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>054 reactive-framework 深入</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --accent: #b45309;
+    --accent-light: #fef3c7;
+    --border: #e7e5e4;
+    --code-bg: #f5f5f4;
+    --success: #16a34a;
+    --warning: #d97706;
+    --info: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .card.info { border-left: 3px solid var(--info); }
+  .card.warning { border-left: 3px solid var(--warning); }
+  .card.success { border-left: 3px solid var(--success); }
+
+  .card-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+  .card.info .card-label { color: var(--info); }
+  .card.warning .card-label { color: var(--warning); }
+  .card.success .card-label { color: var(--success); }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    font-size: 0.88em;
+  }
+
+  pre {
+    background: #1c1917;
+    color: #e7e5e4;
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  pre .comment { color: #78716c; }
+  pre .keyword { color: #f59e0b; }
+  pre .string { color: #86efac; }
+  pre .dir { color: #93c5fd; }
+  pre .file { color: #e7e5e4; }
+  pre .important { color: #fbbf24; font-weight: 500; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.92rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .tree { margin: 1rem 0; }
+
+  .quiz {
+    background: var(--accent-light);
+    border: 1px solid #fbbf24;
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .quiz-title {
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+  .quiz-options { list-style: none; }
+  .quiz-options li {
+    padding: 0.5rem 0.75rem;
+    margin: 0.35rem 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+  }
+  .quiz-options li:hover { background: #fde68a33; border-color: #fbbf24; }
+  .quiz-options li.correct { background: #dcfce7; border-color: #16a34a; }
+  .quiz-options li.wrong { background: #fee2e2; border-color: #ef4444; }
+  .quiz-feedback {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    display: none;
+    font-size: 0.9rem;
+  }
+
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+  }
+  .flow-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .flow-arrow { color: var(--text-secondary); }
+
+  .next-lesson {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .next-lesson a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .next-lesson a:hover { text-decoration: underline; }
+
+  .ask-agent {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+    color: #1e40af;
+  }
+  .ask-agent::before { content: '💡 '; }
+
+  ul, ol { margin: 0.5rem 0 1rem 1.5rem; }
+  li { margin-bottom: 0.3rem; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>054 reactive-framework 深入</h1>
+<p class="subtitle">理解响应式状态管理框架的核心机制 — observable、observer、computed、combine 与 connect 的协作</p>
+
+<!-- ==================== Section 1 ==================== -->
+<h2>1. 回顾：为什么需要响应式框架</h2>
+
+<p>在 Lesson 10 中我们初步了解了 reactive-framework 的概念。这一课我们深入其内部实现，搞清楚 <code>@observable</code>、<code>observer()</code>、<code>StateManager</code>、<code>combine</code>、<code>connect</code> 和 <code>@computed</code> 这些核心 API 是如何协作的。</p>
+
+<div class="card info">
+  <div class="card-label">核心思想</div>
+  <p>当你读取一个 observable 属性时，框架<strong>自动记录</strong>谁在读它；当你修改这个属性时，框架<strong>自动通知</strong>所有读过它的地方重新执行。这就是"响应式"的本质 — <strong>依赖自动追踪 + 精确更新</strong>。</p>
+</div>
+
+<!-- ==================== Section 2 ==================== -->
+<h2>2. @observable 装饰器</h2>
+
+<p><code>@observable</code> 将一个普通属性变成"可观察"属性。它在底层通过 <code>Proxy</code>（或 <code>Object.defineProperty</code>）拦截属性的读写操作。</p>
+
+<pre><span class="keyword">import</span> { observable } <span class="keyword">from</span> <span class="string">'@coohome/reactive-framework'</span>;
+
+<span class="keyword">class</span> DesignState {
+  @observable
+  <span class="file">designId</span>: <span class="dir">string</span> = <span class="string">''</span>;
+
+  @observable
+  <span class="file">isLoading</span>: <span class="dir">boolean</span> = <span class="keyword">false</span>;
+
+  @observable
+  <span class="file">wallList</span>: <span class="dir">WallItem</span>[] = [];
+}</pre>
+
+<h3>它做了什么</h3>
+
+<ol>
+  <li><strong>读取拦截</strong> — 当任何"观察者"读取 <code>designId</code> 时，框架将当前观察者注册为该属性的依赖</li>
+  <li><strong>写入拦截</strong> — 当 <code>designId</code> 被赋新值时，框架通知所有已注册的依赖进行更新</li>
+  <li><strong>批量更新</strong> — 同一事件循环内的多次赋值会被合并，只触发一次更新</li>
+</ol>
+
+<div class="card warning">
+  <div class="card-label">注意</div>
+  <p><code>@observable</code> 只追踪属性本身。如果你用 <code>@observable arr</code>，替换整个数组会触发更新，但 <code>arr.push(x)</code> 不会（因为引用没变）。需要使用框架提供的 <code>observableArray</code> 或手动触发。</p>
+</div>
+
+<!-- ==================== Section 3 ==================== -->
+<h2>3. observer 函数</h2>
+
+<p><code>observer</code> 是一个高阶函数（或装饰器），用于包装"需要响应 observable 变化的代码块"。最常见的用法是包装 React 组件和副作用函数。</p>
+
+<pre><span class="keyword">import</span> { observer } <span class="keyword">from</span> <span class="string">'@coohome/reactive-framework'</span>;
+
+<span class="comment">// 用法一：包装 React 组件</span>
+<span class="keyword">const</span> <span class="file">DesignPanel</span> = observer(() => {
+  <span class="keyword">const</span> state = useDesignState();
+  <span class="keyword">return</span> &lt;div&gt;{state.designId}&lt;/div&gt;;
+  <span class="comment">// 当 designId 变化时，自动触发重新渲染</span>
+});
+
+<span class="comment">// 用法二：创建独立的副作用反应</span>
+observer(() => {
+  console.log(<span class="string">'当前 designId:'</span>, state.designId);
+});</pre>
+
+<h3>执行机制</h3>
+
+<div class="flow">
+  <span class="flow-step">observer 包裹函数执行</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">执行过程中读取 @observable 属性</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">框架自动收集依赖</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">属性变化时重新执行</span>
+</div>
+
+<!-- ==================== Section 4 ==================== -->
+<h2>4. StateManager 基类</h2>
+
+<p><code>StateManager</code> 是我们项目中组织状态的标准基类。它本质上是一个"可观察对象容器 + 生命周期管理器"。</p>
+
+<pre><span class="keyword">import</span> { StateManager, observable } <span class="keyword">from</span> <span class="string">'@coohome/reactive-framework'</span>;
+
+<span class="keyword">class</span> <span class="file">DesignStateManager</span> <span class="keyword">extends</span> StateManager {
+  @observable
+  <span class="file">designId</span>: <span class="dir">string</span> = <span class="string">''</span>;
+
+  @observable
+  <span class="file">isLoading</span>: <span class="dir">boolean</span> = <span class="keyword">false</span>;
+
+  <span class="comment">// 初始化：组件挂载时自动调用</span>
+  onInit() {
+    <span class="keyword">this</span>.loadDesign();
+  }
+
+  <span class="comment">// 清理：组件卸载时自动调用</span>
+  onDestroy() {
+    <span class="comment">// 取消订阅、清理定时器等</span>
+  }
+
+  <span class="keyword">async</span> loadDesign() {
+    <span class="keyword">this</span>.isLoading = <span class="keyword">true</span>;
+    <span class="keyword">this</span>.designId = <span class="keyword">await</span> fetchDesignId();
+    <span class="keyword">this</span>.isLoading = <span class="keyword">false</span>;
+  }
+}</pre>
+
+<div class="card success">
+  <div class="card-label">为什么要用 StateManager 而不是纯 @observable 类</div>
+  <ul>
+    <li>提供 <code>onInit()</code> / <code>onDestroy()</code> 生命周期，确保副作用能被清理</li>
+    <li>内置 <code>combine()</code> / <code>connect()</code> 支持，方便组合多个状态源</li>
+    <li>与 React 组件通过 <code>useStateManager()</code> hook 无缝集成</li>
+  </ul>
+</div>
+
+<!-- ==================== Section 5 ==================== -->
+<h2>5. combine — 组合多个状态源</h2>
+
+<p><code>combine</code> 将多个 observable 的值"组合"成一个新值，类似函数式编程中的 <code>lift</code>。当任何一个输入变化时，组合结果自动重算。</p>
+
+<pre><span class="keyword">import</span> { observable, combine } <span class="keyword">from</span> <span class="string">'@coohome/reactive-framework'</span>;
+
+<span class="keyword">class</span> <span class="file">RoomState</span> {
+  @observable
+  <span class="file">width</span>: <span class="dir">number</span> = 4000;
+
+  @observable
+  <span class="file">height</span>: <span class="dir">number</span> = 3000;
+
+  <span class="comment">// combine：任何输入变化时自动重算</span>
+  <span class="file">area</span> = combine(
+    () => <span class="keyword">this</span>.width,
+    () => <span class="keyword">this</span>.height,
+    (w, h) => w * h / <span class="important">1000000</span>  <span class="comment">// 平方米</span>
+  );
+}
+
+<span class="keyword">const</span> room = <span class="keyword">new</span> RoomState();
+console.log(room.area); <span class="comment">// 12</span>
+room.width = 5000;
+console.log(room.area); <span class="comment">// 15 — 自动更新</span></pre>
+
+<div class="card info">
+  <div class="card-label">combine vs @computed</div>
+  <p><code>combine</code> 是函数式 API，适合在方法内或构造函数中动态组合；<code>@computed</code> 是装饰器 API，适合在类中声明式定义派生属性。两者底层机制相同，选择取决于风格偏好和是否需要传参。</p>
+</div>
+
+<!-- ==================== Section 6 ==================== -->
+<h2>6. connect — 连接外部数据源</h2>
+
+<p><code>connect</code> 用于将外部数据源（如 Redux store、URL 参数、WebSocket 消息）桥接到 observable 体系中。它是"非响应式世界"进入"响应式世界"的入口。</p>
+
+<pre><span class="keyword">import</span> { StateManager, connect } <span class="keyword">from</span> <span class="string">'@coohome/reactive-framework'</span>;
+
+<span class="keyword">class</span> <span class="file">DesignStateManager</span> <span class="keyword">extends</span> StateManager {
+  <span class="comment">// 从外部 Redux store 读取 userId</span>
+  @connect((store) => store.user.userId)
+  <span class="file">userId</span>: <span class="dir">string</span> = <span class="string">''</span>;
+
+  <span class="comment">// 从 URL 参数读取 designId</span>
+  @connect(() => <span class="keyword">new</span> URLSearchParams(location.search).get(<span class="string">'id'</span>))
+  <span class="file">designId</span>: <span class="dir">string</span> = <span class="string">''</span>;
+
+  <span class="comment">// 内部可观察属性</span>
+  @observable
+  <span class="file">isLoading</span>: <span class="dir">boolean</span> = <span class="keyword">false</span>;
+}</pre>
+
+<h3>connect 的特点</h3>
+
+<ul>
+  <li><strong>只读</strong> — <code>@connect</code> 属性通常不支持从 observable 侧反写回外部源</li>
+  <li><strong>自动同步</strong> — 外部源变化时，<code>@connect</code> 属性自动更新并通知下游观察者</li>
+  <li><strong>桥接作用</strong> — 让 StateManager 可以"消费"任何数据源而不耦合其 API</li>
+</ul>
+
+<!-- ==================== Section 7 ==================== -->
+<h2>7. @computed 计算属性</h2>
+
+<p><code>@computed</code> 定义一个"派生属性"— 它的值完全由其他 observable 属性计算得出，并且框架会<strong>缓存</strong>结果，只在依赖变化时重算。</p>
+
+<pre><span class="keyword">import</span> { observable, computed } <span class="keyword">from</span> <span class="string">'@coohome/reactive-framework'</span>;
+
+<span class="keyword">class</span> <span class="file">WallState</span> {
+  @observable
+  <span class="file">wallList</span>: <span class="dir">WallItem</span>[] = [];
+
+  @observable
+  <span class="file">selectedId</span>: <span class="dir">string</span> | <span class="keyword">null</span> = <span class="keyword">null</span>;
+
+  <span class="comment">// 只有 wallList 或 selectedId 变化时才重算</span>
+  @computed
+  <span class="keyword">get</span> <span class="file">selectedWall</span>() {
+    <span class="keyword">return</span> <span class="keyword">this</span>.wallList.find(w => w.id === <span class="keyword">this</span>.selectedId) ?? <span class="keyword">null</span>;
+  }
+
+  <span class="comment">// computed 可以依赖另一个 computed</span>
+  @computed
+  <span class="keyword">get</span> <span class="file">selectedWallArea</span>() {
+    <span class="keyword">const</span> wall = <span class="keyword">this</span>.selectedWall;
+    <span class="keyword">return</span> wall ? wall.width * wall.height : 0;
+  }
+}</pre>
+
+<div class="card warning">
+  <div class="card-label">性能要点</div>
+  <p><code>@computed</code> 的缓存是惰性的 — 如果没有人读取它，就不会执行 getter。但如果被读取过且依赖没变，直接返回缓存值，O(1) 开销。避免在 getter 内做昂贵操作后又频繁修改依赖，否则缓存失效会很频繁。</p>
+</div>
+
+<!-- ==================== Section 8 ==================== -->
+<h2>8. 与 React Hooks 对比</h2>
+
+<p>很多同学会问："我们已经有 <code>useState</code>、<code>useMemo</code>、<code>useEffect</code> 了，为什么还需要响应式框架？" 下表做了直接对比：</p>
+
+<table>
+  <tr>
+    <th>能力</th>
+    <th>React Hooks</th>
+    <th>reactive-framework</th>
+  </tr>
+  <tr>
+    <td>声明状态</td>
+    <td><code>useState(initial)</code></td>
+    <td><code>@observable prop = initial</code></td>
+  </tr>
+  <tr>
+    <td>派生计算</td>
+    <td><code>useMemo(() => ..., deps)</code></td>
+    <td><code>@computed get prop()</code></td>
+  </tr>
+  <tr>
+    <td>副作用</td>
+    <td><code>useEffect(() => ..., deps)</code></td>
+    <td><code>observer(() => ...)</code></td>
+  </tr>
+  <tr>
+    <td>依赖追踪</td>
+    <td>手动列出 deps 数组</td>
+    <td>自动追踪，无需手动声明</td>
+  </tr>
+  <tr>
+    <td>更新粒度</td>
+    <td>组件级重新渲染</td>
+    <td>精确到属性级，只有读过该属性的 observer 重执行</td>
+  </tr>
+  <tr>
+    <td>跨组件共享</td>
+    <td>需要 Context / 外部 store</td>
+    <td>StateManager 天然可共享</td>
+  </tr>
+  <tr>
+    <td>测试</td>
+    <td>需要 renderHook 等工具</td>
+    <td>直接实例化 StateManager 测试</td>
+  </tr>
+</table>
+
+<div class="card success">
+  <div class="card-label">关键区别</div>
+  <p><strong>React Hooks 的依赖数组是你最容易出 bug 的地方</strong> — 漏写依赖导致 stale closure，多写依赖导致不必要的执行。reactive-framework 通过 Proxy 自动追踪依赖，从根本上消除了这类问题。</p>
+</div>
+
+<p>在我们的项目中，两者是<strong>协作关系</strong>而非替代关系：StateManager 管理状态逻辑，React 组件通过 <code>observer()</code> 包装消费状态，两者各司其职。</p>
+
+<!-- ==================== Quiz ==================== -->
+<h2>Quiz — 看看你掌握了多少</h2>
+
+<div class="quiz" id="quiz1">
+  <div class="quiz-title">Q1: @observable 的依赖追踪发生在什么时候？</div>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz1', 0)">A. 属性被赋值时</li>
+    <li onclick="checkQuiz('quiz1', 1)">B. 属性被读取时</li>
+    <li onclick="checkQuiz('quiz1', 2)">C. 组件挂载时</li>
+    <li onclick="checkQuiz('quiz1', 3)">D. StateManager 初始化时</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <div class="quiz-title">Q2: @computed 属性在没有人读取它时，会不会执行 getter 函数？</div>
+  <ul class="quiz-options" data-correct="0">
+    <li onclick="checkQuiz('quiz2', 0)">A. 不会，@computed 是惰性求值的</li>
+    <li onclick="checkQuiz('quiz2', 1)">B. 会，依赖变化就立即计算</li>
+    <li onclick="checkQuiz('quiz2', 2)">C. 取决于是否有 @connect 依赖</li>
+    <li onclick="checkQuiz('quiz2', 3)">D. 取决于 StateManager 是否调用了 onInit</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <div class="quiz-title">Q3: combine 和 @computed 的主要区别是什么？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz3', 0)">A. combine 支持缓存，@computed 不支持</li>
+    <li onclick="checkQuiz('quiz3', 1)">B. @computed 只能用于字符串，combine 用于数字</li>
+    <li onclick="checkQuiz('quiz3', 2)">C. combine 是函数式 API，@computed 是声明式装饰器 API</li>
+    <li onclick="checkQuiz('quiz3', 3)">D. 完全相同，只是名字不同</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="ask-agent">
+  想深入了解？可以问 Agent：<br>
+  "帮我找一个 StateManager 中 combine 和 @computed 同时使用的真实例子"
+</div>
+</div>
+
+<script>
+function checkQuiz(quizId, selected) {
+  const quiz = document.getElementById(quizId);
+  const options = quiz.querySelector('.quiz-options');
+  const correct = parseInt(options.dataset.correct);
+  const items = options.querySelectorAll('li');
+  const feedback = quiz.querySelector('.quiz-feedback');
+
+  items.forEach((item, i) => {
+    item.onclick = null;
+    if (i === correct) item.classList.add('correct');
+    if (i === selected && i !== correct) item.classList.add('wrong');
+  });
+
+  const feedbacks = {
+    quiz1: {
+      correct: '✓ 对！@observable 的依赖追踪发生在属性被读取的瞬间 — 框架记录"谁在读"，而不是"谁在写"。',
+      wrong: '✗ 是属性被读取时。读取操作触发 Proxy 的 get trap，框架在此刻记录依赖关系。赋值时触发的是通知更新。'
+    },
+    quiz2: {
+      correct: '✓ 对！@computed 是惰性求值（lazy evaluation）— 只有当有人读取它时才执行 getter，并缓存结果。',
+      wrong: '✗ @computed 是惰性求值的。没有人读取它时，即使依赖变化也不会执行 getter，直到下一次被读取时才重算。'
+    },
+    quiz3: {
+      correct: '✓ 对！combine 是函数式 API（<code>combine(() => ..., (a, b) => ...)</code>），@computed 是声明式装饰器 API（<code>@computed get xxx()</code>），底层机制相同。',
+      wrong: '✗ 两者底层机制相同，区别在于 API 风格：combine 是函数式调用，@computed 是装饰器声明式。@computed 也支持缓存，且可以用于任意类型。'
+    }
+  };
+
+  feedback.style.display = 'block';
+  feedback.innerHTML = selected === correct
+    ? feedbacks[quizId].correct
+    : feedbacks[quizId].wrong;
+  feedback.style.background = selected === correct ? '#dcfce7' : '#fee2e2';
+}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 054</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0053-ai-service-integration.html">上一课：053 AI 服务集成与模型调用</a><a class="primary" href="0055-viewer-integration.html">下一课：055 2D/3D Viewer 集成与通信</a></div></nav>
+</body>
+</html>

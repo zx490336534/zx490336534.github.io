@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0033 - 导航与路由系统详解</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:1rem}
+  .breadcrumb{color:var(--text-secondary);font-size:.85rem;margin-bottom:2rem}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .breadcrumb a:hover{text-decoration:underline}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.15rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem;color:var(--accent)}
+  p{margin-bottom:1rem}
+  .desc{color:var(--text-secondary);font-size:.95rem;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;overflow-x:auto;margin:1rem 0 1.5rem;font-size:.85rem;line-height:1.7}
+  code{font-family:'JetBrains Mono',monospace;font-size:.85em}
+  p code,li code{background:var(--code-bg);padding:.15rem .4rem;border-radius:4px;color:var(--accent)}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1.5rem 0}
+  .card.warn{border-color:#fbbf24;background:#fffbeb}
+  .card.info{border-color:#93c5fd;background:#eff6ff}
+  .card.success{border-color:#86efac;background:#f0fdf4}
+  .card.purple{border-color:#c4b5fd;background:#f5f3ff}
+  .card h3{margin-top:0}
+  .card ul,.card ol{margin:.5rem 0 0 1.25rem}
+  .card li{margin-bottom:.3rem}
+  .tag{display:inline-block;padding:.15rem .5rem;border-radius:4px;font-size:.75rem;font-weight:500;margin-right:.3rem}
+  .tag.deep{background:#fef3c7;color:#b45309}
+  .tag.code{background:#dbeafe;color:#2563eb}
+  .tag.arch{background:#f3e8ff;color:#7c3aed}
+  .tag.ui{background:#dcfce7;color:#16a34a}
+  .quiz{background:var(--surface);border:2px solid var(--border);border-radius:8px;padding:1.5rem;margin:1.5rem 0}
+  .quiz h3{color:var(--info);margin-top:0}
+  .quiz ol{margin-left:1.25rem}
+  .quiz li{margin-bottom:1rem}
+  .quiz .options{margin:.5rem 0 0 1rem}
+  .quiz .options div{margin-bottom:.3rem;padding:.4rem .75rem;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s}
+  .quiz .options div:hover{border-color:var(--accent);background:var(--accent-light)}
+  .quiz .options div.correct{border-color:var(--success);background:#dcfce7;color:var(--success);font-weight:600}
+  .quiz .options div.wrong{border-color:#ef4444;background:#fef2f2;color:#ef4444}
+  .quiz .answer{margin-top:.75rem;padding:.75rem 1rem;background:#f0fdf4;border:1px solid #86efac;border-radius:6px;display:none;font-size:.9rem}
+  .quiz .answer.show{display:block}
+  .quiz .show-btn{display:inline-block;margin-top:.75rem;padding:.4rem 1rem;background:var(--accent);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:.85rem}
+  .quiz .show-btn:hover{opacity:.9}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.3rem}
+  .file-ref{display:inline-block;background:var(--code-bg);border:1px solid var(--border);border-radius:4px;padding:.1rem .5rem;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--purple)}
+  table{width:100%;border-collapse:collapse;margin:1rem 0 1.5rem;font-size:.9rem}
+  th,td{padding:.6rem 1rem;border:1px solid var(--border);text-align:left}
+  th{background:var(--code-bg);font-weight:600}
+  .tree{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:2;overflow-x:auto;white-space:pre}
+  .nav-links{display:flex;justify-content:space-between;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+  .nav-links a{color:var(--accent);text-decoration:none;font-size:.9rem}
+  .nav-links a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="breadcrumb"><a href="../index.html">课程首页</a> &gt; kuai-service-front &gt; 0033 导航与路由系统详解</div>
+
+<h1>🧭 导航与路由系统详解</h1>
+<p class="subtitle">理解 navbarMenu 配置、文件系统路由、动态路由和路由守卫</p>
+<p class="desc">本课程聚焦 Kuai 前端的导航和路由系统。导航菜单在 <code>src/config/navigation.js</code> 中集中配置，页面路由基于 Next.js App Router 的文件系统约定自动生成。两者配合构成了用户在应用中的导航体验。</p>
+
+<div class="card purple">
+  <h3>📚 前置知识</h3>
+  <ul>
+    <li><strong>Next.js App Router</strong>：文件系统路由、<code>page.js</code>、<code>layout.js</code>、<code>loading.js</code> 的作用</li>
+    <li><strong>React 基础</strong>：<code>useState</code>、<code>useEffect</code>、JSX 语法</li>
+    <li><strong>Ant Design Menu 组件</strong>：<code>Menu</code>、<code>SubMenu</code>、<code>MenuItem</code> 的基本用法</li>
+    <li><strong>React Router 概念</strong>：路径（path）、路由参数（params）、嵌套路由</li>
+    <li><strong>0005 课程</strong>：kuai-service-front 项目概览</li>
+    <li><strong>概念课</strong>：<a href="../../reference/nextjs-app-router.html">Next.js App Router 基础</a></li>
+  </ul>
+</div>
+
+<!-- ==================== 导航配置 ==================== -->
+<h2><span class="icon">📋</span> navbarMenu 导航配置</h2>
+
+<p><span class="tag arch">核心配置</span> <span class="file-ref">src/config/navigation.js</span> 是整个应用导航菜单的单一数据源。侧边栏（Sider）组件读取这个配置来渲染菜单。</p>
+
+<h3>配置结构</h3>
+
+<pre><code class="language-javascript">// src/config/navigation.js
+export const navbarMenu = [
+  // 一级菜单项（无子菜单）
+  {
+    label: '工作台',
+    key: 'dashboard',
+    icon: &lt;HomeOutlined /&gt;,
+    path: '/dashboard',
+  },
+
+  // 一级菜单项（有子菜单）
+  {
+    label: 'Agent管理',
+    key: 'application',
+    icon: &lt;AppstoreOutlined /&gt;,
+    children: [
+      {
+        label: 'FastQA应用列表',
+        key: 'app-list',
+        icon: &lt;UnorderedListOutlined /&gt;,
+        path: '/application/list',
+      },
+      {
+        label: 'Agent评分',
+        key: 'app-rating',
+        icon: &lt;StarOutlined /&gt;,
+        path: '/application/rating',
+      },
+      // ... 更多子菜单
+    ],
+  },
+
+  // 外部链接（不走前端路由）
+  {
+    label: 'AI语料库管理',
+    key: 'knowledge-librify',
+    icon: &lt;DatabaseOutlined /&gt;,
+    path: 'https://librify.example.com/',
+    external: true,  // 标记为外部链接
+  },
+];</code></pre>
+
+<h3>菜单项属性说明</h3>
+
+<table>
+  <tr><th>属性</th><th>类型</th><th>必填</th><th>说明</th></tr>
+  <tr><td><code>label</code></td><td>string</td><td>是</td><td>菜单项显示文本</td></tr>
+  <tr><td><code>key</code></td><td>string</td><td>是</td><td>唯一标识，用于 Ant Design Menu 的选中状态</td></tr>
+  <tr><td><code>icon</code></td><td>ReactNode</td><td>否</td><td>菜单项图标（Ant Design 图标组件）</td></tr>
+  <tr><td><code>path</code></td><td>string</td><td>否</td><td>路由路径（内部链接）或 URL（外部链接）</td></tr>
+  <tr><td><code>children</code></td><td>Array</td><td>否</td><td>子菜单项数组（形成折叠子菜单）</td></tr>
+  <tr><td><code>external</code></td><td>boolean</td><td>否</td><td>是否为外部链接（新窗口打开）</td></tr>
+</table>
+
+<h3>图标映射表</h3>
+
+<p>项目定义了一个 <code>MENU_ICONS</code> 映射表，将语义化的图标名映射到 Ant Design 图标组件：</p>
+
+<pre><code class="language-javascript">const MENU_ICONS = {
+  home: HomeOutlined,
+  appstore: AppstoreOutlined,
+  unorderedList: UnorderedListOutlined,
+  star: StarOutlined,
+  cloud: CloudOutlined,
+  database: DatabaseOutlined,
+  setting: SettingOutlined,
+  fileText: FileTextOutlined,
+  edit: EditOutlined,
+  robot: RobotOutlined,
+  tool: ToolOutlined,
+  branches: BranchesOutlined,
+  experiment: ExperimentOutlined,
+  search: SearchOutlined,
+  // ... 更多图标
+};</code></pre>
+
+<!-- ==================== 完整菜单结构 ==================== -->
+<h2><span class="icon">🗺️</span> 完整菜单结构</h2>
+
+<div class="tree">navbarMenu 导航结构
+├── 工作台 (/dashboard)
+├── Agent管理
+│   ├── FastQA应用列表 (/application/list)
+│   ├── Agent评分 (/application/rating)
+│   ├── 公共Agent平台 (/application/public)
+│   ├── LangChain Agent (/agents)
+│   └── 度量指标管理 (/metrics)
+├── 知识库
+│   ├── AI语料库管理 (外部链接 → librify.example.com)
+│   ├── CF文档扫描配置 (/knowledge/scan-config)
+│   └── 知识提炼 (/knowledge-extract)
+├── 提示词管理
+│   ├── 提示词列表 (/prompt-system/list)
+│   └── 智能优化器 (/conversation/prompt-optimizer)
+├── MCP管理
+│   ├── 配置管理 (/mcp/servers)
+│   ├── 分组管理 (/mcp/groups)
+│   ├── MCP测试 (/mcp/test)
+│   ├── coops-MCP中心 (外部链接)
+│   ├── KUTA-MCP工具集 (外部链接)
+│   └── cURL 转 MCP (/mcp/curl-converter)
+├── Skills管理
+│   ├── Skills使用 (/skills/use)
+│   ├── Skills评测 (/skills/eval)
+│   └── Skills配置 (/skills/config)
+└── AI测试
+    └── AI用例管理 (/ai-test/cases)</div>
+
+<!-- ==================== 文件系统路由 ==================== -->
+<h2><span class="icon">📂</span> 文件系统路由</h2>
+
+<p>Next.js App Router 使用 <strong>文件系统作为路由</strong>。你在 <code>src/app/</code> 下创建的文件夹和文件结构，直接决定了 URL 路径。</p>
+
+<h3>基本规则</h3>
+
+<pre><code class="language-bash">src/app/
+├── page.js              →  / (首页)
+├── dashboard/
+│   └── page.js          →  /dashboard
+├── application/
+│   ├── list/
+│   │   └── page.js      →  /application/list
+│   └── rating/
+│       └── page.js      →  /application/rating
+├── agents/
+│   └── page.js          →  /agents
+└── mcp/
+    ├── servers/
+    │   └── page.js      →  /mcp/servers
+    ├── groups/
+    │   └── page.js      →  /mcp/groups
+    └── test/
+        └── page.js      →  /mcp/test</code></pre>
+
+<div class="card info">
+  <h3>💡 导航配置与路由的对应关系</h3>
+  <p>导航菜单中的 <code>path</code> 值必须与 <code>src/app/</code> 下的文件结构一一对应。例如：</p>
+  <ul>
+    <li>菜单 <code>path: '/mcp/servers'</code> 对应 <code>src/app/mcp/servers/page.js</code></li>
+    <li>菜单 <code>path: '/agents'</code> 对应 <code>src/app/agents/page.js</code></li>
+  </ul>
+  <p>如果菜单配置了路径但没有对应的 <code>page.js</code> 文件，点击菜单会显示 404 页面。</p>
+</div>
+
+<h3>特殊文件</h3>
+
+<table>
+  <tr><th>文件名</th><th>作用</th><th>示例</th></tr>
+  <tr><td><code>page.js</code></td><td>页面组件（必须）</td><td>定义页面内容</td></tr>
+  <tr><td><code>layout.js</code></td><td>布局组件（可选）</td><td>子页面共享的布局</td></tr>
+  <tr><td><code>loading.js</code></td><td>加载状态（可选）</td><td>页面加载时的骨架屏</td></tr>
+  <tr><td><code>error.js</code></td><td>错误处理（可选）</td><td>页面出错时的错误界面</td></tr>
+  <tr><td><code>not-found.js</code></td><td>404 页面（可选）</td><td>路由未找到时显示</td></tr>
+</table>
+
+<pre><code class="language-javascript">// src/app/agents/page.js — 典型的页面组件
+'use client';  // 标记为客户端组件
+
+import { useState, useEffect } from 'react';
+import AgentChat from '@/components/common/AgentChat';
+
+export default function AgentsPage() {
+  const [agents, setAgents] = useState([]);
+
+  useEffect(() => {
+    // 加载 Agent 列表
+    fetch('/api/agents')
+      .then(res => res.json())
+      .then(data => setAgents(data));
+  }, []);
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;LangChain Agent&lt;/h1&gt;
+      {agents.map(agent =&gt; (
+        &lt;AgentCard key={agent.id} agent={agent} /&gt;
+      ))}
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+<!-- ==================== 动态路由 ==================== -->
+<h2><span class="icon">🔀</span> 动态路由</h2>
+
+<p>当页面需要根据 URL 参数显示不同内容时，使用 <strong>动态路由</strong>（文件夹名用方括号包裹）。</p>
+
+<h3>动态路由示例</h3>
+
+<pre><code class="language-bash"># 文件结构
+src/app/
+└── agents/
+    └── [agentId]/
+        └── page.js      →  /agents/chart-agent
+                            →  /agents/code-assistant
+                            →  /agents/:agentId（任意 ID）</code></pre>
+
+<pre><code class="language-javascript">// src/app/agents/[agentId]/page.js
+'use client';
+
+import { useParams } from 'next/navigation';
+
+export default function AgentDetailPage() {
+  const { agentId } = useParams();  // 获取动态路由参数
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Agent 详情: {agentId}&lt;/h1&gt;
+      &lt;AgentChat agentId={agentId} /&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+<h3>嵌套动态路由</h3>
+
+<pre><code class="language-bash"># 多级动态参数
+src/app/
+└── prompt-system/
+    └── [promptId]/
+        └── page.js      →  /prompt-system/abc123（查看提示词详情）
+                            →  /prompt-system/xyz789（查看另一个提示词）</code></pre>
+
+<div class="card">
+  <h3>📌 实际使用：Agent 对话页面</h3>
+  <p>Kuai 前端的 Agent 对话页面就是动态路由的典型应用：</p>
+  <ul>
+    <li><code>/agents</code> — Agent 列表页（<code>src/app/agents/page.js</code>）</li>
+    <li><code>/agents/[agentId]</code> — Agent 对话页（<code>src/app/agents/[agentId]/page.js</code>）</li>
+  </ul>
+  <p>用户点击列表中的某个 Agent 时，URL 变为 <code>/agents/chart-agent</code>，页面根据 <code>agentId</code> 加载对应的 Agent 配置和对话历史。</p>
+</div>
+
+<!-- ==================== 路由守卫 ==================== -->
+<h2><span class="icon">🛡️</span> 路由守卫与权限控制</h2>
+
+<p>Kuai 前端的路由守卫主要通过 <strong>布局组件</strong> 和 <strong>request 封装</strong> 来实现，而不是传统的路由中间件。</p>
+
+<h3>认证守卫：401 自动跳转</h3>
+
+<pre><code class="language-javascript">// 认证守卫在 request 层统一处理
+// src/services/request/index.js
+function checkStatus(response) {
+  if (response.status === 401) {
+    if (isGuestMode()) {
+      return response;  // 访客模式放行
+    }
+    redirectToLogin();  // 未登录 → 跳转 SSO
+    throw new Error('Unauthorized');
+  }
+  return response;
+}
+
+// 每个页面加载时都会调用 API（如获取用户信息）
+// 如果未登录，第一个 API 调用就会触发 401 → 自动跳转</code></pre>
+
+<div class="card info">
+  <h3>💡 认证守卫的工作原理</h3>
+  <p>与传统前端路由守卫不同，Kuai 采用<strong>"懒认证"</strong>策略：</p>
+  <ul>
+    <li>不在路由切换时检查登录状态（避免每次导航都发请求）</li>
+    <li>而是在页面发起第一个 API 请求时，由 <code>request</code> 函数统一检查 401</li>
+    <li>如果未登录，自动跳转 SSO；登录成功后跳回原页面</li>
+  </ul>
+  <p>这种方式的好处是：认证检查与业务逻辑解耦，所有页面自动获得认证保护。</p>
+</div>
+
+<h3>布局层守卫：页面类型判断</h3>
+
+<pre><code class="language-javascript">// src/components/AppLayout.jsx — 根据页面类型选择布局
+function AppLayoutContent({ children }) {
+  const pathname = usePathname();
+
+  // 分享页面和嵌入页面：不需要导航栏
+  const isSharePage = pathname.startsWith('/share');
+  const isEmbedPage = pathname.startsWith('/embed');
+
+  if (isSharePage || isEmbedPage) {
+    return &lt;div style={{ minHeight: '100dvh' }}&gt;{children}&lt;/div&gt;;
+  }
+
+  // 正常页面：完整布局（Header + Sider + Content）
+  return (
+    &lt;Layout&gt;
+      &lt;Header /&gt;
+      &lt;Layout&gt;
+        &lt;Sider&gt;
+          &lt;SideNav menu={navbarMenu} /&gt;
+        &lt;/Sider&gt;
+        &lt;Content&gt;{children}&lt;/Content&gt;
+      &lt;/Layout&gt;
+    &lt;/Layout&gt;
+  );
+}</code></pre>
+
+<h3>访客模式守卫</h3>
+
+<pre><code class="language-javascript">// 访客模式的判断逻辑
+function isGuestMode() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const isGuestMode = urlParams.get('mode') === 'guest';
+  const isSharePage = window.location.pathname.startsWith('/share');
+
+  // 必须同时满足：是分享页面 + URL 有 ?mode=guest 参数
+  return isSharePage && isGuestMode;
+}</code></pre>
+
+<!-- ==================== 侧边栏组件 ==================== -->
+<h2><span class="icon">📐</span> 侧边栏菜单渲染</h2>
+
+<p>侧边栏组件 <code>SideNav</code> 读取 <code>navbarMenu</code> 配置，使用 Ant Design 的 <code>Menu</code> 组件渲染：</p>
+
+<pre><code class="language-javascript">// src/components/layout/sider/SideNav.jsx（简化）
+'use client';
+import { Menu } from 'antd';
+import { usePathname, useRouter } from 'next/navigation';
+
+function SideNav({ menu }) {
+  const pathname = usePathname();
+  const router = useRouter();
+
+  // 根据当前路径自动选中对应菜单项
+  const selectedKey = findSelectedKey(menu, pathname);
+
+  // 点击菜单项时的处理
+  const handleClick = ({ key, keyPath }) => {
+    const menuItem = findMenuItem(menu, key);
+
+    if (menuItem.external) {
+      // 外部链接：新窗口打开
+      window.open(menuItem.path, '_blank');
+    } else if (menuItem.path) {
+      // 内部链接：使用 Next.js 路由跳转
+      router.push(menuItem.path);
+    }
+  };
+
+  return (
+    &lt;Menu
+      mode="inline"
+      selectedKeys={[selectedKey]}
+      items={convertToMenuItems(menu)}
+      onClick={handleClick}
+    /&gt;
+  );
+}</code></pre>
+
+<div class="card warn">
+  <h3>⚠️ 添加新导航项的步骤</h3>
+  <p>新增页面时，需要同时完成两步：</p>
+  <ol>
+    <li>在 <code>src/app/</code> 下创建对应的 <code>page.js</code> 文件（路由）</li>
+    <li>在 <code>src/config/navigation.js</code> 的 <code>navbarMenu</code> 数组中添加菜单配置</li>
+  </ol>
+  <p>如果只做了其中一步，要么菜单点不开（没有页面），要么页面存在但找不到入口（没有菜单）。</p>
+</div>
+
+<!-- ==================== 外部链接处理 ==================== -->
+<h2><span class="icon">🔗</span> 外部链接处理</h2>
+
+<p>导航菜单中有些项目指向外部系统，通过 <code>external: true</code> 标记：</p>
+
+<pre><code class="language-javascript">// 外部链接示例
+{
+  label: 'AI语料库管理',
+  key: 'knowledge-librify',
+  icon: &lt;DatabaseOutlined /&gt;,
+  path: 'https://librify.example.com/',  // 完整 URL
+  external: true,  // 标记为外部链接
+},
+{
+  label: 'coops-MCP中心',
+  key: 'mcp-coops',
+  icon: &lt;CloudOutlined /&gt;,
+  path: 'https://coops.example.com/ai/mcp?page=1&namespaceId=dev',
+  external: true,
+},</code></pre>
+
+<p>外部链接在点击时会在<strong>新窗口</strong>中打开，不会触发 Next.js 的客户端路由。</p>
+
+<!-- ==================== 路由与状态 ==================== -->
+<h2><span class="icon">🔄</span> 路由与状态管理</h2>
+
+<pre><code class="language-javascript">// 在组件中获取路由信息
+'use client';
+import { usePathname, useRouter, useSearchParams, useParams } from 'next/navigation';
+
+function MyComponent() {
+  const pathname = usePathname();        // 当前路径：'/agents/chart-agent'
+  const router = useRouter();            // 路由操作对象
+  const searchParams = useSearchParams(); // URL 查询参数
+  const params = useParams();            // 动态路由参数
+
+  // 编程式导航
+  const goToAgents = () => router.push('/agents');
+  const goBack = () => router.back();
+
+  // 带查询参数跳转
+  const goToPage2 = () => router.push('/mcp/servers?page=2');
+}</code></pre>
+
+<!-- ==================== Quiz ==================== -->
+<h2><span class="icon">🧪</span> 知识检验</h2>
+
+<div class="quiz" id="quiz1">
+  <h3>题目 1：导航配置</h3>
+  <p>如果要添加一个新的子菜单项"定时任务管理"到"Agent管理"下，应该修改哪个文件？</p>
+  <div class="options">
+    <div onclick="checkAnswer(this,'quiz1',false)">A. src/app/application/page.js</div>
+    <div onclick="checkAnswer(this,'quiz1',false)">B. src/components/layout/sider/SideNav.jsx</div>
+    <div onclick="checkAnswer(this,'quiz1',true)">C. src/config/navigation.js</div>
+    <div onclick="checkAnswer(this,'quiz1',false)">D. next.config.js</div>
+  </div>
+  <button class="show-btn" onclick="toggleAnswer('quiz1')">显示解析</button>
+  <div class="answer" id="quiz1-answer">
+    <strong>答案 C</strong>。所有导航菜单配置集中在 <code>src/config/navigation.js</code> 的 <code>navbarMenu</code> 数组中。要添加子菜单，需要在"Agent管理"对象的 <code>children</code> 数组中添加新的菜单项。同时还需要在 <code>src/app/</code> 下创建对应的 <code>page.js</code> 文件。
+  </div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <h3>题目 2：路由守卫</h3>
+  <p>用户未登录时访问 <code>/agents</code> 页面，系统如何处理？</p>
+  <div class="options">
+    <div onclick="checkAnswer(this,'quiz2',false)">A. 显示一个登录弹窗</div>
+    <div onclick="checkAnswer(this,'quiz2',false)">B. 直接显示 403 无权限页面</div>
+    <div onclick="checkAnswer(this,'quiz2',true)">C. 页面加载后第一个 API 请求返回 401，request 函数自动跳转到 SSO 登录页</div>
+    <div onclick="checkAnswer(this,'quiz2',false)">D. Next.js 中间件在路由层面拦截，直接重定向</div>
+  </div>
+  <button class="show-btn" onclick="toggleAnswer('quiz2')">显示解析</button>
+  <div class="answer" id="quiz2-answer">
+    <strong>答案 C</strong>。Kuai 前端采用"懒认证"策略：页面可以正常加载和渲染，但当组件发起第一个 API 请求（如获取 Agent 列表）时，后端返回 401。<code>request</code> 函数的 <code>checkStatus</code> 检测到 401 后自动调用 <code>redirectToLogin()</code> 跳转到 SSO 登录页。登录成功后会跳回原页面。
+  </div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <h3>题目 3：外部链接</h3>
+  <p>导航菜单中 <code>external: true</code> 的菜单项与普通菜单项有什么区别？</p>
+  <div class="options">
+    <div onclick="checkAnswer(this,'quiz3',false)">A. 外部链接会显示不同的图标</div>
+    <div onclick="checkAnswer(this,'quiz3',false)">B. 外部链接不能有子菜单</div>
+    <div onclick="checkAnswer(this,'quiz3',true)">C. 外部链接点击后在新窗口打开，不走 Next.js 客户端路由</div>
+    <div onclick="checkAnswer(this,'quiz3',false)">D. 外部链接不需要配置 key 属性</div>
+  </div>
+  <button class="show-btn" onclick="toggleAnswer('quiz3')">显示解析</button>
+  <div class="answer" id="quiz3-answer">
+    <strong>答案 C</strong>。标记了 <code>external: true</code> 的菜单项，点击时会调用 <code>window.open(menuItem.path, '_blank')</code> 在新标签页打开。普通菜单项则使用 <code>router.push(menuItem.path)</code> 进行客户端路由跳转。外部链接的 <code>path</code> 是完整的 URL（如 <code>https://librify.example.com/</code>），而不是相对路径。
+  </div>
+</div>
+
+<div class="nav-links">
+  <a href="0032-kuai-front-http-client.html">← HTTP 请求封装</a>
+  <a href="../index.html">🗺️ 完整学习地图</a>
+  <a href="0034-kuai-front-ant-design-usage.html">Ant Design 与 AI 组件库 →</a>
+</div>
+
+</div>
+
+<script>
+function checkAnswer(el, quizId, correct) {
+  const options = el.parentNode.children;
+  for (let o of options) { o.style.pointerEvents = 'none'; }
+  if (correct) {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    for (let o of options) {
+      if (o.onclick && o.onclick.toString().includes('true')) o.classList.add('correct');
+    }
+  }
+  document.getElementById(quizId + '-answer').classList.add('show');
+}
+function toggleAnswer(quizId) {
+  document.getElementById(quizId + '-answer').classList.toggle('show');
+}
+</script>
+</body>
+</html>

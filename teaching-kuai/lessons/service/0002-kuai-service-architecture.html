@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0002 - kuai-service 架构深度追踪</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:2rem}
+  .breadcrumb{color:var(--text-secondary);font-size:.85rem;margin-bottom:1.5rem}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .breadcrumb a:hover{text-decoration:underline}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.15rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem}
+  p{margin-bottom:1rem}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15rem .4rem;border-radius:4px;font-size:.88em}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;overflow-x:auto;margin:1rem 0;font-size:.88rem;line-height:1.6}
+  pre code{background:none;padding:0}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.4rem}
+  .tag{display:inline-block;padding:.1rem .4rem;border-radius:4px;font-size:.7rem;font-weight:500;margin-right:.3rem}
+  .tag.overview{background:#dbeafe;color:#2563eb}
+  .tag.deep{background:#fef3c7;color:#b45309}
+  .tag.dev{background:#dcfce7;color:#16a34a}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0}
+  .card.info{background:#eff6ff;border-color:#bfdbfe}
+  .card-label{font-weight:600;font-size:.85rem;color:#2563eb;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.05em}
+  .card-title{font-weight:600;margin-bottom:.5rem;font-size:1.05rem}
+  .flow-box{background:var(--surface);border:2px solid var(--accent);border-radius:12px;padding:1.5rem;margin:1.5rem 0;text-align:center}
+  .flow-arrow{font-size:1.3rem;color:var(--accent);margin:0 .5rem;font-weight:700}
+  .flow-step{display:inline-block;background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:.4rem 1rem;font-weight:600;font-size:.95rem}
+  .flow-step.mongo{background:#dcfce7;border-color:#86efac;color:#166534}
+  .flow-step.mysql{background:#dbeafe;border-color:#93c5fd;color:#1e40af}
+  .flow-step.ext{background:#f3e8ff;border-color:#c4b5fd;color:#6d28d9}
+  .call-chain{font-family:'JetBrains Mono',monospace;font-size:.85rem;background:var(--code-bg);padding:1rem 1.25rem;border-radius:8px;border:1px solid var(--border);margin:1rem 0;line-height:2}
+  .call-chain .cls{color:#b45309;font-weight:600}
+  .call-chain .method{color:#2563eb}
+  .call-chain .arrow{color:#78716c;margin:0 .25rem}
+  .quiz-section{background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:1.5rem;margin-top:2.5rem}
+  .quiz-section h2{margin-top:0;color:var(--accent)}
+  .quiz-q{margin-bottom:1.5rem}
+  .quiz-q .q-title{font-weight:600;margin-bottom:.5rem}
+  .quiz-q label{display:block;padding:.4rem .75rem;margin:.3rem 0;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s;background:var(--surface)}
+  .quiz-q label:hover{border-color:var(--accent)}
+  .quiz-q input[type="radio"]{margin-right:.5rem}
+  .quiz-q .answer{display:none;margin-top:.5rem;padding:.75rem 1rem;border-radius:6px;font-size:.9rem}
+  .quiz-q .answer.correct{background:#dcfce7;color:#166534;border:1px solid #86efac}
+  .quiz-q .answer.wrong{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
+  .ask-agent::before{content:'💡 '}
+  .nav-links{display:flex;justify-content:space-between;margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+  .nav-links a{color:var(--accent);text-decoration:none;font-weight:500}
+  .nav-links a:hover{text-decoration:underline}
+  table{width:100%;border-collapse:collapse;margin:1rem 0}
+  th,td{padding:.6rem .8rem;border:1px solid var(--border);text-align:left;font-size:.9rem}
+  th{background:var(--code-bg);font-weight:600}
+</style>
+<script>
+function checkAnswer(qId, correct, el){
+  var ans=el.parentElement.parentElement.querySelector('.answer');
+  if(el.value===correct){ans.className='answer correct';ans.innerHTML='✅ 正确！';ans.style.display='block'}
+  else{ans.className='answer wrong';ans.innerHTML='❌ 错误，正确答案是 '+correct+'。';ans.style.display='block'}
+}
+</script>
+</head>
+<body>
+<div class="container">
+
+<div class="breadcrumb"><a href="../index.html">课程首页</a> &gt; kuai-service &gt; 0002 架构深度追踪</div>
+
+<div class="card info">
+  <div class="card-label">前置知识</div>
+  <p>如果你不熟悉以下概念，建议先阅读对应教程：</p>
+  <ul>
+    <li><a href="../../reference/spring-boot-basics.html">Spring Boot 基础入门</a></li>
+    <li><a href="../../reference/mybatis-plus-basics.html">MyBatis-Plus 基础入门</a></li>
+    <li><a href="../../reference/tddl-basics.html">TDDL 数据库中间件入门</a></li>
+  </ul>
+</div>
+
+<h1>🔍 kuai-service 架构深度追踪</h1>
+<p class="subtitle"><span class="tag deep">深度</span> 从 Controller 到 Mapper，追踪完整的请求处理链路</p>
+
+<!-- ============ 1. 分层架构 ============ -->
+<h2><span class="icon">🏗️</span> 三层架构总览</h2>
+<p>kuai-service 遵循经典的 <strong>Controller → Service → Mapper</strong> 三层架构：</p>
+
+<div class="flow-box">
+  <span class="flow-step">HTTP 请求</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">Controller</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">Service</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step mysql">Mapper (MySQL)</span>
+  <span style="display:block;margin:.75rem 0"></span>
+  <span style="display:inline-block;width:120px"></span>
+  <span class="flow-step">Service</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step mongo">MongoTemplate (MongoDB)</span>
+  <span style="display:block;margin:.75rem 0"></span>
+  <span style="display:inline-block;width:120px"></span>
+  <span class="flow-step">Service</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step ext">外部 API (FastGPT/企微)</span>
+</div>
+
+<table>
+  <tr><th>层级</th><th>职责</th><th>所在包</th></tr>
+  <tr><td><strong>Controller</strong></td><td>接收 HTTP 请求，参数校验，调用 Service，返回统一 Result</td><td><code>com.qunhe.kuai.controller</code></td></tr>
+  <tr><td><strong>Service</strong></td><td>核心业务逻辑，事务管理，异步任务编排</td><td><code>com.qunhe.kuai.Service</code></td></tr>
+  <tr><td><strong>Mapper</strong></td><td>数据访问，SQL/查询定义</td><td><code>com.qunhe.kuai.mapper</code> + <code>mapper.fastGpt</code></td></tr>
+</table>
+
+<!-- ============ 2. 调用链 1: Prompt 管理 ============ -->
+<h2><span class="icon">📝</span> 调用链 1：Prompt 管理</h2>
+<p>以"创建提示词"为例，追踪完整的请求流程：</p>
+
+<div class="call-chain">
+  <span class="cls">PromptController</span><span class="arrow">.</span><span class="method">createPrompt()</span><br>
+  &nbsp;&nbsp;<span class="arrow">│</span> POST /api/sso/prompts<br>
+  &nbsp;&nbsp;<span class="arrow">│</span> SsoSessionUtil.getUserInfo() → 获取当前用户<br>
+  &nbsp;&nbsp;<span class="arrow">│</span><br>
+  &nbsp;&nbsp;<span class="arrow">├→</span> <span class="cls">PromptService</span><span class="arrow">.</span><span class="method">createPrompt(request, currentUser)</span><br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; 构建 Prompt 实体，设置创建人/时间<br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp;<br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; <span class="arrow">├→</span> <span class="cls">PromptMapper</span><span class="arrow">.</span><span class="method">insert(prompt)</span> <span style="color:#16a34a">// MySQL 插入</span><br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; <span class="arrow">└→</span> 返回 Prompt 对象（含自增 ID）<br>
+  &nbsp;&nbsp;<span class="arrow">│</span><br>
+  &nbsp;&nbsp;<span class="arrow">└→</span> Result.ok({id, title, version}) → HTTP 200
+</div>
+
+<p>其他 Prompt 相关接口遵循相同模式：</p>
+<table>
+  <tr><th>HTTP 方法</th><th>路径</th><th>Controller 方法</th><th>说明</th></tr>
+  <tr><td><code>GET</code></td><td><code>/api/prompts</code></td><td><code>getPromptList()</code></td><td>列表查询（支持分类/关键词/状态筛选）</td></tr>
+  <tr><td><code>GET</code></td><td><code>/api/prompts/{id}</code></td><td><code>getPromptById()</code></td><td>详情查询</td></tr>
+  <tr><td><code>PUT</code></td><td><code>/api/sso/prompts/{id}</code></td><td><code>updatePrompt()</code></td><td>更新（需 SSO 登录）</td></tr>
+  <tr><td><code>DELETE</code></td><td><code>/api/sso/prompts/{id}</code></td><td><code>deletePrompt()</code></td><td>删除（需 SSO 登录）</td></tr>
+  <tr><td><code>PUT</code></td><td><code>/api/sso/prompts/{id}/publish</code></td><td><code>publishPrompt()</code></td><td>发布</td></tr>
+</table>
+
+<!-- ============ 3. 调用链 2: LLM 评估 ============ -->
+<h2><span class="icon">🤖</span> 调用链 2：LLM 批量评估</h2>
+<p>这是项目中最复杂的链路，涉及<strong>异步并发</strong>和<strong>外部 API 调用</strong>：</p>
+
+<div class="call-chain">
+  <span class="cls">LLMEvaluationController</span><span class="arrow">.</span><span class="method">batchLLMEvaluate()</span><br>
+  &nbsp;&nbsp;<span class="arrow">│</span> POST /kuai/evaluation-app/llmEvaluate/batch<br>
+  &nbsp;&nbsp;<span class="arrow">│</span><br>
+  &nbsp;&nbsp;<span class="arrow">├→</span> <span class="cls">LLMEvaluationService</span><span class="arrow">.</span><span class="method">batchLLMEvaluation(requests)</span><br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; 1. 计算 totalCount，验证 appId<br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; 2. <span class="cls">LlmTaskMapper</span><span class="arrow">.</span><span class="method">insertTask()</span> → 创建任务记录<br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; 3. CompletableFuture.runAsync() → 异步执行<br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; 4. 返回 taskId<br>
+  &nbsp;&nbsp;<span class="arrow">│</span><br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; [异步线程] <span class="cls">executeBatchLLMEvaluationAsync()</span><br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp;&nbsp;&nbsp; for each answer:<br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="arrow">├→</span> <span class="method">evaluateSingleAnswer()</span><br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="arrow">│</span>&nbsp;&nbsp; <span class="cls">ApplicationInfoMapper</span><span class="arrow">.</span><span class="method">findByAppId()</span><br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="arrow">│</span>&nbsp;&nbsp; <span class="cls">EvaluationResultMapper</span><span class="arrow">.</span><span class="method">selectManualSatisfaction...()</span><br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="arrow">│</span>&nbsp;&nbsp; buildLLMEvaluationPrompt() → 构建评估 Prompt<br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="arrow">│</span>&nbsp;&nbsp; <span class="cls">ChatService</span><span class="arrow">.</span><span class="method">chat()</span> <span style="color:#7c3aed">// 调用 FastGPT API</span><br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="arrow">│</span>&nbsp;&nbsp; parseScoreFromResponse() → 解析分数<br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="arrow">│</span>&nbsp;&nbsp; <span class="cls">LlmEvaluationRecordMapper</span><span class="arrow">.</span><span class="method">insert()</span><br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="arrow">└→</span> <span class="cls">SharedAppService</span><span class="arrow">.</span><span class="method">saveOrUpdateEvaluationResult()</span><br>
+  &nbsp;&nbsp;<span class="arrow">│</span><br>
+  &nbsp;&nbsp;<span class="arrow">└→</span> Result.ok({taskId, chatCount, message})
+</div>
+
+<div class="card">
+  <div class="card-title">关键设计点</div>
+  <ul>
+    <li><strong>异步执行</strong>：使用 <code>@Async("llmTaskExecutor")</code> + <code>CompletableFuture</code> 并发评估多个答案</li>
+    <li><strong>进度追踪</strong>：<code>BatchTaskProgressTracker</code> 实时更新 <code>doneCount</code>，前端可轮询任务状态</li>
+    <li><strong>取消机制</strong>：<code>shouldStopTask()</code> 检查任务状态，支持中途取消</li>
+    <li><strong>分布式锁</strong>：通过 <code>LlmEvalLockMapper</code> 防止同一 chatId 重复评估</li>
+  </ul>
+</div>
+
+<!-- ============ 4. 调用链 3: 微信机器人 ============ -->
+<h2><span class="icon">💬</span> 调用链 3：微信机器人对话</h2>
+
+<div class="call-chain">
+  <span class="cls">WeChatRobotController</span><span class="arrow">.</span><span class="method">wechatNew()</span><br>
+  &nbsp;&nbsp;<span class="arrow">│</span> POST /gpt/wechat/message<br>
+  &nbsp;&nbsp;<span class="arrow">│</span> @Async("myAsync") → 异步处理<br>
+  &nbsp;&nbsp;<span class="arrow">│</span><br>
+  &nbsp;&nbsp;<span class="arrow">├→</span> <span class="cls">RobotChatService</span><span class="arrow">.</span><span class="method">fastWxWechat(data)</span><br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; 解析消息类型（文本/图片/事件）<br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp;<br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; <span class="arrow">├→</span> <span class="cls">NewRobotService</span><span class="arrow">.</span><span class="method">getToken(messageObj)</span><br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; <span class="arrow">│</span>&nbsp;&nbsp; 根据 roomId/userId + botId 查找 Token<br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; <span class="arrow">│</span>&nbsp;&nbsp; <span class="cls">NewRobotMapper</span><span class="arrow">.</span><span class="method">list(robot)</span> → MySQL 查询<br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; <span class="arrow">│</span>&nbsp;&nbsp; 回退: TxBotUtil.getDefaultFastToken()<br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; <span class="arrow">│</span><br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; <span class="arrow">├→</span> <span class="cls">ChatService</span><span class="arrow">.</span><span class="method">chat(chatIns)</span> <span style="color:#7c3aed">// 调用 FastGPT</span><br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; <span class="arrow">│</span>&nbsp;&nbsp; HTTP POST → fastqa-new.example.com<br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; <span class="arrow">│</span><br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; <span class="arrow">└→</span> <span class="cls">WeChatSendService</span><span class="arrow">.</span><span class="method">sendMessage()</span> <span style="color:#7c3aed">// 回复企微</span><br>
+  &nbsp;&nbsp;<span class="arrow">│</span><br>
+  &nbsp;&nbsp;<span class="arrow">└→</span> void（异步，无需返回值）
+</div>
+
+<!-- ============ 5. 关键类速查 ============ -->
+<h2><span class="icon">📋</span> 关键类速查表</h2>
+
+<table>
+  <tr><th>类名</th><th>层级</th><th>职责</th></tr>
+  <tr><td><code>CommonServiceApplication</code></td><td>启动</td><td>Spring Boot 入口，@MapperScan + @EnableAsync 等</td></tr>
+  <tr><td><code>PromptController</code></td><td>Controller</td><td>提示词 CRUD，路径 <code>/api/prompts</code></td></tr>
+  <tr><td><code>LLMEvaluationController</code></td><td>Controller</td><td>LLM 评估，路径 <code>/kuai/evaluation-app</code></td></tr>
+  <tr><td><code>LLMEvaluationService</code></td><td>Service</td><td>评估核心逻辑：并发执行、进度追踪、分数解析</td></tr>
+  <tr><td><code>SharedAppService</code></td><td>Service</td><td>分享应用管理（2700+ 行），MongoDB 聚合查询</td></tr>
+  <tr><td><code>NewRobotService</code></td><td>Service</td><td>机器人 Token 注册与获取，群聊/私聊隔离</td></tr>
+  <tr><td><code>RobotChatService</code></td><td>Service</td><td>微信消息处理，调用 FastGPT 获取回答</td></tr>
+  <tr><td><code>ChatService</code></td><td>Service</td><td>通用对话服务，调用外部 LLM API</td></tr>
+  <tr><td><code>LlmTaskMapper</code></td><td>Mapper</td><td>批量评估任务表 CRUD，原生 SQL 注解</td></tr>
+  <tr><td><code>LlmEvaluationRecordMapper</code></td><td>Mapper</td><td>评估记录表，继承 <code>BaseMapper</code></td></tr>
+  <tr><td><code>ChatRepository</code></td><td>Mapper</td><td>MongoDB 会话数据访问</td></tr>
+  <tr><td><code>BatchTaskProgressTracker</code></td><td>Util</td><td>批量任务进度追踪，合并更新减少 DB 写入</td></tr>
+</table>
+
+<!-- ============ 6. 数据流 ============ -->
+<h2><span class="icon">🔄</span> 数据流模式</h2>
+
+<div class="card">
+  <div class="card-title">模式 1：同步请求-响应</div>
+  <p>适用于轻量查询，如获取提示词列表、分类统计。</p>
+  <pre><code>HTTP GET → Controller → Service → Mapper.findByCondition() → Result.ok(list)</code></pre>
+</div>
+
+<div class="card">
+  <div class="card-title">模式 2：异步任务 + 轮询</div>
+  <p>适用于耗时操作，如批量 LLM 评估。前端提交后获得 taskId，通过轮询查询进度。</p>
+  <pre><code>POST /batch → 创建任务 → 返回 taskId → 异步执行
+GET /task/{taskId} → 查询进度 {status, doneCount, totalCount, avgScore}</code></pre>
+</div>
+
+<div class="card">
+  <div class="card-title">模式 3：Webhook 回调</div>
+  <p>适用于企业微信消息推送。企微服务器主动 POST 到 kuai-service，异步处理后回复。</p>
+  <pre><code>企微 POST /gpt/wechat/message → @Async → 解析消息 → 调用 FastGPT → 回复企微</code></pre>
+</div>
+
+<!-- ============ Quiz ============ -->
+<div class="quiz-section">
+  <h2>📝 自检 Quiz</h2>
+
+  <div class="quiz-q">
+    <div class="q-title">Q1: 在 LLM 批量评估流程中，任务创建后是如何执行的？</div>
+    <label><input type="radio" name="q1" value="A" onclick="checkAnswer('q1','C',this)"> A. 同步执行，等待完成后返回</label>
+    <label><input type="radio" name="q1" value="B" onclick="checkAnswer('q1','C',this)"> B. 通过消息队列异步消费</label>
+    <label><input type="radio" name="q1" value="C" onclick="checkAnswer('q1','C',this)"> C. CompletableFuture.runAsync() 异步执行</label>
+    <label><input type="radio" name="q1" value="D" onclick="checkAnswer('q1','C',this)"> D. 定时任务轮询执行</label>
+    <div class="answer"></div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-title">Q2: PromptController 中哪些接口需要 SSO 登录？</div>
+    <label><input type="radio" name="q2" value="A" onclick="checkAnswer('q2','B',this)"> A. 所有接口都需要</label>
+    <label><input type="radio" name="q2" value="B" onclick="checkAnswer('q2','B',this)"> B. 路径中包含 /sso/ 的接口（创建、更新、删除、发布）</label>
+    <label><input type="radio" name="q2" value="C" onclick="checkAnswer('q2','B',this)"> C. 只有 DELETE 接口需要</label>
+    <label><input type="radio" name="q2" value="D" onclick="checkAnswer('q2','B',this)"> D. 不需要 SSO，使用 API Key 认证</label>
+    <div class="answer"></div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-title">Q3: SharedAppService 主要使用哪种数据库操作方式？</div>
+    <label><input type="radio" name="q3" value="A" onclick="checkAnswer('q3','B',this)"> A. MyBatis XML 映射文件</label>
+    <label><input type="radio" name="q3" value="B" onclick="checkAnswer('q3','B',this)"> B. MongoTemplate + Aggregation Pipeline</label>
+    <label><input type="radio" name="q3" value="C" onclick="checkAnswer('q3','B',this)"> C. JPA/Hibernate</label>
+    <label><input type="radio" name="q3" value="D" onclick="checkAnswer('q3','B',this)"> D. 纯 JDBC Template</label>
+    <div class="answer"></div>
+  </div>
+</div>
+
+<div class="ask-agent">
+  <strong>想深入了解？</strong>试试问 Agent："LLMEvaluationService 的 evaluateSingleAnswer 方法做了什么？" 或 "BatchTaskProgressTracker 是怎么减少数据库写入的？"
+</div>
+
+<div class="nav-links">
+  <a href="../0014-ai-testing-concepts.html">← AI 测试核心概念</a>
+  <a href="../index.html">🗺️ 完整学习地图</a>
+  <a href="0003-kuai-service-api-design.html">API 设计与数据层 →</a>
+</div>
+
+</div>
+</body>
+</html>

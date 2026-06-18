@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Redis 基础入门</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:2rem}
+  .breadcrumb{color:var(--text-secondary);font-size:.85rem;margin-bottom:1.5rem}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .breadcrumb a:hover{text-decoration:underline}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.15rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem}
+  p{margin-bottom:1rem}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15rem .4rem;border-radius:4px;font-size:.88em}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;overflow-x:auto;margin:1rem 0;font-size:.88rem;line-height:1.6}
+  pre code{background:none;padding:0}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.4rem}
+  .tag{display:inline-block;padding:.1rem .4rem;border-radius:4px;font-size:.7rem;font-weight:500;margin-right:.3rem}
+  .tag.overview{background:#dbeafe;color:#2563eb}
+  .tag.concept{background:#f3e8ff;color:#7c3aed}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0}
+  .card-title{font-weight:600;margin-bottom:.5rem;font-size:1.05rem}
+  .module-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin:1rem 0}
+  .module-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;transition:all .2s}
+  .module-card:hover{border-color:var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .module-card h4{font-size:1rem;font-weight:600;margin-bottom:.35rem}
+  .module-card p{color:var(--text-secondary);font-size:.9rem;margin:0}
+  .quiz-section{background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:1.5rem;margin-top:2.5rem}
+  .quiz-section h2{margin-top:0;color:var(--accent)}
+  .quiz-q{margin-bottom:1.5rem}
+  .quiz-q .q-title{font-weight:600;margin-bottom:.5rem}
+  .quiz-q label{display:block;padding:.4rem .75rem;margin:.3rem 0;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s;background:var(--surface)}
+  .quiz-q label:hover{border-color:var(--accent)}
+  .quiz-q input[type="radio"]{margin-right:.5rem}
+  .quiz-q .answer{display:none;margin-top:.5rem;padding:.75rem 1rem;border-radius:6px;font-size:.9rem}
+  .quiz-q .answer.correct{background:#dcfce7;color:#166534;border:1px solid #86efac}
+  .quiz-q .answer.wrong{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
+  .ask-agent::before{content:'💡 '}
+  .nav-links{display:flex;justify-content:space-between;margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+  .nav-links a{color:var(--accent);text-decoration:none;font-weight:500}
+  .nav-links a:hover{text-decoration:underline}
+  .highlight{background:var(--accent-light);padding:.1rem .3rem;border-radius:3px}
+  table{width:100%;border-collapse:collapse;margin:1rem 0}
+  th,td{padding:.6rem .8rem;border:1px solid var(--border);text-align:left;font-size:.9rem}
+  th{background:var(--code-bg);font-weight:600}
+</style>
+<script>
+function checkAnswer(qId, correct, el){
+  var ans=el.parentElement.parentElement.querySelector('.answer');
+  if(el.value===correct){ans.className='answer correct';ans.innerHTML='✅ 正确！';ans.style.display='block'}
+  else{ans.className='answer wrong';ans.innerHTML='❌ 错误，正确答案是 '+correct+'。';ans.style.display='block'}
+}
+</script>
+</head>
+<body>
+<div class="container">
+
+<div class="breadcrumb"><a href="../lessons/index.html">课程首页</a> &gt; 概念教程 &gt; Redis 基础入门</div>
+
+<h1>🔴 Redis 基础入门</h1>
+<p class="subtitle"><span class="tag concept">概念</span> 从零了解 Redis，掌握核心数据结构和 Spring Boot 集成方式</p>
+
+<!-- ============ 1. 什么是 Redis ============ -->
+<h2><span class="icon">🤔</span> 什么是 Redis？</h2>
+<p>Redis（Remote Dictionary Server）是一个开源的<strong>内存数据库</strong>。和 MySQL 不同，Redis 把数据存在<strong>内存</strong>里，所以读写速度极快，通常在<strong>微秒级别</strong>。</p>
+<p>用一个生活中的比喻：</p>
+<div class="card">
+  <p class="card-title">📦 快递柜比喻</p>
+  <p>MySQL 就像仓库货架 —— 存储量大，但找东西要走过去拿，比较慢。<br>
+  Redis 就像你家门口的快递柜 —— 东西就在手边，一按就取出来，非常快。但快递柜空间有限，不可能存下所有快递。</p>
+</div>
+<p>Redis 的核心特点：</p>
+<ul>
+  <li><strong>极快</strong>：数据存在内存中，读写速度比 MySQL 快 10~100 倍</li>
+  <li><strong>丰富的数据结构</strong>：不只是简单的 Key-Value，还支持 Hash、List、Set 等</li>
+  <li><strong>持久化</strong>：虽然数据在内存里，但可以定期保存到磁盘，防止丢失</li>
+  <li><strong>单线程模型</strong>：避免了多线程的锁竞争问题，反而更快更简单</li>
+</ul>
+
+<!-- ============ 2. 为什么用它 ============ -->
+<h2><span class="icon">💡</span> 为什么用 Redis？</h2>
+<p>Redis 最常见的三大用途：</p>
+
+<h3>2.1 缓存 —— 加速数据访问</h3>
+<p>这是 Redis 最经典的用途。查询数据库很慢，但查 Redis 很快。所以我们可以把<strong>热点数据</strong>（经常被访问的数据）存到 Redis 里：</p>
+<pre><code>// 查询用户信息的伪代码
+public User getUser(Long id) {
+    // 第一步：先查 Redis
+    String json = redis.get("user:" + id);
+    if (json != null) {
+        return parse(json);  // 命中缓存，直接返回
+    }
+    // 第二步：Redis 没有，再查数据库
+    User user = userDao.selectById(id);
+    // 第三步：把结果存到 Redis，下次就不用查库了
+    redis.set("user:" + id, toJson(user), 3600);  // 缓存 1 小时
+    return user;
+}</code></pre>
+<div class="card">
+  <p class="card-title">🏠 缓存的生活比喻</p>
+  <p>缓存就像你把常用的书放在书桌上（Redis），不常用的放在书架上（MySQL）。用完放回去，下次随手就能拿到。</p>
+</div>
+
+<h3>2.2 分布式锁 —— 防止重复操作</h3>
+<p>在分布式系统中（多个服务器同时运行），需要一种机制来保证<strong>同一时刻只有一个服务器能执行某个操作</strong>（比如扣减库存、创建订单）。Redis 可以用 <code>SETNX</code> 命令实现分布式锁：</p>
+<pre><code>// 伪代码：用 Redis 实现分布式锁
+boolean locked = redis.set("lock:order:create", "1", 30, "NX");
+// NX = 不存在才设置，相当于"抢锁"
+if (locked) {
+    try {
+        createOrder();  // 拿到锁了，执行业务
+    } finally {
+        redis.del("lock:order:create");  // 用完释放锁
+    }
+} else {
+    // 没拿到锁，提示稍后重试
+}</code></pre>
+
+<h3>2.3 会话存储 —— 保存用户登录状态</h3>
+<p>用户登录后，服务器会生成一个 <code>Session</code>（会话）来记住"这个用户已经登录了"。传统方式把 Session 存在服务器内存里，但如果有<strong>多台服务器</strong>，用户的请求可能被分配到不同的服务器，导致 Session 丢失。</p>
+<p>把 Session 存到 Redis 就解决了这个问题 —— 所有服务器都从同一个 Redis 读取 Session：</p>
+<pre><code>// Spring Boot 中配置 Session 存储到 Redis
+// 只需要引入 spring-session-data-redis 依赖即可
+// application.yml:
+spring:
+  session:
+    store-type: redis</code></pre>
+
+<!-- ============ 3. 核心数据结构 ============ -->
+<h2><span class="icon">🧩</span> 核心数据结构</h2>
+<p>Redis 不只是简单的 Key-Value 存储，它支持 4 种常用数据结构：</p>
+
+<table>
+  <tr><th>数据结构</th><th>类比</th><th>典型用途</th></tr>
+  <tr><td><strong>String</strong></td><td>一个抽屉放一个东西</td><td>缓存单个值、计数器、分布式锁</td></tr>
+  <tr><td><strong>Hash</strong></td><td>一个抽屉里有多个小格子</td><td>存储对象（用户信息、商品信息）</td></tr>
+  <tr><td><strong>List</strong></td><td>排队队列</td><td>消息队列、最新动态列表</td></tr>
+  <tr><td><strong>Set</strong></td><td>不允许重复的集合</td><td>标签、共同好友、去重</td></tr>
+</table>
+
+<h3>3.1 String —— 最基本的类型</h3>
+<pre><code># 存值
+SET user:1:name "张三"
+
+# 取值
+GET user:1:name    → "张三"
+
+# 设置过期时间（3600 秒后自动删除）
+SET token:abc123 "user_1" EX 3600
+
+# 计数器（比如文章点赞数）
+INCR article:1001:likes    → 1
+INCR article:1001:likes    → 2
+INCR article:1001:likes    → 3</code></pre>
+
+<h3>3.2 Hash —— 存储对象</h3>
+<pre><code># 存储用户信息（类似 Java 的 Map）
+HSET user:1 name "张三"
+HSET user:1 age 25
+HSET user:1 email "zhangsan@example.com"
+
+# 获取单个字段
+HGET user:1 name    → "张三"
+
+# 获取所有字段
+HGETALL user:1
+→ {name: "张三", age: 25, email: "zhangsan@example.com"}</code></pre>
+<div class="card">
+  <p class="card-title">String vs Hash 怎么选？</p>
+  <p>如果只需要存一个值，用 <strong>String</strong>；如果需要存一个对象的多个字段，用 <strong>Hash</strong>。Hash 的好处是可以只更新某个字段，不用取出整个对象。</p>
+</div>
+
+<h3>3.3 List —— 有序列表</h3>
+<pre><code># 从左边插入（像排队一样）
+LPUSH messages "消息1"
+LPUSH messages "消息2"
+LPUSH messages "消息3"
+
+# 获取列表（0 到 2，共 3 条）
+LRANGE messages 0 2
+→ ["消息3", "消息2", "消息1"]  # 最新的在前面
+
+# 从右边取出（FIFO 先进先出）
+RPOP messages → "消息1"</code></pre>
+
+<h3>3.4 Set —— 无序不重复集合</h3>
+<pre><code># 添加标签
+SADD article:1:tags "Java"
+SADD article:1:tags "Redis"
+SADD article:1:tags "Spring"
+
+# 获取所有标签
+SMEMBERS article:1:tags → {"Java", "Redis", "Spring"}
+
+# 判断是否包含某个标签
+SISMEMBER article:1:tags "Redis" → 1 (true)
+
+# 两个集合求交集（比如共同好友）
+SINTER user:1:friends user:2:friends</code></pre>
+
+<!-- ============ 4. Spring Boot 集成 ============ -->
+<h2><span class="icon">🚀</span> Spring Boot 集成 Redis</h2>
+<p>在 Spring Boot 中使用 Redis 非常简单，主要通过 <strong>RedisTemplate</strong> 来操作。</p>
+
+<h3>第一步：引入依赖</h3>
+<pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-data-redis&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+
+<h3>第二步：配置连接信息</h3>
+<pre><code># application.yml
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: your_password
+      database: 0</code></pre>
+
+<h3>第三步：使用 RedisTemplate</h3>
+<pre><code>@Service
+public class CacheService {
+
+    @Autowired
+    private RedisTemplate&lt;String, Object&gt; redisTemplate;
+
+    // 存值
+    public void set(String key, Object value, long seconds) {
+        redisTemplate.opsForValue().set(key, value, seconds, TimeUnit.SECONDS);
+    }
+
+    // 取值
+    public Object get(String key) {
+        return redisTemplate.opsForValue().get(key);
+    }
+
+    // 删除
+    public void delete(String key) {
+        redisTemplate.delete(key);
+    }
+
+    // 判断是否存在
+    public boolean hasKey(String key) {
+        return Boolean.TRUE.equals(redisTemplate.hasKey(key));
+    }
+}</code></pre>
+
+<h3>opsFor 系列方法</h3>
+<p>RedisTemplate 提供了不同数据结构的操作方法：</p>
+<pre><code>// String 操作
+redisTemplate.opsForValue().set("key", "value");
+redisTemplate.opsForValue().get("key");
+
+// Hash 操作
+redisTemplate.opsForHash().put("user:1", "name", "张三");
+redisTemplate.opsForHash().get("user:1", "name");
+
+// List 操作
+redisTemplate.opsForList().leftPush("queue", "msg");
+redisTemplate.opsForList().rightPop("queue");
+
+// Set 操作
+redisTemplate.opsForSet().add("tags", "Java", "Redis");
+redisTemplate.opsForSet().members("tags");</code></pre>
+
+<div class="ask-agent">
+  <strong>试试问 Agent：</strong>"Redis 和 Memcached 有什么区别？" 或者 "Redis 的持久化方式 RDB 和 ADB 有什么区别？"
+</div>
+
+<!-- ============ Quiz ============ -->
+<div class="quiz-section">
+  <h2><span class="icon">📝</span> Quiz — 检验你的理解</h2>
+
+  <div class="quiz-q">
+    <div class="q-title">Q1: Redis 最适合用于以下哪个场景？</div>
+    <label><input type="radio" name="q1" value="A" onclick="checkAnswer('q1','A',this)"> A. 缓存热点数据，加速查询</label>
+    <label><input type="radio" name="q1" value="B" onclick="checkAnswer('q1','B',this)"> B. 存储所有业务数据，完全替代 MySQL</label>
+    <label><input type="radio" name="q1" value="C" onclick="checkAnswer('q1','C',this)"> C. 存储大型文件（如图片、视频）</label>
+    <div class="answer"></div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-title">Q2: 在 Spring Boot 中，操作 Redis 的核心类是？</div>
+    <label><input type="radio" name="q2" value="A" onclick="checkAnswer('q2','A',this)"> A. JdbcTemplate</label>
+    <label><input type="radio" name="q2" value="B" onclick="checkAnswer('q2','B',this)"> B. RedisTemplate</label>
+    <label><input type="radio" name="q2" value="C" onclick="checkAnswer('q2','C',this)"> C. MongoTemplate</label>
+    <div class="answer"></div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-title">Q3: 存储一个用户的多个属性（姓名、年龄、邮箱），最适合用 Redis 的哪种数据结构？</div>
+    <label><input type="radio" name="q3" value="A" onclick="checkAnswer('q3','A',this)"> A. String</label>
+    <label><input type="radio" name="q3" value="B" onclick="checkAnswer('q3','B',this)"> B. List</label>
+    <label><input type="radio" name="q3" value="C" onclick="checkAnswer('q3','C',this)"> C. Hash</label>
+    <div class="answer"></div>
+  </div>
+</div>
+
+<div class="nav-links">
+  <a href="../lessons/index.html">← 返回课程首页</a>
+  <a href="websocket-basics.html">下一课：WebSocket 与 STOMP 协议入门 →</a>
+</div>
+
+</div>
+</body>
+</html>

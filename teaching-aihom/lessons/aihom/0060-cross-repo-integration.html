@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>060 跨仓库集成指南</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:780px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:.95rem;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  h2{font-size:1.35rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem}
+  h3{font-size:1.1rem;font-weight:500;margin-top:1.5rem;margin-bottom:.75rem;color:var(--accent)}
+  p{margin-bottom:1rem}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0}
+  .card.info{border-left:3px solid var(--info)}.card.warning{border-left:3px solid var(--warning)}.card.success{border-left:3px solid var(--success)}
+  .card-label{font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+  .card.info .card-label{color:var(--info)}.card.warning .card-label{color:var(--warning)}.card.success .card-label{color:var(--success)}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15em .4em;border-radius:4px;font-size:.88em}
+  pre{background:#1c1917;color:#e7e5e4;padding:1.25rem 1.5rem;border-radius:8px;overflow-x:auto;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.6}
+  pre .comment{color:#78716c}pre .keyword{color:#f59e0b}pre .string{color:#86efac}pre .important{color:#fbbf24;font-weight:500}pre .dir{color:#93c5fd}
+  table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.92rem}
+  th,td{text-align:left;padding:.6rem .8rem;border-bottom:1px solid var(--border)}
+  th{font-weight:500;color:var(--text-secondary);font-size:.82rem;text-transform:uppercase;letter-spacing:.04em}
+  .quiz{background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0}
+  .quiz-title{font-weight:700;margin-bottom:.75rem;color:var(--accent)}
+  .quiz-options{list-style:none}.quiz-options li{padding:.5rem .75rem;margin:.35rem 0;border-radius:6px;cursor:pointer;transition:background .15s;border:1px solid transparent}
+  .quiz-options li:hover{background:#fde68a33;border-color:#fbbf24}
+  .quiz-options li.correct{background:#dcfce7;border-color:#16a34a}.quiz-options li.wrong{background:#fee2e2;border-color:#ef4444}
+  .quiz-feedback{margin-top:.75rem;padding:.75rem;border-radius:6px;display:none;font-size:.9rem}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
+  .ask-agent::before{content:'💡 '}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.3rem}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>060 跨仓库集成指南</h1>
+<p class="subtitle">理解 AIHom 核心工程如何协作，数据如何在它们之间流动</p>
+
+<h2>1. 多仓协作全景</h2>
+<pre>
+                    ┌─────────────────────┐
+                    │     <span class="important">ai-home</span>          │
+                    │  React 前端主应用     │
+                    │  对话+画布+2D/3D     │
+                    └──┬──────────┬────────┘
+                       │ iframe   │ iframe
+          ┌────────────▼──┐  ┌───▼────────────┐
+          │   <span class="dir">viewer-2d</span>   │  │   <span class="dir">render-3d</span>    │
+          │  2D 户型渲染   │  │  3D 渲染+出图   │
+          │  PixiJS       │  │  EGS WebGL     │
+          └───────────────┘  └────────────────┘
+                       │          │
+                       │ WebSocket │ HTTP
+          ┌────────────▼──────────▼────────┐
+          │       <span class="important">ai-native-service</span>        │
+          │  Java 21 + Spring AI           │
+          │  Agent 对话 + 工具调用          │
+          └──────────────┬────────────────┘
+                         │ HTTP/内部调用
+          ┌──────────────▼────────────────┐
+          │     <span class="dir">auto-layout-service</span>       │
+          │  Java 8 + Spring Boot         │
+          │  AI 自动布局 + 商品匹配        │
+          └──────────────────────────────┘
+</pre>
+
+<h2>2. 数据流：用户发送 "帮我设计一个客厅"</h2>
+
+<table>
+  <tr><th>步骤</th><th>仓库</th><th>动作</th><th>协议</th></tr>
+  <tr><td>①</td><td>ai-home</td><td>用户输入消息，SDK 发送</td><td>WebSocket</td></tr>
+  <tr><td>②</td><td>ai-native-service</td><td>接收消息，Supervisor 路由到子 Agent</td><td>-</td></tr>
+  <tr><td>③</td><td>ai-native-service</td><td>子 Agent 调用 FloorplanToStructureTool</td><td>HTTP</td></tr>
+  <tr><td>④</td><td>ai-native-service</td><td>调用 auto-layout-service 生成布局</td><td>HTTP</td></tr>
+  <tr><td>⑤</td><td>auto-layout-service</td><td>双通道并行布局（RAG + PRODUCT_CONFIG）</td><td>OpenAI/Gemini</td></tr>
+  <tr><td>⑥</td><td>ai-native-service</td><td>收到布局结果，调用前端 MCP 工具</td><td>WebSocket</td></tr>
+  <tr><td>⑦</td><td>ai-home</td><td>执行 3D 渲染工具，调用 render-3d</td><td>iframe postMessage</td></tr>
+  <tr><td>⑧</td><td>render-3d</td><td>加载 3D 场景，渲染效果图</td><td>EGS WebGL</td></tr>
+  <tr><td>⑨</td><td>ai-home</td><td>渲染结果回传给 ai-native-service</td><td>WebSocket</td></tr>
+  <tr><td>⑩</td><td>ai-native-service</td><td>组装最终回复，流式返回给前端</td><td>WebSocket</td></tr>
+</table>
+
+<h2>3. 接口契约</h2>
+
+<h3>3.1 ai-home ↔ ai-native-service</h3>
+<table>
+  <tr><th>协议</th><th>用途</th><th>关键接口</th></tr>
+  <tr><td>WebSocket/STOMP 帧 + RawSocketMessage</td><td>实时对话</td><td>SendMessage, CancelMessage, AddMessages</td></tr>
+  <tr><td>HTTP REST</td><td>非实时操作</td><td>/conversation, /image, /credit</td></tr>
+</table>
+
+<h3>3.2 ai-home ↔ viewer-2d / render-3d</h3>
+<table>
+  <tr><th>协议</th><th>用途</th><th>关键消息</th></tr>
+  <tr><td>iframe postMessage</td><td>数据同步</td><td>roomInfo, previewImage, showRule</td></tr>
+  <tr><td>iframe postMessage</td><td>MCP 工具调用</td><td>capture3DScreenshot, generateVideo</td></tr>
+</table>
+
+<h3>3.3 ai-native-service → auto-layout-service</h3>
+<table>
+  <tr><th>协议</th><th>用途</th><th>关键接口</th></tr>
+  <tr><td>HTTP REST</td><td>自动布局</td><td>/auto-layout, /match-furniture</td></tr>
+  <tr><td>HTTP REST</td><td>户型识别</td><td>/floorplan-to-structure</td></tr>
+</table>
+
+<h2>4. 版本兼容性注意事项</h2>
+
+<div class="card warning">
+  <div class="card-label">高风险</div>
+  <ul>
+    <li><strong>WebSocket 消息格式</strong> — 前后端必须同步更新，否则消息解析失败</li>
+    <li><strong>iframe postMessage 协议</strong> — ai-home 和 viewer 的消息类型必须一致</li>
+    <li><strong>MCP 工具签名</strong> — 工具名、参数格式变更需要前后端同步</li>
+    <li><strong>auto-layout-service 接口</strong> — 请求/响应结构变更需要 ai-native-service 同步</li>
+  </ul>
+</div>
+
+<div class="card success">
+  <div class="card-label">安全</div>
+  <ul>
+    <li><strong>Nacos 配置变更</strong> — 只影响 ai-native-service，无需协调</li>
+    <li><strong>CSS/样式变更</strong> — 各仓库独立，互不影响</li>
+    <li><strong>工具内部逻辑</strong> — 只要接口不变，内部实现可独立修改</li>
+  </ul>
+</div>
+
+<h2>5. 联调指南</h2>
+<ol>
+  <li><strong>本地联调</strong> — ai-home 本地启动，连接 dev 环境的 ai-native-service</li>
+  <li><strong>前端联调</strong> — viewer-2d / render-3d 本地启动，通过 iframe 嵌入 ai-home</li>
+  <li><strong>后端联调</strong> — ai-native-service 本地启动，连接 dev 环境的 auto-layout-service</li>
+  <li><strong>全链路</strong> — 所有服务本地启动，修改 ai-home 的 WebSocket endpoint 指向本地</li>
+</ol>
+
+<h2>6. 自检 Quiz</h2>
+
+<div class="quiz" id="quiz1">
+  <div class="quiz-title">Q1: ai-home 与 viewer-2d 的通信方式是？</div>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz1',0)">A. WebSocket</li>
+    <li onclick="checkQuiz('quiz1',1)">B. iframe postMessage</li>
+    <li onclick="checkQuiz('quiz1',2)">C. HTTP REST</li>
+    <li onclick="checkQuiz('quiz1',3)">D. 共享内存</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <div class="quiz-title">Q2: ai-native-service 调用 auto-layout-service 使用什么协议？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz2',0)">A. WebSocket</li>
+    <li onclick="checkQuiz('quiz2',1)">B. gRPC</li>
+    <li onclick="checkQuiz('quiz2',2)">C. HTTP REST</li>
+    <li onclick="checkQuiz('quiz2',3)">D. 消息队列</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <div class="quiz-title">Q3: 修改哪个接口需要前后端同步发版？</div>
+  <ul class="quiz-options" data-correct="0">
+    <li onclick="checkQuiz('quiz3',0)">A. WebSocket 消息格式</li>
+    <li onclick="checkQuiz('quiz3',1)">B. Nacos Agent 配置</li>
+    <li onclick="checkQuiz('quiz3',2)">C. CSS 样式</li>
+    <li onclick="checkQuiz('quiz3',3)">D. 工具内部实现</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="card info">
+  <div class="card-label">课程完成</div>
+  <p>恭喜！你已经完成了全部 27 课的 AIHom 技术栈学习。建议按以下顺序实践：</p>
+  <ol>
+    <li>选一个你感兴趣的仓库，从概览课开始</li>
+    <li>跟着深度课追踪代码</li>
+    <li>用实战课的指南做一个小功能</li>
+    <li>遇到不懂的随时问 agent</li>
+  </ol>
+</div>
+</div>
+<script>
+function checkQuiz(q,s){const o=document.getElementById(q).querySelector('.quiz-options'),c=parseInt(o.dataset.correct),i=o.querySelectorAll('li'),f=document.getElementById(q).querySelector('.quiz-feedback');i.forEach((x,n)=>{x.onclick=null;if(n===c)x.classList.add('correct');if(n===s&&n!==c)x.classList.add('wrong')});const fb={q1:{c:'✓ 对！ai-home 通过 iframe 嵌入 viewer-2d，使用 postMessage 双向通信。',w:'✗ 是 iframe postMessage。viewer-2d 作为 iframe 嵌入 ai-home。'},q2:{c:'✓ 对！ai-native-service 通过 HTTP REST 调用 auto-layout-service。',w:'✗ 是 HTTP REST。两个后端服务之间通过 HTTP 接口通信。'},q3:{c:'✓ 对！WebSocket 消息格式变更需要前后端同步发版，否则消息解析失败。',w:'✗ 是 WebSocket 消息格式。这是前后端的硬契约，变更必须同步。'}};f.style.display='block';f.textContent=s===c?fb[q].c:fb[q].w;f.style.background=s===c?'#dcfce7':'#fee2e2'}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 060</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0059-template-system.html">上一课：059 模板系统与灯光/背景管理</a><a class="primary" href="../spring-ai/0061-aihom-hands-on.html">下一课：061 回到 AIHom：重读 ai-native-service + 新增功能</a></div></nav>
+</body>
+</html>

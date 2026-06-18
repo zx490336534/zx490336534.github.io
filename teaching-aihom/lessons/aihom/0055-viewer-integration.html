@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>055 2D/3D Viewer 集成与通信</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --accent: #b45309;
+    --accent-light: #fef3c7;
+    --border: #e7e5e4;
+    --code-bg: #f5f5f4;
+    --success: #16a34a;
+    --warning: #d97706;
+    --info: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .card.info { border-left: 3px solid var(--info); }
+  .card.warning { border-left: 3px solid var(--warning); }
+  .card.success { border-left: 3px solid var(--success); }
+
+  .card-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+  .card.info .card-label { color: var(--info); }
+  .card.warning .card-label { color: var(--warning); }
+  .card.success .card-label { color: var(--success); }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    font-size: 0.88em;
+  }
+
+  pre {
+    background: #1c1917;
+    color: #e7e5e4;
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  pre .comment { color: #78716c; }
+  pre .keyword { color: #f59e0b; }
+  pre .string { color: #86efac; }
+  pre .dir { color: #93c5fd; }
+  pre .file { color: #e7e5e4; }
+  pre .important { color: #fbbf24; font-weight: 500; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.92rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .tree { margin: 1rem 0; }
+
+  .quiz {
+    background: var(--accent-light);
+    border: 1px solid #fbbf24;
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .quiz-title {
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+  .quiz-options { list-style: none; }
+  .quiz-options li {
+    padding: 0.5rem 0.75rem;
+    margin: 0.35rem 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+  }
+  .quiz-options li:hover { background: #fde68a33; border-color: #fbbf24; }
+  .quiz-options li.correct { background: #dcfce7; border-color: #16a34a; }
+  .quiz-options li.wrong { background: #fee2e2; border-color: #ef4444; }
+  .quiz-feedback {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    display: none;
+    font-size: 0.9rem;
+  }
+
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+  }
+  .flow-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .flow-arrow { color: var(--text-secondary); }
+
+  .next-lesson {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .next-lesson a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .next-lesson a:hover { text-decoration: underline; }
+
+  .ask-agent {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+    color: #1e40af;
+  }
+  .ask-agent::before { content: '💡 '; }
+
+  ul, ol { margin: 0.5rem 0 1rem 1.5rem; }
+  li { margin-bottom: 0.3rem; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>055 2D/3D Viewer 集成与通信</h1>
+<p class="subtitle">理解 ai-home 如何通过 iframe 嵌入 viewer-2d 和 render-3d，以及它们之间的 postMessage 通信协议、数据同步与 MCP 工具桥接机制</p>
+
+<!-- ==================== Section 1 ==================== -->
+<h2>1. 为什么用 iframe 嵌入 Viewer</h2>
+
+<p>AI Home 的前端页面需要同时展示<strong>2D 户型图</strong>和<strong>3D 渲染图</strong>。这两个 Viewer 并不是 ai-home 自己实现的，而是由独立的子应用（viewer-2d / render-3d）提供。ai-home 通过 <code>&lt;iframe&gt;</code> 将它们嵌入到自己的页面中。</p>
+
+<div class="card info">
+  <div class="card-label">设计优势</div>
+  <p><strong>技术隔离</strong>：viewer-2d 基于 Canvas/WebGL 绑定、render-3d 基于 BimFace 引擎，两者技术栈与 ai-home（React）完全不同，iframe 天然实现了运行时隔离。<br>
+  <strong>独立部署</strong>：Viewer 子应用可以独立迭代版本，不影响宿主页面。<br>
+  <strong>复用性</strong>：同一个 Viewer 可以被多个产品页面嵌入，只需遵循统一的通信协议。</p>
+</div>
+
+<!-- ==================== Section 2 ==================== -->
+<h2>2. iframe 嵌入方式</h2>
+
+<h3>Viewer2D 嵌入</h3>
+
+<p>在 <code>Viewer2D.tsx</code> 组件中，通过一个标准的 <code>&lt;iframe&gt;</code> 标签嵌入 2D 查看器：</p>
+
+<pre>
+&lt;<span class="keyword">iframe</span>
+  <span class="dir">ref</span>={iframeRef}
+  <span class="dir">id</span>={getViewer2DIframeId(designId, levelId)}
+  <span class="dir">src</span>={<span class="string">`${origin}/pub/tool/bim/viewer-2d?designId=${designId}&levelId=${levelId}`</span>}
+  width=<span class="string">"100%"</span> height=<span class="string">"100%"</span> frameBorder=<span class="string">"0"</span> allowFullScreen
+/&gt;
+</pre>
+
+<h3>Render3D 嵌入</h3>
+
+<p>在 <code>Render3D/index.tsx</code> 组件中，嵌入方式类似，但 URL 路径和参数不同：</p>
+
+<pre>
+&lt;<span class="keyword">iframe</span>
+  <span class="dir">ref</span>={iframeRef}
+  <span class="dir">id</span>={getRender3DIframeId(designId, levelId)}
+  <span class="dir">src</span>={<span class="string">`${origin}/pub/tool/bim/render-3d?designId=${designId}&levelId=${levelId}&generateGallery=${...}`</span>}
+  width=<span class="string">"100%"</span> height=<span class="string">"100%"</span> frameBorder=<span class="string">"0"</span> allowFullScreen
+/&gt;
+</pre>
+
+<div class="card warning">
+  <div class="card-label">关键细节</div>
+  <p>iframe 的 <code>id</code> 由 <code>getViewer2DIframeId()</code> / <code>getRender3DIframeId()</code> 工具函数生成，格式为基于 designId 和 levelId 的唯一标识。这个 id 是后续 <code>postMessage</code> 定向发送消息的关键。</p>
+</div>
+
+<!-- ==================== Section 3 ==================== -->
+<h2>3. postMessage 通信协议</h2>
+
+<p>父窗口（ai-home）和子窗口（Viewer iframe）之间的所有通信都通过 <code>window.postMessage</code> 实现。ai-home 封装了 <code>IframeMessenger</code> 单例来统一管理消息收发。</p>
+
+<h3>消息格式</h3>
+
+<p>所有消息都遵循统一的结构：</p>
+
+<pre>
+<span class="comment">// IframeMessage 接口定义</span>
+interface IFrameMessage&lt;T&gt; {
+  type: string;   <span class="comment">// 消息类型枚举值</span>
+  data: T;         <span class="comment">// 消息载荷，类型随 type 变化</span>
+}
+</pre>
+
+<h3>消息方向</h3>
+
+<table>
+  <tr><th>方向</th><th>枚举名</th><th>含义</th></tr>
+  <tr><td rowspan="5"><strong>子 → 父</strong><br><code>INPUT_MESSAGE_TYPE</code></td><td><code>VIEWER2D_LOADING_SUCCESS</code></td><td>2D Viewer 加载完成</td></tr>
+  <tr><td><code>RENDER3D_LOADING_SUCCESS</code></td><td>3D Viewer 加载完成</td></tr>
+  <tr><td><code>RENDER3D_UPDATE_RENDER_IMAGE</code></td><td>3D 渲染图更新（含 base64 图片）</td></tr>
+  <tr><td><code>SYNC_STATUS_CHANGE</code></td><td>2D 同步状态变化（Syncing / UpToDate / Failed）</td></tr>
+  <tr><td><code>BATCH_CAPTURE_STATUS_CHANGE</code></td><td>批量截图状态变化（Ready / Completed / Failed）</td></tr>
+  <tr><td rowspan="5"><strong>父 → 子</strong><br><code>OUT_PUT_MESSAGE_TYPE</code></td><td><code>VIEWER2D_UPDATE_DESIGN</code></td><td>通知 2D Viewer 刷新设计数据</td></tr>
+  <tr><td><code>RENDER3D_REFRESH</code></td><td>通知 3D Viewer 刷新渲染</td></tr>
+  <tr><td><code>RENDER3D_GET_RENDER_IMAGE</code></td><td>请求 3D Viewer 返回渲染截图</td></tr>
+  <tr><td><code>TRIGGER_BATCH_CAPTURE</code></td><td>触发 3D 批量截图</td></tr>
+  <tr><td><code>SCREEN_MODE_CHANGE</code></td><td>通知 Viewer 全屏/退出全屏</td></tr>
+</table>
+
+<h3>IframeMessenger 核心实现</h3>
+
+<pre>
+<span class="keyword">class</span> IframeMessenger {
+  <span class="comment">// 订阅子窗口消息（按 type 分发）</span>
+  <span class="dir">on</span>&lt;T&gt;(type: T, handler: MessageHandler): () =&gt; void;
+
+  <span class="comment">// 向指定 iframe 发送消息</span>
+  <span class="dir">postToIframe</span>(iframeId: string, type: T, data: T): void {
+    <span class="keyword">const</span> iframe = document.getElementById(iframeId);
+    iframe.contentWindow.postMessage({ type, data }, origin);
+  }
+
+  <span class="comment">// 内部：监听 window.message 事件，按 type 分发给注册的 handler</span>
+  <span class="keyword">private</span> handleMessage(event: MessageEvent) {
+    <span class="keyword">const</span> message = event.data;
+    <span class="keyword">const</span> handlers = <span class="keyword">this</span>.handlers.get(message.type);
+    handlers.forEach(h =&gt; h(message.data, event));
+  }
+}
+</pre>
+
+<div class="card success">
+  <div class="card-label">安全机制</div>
+  <p><code>postMessage</code> 调用时始终指定 <code>window.location.origin</code> 作为目标源，防止消息泄漏到非同源页面。<code>IframeMessenger</code> 在构造函数中就开始监听，是整个 Viewer 通信的中枢。</p>
+</div>
+
+<!-- ==================== Section 4 ==================== -->
+<h2>4. 数据同步机制</h2>
+
+<p>当 AI Agent 执行了户型布局等操作后，2D 和 3D Viewer 需要同步最新数据。这个过程涉及多个状态和 loading 管理。</p>
+
+<h3>同步流程</h3>
+
+<div class="flow">
+  <span class="flow-step">Agent 完成布局</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">发送 VIEWER2D_UPDATE_DESIGN</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">2D Viewer 重新加载</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">SYNC_STATUS_CHANGE (Syncing)</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">父窗口显示 loading</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">SYNC_STATUS_CHANGE (UpToDate)</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">loading 消失</span>
+</div>
+
+<h3>SyncStatus 状态机</h3>
+
+<p><code>ViewerStateManager</code> 维护了一个 <code>syncStatusMap</code>，以 <code>designId-levelId</code> 为 key 跟踪每个 Viewer 的同步状态：</p>
+
+<pre>
+<span class="keyword">enum</span> SyncStatus {
+  Default    = <span class="string">'default'</span>,       <span class="comment">// 正常态</span>
+  OutOfSync  = <span class="string">'out_of_sync'</span>,   <span class="comment">// 数据不同步</span>
+  Syncing    = <span class="string">'syncing'</span>,       <span class="comment">// 正在同步中 → 显示 loading</span>
+  UpToDate   = <span class="string">'up_to_date'</span>,    <span class="comment">// 同步完成 → 3 秒后回到 Default</span>
+  SyncFailed = <span class="string">'sync_failed'</span>,   <span class="comment">// 同步失败 → 显示 toast 错误</span>
+}
+</pre>
+
+<h3>3D Viewer 刷新的额外保障</h3>
+
+<p>3D Viewer 的刷新有一个 <strong>20 秒超时机制</strong>。如果发送 <code>RENDER3D_REFRESH</code> 后 20 秒内未收到 <code>RENDER3D_LOADING_SUCCESS</code>，会自动清除 loading 状态并提示超时错误。同时还监听 <code>RENDER3D_REFRESH_FAILED</code> 来处理渲染失败的情况。</p>
+
+<div class="card info">
+  <div class="card-label">布局进度</div>
+  <p>除了同步状态，<code>ViewerStateManager</code> 还维护了 <code>layoutProgressMap</code>，跟踪布局生成的实时进度（如 <code>3/10</code> 个房间已布局），在 loading 界面上显示给用户。</p>
+</div>
+
+<!-- ==================== Section 5 ==================== -->
+<h2>5. MCP 工具桥接流程</h2>
+
+<p>当 AI Agent 需要获取 3D 场景的截图时，不能直接操作 WebGL 上下文（它在 iframe 里），而是通过 <strong>MCP 工具桥接</strong> 来完成：后端发起工具调用 → 前端 SDK 接收 → 通过 postMessage 让 iframe 截图 → 结果回传。</p>
+
+<h3>注册的前端 MCP 工具</h3>
+
+<table>
+  <tr><th>工具名</th><th>功能</th></tr>
+  <tr><td><code>capture_3d_screenshot</code></td><td>截取 3D 截图，返回图片 URL 列表</td></tr>
+  <tr><td><code>capture_3d_render</code></td><td>截取 3D 截图并通过 AI 优化渲染质量</td></tr>
+  <tr><td><code>search_decoration_model</code></td><td>搜索装饰模型</td></tr>
+  <tr><td><code>replace_decoration_model</code></td><td>替换装饰模型</td></tr>
+</table>
+
+<h3>capture_3d_screenshot 完整链路</h3>
+
+<div class="flow">
+  <span class="flow-step">Agent 调用工具</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">WebSocket 推送 Tool Call</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">agent-conversation-sdk 触发 callback</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">capture3DScreenshotApi()</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">postMessage → iframe</span>
+</div>
+
+<p>具体步骤：</p>
+
+<ol>
+  <li><strong>触发截图</strong> — 通过 <code>iframeMessenger.postToIframe()</code> 向 render-3d iframe 发送 <code>TRIGGER_BATCH_CAPTURE</code> 消息</li>
+  <li><strong>等待回调</strong> — 监听 <code>BATCH_CAPTURE_STATUS_CHANGE</code> 消息，等待 iframe 完成截图</li>
+  <li><strong>接收 base64</strong> — iframe 截图完成后，通过 postMessage 返回 base64 图片数组</li>
+  <li><strong>上传图片</strong> — 将 base64 图片通过 <code>FileUploadUtils.uploadBase64Image()</code> 上传到 CDN</li>
+  <li><strong>返回 URL</strong> — 将上传后的 URL 列表作为 MCP 工具结果返回给 Agent</li>
+</ol>
+
+<pre>
+<span class="comment">// MCP 工具注册（MCP/index.ts）</span>
+<span class="keyword">export const</span> FRONT_TOOLS: MCPTool[] = [
+  {
+    name: <span class="string">'capture_3d_screenshot'</span>,
+    callback: capture3DScreenshot,  <span class="comment">// 由 agent-conversation-sdk 调用</span>
+  },
+  {
+    name: <span class="string">'capture_3d_render'</span>,
+    callback: capture3DRender,      <span class="comment">// 截图 + AI 渲染优化</span>
+  },
+  <span class="comment">// ...</span>
+];
+</pre>
+
+<div class="card warning">
+  <div class="card-label">超时与重试</div>
+  <p><code>capture3DScreenshotApi</code> 设有 <strong>5 分钟超时</strong>（<code>SCREENSHOT_TIMEOUT = 300000ms</code>）。如果 iframe 未就绪（<code>BATCH_CAPTURE_STATUS_CHANGE</code> 的 <code>status</code> 为 <code>Ready</code> 时才触发截图），会等待直到超时。截图失败时有完善的诊断信息上报机制。</p>
+</div>
+
+<h3>capture_3d_render 的额外步骤</h3>
+
+<p>在 <code>capture_3d_screenshot</code> 的基础上，<code>capture_3d_render</code> 还会：</p>
+
+<ol>
+  <li>将截取的每张图片调用 <code>optimizeRenderImage()</code> 进行 AI 渲染优化</li>
+  <li>使用 <code>Promise.allSettled</code> 并行处理，容忍部分失败</li>
+  <li>汇总消耗的积分（credits）和成功/失败数量</li>
+  <li>返回优化后的图片 URL 列表</li>
+</ol>
+
+<!-- ==================== Section 6 ==================== -->
+<h2>6. 全局 iframe 消息处理</h2>
+
+<p>除了 Viewer 组件内部的消息处理，<code>GlobalIframeMessage.ts</code> 在应用启动时注册了一些全局的 iframe 消息处理器：</p>
+
+<pre>
+<span class="keyword">export function</span> setupGlobalIframeMessage() {
+  setupToastMessage();     <span class="comment">// iframe 发来的 toast 弹窗</span>
+  setupCommentsMessage();  <span class="comment">// 评论选中项信息变更</span>
+  setupCaptureMessage();   <span class="comment">// 截图就绪状态</span>
+}
+</pre>
+
+<table>
+  <tr><th>消息类型</th><th>处理逻辑</th></tr>
+  <tr><td><code>TOAST_MESSAGE</code></td><td>iframe 可以请求宿主显示 toast 通知（success/error/warn）</td></tr>
+  <tr><td><code>COMMENTS_INFO_CHANGE</code></td><td>iframe 中用户选中了某个构件或家具，同步到宿主的评论系统</td></tr>
+  <tr><td><code>BATCH_CAPTURE_STATUS_CHANGE</code></td><td>维护 <code>captureableMap</code>，标记哪个 designId-levelId 已就绪可截图</td></tr>
+</table>
+
+<!-- ==================== Quiz ==================== -->
+<h2>7. 自检 Quiz</h2>
+
+<div class="quiz" id="quiz1">
+  <div class="quiz-title">Q1: ai-home 与 Viewer iframe 之间的通信用的是什么机制？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz1', 0)">A. WebSocket 双向通信</li>
+    <li onclick="checkQuiz('quiz1', 1)">B. HTTP 轮询</li>
+    <li onclick="checkQuiz('quiz1', 2)">C. window.postMessage</li>
+    <li onclick="checkQuiz('quiz1', 3)">D. localStorage 事件</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <div class="quiz-title">Q2: 当 MCP 工具 capture_3d_screenshot 需要截图时，正确的工作流程是？</div>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz2', 0)">A. 直接在父窗口调用 WebGL API 截取 canvas</li>
+    <li onclick="checkQuiz('quiz2', 1)">B. 通过 postMessage 发送 TRIGGER_BATCH_CAPTURE，监听 BATCH_CAPTURE_STATUS_CHANGE 接收 base64 图片</li>
+    <li onclick="checkQuiz('quiz2', 2)">C. 让后端直接调用 render-3d 服务的截图接口</li>
+    <li onclick="checkQuiz('quiz2', 3)">D. 使用 canvas.toDataURL() 跨域获取 iframe 内容</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <div class="quiz-title">Q3: 3D Viewer 刷新时，如果 20 秒内没有收到加载成功的消息，会发生什么？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz3', 0)">A. 自动重试刷新</li>
+    <li onclick="checkQuiz('quiz3', 1)">B. 页面自动刷新</li>
+    <li onclick="checkQuiz('quiz3', 2)">C. 清除 loading 状态并显示超时错误 toast</li>
+    <li onclick="checkQuiz('quiz3', 3)">D. 什么都不做，一直等待</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<!-- ==================== Next ==================== -->
+
+</div>
+</div>
+
+<script>
+function checkQuiz(quizId, selected) {
+  const quiz = document.getElementById(quizId);
+  const options = quiz.querySelector('.quiz-options');
+  const correct = parseInt(options.dataset.correct);
+  const items = options.querySelectorAll('li');
+  const feedback = quiz.querySelector('.quiz-feedback');
+
+  items.forEach((item, i) => {
+    item.onclick = null;
+    if (i === correct) item.classList.add('correct');
+    if (i === selected && i !== correct) item.classList.add('wrong');
+  });
+
+  const feedbacks = {
+    quiz1: {
+      correct: '✓ 对！ai-home 通过 IframeMessenger 单例封装了 window.postMessage，实现父窗口与 Viewer iframe 之间的双向通信。',
+      wrong: '✗ 是 window.postMessage。IframeMessenger 对 postMessage 做了统一封装，按消息类型分发给注册的 handler。'
+    },
+    quiz2: {
+      correct: '✓ 对！截图是在 iframe 内部完成的，父窗口通过 postMessage 触发，再监听回调接收 base64 图片，最后上传到 CDN。',
+      wrong: '✗ 正确流程是通过 postMessage 发送 TRIGGER_BATCH_CAPTURE 触发 iframe 截图，然后监听 BATCH_CAPTURE_STATUS_CHANGE 接收 base64 结果。父窗口无法直接访问 iframe 内的 WebGL 上下文。'
+    },
+    quiz3: {
+      correct: '✓ 对！Render3DImpl 有一个 20 秒的 REFRESH_TIMEOUT_MS 超时机制，超时后自动清除 loading 并通过 toast.error 提示用户。',
+      wrong: '✗ 是超时后清除 loading 状态并显示错误 toast。Render3DImpl 的 startRefreshTimeout() 在 20 秒后触发，清除 refreshLoading 并提示操作失败。'
+    }
+  };
+
+  feedback.style.display = 'block';
+  feedback.textContent = selected === correct
+    ? feedbacks[quizId].correct
+    : feedbacks[quizId].wrong;
+  feedback.style.background = selected === correct ? '#dcfce7' : '#fee2e2';
+}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 055</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0054-reactive-framework.html">上一课：054 reactive-framework 深入</a><a class="primary" href="0056-pixijs-rendering.html">下一课：056 PixiJS 渲染引擎与 Scene2D</a></div></nav>
+</body>
+</html>

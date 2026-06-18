@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kuai 测试平台 - 完整学习地图</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:980px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.5rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:2rem}
+  .desc{color:var(--text-secondary);font-size:.95rem;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.8rem;margin-bottom:.4rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  .stage-desc{color:var(--text-secondary);font-size:.9rem;margin-bottom:1rem}
+  .stats{display:flex;gap:2rem;margin:1.5rem 0;padding:1rem 1.5rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;flex-wrap:wrap}
+  .stat{text-align:center;flex:1;min-width:90px}
+  .stat-num{font-size:1.8rem;font-weight:700;color:var(--accent)}
+  .stat-label{font-size:.8rem;color:var(--text-secondary)}
+  .how-to{background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0}
+  .how-to h3{color:var(--accent);margin-bottom:.5rem;font-size:1.05rem}
+  .how-to ol{margin-left:1.25rem}
+  .how-to li{margin-bottom:.3rem}
+  .lesson-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:1rem;margin:1rem 0 2rem}
+  .lesson-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.1rem 1.35rem;transition:all .2s;text-decoration:none;color:var(--text);display:block}
+  .lesson-card:hover{border-color:var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.06);transform:translateY(-1px)}
+  .card-top{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem;flex-wrap:wrap}
+  .lesson-num{display:inline-block;background:var(--accent-light);color:var(--accent);padding:.15rem .5rem;border-radius:4px;font-size:.72rem;font-weight:600}
+  .repo{display:inline-block;padding:.1rem .45rem;border-radius:4px;font-size:.68rem;font-weight:600}
+  .repo.svc{background:#ffedd5;color:#c2410c}
+  .repo.fe{background:#fef3c7;color:#a16207}
+  .repo.py{background:#dbeafe;color:#1d4ed8}
+  .repo.cross{background:#f3e8ff;color:#7c3aed}
+  .lesson-title{font-weight:600;font-size:.95rem;margin-bottom:.3rem}
+  .lesson-meta{color:var(--text-secondary);font-size:.8rem}
+  .ref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.7rem;margin:1rem 0 2rem}
+  .ref-card{background:var(--surface);border:1px dashed var(--border);border-radius:8px;padding:.8rem 1.1rem;text-decoration:none;color:var(--text);font-size:.88rem}
+  .ref-card:hover{border-color:var(--accent);border-style:solid}
+  .ref-card .rt{font-weight:600;display:block;margin-bottom:.15rem}
+  .ref-card .rm{color:var(--text-secondary);font-size:.78rem}
+  .ref-card.featured{background:#eff6ff;border-color:#bfdbfe;border-style:solid}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
+  .ask-agent::before{content:'💡 '}
+  .legend{font-size:.82rem;color:var(--text-secondary);margin:.5rem 0 0}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>🎓 Kuai 测试平台 · 完整学习地图</h1>
+<p class="subtitle">从全局认知到独立开发，系统掌握 Kuai 三仓库</p>
+<p class="desc">本课程覆盖 <strong>kuai-service</strong>（Java 后端）、<strong>kuai-service-front</strong>（Next.js 前端）、<strong>kuai-service-py</strong>（Python MCP 服务）三个仓库。按「全局认知 → 仓库地基 → 核心深入 → 全栈实战」的学习路径层层递进，每个概念都有专门的基础教程，适合零基础新人。</p>
+
+<div class="stats">
+  <div class="stat"><div class="stat-num">3</div><div class="stat-label">仓库</div></div>
+  <div class="stat"><div class="stat-num">34</div><div class="stat-label">主课程</div></div>
+  <div class="stat"><div class="stat-num">12</div><div class="stat-label">概念速查</div></div>
+  <div class="stat"><div class="stat-num">135</div><div class="stat-label">Quiz 题</div></div>
+</div>
+
+<div class="how-to">
+  <h3>📖 如何使用</h3>
+  <ol>
+    <li>从<strong>阶段 0 全局认知</strong>开始，先建立三仓库分工与数据流的整体地图</li>
+    <li>遇到不懂的概念，点击<strong>前置知识</strong>跳到 <code>reference/</code> 概念速查</li>
+    <li>按<strong>阶段 1 仓库地基</strong>逐仓库打地基，再到<strong>阶段 2 核心深入</strong></li>
+    <li>用<strong>阶段 3 全栈实战</strong>的指南动手做端到端功能</li>
+    <li>不懂就问 Agent —— 它是你的私人教师</li>
+  </ol>
+</div>
+<p class="legend">仓库标记：<span class="repo svc">☕ 后端</span> <span class="repo fe">⚛️ 前端</span> <span class="repo py">🐍 Python</span> <span class="repo cross">🔗 跨仓</span></p>
+
+<!-- ==================== 阶段 0 ==================== -->
+<h2><span class="icon">🌍</span> 阶段 0 · 平台全局认知</h2>
+<p class="stage-desc">建立三仓库职责、数据流与核心能力的整体心智。<strong>新人必读起点。</strong></p>
+<div class="lesson-grid">
+  <a class="lesson-card" href="service/0001-kuai-service-overview.html">
+    <div class="card-top"><span class="lesson-num">0001</span><span class="repo svc">☕ 后端</span></div>
+    <div class="lesson-title">kuai-service 项目概览</div>
+    <div class="lesson-meta">技术栈 · 目录结构 · 核心模块</div>
+  </a>
+  <a class="lesson-card" href="front/0005-kuai-front-overview.html">
+    <div class="card-top"><span class="lesson-num">0005</span><span class="repo fe">⚛️ 前端</span></div>
+    <div class="lesson-title">kuai-service-front 项目概览</div>
+    <div class="lesson-meta">Next.js 16 · App Router · 目录结构</div>
+  </a>
+  <a class="lesson-card" href="py/0010-kuai-py-overview.html">
+    <div class="card-top"><span class="lesson-num">0010</span><span class="repo py">🐍 Python</span></div>
+    <div class="lesson-title">kuai-service-py 项目概览</div>
+    <div class="lesson-meta">FastAPI · MCP 协议 · 多协议支持</div>
+  </a>
+  <a class="lesson-card" href="0013-cross-repo-architecture.html">
+    <div class="card-top"><span class="lesson-num">0013</span><span class="repo cross">🔗 跨仓</span></div>
+    <div class="lesson-title">三仓库协作架构</div>
+    <div class="lesson-meta">数据流 · 接口契约 · 联调指南</div>
+  </a>
+  <a class="lesson-card" href="0014-ai-testing-concepts.html">
+    <div class="card-top"><span class="lesson-num">0014</span><span class="repo cross">🔗 跨仓</span></div>
+    <div class="lesson-title">AI 测试核心概念</div>
+    <div class="lesson-meta">Prompt 管理 · LLM 评估 · 知识库</div>
+  </a>
+</div>
+
+<!-- ==================== 阶段 1 ==================== -->
+<h2><span class="icon">🏗️</span> 阶段 1 · 三仓库地基</h2>
+<p class="stage-desc">每个仓库从「概览 → 架构 → API/数据 → 本地开发」打好地基。</p>
+
+<h3 style="margin-top:1.5rem;font-size:1rem">☕ 后端线</h3>
+<div class="lesson-grid">
+  <a class="lesson-card" href="service/0002-kuai-service-architecture.html">
+    <div class="card-top"><span class="lesson-num">0002</span><span class="repo svc">☕ 后端</span></div>
+    <div class="lesson-title">架构深度追踪</div>
+    <div class="lesson-meta">Controller → Service → Mapper 调用链</div>
+  </a>
+  <a class="lesson-card" href="service/0003-kuai-service-api-design.html">
+    <div class="card-top"><span class="lesson-num">0003</span><span class="repo svc">☕ 后端</span></div>
+    <div class="lesson-title">API 设计与数据层</div>
+    <div class="lesson-meta">RESTful · MyBatis-Plus · 数据库</div>
+  </a>
+  <a class="lesson-card" href="service/0004-kuai-service-dev-guide.html">
+    <div class="card-top"><span class="lesson-num">0004</span><span class="repo svc">☕ 后端</span></div>
+    <div class="lesson-title">后端开发实战指南</div>
+    <div class="lesson-meta">新增接口 · 本地运行 · 调试</div>
+  </a>
+</div>
+
+<h3 style="margin-top:1.5rem;font-size:1rem">⚛️ 前端线</h3>
+<div class="lesson-grid">
+  <a class="lesson-card" href="front/0006-kuai-front-agent-system.html">
+    <div class="card-top"><span class="lesson-num">0006</span><span class="repo fe">⚛️ 前端</span></div>
+    <div class="lesson-title">Agent 系统深度追踪</div>
+    <div class="lesson-meta">LangChain · Agent 定义 · 流式对话</div>
+  </a>
+  <a class="lesson-card" href="front/0007-kuai-front-mcp-tools.html">
+    <div class="card-top"><span class="lesson-num">0007</span><span class="repo fe">⚛️ 前端</span></div>
+    <div class="lesson-title">MCP 工具集成</div>
+    <div class="lesson-meta">MCP 协议 · 工具加载 · 缓存机制</div>
+  </a>
+  <a class="lesson-card" href="front/0008-kuai-front-state-management.html">
+    <div class="card-top"><span class="lesson-num">0008</span><span class="repo fe">⚛️ 前端</span></div>
+    <div class="lesson-title">状态管理与数据流</div>
+    <div class="lesson-meta">Redux Toolkit · 会话存储 · MongoDB</div>
+  </a>
+  <a class="lesson-card" href="front/0009-kuai-front-dev-guide.html">
+    <div class="card-top"><span class="lesson-num">0009</span><span class="repo fe">⚛️ 前端</span></div>
+    <div class="lesson-title">前端开发实战指南</div>
+    <div class="lesson-meta">新增 Agent · 新增页面 · 调试</div>
+  </a>
+</div>
+
+<h3 style="margin-top:1.5rem;font-size:1rem">🐍 Python 线</h3>
+<div class="lesson-grid">
+  <a class="lesson-card" href="py/0011-kuai-py-mcp-service.html">
+    <div class="card-top"><span class="lesson-num">0011</span><span class="repo py">🐍 Python</span></div>
+    <div class="lesson-title">MCP 服务架构深度追踪</div>
+    <div class="lesson-meta">服务器管理 · 分组管理 · 工具调用</div>
+  </a>
+  <a class="lesson-card" href="py/0012-kuai-py-dev-guide.html">
+    <div class="card-top"><span class="lesson-num">0012</span><span class="repo py">🐍 Python</span></div>
+    <div class="lesson-title">Python 开发实战指南</div>
+    <div class="lesson-meta">新增 MCP 服务器 · 分组 · 调试</div>
+  </a>
+</div>
+
+<!-- ==================== 阶段 2 ==================== -->
+<h2><span class="icon">🔬</span> 阶段 2 · 核心功能深入</h2>
+<p class="stage-desc">逐模块追踪真实代码路径，建立各仓库核心能力的深度认知。</p>
+
+<h3 style="margin-top:1.5rem;font-size:1rem">☕ 后端模块</h3>
+<div class="lesson-grid">
+  <a class="lesson-card" href="service/0016-kuai-service-prompt-system.html">
+    <div class="card-top"><span class="lesson-num">0016</span><span class="repo svc">☕ 后端</span></div>
+    <div class="lesson-title">Prompt 管理系统详解</div>
+    <div class="lesson-meta">版本管理 · CRUD · A/B 测试</div>
+  </a>
+  <a class="lesson-card" href="service/0017-kuai-service-llm-evaluation.html">
+    <div class="card-top"><span class="lesson-num">0017</span><span class="repo svc">☕ 后端</span></div>
+    <div class="lesson-title">LLM 评估系统详解</div>
+    <div class="lesson-meta">批量评估 · DeepEval · 异步任务</div>
+  </a>
+  <a class="lesson-card" href="service/0018-kuai-service-wechat-robot.html">
+    <div class="card-top"><span class="lesson-num">0018</span><span class="repo svc">☕ 后端</span></div>
+    <div class="lesson-title">微信机器人集成详解</div>
+    <div class="lesson-meta">消息路由 · AI 对话 · 流式回复</div>
+  </a>
+  <a class="lesson-card" href="service/0019-kuai-service-knowledge-base.html">
+    <div class="card-top"><span class="lesson-num">0019</span><span class="repo svc">☕ 后端</span></div>
+    <div class="lesson-title">知识库与分享应用详解</div>
+    <div class="lesson-meta">数据模型 · 分享管理 · MongoDB</div>
+  </a>
+  <a class="lesson-card" href="service/0020-kuai-service-database-deep-dive.html">
+    <div class="card-top"><span class="lesson-num">0020</span><span class="repo svc">☕ 后端</span></div>
+    <div class="lesson-title">数据库设计深度解析</div>
+    <div class="lesson-meta">MySQL 表设计 · MongoDB 集合 · TDDL</div>
+  </a>
+</div>
+
+<h3 style="margin-top:1.5rem;font-size:1rem">⚛️ 前端模块</h3>
+<div class="lesson-grid">
+  <a class="lesson-card" href="front/0021-kuai-front-prompt-management.html">
+    <div class="card-top"><span class="lesson-num">0021</span><span class="repo fe">⚛️ 前端</span></div>
+    <div class="lesson-title">Prompt 管理界面详解</div>
+    <div class="lesson-meta">版本编辑器 · A/B 测试 · 评估</div>
+  </a>
+  <a class="lesson-card" href="front/0022-kuai-front-conversation-streaming.html">
+    <div class="card-top"><span class="lesson-num">0022</span><span class="repo fe">⚛️ 前端</span></div>
+    <div class="lesson-title">对话与流式处理详解</div>
+    <div class="lesson-meta">chatStreamHandler · AsyncQueue · 持久化</div>
+  </a>
+  <a class="lesson-card" href="front/0023-kuai-front-component-architecture.html">
+    <div class="card-top"><span class="lesson-num">0023</span><span class="repo fe">⚛️ 前端</span></div>
+    <div class="lesson-title">组件架构与布局系统</div>
+    <div class="lesson-meta">AppLayout · Header · Sider · 功能组件</div>
+  </a>
+  <a class="lesson-card" href="front/0024-kuai-front-api-routes.html">
+    <div class="card-top"><span class="lesson-num">0024</span><span class="repo fe">⚛️ 前端</span></div>
+    <div class="lesson-title">API Routes 深度解析</div>
+    <div class="lesson-meta">rewrites 代理 · Agent API · MCP API</div>
+  </a>
+  <a class="lesson-card" href="front/0028-kuai-front-authentication.html">
+    <div class="card-top"><span class="lesson-num">0028</span><span class="repo fe">⚛️ 前端</span></div>
+    <div class="lesson-title">认证与权限系统详解</div>
+    <div class="lesson-meta">SSO 登录 · 401 跳转 · 访客模式</div>
+  </a>
+  <a class="lesson-card" href="front/0029-kuai-front-skills-system.html">
+    <div class="card-top"><span class="lesson-num">0029</span><span class="repo fe">⚛️ 前端</span></div>
+    <div class="lesson-title">技能系统（Skills）详解</div>
+    <div class="lesson-meta">渐进式披露 · SKILL.md · 技能加载</div>
+  </a>
+  <a class="lesson-card" href="front/0030-kuai-front-claudecode-integration.html">
+    <div class="card-top"><span class="lesson-num">0030</span><span class="repo fe">⚛️ 前端</span></div>
+    <div class="lesson-title">Claude Code Agent SDK 集成</div>
+    <div class="lesson-meta">代码分析 · 模型选择 · 超时处理</div>
+  </a>
+  <a class="lesson-card" href="front/0031-kuai-front-testing.html">
+    <div class="card-top"><span class="lesson-num">0031</span><span class="repo fe">⚛️ 前端</span></div>
+    <div class="lesson-title">测试与质量保障</div>
+    <div class="lesson-meta">ESLint · Vitest · Playwright</div>
+  </a>
+  <a class="lesson-card" href="front/0032-kuai-front-http-client.html">
+    <div class="card-top"><span class="lesson-num">0032</span><span class="repo fe">⚛️ 前端</span></div>
+    <div class="lesson-title">HTTP 请求封装与 API 服务层</div>
+    <div class="lesson-meta">request 封装 · {data,err} · 模块化 API</div>
+  </a>
+  <a class="lesson-card" href="front/0033-kuai-front-navigation-routing.html">
+    <div class="card-top"><span class="lesson-num">0033</span><span class="repo fe">⚛️ 前端</span></div>
+    <div class="lesson-title">导航与路由系统详解</div>
+    <div class="lesson-meta">navbarMenu · 文件路由 · 路由守卫</div>
+  </a>
+  <a class="lesson-card" href="front/0034-kuai-front-ant-design-usage.html">
+    <div class="card-top"><span class="lesson-num">0034</span><span class="repo fe">⚛️ 前端</span></div>
+    <div class="lesson-title">Ant Design 与 AI 组件库</div>
+    <div class="lesson-meta">Ant Design 6 · Ant Design X · Tailwind</div>
+  </a>
+</div>
+
+<h3 style="margin-top:1.5rem;font-size:1rem">🐍 Python 模块</h3>
+<div class="lesson-grid">
+  <a class="lesson-card" href="py/0025-kuai-py-transport-protocols.html">
+    <div class="card-top"><span class="lesson-num">0025</span><span class="repo py">🐍 Python</span></div>
+    <div class="lesson-title">MCP 传输协议深度解析</div>
+    <div class="lesson-meta">SSE · Stdio · StreamableHTTP</div>
+  </a>
+  <a class="lesson-card" href="py/0026-kuai-py-server-lifecycle.html">
+    <div class="card-top"><span class="lesson-num">0026</span><span class="repo py">🐍 Python</span></div>
+    <div class="lesson-title">MCP 服务器生命周期管理</div>
+    <div class="lesson-meta">状态机 · 启动 · 健康检查 · 重启</div>
+  </a>
+</div>
+
+<!-- ==================== 阶段 3 ==================== -->
+<h2><span class="icon">🚀</span> 阶段 3 · 全栈实战</h2>
+<p class="stage-desc">打通三仓库的端到端开发、部署与监控。</p>
+<div class="lesson-grid">
+  <a class="lesson-card" href="0015-full-stack-dev-guide.html">
+    <div class="card-top"><span class="lesson-num">0015</span><span class="repo cross">🔗 跨仓</span></div>
+    <div class="lesson-title">全栈开发实战</div>
+    <div class="lesson-meta">端到端功能开发 · 部署 · 监控</div>
+  </a>
+  <a class="lesson-card" href="0027-deployment-monitoring.html">
+    <div class="card-top"><span class="lesson-num">0027</span><span class="repo cross">🔗 跨仓</span></div>
+    <div class="lesson-title">部署与监控实战</div>
+    <div class="lesson-meta">CI/CD · 健康检查 · Langfuse</div>
+  </a>
+</div>
+
+<!-- ==================== 概念速查 ==================== -->
+<h2><span class="icon">📚</span> 概念速查（reference/）</h2>
+<p class="stage-desc">跨课程复用的基础概念速查页，可单独打印。先看平台全景：<a href="../reference/internal-concepts.html"><strong>internal-concepts.html</strong></a>。</p>
+<div class="ref-grid">
+  <a class="ref-card featured" href="../reference/internal-concepts.html"><span class="rt">🗺️ Kuai 平台内部概念速查</span><span class="rm">三仓库职责 · 数据流 · 核心能力 · 工程基建</span></a>
+  <a class="ref-card" href="../reference/spring-boot-basics.html"><span class="rt">Spring Boot 基础</span><span class="rm">DI · 自动配置 · 三层注解</span></a>
+  <a class="ref-card" href="../reference/mybatis-plus-basics.html"><span class="rt">MyBatis-Plus 基础</span><span class="rm">BaseMapper · 条件构造器</span></a>
+  <a class="ref-card" href="../reference/tddl-basics.html"><span class="rt">TDDL 中间件</span><span class="rm">分库分表 · 数据源</span></a>
+  <a class="ref-card" href="../reference/mongodb-basics.html"><span class="rt">MongoDB 基础</span><span class="rm">文档模型 · 会话存储</span></a>
+  <a class="ref-card" href="../reference/redis-basics.html"><span class="rt">Redis 基础</span><span class="rm">缓存 · 数据结构</span></a>
+  <a class="ref-card" href="../reference/nextjs-app-router.html"><span class="rt">Next.js App Router</span><span class="rm">路由 · 布局 · 数据获取</span></a>
+  <a class="ref-card" href="../reference/redux-toolkit-basics.html"><span class="rt">Redux Toolkit 基础</span><span class="rm">slice · 状态管理</span></a>
+  <a class="ref-card" href="../reference/langchain-basics.html"><span class="rt">LangChain 基础</span><span class="rm">Agent · Tool · 链</span></a>
+  <a class="ref-card" href="../reference/mcp-protocol.html"><span class="rt">MCP 协议基础</span><span class="rm">Server · Tool · 传输</span></a>
+  <a class="ref-card" href="../reference/fastapi-basics.html"><span class="rt">FastAPI 基础</span><span class="rm">路由 · 依赖注入 · async</span></a>
+  <a class="ref-card" href="../reference/websocket-basics.html"><span class="rt">WebSocket 基础</span><span class="rm">双向通信 · 握手</span></a>
+</div>
+
+<div class="ask-agent">
+  <strong>遇到不懂的地方？</strong>直接问 Agent。比如："帮我解释 LangChain 的 createReactAgent 是什么"、"MCP 的 SSE 和 StreamableHTTP 有什么区别"，或 "Kuai 三仓库一次对话怎么流转？"
+</div>
+
+</div>
+</body>
+</html>

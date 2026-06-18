@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>010 前端本地运行与部署基础</title>
+<style>
+  :root{--bg:#f8fafc;--surface:#fff;--text:#111827;--muted:#64748b;--accent:#0f766e;--border:#dbe3ee;--code:#f1f5f9;--info:#2563eb;--warn:#b45309;--ok:#16a34a}
+  *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.78 -apple-system,BlinkMacSystemFont,"Noto Sans SC","Segoe UI",sans-serif}.container{max-width:820px;margin:0 auto;padding:3rem 2rem}h1{font-size:2rem;margin:.2rem 0 .5rem}.subtitle{color:var(--muted);padding-bottom:1.5rem;border-bottom:1px solid var(--border);margin-bottom:2rem}h2{font-size:1.35rem;margin:2.2rem 0 .9rem}h3{font-size:1.08rem;color:var(--accent);margin:1.4rem 0 .6rem}p{margin:.35rem 0 1rem}code{background:var(--code);border-radius:4px;padding:.12em .35em;font-family:Menlo,Consolas,monospace;font-size:.9em}pre{background:#111827;color:#e5e7eb;border-radius:8px;padding:1rem 1.2rem;overflow:auto;font:14px/1.65 Menlo,Consolas,monospace}.card{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--info);border-radius:8px;padding:1rem 1.15rem;margin:1rem 0}.card.warn{border-left-color:var(--warn)}table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:1rem 0}th,td{padding:.65rem .75rem;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}th{font-size:.82rem;color:var(--muted);background:#f1f5f9}tr:last-child td{border-bottom:0}.quiz{background:#ecfeff;border:1px solid #67e8f9;border-radius:8px;padding:1rem 1.15rem;margin:1.4rem 0}.quiz-options{list-style:none;margin:.5rem 0 0;padding:0}.quiz-options li{padding:.45rem .65rem;border-radius:6px;border:1px solid transparent;cursor:pointer}.quiz-options li:hover{border-color:#67e8f9}.correct{background:#dcfce7}.wrong{background:#fee2e2}.quiz-feedback{display:none;margin-top:.6rem;padding:.6rem;border-radius:6px}.ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;color:#1e40af;padding:1rem;margin:1.4rem 0}.ask-agent:before{content:"提示：";font-weight:700}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>010 前端本地运行与部署基础</h1>
+<p class="subtitle">目标：知道 ai-home、viewer-2d、render-3d 该怎么本地启动、构建，以及为什么它们不是同一个部署边界。</p>
+
+<h2>1. 三个前端仓库的角色不同</h2>
+<table>
+  <tr><th>仓库</th><th>本地运行命令</th><th>你在验证什么</th></tr>
+  <tr><td><code>ai-home</code></td><td><code>yarn dev</code> → <code>kjl dev</code><br><code>yarn beta</code> → <code>kjl dev -T https://prod-test-seoul.example.com</code></td><td>主页面、AI 对话、SDK、前端 Tool、嵌入 viewer 的链路。</td></tr>
+  <tr><td><code>viewer-2d</code></td><td><code>yarn dev</code> → <code>kjl pub:dev</code></td><td>2D 户型画布、PixiJS、Entity/Drawable、和父页面通信。</td></tr>
+  <tr><td><code>render-3d</code></td><td><code>yarn dev</code> → <code>kjl pub:dev</code></td><td>3D 场景、截图、离线渲染、iframe 通信。</td></tr>
+</table>
+
+<div class="card">
+  <p><code>ai-home</code> 更像主应用；<code>viewer-2d</code> 和 <code>render-3d</code> 更像被主应用嵌入的能力容器。联调时不要只问“前端跑了吗”，要问“跑的是主应用，还是被嵌入的 viewer”。</p>
+</div>
+
+<h2>2. ai-home：主前端怎么跑</h2>
+<p><code>ai-home/package.json</code> 里真实脚本如下：</p>
+<pre>"dev": "kjl dev"
+"beta": "kjl dev -T https://prod-test-seoul.example.com"
+"build": "kjl build"</pre>
+
+<table>
+  <tr><th>命令</th><th>用途</th><th>小白判断</th></tr>
+  <tr><td><code>yarn dev</code></td><td>启动本地 dev-server。</td><td>你主要看页面能不能加载、bundle 有没有报错。</td></tr>
+  <tr><td><code>yarn beta</code></td><td>本地前端资源对接 beta 目标站点。</td><td>适合验证“本地代码 + 线上/测试环境后端”的组合。</td></tr>
+  <tr><td><code>yarn build</code></td><td>生产构建。</td><td>合并前至少确认构建不炸，尤其是类型/资源路径问题。</td></tr>
+</table>
+
+<h2>3. viewer-2d / render-3d：pub 应用怎么跑</h2>
+<p>两个 viewer 仓库的脚本很像：</p>
+<pre>"postinstall": "yarn dupe"
+"dev": "npx cross-env NODE_OPTIONS=--max-old-space-size=8192 kjl pub:dev"
+"pub-script": "npx cross-env NODE_OPTIONS=--max-old-space-size=8192 kjl pub:build"</pre>
+
+<p>这里的重点不是背命令，而是理解 <code>pub:dev</code> / <code>pub:build</code>：它们按公司 pub 体系启动和构建前端资源。<code>def.config.js</code> 里三个前端仓库都声明了 <code>pub:deploy</code> 任务。</p>
+
+<div class="card warn">
+  <p><code>viewer-2d</code> / <code>render-3d</code> 的 <code>NODE_OPTIONS=--max-old-space-size=8192</code> 是为了给构建更多内存。不要随手删除；构建很大的前端项目时内存不足会导致莫名其妙的失败。</p>
+</div>
+
+<h2>4. 联调时先画清楚资源从哪里来</h2>
+<pre>浏览器打开 AIHom 页面
+  ↓
+加载 ai-home 本地或环境资源
+  ↓
+ai-home 通过 iframe / SDK 嵌入 viewer-2d、render-3d
+  ↓
+ai-home 通过 agent-conversation-sdk 连 ai-native-service
+  ↓
+后端通过 WebSocket 让前端执行 MCP Tool</pre>
+
+<p>所以一个前端问题可能来自四种地方：主应用资源、viewer 资源、后端接口/WebSocket、环境配置。不要只盯着 React 组件。</p>
+
+<h2>5. 部署前最小检查</h2>
+<ol>
+  <li><code>yarn install</code> 后没有依赖冲突；viewer 仓库会执行 <code>yarn dupe</code>。</li>
+  <li>本地 dev-server 能打开，Console 没有启动级红错。</li>
+  <li>Network 里入口 JS、CSS、iframe 资源不是 404。</li>
+  <li>涉及 WebSocket/MCP 的改动，要确认 tool_call 和 tool_response 成对出现。</li>
+  <li>涉及 viewer 的改动，要分别验证主应用嵌入场景和 viewer 自身场景。</li>
+</ol>
+
+<div class="ask-agent">问 agent：“帮我判断这个 ai-home 问题属于主应用、viewer、WebSocket 还是环境配置”，并贴 Console + Network 里第一条红错。</div>
+
+<h2>6. 自检 Quiz</h2>
+<div class="quiz" id="quiz1">
+  <strong>Q1: <code>ai-home</code> 的 <code>yarn beta</code> 比 <code>yarn dev</code> 多了什么？</strong>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz1',0)">A. 多跑 Java 服务</li>
+    <li onclick="checkQuiz('quiz1',1)">B. 多建数据库表</li>
+    <li onclick="checkQuiz('quiz1',2)">C. 指定目标站点</li>
+    <li onclick="checkQuiz('quiz1',3)">D. 自动发版上线</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+<div class="quiz" id="quiz2">
+  <strong>Q2: viewer-2d/render-3d 本地脚本为什么带 <code>pub:dev</code>？</strong>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz2',0)">A. 因为它们是后端服务</li>
+    <li onclick="checkQuiz('quiz2',1)">B. 因为按 pub 体系运行</li>
+    <li onclick="checkQuiz('quiz2',2)">C. 因为只支持生产环境</li>
+    <li onclick="checkQuiz('quiz2',3)">D. 因为不能本地调试</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+</div>
+<script>
+function checkQuiz(q,s){const box=document.getElementById(q),opts=box.querySelector('.quiz-options'),c=Number(opts.dataset.correct),lis=opts.querySelectorAll('li'),fb=box.querySelector('.quiz-feedback');lis.forEach((li,i)=>{li.onclick=null;if(i===c)li.classList.add('correct');if(i===s&&i!==c)li.classList.add('wrong')});fb.style.display='block';fb.textContent=s===c?'正确。前端联调先分清资源和环境。':'不对。回到 package.json 脚本表看命令含义。';fb.style.background=s===c?'#dcfce7':'#fee2e2'}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 010</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0009-backend-local-run-and-deploy.html">上一课：009 后端本地运行与部署基础</a><a class="primary" href="0011-coops-agent-mcp-injection.html">下一课：011 Coops Agent 配置与 MCP 注入</a></div></nav>
+</body>
+</html>

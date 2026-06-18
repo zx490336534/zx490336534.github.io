@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WebSocket 与 STOMP 协议入门</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:2rem}
+  .breadcrumb{color:var(--text-secondary);font-size:.85rem;margin-bottom:1.5rem}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .breadcrumb a:hover{text-decoration:underline}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.15rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem}
+  p{margin-bottom:1rem}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15rem .4rem;border-radius:4px;font-size:.88em}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;overflow-x:auto;margin:1rem 0;font-size:.88rem;line-height:1.6}
+  pre code{background:none;padding:0}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.4rem}
+  .tag{display:inline-block;padding:.1rem .4rem;border-radius:4px;font-size:.7rem;font-weight:500;margin-right:.3rem}
+  .tag.overview{background:#dbeafe;color:#2563eb}
+  .tag.concept{background:#f3e8ff;color:#7c3aed}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0}
+  .card-title{font-weight:600;margin-bottom:.5rem;font-size:1.05rem}
+  .module-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin:1rem 0}
+  .module-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;transition:all .2s}
+  .module-card:hover{border-color:var(--accent);box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .module-card h4{font-size:1rem;font-weight:600;margin-bottom:.35rem}
+  .module-card p{color:var(--text-secondary);font-size:.9rem;margin:0}
+  .quiz-section{background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:1.5rem;margin-top:2.5rem}
+  .quiz-section h2{margin-top:0;color:var(--accent)}
+  .quiz-q{margin-bottom:1.5rem}
+  .quiz-q .q-title{font-weight:600;margin-bottom:.5rem}
+  .quiz-q label{display:block;padding:.4rem .75rem;margin:.3rem 0;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s;background:var(--surface)}
+  .quiz-q label:hover{border-color:var(--accent)}
+  .quiz-q input[type="radio"]{margin-right:.5rem}
+  .quiz-q .answer{display:none;margin-top:.5rem;padding:.75rem 1rem;border-radius:6px;font-size:.9rem}
+  .quiz-q .answer.correct{background:#dcfce7;color:#166534;border:1px solid #86efac}
+  .quiz-q .answer.wrong{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
+  .ask-agent::before{content:'💡 '}
+  .nav-links{display:flex;justify-content:space-between;margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+  .nav-links a{color:var(--accent);text-decoration:none;font-weight:500}
+  .nav-links a:hover{text-decoration:underline}
+  .highlight{background:var(--accent-light);padding:.1rem .3rem;border-radius:3px}
+  table{width:100%;border-collapse:collapse;margin:1rem 0}
+  th,td{padding:.6rem .8rem;border:1px solid var(--border);text-align:left;font-size:.9rem}
+  th{background:var(--code-bg);font-weight:600}
+</style>
+<script>
+function checkAnswer(qId, correct, el){
+  var ans=el.parentElement.parentElement.querySelector('.answer');
+  if(el.value===correct){ans.className='answer correct';ans.innerHTML='✅ 正确！';ans.style.display='block'}
+  else{ans.className='answer wrong';ans.innerHTML='❌ 错误，正确答案是 '+correct+'。';ans.style.display='block'}
+}
+</script>
+</head>
+<body>
+<div class="container">
+
+<div class="breadcrumb"><a href="../lessons/index.html">课程首页</a> &gt; 概念教程 &gt; WebSocket 与 STOMP 协议入门</div>
+
+<h1>🔌 WebSocket 与 STOMP 协议入门</h1>
+<p class="subtitle"><span class="tag concept">概念</span> 从零了解 WebSocket 和 STOMP，掌握 Spring Boot 中的实时消息推送</p>
+
+<!-- ============ 1. 什么是 WebSocket ============ -->
+<h2><span class="icon">🤔</span> 什么是 WebSocket？</h2>
+<p>WebSocket 是一种<strong>全双工通信</strong>协议，允许服务器和浏览器之间<strong>建立持久连接</strong>，随时互相发送消息。</p>
+<div class="card">
+  <p class="card-title">📞 打电话比喻</p>
+  <p><strong>HTTP</strong> 就像发短信 —— 你发一条，对方回一条，每次都要重新建立连接。<br>
+  <strong>WebSocket</strong> 就像打电话 —— 电话接通后，双方随时可以说话，不需要每次都拨号。而且<strong>服务器可以主动</strong>对客户端说话，不用等客户端先开口。</p>
+</div>
+
+<!-- ============ 2. HTTP vs WebSocket ============ -->
+<h2><span class="icon">⚖️</span> HTTP vs WebSocket</h2>
+<p>在没有 WebSocket 之前，要实现"服务器主动推送消息给浏览器"，只能用一些"曲线救国"的方式：</p>
+
+<h3>传统方案的痛点</h3>
+<table>
+  <tr><th>方案</th><th>原理</th><th>问题</th></tr>
+  <tr><td><strong>轮询（Polling）</strong></td><td>浏览器每隔几秒就问一次服务器"有新消息吗？"</td><td>大量无意义请求，浪费资源</td></tr>
+  <tr><td><strong>长轮询</strong></td><td>浏览器发请求，服务器一直挂着不回复，直到有新消息</td><td>延迟高，实现复杂</td></tr>
+  <tr><td><strong>SSE</strong></td><td>服务器单向推送</td><td>只能服务器 → 客户端，不能反向</td></tr>
+</table>
+
+<h3>WebSocket 的优势</h3>
+<table>
+  <tr><th>对比项</th><th>HTTP</th><th>WebSocket</th></tr>
+  <tr><td>连接方式</td><td>每次请求都要建立新连接</td><td>一次连接，持久复用</td></tr>
+  <tr><td>通信方向</td><td>只能客户端 → 服务器</td><td>双向，服务器可以主动推送</td></tr>
+  <tr><td>实时性</td><td>需要客户端轮询</td><td>毫秒级实时推送</td></tr>
+  <tr><td>开销</td><td>每次带完整 HTTP 头（几百字节）</td><td>消息头只有 2~14 字节</td></tr>
+  <tr><td>典型场景</td><td>普通网页请求、API 调用</td><td>聊天室、实时通知、协作编辑</td></tr>
+</table>
+
+<!-- ============ 3. 什么是 STOMP ============ -->
+<h2><span class="icon">📨</span> 什么是 STOMP？</h2>
+<p>WebSocket 只是一个<strong>底层传输协议</strong>，就像高速公路 —— 它保证数据能双向传输，但不规定数据的格式。</p>
+<p>STOMP（Simple Text Oriented Messaging Protocol）是一个<strong>基于文本的消息协议</strong>，运行在 WebSocket 之上，定义了消息的格式和语义。</p>
+<div class="card">
+  <p class="card-title">📬 邮件系统比喻</p>
+  <p><strong>WebSocket</strong> = 快递运输网络（负责把东西运过去）<br>
+  <strong>STOMP</strong> = 邮件格式规范（规定信封怎么写、收件人写在哪、内容怎么格式化）<br><br>
+  STOMP 提供了 <code>SUBSCRIBE</code>（订阅频道）、<code>SEND</code>（发送消息）、<code>MESSAGE</code>（接收消息）等命令，就像邮件系统有"寄信"、"收信"、"订阅杂志"等操作。</p>
+</div>
+
+<h3>STOMP 的核心概念</h3>
+<ul>
+  <li><strong>Destination（目的地）</strong>：消息发往的"地址"，类似邮件的收件地址，如 <code>/topic/chat</code></li>
+  <li><strong>Subscribe（订阅）</strong>：客户端告诉服务器"我想收某个地址的消息"</li>
+  <li><strong>Send（发送）</strong>：客户端或服务器往某个地址发消息</li>
+  <li><strong>/topic</strong>：广播模式，所有人都能收到（群聊）</li>
+  <li><strong>/user/queue</strong>：点对点模式，只有指定用户能收到（私聊）</li>
+</ul>
+
+<!-- ============ 4. Spring Boot WebSocket 集成 ============ -->
+<h2><span class="icon">🚀</span> Spring Boot 集成 WebSocket</h2>
+<p>Spring Boot 通过 <code>spring-boot-starter-websocket</code> 提供了完整的 WebSocket + STOMP 支持。</p>
+
+<h3>第一步：引入依赖</h3>
+<pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-websocket&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+
+<h3>第二步：配置 WebSocket</h3>
+<pre><code>@Configuration
+@EnableWebSocketMessageBroker  // 启用 WebSocket 消息代理
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+
+    @Override
+    public void configureMessageBroker(MessageBrokerRegistry config) {
+        // 启用简单消息代理，/topic 开头的目的地由代理处理
+        config.enableSimpleBroker("/topic");
+        // 客户端发送消息的目的地前缀
+        config.setApplicationDestinationPrefixes("/app");
+    }
+
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        // 注册 WebSocket 端点，客户端通过这个 URL 连接
+        registry.addEndpoint("/ws").withSockJS();
+    }
+}</code></pre>
+
+<h3>第三步：编写消息处理 Controller</h3>
+<pre><code>@Controller
+public class ChatController {
+
+    // 接收客户端发到 /app/chat.send 的消息
+    @MessageMapping("/chat.send")
+    // 把结果广播到 /topic/messages
+    @SendTo("/topic/messages")
+    public ChatMessage sendMessage(ChatMessage message) {
+        message.setTimestamp(LocalDateTime.now());
+        return message;  // 返回的消息会推送给所有订阅 /topic/messages 的客户端
+    }
+}</code></pre>
+
+<h3>第四步：前端连接</h3>
+<pre><code>// 使用 SockJS + STOMP.js 连接
+const socket = new SockJS('/ws');
+const stompClient = Stomp.over(socket);
+
+stompClient.connect({}, function(frame) {
+    console.log('已连接: ' + frame);
+
+    // 订阅广播频道
+    stompClient.subscribe('/topic/messages', function(message) {
+        const msg = JSON.parse(message.body);
+        showChatMessage(msg);  // 在页面上显示消息
+    });
+
+    // 发送消息
+    stompClient.send('/app/chat.send', {},
+        JSON.stringify({ sender: '张三', content: '你好！' })
+    );
+});</code></pre>
+
+<!-- ============ 5. 消息推送流程 ============ -->
+<h2><span class="icon">🔄</span> 消息推送流程</h2>
+<p>来完整地走一遍消息从发送到接收的流程：</p>
+
+<div class="card">
+  <p class="card-title">完整流程（以聊天室为例）</p>
+  <ol>
+    <li><strong>连接</strong>：浏览器通过 <code>SockJS</code> 连接到 <code>/ws</code> 端点，然后升级为 STOMP 协议</li>
+    <li><strong>订阅</strong>：浏览器调用 <code>subscribe('/topic/messages')</code>，告诉服务器"我要收这个频道的消息"</li>
+    <li><strong>发送</strong>：用户输入消息，浏览器调用 <code>send('/app/chat.send', ...)</code></li>
+    <li><strong>处理</strong>：消息到达服务器，Spring 找到 <code>@MessageMapping("/chat.send")</code> 的方法处理</li>
+    <li><strong>广播</strong>：处理结果通过 <code>@SendTo("/topic/messages")</code> 推送给所有订阅者</li>
+    <li><strong>接收</strong>：所有已订阅的浏览器收到消息，更新页面显示</li>
+  </ol>
+</div>
+
+<h3>SockJS 是什么？</h3>
+<p>SockJS 是一个 JavaScript 库，它在 WebSocket 的基础上加了一层<strong>兼容性处理</strong>。如果用户的浏览器或网络环境不支持 WebSocket（比如公司防火墙拦截），SockJS 会自动降级为其他方式（如轮询），保证功能正常使用。</p>
+<div class="card">
+  <p class="card-title">🔗 SockJS 的作用</p>
+  <p>就像一个万能转换插头 —— 你的电器（STOMP）不需要关心插座是什么规格（浏览器是否支持 WebSocket），SockJS 自动帮你转换。</p>
+</div>
+
+<h3>/topic 还是 /user/queue？</h3>
+<table>
+  <tr><th>前缀</th><th>模式</th><th>场景</th><th>例子</th></tr>
+  <tr><td><code>/topic</code></td><td>广播（1 对多）</td><td>所有人都能收到</td><td>聊天室消息、系统公告</td></tr>
+  <tr><td><code>/user/queue</code></td><td>点对点（1 对 1）</td><td>只有目标用户收到</td><td>私聊、个人通知、审批提醒</td></tr>
+</table>
+
+<div class="ask-agent">
+  <strong>试试问 Agent：</strong>"WebSocket 和 SSE 有什么区别？各自适合什么场景？" 或者 "如何在 WebSocket 中实现用户认证？"
+</div>
+
+<!-- ============ Quiz ============ -->
+<div class="quiz-section">
+  <h2><span class="icon">📝</span> Quiz — 检验你的理解</h2>
+
+  <div class="quiz-q">
+    <div class="q-title">Q1: WebSocket 相比 HTTP 最大的优势是什么？</div>
+    <label><input type="radio" name="q1" value="A" onclick="checkAnswer('q1','A',this)"> A. 支持双向通信，服务器可以主动推送消息</label>
+    <label><input type="radio" name="q1" value="B" onclick="checkAnswer('q1','B',this)"> B. 传输速度比 HTTP 快 100 倍</label>
+    <label><input type="radio" name="q1" value="C" onclick="checkAnswer('q1','C',this)"> C. 不需要网络连接也能使用</label>
+    <div class="answer"></div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-title">Q2: STOMP 在 WebSocket 体系中扮演什么角色？</div>
+    <label><input type="radio" name="q2" value="A" onclick="checkAnswer('q2','A',this)"> A. 替代 WebSocket 的传输协议</label>
+    <label><input type="radio" name="q2" value="B" onclick="checkAnswer('q2','B',this)"> B. 在 WebSocket 之上定义消息格式和语义的消息协议</label>
+    <label><input type="radio" name="q2" value="C" onclick="checkAnswer('q2','C',this)"> C. 一种前端 UI 框架</label>
+    <div class="answer"></div>
+  </div>
+
+  <div class="quiz-q">
+    <div class="q-title">Q3: 在 Spring Boot WebSocket 中，<code>@MessageMapping("/chat.send")</code> 注解的作用是？</div>
+    <label><input type="radio" name="q3" value="A" onclick="checkAnswer('q3','A',this)"> A. 定义 WebSocket 连接端点</label>
+    <label><input type="radio" name="q3" value="B" onclick="checkAnswer('q3','B',this)"> B. 映射客户端发送到 /app/chat.send 的消息到此方法处理</label>
+    <label><input type="radio" name="q3" value="C" onclick="checkAnswer('q3','C',this)"> C. 定义 REST API 接口</label>
+    <div class="answer"></div>
+  </div>
+</div>
+
+<div class="nav-links">
+  <a href="redis-basics.html">← 上一课：Redis 基础入门</a>
+  <a href="../lessons/index.html">返回课程首页 →</a>
+</div>
+
+</div>
+</body>
+</html>

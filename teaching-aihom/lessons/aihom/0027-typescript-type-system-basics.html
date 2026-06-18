@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>027 前端基础 07：TypeScript 类型系统</title>
+<style>
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--muted:#78716c;--accent:#b45309;--soft:#fef3c7;--border:#e7e5e4;--code:#f5f5f4;--ok:#16a34a;--bad:#ef4444;--info:#2563eb}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.8 -apple-system,BlinkMacSystemFont,"Noto Sans SC","Segoe UI",sans-serif}.container{max-width:780px;margin:0 auto;padding:3rem 2rem}h1{font-size:2rem;margin:.2rem 0 .5rem}.subtitle{color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:1.4rem;margin-bottom:2rem}h2{font-size:1.35rem;margin:2rem 0 .8rem}code{font-family:Menlo,Consolas,monospace;background:var(--code);padding:.15em .35em;border-radius:4px}pre{background:#1c1917;color:#e7e5e4;padding:1rem 1.2rem;border-radius:8px;overflow:auto}.kw{color:#f59e0b}.t{color:#93c5fd}.s{color:#86efac}.c{color:#a8a29e}.card{background:#fff;border:1px solid var(--border);border-left:3px solid var(--info);border-radius:8px;padding:1rem 1.2rem;margin:1rem 0}.label{font-size:.75rem;color:var(--info);font-weight:700;text-transform:uppercase}table{width:100%;border-collapse:collapse;margin:1rem 0}th,td{border-bottom:1px solid var(--border);padding:.55rem;text-align:left;vertical-align:top}th{color:var(--muted)}.quiz{background:var(--soft);border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.2rem;margin:1.5rem 0}.quiz-options{list-style:none;margin:0;padding:0}.quiz-options li{padding:.45rem .65rem;margin:.35rem 0;border:1px solid transparent;border-radius:6px;cursor:pointer}.correct{background:#dcfce7!important;border-color:var(--ok)!important}.wrong{background:#fee2e2!important;border-color:var(--bad)!important}.quiz-feedback{display:none;margin-top:.6rem;padding:.6rem;border-radius:6px}.nav{margin-top:2.5rem;border:1px solid var(--border);border-radius:8px;background:#fff;padding:1rem}.nav a{display:inline-block;margin:.25rem;color:#444;text-decoration:none;border:1px solid var(--border);border-radius:6px;padding:.35rem .65rem}.nav a.primary{background:var(--accent);border-color:var(--accent);color:#fff}.nav a.map{background:#eff6ff;border-color:#bfdbfe;color:var(--info)}
+</style></head><body><div class="container">
+<h1>027 前端基础 07：TypeScript 类型系统</h1>
+<p class="subtitle">目标：读懂 AIHom 前端里的 interface、type、union、generic，知道类型是在开发期保护你，不是运行时数据。</p>
+
+<h2>1. interface：对象长什么样</h2>
+<p>前端最常见的类型是“这个对象有哪些字段”。比如消息、工具参数、viewer 配置，都适合用 <code>interface</code> 描述。</p>
+<pre><span class="kw">interface</span> <span class="t">ToolCallPayload</span> {
+  id: <span class="t">string</span>;
+  name: <span class="t">string</span>;
+  arguments?: <span class="t">Record</span>&lt;<span class="t">string</span>, <span class="t">unknown</span>&gt;; <span class="c">// ? 表示可选</span>
+}</pre>
+
+<h2>2. union：只能是几种值之一</h2>
+<p>协议字段很适合 union。它能防止你把 <code>tool_response</code> 写成 <code>toolResponse</code> 这类拼写错误。</p>
+<pre><span class="kw">type</span> <span class="t">SocketType</span> = <span class="s">'request'</span> | <span class="s">'notification'</span> | <span class="s">'tool_response'</span>;</pre>
+
+<h2>3. generic：先留一个类型空位</h2>
+<p><code>Promise&lt;T&gt;</code>、<code>Array&lt;T&gt;</code>、<code>Record&lt;K,V&gt;</code> 都是泛型。读法是：外壳固定，里面装什么由尖括号决定。</p>
+<pre><span class="kw">async function</span> fetchJson&lt;<span class="t">T</span>&gt;(url: <span class="t">string</span>): <span class="t">Promise</span>&lt;<span class="t">T</span>&gt; {
+  <span class="kw">const</span> res = <span class="kw">await</span> fetch(url);
+  <span class="kw">return</span> res.json();
+}</pre>
+
+<h2>4. 类型不会自动校验后端返回</h2>
+<div class="card"><div class="label">关键边界</div><p>TypeScript 只在开发和编译阶段帮你检查。后端真的返回了什么，运行时还要靠接口约定、测试、必要时的字段兜底。全栈联调时不要把 TS 类型当成后端响应保证。</p></div>
+
+<table>
+  <tr><th>看到</th><th>先问</th></tr>
+  <tr><td><code>interface XxxProps</code></td><td>组件需要父级传什么</td></tr>
+  <tr><td><code>type A = 'x' | 'y'</code></td><td>这个字段只能取哪些值</td></tr>
+  <tr><td><code>Promise&lt;Result&gt;</code></td><td>异步完成后会给什么结果</td></tr>
+  <tr><td><code>unknown</code></td><td>这里还不知道结构，使用前要收窄</td></tr>
+</table>
+
+<div class="quiz" id="quiz1"><strong>Q1: <code>type Status = 'ready' | 'failed'</code> 的作用是？</strong>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz1',0)">A. 自动发起网络请求</li>
+    <li onclick="checkQuiz('quiz1',1)">B. 创建浏览器事件</li>
+    <li onclick="checkQuiz('quiz1',2)">C. 限制字段可选值</li>
+  </ul><div class="quiz-feedback"></div>
+</div>
+
+<div class="card"><div class="label">主资料</div><p>优先读 TypeScript 官方 Handbook 的 <a href="https://www.typescriptlang.org/docs/handbook/2/everyday-types.html" target="_blank" rel="noopener">Everyday Types</a> 和 <a href="https://www.typescriptlang.org/docs/handbook/2/objects.html" target="_blank" rel="noopener">Object Types</a>。</p></div>
+</div><script>
+function checkQuiz(id,s){const q=document.getElementById(id),o=q.querySelector('.quiz-options'),c=Number(o.dataset.correct),items=o.querySelectorAll('li'),f=q.querySelector('.quiz-feedback');items.forEach((x,i)=>{x.onclick=null;if(i===c)x.classList.add('correct');if(i===s&&i!==c)x.classList.add('wrong')});f.style.display='block';f.textContent=s===c?'对。union type 用来限制一个值只能落在几个候选里。':'不是。这里的重点是限制字段只能取 ready 或 failed。';f.style.background=s===c?'#dcfce7':'#fee2e2'}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 027</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0026-javascript-runtime-basics.html">上一课：026 前端基础 06：JavaScript 异步运行模型</a><a class="primary" href="0028-browser-network-dom-basics.html">下一课：028 前端基础 08：浏览器、网络与 DOM</a></div></nav>
+</body></html>

@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>017 流式响应 + 结构化输出 + 会话记忆</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --accent: #b45309;
+    --accent-light: #fef3c7;
+    --border: #e7e5e4;
+    --code-bg: #1c1917;
+    --code-text: #f5f5f4;
+    --success: #16a34a;
+    --success-light: #dcfce7;
+    --warning: #d97706;
+    --warning-light: #fef3c7;
+    --info: #2563eb;
+    --info-light: #dbeafe;
+    --tag-java: #d97706;
+    --tag-spring: #16a34a;
+    --tag-ai: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 3rem 2rem 5rem;
+  }
+
+  .lesson-meta {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2.8rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  strong { font-weight: 700; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.25rem 0;
+  }
+  .card.info { border-left: 3px solid var(--info); background: var(--info-light); }
+  .card.warning { border-left: 3px solid var(--warning); background: var(--warning-light); }
+  .card.success { border-left: 3px solid var(--success); background: var(--success-light); }
+  .card.tip { border-left: 3px solid var(--accent); }
+
+  .card-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+  }
+
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 1.25rem 1.4rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1.25rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.86rem;
+    line-height: 1.7;
+  }
+  code { font-family: 'JetBrains Mono', monospace; }
+  p code, li code {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 0.12em 0.4em;
+    border-radius: 4px;
+    font-size: 0.85em;
+  }
+  .com { color: #a8a29e; }      /* 代码注释 */
+  .kw  { color: #fbbf24; }      /* 关键字 */
+  .ann { color: #86efac; }      /* 注解 @ */
+  .typ { color: #93c5fd; }      /* 类型 */
+  .str { color: #fda4af; }      /* 字符串 */
+
+  /* 逐行归属表 */
+  table.belong {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.25rem 0;
+    font-size: 0.9rem;
+  }
+  table.belong th, table.belong td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  table.belong th {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+  table.belong td code { font-size: 0.82em; }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.1em 0.55em;
+    border-radius: 10px;
+    color: #fff;
+    letter-spacing: 0.02em;
+  }
+  .tag.java   { background: var(--tag-java); }
+  .tag.spring { background: var(--tag-spring); }
+  .tag.ai     { background: var(--tag-ai); }
+
+  /* 学习地图 */
+  .roadmap {
+    list-style: none;
+    margin: 1.25rem 0;
+    padding: 0;
+  }
+  .roadmap li {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+  }
+  .roadmap .stage {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 0.85rem;
+    min-width: 3.2em;
+    flex-shrink: 0;
+  }
+  .roadmap .here { border-color: var(--accent); background: var(--accent-light); }
+  .roadmap .here .stage { color: var(--text); }
+
+  /* Quiz */
+  .quiz {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem 1.6rem;
+    margin: 1.5rem 0;
+  }
+  .quiz-q {
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  .quiz-opt {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--text);
+    transition: all 0.15s;
+  }
+  .quiz-opt:hover { border-color: var(--accent); }
+  .quiz-opt.correct {
+    background: var(--success-light);
+    border-color: var(--success);
+    color: #14532d;
+    font-weight: 500;
+  }
+  .quiz-opt.wrong {
+    background: #fee2e2;
+    border-color: #dc2626;
+    color: #7f1d1d;
+  }
+  .quiz-opt.disabled { cursor: default; opacity: 0.85; }
+  .quiz-fb {
+    margin-top: 0.85rem;
+    font-size: 0.9rem;
+    display: none;
+    padding: 0.7rem 0.9rem;
+    border-radius: 6px;
+    line-height: 1.7;
+  }
+  .quiz-fb.show { display: block; }
+
+  .win {
+    background: var(--success-light);
+    border-left: 3px solid var(--success);
+    border-radius: 8px;
+    padding: 1rem 1.4rem;
+    margin: 2rem 0;
+  }
+  .win .card-label { color: #14532d; }
+
+  .reading {
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.4rem;
+    margin: 1.5rem 0;
+  }
+  .reading a { color: var(--info); text-decoration: none; font-weight: 500; }
+  .reading a:hover { text-decoration: underline; }
+
+  .ask {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+  }
+
+  blockquote {
+    border-left: 3px solid var(--accent);
+    padding-left: 1rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin: 1.25rem 0;
+  }
+@media print {
+    body { background: #fff; }
+    .quiz-opt { border: 1px solid #999; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="lesson-meta">AIHom 全栈学习 · 第 017 课 · 流式与记忆</div>
+  <h1>017 流式响应 + 结构化输出 + 会话记忆</h1>
+  <div class="subtitle">本节目标：搞懂 Spring AI 里"让 AI 像打字机一样一字一字蹦"的流式调用、让 AI 返回能直接映射成 Java 对象的结构化输出、以及让 AI 记住多轮对话上下文的会话记忆。这三个能力组合在一起，撑起了 AIHom 聊天页面的核心体验。</div>
+
+  <!-- 0. 为什么放一起讲 -->
+  <h2>为什么这三个一起讲</h2>
+  <p>上一课我们学会了 <code>ChatClient</code> 的基础调用：<code>.prompt().user(q).call().content()</code>，一次问、一次答、拿到一坨字符串。这个模式能跑，但离真正的产品体验还差三块：</p>
+
+  <table class="belong">
+    <thead>
+      <tr><th>痛点</th><th>解决它</th><th>对应能力</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>AI 回答很长，用户盯着转圈圈等几秒才出结果，体验差</td>
+        <td>边生成边返回，让前端做"打字机"效果</td>
+        <td><span class="tag ai">流式响应</span></td>
+      </tr>
+      <tr>
+        <td>AI 返回的是一段自然语言文本，但我想要 <code>{"title":"...","summary":"..."}</code> 这种结构化数据</td>
+        <td>让 AI 按指定结构返回，自动映射成 Java 对象</td>
+        <td><span class="tag ai">结构化输出</span></td>
+      </tr>
+      <tr>
+        <td>第二轮提问，AI 把第一轮说过的事全忘了</td>
+        <td>把历史消息存起来，每次提问带上</td>
+        <td><span class="tag ai">会话记忆</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card tip">
+    <div class="card-label">AIHom 里的真实场景</div>
+    <p style="margin:0">AIHom 的聊天页就是这三件套合体：<strong>WebSocket 把流式 token 推到前端</strong>（你看到的字一个一个蹦出来），<strong>结构化输出</strong>用来让 AI 返回"要不要触发工具、参数是什么"这类机器要读的数据，<strong>会话记忆</strong>让你这分钟问的"它刚才说的那个词啥意思"能被听懂。本课讲的，就是这三块的 API 长什么样。</p>
+  </div>
+
+  <!-- 1. 流式响应 -->
+  <h2>1. 流式响应：让 AI 逐字返回</h2>
+  <p>大模型生成文字是<strong>一个 token 一个 token 往外吐</strong>的（一个 token 大概是半个到一个汉字）。传统调用 <code>.call().content()</code> 会等模型把整段话全生成完，再一次性返回给你——用户要干等几秒。流式调用则<strong>每生成出一个 token 就立刻发给你一次</strong>，前端可以马上显示出来。</p>
+
+  <div class="card info">
+    <div class="card-label">一字之差：.call() → .stream()</div>
+    <p style="margin:0.3rem 0 0">Spring AI 里切到流式，就是把 <code>.call()</code> 换成 <code>.stream()</code>。返回类型从 <code>String</code>（一整段）变成 <code>Flux&lt;String&gt;</code>（一堆小片段）。</p>
+  </div>
+
+  <p><code>Flux&lt;String&gt;</code> 里的 <code>Flux</code> 来自一个叫 <strong>Reactor</strong> 的响应式库。现在不用深究，记住一句话就够：<strong><code>Flux&lt;String&gt;</code> 是一条"会陆续发出多个字符串"的流水线</strong>。前端订阅这条流水线，每来一个片段就追加显示，就形成了打字机效果。</p>
+
+  <pre><span class="ann">@RestController</span>
+<span class="kw">public class</span> <span class="typ">StreamController</span> {
+
+    <span class="kw">private final</span> <span class="typ">ChatClient</span> chatClient;   <span class="com">// Spring AI 注入的聊天客户端</span>
+
+    <span class="kw">public</span> <span class="typ">StreamController</span>(<span class="typ">ChatClient</span> chatClient) {
+        <span class="kw">this</span>.chatClient = chatClient;
+    }
+
+    <span class="com">// 流式接口：访问 /chat/stream?q=你好，会不断返回片段</span>
+    <span class="ann">@GetMapping</span>(value = <span class="str">"/chat/stream"</span>, produces = <span class="str">"text/event-stream"</span>)
+    <span class="kw">public</span> <span class="typ">Flux</span>&lt;<span class="typ">String</span>&gt; stream(<span class="ann">@RequestParam</span> <span class="typ">String</span> q) {
+        <span class="kw">return</span> chatClient.prompt()        <span class="com">// 组装提问</span>
+                           .user(q)             <span class="com">// 用户的问题</span>
+                           .stream()            <span class="com">// ★ 关键：流式调用，不是 .call()</span>
+                           .content();          <span class="com">// 取出每个片段的文字</span>
+    }
+}</pre>
+
+  <p>逐行拆这段：</p>
+
+  <table class="belong">
+    <thead>
+      <tr><th>代码</th><th>归谁管</th><th>大白话</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>produces = "text/event-stream"</code></td>
+        <td><span class="tag spring">Spring</span></td>
+        <td>HTTP 协议里的 SSE（Server-Sent Events），告诉浏览器"这是一条会不断有数据的流"。Spring 帮你处理协议头。</td>
+      </tr>
+      <tr>
+        <td><code>Flux&lt;String&gt;</code></td>
+        <td><span class="tag spring">Spring</span></td>
+        <td>Reactor 的响应式类型，表示"陆续发出的多个字符串"。Spring Boot 3 原生支持把它转成 SSE 流推给前端。</td>
+      </tr>
+      <tr>
+        <td><code>.stream().content()</code></td>
+        <td><span class="tag ai">Spring AI</span></td>
+        <td>Spring AI 的流式调用入口。模型每生成一个片段，<code>Flux</code> 就发一个。</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card success">
+    <div class="card-label">流式 vs 一次性，一张图记住</div>
+    <p style="margin:0.3rem 0 0"><strong>一次性 <code>.call()</code></strong>：模型 ━━━━━━━生成完━━━━━━━▶ 你（用户干等 3 秒，然后一下全出来）<br>
+    <strong>流式 <code>.stream()</code></strong>：模型 ─▶你 ─▶你 ─▶你 ─▶你（第 0.1 秒就开始显示，边生成边显示）</p>
+  </div>
+
+  <div class="card warning">
+    <div class="card-label">小白避坑：不是更快，是更早</div>
+    <p style="margin:0">流式<strong>不会</strong>让模型整体生成得更快——总时间差不多。它只是让<strong>第一个字出现得早</strong>，用户体感上"快得多"。这就是为什么 ChatGPT、AIHom 都用流式：人对"立刻有反馈"的感知，远比对"总时长短"敏感。</p>
+  </div>
+
+  <!-- 2. 结构化输出 -->
+  <h2>2. 结构化输出：让 AI 返回 JSON 并自动变成 Java 对象</h2>
+  <p>大模型默认返回的是<strong>自然语言文本</strong>。但很多时候你想要的不是一段话，而是一份机器能读的数据：比如让 AI 总结一篇文章，你想要的是 <code>{"title": "...", "summary": "..."}</code> 这种结构，而不是一坨散文。</p>
+
+  <p>Spring AI 的<strong>结构化输出</strong>干的就是这件事：你<strong>先用 Java 定义一个结构</strong>（用一个 <code>record</code>），然后让 AI 按<strong>这个结构</strong>返回，Spring AI 会自动把 JSON 映射成你的 Java 对象。</p>
+
+  <h3>第一步：用 record 定义"我想要什么结构"</h3>
+  <p><code>record</code> 是 Java 16+ 引入的"不可变数据类"——你就当成"一个只有字段的数据盒子"。下面定义一个盒子，装两个字段：</p>
+
+  <pre><span class="com">// 我希望 AI 返回这种结构：一个标题 + 一段摘要</span>
+<span class="kw">public record</span> <span class="typ">ArticleSummary</span>(
+    <span class="typ">String</span> title,      <span class="com">// 文章标题</span>
+    <span class="typ">String</span> summary     <span class="com">// 三句话摘要</span>
+) {}</pre>
+
+  <p>这段等于告诉 AI："请返回类似 <code>{"title":"...","summary":"..."}</code> 的 JSON"。Spring AI 会自动把这个结构塞进提示词，约束模型的输出格式。</p>
+
+  <h3>第二步：用 .entity() 声明"我要映射成哪个类"</h3>
+
+  <pre><span class="ann">@GetMapping</span>(<span class="str">"/summarize"</span>)
+<span class="kw">public</span> <span class="typ">ArticleSummary</span> summarize(<span class="ann">@RequestParam</span> <span class="typ">String</span> article) {
+    <span class="kw">return</span> chatClient.prompt()
+                       .user(u -> u.text(<span class="str">"请总结这篇文章：\n\n{article}"</span>)
+                                   .param(<span class="str">"article"</span>, article))
+                       .call()
+                       .entity(<span class="typ">ArticleSummary</span>.<span class="kw">class</span>);   <span class="com">// ★ 关键：告诉它映射成哪个类</span>
+}</pre>
+
+  <p>注意最后那行 <code>.entity(ArticleSummary.class)</code>——这就是结构化输出的入口。它做了三件事：</p>
+  <ol style="padding-left: 1.5rem; margin-bottom: 1rem;">
+    <li>读 <code>ArticleSummary</code> 的字段，自动生成一段"请按 <code>{"title":..., "summary":...}</code> 这个 JSON schema 返回"的指令，塞进给模型的提示词；</li>
+    <li>拿到模型的 JSON 文本后，自动用 <strong>BeanOutputConverter</strong> 反序列化成 <code>ArticleSummary</code> 对象；</li>
+    <li>如果格式不对，会自动重试修正（很贴心）。</li>
+  </ol>
+
+  <div class="card info">
+    <div class="card-label">BeanOutputConverter 是什么</div>
+    <p style="margin:0"><code>.entity(Xxx.class)</code> 内部用的就是这个转换器。它的活儿就一句：把 JSON 字符串 → Java 对象（字段名对得上就填，对不上就报错）。你不用手写解析代码，Spring AI 全包了。</p>
+  </div>
+
+  <div class="card tip">
+    <div class="card-label">测试工程师视角</div>
+    <p style="margin:0">以后你在 AIHom 看到 <code>.entity(SomeRecord.class)</code>，就知道：这不是什么神秘魔法，是"让 AI 按 record 定义的结构吐 JSON，再自动变回 Java 对象"。这个能力在<strong>工具调用（下一课）和 Agent 编排</strong>里大量使用——AI 要返回"该调哪个工具、参数是什么"，这种必须用结构化输出。</p>
+  </div>
+
+  <!-- 3. 会话记忆 -->
+  <h2>3. 会话记忆 ChatMemory：让 AI 记住上文</h2>
+  <p>大模型本身是<strong>无状态</strong>的——你这次问"它刚才说的那个词啥意思"，它根本不知道"刚才"是什么。所谓"多轮对话"，其实是<strong>每次提问时把历史消息一起打包带过去</strong>。Spring AI 把这件事抽象成了 <strong>ChatMemory</strong>。</p>
+
+  <div class="card info">
+    <div class="card-label">ChatMemory 的核心思路</div>
+    <p style="margin:0.3rem 0 0">按一个 <strong>conversationId（会话 ID）</strong>把历史消息存起来。下次同一个会话再提问时，Spring AI 会自动把这条会话之前的消息取出来，拼到新提问前面，一起发给模型。模型就"显得"记住了上下文。</p>
+  </div>
+
+  <p>Spring AI 1.1.x 里，ChatMemory 有两种典型实现（你只需要知道区别，不用现在背 API）：</p>
+
+  <table class="belong">
+    <thead>
+      <tr><th>实现</th><th>存在哪</th><th>什么时候用</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>MessageWindowChatMemory</code>（内存）</td>
+        <td>程序内存里</td>
+        <td>开发联调、demo、单机小流量。重启就没了</td>
+      </tr>
+      <tr>
+        <td>持久化实现（如 Redis / JDBC）</td>
+        <td>数据库 / 缓存</td>
+        <td>生产环境，多实例、要长期保存。AIHom 走这条</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>概念性的用法长这样（先看懂结构，不用记 API）：</p>
+
+  <pre><span class="com">// 给 ChatClient 装上"记忆"，绑定一个 conversationId</span>
+<span class="typ">String</span> conversationId = <span class="str">"user-42-session-1"</span>;   <span class="com">// 哪个用户的哪次会话</span>
+
+<span class="typ">String</span> reply = chatClient.prompt()
+        .messages(memory.get(conversationId))   <span class="com">// 取出这个会话的历史消息，带上</span>
+        .user(<span class="str">"它刚才说的那个词啥意思？"</span>)       <span class="com">// 新问题</span>
+        .call()
+        .content();
+
+memory.add(conversationId, <span class="kw">new</span> <span class="typ">UserMessage</span>(<span class="str">"它刚才说的那个词啥意思？"</span>));
+memory.add(conversationId, <span class="kw">new</span> <span class="typ">AssistantMessage</span>(reply));  <span class="com">// 把这轮对话存回去</span></pre>
+
+  <div class="card warning">
+    <div class="card-label">小白的常见误解</div>
+    <p style="margin:0">"记忆"不是模型自己学进去了什么——模型每次还是<strong>从零开始</strong>读你发来的全部消息。<strong>记东西的是你的程序</strong>（存在 ChatMemory 里），每次提问把它<strong>原样转发</strong>给模型。所以历史越长，每次发的 token 越多、越贵、越慢——这是后面要权衡的事，现在先知道原理。</p>
+  </div>
+
+  <!-- 小结对比 -->
+  <h2>三件事一句话回顾</h2>
+  <table class="belong">
+    <thead>
+      <tr><th>能力</th><th>API 关键词</th><th>解决了什么</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>流式响应</td>
+        <td><code>.stream()</code> → <code>Flux&lt;String&gt;</code></td>
+        <td>边生成边返回，前端打字机效果，第一个字出现得早</td>
+      </tr>
+      <tr>
+        <td>结构化输出</td>
+        <td><code>.entity(XxxRecord.class)</code></td>
+        <td>让 AI 按 record 结构返回 JSON，自动映射成 Java 对象</td>
+      </tr>
+      <tr>
+        <td>会话记忆</td>
+        <td><code>ChatMemory</code> + <code>conversationId</code></td>
+        <td>按会话存历史消息，多轮对话时带上，让 AI"记住"上文</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Quiz -->
+  <h2>小测验：确认你真的 get 到了</h2>
+
+  <div class="quiz" id="quiz1">
+    <div class="quiz-q">第 1 题：从一次性返回切到流式返回，代码上最关键的一处改动是什么？</div>
+    <button class="quiz-opt" data-correct="false">把 <code>@GetMapping</code> 换成 <code>@PostMapping</code></button>
+    <button class="quiz-opt" data-correct="true">把 <code>.call()</code> 换成 <code>.stream()</code>，返回类型变成 <code>Flux&lt;String&gt;</code></button>
+    <button class="quiz-opt" data-correct="false">给 <code>ChatClient</code> 加上 <code>@Stream</code> 注解</button>
+    <button class="quiz-opt" data-correct="false">在 application.yml 里把 <code>stream: true</code> 打开</button>
+    <div class="quiz-fb" id="fb1"></div>
+  </div>
+
+  <div class="quiz" id="quiz2">
+    <div class="quiz-q">第 2 题：结构化输出 <code>.entity(ArticleSummary.class)</code> 主要解决了什么问题？</div>
+    <button class="quiz-opt" data-correct="false">让模型回答得更快</button>
+    <button class="quiz-opt" data-correct="false">给模型加上会话记忆</button>
+    <button class="quiz-opt" data-correct="true">让模型按指定结构返回 JSON，并自动映射成 Java 对象，省掉手写解析</button>
+    <button class="quiz-opt" data-correct="false">把返回结果加密成不可读的字符串</button>
+    <div class="quiz-fb" id="fb2"></div>
+  </div>
+
+  <div class="quiz" id="quiz3">
+    <div class="quiz-q">第 3 题：关于会话记忆 ChatMemory，下面哪种说法<strong>正确</strong>？</div>
+    <button class="quiz-opt" data-correct="false">模型自己会把学到的内容永久记住，下次直接用</button>
+    <button class="quiz-opt" data-correct="true">每次提问时，由程序把历史消息取出来一起发给模型，模型才显得"记得"</button>
+    <button class="quiz-opt" data-correct="false">ChatMemory 只能存在内存里，重启就丢</button>
+    <button class="quiz-opt" data-correct="false">会话记忆和流式响应必须二选一，不能同时用</button>
+    <div class="quiz-fb" id="fb3"></div>
+  </div>
+
+  <!-- 本节胜利 -->
+  <div class="win">
+    <div class="card-label">本节你获得的胜利</div>
+    <p style="margin:0.3rem 0 0">现在你看到一个流式接口（<code>.stream()</code> + <code>Flux&lt;String&gt;</code> + SSE）能讲清它和一次性返回的区别；看到 <code>.entity(Xxx.class)</code> 知道那是让 AI 按 record 结构吐 JSON；看到 <code>ChatMemory</code> 知道"记忆"是程序在存历史、转发给模型。这三个概念组合，就是 AIHom 聊天页体验的骨架——下一课进工具调用（Tool / MCP），你会把它们用得更深。</p>
+  </div>
+
+  <!-- 推荐阅读 -->
+  <div class="reading">
+    <div class="card-label">推荐 primary source（高质量一手资料）</div>
+    <p style="margin:0.5rem 0 0">两个权威入口，对照本课主题去看：<br>
+    • <a href="https://docs.spring.io/spring-ai/reference/api/chatclient.html" target="_blank">Spring AI 官方文档 · ChatClient</a>（流式 <code>stream()</code>、结构化输出 <code>entity()</code> 都在这一章）<br>
+    • <a href="https://docs.spring.io/spring-ai/reference/api/chat/memory.html" target="_blank">Spring AI 官方文档 · Chat Memory</a>（会话记忆的 API 与持久化实现）<br>
+    • <a href="https://java2ai.com/" target="_blank">Spring AI Alibaba 官方文档</a>（AIHom 实际用的框架，重点看流式 + DashScope 接入 + Alibaba 对 ChatMemory 的扩展）<br>
+    现在不用全读，挑"Streaming""Structured Output""ChatMemory"三个小节扫一眼即可。</p>
+  </div>
+
+  <div class="card warning">
+    <div class="card-label">关于版本（重要，已从代码核实）</div>
+    <p style="margin:0">本课所有 API 对齐 <strong>Spring AI 1.1.2 + Spring AI Alibaba 1.1.2.0.5-qh</strong>（AIHom 真实栈）。⚠️ 社区 Spring AI 已发到 2.0.0（2026-06-12，Boot 4.x），<strong>和你的项目无关</strong>——查文档认准 1.1.x，别被 2.x 教程带偏。1.1.x 里 <code>.stream()</code>、<code>.entity()</code>、<code>ChatMemory</code> 的写法与本课完全一致。</p>
+  </div>
+
+  <!-- 追问 -->
+  <div class="ask">
+    <p>🤔 <strong>有任何看不懂的地方，直接问我。</strong>比如："<code>Flux</code> 到底怎么订阅"、"record 和 class 有啥区别"、"AIHom 里流式是怎么通过 WebSocket 推给前端的"……没有蠢问题，我是你的私教，问就对了。</p>
+  </div>
+</div>
+
+<script>
+  // 简单的 quiz 即时反馈
+  const feedback = {
+    1: { ok: '✓ 对！就这一处：.call() → .stream()，返回类型从 String 变成 Flux<String>。前端订阅这条流水线，每来一个片段就显示。',
+         no: '关键改动在调用方式上：把 .call() 换成 .stream()，返回类型相应变成 Flux<String>。不是改注解，也不是 yml 开关。' },
+    2: { ok: '✓ 对！.entity(ArticleSummary.class) 让 AI 按这个 record 的字段结构返回 JSON，再自动用 BeanOutputConverter 映射成 Java 对象，省掉手写解析。',
+         no: '结构化输出解决的是"返回的数据结构"问题——让 AI 按 record 定义的结构吐 JSON 并自动变成 Java 对象。跟速度、记忆、加密都无关。' },
+    3: { ok: '✓ 对！模型本身无状态，是程序按 conversationId 把历史消息存起来、下次提问一起带上，模型才"显得"记得。',
+         no: '模型自己不记东西，是 ChatMemory 帮你存历史、每次转发给模型。而且 ChatMemory 不只能存内存，也有数据库/Redis 持久化实现。' }
+  };
+
+  function wireQuiz(id) {
+    const quiz = document.getElementById('quiz' + id);
+    const fb = document.getElementById('fb' + id);
+    const opts = quiz.querySelectorAll('.quiz-opt');
+    opts.forEach(opt => {
+      opt.addEventListener('click', () => {
+        const correct = opt.dataset.correct === 'true';
+        opts.forEach(o => o.classList.add('disabled'));
+        if (correct) {
+          opt.classList.add('correct');
+          fb.style.background = 'var(--success-light)';
+          fb.style.color = '#14532d';
+          fb.textContent = feedback[id].ok;
+        } else {
+          opt.classList.add('wrong');
+          // 同时点亮正确答案
+          opts.forEach(o => { if (o.dataset.correct === 'true') o.classList.add('correct'); });
+          fb.style.background = '#fee2e2';
+          fb.style.color = '#7f1d1d';
+          fb.textContent = feedback[id].no;
+        }
+        fb.classList.add('show');
+      });
+    });
+  }
+  [1,2,3].forEach(wireQuiz);
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 017</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0016-chatclient-prompt.html">上一课：016 ChatClient + Prompt + 消息体系</a><a class="primary" href="0018-tool-calling-mcp.html">下一课：018 Tool Calling + MCP</a></div></nav>
+</body>
+</html>

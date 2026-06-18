@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Redux Toolkit 基础入门</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.5rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:2rem}
+  .desc{color:var(--text-secondary);font-size:.95rem;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.1rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem}
+  p{margin-bottom:1rem}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}
+  li{margin-bottom:.5rem}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15rem .4rem;border-radius:4px;font-size:.85rem}
+  pre{background:#1e293b;color:#e2e8f0;padding:1.25rem 1.5rem;border-radius:8px;overflow-x:auto;margin:1rem 0;font-size:.85rem;line-height:1.6}
+  pre code{background:none;padding:0;color:inherit}
+  .info-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0}
+  .info-box h3{color:var(--info);margin-top:0}
+  .warn-box{background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0}
+  .warn-box h3{color:var(--warning);margin-top:0}
+  .success-box{background:#dcfce7;border:1px solid #86efac;border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0}
+  .success-box h3{color:var(--success);margin-top:0}
+  table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.9rem}
+  th,td{border:1px solid var(--border);padding:.6rem .8rem;text-align:left}
+  th{background:var(--code-bg);font-weight:600}
+  .quiz-section{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1.5rem 0}
+  .quiz-section h3{color:var(--purple);margin-top:0}
+  .quiz-q{margin-bottom:1.5rem}
+  .quiz-q strong{display:block;margin-bottom:.5rem}
+  .quiz-opt{list-style:upper-alpha;margin-left:1.5rem}
+  .quiz-opt li{margin-bottom:.3rem;cursor:pointer;padding:.25rem .5rem;border-radius:4px;transition:background .2s}
+  .quiz-opt li:hover{background:var(--code-bg)}
+  .answer{display:none;background:#dcfce7;border:1px solid #86efac;border-radius:6px;padding:.75rem 1rem;margin-top:.75rem;font-size:.9rem}
+  .answer.show{display:block}
+  .show-answers{background:var(--accent);color:white;border:none;padding:.5rem 1rem;border-radius:6px;cursor:pointer;font-size:.9rem;margin-top:1rem}
+  .show-answers:hover{opacity:.9}
+  .diagram{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1rem 0;text-align:center;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.4;overflow-x:auto}
+  .tag{display:inline-block;padding:.1rem .4rem;border-radius:4px;font-size:.7rem;font-weight:500;margin-right:.3rem}
+  .back-link{display:inline-block;margin-bottom:2rem;color:var(--accent);text-decoration:none;font-size:.9rem}
+  .back-link:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="container">
+
+<a class="back-link" href="../lessons/index.html">&larr; 返回课程目录</a>
+
+<h1>📦 Redux Toolkit 基础入门</h1>
+<p class="subtitle">理解 React 状态管理的核心工具</p>
+<p class="desc">Redux Toolkit 是 Redux 的官方推荐工具包，它大大简化了 Redux 的使用。本课程将从 "什么是状态管理" 开始，带你理解 Redux Toolkit 的核心概念。</p>
+
+<!-- ==================== 第一章 ==================== -->
+<h2><span class="icon">📖</span> 一、什么是状态管理？</h2>
+
+<p>在 React 应用中，<strong>状态（State）</strong>就是驱动界面显示的数据。比如：</p>
+<ul>
+  <li>用户是否已登录</li>
+  <li>购物车里有哪些商品</li>
+  <li>当前选中的主题是深色还是浅色</li>
+  <li>聊天消息列表</li>
+</ul>
+
+<p><strong>状态管理</strong>就是如何组织、存储和更新这些数据。</p>
+
+<div class="info-box">
+  <h3>💡 类比理解</h3>
+  <p>想象一个餐厅：<strong>状态</strong>就是厨房里 "当前有哪些订单"。状态管理就是一套流程 —— 谁负责下单、谁负责做菜、谁负责通知顾客。</p>
+</div>
+
+<h3>React 自带的状态管理</h3>
+<p>React 自带了 <code>useState</code> 和 <code>useContext</code> 来管理状态。对于小型应用，这就够了。但当应用变复杂时，问题就来了：</p>
+<ul>
+  <li><strong>状态需要跨很多组件共享</strong>：比如用户登录信息，几乎每个页面都要用</li>
+  <li><strong>状态更新逻辑复杂</strong>：比如购物车的增删改查，逻辑散落在各处</li>
+  <li><strong>调试困难</strong>：状态变了不知道是谁改的、什么时候改的</li>
+</ul>
+
+<!-- ==================== 第二章 ==================== -->
+<h2><span class="icon">🤔</span> 二、为什么需要 Redux？</h2>
+
+<p>Redux 是一个<strong>可预测的状态容器</strong>，它有三个核心原则：</p>
+
+<ol>
+  <li><strong>单一数据源</strong>：整个应用的状态存储在一个地方（Store），而不是散落在各个组件里</li>
+  <li><strong>状态只读</strong>：不能直接修改状态，只能通过发送 "Action" 来触发更新</li>
+  <li><strong>纯函数更新</strong>：状态的更新逻辑写在 "Reducer" 里，它是一个纯函数 —— 输入相同，输出一定相同</li>
+</ol>
+
+<div class="diagram">
+<pre style="background:none;color:var(--text);text-align:left">
+  ┌──────────┐    dispatch action    ┌──────────┐    新状态    ┌──────────┐
+  │  组件     │ ──────────────────&gt;  │ Reducer  │ ──────────&gt; │  Store   │
+  │ (View)   │                       │ (纯函数)  │             │ (状态树)  │
+  └──────────┘ &lt;──────────────────  └──────────┘             └──────────┘
+        │          订阅状态更新                                     │
+        │                                                          │
+        └──────────── 读取状态 &lt;────────────────────────────────────┘
+</pre>
+</div>
+
+<div class="warn-box">
+  <h3>⚠️ 传统 Redux 的痛点</h3>
+  <p>原生 Redux 写起来很繁琐 —— 要定义 Action Types、Action Creators、Reducer，还要配置 Store，写大量模板代码。这就是 Redux Toolkit 诞生的原因！</p>
+</div>
+
+<!-- ==================== 第三章 ==================== -->
+<h2><span class="icon">🛠️</span> 三、Redux Toolkit 核心 API</h2>
+
+<p>Redux Toolkit（简称 RTK）是 Redux 官方推荐的工具包，它把 Redux 的最佳实践打包成了简洁的 API。</p>
+
+<h3>1. createSlice — 创建状态切片</h3>
+
+<p><code>createSlice</code> 是 RTK 最核心的 API。它帮你同时定义 <strong>初始状态</strong>、<strong>reducers（更新逻辑）</strong>和 <strong>actions（触发更新的方式）</strong>。</p>
+
+<pre><code>// features/counter/counterSlice.js
+import { createSlice } from '@reduxjs/toolkit';
+
+const counterSlice = createSlice({
+  name: 'counter',        // slice 的名字
+  initialState: {         // 初始状态
+    value: 0,
+  },
+  reducers: {             // 更新逻辑（自动生成 actions）
+    increment(state) {
+      state.value += 1;   // 看起来像直接修改，其实是 Immer 在背后处理
+    },
+    decrement(state) {
+      state.value -= 1;
+    },
+    incrementByAmount(state, action) {
+      state.value += action.payload;
+    },
+  },
+});
+
+// 自动生成了 actions
+export const { increment, decrement, incrementByAmount } = counterSlice.actions;
+// 导出 reducer
+export default counterSlice.reducer;</code></pre>
+
+<div class="success-box">
+  <h3>✅ 为什么可以直接修改 state？</h3>
+  <p>RTK 内部使用了 <strong>Immer</strong> 库。你写的 <code>state.value += 1</code> 实际上会被 Immer 转换为不可变更新。这让代码写起来简单，但底层仍然是安全的不可变操作。</p>
+</div>
+
+<h3>2. configureStore — 创建 Store</h3>
+
+<p><code>configureStore</code> 帮你创建 Redux Store，自动配置了中间件（包括 thunk 异步处理）和开发工具。</p>
+
+<pre><code>// store.js
+import { configureStore } from '@reduxjs/toolkit';
+import counterReducer from './features/counter/counterSlice';
+import userReducer from './features/user/userSlice';
+
+const store = configureStore({
+  reducer: {
+    counter: counterReducer,  // counter 状态由 counterReducer 管理
+    user: userReducer,        // user 状态由 userReducer 管理
+  },
+});
+
+export default store;</code></pre>
+
+<h3>3. useSelector — 读取状态</h3>
+
+<p><code>useSelector</code> 是一个 React Hook，用来从 Store 中读取状态。</p>
+
+<pre><code>import { useSelector } from 'react-redux';
+
+function Counter() {
+  // 从 Store 中读取 counter.value
+  const count = useSelector((state) => state.counter.value);
+
+  return &lt;div&gt;当前计数：{count}&lt;/div&gt;;
+}</code></pre>
+
+<h3>4. useDispatch — 触发状态更新</h3>
+
+<p><code>useDispatch</code> 是一个 React Hook，用来发送 actions 触发状态更新。</p>
+
+<pre><code>import { useDispatch, useSelector } from 'react-redux';
+import { increment, decrement } from './counterSlice';
+
+function Counter() {
+  const count = useSelector((state) => state.counter.value);
+  const dispatch = useDispatch();
+
+  return (
+    &lt;div&gt;
+      &lt;span&gt;{count}&lt;/span&gt;
+      &lt;button onClick={() => dispatch(increment())}&gt;+1&lt;/button&gt;
+      &lt;button onClick={() => dispatch(decrement())}&gt;-1&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+<h3>数据流总结</h3>
+<div class="diagram">
+<pre style="background:none;color:var(--text);text-align:left">
+  组件点击按钮
+       │
+       ▼
+  dispatch(increment())     ← useDispatch 发送 action
+       │
+       ▼
+  Reducer 处理 action       ← createSlice 定义的 reducers
+       │
+       ▼
+  Store 状态更新            ← configureStore 创建的 Store
+       │
+       ▼
+  useSelector 感知变化      ← 组件自动重新渲染
+</pre>
+</div>
+
+<!-- ==================== 第四章 ==================== -->
+<h2><span class="icon">⚖️</span> 四、Redux Toolkit vs React Context</h2>
+
+<p>很多同学会问："React 自带的 Context 不就能共享状态吗？为什么还要 Redux？"</p>
+
+<table>
+  <tr><th>对比维度</th><th>React Context</th><th>Redux Toolkit</th></tr>
+  <tr><td>适用场景</th><td>简单的全局状态（主题、语言）</th><td>复杂的应用状态（购物车、聊天）</th></tr>
+  <tr><td>性能</th><td>Context 值变化时，所有消费者都会重新渲染</th><td>精确订阅，只有相关组件重新渲染</th></tr>
+  <tr><td>调试</th><td>没有内置工具</th><td>Redux DevTools，可追踪每次状态变化</th></tr>
+  <tr><td>中间件</th><td>不支持</th><td>支持异步（thunk）、日志、持久化等</th></tr>
+  <tr><td>状态更新追踪</th><td>困难</th><td>完整的 action 日志，时间旅行调试</th></tr>
+  <tr><td>代码量</th><td>少</th><td>比原生 Redux 少很多，但比 Context 多</th></tr>
+  <tr><td>学习曲线</th><td>低</th><td>中等</th></tr>
+</table>
+
+<div class="info-box">
+  <h3>💡 什么时候用哪个？</h3>
+  <ul>
+    <li><strong>用 Context</strong>：只有少数组件需要共享的简单状态（如主题色、语言设置）</li>
+    <li><strong>用 Redux Toolkit</strong>：多个页面/组件需要共享的复杂状态，需要异步操作，需要调试能力</li>
+  </ul>
+</div>
+
+<div class="warn-box">
+  <h3>⚠️ 常见误区</h3>
+  <p>"用 Redux 就不用 Context 了" —— 不对！它们可以共存。Redux 管理业务状态，Context 管理一些简单的配置（如主题）。关键是选择合适的工具。</p>
+</div>
+
+<!-- ==================== Quiz ==================== -->
+<h2><span class="icon">🧠</span> Quiz — 检验你的理解</h2>
+
+<div class="quiz-section">
+  <h3>📝 选择题</h3>
+
+  <div class="quiz-q">
+    <strong>1. createSlice 中，为什么可以直接写 state.value += 1？</strong>
+    <ul class="quiz-opt">
+      <li onclick="this.style.background='#fee2e2'">Redux 允许直接修改状态</li>
+      <li onclick="this.style.background='#dcfce7'">RTK 内部使用了 Immer 库，会自动转换为不可变更新</li>
+      <li onclick="this.style.background='#fee2e2'">这只在开发环境有效</li>
+      <li onclick="this.style.background='#fee2e2'">这是一个 bug，不应该这样写</li>
+    </ul>
+    <button class="show-answers" onclick="this.nextElementSibling.classList.toggle('show')">显示答案</button>
+    <div class="answer"><strong>答案：B</strong> — Redux Toolkit 内部集成了 Immer 库。你写的 "直接修改" 代码会被 Immer 转换为正确的不可变更新操作，所以底层仍然是安全的。</div>
+  </div>
+
+  <div class="quiz-q">
+    <strong>2. useSelector 的作用是什么？</strong>
+    <ul class="quiz-opt">
+      <li onclick="this.style.background='#fee2e2'">发送 action 触发状态更新</li>
+      <li onclick="this.style.background='#dcfce7'">从 Store 中读取状态</li>
+      <li onclick="this.style.background='#fee2e2'">创建一个新的 Slice</li>
+      <li onclick="this.style.background='#fee2e2'">配置 Redux Store</li>
+    </ul>
+    <button class="show-answers" onclick="this.nextElementSibling.classList.toggle('show')">显示答案</button>
+    <div class="answer"><strong>答案：B</strong> — useSelector 是一个 React Hook，用于从 Redux Store 中读取（选择）状态。dispatch 用于发送 action，configureStore 用于创建 Store。</div>
+  </div>
+
+  <div class="quiz-q">
+    <strong>3. 以下哪种场景更适合使用 Redux Toolkit 而不是 React Context？</strong>
+    <ul class="quiz-opt">
+      <li onclick="this.style.background='#fee2e2'">存储当前主题色（深色/浅色）</li>
+      <li onclick="this.style.background='#fee2e2'">存储当前语言设置</li>
+      <li onclick="this.style.background='#dcfce7'">管理购物车商品列表，需要增删改查和异步同步</li>
+      <li onclick="this.style.background='#fee2e2'">存储一个模态框的开关状态</li>
+    </ul>
+    <button class="show-answers" onclick="this.nextElementSibling.classList.toggle('show')">显示答案</button>
+    <div class="answer"><strong>答案：C</strong> — 购物车涉及多个组件共享的复杂状态、异步操作、复杂更新逻辑，这些正是 Redux Toolkit 的优势场景。简单的主题/语言/模态框状态用 Context 就够了。</div>
+  </div>
+</div>
+
+<div class="info-box">
+  <h3>💡 下一步学习</h3>
+  <p>理解了 Redux Toolkit 的基础后，可以继续学习：</p>
+  <ul>
+    <li><a href="../lessons/front/0008-kuai-front-state-management.html">状态管理与数据流</a> — 看看实际项目中 Redux Toolkit 是怎么用的</li>
+    <li><a href="../lessons/front/0006-kuai-front-agent-system.html">Agent 系统深度追踪</a> — 了解 Agent 的会话状态是如何管理的</li>
+  </ul>
+</div>
+
+</div>
+</body>
+</html>

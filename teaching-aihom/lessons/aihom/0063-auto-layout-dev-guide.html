@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>063 auto-layout-service 开发实战</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --accent: #b45309;
+    --accent-light: #fef3c7;
+    --border: #e7e5e4;
+    --code-bg: #f5f5f4;
+    --success: #16a34a;
+    --warning: #d97706;
+    --info: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .card.info { border-left: 3px solid var(--info); }
+  .card.warning { border-left: 3px solid var(--warning); }
+  .card.success { border-left: 3px solid var(--success); }
+
+  .card-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+  .card.info .card-label { color: var(--info); }
+  .card.warning .card-label { color: var(--warning); }
+  .card.success .card-label { color: var(--success); }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    font-size: 0.88em;
+  }
+
+  pre {
+    background: #1c1917;
+    color: #e7e5e4;
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  pre .comment { color: #78716c; }
+  pre .keyword { color: #f59e0b; }
+  pre .string { color: #86efac; }
+  pre .dir { color: #93c5fd; }
+  pre .file { color: #e7e5e4; }
+  pre .important { color: #fbbf24; font-weight: 500; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.92rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .tree { margin: 1rem 0; }
+
+  .quiz {
+    background: var(--accent-light);
+    border: 1px solid #fbbf24;
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .quiz-title {
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+  .quiz-options { list-style: none; }
+  .quiz-options li {
+    padding: 0.5rem 0.75rem;
+    margin: 0.35rem 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+  }
+  .quiz-options li:hover { background: #fde68a33; border-color: #fbbf24; }
+  .quiz-options li.correct { background: #dcfce7; border-color: #16a34a; }
+  .quiz-options li.wrong { background: #fee2e2; border-color: #ef4444; }
+  .quiz-feedback {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    display: none;
+    font-size: 0.9rem;
+  }
+
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+  }
+  .flow-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .flow-arrow { color: var(--text-secondary); }
+
+  .next-lesson {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .next-lesson a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .next-lesson a:hover { text-decoration: underline; }
+
+  .ask-agent {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+    color: #1e40af;
+  }
+  .ask-agent::before { content: '💡 '; }
+
+  .step-num {
+    display: inline-block;
+    width: 1.6rem;
+    height: 1.6rem;
+    line-height: 1.6rem;
+    text-align: center;
+    background: var(--accent);
+    color: white;
+    border-radius: 50%;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-right: 0.5rem;
+  }
+
+  ul, ol { margin: 0.5rem 0 1rem 1.5rem; }
+  li { margin-bottom: 0.3rem; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>063 auto-layout-service 开发实战</h1>
+<p class="subtitle">手把手教你新增 Processor、Manager，接入 AI 服务，以及本地调试与排查技巧</p>
+
+<!-- ==================== Section 1 ==================== -->
+<h2>1. 如何新增 Processor</h2>
+
+<p>新增一个 Processor 是 auto-layout-service 中最常见的开发任务。以新增一个 <code>MyNewProcessor</code> 为例：</p>
+
+<h3><span class="step-num">1</span>选择基类</h3>
+<p>根据任务类型选择继承的基类：</p>
+<table>
+  <tr><th>场景</th><th>继承</th><th>说明</th></tr>
+  <tr><td>需要 DB 持久化任务状态</td><td><code>BaseDbTaskAsyncProcessor</code></td><td>任务记录写 MySQL</td></tr>
+  <tr><td>需要 Redis 管理任务状态</td><td><code>BaseRedisTaskAsyncProcessor</code></td><td>任务记录写 Redis，高并发友好</td></tr>
+  <tr><td>简单同步任务</td><td><code>BaseProcessor</code></td><td>不需要异步，直接执行</td></tr>
+</table>
+
+<h3><span class="step-num">2</span>创建 Processor 类</h3>
+<pre>
+<span class="keyword">@Component</span>
+<span class="keyword">public class</span> <span class="important">MyNewProcessor</span> <span class="keyword">extends</span> BaseRedisTaskAsyncProcessor {
+
+    <span class="keyword">@Autowired</span>
+    <span class="keyword">private</span> SomeManager someManager;
+
+    <span class="keyword">@Override</span>
+    <span class="keyword">protected</span> String getTaskType() {
+        <span class="keyword">return</span> <span class="string">"MY_NEW_TASK"</span>;
+    }
+
+    <span class="keyword">@Override</span>
+    <span class="keyword">protected void</span> doProcessInner(YourRequestVO request) {
+        <span class="comment">// 1. 参数校验</span>
+        <span class="comment">// 2. 调用 Manager 做业务</span>
+        someManager.doSomething(request);
+        <span class="comment">// 3. 构建返回结果</span>
+    }
+}
+</pre>
+
+<h3><span class="step-num">3</span>注册到路由</h3>
+<p>确保新 Processor 能被请求路由到。通常在 Service 层或配置中添加路由映射。</p>
+
+<div class="card warning">
+  <div class="card-label">注意</div>
+  <p>不要在 Processor 里直接调用外部 HTTP/RPC 接口。把外部调用封装到 Manager 中，Processor 只负责<strong>编排流程</strong>。</p>
+</div>
+
+<!-- ==================== Section 2 ==================== -->
+<h2>2. 如何新增 Manager</h2>
+
+<p>Manager 是外部服务的封装层。当你需要接入一个新的外部服务（AI 服务、第三方 API 等），新建一个 Manager。</p>
+
+<h3><span class="step-num">1</span>在 manager/ 目录下创建类</h3>
+<pre>
+<span class="keyword">@Component</span>
+<span class="keyword">@Slf4j</span>
+<span class="keyword">public class</span> <span class="important">MyServiceManager</span> {
+
+    <span class="keyword">@Autowired</span>
+    <span class="keyword">private</span> SomeFeignClient feignClient;
+
+    <span class="keyword">public</span> ResultVO callExternalService(ParamVO param) {
+        log.info(<span class="string">"调用外部服务, param={}"</span>, param);
+        <span class="keyword">try</span> {
+            ResultVO result = feignClient.call(param);
+            log.info(<span class="string">"调用成功, result={}"</span>, result);
+            <span class="keyword">return</span> result;
+        } <span class="keyword">catch</span> (Exception e) {
+            log.error(<span class="string">"调用失败"</span>, e);
+            <span class="keyword">throw</span> e;
+        }
+    }
+}
+</pre>
+
+<h3><span class="step-num">2</span>创建 Feign Client（如果需要）</h3>
+<p>如果外部服务有 HTTP 接口，在 <code>auto-layout-service-client</code> 模块中定义 Feign Client：</p>
+<pre>
+<span class="keyword">@FeignClient</span>(name = <span class="string">"my-external-service"</span>, url = <span class="string">"${my.service.url}"</span>)
+<span class="keyword">public interface</span> <span class="important">MyExternalServiceClient</span> {
+
+    <span class="keyword">@PostMapping</span>(<span class="string">"/api/endpoint"</span>)
+    ResultVO call(<span class="keyword">@RequestBody</span> ParamVO param);
+}
+</pre>
+
+<div class="card info">
+  <div class="card-label">命名规范</div>
+  <p>Manager 类名以 <code>Manager</code> 结尾，放在 <code>manager/</code> 目录下。Feign Client 以 <code>Client</code> 结尾，放在 <code>client</code> 模块中。</p>
+</div>
+
+<!-- ==================== Section 3 ==================== -->
+<h2>3. 如何接入新的 AI 服务</h2>
+
+<p>项目当前集成了两类 AI 服务：</p>
+<table>
+  <tr><th>AI 服务</th><th>Manager</th><th>SDK</th><th>能力</th></tr>
+  <tr><td>OpenAI</td><td><code>OpenaiManager</code></td><td><code>com.openai</code></td><td>Chat、Embedding、Vision</td></tr>
+  <tr><td>AI Native</td><td><code>AiNativeManager</code></td><td><code>ai-native-service-client</code></td><td>图像生成</td></tr>
+</table>
+
+<p>接入新 AI 服务的步骤：</p>
+
+<ol>
+  <li><strong>引入 SDK</strong> — 在 <code>pom.xml</code> 中添加 AI 服务的客户端依赖</li>
+  <li><strong>新建 Manager</strong> — 在 <code>manager/</code> 下创建 <code>XxxAiManager</code>，封装所有 AI 调用</li>
+  <li><strong>配置化</strong> — API Key、endpoint 等放到 Nacos 或 application.yml，不要硬编码</li>
+  <li><strong>在 Processor 中调用</strong> — 在 Processor 的 <code>doProcessInner()</code> 中注入并调用 Manager</li>
+</ol>
+
+<div class="card success">
+  <div class="card-label">最佳实践</div>
+  <p>AI 调用通常有超时、限流、重试等需求。在 Manager 层统一处理这些逻辑，Processor 层只关注业务编排。</p>
+</div>
+
+<!-- ==================== Section 4 ==================== -->
+<h2>4. 本地运行命令</h2>
+
+<p>在本地启动 auto-layout-service 需要配置以下 JVM 参数：</p>
+
+<pre>
+mvn spring-boot:run \
+  -pl auto-layout-service-web \
+  -Dqunhe.toad.host=http://toad.example.com \
+  -Dqunhe.toad.stage=sit \
+  -Dstage=dev \
+  -Dservice.version.default.global=sit \
+  -Dqunhe.service.version=dev_<span class="important">{花名}</span>
+</pre>
+
+<div class="card warning">
+  <div class="card-label">替换花名</div>
+  <p><code>{花名}</code> 替换为你自己的花名拼音（如 <code>dev_zhangsan</code>），用于区分不同开发者的实例。</p>
+</div>
+
+<h3>常用构建命令</h3>
+<pre>
+<span class="comment"># 完整构建（跳过测试）</span>
+mvn clean deploy -U -DskipTests
+
+<span class="comment"># 运行所有测试</span>
+mvn test
+
+<span class="comment"># 运行单个测试类</span>
+mvn test -pl auto-layout-service-web -am -Dtest=TestClassName
+</pre>
+
+<!-- ==================== Section 5 ==================== -->
+<h2>5. 常见排查路径</h2>
+
+<h3>任务卡住不返回</h3>
+<ol>
+  <li>检查 Redis 中任务状态：<code>AutoLayoutContext.get().getTaskId()</code> 拿到 taskId</li>
+  <li>查看线程池是否满：<code>doAsyncProcess()</code> 提交到线程池时可能排队</li>
+  <li>检查 Manager 层的外部调用是否超时</li>
+</ol>
+
+<h3>AI 返回结果异常</h3>
+<ol>
+  <li>检查 prompt 是否正确 — 看 Manager 层日志中发送给 AI 的完整 prompt</li>
+  <li>检查图片 URL 是否可访问 — AI Vision 需要能下载图片</li>
+  <li>检查模型参数 — temperature、max_tokens 等是否合理</li>
+</ol>
+
+<h3>任务重复执行</h3>
+<ol>
+  <li>检查 <code>getExistTask()</code> 逻辑 — 是否正确判断了已有任务</li>
+  <li>检查 Redis key 是否过期 — 任务还没完成但 key 已经过期了</li>
+  <li>检查是否有并发请求 — 同一个用户短时间内重复提交</li>
+</ol>
+
+<div class="card info">
+  <div class="card-label">日志技巧</div>
+  <p>项目使用自定义 <code>QHLogger</code>，通过 <code>QHLogger.getLogger(getClass())</code> 获取 logger。排查时重点关注 Processor 和 Manager 的 INFO/ERROR 日志。</p>
+</div>
+
+<!-- ==================== Section 6 ==================== -->
+<h2>6. 目录结构速查</h2>
+
+<pre>
+auto-layout-service/
+├── auto-layout-service-common/     <span class="comment"># 共享 DTO、VO、枚举</span>
+├── auto-layout-service-client/     <span class="comment"># Feign Client 定义</span>
+└── auto-layout-service-web/        <span class="comment"># 核心业务</span>
+    └── .../web/
+        ├── <span class="dir">processor/</span>
+        │   ├── <span class="dir">base/</span>           <span class="comment"># 基类：BaseProcessor、BaseAsyncProcessor...</span>
+        │   └── <span class="dir">layoutv2/</span>       <span class="comment"># 具体 Processor 实现</span>
+        ├── <span class="dir">manager/</span>            <span class="comment"># 业务 + 外部调用封装</span>
+        ├── <span class="dir">service/</span>            <span class="comment"># Service 层</span>
+        ├── <span class="dir">mapper/</span>             <span class="comment"># MyBatis Mapper</span>
+        ├── <span class="dir">context/</span>            <span class="comment"># ThreadLocal 上下文</span>
+        ├── <span class="dir">config/</span>             <span class="comment"># 配置类</span>
+        └── <span class="dir">bean/</span>               <span class="comment"># PO / VO / DTO</span>
+</pre>
+
+<!-- ==================== Quiz ==================== -->
+<h2>7. 自检 Quiz</h2>
+
+<div class="quiz" id="quiz1">
+  <div class="quiz-title">Q1: 新增一个需要 Redis 持久化任务状态的 Processor，应该继承哪个基类？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz1', 0)">A. BaseProcessor</li>
+    <li onclick="checkQuiz('quiz1', 1)">B. BaseDbTaskAsyncProcessor</li>
+    <li onclick="checkQuiz('quiz1', 2)">C. BaseRedisTaskAsyncProcessor</li>
+    <li onclick="checkQuiz('quiz1', 3)">D. BaseAsyncProcessor</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <div class="quiz-title">Q2: Processor 中需要调用外部 AI 服务时，正确的做法是？</div>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz2', 0)">A. 在 Processor 中直接写 HTTP 调用代码</li>
+    <li onclick="checkQuiz('quiz2', 1)">B. 新建 Manager 封装调用，Processor 中注入 Manager</li>
+    <li onclick="checkQuiz('quiz2', 2)">C. 在 Controller 中调用 AI 服务，结果传给 Processor</li>
+    <li onclick="checkQuiz('quiz2', 3)">D. 把 API Key 写在 Processor 里直接调用</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <div class="quiz-title">Q3: 本地启动 auto-layout-service 时，qunhe.service.version 参数中的 {花名} 有什么作用？</div>
+  <ul class="quiz-options" data-correct="0">
+    <li onclick="checkQuiz('quiz3', 0)">A. 区分不同开发者的实例，避免互相影响</li>
+    <li onclick="checkQuiz('quiz3', 1)">B. 用于日志记录</li>
+    <li onclick="checkQuiz('quiz3', 2)">C. 用于数据库连接</li>
+    <li onclick="checkQuiz('quiz3', 3)">D. 没有实际作用，可以不填</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<!-- ==================== Next ==================== -->
+
+
+  <h3>推荐阅读</h3>
+  <ul>
+    <li><code>auto-layout-service/AGENTS.md</code> — 项目架构文档</li>
+    <li>Lesson 07：<a href="0047-auto-layout-deep-dive.html">auto-layout-service 深度追踪</a> — Processor 体系详解</li>
+  </ul>
+</div>
+</div>
+
+<script>
+function checkQuiz(quizId, selected) {
+  const quiz = document.getElementById(quizId);
+  const options = quiz.querySelector('.quiz-options');
+  const correct = parseInt(options.dataset.correct);
+  const items = options.querySelectorAll('li');
+  const feedback = quiz.querySelector('.quiz-feedback');
+
+  items.forEach((item, i) => {
+    item.onclick = null;
+    if (i === correct) item.classList.add('correct');
+    if (i === selected && i !== correct) item.classList.add('wrong');
+  });
+
+  const feedbacks = {
+    quiz1: {
+      correct: '✓ 对！BaseRedisTaskAsyncProcessor 用 Redis 管理任务状态，高并发友好。',
+      wrong: '✗ 是 BaseRedisTaskAsyncProcessor。BaseDbTaskAsyncProcessor 用 MySQL，BaseRedisTaskAsyncProcessor 用 Redis。'
+    },
+    quiz2: {
+      correct: '✓ 对！Manager 层封装外部调用，Processor 只负责编排。这是项目的核心设计原则。',
+      wrong: '✗ 正确做法是新建 Manager 封装调用。Processor 不应直接调用外部服务，保持编排职责单一。'
+    },
+    quiz3: {
+      correct: '✓ 对！每个开发者用不同的花名，服务注册到不同实例，避免开发时互相干扰。',
+      wrong: '✗ 花名用于区分不同开发者的实例。比如 dev_zhangsan 和 dev_lisi 是两个独立的服务实例。'
+    }
+  };
+
+  feedback.style.display = 'block';
+  feedback.textContent = selected === correct
+    ? feedbacks[quizId].correct
+    : feedbacks[quizId].wrong;
+  feedback.style.background = selected === correct ? '#dcfce7' : '#fee2e2';
+}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 063</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0062-ai-native-dev-guide.html">上一课：062 ai-native-service 开发实战</a><a class="primary" href="0064-ai-home-dev-guide.html">下一课：064 ai-home 前端开发实战</a></div></nav>
+</body>
+</html>

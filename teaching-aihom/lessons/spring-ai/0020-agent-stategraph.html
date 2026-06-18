@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>020 Agent + StateGraph / Graph</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --accent: #b45309;
+    --accent-light: #fef3c7;
+    --border: #e7e5e4;
+    --code-bg: #1c1917;
+    --code-text: #f5f5f4;
+    --success: #16a34a;
+    --success-light: #dcfce7;
+    --warning: #d97706;
+    --warning-light: #fef3c7;
+    --info: #2563eb;
+    --info-light: #dbeafe;
+    --tag-java: #d97706;
+    --tag-spring: #16a34a;
+    --tag-ai: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 3rem 2rem 5rem;
+  }
+
+  .lesson-meta {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2.8rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  strong { font-weight: 700; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.25rem 0;
+  }
+  .card.info { border-left: 3px solid var(--info); background: var(--info-light); }
+  .card.warning { border-left: 3px solid var(--warning); background: var(--warning-light); }
+  .card.success { border-left: 3px solid var(--success); background: var(--success-light); }
+  .card.tip { border-left: 3px solid var(--accent); }
+
+  .card-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+  }
+
+  pre {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 1.25rem 1.4rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1.25rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.86rem;
+    line-height: 1.7;
+  }
+  code { font-family: 'JetBrains Mono', monospace; }
+  p code, li code {
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 0.12em 0.4em;
+    border-radius: 4px;
+    font-size: 0.85em;
+  }
+  .com { color: #a8a29e; }      /* 代码注释 */
+  .kw  { color: #fbbf24; }      /* 关键字 */
+  .ann { color: #86efac; }      /* 注解 @ */
+  .typ { color: #93c5fd; }      /* 类型 */
+  .str { color: #fda4af; }      /* 字符串 */
+
+  /* 逐行归属表 */
+  table.belong {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.25rem 0;
+    font-size: 0.9rem;
+  }
+  table.belong th, table.belong td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  table.belong th {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    font-weight: 600;
+  }
+  table.belong td code { font-size: 0.82em; }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.1em 0.55em;
+    border-radius: 10px;
+    color: #fff;
+    letter-spacing: 0.02em;
+  }
+  .tag.java   { background: var(--tag-java); }
+  .tag.spring { background: var(--tag-spring); }
+  .tag.ai     { background: var(--tag-ai); }
+
+  /* Quiz */
+  .quiz {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem 1.6rem;
+    margin: 1.5rem 0;
+  }
+  .quiz-q {
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  .quiz-opt {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--text);
+    transition: all 0.15s;
+  }
+  .quiz-opt:hover { border-color: var(--accent); }
+  .quiz-opt.correct {
+    background: var(--success-light);
+    border-color: var(--success);
+    color: #14532d;
+    font-weight: 500;
+  }
+  .quiz-opt.wrong {
+    background: #fee2e2;
+    border-color: #dc2626;
+    color: #7f1d1d;
+  }
+  .quiz-opt.disabled { cursor: default; opacity: 0.85; }
+  .quiz-fb {
+    margin-top: 0.85rem;
+    font-size: 0.9rem;
+    display: none;
+    padding: 0.7rem 0.9rem;
+    border-radius: 6px;
+    line-height: 1.7;
+  }
+  .quiz-fb.show { display: block; }
+
+  .win {
+    background: var(--success-light);
+    border-left: 3px solid var(--success);
+    border-radius: 8px;
+    padding: 1rem 1.4rem;
+    margin: 2rem 0;
+  }
+  .win .card-label { color: #14532d; }
+
+  .reading {
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.4rem;
+    margin: 1.5rem 0;
+  }
+  .reading a { color: var(--info); text-decoration: none; font-weight: 500; }
+  .reading a:hover { text-decoration: underline; }
+
+  .ask {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+  }
+
+  blockquote {
+    border-left: 3px solid var(--accent);
+    padding-left: 1rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin: 1.25rem 0;
+  }
+@media print {
+    body { background: #fff; }
+    .quiz-opt { border: 1px solid #999; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="lesson-meta">AIHom 全栈学习 · 第 020 课 · Agent 与 StateGraph</div>
+  <h1>020 Agent + StateGraph / Graph</h1>
+  <div class="subtitle">本节目标：看懂 AIHom 的"大脑"是怎么搭出来的。区分 Agent 和一问一答，理解 StateGraph/Graph 用"有向图"来编排 AI 流程，并能在一张图里指出节点、边、状态分别是什么。</div>
+
+  <!-- 1. 从一问一答到自主 Agent -->
+  <h2>先回顾：一问一答 vs 自主 Agent</h2>
+  <p>你在 <a href="./0016-chatclient-prompt.html">016 课</a> 学的 <code>ChatClient.prompt().user(q).call().content()</code>，是典型的<strong>一问一答</strong>：你问一句，模型答一句，结束。它没有"下一步"的概念。</p>
+  <p>但现实任务不是这样的。比如用户对 AIHom 说："帮我把这个户型图画成 3D"。一个聪明的助手会<strong>自己拆步骤</strong>：</p>
+
+  <pre><span class="com"># 一问一答：一锤子买卖</span>
+你 → <span class="typ">ChatClient</span> → 模型 → 回答（结束，没有下一步）
+
+<span class="com"># Agent：会自己想"下一步该干嘛"</span>
+你 → <span class="typ">Agent</span> → 模型: <span class="str">"我得先调用识图工具"</span>
+                ↓
+          <span class="kw">调</span> <span class="typ">识图工具</span>
+                ↓
+          模型: <span class="str">"识别完成，现在调画图工具"</span>
+                ↓
+          <span class="kw">调</span> <span class="typ">画图工具</span>
+                ↓
+          模型: <span class="str">"画完了，把结果回复用户"</span>
+                ↓
+          → 你（结束）</pre>
+
+  <div class="card tip">
+    <div class="card-label">Agent 的一句话定义</div>
+    <p style="margin:0"><strong>Agent 是能自主多步推理、并在需要时调用工具来达成目标的 AI。</strong>关键区别在于"自主多步"——它自己决定接下来调模型、调工具、还是直接回用户，而不是你一次性问完就结束。</p>
+  </div>
+
+  <div class="card info">
+    <div class="card-label">测试工程师视角</div>
+    <p style="margin:0">Agent 的"多步"意味着一次对话可能触发好几次模型调用和好几个工具调用。以后你测一个 Agent 接口，看到的耗时是<strong>多步累加</strong>的——这是排查"为什么这么慢"的起点。</p>
+  </div>
+
+  <!-- 2. Spring AI Alibaba 的 Agent 框架 -->
+  <h2>Spring AI Alibaba 的 Agent 框架</h2>
+  <p>回忆 <a href="./0015-spring-ai-vs-alibaba-dashscope.html">015 课</a>：AIHom 真正的核心是 <strong>Spring AI Alibaba 1.1.2.0.5-qh</strong>（群核定制版），它扩展了底层的 Spring AI。Agent 框架就在这一层。它能干三件事：</p>
+
+  <table class="belong">
+    <thead>
+      <tr><th>能力</th><th>谁提供</th><th>大白话</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>定义一个 Agent</td>
+        <td><span class="tag ai">Alibaba</span></td>
+        <td>声明一个"有目标的 AI 角色"，给它挂上系统提示词和工具。</td>
+      </tr>
+      <tr>
+        <td>挂载工具（Tool / MCP）</td>
+        <td><span class="tag ai">Alibaba + Spring AI</span></td>
+        <td>018 课学过的 Tool Calling / MCP Server，就是给 Agent 用的"手脚"。</td>
+      </tr>
+      <tr>
+        <td>多个 Agent 协作（Supervisor 模式）</td>
+        <td><span class="tag ai">Alibaba</span></td>
+        <td>一个"主管 Agent"（Supervisor）负责分配任务给多个"打工人 Agent"，各司其职。AIHom 里就有 Supervisor。</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card warning">
+    <div class="card-label">这里点到为止，别深挖源码</div>
+    <p style="margin:0">Agent 框架的源码细节（怎么注册、怎么路由）对小白现阶段是负担。你只要记住：<strong>"Agent = 目标 + 提示词 + 工具 + 自主决策"</strong>，且 AIHom 用的是 Spring AI Alibaba 的实现就够了。下一节真正的主角，是把这些 Agent 和步骤<strong>串起来</strong>的东西——Graph。</p>
+  </div>
+
+  <!-- 3. StateGraph / Graph：核心中的核心 -->
+  <h2>StateGraph / Graph：AIHom 编排的核心 ★</h2>
+  <p>这是整条学习路线<strong>最重要的一节内容</strong>。无论 Agent 多智能，它"先干嘛再干嘛"的流程，在代码里是用 <strong>StateGraph / Graph</strong> 来描述的。Spring AI Alibaba 提供了 <code>StateGraphFactory</code> / <code>StateGraphBuildFactory</code> 这套 API，AIHom 的编排核心就是它们。</p>
+
+  <p>核心思路一句话：<strong>把复杂的 AI 流程画成一张"有向图"</strong>。图里有三种东西：</p>
+
+  <h3>① 节点（Node）= 一个步骤</h3>
+  <p>每个节点干一件事：调一次模型、调一个工具、做一个判断、或者停下来等人介入（人机交互）。你可以把节点想成<strong>流程图里的方框</strong>。</p>
+
+  <h3>② 边（Edge）= 步骤之间的流转</h3>
+  <p>边连接两个节点，表示"做完 A 就去做 B"。最有用的是<strong>条件边（Conditional Edge）</strong>——满足某个条件走 A，否则走 B。这就是分支判断，像 <code>if/else</code>，但被图化了。</p>
+
+  <h3>③ 状态（State）= 节点之间传递的"背包"</h3>
+  <p>每个节点处理时，都从 State 里读输入（用户消息、中间结果、工具返回值），处理完再把新结果塞回 State，传给下一个节点。State 像一个在节点之间传递的<strong>共享背包</strong>。</p>
+
+  <div class="card tip">
+    <div class="card-label">一个生活类比</div>
+    <p style="margin:0">想象你在医院看病：节点是"挂号→门诊→抽血→出报告→复诊"，条件边是"报告异常？是→进专项检查，否→直接开药回家"，State 是你手里那个<strong>病历本</strong>——每经过一个科室就被写上一笔，下一个科室看着它继续。</p>
+  </div>
+
+  <!-- 4. 为什么用 Graph -->
+  <h2>为什么非要用 Graph，不能堆 if-else 吗？</h2>
+  <p>能，但很快就崩溃。AIHom 这种业务流程的特点是：<strong>多步骤、有分支、还要人机交互</strong>（比如画完图要用户确认才继续）。如果全写成 if-else 嵌套，几层下来就没人看得懂了。</p>
+
+  <table class="belong">
+    <thead>
+      <tr><th>场景</th><th>堆 if-else</th><th>用 Graph 编排</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>看清整体流程</td>
+        <td>要在几百行代码里跳来跳去</td>
+        <td>看一张图，一眼就懂</td>
+      </tr>
+      <tr>
+        <td>加一个分支</td>
+        <td>改一堆嵌套，怕改崩</td>
+        <td>加一个节点 + 一条边，互不影响</td>
+      </tr>
+      <tr>
+        <td>人机交互暂停/恢复</td>
+        <td>要自己维护状态、自己续上</td>
+        <td>Graph 框架内置，State 自动带上</td>
+      </tr>
+      <tr>
+        <td>多人协作维护</td>
+        <td>互相踩脚</td>
+        <td>每人负责几个节点，边界清晰</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card info">
+    <div class="card-label">这就是 StateGraphFactory 在干的事</div>
+    <p style="margin:0">AIHom 里那些 <code>StateGraphFactory</code> / <code>StateGraphBuildFactory</code>，本质上就是<strong>用代码定义这张图</strong>：声明有哪些节点、节点之间怎么连、哪个地方要条件分支、State 里装哪些字段。你看懂了这三件事，就读懂了 AIHom 的编排主干。</p>
+  </div>
+
+  <!-- 5. 极简 Graph 示意 -->
+  <h2>一张极简 Graph 长什么样</h2>
+  <p>来个具体场景：用户说一句话，助手要先<strong>理解意图</strong>，判断"要不要画图"，是就调画图工具，否则直接回复。用 Graph 画出来是这样：</p>
+
+  <pre><span class="com">┌─────────┐</span>
+<span class="com">│  START  │</span>   <span class="com">用户消息进入 State</span>
+<span class="com">└────┬────┘</span>
+     ▼
+<span class="com">┌──────────────────┐</span>
+<span class="com">│ 节点 A：调通义千问 │</span>   <span class="kw">理解意图</span>，输出 <span class="str">"need_draw=true/false"</span>
+<span class="com">│   (understand)    │</span>   写入 State
+<span class="com">└────────┬─────────┘</span>
+         ▼
+   <span class="kw">◇ 条件边</span>: need_draw ?
+      ┌───┴───┐
+    是▼       否▼
+<span class="com">┌──────────┐</span>  <span class="com">┌──────────┐</span>
+<span class="com">│节点 B:    │</span>  <span class="com">│节点 C:    │</span>
+<span class="com">│调画图工具 │</span>  <span class="com">│直接回复   │</span>
+<span class="com">└─────┬────┘</span>  <span class="com">└─────┬────┘</span>
+      ▼               ▼
+<span class="com">┌──────────────────────┐</span>
+<span class="com">│  节点 D：组装最终回复  │</span>   从 State 取结果 → 回用户
+<span class="com">└──────────┬───────────┘</span>
+           ▼
+       <span class="com">┌─────┐</span>
+       <span class="com">│ END │</span>
+       <span class="com">└─────┘</span></pre>
+
+  <p>下面是对应的<strong>概念性伪代码</strong>（不是真实 AIHom 代码，只为让你看清结构）：阅读时对照上面的图，找节点、找边、找条件。</p>
+
+  <pre><span class="com">// 概念性伪代码，展示 StateGraph 的"声明式"写法</span>
+<span class="typ">StateGraph</span> graph = <span class="kw">new</span> <span class="typ">StateGraph</span>()
+
+    <span class="com">// ① 声明节点（每个节点 = 一个步骤）</span>
+    .<span class="kw">addNode</span>(<span class="str">"understand"</span>, node -> {           <span class="com">// 节点 A</span>
+        <span class="typ">String</span> reply = chatClient.call(state.userMsg);
+        state.put(<span class="str">"need_draw"</span>, parseIntent(reply));
+    })
+    .<span class="kw">addNode</span>(<span class="str">"draw"</span>, node -> {                  <span class="com">// 节点 B</span>
+        <span class="typ">String</span> img = drawTool.run(state.userMsg);
+        state.put(<span class="str">"image"</span>, img);
+    })
+    .<span class="kw">addNode</span>(<span class="str">"reply"</span>, node -> {                  <span class="com">// 节点 C</span>
+        state.put(<span class="str">"answer"</span>, <span class="str">"好的，已理解您的需求。"</span>);
+    })
+    .<span class="kw">addNode</span>(<span class="str">"finish"</span>, node -> {                 <span class="com">// 节点 D</span>
+        state.put(<span class="str">"finalReply"</span>, assemble(state));
+    })
+
+    <span class="com">// ② 声明边（先走 understand）</span>
+    .<span class="kw">addEdge</span>(<span class="typ">START</span>, <span class="str">"understand"</span>)
+
+    <span class="com">// ③ 条件边：看 need_draw 决定走 B 还是 C</span>
+    .<span class="kw">addConditionalEdges</span>(<span class="str">"understand"</span>, state -> {
+        <span class="kw">return</span> state.get(<span class="str">"need_draw"</span>)
+             ? <span class="str">"draw"</span>      <span class="com">// 是 → 节点 B</span>
+             : <span class="str">"reply"</span>;    <span class="com">// 否 → 节点 C</span>
+    })
+    <span class="com">// ④ B 和 C 都汇到 finish，再到 END</span>
+    .<span class="kw">addEdge</span>(<span class="str">"draw"</span>,   <span class="str">"finish"</span>)
+    .<span class="kw">addEdge</span>(<span class="str">"reply"</span>,  <span class="str">"finish"</span>)
+    .<span class="kw">addEdge</span>(<span class="str">"finish"</span>, <span class="typ">END</span>);</pre>
+
+  <table class="belong">
+    <thead>
+      <tr><th>图里的元素</th><th>伪代码里对应</th><th>归谁管</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>节点（步骤）</td>
+        <td><code>addNode("名字", 节点逻辑)</code></td>
+        <td><span class="tag ai">Alibaba Graph</span></td>
+      </tr>
+      <tr>
+        <td>普通边（A→B）</td>
+        <td><code>addEdge(A, B)</code></td>
+        <td><span class="tag ai">Alibaba Graph</span></td>
+      </tr>
+      <tr>
+        <td>条件边（满足走 A，否则走 B）</td>
+        <td><code>addConditionalEdges(节点, 判断函数)</code></td>
+        <td><span class="tag ai">Alibaba Graph</span></td>
+      </tr>
+      <tr>
+        <td>状态（在节点间传递）</td>
+        <td>那个 <code>state</code> 变量，节点往里 put / 从里 get</td>
+        <td><span class="tag ai">Alibaba Graph</span></td>
+      </tr>
+      <tr>
+        <td>调模型 / 调工具的真实动作</td>
+        <td>节点 lambda 里的 <code>chatClient.call</code>、<code>drawTool.run</code></td>
+        <td><span class="tag spring">Spring AI</span> + <span class="tag ai">Alibaba</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card success">
+    <div class="card-label">读图三步法（拿去拆 AIHom 任何一段编排）</div>
+    <p style="margin:0.3rem 0 0">第一步：找出所有 <code>addNode</code> —— 这就是全部步骤；第二步：找出 <code>addEdge</code> 和 <code>addConditionalEdges</code> —— 这就是流程和分支；第三步：盯 <code>state</code> 里 put 了啥、get 了啥 —— 这就是数据怎么流动。三步走完，主干就清楚了。</p>
+  </div>
+
+  <!-- 6. Quiz -->
+  <h2>小测验：确认你真的 get 到了</h2>
+
+  <div class="quiz" id="quiz1">
+    <div class="quiz-q">第 1 题：下面哪句话最能区分 <strong>Agent</strong> 和 016 课的<strong>一问一答 ChatClient</strong>？</div>
+    <button class="quiz-opt" data-correct="false">Agent 也能调大模型，所以两者没有本质区别</button>
+    <button class="quiz-opt" data-correct="true">Agent 会自主多步推理、按需调用工具来达成目标，一问一答只回答一次就结束</button>
+    <button class="quiz-opt" data-correct="false">Agent 比 ChatClient 慢，仅此而已</button>
+    <button class="quiz-opt" data-correct="false">Agent 只能用于画图，ChatClient 只能用于聊天</button>
+    <div class="quiz-fb" id="fb1"></div>
+  </div>
+
+  <div class="quiz" id="quiz2">
+    <div class="quiz-q">第 2 题：在一个 StateGraph 里，<strong>"满足条件走 A，否则走 B"</strong> 的分支，对应代码里的什么？</div>
+    <button class="quiz-opt" data-correct="false">一个普通节点 addNode</button>
+    <button class="quiz-opt" data-correct="false">一条普通边 addEdge</button>
+    <button class="quiz-opt" data-correct="true">一条条件边 addConditionalEdges</button>
+    <button class="quiz-opt" data-correct="false">State 里的一个字段</button>
+    <div class="quiz-fb" id="fb2"></div>
+  </div>
+
+  <div class="quiz" id="quiz3">
+    <div class="quiz-q">第 3 题：State（状态）在 Graph 里扮演的角色，最准确的描述是？</div>
+    <button class="quiz-opt" data-correct="false">只在程序启动时设置一次的全局配置</button>
+    <button class="quiz-opt" data-correct="true">在节点之间传递的共享数据，节点可读写，下个节点能看到</button>
+    <button class="quiz-opt" data-correct="false">用来存储模型训练参数的容器</button>
+    <button class="quiz-opt" data-correct="false">每个节点私有的局部变量，互不可见</button>
+    <div class="quiz-fb" id="fb3"></div>
+  </div>
+
+  <!-- 7. 本节胜利 -->
+  <div class="win">
+    <div class="card-label">本节你获得的胜利 ★</div>
+    <p style="margin:0.3rem 0 0">你现在能说清 Agent 和一问一答的区别，理解了 StateGraph 用"节点 + 边 + 状态"把复杂 AI 流程画成图，还掌握了"读图三步法"。这意味着——你拿到了打开 AIHom 编排核心（StateGraphFactory）的钥匙。下一课我们就要真的冲进 AIHom 实战了。</p>
+  </div>
+
+  <!-- 8. 推荐阅读 -->
+  <div class="reading">
+    <div class="card-label">推荐阅读（一手资料）</div>
+    <p style="margin:0.5rem 0 0">两个权威入口，重点看 Alibaba 的 Graph / Agent：<br>
+    • <a href="https://java2ai.com/" target="_blank">Spring AI Alibaba 官方文档（java2ai.com）</a> ★ 重点看 <strong>Agent / Graph / StateGraph</strong> 章节，AIHom 的编排核心就来自这里<br>
+    • <a href="https://docs.spring.io/spring-ai/reference/" target="_blank">Spring AI 官方文档</a> 看底层 ChatClient / Tool Calling 的基础概念（第 07、09 课对应）<br>
+    现在打开 java2ai 找到 "Graph" 或 "StateGraph" 的目录，对照本课的伪代码结构看，会突然觉得"原来如此"。</p>
+  </div>
+
+  <div class="card warning">
+    <div class="card-label">版本提醒（再次确认）</div>
+    <p style="margin:0">AIHom 真实栈：<strong>Spring AI 1.1.2 + Spring AI Alibaba 1.1.2.0.5-qh</strong>。社区 Spring AI 已有 2.x，<strong>但和你无关</strong>。StateGraph / Graph 的 API 在 1.1.x + Alibaba 这套是稳定的，查文档认准 <strong>java2ai.com</strong>，别被 2.x 教程带偏。</p>
+  </div>
+
+  <!-- 9. 追问 -->
+  <div class="ask">
+    <p>🤔 <strong>有任何看不懂的地方，直接问我。</strong>比如："条件边和普通边的区别能再举个例吗"、"AIHom 里 StateGraphFactory 真长这样吗"、"Supervisor 模式具体怎么分配任务"……这是整条路线最重要的一课，卡住了千万别硬扛，问就对了。</p>
+  </div>
+</div>
+
+<script>
+  // 简单的 quiz 即时反馈
+  const feedback = {
+    1: { ok: '✓ 对！关键就在"自主多步"——Agent 自己决定接下来调模型、调工具还是回复用户，而一问一答只回答一次就结束。这也是它耗时会更长的原因。',
+         no: '想想本课开头的对比：一问一答是"一锤子买卖"，Agent 会自己拆步骤、自己决定下一步。是否调模型/调工具/回复用户，是 Agent 自己判断的。' },
+    2: { ok: '✓ 对！分支判断用条件边 addConditionalEdges，配一个判断函数返回下一个节点名。普通 addEdge 是无条件的"A 完了直接 B"。',
+         no: '分支（有条件的流转）对应的是条件边 addConditionalEdges。普通节点是步骤，普通边是无条件流转，字段是数据，都不是分支。' },
+    3: { ok: '✓ 对！State 就是节点间传递的"共享背包"——上一个节点往里放，下一个节点能读到。这正是多步骤流程能记住中间结果的关键。',
+         no: 'State 是在节点之间传递、可被各节点读写的共享数据，像那个病历本。配置参数和训练参数都不是它的角色。' }
+  };
+
+  function wireQuiz(id) {
+    const quiz = document.getElementById('quiz' + id);
+    const fb = document.getElementById('fb' + id);
+    const opts = quiz.querySelectorAll('.quiz-opt');
+    opts.forEach(opt => {
+      opt.addEventListener('click', () => {
+        const correct = opt.dataset.correct === 'true';
+        opts.forEach(o => o.classList.add('disabled'));
+        if (correct) {
+          opt.classList.add('correct');
+          fb.style.background = 'var(--success-light)';
+          fb.style.color = '#14532d';
+          fb.textContent = feedback[id].ok;
+        } else {
+          opt.classList.add('wrong');
+          opts.forEach(o => { if (o.dataset.correct === 'true') o.classList.add('correct'); });
+          fb.style.background = '#fee2e2';
+          fb.style.color = '#7f1d1d';
+          fb.textContent = feedback[id].no;
+        }
+        fb.classList.add('show');
+      });
+    });
+  }
+  [1,2,3].forEach(wireQuiz);
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 020</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0019-rag.html">上一课：019 RAG 检索增强生成</a><a class="primary" href="../aihom/0021-frontend-big-picture.html">下一课：021 前端零基础 01：网页由什么组成</a></div></nav>
+</body>
+</html>

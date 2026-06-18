@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>051 StateGraph 内部机制</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --accent: #b45309;
+    --accent-light: #fef3c7;
+    --border: #e7e5e4;
+    --code-bg: #f5f5f4;
+    --success: #16a34a;
+    --warning: #d97706;
+    --info: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1rem 0;
+  }
+  .card.info { border-left: 3px solid var(--info); }
+  .card.warning { border-left: 3px solid var(--warning); }
+  .card.success { border-left: 3px solid var(--success); }
+
+  .card-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+  .card.info .card-label { color: var(--info); }
+  .card.warning .card-label { color: var(--warning); }
+  .card.success .card-label { color: var(--success); }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    font-size: 0.88em;
+  }
+
+  pre {
+    background: #1c1917;
+    color: #e7e5e4;
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  pre .comment { color: #78716c; }
+  pre .keyword { color: #f59e0b; }
+  pre .string { color: #86efac; }
+  pre .dir { color: #93c5fd; }
+  pre .file { color: #e7e5e4; }
+  pre .important { color: #fbbf24; font-weight: 500; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.92rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .tree { margin: 1rem 0; }
+
+  .quiz {
+    background: var(--accent-light);
+    border: 1px solid #fbbf24;
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .quiz-title {
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+  .quiz-options { list-style: none; }
+  .quiz-options li {
+    padding: 0.5rem 0.75rem;
+    margin: 0.35rem 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+  }
+  .quiz-options li:hover { background: #fde68a33; border-color: #fbbf24; }
+  .quiz-options li.correct { background: #dcfce7; border-color: #16a34a; }
+  .quiz-options li.wrong { background: #fee2e2; border-color: #ef4444; }
+  .quiz-feedback {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    display: none;
+    font-size: 0.9rem;
+  }
+
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+  }
+  .flow-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .flow-arrow { color: var(--text-secondary); }
+
+  .next-lesson {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .next-lesson a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .next-lesson a:hover { text-decoration: underline; }
+
+  .ask-agent {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+    color: #1e40af;
+  }
+  .ask-agent::before { content: '\1F4A1 '; }
+
+  ul, ol { margin: 0.5rem 0 1rem 1.5rem; }
+  li { margin-bottom: 0.3rem; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>051 StateGraph 内部机制</h1>
+<p class="subtitle">深入理解 StateGraph 的数据结构、编译过程、执行引擎、检查点持久化与条件路由</p>
+
+<!-- ==================== Section 1 ==================== -->
+<h2>1. StateGraph 数据结构：节点 + 边 + 状态</h2>
+
+<p>StateGraph 本质上是一个<strong>有向图</strong>，由三个核心要素组成：节点（Node）、边（Edge）和状态（State）。在 <code>ai-native-service</code> 中，它基于 Spring AI Alibaba 的 <code>StateGraph</code> 实现，是整个 Agent 工作流编排的骨架。</p>
+
+<pre>
+┌─────────────────────────────────────────────────────┐
+│  <span class="important">StateGraph = (Nodes, Edges, State)</span>                │
+│                                                     │
+│  Nodes:  { "supervisor", "floorplan_agent", ... }   │
+│  Edges:  { "supervisor" → condition → "xxx" }       │
+│  State:  { messages, context, step, ... }           │
+└─────────────────────────────────────────────────────┘
+</pre>
+
+<h3>节点（Node）</h3>
+<p>每个节点代表一个计算单元。在项目中，节点分为三类：</p>
+
+<table>
+  <tr><th>节点类型</th><th>实现方式</th><th>示例</th></tr>
+  <tr><td>Agent 节点</td><td><code>AgentNodeFactory</code> 创建，封装 ChatClient 调用</td><td>Supervisor、Floorplan_to_Design</td></tr>
+  <tr><td>Tool 节点</td><td>工具回调，执行具体业务逻辑</td><td>FloorplanToStructureTool</td></tr>
+  <tr><td>条件节点</td><td>函数式接口，根据状态决定下一步去向</td><td><code>CustomSupervisorEdgeAction</code></td></tr>
+</table>
+
+<p>在数据库中，节点配置存储在 <code>GraphNodes</code> 表，每个节点记录了类型、关联的 Agent/Tool ID 和参数。</p>
+
+<h3>边（Edge）</h3>
+<p>边定义了节点之间的流转关系。有两种边：</p>
+<ul>
+  <li><strong>普通边（Direct Edge）</strong>：节点 A 执行完，直接跳到节点 B</li>
+  <li><strong>条件边（Conditional Edge）</strong>：根据当前状态动态决定下一个节点，对应 <code>addConditionalEdge()</code> 方法</li>
+</ul>
+
+<pre>
+<span class="comment">// 普通边：agent 执行完 → 直接到 tool</span>
+graph.addEdge("agent_node", "tool_node");
+
+<span class="comment">// 条件边：supervisor 根据意图路由</span>
+graph.addConditionalEdge("supervisor", 
+    state -&gt; routingFunction(state),   <span class="comment">// 路由函数</span>
+    Map.of("design", "floorplan_agent",  <span class="comment">// 路由表</span>
+           "edit",   "image_editor"));
+</pre>
+
+<h3>状态（State）</h3>
+<p>状态是一个在整个图执行过程中持续传递和累积的数据容器。项目中状态通常包含：</p>
+<ul>
+  <li><code>messages</code>：对话历史（ChatMessage 列表）</li>
+  <li><code>context</code>：业务上下文（用户信息、场景参数等）</li>
+  <li><code>step</code>：当前执行步骤</li>
+  <li>各子 Agent 的输出结果</li>
+</ul>
+
+<div class="card info">
+  <div class="card-label">关键设计</div>
+  <p>状态的更新遵循<strong>归并（Reducer）</strong>语义。当节点返回部分状态更新时，系统用 Reducer 函数将其合并到全局状态中。例如 <code>messages</code> 字段使用 <code>add</code> Reducer（追加新消息），而不是替换整个列表。</p>
+</div>
+
+<!-- ==================== Section 2 ==================== -->
+<h2>2. 编译过程：StateGraph → CompiledGraph</h2>
+
+<p><code>StateGraph</code> 是一个可变的构建器（Builder），定义了图的结构。但要执行它，必须先调用 <code>.compile()</code> 将其转化为 <code>CompiledGraph</code>。这个编译过程做了几件关键的事：</p>
+
+<div class="flow">
+  <span class="flow-step">StateGraph（可变图定义）</span>
+  <span class="flow-arrow">&rarr;</span>
+  <span class="flow-step">验证拓扑</span>
+  <span class="flow-arrow">&rarr;</span>
+  <span class="flow-step">解析入口/出口</span>
+  <span class="flow-arrow">&rarr;</span>
+  <span class="flow-step">注册 Checkpointer</span>
+  <span class="flow-arrow">&rarr;</span>
+  <span class="flow-step">CompiledGraph（不可变执行图）</span>
+</div>
+
+<p>编译阶段的关键操作：</p>
+
+<ol>
+  <li><strong>拓扑验证</strong> — 检查是否有孤立节点、循环路径是否合法、所有条件边的目标节点是否都存在</li>
+  <li><strong>入口解析</strong> — 确定 <code>__START__</code> 节点（用户定义的第一个节点），作为执行起点</li>
+  <li><strong>出口识别</strong> — 识别 <code>__END__</code> 节点（或没有出边的节点），作为终止条件</li>
+  <li><strong>Checkpoint 注册</strong> — 如果配置了 <code>Checkpointer</code>，在每个节点执行后自动保存快照</li>
+  <li><strong>不可变化</strong> — 编译后的图不允许再添加节点或边，确保运行时一致性</li>
+</ol>
+
+<pre>
+<span class="comment">// 在 StateGraphFactory 中的典型编译流程</span>
+StateGraph graph = <span class="keyword">new</span> StateGraph(stateType)
+    .addNode("supervisor", supervisorNode)
+    .addNode("floorplan_agent", floorplanNode)
+    .addConditionalEdge("supervisor", routingFn, routeMap)
+    .addEdge("floorplan_agent", "__END__");
+
+CompiledGraph compiled = graph.compile(
+    CompileConfig.builder()
+        .checkpointer(<span class="keyword">new</span> MemorySaver())   <span class="comment">// 检查点存储</span>
+        .build()
+);
+</pre>
+
+<div class="card warning">
+  <div class="card-label">Factory 模式</div>
+  <p>项目中 <code>StateGraphFactory</code> 封装了编译过程。它从数据库加载图配置（<code>StateGraphPo</code> + <code>GraphNodesPo</code>），动态构建 <code>StateGraph</code> 并编译。<code>StateGraphLoader</code> 则负责缓存和版本管理，避免重复编译。</p>
+</div>
+
+<!-- ==================== Section 3 ==================== -->
+<h2>3. 执行引擎：stream() 内部逻辑</h2>
+
+<p><code>CompiledGraph.stream()</code> 是整个 StateGraph 的执行入口。它以流式方式逐节点执行，每次执行一个节点后产出一个中间状态。核心循环如下：</p>
+
+<pre>
+<span class="comment">// stream() 的伪代码逻辑</span>
+currentNode = <span class="string">"__START__"</span>
+state = initialState
+
+<span class="keyword">while</span> (currentNode != <span class="string">"__END__"</span>) {
+    <span class="comment">// 1. 取出当前节点的执行函数</span>
+    nodeFn = nodes.get(currentNode)
+    
+    <span class="comment">// 2. 执行节点，获得状态更新</span>
+    stateUpdate = nodeFn.invoke(state)
+    
+    <span class="comment">// 3. 归并状态（通过 Reducer）</span>
+    state = merge(state, stateUpdate)
+    
+    <span class="comment">// 4. 保存检查点（如果配置了）</span>
+    <span class="keyword">if</span> (checkpointer != <span class="keyword">null</span>) {
+        checkpointer.put(state, currentNode)
+    }
+    
+    <span class="comment">// 5. 决定下一个节点</span>
+    <span class="keyword">if</span> (hasConditionalEdge(currentNode)) {
+        currentNode = conditionalEdge.get(currentNode).apply(state)
+    } <span class="keyword">else</span> {
+        currentNode = directEdge.get(currentNode)
+    }
+    
+    <span class="comment">// 6. 产出中间状态给调用方</span>
+    yield state  <span class="comment">// 流式产出</span>
+}
+</pre>
+
+<p>在 <code>ai-native-service</code> 中，<code>StateGraphServiceImpl</code> 调用 <code>stream()</code> 后，将每个中间状态通过 WebSocket 流式推送给前端。这意味着：</p>
+
+<ul>
+  <li><strong>每经过一个节点</strong>，前端就能收到一次更新（如"正在识别户型..."、"正在生成布局..."）</li>
+  <li><strong>超时保护</strong>：每个节点执行都有超时限制，防止某个 Agent 或 Tool 卡住</li>
+  <li><strong>异常处理</strong>：节点抛异常时，执行引擎可以回退到上一个检查点或直接终止</li>
+</ul>
+
+<div class="card success">
+  <div class="card-label">为什么是 stream 而不是 invoke？</div>
+  <p><code>invoke()</code> 只返回最终结果，中间过程是黑盒。<code>stream()</code> 则实时产出每个节点的中间状态，让前端能展示"正在思考..."这样的进度反馈，用户体验更好。项目中几乎全部使用 <code>stream()</code>。</p>
+</div>
+
+<!-- ==================== Section 4 ==================== -->
+<h2>4. 检查点与持久化</h2>
+
+<p>检查点（Checkpoint）机制是 StateGraph 实现<strong>容错恢复</strong>和<strong>人机协作</strong>的核心。</p>
+
+<h3>工作原理</h3>
+<p>每次节点执行完后，执行引擎会调用 <code>Checkpointer.put()</code> 保存一份当前状态的快照。快照包含：</p>
+
+<table>
+  <tr><th>字段</th><th>说明</th></tr>
+  <tr><td><code>thread_id</code></td><td>会话 ID，标识一次完整的图执行</td></tr>
+  <tr><td><code>checkpoint_id</code></td><td>检查点 ID，支持同一会话多次回退</td></tr>
+  <tr><td><code>state</code></td><td>当前完整状态的序列化数据</td></tr>
+  <tr><td><code>node</code></td><td>产生这个检查点的节点名称</td></tr>
+  <tr><td><code>metadata</code></td><td>附加信息（时间戳、版本号等）</td></tr>
+</table>
+
+<h3>存储后端</h3>
+<p>项目支持两种检查点存储：</p>
+<ul>
+  <li><strong><code>MemorySaver</code></strong> — 内存存储，适合开发调试，重启即丢失</li>
+  <li><strong>Redis/数据库存储</strong> — 生产环境使用，通过自定义 <code>Checkpointer</code> 实现持久化到 Redis 或 MySQL</li>
+</ul>
+
+<h3>恢复与人机协作</h3>
+<p>检查点支持两个关键能力：</p>
+<ol>
+  <li><strong>故障恢复</strong> — 服务重启后，可以通过 <code>thread_id</code> 加载最近的检查点，从断点继续执行</li>
+  <li><strong>Human-in-the-loop</strong> — 某些节点需要人工审批（如设计方案确认），执行引擎在该节点前暂停，将状态保存为检查点；人工审批后，从检查点恢复并继续执行</li>
+</ol>
+
+<pre>
+<span class="comment">// 从检查点恢复执行</span>
+config = RunnableConfig.builder()
+    .threadId("conv_12345")        <span class="comment">// 指定会话</span>
+    .checkpointer(checkpointer)   <span class="comment">// 指定存储</span>
+    .build();
+
+<span class="comment">// stream 会自动从最新的检查点恢复</span>
+graph.stream(inputState, config);
+</pre>
+
+<div class="ask-agent">
+  不理解检查点和数据库持久化的区别？问 agent：\"Checkpoint 和 StateGraphPo 存的有什么区别？\"
+</div>
+
+<!-- ==================== Section 5 ==================== -->
+<h2>5. 条件边与路由</h2>
+
+<p>条件边是 StateGraph 实现<strong>动态路由</strong>的关键。在项目中，最核心的条件边就是 Supervisor 的路由决策。</p>
+
+<h3>条件边的结构</h3>
+<p>一个条件边由两部分组成：</p>
+<ul>
+  <li><strong>路由函数（Routing Function）</strong>：接收当前状态，返回一个字符串 key</li>
+  <li><strong>路由表（Route Map）</strong>：key → 目标节点名的映射</li>
+</ul>
+
+<pre>
+<span class="comment">// Supervisor 的条件边（简化）</span>
+graph.addConditionalEdge(
+    <span class="string">"supervisor"</span>,                      <span class="comment">// 源节点</span>
+    state -&gt; {                          <span class="comment">// 路由函数</span>
+        String intent = classifyIntent(state.messages());
+        <span class="keyword">return</span> intent;                  <span class="comment">// 返回 "floorplan" / "image_edit" / "general"</span>
+    },
+    Map.of(                             <span class="comment">// 路由表</span>
+        <span class="string">"floorplan"</span>,  <span class="string">"floorplan_to_design_agent"</span>,
+        <span class="string">"image_edit"</span>, <span class="string">"image_editor_agent"</span>,
+        <span class="string">"general"</span>,    <span class="string">"general_chat_agent"</span>
+    )
+);
+</pre>
+
+<h3>路由函数的实现：CustomSupervisorEdgeAction</h3>
+<p>在 <code>ai-native-service</code> 中，<code>CustomSupervisorEdgeAction</code> 实现了路由逻辑。它的流程是：</p>
+<ol>
+  <li>获取 Supervisor Agent 上一轮的输出（通常是 JSON 格式的意图分类结果）</li>
+  <li>解析意图字段，映射到路由表中的 key</li>
+  <li>返回目标节点名</li>
+</ol>
+
+<h3>多层路由</h3>
+<p>项目中不仅 Supervisor 使用条件边，子 Agent 内部也可能有二级路由。例如 <code>Floorplan_to_Design</code> Agent 内部，可能根据户型识别结果的置信度，路由到"需要人工确认"或"自动生成布局"两个不同路径。</p>
+
+<div class="card info">
+  <div class="card-label">路由 vs 硬编码 if-else</div>
+  <p>条件边的优势在于<strong>配置化</strong>。路由表存在 Nacos 或数据库中，新增一个子 Agent 只需要添加一条路由记录，不需要改代码重新部署。</p>
+</div>
+
+<!-- ==================== Quiz ==================== -->
+<h2>6. 自检 Quiz</h2>
+
+<div class="quiz" id="quiz1">
+  <div class="quiz-title">Q1: StateGraph 编译（compile）后得到的 CompiledGraph 有什么特性？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz1', 0)">A. 可以继续添加新节点和新边</li>
+    <li onclick="checkQuiz('quiz1', 1)">B. 每次执行前需要重新编译</li>
+    <li onclick="checkQuiz('quiz1', 2)">C. 不可变，且注册了检查点和拓扑验证</li>
+    <li onclick="checkQuiz('quiz1', 3)">D. 只能用 invoke() 执行，不能用 stream()</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <div class="quiz-title">Q2: 在 stream() 执行过程中，检查点（Checkpoint）在什么时候保存？</div>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz2', 0)">A. 只在图执行开始和结束时保存</li>
+    <li onclick="checkQuiz('quiz2', 1)">B. 每个节点执行完后自动保存</li>
+    <li onclick="checkQuiz('quiz2', 2)">C. 只在发生异常时保存</li>
+    <li onclick="checkQuiz('quiz2', 3)">D. 由开发者手动调用保存</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <div class="quiz-title">Q3: 条件边（Conditional Edge）由哪两部分组成？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz3', 0)">A. 源节点和目标节点</li>
+    <li onclick="checkQuiz('quiz3', 1)">B. 状态类型和 Reducer 函数</li>
+    <li onclick="checkQuiz('quiz3', 2)">C. 路由函数和路由表</li>
+    <li onclick="checkQuiz('quiz3', 3)">D. 检查点 ID 和会话 ID</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<!-- ==================== Next ==================== -->
+
+</div>
+</div>
+
+<script>
+function checkQuiz(quizId, selected) {
+  const quiz = document.getElementById(quizId);
+  const options = quiz.querySelector('.quiz-options');
+  const correct = parseInt(options.dataset.correct);
+  const items = options.querySelectorAll('li');
+  const feedback = quiz.querySelector('.quiz-feedback');
+
+  items.forEach((item, i) => {
+    item.onclick = null;
+    if (i === correct) item.classList.add('correct');
+    if (i === selected && i !== correct) item.classList.add('wrong');
+  });
+
+  const feedbacks = {
+    quiz1: {
+      correct: '✓ 对！CompiledGraph 是不可变的，编译时完成拓扑验证并注册 Checkpointer，之后可直接 stream() 或 invoke() 执行。',
+      wrong: '✗ CompiledGraph 是不可变的。编译过程完成了拓扑验证、入口出口解析、检查点注册，编译后的图可直接执行，不需要重复编译。'
+    },
+    quiz2: {
+      correct: '✓ 对！stream() 在每个节点执行完后自动调用 Checkpointer.put() 保存快照，确保每一步都有恢复点。',
+      wrong: '✗ 检查点在每个节点执行完后自动保存。这是执行引擎的内置行为，不需要开发者手动调用。'
+    },
+    quiz3: {
+      correct: '✓ 对！条件边 = 路由函数（接收状态返回 key）+ 路由表（key 到目标节点的映射）。这使得路由逻辑可配置化。',
+      wrong: '✗ 条件边由路由函数（根据状态决定去向的函数）和路由表（key 到目标节点名的映射）两部分组成。'
+    }
+  };
+
+  feedback.style.display = 'block';
+  feedback.textContent = selected === correct
+    ? feedbacks[quizId].correct
+    : feedbacks[quizId].wrong;
+  feedback.style.background = selected === correct ? '#dcfce7' : '#fee2e2';
+}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 051</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0050-render-3d-deep-dive.html">上一课：050 render-3d 深度追踪</a><a class="primary" href="0052-dual-channel-layout.html">下一课：052 双通道并行布局算法</a></div></nav>
+</body>
+</html>

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0019 - 知识库与分享应用详解</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:2rem}
+  .breadcrumb{color:var(--text-secondary);font-size:.85rem;margin-bottom:1.5rem}
+  .breadcrumb a{color:var(--accent);text-decoration:none}
+  .breadcrumb a:hover{text-decoration:underline}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.15rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem}
+  p{margin-bottom:1rem}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15rem .4rem;border-radius:4px;font-size:.88em}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;overflow-x:auto;margin:1rem 0;font-size:.88rem;line-height:1.6}
+  pre code{background:none;padding:0}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.4rem}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0}
+  .card.info{background:#eff6ff;border-color:#bfdbfe}
+  .card-label{font-weight:600;font-size:.85rem;color:#2563eb;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.05em}
+  .flow-box{background:var(--surface);border:2px solid var(--accent);border-radius:12px;padding:1.5rem;margin:1.5rem 0;text-align:center}
+  .flow-arrow{font-size:1.3rem;color:var(--accent);margin:0 .5rem;font-weight:700}
+  .flow-step{display:inline-block;background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:.4rem 1rem;font-weight:600;font-size:.95rem}
+  .flow-step.mongo{background:#dcfce7;border-color:#86efac;color:#166534}
+  .flow-step.mysql{background:#dbeafe;border-color:#93c5fd;color:#1e40af}
+  .flow-step.ext{background:#f3e8ff;border-color:#c4b5fd;color:#6d28d9}
+  .call-chain{font-family:'JetBrains Mono',monospace;font-size:.85rem;background:var(--code-bg);padding:1rem 1.25rem;border-radius:8px;border:1px solid var(--border);margin:1rem 0;line-height:2}
+  .call-chain .cls{color:#b45309;font-weight:600}
+  .call-chain .method{color:#2563eb}
+  .call-chain .arrow{color:#78716c;margin:0 .25rem}
+  .quiz-section{background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:1.5rem;margin-top:2.5rem}
+  .quiz-section h2{margin-top:0;color:var(--accent)}
+  .quiz-q{margin-bottom:1.5rem}
+  .quiz-q .q-title{font-weight:600;margin-bottom:.5rem}
+  .quiz-q label{display:block;padding:.4rem .75rem;margin:.3rem 0;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .15s;background:var(--surface)}
+  .quiz-q label:hover{border-color:var(--accent)}
+  .quiz-q input[type="radio"]{margin-right:.5rem}
+  .quiz-q .answer{display:none;margin-top:.5rem;padding:.75rem 1rem;border-radius:6px;font-size:.9rem}
+  .quiz-q .answer.correct{background:#dcfce7;color:#166534;border:1px solid #86efac}
+  .quiz-q .answer.wrong{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
+  .ask-agent::before{content:'💡 '}
+  .nav-links{display:flex;justify-content:space-between;margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+  .nav-links a{color:var(--accent);text-decoration:none;font-weight:500}
+  .nav-links a:hover{text-decoration:underline}
+  table{width:100%;border-collapse:collapse;margin:1rem 0}
+  th,td{padding:.6rem .8rem;border:1px solid var(--border);text-align:left;font-size:.9rem}
+  th{background:var(--code-bg);font-weight:600}
+  .tag{display:inline-block;padding:.1rem .4rem;border-radius:4px;font-size:.7rem;font-weight:500;margin-right:.3rem}
+  .tag.deep{background:#fef3c7;color:#b45309}
+</style>
+<script>
+function checkAnswer(qId, correct, el){
+  var ans=el.parentElement.parentElement.querySelector('.answer');
+  if(el.value===correct){ans.className='answer correct';ans.innerHTML='✅ 正确！';ans.style.display='block'}
+  else{ans.className='answer wrong';ans.innerHTML='❌ 错误，正确答案是 '+correct+'。';ans.style.display='block'}
+}
+</script>
+</head>
+<body>
+<div class="container">
+
+<div class="breadcrumb"><a href="../index.html">课程首页</a> &gt; kuai-service &gt; 0019 知识库与分享应用详解</div>
+
+<h1>📚 知识库与分享应用详解</h1>
+<p class="subtitle"><span class="tag deep">深度</span> 知识库数据模型 · 分享应用管理 · 标签分类系统 · MongoDB 聚合查询</p>
+
+<div class="card info">
+  <div class="card-label">前置知识</div>
+  <p>本课程假设你已了解以下内容：</p>
+  <ul>
+    <li><strong>Java 基础</strong>：<code>JSONObject</code>（Fastjson）的基本用法、<code>Map</code> 与 <code>List</code> 操作</li>
+    <li><strong>Spring Data MongoDB</strong>：<code>MongoTemplate</code> 的 <code>find()</code>、<code>Criteria</code> 查询构建（可参考课程 0003）</li>
+    <li><strong>MongoDB 文档模型</strong>：知道 MongoDB 的文档（Document）、集合（Collection）概念</li>
+    <li>kuai-service 项目概览（课程 0001）和架构追踪（课程 0002）</li>
+  </ul>
+  <p>如果对 MongoDB 不太熟，建议先看：<a href="https://www.mongodb.com/docs/manual/core/data-model-design/" target="_blank">MongoDB 数据模型设计文档</a></p>
+</div>
+
+<!-- ===== 1. 知识库数据模型 ===== -->
+<h2><span class="icon">🗄️</span> 1. 知识库数据模型</h2>
+
+<p>知识库是 Kuai 平台的核心功能之一，底层对接 <strong>FastGPT</strong> 知识库系统。<code>KnowledgeBase.java</code> 是一个工具类，负责构造创建知识库和文件夹的 JSON 请求体。</p>
+
+<h3>1.1 KnowledgeBase 类结构</h3>
+
+<pre><code>// 文件：com.qunhe.kuai.Service.KnowledgeBase
+public class KnowledgeBase {
+
+  // 创建知识库
+  public static JSONObject createKnowledgeBase(String name, String parentId) {
+    JSONObject knowledgeBase = new JSONObject();
+    knowledgeBase.put("avatar", "/icon/logo.svg");       // 头像
+    knowledgeBase.put("name", name);                      // 知识库名称
+    knowledgeBase.put("tags", new String[] {});           // 标签数组（初始为空）
+    knowledgeBase.put("vectorModel", "text-embedding-3-small"); // 向量模型
+    knowledgeBase.put("type", "dataset");                 // 类型：数据集
+    knowledgeBase.put("parentId", parentId);              // 父目录ID
+    return knowledgeBase;
+  }
+
+  // 创建文件夹
+  public static JSONObject createFolder(String name, String parentId) {
+    JSONObject folder = new JSONObject();
+    folder.put("parentId", parentId);
+    folder.put("name", name);
+    folder.put("type", "folder");                         // 类型：文件夹
+    folder.put("avatar", "/imgs/files/folder.svg");
+    folder.put("tags", new String[] {});
+    return folder;
+  }
+}</code></pre>
+
+<h3>1.2 数据模型字段说明</h3>
+
+<table>
+  <tr><th>字段</th><th>类型</th><th>说明</th></tr>
+  <tr><td><code>name</code></td><td>String</td><td>知识库或文件夹的名称</td></tr>
+  <tr><td><code>avatar</code></td><td>String</td><td>图标路径（数据集用 logo.svg，文件夹用 folder.svg）</td></tr>
+  <tr><td><code>tags</code></td><td>String[]</td><td>标签数组，用于分类标记，创建时默认为空</td></tr>
+  <tr><td><code>vectorModel</code></td><td>String</td><td>向量化模型名，如 <code>text-embedding-3-small</code>（仅数据集需要）</td></tr>
+  <tr><td><code>type</code></td><td>String</td><td><code>"dataset"</code>（知识库）或 <code>"folder"</code>（文件夹）</td></tr>
+  <tr><td><code>parentId</code></td><td>String</td><td>父目录 ID，空字符串表示根目录</td></tr>
+</table>
+
+<h3>1.3 设计要点</h3>
+<ul>
+  <li><strong>静态工厂模式</strong>：所有方法都是 <code>static</code>，不需要实例化，直接调用即可构造 JSON</li>
+  <li><strong>parentId 机制</strong>：支持树形目录结构。根目录创建时 <code>parentId</code> 传空字符串 <code>""</code></li>
+  <li><strong>向量模型绑定</strong>：每个知识库在创建时就绑定了 embedding 模型，后续文档切片都会用此模型向量化</li>
+</ul>
+
+<div class="ask-agent">问问 Agent：KnowledgeBase 为什么选择用 JSONObject 而不是定义一个 POJO 实体类？这有什么优缺点？</div>
+
+<!-- ===== 2. 分享应用管理 ===== -->
+<h2><span class="icon">🔗</span> 2. 分享应用管理</h2>
+
+<p><code>SharedAppService</code> 是系统中最大的 Service 类之一（超过 2700 行），负责管理所有分享应用的查询、统计和导出。</p>
+
+<h3>2.1 分享类型</h3>
+
+<p>每个应用可以有两种分享方式：</p>
+
+<div class="flow-box">
+  <span class="flow-step">应用（App）</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step mongo">API 分享（OpenApis）</span>
+  <span class="flow-arrow">+</span>
+  <span class="flow-step mongo">页面分享（Outlinks）</span>
+</div>
+
+<pre><code>// SharedAppDto —— 分享应用的数据传输对象
+public class SharedAppDto {
+  private String appId;           // 应用ID
+  private String appName;         // 应用名称
+  private String version;         // 版本号（如 v1.0.0）
+  private LocalDateTime versionPublishTime;  // 版本发布时间
+  private String userId;          // 用户ID
+  private String username;        // 用户名
+  private List&lt;String&gt; shareTypes;      // ["API"] 或 ["PAGE"] 或 ["API", "PAGE"]
+  private ApiShareInfo apiShareInfo;    // API 分享信息
+  private PageShareInfo pageShareInfo;  // 页面分享信息
+
+  public static class ApiShareInfo {
+    private String apiKey;        // API 密钥
+    private String openApiId;     // OpenApi 记录ID
+  }
+
+  public static class PageShareInfo {
+    private String shareId;       // 分享链接ID
+    private String outlinkId;     // Outlink 记录ID
+  }
+}</code></pre>
+
+<h3>2.2 查询流程</h3>
+
+<p>获取分享应用列表的核心方法 <code>getSharedApps()</code> 的执行流程：</p>
+
+<pre><code>Step 1: getSharedAppIds()
+        ├── 查询 OpenApis 集合 → 获取有 API 分享的 appId
+        └── 查询 Outlinks 集合 → 获取有页面分享的 appId
+        → 合并去重得到 sharedAppIds
+
+Step 2: appsSetRepository.findByObjectIdIn(objectIds)
+        → 根据 appId 列表查询 MongoDB apps 集合的应用信息
+
+Step 3: filterAppsWithValidTmb(allSharedApps)
+        → 过滤掉 TMB（团队成员）已不存在的应用
+
+Step 4: filterAppsByKeyword(validApps, keyword)
+        → 按应用名称关键字过滤（不区分大小写）
+
+Step 5: 手动分页 + 转换为 SharedAppDto</code></pre>
+
+<h3>2.3 数据关联关系</h3>
+
+<div class="flow-box">
+  <span class="flow-step mongo">Apps</span>
+  <span class="flow-arrow">→ teamId →</span>
+  <span class="flow-step mongo">Teams</span>
+  <span class="flow-arrow">→ ownerId →</span>
+  <span class="flow-step mongo">Users</span>
+</div>
+
+<p>获取用户信息时需要经过三步关联查询：<code>Apps → Teams → Users</code>。代码中用 <strong>批量查询 + Map 缓存</strong> 的方式优化性能：</p>
+
+<pre><code>// 批量查询优化：一次查完，避免 N+1 问题
+private BatchQueryMaps buildBatchQueryMaps(List&lt;String&gt; appIds) {
+    // 1. 提取所有 teamId
+    Set&lt;String&gt; teamIds = apps.stream().map(Apps::getTeamId).collect(...);
+    // 2. 一次查询所有团队
+    List&lt;Teams&gt; teams = teamsRepository.findBy_idIn(new ArrayList&lt;&gt;(teamIds));
+    // 3. 提取所有 ownerId
+    Set&lt;String&gt; ownerIds = teams.stream().map(Teams::getOwnerId).collect(...);
+    // 4. 一次查询所有用户
+    List&lt;Users&gt; users = newUsersRepository.findBy_idIn(new ArrayList&lt;&gt;(ownerIds));
+    // 5. 构建 Map 方便后续快速查找
+    return new BatchQueryMaps(usersMap, teamsMap);
+}</code></pre>
+
+<div class="ask-agent">问问 Agent：SharedAppService 中的"过滤掉 TMB 不存在的应用"是为了解决什么业务问题？为什么不能直接返回所有应用？</div>
+
+<!-- ===== 3. 标签分类系统 ===== -->
+<h2><span class="icon">🏷️</span> 3. 标签分类系统</h2>
+
+<p>系统支持对会话（Chat）进行<strong>一级分类</strong>和<strong>二级分类</strong>的标签管理，用于满意度分析和质量评估。</p>
+
+<h3>3.1 分类变量机制</h3>
+
+<p>分类信息存储在 MongoDB 的 <code>chats</code> 集合中的 <code>variables</code> 字段里：</p>
+
+<pre><code>// MongoDB chats 集合中的文档结构
+{
+  "_id": ObjectId("..."),
+  "appId": ObjectId("..."),
+  "chatId": "chat_abc123",
+  "title": "用户关于XX的咨询",
+  "variables": {
+    "wBf9rrpa": "售前咨询",    // 一级分类变量（key 由系统生成）
+    "gzcXRBWd": "产品功能"     // 二级分类变量
+  },
+  "updateTime": ISODate("2024-01-15T10:30:00Z")
+}</code></pre>
+
+<h3>3.2 默认分类 Key</h3>
+
+<p>系统预定义了两组默认分类 key：</p>
+
+<pre><code>// SharedAppService 中的默认分类 key
+private static final List&lt;String&gt; DEFAULT_CATEGORY1_KEYS = Arrays.asList(
+    "wBf9rrpa", "oNdgIreo", "iYsqB3zV", "w0GtoKxz", "lgrmlnI6", "kGZKzDZw");
+private static final List&lt;String&gt; DEFAULT_CATEGORY2_KEYS = Arrays.asList(
+    "gzcXRBWd", "sxnzXgRY", "wWhZGXCo", "duAz9TdU", "rTNy6CFm", "qy1KAChw");</code></pre>
+
+<p>这些 key 是 variables 中存放一、二级分类值的变量名。不同应用可能用不同的 key，所以代码会先尝试自动推断，再 fallback 到默认值。</p>
+
+<h3>3.3 分类选项查询</h3>
+
+<pre><code>// Controller 层：POST /kuai/shared-apps/categoryOptions
+@PostMapping("/categoryOptions")
+public JSONObject categoryOptions(@RequestBody Map&lt;String, Object&gt; body) {
+    String appId = (String) body.get("appId");
+    String category1Key = (String) body.get("category1Key");
+    String category2Key = (String) body.get("category2Key");
+    return sharedAppService.getCategoryOptions(appId, category1Key, category2Key);
+}</code></pre>
+
+<div class="ask-agent">问问 Agent：为什么分类信息不单独建一张表，而是存在 variables 这个 Map 字段里？这种设计有什么好处和坏处？</div>
+
+<!-- ===== 4. MongoDB 聚合查询实战 ===== -->
+<h2><span class="icon">🔍</span> 4. MongoDB 聚合查询实战</h2>
+
+<p><code>SharedAppService</code> 大量使用 <code>MongoTemplate</code> 进行查询，是学习 MongoDB 查询的好范例。</p>
+
+<h3>4.1 条件查询（Criteria）</h3>
+
+<pre><code>// 构建查询条件
+Criteria criteria = Criteria.where("appId").is(appObjectId);
+
+// 排除评估对话（正则匹配）
+criteria.and("chatId").regex("^(?!EVAL-)");
+
+// 时间范围筛选
+if (query.getDateStart() != null && query.getDateEnd() != null) {
+    criteria.and("updateTime").gte(query.getDateStart()).lte(query.getDateEnd());
+}
+
+// 标题模糊搜索
+if (query.getChatSearch() != null) {
+    Pattern pattern = Pattern.compile(searchText, Pattern.CASE_INSENSITIVE);
+    criteria.and("title").regex(pattern);
+}
+
+// Variables 键值对匹配
+applyVariablesCriteria(criteria, query.getVariables());</code></pre>
+
+<h3>4.2 分页查询</h3>
+
+<pre><code>// 带排序、分页、限制的查询
+Query mongoQuery = new Query(criteria)
+    .with(new Sort(Sort.Direction.DESC, "updateTime"))  // 按更新时间倒序
+    .skip((pageNum - 1) * pageSize)                      // 跳过前面的页
+    .limit(pageSize);                                    // 每页大小
+
+List&lt;Chats&gt; chatList = mongoTemplate.find(mongoQuery, Chats.class);
+long total = mongoTemplate.count(new Query(criteria), Chats.class);</code></pre>
+
+<h3>4.3 常用查询模式总结</h3>
+
+<table>
+  <tr><th>模式</th><th>代码</th><th>说明</th></tr>
+  <tr><td>精确匹配</td><td><code>Criteria.where("field").is(value)</code></td><td>字段等于指定值</td></tr>
+  <tr><td>正则匹配</td><td><code>criteria.and("field").regex(pattern)</code></td><td>正则表达式匹配</td></tr>
+  <tr><td>范围查询</td><td><code>.gte(min).lte(max)</code></td><td>大于等于、小于等于</td></tr>
+  <tr><td>排序</td><td><code>Sort(Direction.DESC, "field")</code></td><td>按字段降序</td></tr>
+  <tr><td>分页</td><td><code>.skip(offset).limit(size)</code></td><td>跳过 + 限制</td></tr>
+  <tr><td>计数</td><td><code>mongoTemplate.count(query, Class)</code></td><td>统计匹配文档数</td></tr>
+</table>
+
+<h3>4.4 Chats 文档模型（MongoDB 集合）</h3>
+
+<pre><code>@Document(collection = "chats")
+public class Chats {
+    @Id
+    private String _id;                        // MongoDB ObjectId
+    private ObjectId appId;                    // 所属应用ID
+    private String chatId;                     // 会话唯一标识
+    private String title;                      // 会话标题
+    private Map&lt;String, Object&gt; metadata;     // 元数据
+    private Map&lt;String, Object&gt; variables;    // 变量（含分类信息）
+    private String source;                     // 来源
+    private String teamId;                     // 团队ID
+    private Date updateTime;                   // 更新时间
+
+    @Transient                                 // 不持久化到 MongoDB
+    private EvaluationStats stats;             // 评估统计（从 MySQL 查）
+    @Transient
+    private LlmEvalLock llmEvalLock;           // LLM 评估锁状态
+}</code></pre>
+
+<div class="card info">
+  <div class="card-label">关键设计</div>
+  <p><code>@Transient</code> 标记的字段<strong>不会存入 MongoDB</strong>，而是在查询后由代码手动填充（从 MySQL 的 <code>evaluation_result</code> 表查询后赋值）。这种"<strong>MongoDB + MySQL 混合查询</strong>"是本系统的典型模式。</p>
+</div>
+
+<div class="ask-agent">问问 Agent：SharedAppService 中 MongoTemplate 和 Repository 接口分别在什么场景下使用？为什么要混合使用？</div>
+
+<!-- ===== Quiz ===== -->
+<div class="quiz-section">
+<h2><span class="icon">✏️</span> Quiz — 检验你的理解</h2>
+
+<div class="quiz-q">
+  <div class="q-title">Q1：KnowledgeBase 中创建知识库时，type 字段的值是什么？</div>
+  <label><input type="radio" name="q1" value="A" onclick="checkAnswer('q1','B',this)"> A. "knowledge"</label>
+  <label><input type="radio" name="q1" value="B" onclick="checkAnswer('q1','B',this)"> B. "dataset"</label>
+  <label><input type="radio" name="q1" value="C" onclick="checkAnswer('q1','B',this)"> C. "base"</label>
+  <label><input type="radio" name="q1" value="D" onclick="checkAnswer('q1','B',this)"> D. "collection"</label>
+  <div class="answer"></div>
+</div>
+
+<div class="quiz-q">
+  <div class="q-title">Q2：SharedAppService 获取分享应用 ID 时，数据来源于哪两个 MongoDB 集合？</div>
+  <label><input type="radio" name="q2" value="A" onclick="checkAnswer('q2','A',this)"> A. OpenApis 和 Outlinks</label>
+  <label><input type="radio" name="q2" value="B" onclick="checkAnswer('q2','A',this)"> B. Apps 和 Teams</label>
+  <label><input type="radio" name="q2" value="C" onclick="checkAnswer('q2','A',this)"> C. Chats 和 ChatItems</label>
+  <label><input type="radio" name="q2" value="D" onclick="checkAnswer('q2','A',this)"> D. Users 和 Members</label>
+  <div class="answer"></div>
+</div>
+
+<div class="quiz-q">
+  <div class="q-title">Q3：Chats 实体类中用 @Transient 标记的 stats 字段有什么作用？</div>
+  <label><input type="radio" name="q3" value="A" onclick="checkAnswer('q3','C',this)"> A. 标记该字段是 MongoDB 的索引字段</label>
+  <label><input type="radio" name="q3" value="B" onclick="checkAnswer('q3','C',this)"> B. 标记该字段需要加密存储</label>
+  <label><input type="radio" name="q3" value="C" onclick="checkAnswer('q3','C',this)"> C. 标记该字段不持久化到 MongoDB，由代码手动填充</label>
+  <label><input type="radio" name="q3" value="D" onclick="checkAnswer('q3','C',this)"> D. 标记该字段在查询时自动忽略</label>
+  <div class="answer"></div>
+</div>
+</div>
+
+<!-- ===== Navigation ===== -->
+<div class="nav-links">
+  <a href="0018-kuai-service-wechat-robot.html">← 微信机器人集成</a>
+  <a href="../index.html">🗺️ 完整学习地图</a>
+  <a href="0020-kuai-service-database-deep-dive.html">数据库设计深度解析 →</a>
+</div>
+
+</div>
+</body>
+</html>

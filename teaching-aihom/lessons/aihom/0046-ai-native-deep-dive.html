@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>046 ai-native-service 深度追踪</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:780px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:.95rem;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  h2{font-size:1.35rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem}
+  h3{font-size:1.1rem;font-weight:500;margin-top:1.5rem;margin-bottom:.75rem;color:var(--accent)}
+  p{margin-bottom:1rem}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0}
+  .card.info{border-left:3px solid var(--info)}.card.warning{border-left:3px solid var(--warning)}.card.success{border-left:3px solid var(--success)}
+  .card-label{font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+  .card.info .card-label{color:var(--info)}.card.warning .card-label{color:var(--warning)}.card.success .card-label{color:var(--success)}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15em .4em;border-radius:4px;font-size:.88em}
+  pre{background:#1c1917;color:#e7e5e4;padding:1.25rem 1.5rem;border-radius:8px;overflow-x:auto;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.6}
+  pre .comment{color:#78716c}pre .keyword{color:#f59e0b}pre .important{color:#fbbf24;font-weight:500}pre .dir{color:#93c5fd}
+  table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.92rem}
+  th,td{text-align:left;padding:.6rem .8rem;border-bottom:1px solid var(--border)}
+  th{font-weight:500;color:var(--text-secondary);font-size:.82rem;text-transform:uppercase;letter-spacing:.04em}
+  .quiz{background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0}
+  .quiz-title{font-weight:700;margin-bottom:.75rem;color:var(--accent)}
+  .quiz-options{list-style:none}.quiz-options li{padding:.5rem .75rem;margin:.35rem 0;border-radius:6px;cursor:pointer;transition:background .15s;border:1px solid transparent}
+  .quiz-options li:hover{background:#fde68a33;border-color:#fbbf24}
+  .quiz-options li.correct{background:#dcfce7;border-color:#16a34a}.quiz-options li.wrong{background:#fee2e2;border-color:#ef4444}
+  .quiz-feedback{margin-top:.75rem;padding:.75rem;border-radius:6px;display:none;font-size:.9rem}
+  .flow{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin:1rem 0;font-size:.9rem}
+  .flow-step{background:var(--surface);border:1px solid var(--border);padding:.4rem .8rem;border-radius:6px;white-space:nowrap}
+  .flow-arrow{color:var(--text-secondary)}
+  .callout{background:#fef3c7;border-left:3px solid #f59e0b;padding:1rem 1.25rem;margin:1rem 0;border-radius:0 8px 8px 0;font-size:.92rem}
+  .next-lesson{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+  .next-lesson a{color:var(--accent);text-decoration:none;font-weight:500}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
+  .ask-agent::before{content:'💡 '}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.3rem}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>046 ai-native-service 深度追踪</h1>
+<p class="subtitle">从 WebSocket 到 Tool 调用，逐层追踪一条消息的完整代码路径</p>
+
+<h2>1. 完整调用链概览</h2>
+<p>当用户在前端输入消息，代码执行顺序如下：</p>
+
+<pre>
+<span class="important">WebSocket 消息到达</span>
+  │
+  ▼
+<span class="dir">WsMessageListener</span>              <span class="comment">// 从 StompSendCommand 解析 RawSocketMessage</span>
+  │  根据 RawSocketMessage.key / type 分发
+  ▼
+<span class="dir">SocketHandlerFactory</span>           <span class="comment">// 路由到对应 Handler</span>
+  │  getRequestHandler("SendMessage")
+  ▼
+<span class="dir">SendMessageHandlerImpl</span>        <span class="comment">// 发消息处理（入口）</span>
+  │  .handleMessage()
+  │  ① 解析 ClientSendMessageDto
+  │  ② messageProcessService.tryLock()  ← Redisson 分布式锁
+  │  ③ stateGraphFactory.getStateGraphCacheDto()  ← 加载图配置
+  │  ④ 构建 MessageContext
+  │  ⑤ conversationService.createConversation / addMessage
+  │  ⑥ messageProcessService.handleMessage()
+  ▼
+<span class="dir">MessageProcessService</span>         <span class="comment">// 消息处理核心</span>
+  │  .handleMessage()
+  │  ① stateGraphFactory.buildCompiledGraph()
+  │  ② compiledGraph.stream(inputs, config)  ← 执行状态图
+  │  ③ .doOnNext(processNewMessage)  ← 流式处理每个节点输出
+  │  ④ .doOnSuccess(successMessage)  ← 完成
+  │  ⑤ .doOnError(errorMessage)      ← 异常
+  │  ⑥ .doOnCancel(cancelMessage)    ← 取消
+  ▼
+<span class="dir">StateGraphFactory</span>             <span class="comment">// 构建状态图</span>
+  │  buildCompiledGraph()
+  │  根据图类型选择 Supervisor 或 ReAct 构建策略
+  ▼
+<span class="dir">CustomSupervisorAgent</span>         <span class="comment">// Supervisor 路由决策</span>
+  │  根据用户意图选择子 Agent
+  │  如: Floorplan_to_Design, Image_Editor, comment_AI
+  ▼
+<span class="dir">子 Agent 节点</span>                 <span class="comment">// 执行具体任务</span>
+  │  调用绑定的 Tool
+  ▼
+<span class="dir">Tool（本地/前端 MCP）</span>         <span class="comment">// 实际执行</span>
+  │  如: FloorplanToStructureTool, LayoutFloorplanTool
+  ▼
+<span class="dir">ResponseServiceImpl</span>          <span class="comment">// 流式返回结果</span>
+  response / pendingResponse / errorResponse
+</pre>
+
+<h2>2. 关键代码逐层解析</h2>
+
+<h3>2.1 SendMessageHandlerImpl.handleMessage()</h3>
+<p>这是消息处理的<strong>入口方法</strong>，做了 6 件关键的事：</p>
+
+<table>
+  <tr><th>步骤</th><th>代码</th><th>作用</th></tr>
+  <tr><td>① 解析消息</td><td><code>JSONUtils.copyOf(data, ClientSendMessageDto.class)</code></td><td>从前端消息提取 graphId、graphVersion、content 等</td></tr>
+  <tr><td>② 加锁</td><td><code>messageProcessService.tryLock(socketInfo, conversationUuid)</code></td><td>Redisson 分布式锁，同一用户同一会话同时只能一个消息</td></tr>
+  <tr><td>③ 加载图配置</td><td><code>stateGraphFactory.getStateGraphCacheDto(graphId, graphVersion)</code></td><td>从缓存/数据库加载 StateGraph 配置</td></tr>
+  <tr><td>④ 构建上下文</td><td><code>MessageContext.builder()...build()</code></td><td>组装 userId、socketInfo、graphId、historyMessages 等</td></tr>
+  <tr><td>⑤ 保存消息</td><td><code>conversationService.createConversation / addMessage</code></td><td>新会话创建 + 保存用户消息到 DB</td></tr>
+  <tr><td>⑥ 执行处理</td><td><code>messageProcessService.handleMessage(messageContext)</code></td><td>进入核心处理逻辑</td></tr>
+</table>
+
+<div class="callout">
+  <strong>注意：</strong>如果最后一条历史消息是未完成的 tool call，<code>processResponseMessage()</code> 会自动补充一条 timeout 的 tool response，避免下次对话卡死。
+</div>
+
+<h3>2.2 MessageProcessService.handleMessage()</h3>
+<p>核心处理方法，使用 <strong>Reactor 响应式流</strong>执行状态图：</p>
+
+<pre>
+CompiledGraph compiledGraph = stateGraphFactory.buildCompiledGraph(stateGraph);
+
+Disposable disposable = compiledGraph
+    .stream(inputs.toMap(), config)          <span class="comment">// 执行状态图，返回流</span>
+    .doOnNext(nodeOutput ->                  <span class="comment">// 每个节点输出</span>
+        processNewMessage(ctx, nodeOutput))  <span class="comment">// 处理新消息/流式输出</span>
+    .last()                                  <span class="comment">// 等待全部完成</span>
+    .doOnSuccess(nodeOutput ->               <span class="comment">// 成功</span>
+        successMessage(ctx, nodeOutput))
+    .doOnError(error ->                      <span class="comment">// 异常</span>
+        errorMessage(ctx, error))
+    .doOnCancel(() ->                        <span class="comment">// 取消</span>
+        cancelMessage(ctx))
+    .subscribe();
+
+conversationCache.put(conversationUuid, userId, disposable);  <span class="comment">// 缓存用于取消</span>
+</pre>
+
+<h3>2.3 流式消息处理</h3>
+<p><code>processNewMessage()</code> 处理两种输出：</p>
+<ul>
+  <li><strong>StreamingOutput</strong> — 流式 token，逐字推送给前端</li>
+  <li><strong>普通 NodeOutput</strong> — 完整消息，包含 tool call/result</li>
+</ul>
+
+<h3>2.4 并发锁机制</h3>
+<pre>
+<span class="comment">// Redisson 分布式锁</span>
+String lockKey = <span class="string">"ai-home-lock:"</span> + conversationUuid;
+RLock lock = commonRedisService.getLock(lockKey);
+lock.tryLock(wait=2s, lease=3s, TimeUnit.SECONDS);
+
+<span class="comment">// 解锁时机</span>
+<span class="comment">// 正常完成 → cleanUpAndUpdateUsage() 中 forceUnlock()</span>
+<span class="comment">// 异常完成 → catch 块中 unlock()</span>
+<span class="comment">// 取消完成 → cancelMessage() 中 cleanUpAndUpdateUsage()</span>
+</pre>
+
+<div class="card warning">
+  <div class="card-label">幽灵锁风险</div>
+  <p>浏览器刷新、网络断开、服务重启等导致清理逻辑未执行，锁会残留。只能等 3 秒 TTL 过期或手动删 Redis key。</p>
+</div>
+
+<h3>2.5 Supervisor 路由</h3>
+<p><code>CustomSupervisorAgent</code> 根据用户意图路由到子 Agent：</p>
+<table>
+  <tr><th>子 Agent</th><th>职责</th></tr>
+  <tr><td>Floorplan_to_Design</td><td>户型图 → 设计方案</td></tr>
+  <tr><td>Floorplan_to_Structure</td><td>户型图 → 结构识别</td></tr>
+  <tr><td>Image_Editor</td><td>图片编辑</td></tr>
+  <tr><td>Video_Generator</td><td>视频生成</td></tr>
+  <tr><td>comment_AI</td><td>评论 AI</td></tr>
+  <tr><td>Text_to_Layout</td><td>文字 → 布局</td></tr>
+</table>
+
+<h3>2.6 MCP 工具桥接</h3>
+<p>后端需要前端资源时（如 3D 渲染），通过 WebSocket 发 Tool Call：</p>
+<pre>
+<span class="comment">// 后端发送 tool call → 前端执行 → 前端回传 tool response</span>
+<span class="comment">// FrontendToolCallHandlerImpl: 处理发往前端的 tool call</span>
+<span class="comment">// FrontendToolResponseHandlerImpl: 处理前端回传的 tool response</span>
+<span class="comment">//   → postProcessTool() + updateUsage() + cleanUsage()</span>
+</pre>
+
+<h2>3. 自检 Quiz</h2>
+
+<div class="quiz" id="quiz1">
+  <div class="quiz-title">Q1: MessageProcessService 使用什么方式执行状态图？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz1',0)">A. 同步阻塞调用</li>
+    <li onclick="checkQuiz('quiz1',1)">B. CompletableFuture</li>
+    <li onclick="checkQuiz('quiz1',2)">C. Reactor 响应式流（Mono/Flux）</li>
+    <li onclick="checkQuiz('quiz1',3)">D. 线程池 submit</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <div class="quiz-title">Q2: 并发锁的 key 格式是？</div>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz2',0)">A. ai-home-lock:{graphId}:{userId}</li>
+    <li onclick="checkQuiz('quiz2',1)">B. ai-home-lock:{conversationUuid}</li>
+    <li onclick="checkQuiz('quiz2',2)">C. ai-home-lock:{userId}</li>
+    <li onclick="checkQuiz('quiz2',3)">D. ai-home-lock:{requestId}</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <div class="quiz-title">Q3: 如果最后一条历史消息是未完成的 tool call，系统会？</div>
+  <ul class="quiz-options" data-correct="0">
+    <li onclick="checkQuiz('quiz3',0)">A. 自动补充一条 timeout 的 tool response</li>
+    <li onclick="checkQuiz('quiz3',1)">B. 报错阻断</li>
+    <li onclick="checkQuiz('quiz3',2)">C. 跳过该消息</li>
+    <li onclick="checkQuiz('quiz3',3)">D. 重新执行该 tool call</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+
+</div>
+</div>
+<script>
+function checkQuiz(q,s){const o=document.getElementById(q).querySelector('.quiz-options'),c=parseInt(o.dataset.correct),i=o.querySelectorAll('li'),f=document.getElementById(q).querySelector('.quiz-feedback');i.forEach((x,n)=>{x.onclick=null;if(n===c)x.classList.add('correct');if(n===s&&n!==c)x.classList.add('wrong')});const fb={q1:{c:'✓ 对！compiledGraph.stream() 返回 Reactor 的 Flux，通过 .doOnNext/.doOnSuccess/.doOnError 处理。',w:'✗ 是 Reactor 响应式流。compiledGraph.stream() 返回 Flux，用 .subscribe() 订阅。'},q2:{c:'✓ 对！lockKey = "ai-home-lock:" + conversationUuid，粒度是会话级别。',w:'✗ 是 ai-home-lock:{conversationUuid}。锁粒度是会话级别，不是用户级别。'},q3:{c:'✓ 对！processResponseMessage() 会自动补充 timeout 的 tool response，避免下次对话卡死。',w:'✗ 是自动补充 timeout response。这是 SendMessageHandlerImpl 的防御性设计。'}};f.style.display='block';f.textContent=s===c?fb[q].c:fb[q].w;f.style.background=s===c?'#dcfce7':'#fee2e2'}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 046</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0045-render-3d-overview.html">上一课：045 render-3d 项目全景</a><a class="primary" href="0047-auto-layout-deep-dive.html">下一课：047 auto-layout-service 深度追踪</a></div></nav>
+</body>
+</html>

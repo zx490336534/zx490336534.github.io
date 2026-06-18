@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0018 - 微信机器人集成详解</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.5rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:2rem}
+  .desc{color:var(--text-secondary);font-size:.95rem;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.15rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem;color:var(--accent)}
+  p{margin-bottom:1rem}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;overflow-x:auto;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.6}
+  code{font-family:'JetBrains Mono',monospace;font-size:.85em;background:var(--code-bg);padding:.15rem .4rem;border-radius:4px}
+  pre code{background:none;padding:0}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.4rem}
+  .lesson-num{display:inline-block;background:var(--accent-light);color:var(--accent);padding:.2rem .6rem;border-radius:4px;font-size:.8rem;font-weight:500;margin-bottom:.5rem}
+  .step{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0}
+  .step-title{font-weight:600;color:var(--accent);margin-bottom:.5rem}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
+  .ask-agent::before{content:'💡 '}
+  .warn{background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:.9rem}
+  .warn::before{content:'⚠️ '}
+  .success{background:#dcfce7;border:1px solid #86efac;border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:.9rem}
+  .success::before{content:'✅ '}
+  .tag{display:inline-block;padding:.1rem .4rem;border-radius:4px;font-size:.7rem;font-weight:500;margin-right:.3rem}
+  .tag.deep{background:#fef3c7;color:#b45309}
+  .tag.overview{background:#dbeafe;color:#2563eb}
+  .quiz{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1rem 0}
+  .quiz-q{font-weight:600;margin-bottom:.5rem}
+  .quiz-options{margin:.5rem 0 .5rem 1rem}
+  .quiz-options li{margin-bottom:.3rem}
+  .quiz-answer{color:var(--success);font-weight:500;margin-top:.75rem;padding-top:.75rem;border-top:1px dashed var(--border)}
+  nav{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:.9rem}
+  nav a{color:var(--accent);text-decoration:none}
+  nav a:hover{text-decoration:underline}
+  table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.9rem}
+  th,td{border:1px solid var(--border);padding:.6rem .8rem;text-align:left}
+  th{background:var(--code-bg);font-weight:600}
+  .prereq{background:linear-gradient(135deg,#eff6ff,#f0f9ff);border:1px solid #93c5fd;border-radius:10px;padding:1.25rem 1.5rem;margin:1.5rem 0}
+  .prereq-title{font-weight:700;color:#1d4ed8;margin-bottom:.5rem;font-size:1.05rem}
+  .prereq a{color:#2563eb;text-decoration:none;font-weight:500}
+  .prereq a:hover{text-decoration:underline}
+  .flow{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin:1rem 0;font-size:.9rem}
+  .flow-step{background:var(--accent-light);padding:.4rem .8rem;border-radius:6px;font-weight:500}
+  .flow-arrow{color:var(--accent);font-weight:700}
+</style>
+</head>
+<body>
+<div class="container">
+
+<span class="lesson-num">0018</span>
+<h1>🤖 微信机器人集成详解</h1>
+<p class="subtitle"><span class="tag deep">深度</span> 企业微信消息接收、路由、AI 对话与存储全链路</p>
+<p class="desc">本课深入讲解 kuai-service 中企业微信机器人的完整工作流程：从接收加密消息、解密路由、调用 AI Agent 生成回复，到消息存储和流式输出。你会理解 <code>WeChatRobotController</code> 和 <code>WeChatMessageController</code> 两个核心控制器的分工与协作。</p>
+
+<!-- 前置知识 -->
+<div class="prereq">
+  <div class="prereq-title">📋 前置知识</div>
+  <ul>
+    <li><strong>Spring Boot 基础</strong> — 了解 <code>@RestController</code>、<code>@PostMapping/@GetMapping</code>、<code>@Autowired</code> 注解的含义（<a href="https://spring.io/guides/gs/spring-boot">官方入门</a>）</li>
+    <li><strong>依赖注入（DI）</strong> — 知道 Spring 会自动把 Bean 注入到 Controller 的成员变量中</li>
+    <li><strong>JSON 处理</strong> — 了解 <code>JSONObject</code>（Fastjson）的 <code>getString/getJSONObject</code> 用法</li>
+    <li><strong>HTTP 请求/响应</strong> — 知道 POST 请求体、请求参数（query param）、响应加密的基本概念</li>
+    <li><strong>异步编程</strong> — 了解 <code>@Async</code> 和 <code>CompletableFuture</code> 的基本用法</li>
+  </ul>
+</div>
+
+<!-- ==================== 1. 两个 Controller 的分工 ==================== -->
+<h2><span class="icon">🗂️</span> 一、两个 Controller 的分工</h2>
+
+<p>微信机器人功能由<strong>两个 Controller</strong> 共同完成，它们分别对接不同的企业微信应用：</p>
+
+<table>
+  <tr><th>Controller</th><th>路径</th><th>职责</th><th>对接的应用</th></tr>
+  <tr><td><code>WeChatRobotController</code></td><td><code>/gpt/wechat</code>、<code>/gpt/wechat/message</code></td><td>接收旧版/通用微信回调，转发给 <code>RobotChatService</code></td><td>通用微信机器人</td></tr>
+  <tr><td><code>WeChatMessageController</code></td><td><code>/kuai/wechat/message</code></td><td>企业微信 AI 机器人的完整消息处理：校验、解密、路由、AI 对话、流式输出</td><td>企业微信 AI 机器人（酷小发）</td></tr>
+</table>
+
+<div class="ask-agent">这两个 Controller 有什么区别？为什么不用一个？让 Agent 帮你对比它们的代码差异。</div>
+
+<!-- ==================== 2. 消息接收与回复流程 ==================== -->
+<h2><span class="icon">📨</span> 二、消息接收与回复流程</h2>
+
+<h3>2.1 整体流程</h3>
+
+<p>企业微信向你的服务器发送加密消息，你需要解密、处理、再加密回复。整个流程如下：</p>
+
+<div class="flow">
+  <span class="flow-step">企业微信发送加密消息</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">解密消息 (WXBizMsgCrypt)</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">解析消息类型</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">路由到对应处理器</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">调用 AI Agent</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">加密响应返回</span>
+</div>
+
+<h3>2.2 URL 验证（GET 请求）</h3>
+
+<p>企业微信首次配置回调 URL 时，会发一个 GET 请求验证你的服务器。代码位于 <code>WeChatMessageController</code>：</p>
+
+<pre><code>@GetMapping("/kuai/wechat/message")
+public String verifyUrl(HttpServletRequest request) throws Exception {
+    String decryptedMsg = decryptMessageTest(request.getParameter("echostr"));
+    log.info("return is {}", decryptedMsg);
+    return decryptedMsg;  // 返回解密后的 echostr 即可通过验证
+}</code></pre>
+
+<p>简单来说：收到 <code>echostr</code> 参数 → 解密 → 原样返回，企业微信就知道你的服务器是可信的。</p>
+
+<h3>2.3 接收消息（POST 请求）</h3>
+
+<p>用户在企业微信里发消息后，企业微信会 POST 加密数据到你的服务器：</p>
+
+<pre><code>@PostMapping("/kuai/wechat/message")
+public JSONObject receiveMessage(HttpServletRequest request, @RequestBody String encryptedMsg) {
+    // 1. 提取签名参数
+    RequestParams params = extractRequestParams(request);
+    // 2. 解密消息
+    String decryptedMsg = decryptMessage(encryptedMsg);
+    // 3. 解析为 JSON
+    JSONObject messageObj = JSONObject.parseObject(decryptedMsg);
+    // 4. 根据消息类型路由到不同处理器
+    // ...
+}</code></pre>
+
+<h3>2.4 加密与解密工具</h3>
+
+<p>所有消息的加解密都通过 <code>WXBizMsgCrypt</code> 类完成，它需要三个配置参数：</p>
+
+<pre><code>// 企业微信后台配置的三个参数
+public static final String token = "gFaj7oGoeSegyiyez7gYcPHzDyD";
+public static final String encodingAesKey = "xyjfgKlIi1cKGr17eB5WPOGTNRdUTLpjsoJwppeb7sD";
+public static final String corpId = "wxe838eaf3a3855809";</code></pre>
+
+<div class="warn">这三个参数是企业微信应用的"钥匙"，泄露了别人就能伪造消息。<strong>生产环境应该放在配置文件或环境变量中</strong>，不要硬编码。</div>
+
+<!-- ==================== 3. 消息路由机制 ==================== -->
+<h2><span class="icon">🔀</span> 三、消息路由机制</h2>
+
+<p>解密后的消息会经过一系列"分流"判断，不同类型的消息走不同路径：</p>
+
+<pre><code>// receiveMessage 方法的核心路由逻辑
+if (TxBotUtil.isStream(messageObj)) {
+    // 流状态查询 — 企业微信轮询 AI 回复进度
+    return handleStreamStatusRequest(messageObj, params);
+}
+if (handleWorkaiFeedbackEvent(messageObj, params) != null) {
+    // WorkAI 反馈卡片事件（好评/差评）
+    return ...;
+}
+if (handleChoiceCardEvent(messageObj, params) != null) {
+    // 注册选择卡片事件
+    return ...;
+}
+if (TxBotUtil.isText(messageObj)) {
+    // 文本消息 — 进一步判断是注册还是普通对话
+    if (content.contains("我要注册") && ...) {
+        return sendChoiceCardForRegisterPrompt(messageObj, params);
+    }
+    // 检查是否是数字员工（WorkAI）
+    if (workaiRobotConfig.isPresent()) {
+        return handleDigitalEmployeeMessage(...);
+    }
+    // 普通 AI 对话
+    return handleNewMessageRequest(messageObj, content, params);
+}
+if (TxBotUtil.isImage(messageObj) || TxBotUtil.isMixed(messageObj)) {
+    // 图片或混合消息
+    return handleImageMessageAsync(messageObj, params);
+}</code></pre>
+
+<p>用表格总结消息路由：</p>
+
+<table>
+  <tr><th>消息类型</th><th>处理方法</th><th>说明</th></tr>
+  <tr><td>流状态查询</td><td><code>handleStreamStatusRequest</code></td><td>企业微信轮询 AI 回复是否完成</td></tr>
+  <tr><td>反馈卡片事件</td><td><code>handleWorkaiFeedbackEvent</code></td><td>用户点击好评/差评按钮</td></tr>
+  <tr><td>选择卡片事件</td><td><code>handleChoiceCardEvent</code></td><td>用户在注册卡片中选择选项</td></tr>
+  <tr><td>文本（注册）</td><td><code>sendChoiceCardForRegisterPrompt</code></td><td>用户发送"我要注册"</td></tr>
+  <tr><td>文本（数字员工）</td><td><code>handleDigitalEmployeeMessage</code></td><td>走 WorkAI 数字员工通道</td></tr>
+  <tr><td>文本（普通对话）</td><td><code>handleNewMessageRequest</code></td><td>调用 FastGPT Agent</td></tr>
+  <tr><td>图片/混合</td><td><code>handleImageMessageAsync</code></td><td>异步解析图片后调用 Agent</td></tr>
+</table>
+
+<div class="ask-agent">消息类型是怎么判断的？让 Agent 帮你解释 <code>TxBotUtil.isText()</code>、<code>TxBotUtil.isImage()</code> 等方法的实现逻辑。</div>
+
+<!-- ==================== 4. AI 对话集成 ==================== -->
+<h2><span class="icon">🧠</span> 四、AI 对话集成</h2>
+
+<h3>4.1 普通对话流程</h3>
+
+<p>用户发一条文本消息后，系统调用 AI Agent 生成回复。但因为 AI 生成需要时间，企业微信采用<strong>流式轮询</strong>机制：</p>
+
+<div class="step">
+  <div class="step-title">Step 1：立即返回"思考中"</div>
+  <p>收到消息后，生成一个唯一的 <code>appId</code>，立即返回 <code>{"stream": {"id": appId, "finish": false, "content": "正在思考中……"}}</code>。企业微信收到后会开始轮询。</p>
+</div>
+
+<div class="step">
+  <div class="step-title">Step 2：异步调用 AI Agent</div>
+  <p>通过 <code>sendToAgent()</code> 方法，将用户消息转发给 FastGPT 或 Kuai Test Agent：</p>
+  <pre><code>private void sendToAgent(JSONObject messageObj, String question, String appId) {
+    NewRobot binding = newRobotService.getRobotBinding(messageObj);
+    String userId = TxBotUtil.getUserId(messageObj);
+    Map&lt;String, String&gt; headers = createAuthHeaders(messageObj, binding, userId);
+    String requestUrl = createAgentUrl(binding);
+    JSONObject requestBody = createAgentRequestBody(messageObj, question, userId, binding);
+
+    httpUtils.sendStreamPostRequest(question, requestUrl, headers, requestBody, appId, ...);
+}</code></pre>
+</div>
+
+<div class="step">
+  <div class="step-title">Step 3：企业微信轮询获取结果</div>
+  <p>企业微信会不断调用 <code>handleStreamStatusRequest()</code> 查询 <code>appId</code> 的状态。当 AI 回复生成完毕，<code>ConversationManager</code> 标记为 <code>finished</code>，返回完整内容。</p>
+</div>
+
+<h3>4.2 两种 AI 后端</h3>
+
+<p>系统支持两种 AI 后端，根据机器人的绑定配置自动选择：</p>
+
+<table>
+  <tr><th>AI 后端</th><th>标识</th><th>请求方式</th></tr>
+  <tr><td>FastGPT</td><td>非 Kuai Test Agent</td><td>发送 <code>messages</code> 数组到 <code>fastgptUrl</code></td></tr>
+  <tr><td>Kuai Test Agent</td><td><code>isKuaiTestAgent()</code> 为 true</td><td>发送 <code>message</code> 字符串到 <code>binding.getFastUrl()</code></td></tr>
+</table>
+
+<h3>4.3 图片消息处理</h3>
+
+<p>图片消息比较特殊，因为企业微信的图片 URL 是加密的。处理流程：</p>
+
+<ol>
+  <li>先创建占位会话（确保企业微信拿到可轮询的 stream id）</li>
+  <li>异步解析图片：如果是企业微信加密图片（URL 包含 <code>ww-aibot-img-</code>），先解密再上传 CDN</li>
+  <li>将 CDN 链接拼接后发给 AI Agent</li>
+</ol>
+
+<pre><code>// 判断是否是企业微信加密图片
+private boolean isWechatEncryptedImageUrl(String imageUrl) {
+    return imageUrl.contains("ww-aibot-img-");
+}</code></pre>
+
+<!-- ==================== 5. 消息存储与查询 ==================== -->
+<h2><span class="icon">💾</span> 五、消息存储与查询</h2>
+
+<h3>5.1 消息存储</h3>
+
+<p>当 AI 回复完成后，系统会将消息存入数据库，并在回复末尾追加"好评/差评"链接：</p>
+
+<pre><code>// handleStreamStatusRequest 中的存储逻辑
+WeChatMessage weChatMessage = chatHistoryService.insertWechatMessage(
+    userId, status.getQuestion(), streamContent, robotNick, "");
+if (weChatMessage != null) {
+    streamContent = append(weChatMessage.getId(), streamContent);
+}</code></pre>
+
+<p><code>append()</code> 方法会在回复末尾拼上好评和差评的评分链接：</p>
+
+<pre><code>public String append(Integer messageId, String res) {
+    String good = "[😀好评](https://kuai.example.com/gpt/chat/wechat/score?chatId=...&score=3)";
+    String bad  = "[🙁差评](https://kuai.example.com/gpt/chat/wechat/score?chatId=...&score=1)";
+    return res + "\n" + good + "       " + bad;
+}</code></pre>
+
+<h3>5.2 故障复盘文档的消息查询</h3>
+
+<p>当用户发送"生成故障复盘文档"关键词时，系统会查询该用户的历史消息作为上下文：</p>
+
+<pre><code>// 通过用户 ID 和消息内容查找房间 ID
+String roomId = weChatMessageHistoryMapper.findRoomIdByUserAndContent(userId, question);
+// 查询该房间的历史消息
+List&lt;WeChatMessageEntity&gt; messageList = weChatMessageHistoryMapper.selectByRoomId(roomId);</code></pre>
+
+<div class="success">这种设计让用户可以直接在微信中触发故障复盘，系统自动拉取历史对话作为上下文，非常方便。</div>
+
+<!-- ==================== 6. 关键类详解 ==================== -->
+<h2><span class="icon">📦</span> 六、关键类详解</h2>
+
+<table>
+  <tr><th>类名</th><th>职责</th></tr>
+  <tr><td><code>WeChatRobotController</code></td><td>旧版微信回调入口，接收 <code>/gpt/wechat</code> 请求，转发给 <code>RobotChatService</code></td></tr>
+  <tr><td><code>WeChatMessageController</code></td><td>企业微信 AI 机器人的主控制器，处理所有消息类型、路由、AI 对话、存储</td></tr>
+  <tr><td><code>WXBizMsgCrypt</code></td><td>企业微信消息加解密工具类（官方 SDK）</td></tr>
+  <tr><td><code>TxBotUtil</code></td><td>工具类：判断消息类型（<code>isText/isImage/isMixed/isStream</code>）、提取用户 ID、构建卡片等</td></tr>
+  <tr><td><code>ConversationManager</code></td><td>管理流式会话状态：开始、追加内容、标记完成、查询状态</td></tr>
+  <tr><td><code>NewRobotService</code></td><td>管理机器人注册信息，获取绑定的 Agent URL 和 Token</td></tr>
+  <tr><td><code>WorkaiWechatRobotService</code></td><td>WorkAI 数字员工的配置管理，查找 <code>RobotConfig</code></td></tr>
+  <tr><td><code>ChatHistoryService</code></td><td>将微信消息持久化到数据库</td></tr>
+  <tr><td><code>HttpUtils</code></td><td>HTTP 工具类，支持普通请求和流式请求（<code>sendStreamPostRequest</code>）</td></tr>
+  <tr><td><code>ImagesReadService</code></td><td>图片处理服务，将内网图片上传到 CDN</td></tr>
+</table>
+
+<div class="ask-agent">想了解 <code>ConversationManager</code> 的内部实现吗？让 Agent 帮你分析它如何管理流式会话的生命周期。</div>
+
+<!-- ==================== Quiz ==================== -->
+<h2><span class="icon">📝</span> 七、Quiz</h2>
+
+<div class="quiz">
+  <div class="quiz-q">Q1：当企业微信首次配置回调 URL 时，服务器需要怎么回应？</div>
+  <ol class="quiz-options">
+    <li>A. 直接返回 200 状态码</li>
+    <li>B. 将收到的 <code>echostr</code> 解密后原样返回</li>
+    <li>C. 返回一个 JSON 对象 <code>{"ok": true}</code></li>
+    <li>D. 返回 HTML 页面</li>
+  </ol>
+  <div class="quiz-answer">✅ 答案：B。企业微信会发送一个 GET 请求，携带 <code>echostr</code> 参数，服务器需要解密后原样返回。</div>
+</div>
+
+<div class="quiz">
+  <div class="quiz-q">Q2：为什么 AI 回复采用"流式轮询"而不是直接返回？</div>
+  <ol class="quiz-options">
+    <li>A. 因为企业微信不支持直接返回长文本</li>
+    <li>B. 因为 AI 生成需要时间，直接等待会导致企业微信超时重试</li>
+    <li>C. 因为流式轮询更省带宽</li>
+    <li>D. 因为这是企业微信强制要求的方式</li>
+  </ol>
+  <div class="quiz-answer">✅ 答案：B。AI 生成可能需要几秒到几十秒，企业微信有超时限制。采用流式轮询可以先返回"思考中"，然后企业微信不断查询进度，避免超时。</div>
+</div>
+
+<div class="quiz">
+  <div class="quiz-q">Q3：<code>handleImageMessageAsync</code> 方法中为什么要先创建"占位会话"？</div>
+  <ol class="quiz-options">
+    <li>A. 为了在数据库中记录图片消息</li>
+    <li>B. 为了确保企业微信马上拿到可轮询的 stream id，避免超时重试</li>
+    <li>C. 为了压缩图片大小</li>
+    <li>D. 为了验证用户权限</li>
+  </ol>
+  <div class="quiz-answer">✅ 答案：B。图片解析（解密、上传 CDN）是耗时操作。先创建占位会话返回 stream id，企业微信就可以开始轮询，等图片处理完成后再更新会话内容。</div>
+</div>
+
+<!-- 导航 -->
+<div class="nav-links">
+  <a href="0017-kuai-service-llm-evaluation.html">← LLM 评估系统</a>
+  <a href="../index.html">🗺️ 完整学习地图</a>
+  <a href="0019-kuai-service-knowledge-base.html">知识库与分享应用 →</a>
+</div>
+
+</div>
+</body>
+</html>

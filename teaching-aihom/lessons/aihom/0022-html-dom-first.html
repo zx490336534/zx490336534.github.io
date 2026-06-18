@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>022 前端零基础 02：HTML 与 DOM</title>
+<style>
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--muted:#78716c;--accent:#b45309;--border:#e7e5e4;--soft:#fef3c7;--info:#2563eb;--ok:#16a34a;--bad:#ef4444}
+  *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.8 -apple-system,BlinkMacSystemFont,"Noto Sans SC","Segoe UI",sans-serif}.container{max-width:760px;margin:0 auto;padding:3rem 1.4rem}h1{font-size:1.9rem;margin:.2rem 0 .5rem}.subtitle{color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:1.2rem;margin-bottom:1.8rem}h2{font-size:1.25rem;margin:2rem 0 .7rem}code{background:#f5f5f4;padding:.12em .35em;border-radius:4px}pre{background:#1c1917;color:#e7e5e4;padding:1rem;border-radius:8px;overflow:auto}.card{background:#fff;border:1px solid var(--border);border-left:3px solid var(--info);border-radius:8px;padding:1rem 1.2rem;margin:1rem 0}.quiz{background:var(--soft);border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.2rem;margin:1.5rem 0}.quiz-options{list-style:none;margin:0;padding:0}.quiz-options li{padding:.45rem .65rem;margin:.35rem 0;border:1px solid transparent;border-radius:6px;cursor:pointer}.correct{background:#dcfce7!important;border-color:var(--ok)!important}.wrong{background:#fee2e2!important;border-color:var(--bad)!important}.quiz-feedback{display:none;margin-top:.6rem;padding:.6rem;border-radius:6px}.nav{margin-top:2rem;border:1px solid var(--border);border-radius:8px;background:#fff;padding:1rem}.nav a{display:inline-block;margin:.25rem;color:#444;text-decoration:none;border:1px solid var(--border);border-radius:6px;padding:.35rem .65rem}.nav a.map{background:#eff6ff;border-color:#bfdbfe;color:var(--info)}.nav a.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+</style>
+</head>
+<body><div class="container">
+<h1>022 前端零基础 02：HTML 与 DOM</h1>
+<p class="subtitle">目标：知道页面元素从哪里来。以后打开浏览器 Elements 面板，能看懂最基本的结构。</p>
+
+<h2>1. HTML 是页面结构</h2>
+<pre>&lt;div class="chat"&gt;
+  &lt;input placeholder="输入需求" /&gt;
+  &lt;button&gt;发送&lt;/button&gt;
+&lt;/div&gt;</pre>
+<p>这段只说明页面上有什么：一个输入框、一个按钮。它还没有说明按钮点了会发生什么。</p>
+
+<h2>2. DOM 是浏览器看到的页面树</h2>
+<p>浏览器读完 HTML 后，会生成一棵 DOM 树。DevTools 的 Elements 面板看到的就是 DOM。</p>
+<pre>div.chat
+  input
+  button</pre>
+
+<h2>3. React 和 DOM 的关系</h2>
+<div class="card">React 不是 DOM。React 组件返回 JSX，React 再把 JSX 变成 DOM。你看源码时看 JSX；你调试页面时看 DOM。</div>
+
+<h2>4. AIHom 里怎么用</h2>
+<p>对话输入框、发送按钮、消息列表、画布容器，最终都会变成 DOM。viewer-2d / render-3d 通常嵌在 <code>iframe</code> 里，所以它们有自己的 DOM 树。</p>
+
+<h2>5. 从源码到页面的最小链路</h2>
+<pre>TSX / JSX 源码
+  -> React 渲染
+  -> 浏览器 DOM
+  -> Elements 面板里能看到的节点</pre>
+<p>所以读前端时要分两步：源码里看 <code>return (...)</code> 或 <code>render()</code> 画了什么；浏览器里看 Elements 面板确认它最后有没有真的出现在页面上。</p>
+
+<div class="card">排查页面“看不见”时，先不要猜 CSS。第一步先确认 DOM 里有没有这个节点。DOM 里没有，说明 React 没渲染出来；DOM 里有但页面看不见，再去查 CSS。</div>
+
+<h2>6. 本课练习：判断问题在 React 还是 CSS</h2>
+<ol>
+  <li>打开页面，选中一个按钮。</li>
+  <li>如果 Elements 找不到它，优先查 React 条件渲染和数据状态。</li>
+  <li>如果 Elements 找得到它，但页面不显示，优先查 CSS 的尺寸、颜色、定位、层级。</li>
+</ol>
+
+<div class="quiz" id="quiz1"><strong>Q: DevTools 的 Elements 面板主要看什么？</strong>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz1',0)">A. Git 提交记录</li>
+    <li onclick="checkQuiz('quiz1',1)">B. 页面 DOM 结构</li>
+    <li onclick="checkQuiz('quiz1',2)">C. 后端 Java 类</li>
+  </ul><div class="quiz-feedback"></div>
+</div>
+
+</div>
+<script>
+function checkQuiz(id,s){const q=document.getElementById(id),o=q.querySelector('.quiz-options'),c=Number(o.dataset.correct),items=o.querySelectorAll('li'),f=q.querySelector('.quiz-feedback');items.forEach((x,i)=>{x.onclick=null;if(i===c)x.classList.add('correct');if(i===s&&i!==c)x.classList.add('wrong')});f.style.display='block';f.textContent=s===c?'对。Elements 面板主要看页面 DOM 结构。':'不对。Elements 面板不是看后端代码或 Git，它看页面元素结构。';f.style.background=s===c?'#dcfce7':'#fee2e2'}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 022</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0021-frontend-big-picture.html">上一课：021 前端零基础 01：网页由什么组成</a><a class="primary" href="0023-css-first.html">下一课：023 前端零基础 03：CSS 先看布局</a></div></nav>
+</body></html>

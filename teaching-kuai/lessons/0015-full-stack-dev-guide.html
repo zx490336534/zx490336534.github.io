@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0015 - 全栈开发实战</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.5rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:2rem}
+  .desc{color:var(--text-secondary);font-size:.95rem;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.15rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem;color:var(--accent)}
+  p{margin-bottom:1rem}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;overflow-x:auto;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.6}
+  code{font-family:'JetBrains Mono',monospace;font-size:.85em;background:var(--code-bg);padding:.15rem .4rem;border-radius:4px}
+  pre code{background:none;padding:0}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.4rem}
+  .lesson-num{display:inline-block;background:var(--accent-light);color:var(--accent);padding:.2rem .6rem;border-radius:4px;font-size:.8rem;font-weight:500;margin-bottom:.5rem}
+  .step{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0}
+  .step-title{font-weight:600;color:var(--accent);margin-bottom:.5rem}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
+  .ask-agent::before{content:'💡 '}
+  .warn{background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:.9rem}
+  .warn::before{content:'⚠️ '}
+  .success{background:#dcfce7;border:1px solid #86efac;border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:.9rem}
+  .success::before{content:'✅ '}
+  .tag{display:inline-block;padding:.1rem .4rem;border-radius:4px;font-size:.7rem;font-weight:500;margin-right:.3rem}
+  .tag.dev{background:#dcfce7;color:#16a34a}
+  .quiz{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1rem 0}
+  .quiz-q{font-weight:600;margin-bottom:.5rem}
+  .quiz-options{margin:.5rem 0 .5rem 1rem}
+  .quiz-options li{margin-bottom:.3rem}
+  .quiz-answer{color:var(--success);font-weight:500;margin-top:.75rem;padding-top:.75rem;border-top:1px dashed var(--border)}
+  nav{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:.9rem}
+  nav a{color:var(--accent);text-decoration:none}
+  nav a:hover{text-decoration:underline}
+  table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.9rem}
+  th,td{border:1px solid var(--border);padding:.6rem .8rem;text-align:left}
+  th{background:var(--code-bg);font-weight:600}
+  .info{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1rem 0;font-size:.9rem}
+  .info::before{content:'ℹ️ '}
+</style>
+</head>
+<body>
+<div class="container">
+
+<span class="lesson-num">0015</span>
+<h1>🚀 全栈开发实战</h1>
+<p class="subtitle"><span class="tag dev">实战</span> 端到端功能开发 · 部署 · 监控</p>
+<p class="desc">本课是系列课程的终极实战篇。我们将以一个完整功能为例，走通「前端页面 → API 接口 → 数据库 → 部署上线 → 监控日志」的全流程，让你掌握 Kuai 平台的端到端开发能力。</p>
+
+<!-- ==================== 1. 端到端功能开发 ==================== -->
+<h2><span class="icon">🔗</span> 一、端到端功能开发流程</h2>
+
+<p>以「新增评估任务管理功能」为例，走完整开发流程：</p>
+
+<pre><code>需求：用户可以在前端创建评估任务，选择 Prompt 版本和测试数据集，
+     运行评估并查看结果报告。
+
+开发路径：
+┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐
+│ 数据库    │───▶│ Java 后端 │───▶│ 前端页面  │───▶│ 联调测试  │
+│ 建表     │    │ API 接口  │    │ UI 组件   │    │ 端到端    │
+└──────────┘    └──────────┘    └──────────┘    └──────────┘</code></pre>
+
+<h3>Step 1：数据库建表</h3>
+<div class="step">
+  <div class="step-title">设计评估任务表</div>
+  <pre><code>-- 评估任务表
+CREATE TABLE `eval_task` (
+  `id`            BIGINT AUTO_INCREMENT PRIMARY KEY,
+  `name`          VARCHAR(128) NOT NULL COMMENT '任务名称',
+  `prompt_id`     BIGINT NOT NULL COMMENT '关联 Prompt ID',
+  `prompt_version` INT NOT NULL COMMENT 'Prompt 版本号',
+  `dataset_id`    BIGINT NOT NULL COMMENT '测试数据集 ID',
+  `model`         VARCHAR(64) NOT NULL COMMENT 'LLM 模型名',
+  `status`        TINYINT DEFAULT 0 COMMENT '0=待运行 1=运行中 2=完成 3=失败',
+  `result_json`   TEXT COMMENT '评估结果 JSON',
+  `create_time`   DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `update_time`   DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX `idx_prompt_id` (`prompt_id`),
+  INDEX `idx_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='评估任务表';</code></pre>
+</div>
+
+<h3>Step 2：Java 后端 — Entity / Mapper / Service / Controller</h3>
+<div class="step">
+  <div class="step-title">Entity 定义</div>
+  <pre><code>@Data
+@TableName("eval_task")
+public class EvalTaskEntity {
+    @TableId(type = IdType.AUTO)
+    private Long id;
+    private String name;
+    private Long promptId;
+    private Integer promptVersion;
+    private Long datasetId;
+    private String model;
+    private Integer status;
+    private String resultJson;
+    private Date createTime;
+    private Date updateTime;
+}</code></pre>
+</div>
+
+<div class="step">
+  <div class="step-title">Mapper 接口</div>
+  <pre><code>@Mapper
+public interface EvalTaskMapper extends BaseMapper&lt;EvalTaskEntity&gt; {
+    // MyBatis-Plus 自动提供 CRUD
+}</code></pre>
+</div>
+
+<div class="step">
+  <div class="step-title">Service 实现</div>
+  <pre><code>@Service
+@Slf4j
+public class EvalTaskServiceImpl extends ServiceImpl&lt;EvalTaskMapper, EvalTaskEntity&gt;
+        implements EvalTaskService {
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public EvalTaskDTO create(EvalTaskCreateReq req) {
+        EvalTaskEntity entity = new EvalTaskEntity();
+        BeanUtils.copyProperties(req, entity);
+        entity.setStatus(0); // 待运行
+        save(entity);
+        log.info("创建评估任务: id={}, name={}", entity.getId(), entity.getName());
+        return toDTO(entity);
+    }
+
+    @Override
+    public EvalTaskDTO run(Long taskId) {
+        EvalTaskEntity task = getById(taskId);
+        if (task == null) throw new BizException("任务不存在");
+
+        task.setStatus(1); // 运行中
+        updateById(task);
+
+        try {
+            // 调用评估引擎运行评估
+            String result = evaluationEngine.run(task);
+            task.setResultJson(result);
+            task.setStatus(2); // 完成
+        } catch (Exception e) {
+            task.setStatus(3); // 失败
+            log.error("评估任务执行失败: id={}", taskId, e);
+        }
+
+        updateById(task);
+        return toDTO(task);
+    }
+}</code></pre>
+</div>
+
+<div class="step">
+  <div class="step-title">Controller 接口</div>
+  <pre><code>@RestController
+@RequestMapping("/api/eval-task")
+@Slf4j
+public class EvalTaskController {
+
+    @Autowired
+    private EvalTaskService evalTaskService;
+
+    @PostMapping("/create")
+    public Result&lt;EvalTaskDTO&gt; create(@RequestBody @Valid EvalTaskCreateReq req) {
+        return Result.success(evalTaskService.create(req));
+    }
+
+    @PostMapping("/{id}/run")
+    public Result&lt;EvalTaskDTO&gt; run(@PathVariable Long id) {
+        return Result.success(evalTaskService.run(id));
+    }
+
+    @GetMapping("/list")
+    public Result&lt;List&lt;EvalTaskDTO&gt;&gt; list(
+            @RequestParam(required = false) Integer status,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer size) {
+        return Result.success(evalTaskService.listByStatus(status, page, size));
+    }
+
+    @GetMapping("/{id}")
+    public Result&lt;EvalTaskDTO&gt; detail(@PathVariable Long id) {
+        return Result.success(evalTaskService.getById(id));
+    }
+}</code></pre>
+</div>
+
+<h3>Step 3：前端页面开发</h3>
+<div class="step">
+  <div class="step-title">页面组件结构</div>
+  <pre><code>// app/eval-tasks/page.tsx
+'use client';
+import { useState, useEffect } from 'react';
+import { Table, Button, Modal, Form, Select, message } from 'antd';
+
+export default function EvalTasksPage() {
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  // 加载任务列表
+  const fetchTasks = async () => {
+    setLoading(true);
+    const res = await fetch('/api/eval-task/list');
+    const { data } = await res.json();
+    setTasks(data);
+    setLoading(false);
+  };
+
+  useEffect(() => { fetchTasks(); }, []);
+
+  // 创建评估任务
+  const handleCreate = async (values) => {
+    const res = await fetch('/api/eval-task/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(values),
+    });
+    const { code, message: msg } = await res.json();
+    if (code === 200) {
+      message.success('创建成功');
+      fetchTasks();
+    }
+  };
+
+  // 运行评估任务
+  const handleRun = async (id: number) => {
+    await fetch(`/api/eval-task/${id}/run`, { method: 'POST' });
+    message.success('任务已提交');
+    fetchTasks();
+  };
+
+  const columns = [
+    { title: '任务名称', dataIndex: 'name' },
+    { title: '模型', dataIndex: 'model' },
+    {
+      title: '状态', dataIndex: 'status',
+      render: (s) => ['待运行', '运行中', '完成', '失败'][s]
+    },
+    {
+      title: '操作',
+      render: (_, record) => (
+        &lt;&gt;
+          &lt;Button onClick={() => handleRun(record.id)}&gt;运行&lt;/Button&gt;
+          &lt;Button href={`/eval-tasks/${record.id}`}&gt;查看&lt;/Button&gt;
+        &lt;/&gt;
+      ),
+    },
+  ];
+
+  return (
+    &lt;div&gt;
+      &lt;Button type="primary" onClick={() => setVisible(true)}&gt;新建任务&lt;/Button&gt;
+      &lt;Table dataSource={tasks} columns={columns} loading={loading} /&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+</div>
+
+<div class="success">
+  <strong>端到端开发 Checklist：</strong>
+  <ul>
+    <li>✅ 数据库表设计 + 建表 SQL</li>
+    <li>✅ Entity → Mapper → Service → Controller 四层代码</li>
+    <li>✅ 请求/响应 DTO 定义</li>
+    <li>✅ 前端页面组件 + API 调用</li>
+    <li>✅ 联调测试（前端 + 后端 + 数据库）</li>
+  </ul>
+</div>
+
+<!-- ==================== 2. 部署流程 ==================== -->
+<h2><span class="icon">🚢</span> 二、部署流程</h2>
+
+<p>Kuai 平台的三个仓库各自独立部署，通过 CI/CD 流水线自动化。</p>
+
+<h3>2.1 部署架构</h3>
+<pre><code>┌─────────────────────────────────────────────────────┐
+│                    CI/CD Pipeline                    │
+│                                                     │
+│  git push ──▶ 代码检查 ──▶ 构建 ──▶ 测试 ──▶ 部署  │
+└─────────────────────────────────────────────────────┘
+
+部署目标：
+┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐
+│ kuai-service     │  │ kuai-service-py  │  │ kuai-service-front│
+│ Java JAR         │  │ Python 程序      │  │ Next.js SSR      │
+│ 端口: 8080       │  │ 端口: 8000       │  │ 端口: 3000       │
+│ 容器化部署       │  │ 容器化部署       │  │ Vercel / 容器    │
+└──────────────────┘  └──────────────────┘  └──────────────────┘</code></pre>
+
+<h3>2.2 各仓库部署命令</h3>
+<table>
+  <tr><th>仓库</th><th>构建命令</th><th>启动命令</th></tr>
+  <tr>
+    <td>kuai-service</td>
+    <td><code>mvn clean package -DskipTests</code></td>
+    <td><code>java -jar target/app.jar</code></td>
+  </tr>
+  <tr>
+    <td>kuai-service-py</td>
+    <td><code>pip install -r requirements.txt</code></td>
+    <td><code>uvicorn main:app --host 0.0.0.0 --port 8000</code></td>
+  </tr>
+  <tr>
+    <td>kuai-service-front</td>
+    <td><code>npm run build</code></td>
+    <td><code>npm start</code>（或 <code>npx next start</code>）</td>
+  </tr>
+</table>
+
+<h3>2.3 环境配置</h3>
+<pre><code># kuai-service (application-prod.yml)
+server:
+  port: 8080
+spring:
+  datasource:
+    url: jdbc:mysql://prod-db:3306/kuai
+    username: ${DB_USER}
+    password: ${DB_PASS}
+
+# kuai-service-py (.env)
+DATABASE_URL=mysql://user:pass@prod-db:3306/kuai
+MCP_SERVER_PORT=8000
+
+# kuai-service-front (.env.local)
+NEXT_PUBLIC_API_URL=https://api.kuai.example.com
+NEXT_PUBLIC_PY_API_URL=https://mcp.kuai.example.com</code></pre>
+
+<div class="warn">
+  <strong>注意：</strong>敏感信息（数据库密码、API Key）不要硬编码在代码中，使用环境变量或密钥管理服务。
+</div>
+
+<!-- ==================== 3. 监控与日志 ==================== -->
+<h2><span class="icon">📡</span> 三、监控与日志</h2>
+
+<h3>3.1 日志规范</h3>
+<table>
+  <tr><th>级别</th><th>用途</th><th>示例</th></tr>
+  <tr>
+    <td><code>ERROR</code></td>
+    <td>影响功能的错误</td>
+    <td>数据库连接失败、API 调用异常</td>
+  </tr>
+  <tr>
+    <td><code>WARN</code></td>
+    <td>潜在问题</td>
+    <td>重试次数接近上限、慢查询</td>
+  </tr>
+  <tr>
+    <td><code>INFO</code></td>
+    <td>关键业务事件</td>
+    <td>用户登录、任务创建、评估完成</td>
+  </tr>
+  <tr>
+    <td><code>DEBUG</code></td>
+    <td>开发调试信息</td>
+    <td>请求参数、SQL 语句、中间结果</td>
+  </tr>
+</table>
+
+<h3>3.2 Java 后端日志</h3>
+<pre><code>@Slf4j
+@Service
+public class EvalTaskServiceImpl {
+
+    public EvalTaskDTO run(Long taskId) {
+        log.info("[评估任务] 开始执行, taskId={}", taskId);
+        long start = System.currentTimeMillis();
+
+        try {
+            // ... 执行评估
+            long cost = System.currentTimeMillis() - start;
+            log.info("[评估任务] 执行完成, taskId={}, 耗时={}ms, score={}",
+                     taskId, cost, score);
+        } catch (Exception e) {
+            log.error("[评估任务] 执行失败, taskId={}", taskId, e);
+            throw e;
+        }
+    }
+}</code></pre>
+
+<h3>3.3 前端监控</h3>
+<pre><code>// 前端错误监控
+window.addEventListener('unhandledrejection', (event) => {
+  console.error('Unhandled promise rejection:', event.reason);
+  // 上报到监控系统
+  reportError({ type: 'unhandledrejection', error: event.reason });
+});
+
+// API 请求错误拦截
+const originalFetch = window.fetch;
+window.fetch = async (...args) => {
+  try {
+    const response = await originalFetch(...args);
+    if (!response.ok) {
+      console.error(`API Error: ${args[0]} -> ${response.status}`);
+    }
+    return response;
+  } catch (error) {
+    console.error(`Network Error: ${args[0]}`, error);
+    throw error;
+  }
+};</code></pre>
+
+<h3>3.4 关键监控指标</h3>
+<table>
+  <tr><th>指标</th><th>说明</th><th>告警阈值</th></tr>
+  <tr><td>API 响应时间</td><td>P99 延迟</td><td>> 3s</td></tr>
+  <tr><td>错误率</td><td>5xx 响应占比</td><td>> 1%</td></tr>
+  <tr><td>评估任务成功率</td><td>成功完成的任务占比</td><td>< 95%</td></tr>
+  <tr><td>数据库连接池</td><td>活跃连接数 / 最大连接数</td><td>> 80%</td></tr>
+  <tr><td>内存使用率</td><td>JVM / Node.js 堆内存</td><td>> 85%</td></tr>
+</table>
+
+<div class="info">
+  <strong>生产环境建议：</strong>
+  <ul>
+    <li>使用结构化日志（JSON 格式），便于日志系统采集和检索</li>
+    <li>为每个请求生成 Trace ID，串联前后端日志</li>
+    <li>设置日志轮转，避免磁盘打满</li>
+    <li>关键业务指标接入 Grafana 看板</li>
+  </ul>
+</div>
+
+<div class="ask-agent">
+  <strong>遇到不懂的地方？</strong>直接问 Agent。比如：「如何给 kuai-service 添加 Dockerfile？」或「Next.js 应用如何配置环境变量？」
+</div>
+
+<!-- ==================== Quiz ==================== -->
+<h2><span class="icon">📝</span> Quiz</h2>
+
+<div class="quiz">
+  <p class="quiz-q">Q1：在 Kuai 平台的全栈开发中，新增一个功能的标准开发顺序是？</p>
+  <ul class="quiz-options">
+    <li>A. 前端页面 → 后端接口 → 数据库建表</li>
+    <li>B. 数据库建表 → 后端接口 → 前端页面 → 联调测试</li>
+    <li>C. 后端接口 → 前端页面 → 数据库建表</li>
+    <li>D. 同时开发前端和后端，最后建表</li>
+  </ul>
+  <p class="quiz-answer">✅ 答案：B — 标准流程是先设计数据模型（建表），再实现后端逻辑（API），然后开发前端界面，最后联调验证。</p>
+</div>
+
+<div class="quiz">
+  <p class="quiz-q">Q2：生产环境部署时，数据库密码等敏感信息应该如何管理？</p>
+  <ul class="quiz-options">
+    <li>A. 直接写在 application.yml 文件中</li>
+    <li>B. 写在代码注释里方便查看</li>
+    <li>C. 使用环境变量或密钥管理服务，不提交到代码仓库</li>
+    <li>D. 通过前端页面传给后端</li>
+  </ul>
+  <p class="quiz-answer">✅ 答案：C — 敏感信息应通过环境变量（${DB_PASS}）或密钥管理服务注入，绝不能硬编码或提交到 Git。</p>
+</div>
+
+<div class="quiz">
+  <p class="quiz-q">Q3：日志级别中，「评估任务执行失败」应该使用哪个级别？</p>
+  <ul class="quiz-options">
+    <li>A. <code>DEBUG</code> — 便于开发调试</li>
+    <li>B. <code>INFO</code> — 记录关键事件</li>
+    <li>C. <code>WARN</code> — 潜在问题</li>
+    <li>D. <code>ERROR</code> — 影响功能的错误</li>
+  </ul>
+  <p class="quiz-answer">✅ 答案：D. <code>ERROR</code> — 任务执行失败影响核心功能，且通常伴随异常堆栈，应使用 ERROR 级别并记录完整异常信息。</p>
+</div>
+
+<div class="nav-links">
+  <a href="py/0026-kuai-py-server-lifecycle.html">← MCP 服务器生命周期</a>
+  <a href="index.html">🗺️ 完整学习地图</a>
+  <a href="0027-deployment-monitoring.html">部署与监控实战 →</a>
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>023 前端零基础 03：CSS 先看布局</title>
+<style>
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--muted:#78716c;--accent:#b45309;--border:#e7e5e4;--soft:#fef3c7;--info:#2563eb;--ok:#16a34a;--bad:#ef4444}
+  *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.8 -apple-system,BlinkMacSystemFont,"Noto Sans SC","Segoe UI",sans-serif}.container{max-width:760px;margin:0 auto;padding:3rem 1.4rem}h1{font-size:1.9rem;margin:.2rem 0 .5rem}.subtitle{color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:1.2rem;margin-bottom:1.8rem}h2{font-size:1.25rem;margin:2rem 0 .7rem}code{background:#f5f5f4;padding:.12em .35em;border-radius:4px}table{width:100%;border-collapse:collapse;margin:1rem 0}th,td{border-bottom:1px solid var(--border);padding:.55rem;text-align:left;vertical-align:top}.card{background:#fff;border:1px solid var(--border);border-left:3px solid var(--info);border-radius:8px;padding:1rem 1.2rem;margin:1rem 0}.quiz{background:var(--soft);border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.2rem;margin:1.5rem 0}.quiz-options{list-style:none;margin:0;padding:0}.quiz-options li{padding:.45rem .65rem;margin:.35rem 0;border:1px solid transparent;border-radius:6px;cursor:pointer}.correct{background:#dcfce7!important;border-color:var(--ok)!important}.wrong{background:#fee2e2!important;border-color:var(--bad)!important}.quiz-feedback{display:none;margin-top:.6rem;padding:.6rem;border-radius:6px}.nav{margin-top:2rem;border:1px solid var(--border);border-radius:8px;background:#fff;padding:1rem}.nav a{display:inline-block;margin:.25rem;color:#444;text-decoration:none;border:1px solid var(--border);border-radius:6px;padding:.35rem .65rem}.nav a.map{background:#eff6ff;border-color:#bfdbfe;color:var(--info)}.nav a.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+</style>
+</head>
+<body><div class="container">
+<h1>023 前端零基础 03：CSS 先看布局</h1>
+<p class="subtitle">目标：不系统学 CSS，先学会看懂“为什么这个东西在这里、为什么挤到一起、为什么被挡住”。</p>
+
+<h2>1. CSS 管样式和位置</h2>
+<table>
+  <tr><th>属性</th><th>先这样理解</th></tr>
+  <tr><td><code>width / height</code></td><td>元素尺寸</td></tr>
+  <tr><td><code>margin / padding</code></td><td>外面的空白 / 里面的空白</td></tr>
+  <tr><td><code>display: flex</code></td><td>让子元素横向或纵向排列</td></tr>
+  <tr><td><code>position</code></td><td>决定元素按普通流、固定位置、绝对位置摆放</td></tr>
+  <tr><td><code>z-index</code></td><td>谁盖在谁上面</td></tr>
+</table>
+
+<h2>2. AIHom 常见布局问题</h2>
+<ul>
+  <li>右侧对话框宽度不对：看容器宽度和 flex。</li>
+  <li>弹窗被盖住：看 position 和 z-index。</li>
+  <li>内容被截断：看 overflow。</li>
+  <li>按钮文字挤在一起：看 padding、width、white-space。</li>
+</ul>
+
+<div class="card">小白排查顺序：先在 Elements 选中元素，再看右侧 Styles 和 Computed。不要一上来全局搜 CSS。</div>
+
+<h2>3. 先学盒模型，再学布局</h2>
+<table>
+  <tr><th>概念</th><th>先这样理解</th><th>排查什么</th></tr>
+  <tr><td>content</td><td>文字、图片、按钮本体</td><td>内容是否太长</td></tr>
+  <tr><td>padding</td><td>内容和边框之间的空白</td><td>按钮是否太挤</td></tr>
+  <tr><td>border</td><td>元素边界</td><td>实际范围在哪里</td></tr>
+  <tr><td>margin</td><td>元素和外界的距离</td><td>两个区域是否贴太近</td></tr>
+</table>
+
+<h2>4. 本课练习：用 Computed 面板查一次尺寸</h2>
+<ol>
+  <li>在 Elements 里选中一个元素。</li>
+  <li>切到 Computed，看盒模型图里的 margin、border、padding、content。</li>
+  <li>如果文字被挤压，先看 content 宽度和 padding；如果区域相互覆盖，再看 position 和 z-index。</li>
+</ol>
+
+<div class="quiz" id="quiz1"><strong>Q: 弹窗显示在页面后面，优先查什么？</strong>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz1',0)">A. Promise</li>
+    <li onclick="checkQuiz('quiz1',1)">B. Java 泛型</li>
+    <li onclick="checkQuiz('quiz1',2)">C. position / z-index</li>
+  </ul><div class="quiz-feedback"></div>
+</div>
+
+</div>
+<script>
+function checkQuiz(id,s){const q=document.getElementById(id),o=q.querySelector('.quiz-options'),c=Number(o.dataset.correct),items=o.querySelectorAll('li'),f=q.querySelector('.quiz-feedback');items.forEach((x,i)=>{x.onclick=null;if(i===c)x.classList.add('correct');if(i===s&&i!==c)x.classList.add('wrong')});f.style.display='block';f.textContent=s===c?'对。遮挡和层级问题通常先看 position / z-index。':'不对。弹窗层级问题优先查 CSS 定位和层级。';f.style.background=s===c?'#dcfce7':'#fee2e2'}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 023</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0022-html-dom-first.html">上一课：022 前端零基础 02：HTML 与 DOM</a><a class="primary" href="0024-javascript-first.html">下一课：024 前端零基础 04：JavaScript 变量、函数、事件</a></div></nav>
+</body></html>

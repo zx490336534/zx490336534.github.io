@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FastAPI 基础入门</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.5rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:2rem}
+  .desc{color:var(--text-secondary);font-size:.95rem;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.1rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem}
+  p{margin-bottom:1rem}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}
+  li{margin-bottom:.5rem}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15rem .4rem;border-radius:4px;font-size:.85rem}
+  pre{background:#1e293b;color:#e2e8f0;padding:1.25rem 1.5rem;border-radius:8px;overflow-x:auto;margin:1rem 0;font-size:.85rem;line-height:1.6}
+  pre code{background:none;padding:0;color:inherit}
+  .info-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0}
+  .info-box h3{color:var(--info);margin-top:0}
+  .warn-box{background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0}
+  .warn-box h3{color:var(--warning);margin-top:0}
+  .success-box{background:#dcfce7;border:1px solid #86efac;border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0}
+  .success-box h3{color:var(--success);margin-top:0}
+  table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.9rem}
+  th,td{border:1px solid var(--border);padding:.6rem .8rem;text-align:left}
+  th{background:var(--code-bg);font-weight:600}
+  .quiz-section{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1.5rem 0}
+  .quiz-section h3{color:var(--purple);margin-top:0}
+  .quiz-q{margin-bottom:1.5rem}
+  .quiz-q strong{display:block;margin-bottom:.5rem}
+  .quiz-opt{list-style:upper-alpha;margin-left:1.5rem}
+  .quiz-opt li{margin-bottom:.3rem;cursor:pointer;padding:.25rem .5rem;border-radius:4px;transition:background .2s}
+  .quiz-opt li:hover{background:var(--code-bg)}
+  .answer{display:none;background:#dcfce7;border:1px solid #86efac;border-radius:6px;padding:.75rem 1rem;margin-top:.75rem;font-size:.9rem}
+  .answer.show{display:block}
+  .show-answers{background:var(--accent);color:white;border:none;padding:.5rem 1rem;border-radius:6px;cursor:pointer;font-size:.9rem;margin-top:1rem}
+  .show-answers:hover{opacity:.9}
+  .diagram{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1rem 0;text-align:center;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.4;overflow-x:auto}
+  .tag{display:inline-block;padding:.1rem .4rem;border-radius:4px;font-size:.7rem;font-weight:500;margin-right:.3rem}
+  .back-link{display:inline-block;margin-bottom:2rem;color:var(--accent);text-decoration:none;font-size:.9rem}
+  .back-link:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="container">
+
+<a class="back-link" href="../lessons/index.html">&larr; 返回课程目录</a>
+
+<h1>⚡ FastAPI 基础入门</h1>
+<p class="subtitle">用 Python 构建高性能 API 的现代框架</p>
+<p class="desc">FastAPI 是一个现代、快速的 Python Web 框架，专为构建 API 而设计。它以高性能、自动文档和类型安全著称。本课程将从零开始，带你理解 FastAPI 的核心概念。</p>
+
+<!-- ==================== 第一章 ==================== -->
+<h2><span class="icon">📖</span> 一、什么是 FastAPI？</h2>
+
+<p>FastAPI 是一个用于构建 API 的 Python Web 框架，由 Sebastián Ramírez 在 2018 年创建。它的名字就是 "Fast" + "API" —— 快速的 API。</p>
+
+<p>FastAPI 的核心特点：</p>
+<ul>
+  <li><strong>高性能</strong>：基于 Starlette 和 Pydantic，性能与 Node.js、Go 不相上下</li>
+  <li><strong>开发快</strong>：代码量少，自动处理很多重复工作</li>
+  <li><strong>自动文档</strong>：不需要手动写 API 文档，自动生成交互式文档</li>
+  <li><strong>类型安全</strong>：基于 Python 类型提示，编辑器能自动补全和检查错误</li>
+  <li><strong>标准兼容</strong>：完全兼容 OpenAPI（Swagger）和 JSON Schema 标准</li>
+</ul>
+
+<div class="info-box">
+  <h3>💡 一句话理解 FastAPI</h3>
+  <p>FastAPI 就是 Python 世界的 "Express.js" —— 但比 Express 更快、更安全、文档更好。写几个函数就能得到一个完整的 API 服务。</p>
+</div>
+
+<!-- ==================== 第二章 ==================== -->
+<h2><span class="icon">🚀</span> 二、为什么用 FastAPI？</h2>
+
+<h3>高性能：速度接近 Go 和 Node.js</h3>
+
+<p>FastAPI 基于 <strong>Starlette</strong>（异步 Web 框架）和 <strong>Pydantic</strong>（数据验证库），支持 Python 的 <code>async/await</code> 异步编程，性能非常出色。</p>
+
+<table>
+  <tr><th>框架</th><th>性能（请求/秒）</th><th>语言</th></tr>
+  <tr><td>FastAPI</td><td>非常高</td><td>Python</td></tr>
+  <tr><td>Flask</td><td>中等</td><td>Python</td></tr>
+  <tr><td>Django</td><td>中等</td><td>Python</td></tr>
+  <tr><td>Express</td><td>高</td><td>Node.js</td></tr>
+  <tr><td>Go (net/http)</td><td>非常高</td><td>Go</td></tr>
+</table>
+
+<div class="success-box">
+  <h3>✅ 关键优势：自动生成 API 文档</h3>
+  <p>FastAPI 会根据你的代码<strong>自动生成</strong>交互式 API 文档。启动服务后，访问 <code>/docs</code> 就能看到 Swagger UI 文档，访问 <code>/redoc</code> 就能看到 ReDoc 文档。不需要写一行文档代码！</p>
+</div>
+
+<!-- ==================== 第三章 ==================== -->
+<h2><span class="icon">🛠️</span> 三、核心 API 装饰器</h2>
+
+<h3>@app.get — 处理 GET 请求</h3>
+
+<p>GET 请求用于<strong>获取数据</strong>，是最常见的 HTTP 方法。</p>
+
+<pre><code>from fastapi import FastAPI
+
+app = FastAPI()
+
+# 定义一个 GET 接口
+@app.get("/")
+def read_root():
+    return {"message": "Hello, World!"}
+
+# 带路径参数的 GET 接口
+@app.get("/items/{item_id}")
+def read_item(item_id: int):
+    return {"item_id": item_id}
+
+# 带查询参数的 GET 接口
+@app.get("/search")
+def search(q: str, limit: int = 10):
+    return {"query": q, "limit": limit}</code></pre>
+
+<p>访问方式：</p>
+<ul>
+  <li><code>GET /</code> → 返回 <code>{"message": "Hello, World!"}</code></li>
+  <li><code>GET /items/42</code> → 返回 <code>{"item_id": 42}</code></li>
+  <li><code>GET /search?q=python&limit=5</code> → 返回 <code>{"query": "python", "limit": 5}</code></li>
+</ul>
+
+<h3>@app.post — 处理 POST 请求</h3>
+
+<p>POST 请求用于<strong>创建数据</strong>，通常携带请求体（Body）。</p>
+
+<pre><code>from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI()
+
+# 定义请求体的数据结构
+class Item(BaseModel):
+    name: str
+    price: float
+    is_offer: bool = False
+
+@app.post("/items")
+def create_item(item: Item):
+    return {"item_name": item.name, "item_price": item.price}</code></pre>
+
+<div class="info-box">
+  <h3>💡 路径参数 vs 查询参数 vs 请求体</h3>
+  <ul>
+    <li><strong>路径参数</strong>：写在 URL 路径里，如 <code>/items/{item_id}</code></li>
+    <li><strong>查询参数</strong>：写在 URL 问号后面，如 <code>/search?q=python</code></li>
+    <li><strong>请求体</strong>：写在 HTTP Body 里，通常用于 POST/PUT，用 Pydantic 模型定义</li>
+  </ul>
+</div>
+
+<!-- ==================== 第四章 ==================== -->
+<h2><span class="icon">📋</span> 四、Pydantic 模型</h2>
+
+<p>Pydantic 是 FastAPI 的 "数据管家"，它负责：</p>
+<ul>
+  <li><strong>数据验证</strong>：自动检查数据类型是否正确</li>
+  <li><strong>数据转换</strong>：自动把 JSON 转成 Python 对象</li>
+  <li><strong>文档生成</strong>：自动根据模型生成 API 文档的参数说明</li>
+</ul>
+
+<pre><code>from pydantic import BaseModel, Field
+from typing import Optional
+
+class UserCreate(BaseModel):
+    username: str = Field(..., min_length=3, max_length=50, description="用户名")
+    email: str = Field(..., description="邮箱地址")
+    age: int = Field(..., gt=0, lt=150, description="年龄")
+    nickname: Optional[str] = Field(None, description="昵称（可选）")
+
+# 使用
+@app.post("/users")
+def create_user(user: UserCreate):
+    return {"username": user.username, "email": user.email}</code></pre>
+
+<div class="warn-box">
+  <h3>⚠️ Pydantic 的魔法</h3>
+  <p>如果客户端发送了 <code>{"age": "25"}</code>（字符串），Pydantic 会自动转换为整数 <code>25</code>。如果发送了 <code>{"age": -1}</code>，Pydantic 会自动返回 422 错误 —— 因为设置了 <code>gt=0</code>（大于 0）。</p>
+</div>
+
+<p>Pydantic 常用的验证器：</p>
+<table>
+  <tr><th>验证器</th><th>含义</th><th>示例</th></tr>
+  <tr><td><code>min_length</code></td><td>最小长度</td><td><code>Field(min_length=3)</code></td></tr>
+  <tr><td><code>max_length</code></td><td>最大长度</td><td><code>Field(max_length=50)</code></td></tr>
+  <tr><td><code>gt / ge</code></td><td>大于 / 大于等于</td><td><code>Field(gt=0)</code></td></tr>
+  <tr><td><code>lt / le</code></td><td>小于 / 小于等于</td><td><code>Field(lt=150)</code></td></tr>
+  <tr><td><code>pattern</code></td><td>正则匹配</td><td><code>Field(pattern="^\\d+$")</code></td></tr>
+</table>
+
+<!-- ==================== 第五章 ==================== -->
+<h2><span class="icon">🔗</span> 五、依赖注入</h2>
+
+<p>依赖注入（Dependency Injection）是 FastAPI 的一个强大特性。简单来说，它让你可以把一些 "公共逻辑" 抽取出来，在多个接口中复用。</p>
+
+<pre><code>from fastapi import FastAPI, Depends, Header, HTTPException
+
+app = FastAPI()
+
+# 定义一个依赖：验证 API Key
+def verify_api_key(x_api_key: str = Header(...)):
+    if x_api_key != "my-secret-key":
+        raise HTTPException(status_code=401, detail="Invalid API Key")
+    return x_api_key
+
+# 在接口中使用依赖
+@app.get("/protected")
+def protected_route(api_key: str = Depends(verify_api_key)):
+    return {"message": "你通过了验证！"}
+
+@app.get("/also-protected")
+def another_protected(api_key: str = Depends(verify_api_key)):
+    return {"message": "这里也需要验证"}</code></pre>
+
+<div class="info-box">
+  <h3>💡 依赖注入的好处</h3>
+  <ul>
+    <li><strong>代码复用</strong>：验证逻辑写一次，到处使用</li>
+    <li><strong>易于测试</strong>：测试时可以替换依赖（mock）</li>
+    <li><strong>逻辑分离</strong>：接口只关心业务逻辑，验证、认证等交给依赖</li>
+  </ul>
+</div>
+
+<p>常见的依赖注入场景：</p>
+<ul>
+  <li><strong>数据库连接</strong>：每个请求获取一个数据库连接，请求结束后自动释放</li>
+  <li><strong>用户认证</strong>：从请求头中提取 token，验证用户身份</li>
+  <li><strong>权限检查</strong>：检查用户是否有权限访问某个接口</li>
+  <li><strong>分页参数</strong>：统一处理分页的 page、size 参数</li>
+</ul>
+
+<!-- ==================== 第六章 ==================== -->
+<h2><span class="icon">📄</span> 六、自动 OpenAPI 文档</h2>
+
+<p>这是 FastAPI 最酷的特性之一 —— 你写的代码<strong>自动变成</strong>交互式 API 文档。</p>
+
+<p>启动 FastAPI 应用后，你会得到两个文档页面：</p>
+
+<table>
+  <tr><th>地址</th><th>文档类型</th><th>特点</th></tr>
+  <tr><td><code>/docs</code></td><td>Swagger UI</td><td>交互式，可以直接在页面上测试 API</td></tr>
+  <tr><td><code>/redoc</code></td><td>ReDoc</td><td>阅读式，更美观，适合给前端/产品看</td></tr>
+  <tr><td><code>/openapi.json</code></td><td>OpenAPI JSON</td><td>机器可读的标准格式</td></tr>
+</table>
+
+<pre><code># 启动服务后访问：
+# http://localhost:8000/docs      → Swagger UI 交互式文档
+# http://localhost:8000/redoc     → ReDoc 美观文档
+# http://localhost:8000/openapi.json → OpenAPI JSON
+
+# 文档中的信息来自：
+# 1. 你的路径装饰器（@app.get, @app.post 等）
+# 2. 你的 Pydantic 模型（自动生成参数说明）
+# 3. 你的函数文档字符串（docstring）
+
+@app.get("/items/{item_id}", summary="获取商品详情", description="根据商品 ID 获取商品的详细信息")
+def read_item(item_id: int):
+    """这是一个获取商品详情的接口"""
+    return {"item_id": item_id}</code></pre>
+
+<div class="success-box">
+  <h3>✅ 为什么自动文档很重要？</h3>
+  <ul>
+    <li>前端开发者可以直接看文档，不需要问后端 "这个接口怎么调"</li>
+    <li>可以在文档页面直接测试接口，不需要写 curl 命令</li>
+    <li>文档永远和代码同步 —— 因为文档就是从代码生成的</li>
+  </ul>
+</div>
+
+<!-- ==================== 完整示例 ==================== -->
+<h2><span class="icon">📝</span> 七、完整示例</h2>
+
+<p>把上面学的知识串起来，这是一个完整的 FastAPI 应用：</p>
+
+<pre><code>from fastapi import FastAPI, Depends, HTTPException
+from pydantic import BaseModel, Field
+from typing import List, Optional
+
+app = FastAPI(title="我的第一个 API", version="1.0.0")
+
+# Pydantic 模型
+class ItemCreate(BaseModel):
+    name: str = Field(..., min_length=1, max_length=100)
+    price: float = Field(..., gt=0)
+    description: Optional[str] = None
+
+class ItemResponse(BaseModel):
+    id: int
+    name: str
+    price: float
+    description: Optional[str]
+
+# 模拟数据库
+items_db = []
+next_id = 1
+
+# GET - 获取所有商品
+@app.get("/items", response_model=List[ItemResponse], summary="获取商品列表")
+def list_items(skip: int = 0, limit: int = 10):
+    return items_db[skip : skip + limit]
+
+# GET - 获取单个商品
+@app.get("/items/{item_id}", response_model=ItemResponse, summary="获取商品详情")
+def get_item(item_id: int):
+    for item in items_db:
+        if item["id"] == item_id:
+            return item
+    raise HTTPException(status_code=404, detail="商品不存在")
+
+# POST - 创建商品
+@app.post("/items", response_model=ItemResponse, summary="创建商品", status_code=201)
+def create_item(item: ItemCreate):
+    global next_id
+    new_item = {"id": next_id, **item.model_dump()}
+    items_db.append(new_item)
+    next_id += 1
+    return new_item</code></pre>
+
+<!-- ==================== Quiz ==================== -->
+<h2><span class="icon">🧠</span> Quiz — 检验你的理解</h2>
+
+<div class="quiz-section">
+  <h3>📝 选择题</h3>
+
+  <div class="quiz-q">
+    <strong>1. FastAPI 自动生成的交互式文档页面地址是什么？</strong>
+    <ul class="quiz-opt">
+      <li onclick="this.style.background='#fee2e2'">/api/docs</li>
+      <li onclick="this.style.background='#dcfce7'">/docs</li>
+      <li onclick="this.style.background='#fee2e2'">/swagger</li>
+      <li onclick="this.style.background='#fee2e2'">/help</li>
+    </ul>
+    <button class="show-answers" onclick="this.nextElementSibling.classList.toggle('show')">显示答案</button>
+    <div class="answer"><strong>答案：B</strong> — FastAPI 默认在 <code>/docs</code> 提供 Swagger UI 交互式文档，在 <code>/redoc</code> 提供 ReDoc 文档。</div>
+  </div>
+
+  <div class="quiz-q">
+    <strong>2. Pydantic 模型的主要作用是什么？</strong>
+    <ul class="quiz-opt">
+      <li onclick="this.style.background='#fee2e2'">只用于定义数据库表结构</li>
+      <li onclick="this.style.background='#dcfce7'">数据验证、数据转换和文档生成</li>
+      <li onclick="this.style.background='#fee2e2'">只用于美化 JSON 输出</li>
+      <li onclick="this.style.background='#fee2e2'">处理 HTTP 路由</li>
+    </ul>
+    <button class="show-answers" onclick="this.nextElementSibling.classList.toggle('show')">显示答案</button>
+    <div class="answer"><strong>答案：B</strong> — Pydantic 是 FastAPI 的数据层核心，负责自动验证输入数据的类型和约束、在 JSON 和 Python 对象之间转换、以及根据模型自动生成 API 文档。</div>
+  </div>
+
+  <div class="quiz-q">
+    <strong>3. FastAPI 的依赖注入（Depends）的主要好处是什么？</strong>
+    <ul class="quiz-opt">
+      <li onclick="this.style.background='#fee2e2'">让代码运行更快</li>
+      <li onclick="this.style.background='#dcfce7'">实现公共逻辑复用、易于测试和逻辑分离</li>
+      <li onclick="this.style.background='#fee2e2'">自动生成数据库迁移脚本</li>
+      <li onclick="this.style.background='#fee2e2'">自动部署应用到服务器</li>
+    </ul>
+    <button class="show-answers" onclick="this.nextElementSibling.classList.toggle('show')">显示答案</button>
+    <div class="answer"><strong>答案：B</strong> — 依赖注入让你把公共逻辑（如认证、数据库连接、权限检查）抽取出来，通过 <code>Depends()</code> 在多个接口中复用，同时方便测试时替换（mock）。</div>
+  </div>
+</div>
+
+<div class="info-box">
+  <h3>💡 下一步学习</h3>
+  <p>理解了 FastAPI 的基础后，可以继续学习：</p>
+  <ul>
+    <li><a href="../lessons/py/0010-kuai-py-overview.html">Python MCP 服务项目概览</a> — 看看实际项目中 FastAPI 是怎么用的</li>
+    <li><a href="../lessons/py/0012-kuai-py-dev-guide.html">Python 开发实战指南</a> — 动手实践 FastAPI 开发</li>
+  </ul>
+</div>
+
+</div>
+</body>
+</html>

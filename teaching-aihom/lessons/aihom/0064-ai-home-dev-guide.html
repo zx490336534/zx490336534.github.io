@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>064 ai-home 前端开发实战</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --accent: #b45309;
+    --accent-light: #fef3c7;
+    --border: #e7e5e4;
+    --code-bg: #f5f5f4;
+    --success: #16a34a;
+    --warning: #d97706;
+    --info: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .card.info { border-left: 3px solid var(--info); }
+  .card.warning { border-left: 3px solid var(--warning); }
+  .card.success { border-left: 3px solid var(--success); }
+
+  .card-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+  .card.info .card-label { color: var(--info); }
+  .card.warning .card-label { color: var(--warning); }
+  .card.success .card-label { color: var(--success); }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    font-size: 0.88em;
+  }
+
+  pre {
+    background: #1c1917;
+    color: #e7e5e4;
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  pre .comment { color: #78716c; }
+  pre .keyword { color: #f59e0b; }
+  pre .string { color: #86efac; }
+  pre .dir { color: #93c5fd; }
+  pre .file { color: #e7e5e4; }
+  pre .important { color: #fbbf24; font-weight: 500; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.92rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .tree { margin: 1rem 0; }
+
+  .quiz {
+    background: var(--accent-light);
+    border: 1px solid #fbbf24;
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .quiz-title {
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+  .quiz-options { list-style: none; }
+  .quiz-options li {
+    padding: 0.5rem 0.75rem;
+    margin: 0.35rem 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+  }
+  .quiz-options li:hover { background: #fde68a33; border-color: #fbbf24; }
+  .quiz-options li.correct { background: #dcfce7; border-color: #16a34a; }
+  .quiz-options li.wrong { background: #fee2e2; border-color: #ef4444; }
+  .quiz-feedback {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    display: none;
+    font-size: 0.9rem;
+  }
+
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+  }
+  .flow-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .flow-arrow { color: var(--text-secondary); }
+
+  .next-lesson {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .next-lesson a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .next-lesson a:hover { text-decoration: underline; }
+
+  .ask-agent {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+    color: #1e40af;
+  }
+  .ask-agent::before { content: '💡 '; }
+
+  ul, ol { margin: 0.5rem 0 1rem 1.5rem; }
+  li { margin-bottom: 0.3rem; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>064 ai-home 前端开发实战</h1>
+<p class="subtitle">掌握 ai-home 前端的页面组件开发、MCP Tool 接入以及团队开发规范</p>
+
+<!-- ==================== Section 1 ==================== -->
+<h2>1. 如何新增页面组件</h2>
+
+<p>ai-home 基于 React + TypeScript 构建，页面组件遵循统一的目录规范和开发模式。新增一个页面组件需要以下步骤：</p>
+
+<h3>Step 1 — 确定页面归属</h3>
+<p>根据页面功能将其归入对应的模块目录：</p>
+
+<pre>
+src/
+├── <span class="dir">pages/</span>                <span class="comment"># 页面级组件</span>
+│   ├── <span class="dir">Home/</span>            <span class="comment"># 首页模块</span>
+│   ├── <span class="dir">Conversation/</span>    <span class="comment"># 对话模块</span>
+│   ├── <span class="dir">Floorplan/</span>       <span class="comment"># 户型模块</span>
+│   └── <span class="dir">Design/</span>          <span class="comment"># 设计模块</span>
+├── <span class="dir">components/</span>          <span class="comment"># 通用业务组件</span>
+└── <span class="dir">common/</span>              <span class="comment"># 基础 UI 组件</span>
+</pre>
+
+<h3>Step 2 — 创建组件文件</h3>
+<p>每个页面组件包含以下标准文件：</p>
+
+<pre>
+<span class="dir">pages/YourPage/</span>
+├── <span class="file">index.tsx</span>          <span class="comment"># 组件主文件</span>
+├── <span class="file">index.module.scss</span>  <span class="comment"># 样式文件（CSS Modules）</span>
+├── <span class="file">hooks.ts</span>           <span class="comment"># 页面自定义 hooks</span>
+└── <span class="file">types.ts</span>           <span class="comment"># 页面类型定义</span>
+</pre>
+
+<h3>Step 3 — 注册路由</h3>
+<p>在路由配置文件中添加页面路由：</p>
+
+<pre><span class="comment">// src/router/routes.tsx</span>
+<span class="keyword">import</span> { lazy } <span class="keyword">from</span> <span class="string">'react'</span>;
+
+<span class="keyword">const</span> YourPage = lazy(() =&gt; <span class="keyword">import</span>(<span class="string">'@/pages/YourPage'</span>));
+
+<span class="keyword">const</span> routes = [
+  {
+    path: <span class="string">'/your-page'</span>,
+    element: &lt;YourPage /&gt;,
+    meta: { title: <span class="string">'页面标题'</span>, auth: <span class="keyword">true</span> }
+  },
+  <span class="comment">// ...其他路由</span>
+];</pre>
+
+<h3>Step 4 — 编写组件</h3>
+<pre><span class="comment">// src/pages/YourPage/index.tsx</span>
+<span class="keyword">import</span> { useEffect, useState } <span class="keyword">from</span> <span class="string">'react'</span>;
+<span class="keyword">import</span> styles <span class="keyword">from</span> <span class="string">'./index.module.scss'</span>;
+<span class="keyword">import</span> type { YourPageProps } <span class="keyword">from</span> <span class="string">'./types'</span>;
+
+<span class="keyword">export default function</span> YourPage({ }: YourPageProps) {
+  <span class="keyword">const</span> [data, setData] = useState(<span class="keyword">null</span>);
+
+  useEffect(() =&gt; {
+    <span class="comment">// 初始化逻辑</span>
+  }, []);
+
+  <span class="keyword">return</span> (
+    &lt;div className={styles.container}&gt;
+      <span class="comment">{/* 页面内容 */}</span>
+    &lt;/div&gt;
+  );
+}</pre>
+
+<div class="card info">
+  <div class="card-label">关键约定</div>
+  <p>组件使用 <strong>函数式组件 + Hooks</strong>，样式使用 <strong>CSS Modules</strong>，类型定义独立到 <code>types.ts</code>，避免组件文件过长。</p>
+</div>
+
+<!-- ==================== Section 2 ==================== -->
+<h2>2. 如何新增 MCP Tool</h2>
+
+<p>ai-home 的前端 MCP Tool 是后端 Agent 通过 WebSocket 调用前端执行的工具。典型场景：3D 渲染、UI 交互操作等需要前端环境才能完成的任务。</p>
+
+<h3>整体流程</h3>
+<div class="flow">
+  <span class="flow-step">后端定义 Tool Schema</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">前端注册 Tool Handler</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">WebSocket 触发调用</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">前端执行并回传结果</span>
+</div>
+
+<h3>Step 1 — 定义 Tool Schema</h3>
+<p>在 Tool 注册文件中声明工具的名称、描述和参数：</p>
+
+<pre><span class="comment">// src/mcp/tools/myNewTool.ts</span>
+<span class="keyword">import</span> type { MCPToolDefinition } <span class="keyword">from</span> <span class="string">'@/types/mcp'</span>;
+
+<span class="keyword">export const</span> myNewToolDef: MCPToolDefinition = {
+  name: <span class="string">'my_new_tool'</span>,
+  description: <span class="string">'工具的描述，告诉 AI 什么时候该调用它'</span>,
+  parameters: {
+    type: <span class="string">'object'</span>,
+    properties: {
+      targetId: {
+        type: <span class="string">'string'</span>,
+        description: <span class="string">'目标对象 ID'</span>,
+      },
+      options: {
+        type: <span class="string">'object'</span>,
+        description: <span class="string">'操作选项'</span>,
+        properties: {
+          mode: { type: <span class="string">'string'</span>, enum: [<span class="string">'fast'</span>, <span class="string">'quality'</span>] },
+        },
+      },
+    },
+    required: [<span class="string">'targetId'</span>],
+  },
+};</pre>
+
+<h3>Step 2 — 实现 Handler</h3>
+<pre><span class="comment">// src/mcp/handlers/myNewToolHandler.ts</span>
+<span class="keyword">import</span> type { MCPToolHandler, MCPToolResult } <span class="keyword">from</span> <span class="string">'@/types/mcp'</span>;
+
+<span class="keyword">export const</span> myNewToolHandler: MCPToolHandler = <span class="keyword">async</span> (params) =&gt; {
+  <span class="keyword">const</span> { targetId, options } = params;
+
+  <span class="keyword">try</span> {
+    <span class="comment">// 业务逻辑：操作 3D 场景、修改 UI 等</span>
+    <span class="keyword">const</span> result = <span class="keyword">await</span> doSomething(targetId, options);
+
+    <span class="keyword">return</span> {
+      success: <span class="keyword">true</span>,
+      data: result,
+    } <span class="keyword">as</span> MCPToolResult;
+  } <span class="keyword">catch</span> (err) {
+    <span class="keyword">return</span> {
+      success: <span class="keyword">false</span>,
+      error: String(err),
+    } <span class="keyword">as</span> MCPToolResult;
+  }
+};</pre>
+
+<h3>Step 3 — 注册到 Tool Registry</h3>
+<pre><span class="comment">// src/mcp/registry.ts</span>
+<span class="keyword">import</span> { myNewToolDef } <span class="keyword">from</span> <span class="string">'./tools/myNewTool'</span>;
+<span class="keyword">import</span> { myNewToolHandler } <span class="keyword">from</span> <span class="string">'./handlers/myNewToolHandler'</span>;
+
+toolRegistry.register({
+  definition: myNewToolDef,
+  handler: myNewToolHandler,
+});</pre>
+
+<div class="card warning">
+  <div class="card-label">注意事项</div>
+  <p>Handler 必须是 <strong>异步函数</strong>，返回值必须符合 <code>MCPToolResult</code> 类型。如果执行失败，<code>success</code> 字段设为 <code>false</code> 并附带 <code>error</code> 描述，后端 Agent 会据此决定下一步行为。</p>
+</div>
+
+<!-- ==================== Section 3 ==================== -->
+<h2>3. 开发规范</h2>
+
+<table>
+  <tr><th>规范项</th><th>要求</th><th>说明</th></tr>
+  <tr><td>语言</td><td>TypeScript Strict</td><td>禁止 <code>any</code>，所有类型必须显式声明</td></tr>
+  <tr><td>组件风格</td><td>函数式 + Hooks</td><td>不使用 Class Component</td></tr>
+  <tr><td>样式方案</td><td>CSS Modules</td><td>文件名 <code>*.module.scss</code>，避免全局样式污染</td></tr>
+  <tr><td>状态管理</td><td>Zustand / React Context</td><td>全局状态用 Zustand，局部 Context 用 React 原生</td></tr>
+  <tr><td>请求封装</td><td>统一 HTTP Client</td><td>使用 <code>src/utils/request.ts</code>，不直接用 fetch</td></tr>
+  <tr><td>命名</td><td>camelCase / PascalCase</td><td>变量/函数 camelCase，组件/类型 PascalCase</td></tr>
+  <tr><td>目录结构</td><td>按功能模块划分</td><td>每个模块一个目录，内部自包含组件/hooks/types</td></tr>
+</table>
+
+<h3>代码提交规范</h3>
+<pre>
+<span class="comment"># Commit Message 格式</span>
+<span class="keyword">feat</span>(module): 新增 xxx 功能
+<span class="keyword">fix</span>(module): 修复 xxx 问题
+<span class="keyword">refactor</span>(module): 重构 xxx
+<span class="keyword">style</span>(module): 调整 xxx 样式
+<span class="keyword">docs</span>: 更新文档
+</pre>
+
+<div class="card success">
+  <div class="card-label">Lint 检查</div>
+  <p>提交前必须通过 ESLint + Prettier 检查。运行 <code>pnpm lint</code> 确认无报错，<code>pnpm typecheck</code> 确认类型正确。CI 不通过的 PR 不会被合并。</p>
+</div>
+
+<!-- ==================== Quiz ==================== -->
+<h2>4. 自检 Quiz</h2>
+
+<div class="quiz" id="quiz1">
+  <div class="quiz-title">Q1: 新增页面组件时，样式文件的命名规范是？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz1', 0)">A. style.css</li>
+    <li onclick="checkQuiz('quiz1', 1)">B. index.css</li>
+    <li onclick="checkQuiz('quiz1', 2)">C. index.module.scss</li>
+    <li onclick="checkQuiz('quiz1', 3)">D. styles.scss</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <div class="quiz-title">Q2: MCP Tool Handler 的返回值必须包含哪个关键字段来标识执行是否成功？</div>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz2', 0)">A. code</li>
+    <li onclick="checkQuiz('quiz2', 1)">B. success</li>
+    <li onclick="checkQuiz('quiz2', 2)">C. status</li>
+    <li onclick="checkQuiz('quiz2', 3)">D. result</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <div class="quiz-title">Q3: ai-home 项目中，全局状态管理推荐使用哪个库？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz3', 0)">A. Redux</li>
+    <li onclick="checkQuiz('quiz3', 1)">B. MobX</li>
+    <li onclick="checkQuiz('quiz3', 2)">C. Zustand</li>
+    <li onclick="checkQuiz('quiz3', 3)">D. Recoil</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<!-- ==================== Next ==================== -->
+
+</div>
+</div>
+
+<script>
+function checkQuiz(quizId, selected) {
+  const quiz = document.getElementById(quizId);
+  const options = quiz.querySelector('.quiz-options');
+  const correct = parseInt(options.dataset.correct);
+  const items = options.querySelectorAll('li');
+  const feedback = quiz.querySelector('.quiz-feedback');
+
+  items.forEach((item, i) => {
+    item.onclick = null;
+    if (i === correct) item.classList.add('correct');
+    if (i === selected && i !== correct) item.classList.add('wrong');
+  });
+
+  const feedbacks = {
+    quiz1: {
+      correct: '✓ 对！ai-home 使用 CSS Modules，样式文件统一命名为 index.module.scss。',
+      wrong: '✗ 正确答案是 index.module.scss。项目规范使用 CSS Modules 避免样式污染。'
+    },
+    quiz2: {
+      correct: '✓ 对！MCPToolResult 类型中 success 字段是必须的，标识工具执行是否成功。',
+      wrong: '✗ 是 success 字段。Handler 返回值必须符合 MCPToolResult 类型，其中 success 标识执行结果。'
+    },
+    quiz3: {
+      correct: '✓ 对！ai-home 推荐使用 Zustand 进行全局状态管理，轻量且对 TypeScript 支持好。',
+      wrong: '✗ 是 Zustand。项目选型为 Zustand，它轻量、简单，且对 TS 友好。'
+    }
+  };
+
+  feedback.style.display = 'block';
+  feedback.textContent = selected === correct
+    ? feedbacks[quizId].correct
+    : feedbacks[quizId].wrong;
+  feedback.style.background = selected === correct ? '#dcfce7' : '#fee2e2';
+}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 064</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0063-auto-layout-dev-guide.html">上一课：063 auto-layout-service 开发实战</a><a class="primary" href="0065-viewer-2d-dev-guide.html">下一课：065 viewer-2d 开发实战</a></div></nav>
+</body>
+</html>

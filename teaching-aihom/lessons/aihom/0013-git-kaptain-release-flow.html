@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>013 Git、Kaptain 与发布分支基础</title>
+<style>
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--muted:#78716c;--accent:#b45309;--border:#e7e5e4;--code:#f5f5f4;--info:#2563eb;--warn:#d97706;--ok:#16a34a}
+  *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.78 -apple-system,BlinkMacSystemFont,"Noto Sans SC","Segoe UI",sans-serif}.container{max-width:860px;margin:0 auto;padding:3rem 2rem}h1{font-size:2rem;margin:.2rem 0 .5rem}.subtitle{color:var(--muted);padding-bottom:1.5rem;border-bottom:1px solid var(--border);margin-bottom:2rem}h2{font-size:1.35rem;margin:2.2rem 0 .9rem}p{margin:.35rem 0 1rem}code{background:var(--code);border-radius:4px;padding:.12em .35em;font-family:Menlo,Consolas,monospace;font-size:.9em}pre{background:#1c1917;color:#e7e5e4;border-radius:8px;padding:1rem 1.2rem;overflow:auto;font:14px/1.65 Menlo,Consolas,monospace}.card{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--info);border-radius:8px;padding:1rem 1.15rem;margin:1rem 0}.card.warn{border-left-color:var(--warn)}table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:1rem 0}th,td{padding:.65rem .75rem;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}th{font-size:.82rem;color:var(--muted);background:#f5f5f4}tr:last-child td{border-bottom:0}.flow{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:1rem 0}.step{border:1px solid var(--border);background:#fff;border-radius:6px;padding:.4rem .7rem}.arrow{color:var(--muted)}.ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;color:#1e40af;padding:1rem;margin:1.4rem 0}.ask-agent:before{content:"提示：";font-weight:700}.quiz{background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.15rem;margin:1.4rem 0}.quiz-options{list-style:none;margin:.5rem 0 0;padding:0}.quiz-options li{padding:.45rem .65rem;border-radius:6px;border:1px solid transparent;cursor:pointer}.quiz-options li:hover{border-color:#fbbf24}.correct{background:#dcfce7}.wrong{background:#fee2e2}.quiz-feedback{display:none;margin-top:.6rem;padding:.6rem;border-radius:6px}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>013 Git、Kaptain 与发布分支基础</h1>
+<p class="subtitle">目标：理解从 Kaptain 需求到功能分支、MR、release 日期分支、上线和回滚的最小工作流。</p>
+
+<h2>1. 先理解四个对象</h2>
+<table>
+  <tr><th>对象</th><th>作用</th><th>你要记住什么</th></tr>
+  <tr><td>Kaptain 事项</td><td>需求、任务或缺陷的来源。</td><td>分支名、commit、MR 标题最好带事项 key，例如 <code>COOAI-xxx</code>，方便追溯。只有数字 id 时，先查出 key 和标题。</td></tr>
+  <tr><td>功能分支</td><td>你开发需求的隔离分支。</td><td>从当前团队约定基线拉出，开发完成后提 MR。</td></tr>
+  <tr><td>发布分支</td><td>一次上线窗口的集成分支，常见格式是 <code>release/YYYYMMDD</code>。</td><td>Confluence 中有自动创建 <code>release/YYYYmmdd</code> 的 Git 插件示例。</td></tr>
+  <tr><td>MR / Pipeline</td><td>代码评审和自动检查入口。</td><td>不要绕过 MR 直接推关键分支；上线前看 pipeline 和评审状态。</td></tr>
+</table>
+
+<div class="flow">
+  <span class="step">Kaptain 事项</span><span class="arrow">→</span>
+  <span class="step">功能分支</span><span class="arrow">→</span>
+  <span class="step">MR 到目标分支</span><span class="arrow">→</span>
+  <span class="step">合入 release/日期</span><span class="arrow">→</span>
+  <span class="step">测试验收</span><span class="arrow">→</span>
+  <span class="step">上线</span>
+</div>
+
+<h2>2. 基于 Kaptain 事项拉分支</h2>
+<p>Kaptain 链接里可能只有数字 id，也可能直接有 <code>COOAI-xxx</code> 这类 key。开发前先把事项查清楚：key、标题、目标仓库、目标上线日期。具体分支命名以团队当前约定为准；学习时先掌握这个原则：分支名必须能看出事项来源和改动目的。</p>
+<pre># 示例：从最新 master 或团队指定基线拉需求分支
+git fetch origin
+git checkout master
+git pull --ff-only
+git checkout -b feature/COOAI-1234-add-tool-result
+
+# 提交时也带事项号，方便 GitLab/Kaptain 追踪
+git add .
+git commit -m "feat(COOAI-1234): add tool result display"
+git push -u origin feature/COOAI-1234-add-tool-result</pre>
+
+<div class="card warn">
+  <p>不要凭记忆硬套 <code>master</code>、<code>main</code>、<code>develop</code>。进入具体仓库前，先看团队近期 MR 都合到哪里，以及当前发布分支是什么。</p>
+</div>
+
+<h2>3. 合入 release 日期分支</h2>
+<p>发布分支通常表达一个上线日期，例如 <code>release/20260617</code>。Confluence 的 Git 插件实践文档里给过自动创建 <code>release/YYYYmmdd</code> 的例子，说明“按日期管理 release 分支”是内部常见做法之一。</p>
+
+<pre># 如果 release 分支已经存在，基于远端创建本地分支
+git fetch origin
+git checkout -b release/20260617 origin/release/20260617
+
+# 如果需要把功能分支变更带入 release，优先通过 GitLab MR
+# 必须本地处理时，先确认团队允许 cherry-pick 或 merge
+git cherry-pick &lt;commit-hash&gt;</pre>
+
+<table>
+  <tr><th>方式</th><th>适合场景</th><th>风险</th></tr>
+  <tr><td>MR 合入 release</td><td>常规上线、需要评审和 pipeline。</td><td>需要处理冲突和评审等待。</td></tr>
+  <tr><td>cherry-pick 到 release</td><td>只挑某几个 commit 上线，或从复杂分支里剥离改动。</td><td>容易漏 commit；必须记录来源。</td></tr>
+  <tr><td>revert</td><td>上线后快速回退某个 MR。</td><td>GitLab 自动 revert 可能因后续提交冲突失败。</td></tr>
+</table>
+
+<h2>4. 回滚和补救的基本判断</h2>
+<p>Confluence 的 Release 分支回滚规范给了三个层级：</p>
+<ol>
+  <li><strong>能用 GitLab Revert 就先用 Revert</strong>：最常规，链路清楚。</li>
+  <li><strong>能用开关屏蔽就优先开关</strong>：如果代码可以通过配置关闭，先降低影响面。</li>
+  <li><strong>复杂情况再 cherry-pick 重建分支</strong>：找需要剔除 commit 前的节点，逐个 cherry-pick 保留的 commit。</li>
+</ol>
+
+<div class="card">
+  <p>这也是为什么 commit 要小、要能追溯 Kaptain：上线后如果要拆掉某个改动，小 commit 比一个巨大混合 commit 好处理得多。</p>
+</div>
+
+<h2>5. worktree 适合发布联调</h2>
+<p>Confluence 的 Git Worktree 文档建议：当你同时开发功能、处理 hotfix、验证 release 时，可以用 <code>git worktree</code> 开多个工作目录，避免频繁 stash。</p>
+<pre>git fetch origin
+git worktree add ../ai-home-release-20260617 release/20260617
+git worktree add -b feature/COOAI-1234 ../ai-home-COOAI-1234 origin/master
+git worktree list</pre>
+
+<p>注意：每个 worktree 的 <code>node_modules</code>、<code>.env</code>、IDE 索引通常是独立的。前端仓库首次进入新 worktree 可能需要重新安装依赖。</p>
+
+<h2>6. 上线前自检</h2>
+<ol>
+  <li>Kaptain 事项号是否出现在分支、commit 或 MR 中。</li>
+  <li>MR 目标分支是否正确：功能合主干，发布合 <code>release/日期</code>，hotfix 按团队约定走。</li>
+  <li>Pipeline 是否通过，评审是否完成。</li>
+  <li>后端是否构建通过，前端是否 <code>build</code> / <code>pub:build</code> 通过。</li>
+  <li>测试是否在目标发布分支对应环境验收，而不是只验本地分支。</li>
+  <li>如果要回滚，是否优先考虑 Revert 或开关屏蔽。</li>
+</ol>
+
+<div class="ask-agent">问 agent：“根据这个 Kaptain 号和仓库，帮我检查当前分支、MR 目标分支、release 日期分支是否合理”，并贴 <code>git status</code>、<code>git branch -vv</code>、MR 链接。</div>
+
+<h2>7. 自检 Quiz</h2>
+<div class="quiz" id="quiz1">
+  <strong>Q1: 发布分支 <code>release/20260617</code> 最核心表达什么？</strong>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz1',0)">A. 本地临时实验</li>
+    <li onclick="checkQuiz('quiz1',1)">B. 用户个人目录</li>
+    <li onclick="checkQuiz('quiz1',2)">C. 上线日期窗口</li>
+    <li onclick="checkQuiz('quiz1',3)">D. 数据库用户名</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+</div>
+<script>
+function checkQuiz(q,s){const box=document.getElementById(q),opts=box.querySelector('.quiz-options'),c=Number(opts.dataset.correct),lis=opts.querySelectorAll('li'),fb=box.querySelector('.quiz-feedback');lis.forEach((li,i)=>{li.onclick=null;if(i===c)li.classList.add('correct');if(i===s&&i!==c)li.classList.add('wrong')});fb.style.display='block';fb.textContent=s===c?'正确。release 日期分支用于承接某次上线窗口的代码。':'不对。release/日期通常用于发布窗口管理。';fb.style.background=s===c?'#dcfce7':'#fee2e2'}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 013</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0012-environment-debug-checklist.html">上一课：012 端到端环境排查清单</a><a class="primary" href="0014-debugging-logs-trace.html">下一课：014 日志、Trace、断点与 WebSocket 排查</a></div></nav>
+</body>
+</html>

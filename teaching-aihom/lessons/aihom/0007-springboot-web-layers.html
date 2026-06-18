@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>007 Spring Boot Web 三层最小闭环</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:820px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:0}
+  .subtitle{color:var(--text-secondary);font-size:.95rem;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  h2{font-size:1.35rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem}
+  h3{font-size:1.1rem;font-weight:500;margin-top:1.5rem;margin-bottom:.75rem;color:var(--accent)}
+  p{margin-bottom:1rem}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0}
+  .card.info{border-left:3px solid var(--info)}.card.warning{border-left:3px solid var(--warning)}.card.success{border-left:3px solid var(--success)}
+  .card-label{font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+  .card.info .card-label{color:var(--info)}.card.warning .card-label{color:var(--warning)}.card.success .card-label{color:var(--success)}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15em .4em;border-radius:4px;font-size:.88em}
+  pre{background:#1c1917;color:#e7e5e4;padding:1.25rem 1.5rem;border-radius:8px;overflow-x:auto;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.6}
+  pre .comment{color:#a8a29e}pre .important{color:#fbbf24;font-weight:500}pre .anno{color:#f59e0b}pre .type{color:#93c5fd}pre .method{color:#86efac}
+  table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.92rem}
+  th,td{text-align:left;padding:.6rem .8rem;border-bottom:1px solid var(--border);vertical-align:top}
+  th{font-weight:500;color:var(--text-secondary);font-size:.82rem;text-transform:uppercase;letter-spacing:.04em}
+  .flow{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin:1rem 0;font-size:.9rem}
+  .flow-step{background:var(--surface);border:1px solid var(--border);padding:.4rem .8rem;border-radius:6px;white-space:nowrap}
+  .flow-arrow{color:var(--text-secondary)}
+  .quiz{background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0}
+  .quiz-title{font-weight:700;margin-bottom:.75rem;color:var(--accent)}
+  .quiz-options{list-style:none;margin:0}.quiz-options li{padding:.5rem .75rem;margin:.35rem 0;border-radius:6px;cursor:pointer;transition:background .15s;border:1px solid transparent}
+  .quiz-options li:hover{background:#fde68a33;border-color:#fbbf24}
+  .quiz-options li.correct{background:#dcfce7;border-color:#16a34a}.quiz-options li.wrong{background:#fee2e2;border-color:#ef4444}
+  .quiz-feedback{margin-top:.75rem;padding:.75rem;border-radius:6px;display:none;font-size:.9rem}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.3rem}
+  a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+  .nav{margin:2.5rem 0 0;padding:1rem 1.1rem;border:1px solid #d6d3d1;border-radius:8px;background:#fff;display:grid;gap:.75rem}
+  .nav-title{font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:#78716c}
+  .nav-links{display:flex;flex-wrap:wrap;gap:.65rem;align-items:center}
+  .nav a{color:#44403c;text-decoration:none;border:1px solid #e7e5e4;border-radius:6px;padding:.35rem .65rem}
+  .nav a.primary{color:#fff;border-color:#b45309;background:#b45309}.nav a.map{color:#2563eb;border-color:#bfdbfe;background:#eff6ff}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>007 Spring Boot Web 三层最小闭环</h1>
+<p class="subtitle">从 Controller 追到 Service / Factory / Manager，再追到 Client / Mapper，读懂 AIHom 后端一次请求怎么跑完</p>
+
+<h2>1. 最小闭环不是死板三层</h2>
+
+<p>教科书常说 Controller、Service、DAO 三层。AIHom 的真实后端更像这个闭环：</p>
+
+<div class="flow">
+  <span class="flow-step">Controller</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">Processor / Service</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">Factory / Manager</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">Client / Mapper</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">Result / VO</span>
+</div>
+
+<table>
+  <tr><th>角色</th><th>你可以这样理解</th><th>常见注解</th></tr>
+  <tr><td>Controller</td><td>接 HTTP 请求，做登录 / 权限 / 参数入口，返回 <code>Result&lt;...&gt;</code></td><td><code>@RestController</code><br><code>@GetMapping</code><br><code>@PostMapping</code></td></tr>
+  <tr><td>Processor / Service</td><td>编排一次业务流程，例如创建任务、查会话、生成布局</td><td><code>@Component</code><br><code>@Service</code></td></tr>
+  <tr><td>Factory</td><td>根据类型挑一个实现，例如图类型、布局通道、请求 VO 类型</td><td><code>@Component</code><br><code>InitializingBean</code></td></tr>
+  <tr><td>Manager</td><td>封装外部系统、复杂领域动作或第三方 SDK 调用</td><td><code>@Component</code><br><code>@Service</code></td></tr>
+  <tr><td>Client / Mapper</td><td>Client 调别的服务；Mapper 读写数据库</td><td><code>@FeignClient</code><br><code>BaseMapper</code></td></tr>
+</table>
+
+<div class="card info">
+  <div class="card-label">全栈视角</div>
+  <p>前端同学看接口时关心 URL、入参、返回值；后端同学还要继续往后追：这个 Controller 把请求交给了谁，谁又访问了数据库或外部服务。</p>
+</div>
+
+<h2>2. ai-native-service：从 Controller 追会话链路</h2>
+
+<p><code>ConversationController</code> 很薄，接到请求后直接交给 <code>ProcessorFactory.exec(reqVo)</code>。这说明项目里有一套“按请求对象选择 Processor”的分发机制。</p>
+
+<pre>
+<span class="anno">@RestController</span>
+<span class="type">public class</span> ConversationController {
+  <span class="anno">@GetMapping</span>(UriConstants.CONVERSATION)
+  <span class="type">public</span> Result&lt;GetConversationResVo&gt; <span class="method">getConversation</span>(GetConversationReqVo reqVo) {
+    <span class="type">return</span> ProcessorFactory.exec(reqVo);
+  }
+}
+</pre>
+
+<p>如果你是在排查“为什么会话标题没更新”，就不能停在 Controller。真实调用会进入 <code>ConversationServiceImpl</code>，它注入了多个 Bean：</p>
+
+<pre>
+ConversationServiceImpl
+├── ConversationDao        <span class="comment">会话表读写</span>
+├── MessageDao             <span class="comment">消息表读写</span>
+├── StateGraphFactory      <span class="comment">按 graphId/version 找状态图</span>
+├── NotificationServiceImpl<span class="comment">通知前端更新标题</span>
+└── ISummaryService        <span class="comment">总结消息、生成标题</span>
+</pre>
+
+<p>再往下，<code>ConversationDao</code> 注入 <code>ConversationMapper</code>，而 <code>ConversationMapper</code> 继承 <code>BaseMapper&lt;ConversationPo&gt;</code>。这就是“业务对象落库”的常见末端。</p>
+
+<div class="card success">
+  <div class="card-label">读链路口诀</div>
+  <p>Controller 看入口，Service 看业务，Dao/Mapper 看数据库，Factory 看“选哪个实现”。每次只追一条线，不要一上来全局搜索所有类。</p>
+</div>
+
+<h2>3. auto-layout-service：从自动布局接口追异步任务</h2>
+
+<p><code>AutoLayoutV2Controller</code> 也是薄 Controller。比如 <code>AUTO_LAYOUT_WITH_IMAGE</code> 的 POST 接口，接收 <code>AutoLayoutWithImageReqVo</code> 和 <code>CurrentUser</code>，然后交给 <code>ProcessorFactory.exec(reqVo, user)</code>。</p>
+
+<pre>
+<span class="anno">@PostMapping</span>(UriConstants.AUTO_LAYOUT_WITH_IMAGE)
+<span class="anno">@PreAuthorize</span>("hasAuthority('ROLE_USER')")
+<span class="type">public</span> Result&lt;LayoutTaskStatusVo&gt; <span class="method">autoLayoutWithImage</span>(
+    <span class="anno">@RequestBody</span> AutoLayoutWithImageReqVo reqVo,
+    CurrentUser user) {
+  <span class="type">return</span> ProcessorFactory.exec(reqVo, user);
+}
+</pre>
+
+<p>后面会进入 <code>AutoLayoutWithImageProcessor</code>。它继承 <code>BaseDbTaskAsyncProcessor&lt;AutoLayoutWithImageReqVo, LayoutTaskStatusVo&gt;</code>，说明这是一个“创建任务，然后异步处理，再查询状态”的接口。</p>
+
+<pre>
+AutoLayoutWithImageProcessor
+├── verify(reqVo)                       <span class="comment">校验权限、加锁，避免并发提交</span>
+├── initTask(reqVo)                     <span class="comment">初始化 LayoutTaskStatusVo</span>
+├── AutoDesignInfoManager               <span class="comment">更新自动设计状态</span>
+├── KWorkbenchManager / LOD300Manager   <span class="comment">查设计、查户型模型</span>
+├── OpenaiManager / OpenAIClient        <span class="comment">调用大模型能力</span>
+└── IProductConfigService               <span class="comment">读取选品配置</span>
+</pre>
+
+<p>这个服务里还有一个很典型的 Factory：<code>AutoLayoutFactory</code>。它启动后收集所有 <code>IAutoLayoutService</code> 实现，用 <code>LayoutChannel</code> 做 key。后来只要知道通道，就能拿到对应布局实现。</p>
+
+<pre>
+AutoLayoutFactory
+└── Map&lt;LayoutChannel, IAutoLayoutService&gt;
+    ├── GeminiLayoutServiceImpl
+    ├── MaasLayoutServiceImpl
+    └── 其他 IAutoLayoutService 实现
+</pre>
+
+<h2>4. DTO / VO / Result / 异常怎么看</h2>
+
+<table>
+  <tr><th>名字</th><th>在 AIHom 后端里的含义</th><th>例子</th></tr>
+  <tr><td><code>ReqVo</code></td><td>HTTP 入参对象，通常跟接口请求体或 query 参数绑定</td><td><code>AutoLayoutWithImageReqVo</code><br><code>GetConversationReqVo</code></td></tr>
+  <tr><td><code>ResVo</code> / <code>TaskVo</code></td><td>接口返回对象，包在 <code>Result&lt;...&gt;</code> 里给前端</td><td><code>LayoutTaskStatusVo</code><br><code>GetConversationResVo</code></td></tr>
+  <tr><td><code>Dto</code></td><td>服务内部传递的数据对象，常用于上下文、模型结果、转换中间态</td><td><code>MessageDto</code><br><code>AutoLayoutDesignDto</code></td></tr>
+  <tr><td><code>Po</code></td><td>数据库持久化对象，通常和 Mapper 一起出现</td><td><code>ConversationPo</code><br><code>Task</code></td></tr>
+  <tr><td><code>Result</code></td><td>统一接口返回壳，成功或失败都走标准结构</td><td><code>Result.ok()</code><br><code>Result&lt;LayoutTaskStatusVo&gt;</code></td></tr>
+  <tr><td><code>BizzException</code></td><td>业务异常，常用于校验失败、外部调用失败、数据异常</td><td><code>throw new BizzException(...)</code></td></tr>
+</table>
+
+<div class="card warning">
+  <div class="card-label">排查建议</div>
+  <p>接口返回失败时，先看 Controller 返回的 <code>Result</code> 类型，再搜 <code>BizzException</code> 抛出的 message。很多失败不是框架异常，而是业务校验主动抛出的。</p>
+</div>
+
+<h2>5. Bean 注入：代码怎么连起来</h2>
+
+<p>这两个服务里常见 <code>@Resource</code> 和 <code>@Autowired</code>。它们的作用都是让 Spring 把容器里的对象塞进来。你看到这些字段，就知道“当前类依赖谁”。</p>
+
+<pre>
+<span class="anno">@Service</span>
+<span class="type">public class</span> ConversationServiceImpl {
+  <span class="anno">@Resource</span>
+  <span class="type">private</span> ConversationDao conversationDao;
+
+  <span class="anno">@Resource</span>
+  <span class="type">private</span> StateGraphFactory stateGraphFactory;
+}
+</pre>
+
+<p>Factory 类通常用列表注入：例如 <code>StateGraphBuildFactory</code> 注入 <code>List&lt;IStateGraphBuildService&gt;</code>，启动后塞进 Map。新增一种图构建方式时，你通常要实现接口，并让它成为 Spring Bean。</p>
+
+<h2>6. 三步追代码练习</h2>
+
+<ol>
+  <li>从 URL 找 Controller：搜 <code>UriConstants.AUTO_LAYOUT_WITH_IMAGE</code> 或接口路径常量。</li>
+  <li>从 Controller 找下一跳：看它直接调用 Service，还是走 <code>ProcessorFactory.exec</code>。</li>
+  <li>从 Service / Processor 看依赖字段：<code>@Resource</code>、<code>@Autowired</code> 后面的类，就是下一批要追的对象。</li>
+</ol>
+
+<h2>7. 代码证据</h2>
+
+<table>
+  <tr><th>你要确认什么</th><th>真实文件</th></tr>
+  <tr><td>ai-native-service 的薄 Controller 和 ProcessorFactory 入口</td><td><code>ConversationController</code><br><code>ProcessorFactory</code></td></tr>
+  <tr><td>ai-native-service 的 Service / Dao / Mapper 链路</td><td><code>ConversationServiceImpl</code><br><code>ConversationDao</code><br><code>ConversationMapper</code></td></tr>
+  <tr><td>ai-native-service 的 Factory 选择实现</td><td><code>StateGraphBuildFactory</code><br><code>StateGraphFactory</code></td></tr>
+  <tr><td>auto-layout-service 的自动布局入口</td><td><code>AutoLayoutV2Controller</code><br><code>AutoLayoutWithImageProcessor</code></td></tr>
+  <tr><td>auto-layout-service 的 Factory / Manager / Mapper</td><td><code>AutoLayoutFactory</code><br><code>AiNativeManager</code><br><code>TaskMapper</code></td></tr>
+  <tr><td>异常和统一返回</td><td><code>MoreExceptionHandler</code><br><code>CommonErrorCode</code><br><code>ErrorCode</code></td></tr>
+</table>
+
+<h2>8. 自检 Quiz</h2>
+
+<div class="quiz" id="quiz1">
+  <div class="quiz-title">Q1: <code>@RestController</code> 最主要对应哪一层？</div>
+  <ul class="quiz-options" data-correct="0">
+    <li onclick="checkQuiz('quiz1',0)">A. Controller</li>
+    <li onclick="checkQuiz('quiz1',1)">B. MapperDao</li>
+    <li onclick="checkQuiz('quiz1',2)">C. ClientSdk</li>
+    <li onclick="checkQuiz('quiz1',3)">D. ConfigMap</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <div class="quiz-title">Q2: <code>AutoLayoutFactory</code> 用 <code>LayoutChannel</code> 选择什么？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz2',0)">A. 页面路由</li>
+    <li onclick="checkQuiz('quiz2',1)">B. 数据表名</li>
+    <li onclick="checkQuiz('quiz2',2)">C. 布局实现</li>
+    <li onclick="checkQuiz('quiz2',3)">D. 用户语言</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <div class="quiz-title">Q3: <code>ConversationDao</code> 往下通常会调用谁？</div>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz3',0)">A. Controller</li>
+    <li onclick="checkQuiz('quiz3',1)">B. Mapper</li>
+    <li onclick="checkQuiz('quiz3',2)">C. HTML</li>
+    <li onclick="checkQuiz('quiz3',3)">D. Browser</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="ask-agent">
+  练习时可以把某个 Controller 文件名发给 agent，让它陪你一起追“下一跳是谁、再下一跳是谁、最终是数据库还是外部服务”。
+</div>
+
+<div class="card info">
+  <div class="card-label">推荐主资料</div>
+  <p>想补 Spring Web 基础，优先看 Spring 官方 <a href="https://docs.spring.io/spring-framework/reference/web/webmvc.html" target="_blank" rel="noopener">Spring Web MVC</a> 文档。对 AIHom 当前阶段，只需要先理解 Controller、请求映射、参数绑定、异常处理和 Bean 注入。</p>
+</div>
+
+</div>
+<script>
+function checkQuiz(q,s){const root=document.getElementById(q),o=root.querySelector('.quiz-options'),c=parseInt(o.dataset.correct),items=o.querySelectorAll('li'),f=root.querySelector('.quiz-feedback');items.forEach((x,n)=>{x.onclick=null;if(n===c)x.classList.add('correct');if(n===s&&n!==c)x.classList.add('wrong')});const fb={quiz1:{c:'答对了。Controller 负责接 HTTP 请求和返回 Result。',w:'答案是 Controller。@RestController 是 HTTP 接口入口的典型标记。'},quiz2:{c:'答对了。Factory 用 LayoutChannel 找到对应的 IAutoLayoutService 实现。',w:'答案是布局实现。Factory 的重点是按类型选择一个实现。'},quiz3:{c:'答对了。Dao 再往下通常就是 Mapper 或外部存储。',w:'答案是 Mapper。Dao 封装数据库动作，Mapper 执行具体读写。'}};f.style.display='block';f.textContent=s===c?fb[q].c:fb[q].w;f.style.background=s===c?'#dcfce7':'#fee2e2'}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 007</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0006-maven-multimodule-java-project.html">上一课：006 Maven 多模块 + Java 工程读法</a><a class="primary" href="0008-local-config-nacos-pilot.html">下一课：008 本地启动与配置体系</a></div></nav>
+</body>
+</html>

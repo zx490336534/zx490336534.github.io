@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 29: 技能系统（Skills）详解</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:780px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:.95rem;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  h2{font-size:1.35rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem}
+  h3{font-size:1.1rem;font-weight:500;margin-top:1.5rem;margin-bottom:.75rem;color:var(--accent)}
+  p{margin-bottom:1rem}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0}
+  .card.info{border-left:3px solid var(--info)}.card.warning{border-left:3px solid var(--warning)}.card.success{border-left:3px solid var(--success)}
+  .card-label{font-size:.75rem;font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.5rem}
+  .card.info .card-label{color:var(--info)}.card.warning .card-label{color:var(--warning)}.card.success .card-label{color:var(--success)}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15em .4em;border-radius:4px;font-size:.88em}
+  pre{background:#1c1917;color:#e7e5e4;padding:1.25rem 1.5rem;border-radius:8px;overflow-x:auto;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.6}
+  pre .comment{color:#78716c}pre .keyword{color:#f59e0b}pre .string{color:#86efac}
+  table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.92rem}
+  th,td{text-align:left;padding:.6rem .8rem;border-bottom:1px solid var(--border)}
+  th{font-weight:500;color:var(--text-secondary);font-size:.82rem;text-transform:uppercase;letter-spacing:.04em}
+  .quiz{background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0}
+  .quiz-title{font-weight:700;margin-bottom:.75rem;color:var(--accent)}
+  .quiz-options{list-style:none}.quiz-options li{padding:.5rem .75rem;margin:.35rem 0;border-radius:6px;cursor:pointer;transition:background .15s;border:1px solid transparent}
+  .quiz-options li:hover{background:#fde68a33;border-color:#fbbf24}
+  .quiz-options li.correct{background:#dcfce7;border-color:#16a34a}.quiz-options li.wrong{background:#fee2e2;border-color:#ef4444}
+  .quiz-feedback{margin-top:.75rem;padding:.75rem;border-radius:6px;display:none;font-size:.9rem}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
+  .ask-agent::before{content:'💡 '}
+  ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.3rem}
+.nav-links{max-width:900px;margin:2.5rem auto 0;padding:1.5rem 2rem;border-top:1px solid #e7e5e4;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem}.nav-links a{color:#b45309;text-decoration:none;font-weight:500}.nav-links a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Lesson 29: 技能系统（Skills）详解</h1>
+<p class="subtitle">渐进式披露机制、SKILL.md 格式、skillLoader、getSkillTools 与技能目录结构</p>
+
+<div class="card info">
+  <div class="card-label">前置知识</div>
+  <p>学习本课前，建议先了解以下概念：</p>
+  <ul>
+    <li><a href="../../reference/langchain-basics.html">LangChain 基础</a> — 了解 Agent 和 Tool 的基本概念</li>
+    <li><a href="0006-kuai-front-agent-system.html">Agent 系统架构</a> — 了解 Agent 系统整体架构</li>
+  </ul>
+</div>
+
+<!-- ==================== 为什么需要技能系统 ==================== -->
+<h2>1. 为什么需要技能系统？</h2>
+
+<p>想象一个 AI Agent 是一个"全栈工程师"。他什么都会一点，但不可能把所有知识都装在脑子里。</p>
+
+<p>技能系统的设计理念就像<strong>给工程师一本工具手册</strong>：</p>
+
+<div class="card success">
+  <div class="card-label">类比理解</div>
+  <ul>
+    <li><strong>Agent 的系统提示</strong> = 工程师脑子里记住的东西（有限）</li>
+    <li><strong>技能系统</strong> = 书架上的工具手册（按需翻阅）</li>
+    <li><strong>list_skills</strong> = 看看书架上有哪些手册</li>
+    <li><strong>get_skill_content</strong> = 翻开某本手册，阅读具体内容</li>
+  </ul>
+</div>
+
+<p>如果把所有技能的详细内容都塞进系统提示词，会消耗大量 Token，而且 Agent 大部分时候用不到它们。<strong>渐进式披露</strong>解决了这个问题。</p>
+
+<!-- ==================== 渐进式披露机制 ==================== -->
+<h2>2. 渐进式披露机制</h2>
+
+<p>"渐进式披露"（Progressive Disclosure）的核心思想：<strong>先告诉你有什么，需要时再给细节</strong>。</p>
+
+<h3>2.1 三步交互流程</h3>
+
+<pre>
+<span class="comment">第一步：系统提示词只包含技能列表（名称 + 简短描述）</span>
+系统提示: "你有以下技能可用：git-clone（克隆仓库）、dev-design（技术设计文档）..."
+
+<span class="comment">第二步：Agent 调用 list_skills 查看所有技能详情</span>
+Agent → <span class="string">list_skills()</span> → 返回所有技能的名称和描述
+
+<span class="comment">第三步：Agent 根据需要调用 get_skill_content 读取具体技能文档</span>
+Agent → <span class="string">get_skill_content("dev-design")</span> → 返回 SKILL.md 的完整内容
+</pre>
+
+<div class="card info">
+  <div class="card-label">为什么要这样做？</div>
+  <table>
+    <tr><th>方式</th><th>Token 消耗</th><th>效果</th></tr>
+    <tr><td>全部塞进系统提示</td><td>很高（浪费）</td><td>Agent 可能忽略大部分内容</td></tr>
+    <tr><td>渐进式披露</td><td>很低（按需）</td><td>Agent 只在需要时加载，更精准</td></tr>
+  </table>
+</div>
+
+<!-- ==================== SKILL.md 格式 ==================== -->
+<h2>3. SKILL.md 文件格式</h2>
+
+<p>每个技能的核心是一个 <code>SKILL.md</code> 文件，它必须包含 <strong>YAML frontmatter</strong>（文件开头的 <code>---</code> 之间的部分）。</p>
+
+<h3>3.1 文件结构</h3>
+
+<pre>
+<span class="comment">文件路径: src/agents/skills/my-skill/SKILL.md</span>
+
+---
+<span class="keyword">name</span>: <span class="string">my-skill</span>
+<span class="keyword">description</span>: <span class="string">简短描述技能功能（1-2句话）</span>
+---
+
+# 技能标题
+
+## 核心功能
+这个技能能做什么...
+
+## 快速开始
+最简单的使用示例...
+
+## 工作流程
+典型使用流程（步骤化）...
+
+## 工具参数
+详细说明每个工具的参数...
+
+## 最佳实践
+使用建议和注意事项...
+
+## 常见场景
+各种使用场景的示例...
+</pre>
+
+<h3>3.2 Frontmatter 字段说明</h3>
+
+<div class="card warning">
+  <div class="card-label">必须遵守的规则</div>
+  <table>
+    <tr><th>字段</th><th>必填</th><th>说明</th></tr>
+    <tr><td><code>name</code></td><td>是</td><td>技能名称，使用 <strong>kebab-case</strong>（如 <code>git-clone</code>）</td></tr>
+    <tr><td><code>description</code></td><td>是</td><td>简短描述（1-2句），会出现在系统提示中</td></tr>
+  </table>
+</div>
+
+<div class="card info">
+  <div class="card-label">命名规范</div>
+  <ul>
+    <li>✅ <code>git-clone</code>、<code>dev-design</code>、<code>test-analysis</code>（kebab-case）</li>
+    <li>❌ <code>gitClone</code>、<code>GitClone</code>、<code>git_clone</code>（不要用驼峰、大写或下划线）</li>
+  </ul>
+</div>
+
+<!-- ==================== 技能目录结构 ==================== -->
+<h2>4. 技能目录结构</h2>
+
+<p>所有技能都放在 <code>src/agents/skills/</code> 目录下，每个技能一个子目录：</p>
+
+<pre>
+src/agents/skills/
+├── <span class="keyword">git-clone/</span>                  # Git 仓库克隆
+│   ├── SKILL.md               # 技能定义文件（必须）
+│   └── references/            # 参考资料（可选）
+│       ├── best-practices.md
+│       └── examples.md
+│
+├── <span class="keyword">dev-design/</span>                 # 技术设计文档
+│   ├── SKILL.md
+│   └── references/
+│
+├── <span class="keyword">test-analysis/</span>              # 测试分析报告
+│   ├── SKILL.md
+│   └── references/
+│
+├── <span class="keyword">mermaid/</span>                    # Mermaid 图表
+├── <span class="keyword">drawio-diagrams-enhanced/</span>   # Draw.io 图表
+├── <span class="keyword">env-issue-resolver/</span>         # 环境问题排查
+├── <span class="keyword">code-explore/</span>               # 代码探索分析
+├── <span class="keyword">dcs-drawing-helper/</span>         # DCS 图纸辅助
+├── <span class="keyword">test-case-formatter/</span>        # 测试用例格式化
+├── <span class="keyword">ui-localization/</span>            # UI 本地化翻译
+├── <span class="keyword">apollo-ai-case/</span>             # Apollo AI 用例生成
+└── <span class="keyword">langfuse/</span>                   # Langfuse 可观测性
+</pre>
+
+<div class="card success">
+  <div class="card-label">目录规则</div>
+  <ul>
+    <li><code>SKILL.md</code> — <strong>必须</strong>，包含 YAML frontmatter 和技能内容</li>
+    <li><code>references/</code> — <strong>可选</strong>，存放参考资料（best-practices.md、examples.md 等）</li>
+    <li>目录名 = 技能名，使用 <strong>kebab-case</strong></li>
+  </ul>
+</div>
+
+<!-- ==================== skillLoader ==================== -->
+<h2>5. 技能加载器（skillLoader）</h2>
+
+<p><code>skillLoader.js</code> 是技能系统的"发动机"，负责扫描技能目录、读取文件、创建工具。</p>
+
+<p>核心代码在 <code>src/agents/tools/skillLoader.js</code>：</p>
+
+<pre>
+<span class="comment">// skillLoader.js 的核心逻辑（简化版）</span>
+
+<span class="keyword">export async function</span> getSkillTools({ skills } = {}) {
+  <span class="keyword">const</span> skillsDir = path.join(process.cwd(), <span class="string">'src/agents/skills'</span>);
+
+  <span class="comment">// 1. 扫描技能目录</span>
+  <span class="keyword">let</span> skillDirs = [];
+  <span class="keyword">if</span> (skills && skills.length > 0) {
+    <span class="comment">// 指定了技能列表 → 只加载指定的</span>
+    skillDirs = skills;
+  } <span class="keyword">else</span> {
+    <span class="comment">// 没指定 → 自动扫描整个 skills/ 目录</span>
+    skillDirs = fs.readdirSync(skillsDir);
+  }
+
+  <span class="comment">// 2. 读取每个技能的 SKILL.md frontmatter</span>
+  <span class="keyword">const</span> skillList = skillDirs.map(name => {
+    <span class="keyword">const</span> content = fs.readFileSync(
+      path.join(skillsDir, name, <span class="string">'SKILL.md'</span>), <span class="string">'utf-8'</span>
+    );
+    <span class="keyword">const</span> { data } = matter(content); <span class="comment">// 解析 YAML frontmatter</span>
+    <span class="keyword">return</span> { name: data.name, description: data.description };
+  });
+
+  <span class="comment">// 3. 创建两个 LangChain 工具</span>
+  <span class="keyword">return</span> [
+    <span class="comment">// list_skills 工具：列出所有可用技能</span>
+    tool(<span class="keyword">async</span> () => JSON.stringify(skillList), {
+      name: <span class="string">'list_skills'</span>,
+      description: <span class="string">'列出所有可用的技能'</span>,
+    }),
+
+    <span class="comment">// get_skill_content 工具：读取指定技能的完整内容</span>
+    tool(<span class="keyword">async</span> ({ skillName }) => {
+      <span class="keyword">const</span> filePath = path.join(skillsDir, skillName, <span class="string">'SKILL.md'</span>);
+      <span class="comment">// 路径安全检查：防止读取技能目录之外的文件</span>
+      <span class="keyword">return</span> fs.readFileSync(filePath, <span class="string">'utf-8'</span>);
+    }, {
+      name: <span class="string">'get_skill_content'</span>,
+      description: <span class="string">'获取指定技能的详细内容'</span>,
+      schema: z.object({ skillName: z.string() }),
+    }),
+  ];
+}
+</pre>
+
+<h3>5.1 加载方式对比</h3>
+
+<div class="card info">
+  <div class="card-label">两种加载方式</div>
+  <table>
+    <tr><th>方式</th><th>代码</th><th>说明</th></tr>
+    <tr><td>指定技能</td><td><code>getSkillTools({ skills: ['git-clone', 'dev-design'] })</code></td><td>只加载指定的技能</td></tr>
+    <tr><td>自动扫描</td><td><code>getSkillTools()</code></td><td>自动扫描 skills/ 目录下所有技能</td></tr>
+  </table>
+</div>
+
+<!-- ==================== getSkillTools 使用 ==================== -->
+<h2>6. 在 Agent 中使用 getSkillTools</h2>
+
+<p>在 Agent 的 <code>createAgent</code> 函数中加载技能：</p>
+
+<pre>
+<span class="keyword">import</span> { defineAgent } <span class="keyword">from</span> <span class="string">'@/lib/agents/define'</span>;
+<span class="keyword">import</span> { createReactAgent } <span class="keyword">from</span> <span class="string">'@langchain/langgraph/prebuilt'</span>;
+<span class="keyword">import</span> { getGitCloneTools, getSkillTools, getMCPTools } <span class="keyword">from</span> <span class="string">'@/agents/tools'</span>;
+
+<span class="keyword">export default</span> defineAgent({
+  name: <span class="string">'代码助手'</span>,
+  description: <span class="string">'帮助分析代码并生成文档'</span>,
+
+  createAgent: <span class="keyword">async</span> () => {
+    <span class="comment">// 并行加载所有工具（提高启动速度）</span>
+    <span class="keyword">const</span> [gitTools, mcpTools, skillTools] = <span class="keyword">await</span> Promise.all([
+      getGitCloneTools(),
+      getMCPTools(MCP_SERVERS, { useCache: <span class="keyword">true</span> }),
+      <span class="comment">// 指定这个 Agent 需要哪些技能</span>
+      getSkillTools({
+        skills: [<span class="string">'git-clone'</span>, <span class="string">'dev-design'</span>, <span class="string">'test-analysis'</span>]
+      }),
+    ]);
+
+    <span class="keyword">return</span> createReactAgent({
+      llm: model,
+      tools: [...gitTools, ...mcpTools, ...skillTools],
+    });
+  },
+});
+</pre>
+
+<div class="card warning">
+  <div class="card-label">技能依赖提醒</div>
+  <p>使用 <code>dev-design</code> 或 <code>test-analysis</code> 技能时，通常需要同步接入 <code>confluence-mcp</code>，以提供 Confluence 读取和发布能力。否则技能的文档发布功能将无法使用。</p>
+</div>
+
+<!-- ==================== 新建技能 ==================== -->
+<h2>7. 如何新建一个技能（实战步骤）</h2>
+
+<div class="card success">
+  <div class="card-label">五步创建新技能</div>
+  <ol>
+    <li>在 <code>src/agents/skills/</code> 下创建新目录（如 <code>my-skill/</code>）</li>
+    <li>创建 <code>SKILL.md</code> 文件，写入 YAML frontmatter + 内容</li>
+    <li>可选：创建 <code>references/</code> 子目录，添加参考资料</li>
+    <li>在 Agent 中使用 <code>getSkillTools({ skills: ['my-skill'] })</code></li>
+    <li>测试：在对话中尝试让 Agent 使用你的技能</li>
+  </ol>
+</div>
+
+<pre>
+<span class="comment"># 步骤 1: 创建目录</span>
+mkdir src/agents/skills/my-skill
+
+<span class="comment"># 步骤 2: 创建 SKILL.md</span>
+cat > src/agents/skills/my-skill/SKILL.md << <span class="string">'EOF'</span>
+---
+name: my-skill
+description: 我的自定义技能，用于xxx场景
+---
+
+# 我的技能
+
+## 核心功能
+这个技能用来...
+
+## 快速开始
+1. 第一步...
+2. 第二步...
+<span class="string">EOF</span>
+</pre>
+
+<!-- ==================== Quiz ==================== -->
+<h2>🎯 Quiz — 测测你学会了多少</h2>
+
+<div class="quiz" id="quiz1">
+  <div class="quiz-title">Q1: 技能系统使用"渐进式披露"的核心目的是什么？</div>
+  <ul class="quiz-options" onclick="checkQuiz(event, 'B')">
+    <li data-key="A">A. 让代码更简洁</li>
+    <li data-key="B">B. 减少 Token 消耗，Agent 按需加载技能内容</li>
+    <li data-key="C">C. 提高页面加载速度</li>
+    <li data-key="D">D. 防止用户看到技能内容</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <div class="quiz-title">Q2: SKILL.md 文件中必须包含什么？</div>
+  <ul class="quiz-options" onclick="checkQuiz(event, 'C')">
+    <li data-key="A">A. 一个 JavaScript 函数</li>
+    <li data-key="B">B. 一个 JSON 配置</li>
+    <li data-key="C">C. YAML frontmatter（name 和 description）</li>
+    <li data-key="D">D. 一个 React 组件</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <div class="quiz-title">Q3: 调用 getSkillTools() 不传 skills 参数会怎样？</div>
+  <ul class="quiz-options" onclick="checkQuiz(event, 'A')">
+    <li data-key="A">A. 自动扫描 src/agents/skills/ 目录，加载所有技能</li>
+    <li data-key="B">B. 报错，因为 skills 是必填参数</li>
+    <li data-key="C">C. 返回空数组，没有任何技能可用</li>
+    <li data-key="D">D. 只加载第一个技能</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="ask-agent">
+  还有疑问？试试问 Agent：<strong>"帮我创建一个新的 Skill"</strong> 或 <strong>"带我看看 git-clone 技能的 SKILL.md 文件"</strong>
+</div>
+
+</div>
+
+<script>
+function checkQuiz(e, correct) {
+  const li = e.target.closest('li');
+  if (!li || li.dataset.corrected) return;
+  const quiz = li.closest('.quiz');
+  const feedback = quiz.querySelector('.quiz-feedback');
+  const key = li.dataset.key;
+  if (key === correct) {
+    li.classList.add('correct');
+    feedback.textContent = '✅ 正确！';
+    feedback.style.background = '#dcfce7'; feedback.style.display = 'block';
+  } else {
+    li.classList.add('wrong');
+    feedback.textContent = '❌ 不对哦，再想想？';
+    feedback.style.background = '#fee2e2'; feedback.style.display = 'block';
+  }
+  li.dataset.corrected = '1';
+}
+</script>
+<div class="nav-links">
+  <a href="0028-kuai-front-authentication.html">← 认证与权限系统</a>
+  <a href="../index.html">🗺️ 完整学习地图</a>
+  <a href="0030-kuai-front-claudecode-integration.html">Claude Code 集成 →</a>
+</div>
+</body>
+</html>

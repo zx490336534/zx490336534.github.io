@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>040 AIHom 前端入口 09：跨仓开发工作流</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--muted:#78716c;--accent:#b45309;--border:#e7e5e4;--code:#f5f5f4;--blue:#2563eb;--green:#16a34a}
+  *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.8 'Noto Sans SC',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}.container{max-width:880px;margin:0 auto;padding:3rem 1.6rem 4rem}h1{font-size:2rem;line-height:1.25;margin:.2rem 0 .5rem}h2{font-size:1.35rem;margin:2.2rem 0 .8rem}p{margin:.4rem 0 1rem}ul,ol{margin:.4rem 0 1rem 1.4rem;padding:0}li{margin:.25rem 0}a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}code{font-family:'JetBrains Mono',Menlo,Consolas,monospace;background:var(--code);border-radius:4px;padding:.1em .35em;font-size:.9em}pre{background:#1c1917;color:#e7e5e4;border-radius:8px;padding:1rem 1.1rem;overflow:auto;font:13px/1.65 'JetBrains Mono',Menlo,Consolas,monospace;margin:1rem 0}table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:1rem 0}th,td{padding:.65rem .75rem;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}th{color:var(--muted);font-size:.82rem;background:#f5f5f4}tr:last-child td{border-bottom:0}.subtitle{color:var(--muted);padding-bottom:1.3rem;border-bottom:1px solid var(--border);margin-bottom:1.8rem}.card{background:#fff;border:1px solid var(--border);border-left:4px solid var(--blue);border-radius:8px;padding:1rem 1.15rem;margin:1rem 0}.card.soft{border-left-color:var(--accent);background:#fff7ed}.label{font-size:.76rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;margin-bottom:.35rem}.quiz{background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.15rem;margin:1.4rem 0}.quiz-title{font-weight:700;margin-bottom:.55rem;color:#92400e}.quiz-options{list-style:none;margin:0;padding:0}.quiz-options li{padding:.45rem .65rem;margin:.35rem 0;border-radius:6px;border:1px solid transparent;cursor:pointer}.quiz-options li:hover{border-color:#f59e0b}.correct{background:#dcfce7!important;border-color:#16a34a!important}.wrong{background:#fee2e2!important;border-color:#ef4444!important}.quiz-feedback{display:none;margin-top:.65rem;padding:.6rem;border-radius:6px}.ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;color:#1e40af;padding:1rem;margin:1.4rem 0}.ask-agent:before{content:"提示：";font-weight:700}.learning-map-quick-nav{margin:2.5rem 0 0;padding:1rem 1.1rem;border:1px solid #d6d3d1;border-radius:8px;background:#fff;display:grid;gap:.75rem}.nav-title{font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:#78716c}.nav-links{display:flex;flex-wrap:wrap;gap:.65rem;align-items:center}.nav-links a{color:#44403c;text-decoration:none;border:1px solid #e7e5e4;border-radius:6px;padding:.35rem .65rem}.nav-links a.primary{color:#fff;border-color:#b45309;background:#b45309}.nav-links a.map{color:#2563eb;border-color:#bfdbfe;background:#eff6ff}@media(max-width:640px){.container{padding:2rem 1rem 3.5rem}h1{font-size:1.65rem}pre{font-size:.78rem}}
+</style>
+</head>
+<body>
+<main class="container">
+  <h1>040 AIHom 前端入口 09：跨仓开发工作流</h1>
+  <p class="subtitle">目标：接到一个 AIHom 需求时，先判断影响哪些仓库、接口边界在哪里、怎么联调，而不是一头扎进所有代码。</p>
+
+  <section class="card soft">
+    <div class="label">先把仓库当岗位</div>
+    <p>AIHom 不是一个仓库包打天下。每个仓库负责一类岗位：主前端负责页面，后端负责对话和 Agent，自动布局服务负责布局任务，viewer 负责展示和渲染。跨仓开发就是让这些岗位按同一份契约协作。</p>
+  </section>
+
+  <h2>1. 仓库职责边界</h2>
+  <table>
+    <tr><th>仓库</th><th>先理解成</th><th>常见改动</th></tr>
+    <tr><td><code>ai-home</code></td><td>主前端</td><td>页面、对话、工具桥、viewer 嵌入</td></tr>
+    <tr><td><code>viewer-2d</code></td><td>2D 展示</td><td>户型实体、2D 交互、画布显示</td></tr>
+    <tr><td><code>render-3d</code></td><td>3D 展示与截图</td><td>3D 状态、渲染、截图回传</td></tr>
+    <tr><td><code>ai-native-service</code></td><td>AI 对话后端</td><td>WebSocket、Agent、Tool、MCP、消息</td></tr>
+    <tr><td><code>auto-layout-service</code></td><td>自动布局服务</td><td>布局任务、Processor、状态查询</td></tr>
+  </table>
+
+  <h2>2. 接需求先问五个问题</h2>
+  <ol>
+    <li>用户看到的变化在哪里：聊天区、2D、3D、还是后端结果？</li>
+    <li>数据从哪里来：前端状态、WebSocket、后端接口、还是 Nacos 配置？</li>
+    <li>要不要新增或修改接口字段？</li>
+    <li>会不会影响 viewer 消息协议或工具调用协议？</li>
+    <li>需要哪些仓库一起发版或一起联调？</li>
+  </ol>
+
+  <h2>3. client 模块是边界合同</h2>
+  <p>后端服务之间常通过 client 模块定义调用接口。你可以先把 client 理解成“别的仓库调用我时看的合同”。改合同要谨慎，因为调用方也要跟着改。</p>
+  <table>
+    <tr><th>如果你改了</th><th>要同步检查</th></tr>
+    <tr><td>请求字段</td><td>前端/调用方是否传了新字段</td></tr>
+    <tr><td>响应字段</td><td>前端/调用方是否读取旧字段</td></tr>
+    <tr><td>状态枚举</td><td>所有判断终态的地方是否同步</td></tr>
+    <tr><td>错误码</td><td>前端提示和日志是否同步</td></tr>
+  </table>
+
+  <h2>4. 一个需求怎么拆</h2>
+  <pre>先写用户现象
+  ↓
+判断影响仓库
+  ↓
+列接口 / 消息 / 配置边界
+  ↓
+每个仓库建对应分支
+  ↓
+本地联调
+  ↓
+提 MR
+  ↓
+合入 release/日期分支上线</pre>
+
+  <h2>5. 联调最小检查清单</h2>
+  <ul>
+    <li>前端请求参数和后端 DTO 字段是否一致。</li>
+    <li>WebSocket <code>type/key/data</code> 是否一致。</li>
+    <li>viewer message type 是否一致。</li>
+    <li>Nacos 配置是否在当前环境生效。</li>
+    <li>异步任务状态是否进入终态。</li>
+    <li>日志里能否串起同一个 requestId / traceId。</li>
+  </ul>
+
+  <h2>6. 新手最容易踩的坑</h2>
+  <ul>
+    <li>只改了服务端 DTO，忘了前端类型和调用参数。</li>
+    <li>只在一个仓库测通过，没跑跨仓真实链路。</li>
+    <li>看错环境配置，以为代码没生效。</li>
+    <li>枚举新增了状态，但前端没有处理这个状态。</li>
+  </ul>
+
+  <div class="quiz" id="quiz1"><div class="quiz-title">Q1：跨仓需求第一步先判断什么？</div><ul class="quiz-options" data-correct="0"><li onclick="checkQuiz('quiz1',0)">A. 影响仓库</li><li onclick="checkQuiz('quiz1',1)">B. 字体颜色</li><li onclick="checkQuiz('quiz1',2)">C. 空格数量</li><li onclick="checkQuiz('quiz1',3)">D. 注释风格</li></ul><div class="quiz-feedback"></div></div>
+  <div class="quiz" id="quiz2"><div class="quiz-title">Q2：client 模块最像什么？</div><ul class="quiz-options" data-correct="2"><li onclick="checkQuiz('quiz2',0)">A. 页面样式</li><li onclick="checkQuiz('quiz2',1)">B. 本地缓存</li><li onclick="checkQuiz('quiz2',2)">C. 调用合同</li><li onclick="checkQuiz('quiz2',3)">D. 图片资源</li></ul><div class="quiz-feedback"></div></div>
+  <div class="quiz" id="quiz3"><div class="quiz-title">Q3：枚举状态新增后必须检查什么？</div><ul class="quiz-options" data-correct="1"><li onclick="checkQuiz('quiz3',0)">A. 标题字号</li><li onclick="checkQuiz('quiz3',1)">B. 前后端判断</li><li onclick="checkQuiz('quiz3',2)">C. 文件图标</li><li onclick="checkQuiz('quiz3',3)">D. 目录颜色</li></ul><div class="quiz-feedback"></div></div>
+
+  <div class="ask-agent">复习时可以问 agent：给我一个跨 ai-home、ai-native-service、auto-layout-service 的需求拆解模板。</div>
+  <nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 040</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0039-async-task-state-machine.html">上一课：039 AIHom 前端入口 08：异步任务与状态机基础</a><a class="primary" href="0041-ai-native-service-overview.html">下一课：041 ai-native-service 项目全景</a></div></nav>
+</main>
+<script>
+function checkQuiz(q,s){const box=document.getElementById(q),opts=box.querySelector('.quiz-options'),c=Number(opts.dataset.correct),items=opts.querySelectorAll('li'),fb=box.querySelector('.quiz-feedback');items.forEach((item,i)=>{item.onclick=null;if(i===c)item.classList.add('correct');if(i===s&&i!==c)item.classList.add('wrong')});const text={quiz1:['正确。先判断影响哪些仓库，才能安排改动和联调。','不对。跨仓需求先判断影响仓库。'],quiz2:['正确。client 模块是服务调用边界的合同。','不对。client 更像调用合同。'],quiz3:['正确。枚举状态新增后，前后端所有判断都要同步检查。','不对。新增状态要检查前后端判断。']};fb.style.display='block';fb.textContent=s===c?text[q][0]:text[q][1];fb.style.background=s===c?'#dcfce7':'#fee2e2'}
+</script>
+</body>
+</html>

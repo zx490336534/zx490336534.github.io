@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MongoDB 基础入门</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--text-secondary:#78716c;--accent:#b45309;--accent-light:#fef3c7;--border:#e7e5e4;--code-bg:#f5f5f4;--success:#16a34a;--warning:#d97706;--info:#2563eb;--purple:#7c3aed}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.8;font-size:16px}
+  .container{max-width:900px;margin:0 auto;padding:3rem 2rem}
+  h1{font-size:2.5rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em}
+  .subtitle{color:var(--text-secondary);font-size:1.1rem;margin-bottom:2rem}
+  .desc{color:var(--text-secondary);font-size:.95rem;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+  h2{font-size:1.4rem;font-weight:700;margin-top:2.5rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+  h2 .icon{font-size:1.5rem}
+  h3{font-size:1.15rem;font-weight:600;margin-top:1.5rem;margin-bottom:.75rem}
+  p{margin-bottom:1rem}
+  ul{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.5rem}
+  ol{margin:.5rem 0 1rem 1.5rem}ol li{margin-bottom:.5rem}
+  code{font-family:'JetBrains Mono',monospace;background:var(--code-bg);padding:.15rem .4rem;border-radius:4px;font-size:.88em}
+  pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0;overflow-x:auto;font-size:.88rem;line-height:1.6}
+  pre code{background:none;padding:0}
+  .tag{display:inline-block;padding:.1rem .4rem;border-radius:4px;font-size:.7rem;font-weight:500;margin-right:.3rem}
+  .tag.overview{background:#dbeafe;color:#2563eb}
+  .tag.concept{background:#dcfce7;color:#16a34a}
+  .tag.code{background:#fef3c7;color:#b45309}
+  .callout{border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0;font-size:.9rem}
+  .callout.info{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
+  .callout.tip{background:var(--accent-light);border:1px solid #fbbf24;color:var(--accent)}
+  .callout.warning{background:#fef2f2;border:1px solid #fecaca;color:#b91c1c}
+  .callout::before{font-weight:700;margin-right:.3rem}
+  .callout.info::before{content:'💡 '}
+  .callout.tip::before{content:'📌 '}
+  .callout.warning::before{content:'⚠️ '}
+  table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.9rem}
+  th,td{border:1px solid var(--border);padding:.6rem .8rem;text-align:left}
+  th{background:var(--code-bg);font-weight:600}
+  .quiz-section{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.5rem;margin:1.5rem 0}
+  .quiz-section h3{color:var(--accent);margin-bottom:1rem}
+  .quiz-q{margin-bottom:1.5rem}
+  .quiz-q p{font-weight:600;margin-bottom:.5rem}
+  .quiz-q label{display:block;padding:.5rem .75rem;margin:.3rem 0;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .2s;font-size:.9rem}
+  .quiz-q label:hover{border-color:var(--accent);background:var(--accent-light)}
+  .quiz-q input[type="radio"]{margin-right:.5rem}
+  .quiz-btn{background:var(--accent);color:white;border:none;padding:.6rem 1.5rem;border-radius:6px;cursor:pointer;font-size:.95rem;font-weight:500;margin-top:1rem}
+  .quiz-btn:hover{opacity:.9}
+  .quiz-result{margin-top:1rem;padding:1rem;border-radius:6px;font-weight:500;display:none}
+  .quiz-result.pass{background:#dcfce7;color:#16a34a;border:1px solid #86efac}
+  .quiz-result.fail{background:#fef2f2;color:#b91c1c;border:1px solid #fecaca}
+  .back-link{display:inline-block;margin-bottom:2rem;color:var(--accent);text-decoration:none;font-size:.9rem}
+  .back-link:hover{text-decoration:underline}
+  .breadcrumb{color:var(--text-secondary);font-size:.85rem;margin-bottom:.5rem}
+  .divider{border:none;border-top:1px solid var(--border);margin:2.5rem 0}
+</style>
+</head>
+<body>
+<div class="container">
+
+<a class="back-link" href="../lessons/index.html">← 返回课程目录</a>
+<div class="breadcrumb">概念教程 / 数据库</div>
+
+<h1>MongoDB 基础入门</h1>
+<p class="subtitle"><span class="tag overview">概念</span> 面向零基础小白的 MongoDB 入门教程</p>
+<p class="desc">本教程将带你了解 MongoDB 这个流行的 NoSQL 数据库。学完后你将理解文档/集合/数据库的核心概念，以及如何在 Spring Boot 项目中使用 Spring Data MongoDB。</p>
+
+<!-- ==================== 第一部分：什么是 NoSQL ==================== -->
+<h2><span class="icon">📦</span> 什么是 NoSQL</h2>
+
+<p>在学习 MongoDB 之前，我们先搞清楚一个前置概念：<strong>NoSQL</strong>。</p>
+
+<h3>SQL vs NoSQL</h3>
+<p><strong>SQL</strong>（Structured Query Language）是传统关系型数据库的统称，比如 MySQL、PostgreSQL、Oracle。它们用<strong>表格</strong>（行和列）来存储数据。</p>
+<p><strong>NoSQL</strong>（Not Only SQL）是"不仅仅是 SQL"的意思，泛指<strong>非关系型数据库</strong>。它们不用固定的表格结构，数据存储方式更灵活。</p>
+
+<div class="callout tip">
+<strong>一句话理解：</strong>如果 SQL 数据库像 Excel 表格（每行必须有相同的列），那 NoSQL 数据库就像一个文件夹，里面的每个文件可以有不同的内容。
+</div>
+
+<h3>常见的 NoSQL 数据库类型</h3>
+<table>
+<tr><th>类型</th><th>代表产品</th><th>特点</th></tr>
+<tr><td>文档型</td><td>MongoDB、CouchDB</td><td>数据以 JSON 文档存储，灵活</td></tr>
+<tr><td>键值型</td><td>Redis、Memcached</td><td>简单 key-value，速度极快</td></tr>
+<tr><td>列族型</td><td>Cassandra、HBase</td><td>适合海量数据分析</td></tr>
+<tr><td>图数据库</td><td>Neo4j</td><td>擅长处理关系网络</td></tr>
+</table>
+
+<p>MongoDB 属于<strong>文档型数据库</strong>，是目前最流行的 NoSQL 数据库之一。</p>
+
+<hr class="divider">
+
+<!-- ==================== 第二部分：MongoDB vs MySQL ==================== -->
+<h2><span class="icon">⚖️</span> MongoDB vs MySQL</h2>
+
+<p>很多初学者会问：既然有了 MySQL，为什么还需要 MongoDB？让我们来对比一下：</p>
+
+<table>
+<tr><th>对比维度</th><th>MySQL（关系型）</th><th>MongoDB（文档型）</th></tr>
+<tr><td>数据结构</td><td>固定的表结构（Schema）</td><td>灵活的文档结构（Schema-less）</td></tr>
+<tr><td>存储格式</td><td>行和列</td><td>JSON/BSON 文档</td></tr>
+<tr><td>查询语言</td><td>SQL</td><td>MongoDB Query Language</td></tr>
+<tr><td>关联查询</td><td>JOIN 非常强</td><td>嵌套文档或 $lookup</td></tr>
+<tr><td>扩展方式</td><td>垂直扩展（加硬件）</td><td>水平扩展（加机器）</td></tr>
+<tr><td>事务支持</td><td>完善的 ACID 事务</td><td>4.0+ 支持多文档事务</td></tr>
+<tr><td>适合场景</td><td>结构化数据、复杂查询</td><td>灵活数据、快速迭代</td></tr>
+</table>
+
+<div class="callout info">
+<strong>什么时候选 MongoDB？</strong><br>
+- 数据结构经常变化（比如需求还在迭代中）<br>
+- 数据之间关系不复杂（不需要很多 JOIN）<br>
+- 需要存储 JSON 格式的数据（比如 API 响应、日志）<br>
+- 需要快速开发，不想先定义表结构
+</div>
+
+<hr class="divider">
+
+<!-- ==================== 第三部分：核心概念 ==================== -->
+<h2><span class="icon">📄</span> 文档 / 集合 / 数据库</h2>
+
+<p>MongoDB 有三个核心概念，理解了它们就理解了 MongoDB 的数据组织方式：</p>
+
+<h3>1. 文档（Document）</h3>
+<p>文档是 MongoDB 中最小的数据单元，就是一个 <strong>JSON 对象</strong>（技术上是 BSON，二进制 JSON）。</p>
+
+<pre><code>{
+  "_id": "507f1f77bcf86cd799439011",
+  "name": "张三",
+  "age": 25,
+  "hobbies": ["编程", "打游戏"],
+  "address": {
+    "city": "北京",
+    "district": "海淀区"
+  }
+}</code></pre>
+
+<div class="callout tip">
+<strong>注意：</strong>每个文档都有一个 <code>_id</code> 字段作为唯一标识，类似 MySQL 的主键。如果你不提供，MongoDB 会自动生成一个。
+</div>
+
+<h3>2. 集合（Collection）</h3>
+<p>集合就是一组文档的"容器"，类似 MySQL 中的<strong>表（Table）</strong>。</p>
+<ul>
+<li>一个集合里的文档可以有不同的字段（不像 MySQL 每行必须有相同的列）</li>
+<li>通常我们会让同一个集合里的文档保持相似的结构</li>
+<li>集合名一般是复数形式，比如 <code>users</code>、<code>orders</code></li>
+</ul>
+
+<h3>3. 数据库（Database）</h3>
+<p>数据库是集合的"容器"，一个 MongoDB 服务器可以有多个数据库。类似 MySQL 中的数据库概念。</p>
+
+<pre><code>MongoDB 服务器
+├── 数据库: kuai_service
+│   ├── 集合: users
+│   │   ├── 文档: { name: "张三", age: 25 }
+│   │   └── 文档: { name: "李四", age: 30 }
+│   └── 集合: prompts
+│       └── 文档: { title: "测试提示词", content: "..." }
+└── 数据库: test_db
+    └── 集合: logs
+        └── 文档: { level: "info", message: "..." }
+</code></pre>
+
+<div class="callout info">
+<strong>层级关系：</strong>数据库 → 集合 → 文档，就像 文件夹 → 子文件夹 → 文件。
+</div>
+
+<hr class="divider">
+
+<!-- ==================== 第四部分：Spring Data MongoDB ==================== -->
+<h2><span class="icon">🍃</span> Spring Data MongoDB</h2>
+
+<p>在 Spring Boot 项目中，我们可以使用 <strong>Spring Data MongoDB</strong> 来操作 MongoDB。它提供了三种主要方式：</p>
+
+<h3>1. @Document 注解 — 定义数据模型</h3>
+<p><code>@Document</code> 注解用来标记一个 Java 类对应 MongoDB 中的哪个集合：</p>
+
+<pre><code>@Document(collection = "users")  // 对应 MongoDB 的 users 集合
+public class User {
+    @Id
+    private String id;            // 对应 _id 字段
+    private String name;
+    private Integer age;
+    private List&lt;String&gt; hobbies;
+    
+    // getter/setter 省略
+}</code></pre>
+
+<div class="callout tip">
+<strong>类比：</strong><code>@Document</code> 就像 MyBatis-Plus 的 <code>@TableName</code>，告诉框架"这个类对应数据库的哪个表（集合）"。
+</div>
+
+<h3>2. MongoTemplate — 灵活操作数据库</h3>
+<p><code>MongoTemplate</code> 是一个功能强大的工具类，可以执行各种复杂的数据库操作：</p>
+
+<pre><code>@Service
+public class UserService {
+    
+    @Autowired
+    private MongoTemplate mongoTemplate;
+    
+    // 插入一条数据
+    public User createUser(User user) {
+        return mongoTemplate.insert(user);
+    }
+    
+    // 查询：找名字为"张三"的用户
+    public User findByName(String name) {
+        Query query = new Query(Criteria.where("name").is(name));
+        return mongoTemplate.findOne(query, User.class);
+    }
+    
+    // 更新：修改年龄
+    public void updateAge(String id, Integer age) {
+        Query query = new Query(Criteria.where("id").is(id));
+        Update update = new Update().set("age", age);
+        mongoTemplate.updateFirst(query, update, User.class);
+    }
+    
+    // 删除
+    public void deleteUser(String id) {
+        Query query = new Query(Criteria.where("id").is(id));
+        mongoTemplate.remove(query, User.class);
+    }
+}</code></pre>
+
+<h3>3. Repository — 自动实现查询</h3>
+<p>类似 Spring Data JPA 的 <code>JpaRepository</code>，只需要定义接口，Spring 会自动实现：</p>
+
+<pre><code>public interface UserRepository extends MongoRepository&lt;User, String&gt; {
+    
+    // 按名字查找 — 只需定义方法名，Spring 自动生成实现
+    User findByName(String name);
+    
+    // 按年龄范围查找
+    List&lt;User&gt; findByAgeBetween(Integer min, Integer max);
+    
+    // 按名字模糊查询
+    List&lt;User&gt; findByNameContaining(String keyword);
+    
+    // 按年龄降序排列
+    List&lt;User&gt; findAllByOrderByAgeDesc();
+}</code></pre>
+
+<div class="callout info">
+<strong>三种方式怎么选？</strong><br>
+- 简单 CRUD → 用 <strong>Repository</strong>（最简单）<br>
+- 复杂查询/聚合 → 用 <strong>MongoTemplate</strong>（最灵活）<br>
+- 两者可以同时使用，互不冲突
+</div>
+
+<hr class="divider">
+
+<!-- ==================== Quiz ==================== -->
+<div class="quiz-section">
+<h3>📝 Quiz — 检验你的学习成果</h3>
+
+<div class="quiz-q">
+<p>Q1：MongoDB 属于哪种类型的数据库？</p>
+<label><input type="radio" name="q1" value="A"> A. 关系型数据库</label>
+<label><input type="radio" name="q1" value="B"> B. 文档型 NoSQL 数据库</label>
+<label><input type="radio" name="q1" value="C"> C. 键值型数据库</label>
+<label><input type="radio" name="q1" value="D"> D. 图数据库</label>
+</div>
+
+<div class="quiz-q">
+<p>Q2：在 MongoDB 中，一个文档（Document）最接近 MySQL 中的哪个概念？</p>
+<label><input type="radio" name="q2" value="A"> A. 数据库（Database）</label>
+<label><input type="radio" name="q2" value="B"> B. 表（Table）</label>
+<label><input type="radio" name="q2" value="C"> C. 一行数据（Row）</label>
+<label><input type="radio" name="q2" value="D"> D. 一个字段（Column）</label>
+</div>
+
+<div class="quiz-q">
+<p>Q3：Spring Data MongoDB 中，哪种方式最适合简单的 CRUD 操作？</p>
+<label><input type="radio" name="q3" value="A"> A. MongoTemplate</label>
+<label><input type="radio" name="q3" value="B"> B. @Document 注解</label>
+<label><input type="radio" name="q3" value="C"> C. MongoRepository 接口</label>
+<label><input type="radio" name="q3" value="D"> D. 直接写 SQL</label>
+</div>
+
+<button class="quiz-btn" onclick="checkQuiz()">提交答案</button>
+<div class="quiz-result" id="quizResult"></div>
+</div>
+
+<script>
+function checkQuiz(){
+  var answers={q1:'B',q2:'C',q3:'C'};
+  var score=0,total=3;
+  for(var q in answers){
+    var selected=document.querySelector('input[name="'+q+'"]:checked');
+    if(selected && selected.value===answers[q])score++;
+  }
+  var el=document.getElementById('quizResult');
+  el.style.display='block';
+  if(score===total){
+    el.className='quiz-result pass';
+    el.innerHTML='🎉 满分！你已经掌握了 MongoDB 的基础知识！';
+  }else{
+    el.className='quiz-result fail';
+    el.innerHTML='答对 '+score+'/'+total+' 题，再回顾一下内容吧～ 正确答案：Q1-B, Q2-C, Q3-C';
+  }
+}
+</script>
+
+<div class="callout info" style="margin-top:2rem">
+<strong>遇到不懂的地方？</strong>直接问 Agent。比如："帮我解释 MongoDB 的聚合管道怎么用" 或 "MongoDB 和 MySQL 在事务处理上有什么区别"。
+</div>
+
+</div>
+</body>
+</html>

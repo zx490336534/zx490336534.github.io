@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>047 auto-layout-service 深度追踪</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --text-secondary: #78716c;
+    --accent: #b45309;
+    --accent-light: #fef3c7;
+    --border: #e7e5e4;
+    --code-bg: #f5f5f4;
+    --success: #16a34a;
+    --warning: #d97706;
+    --info: #2563eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    font-size: 16px;
+  }
+
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 1rem; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1rem 0;
+  }
+
+  .card.info { border-left: 3px solid var(--info); }
+  .card.warning { border-left: 3px solid var(--warning); }
+  .card.success { border-left: 3px solid var(--success); }
+
+  .card-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+  .card.info .card-label { color: var(--info); }
+  .card.warning .card-label { color: var(--warning); }
+  .card.success .card-label { color: var(--success); }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    font-size: 0.88em;
+  }
+
+  pre {
+    background: #1c1917;
+    color: #e7e5e4;
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1rem 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  pre .comment { color: #78716c; }
+  pre .keyword { color: #f59e0b; }
+  pre .string { color: #86efac; }
+  pre .dir { color: #93c5fd; }
+  pre .file { color: #e7e5e4; }
+  pre .important { color: #fbbf24; font-weight: 500; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.92rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .tree { margin: 1rem 0; }
+
+  .quiz {
+    background: var(--accent-light);
+    border: 1px solid #fbbf24;
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .quiz-title {
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--accent);
+  }
+  .quiz-options { list-style: none; }
+  .quiz-options li {
+    padding: 0.5rem 0.75rem;
+    margin: 0.35rem 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: 1px solid transparent;
+  }
+  .quiz-options li:hover { background: #fde68a33; border-color: #fbbf24; }
+  .quiz-options li.correct { background: #dcfce7; border-color: #16a34a; }
+  .quiz-options li.wrong { background: #fee2e2; border-color: #ef4444; }
+  .quiz-feedback {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    display: none;
+    font-size: 0.9rem;
+  }
+
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+  }
+  .flow-step {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .flow-arrow { color: var(--text-secondary); }
+
+  .next-lesson {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .next-lesson a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .next-lesson a:hover { text-decoration: underline; }
+
+  .ask-agent {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+    color: #1e40af;
+  }
+  .ask-agent::before { content: '💡 '; }
+
+  ul, ol { margin: 0.5rem 0 1rem 1.5rem; }
+  li { margin-bottom: 0.3rem; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>047 auto-layout-service 深度追踪</h1>
+<p class="subtitle">深入理解自动布局引擎的 Processor 模式、数据流与双通道并行架构</p>
+
+<!-- ==================== Section 1 ==================== -->
+<h2>1. 项目定位</h2>
+
+<p><code>auto-layout-service</code> 是 AI Home 的<strong>自动布局引擎</strong>。当用户上传户型图后，这个服务负责完成从户型识别到家具摆放的全部自动化流程。</p>
+
+<div class="card info">
+  <div class="card-label">一句话定位</div>
+  <p>接收户型图请求 → 调用 AI 识别户型 → 自动生成家具布局方案 → 返回结果。<strong>Processor 模式</strong>驱动的异步任务引擎。</p>
+</div>
+
+<h3>三模块结构</h3>
+<table>
+  <tr><th>模块</th><th>职责</th></tr>
+  <tr><td><code>auto-layout-service-common</code></td><td>共享 DTO、VO、枚举</td></tr>
+  <tr><td><code>auto-layout-service-client</code></td><td>Feign 客户端，供外部服务调用</td></tr>
+  <tr><td><code>auto-layout-service-web</code></td><td><strong>核心业务</strong> — Processor、Manager、Service 全在这里</td></tr>
+</table>
+
+<!-- ==================== Section 2 ==================== -->
+<h2>2. Processor 继承体系</h2>
+
+<p>Processor 是 auto-layout-service 的<strong>核心设计模式</strong>。每一个异步任务（如自动布局、户型识别）都由一个 Processor 实例驱动。继承体系如下：</p>
+
+<pre>
+<span class="important">BaseProcessor</span>  （最底层，定义 doProcess 抽象模板）
+    │
+    ├── <span class="important">BaseAsyncProcessor</span>  （异步任务生命周期管理）
+    │       │
+    │       ├── <span class="important">BaseDbTaskAsyncProcessor</span>  （DB 持久化任务状态）
+    │       │       └── SubmitAutoDesignV2AsyncProcessor
+    │       │
+    │       └── <span class="important">BaseRedisTaskAsyncProcessor</span>  （Redis 管理任务状态）
+    │               └── AutoLayoutWithImageProcessor
+    │
+    └── (同步 Processor，直接执行)
+</pre>
+
+<div class="card warning">
+  <div class="card-label">关键区别</div>
+  <p><strong>BaseDbTaskAsyncProcessor</strong> 用 MySQL 存任务状态，适合需要持久化的长任务；<strong>BaseRedisTaskAsyncProcessor</strong> 用 Redis 存任务状态，适合高并发、短生命周期的任务。两者继承路径不同（一个走 BaseAsyncProcessor，一个走 BaseAsyncV2Processor）。</p>
+</div>
+
+<h3>BaseAsyncProcessor.doProcess() 核心流程</h3>
+
+<div class="flow">
+  <span class="flow-step">getExistTask()</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">executeNewTask()</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">initTask()</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">doAsyncProcess()</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">onSuccess() / onError()</span>
+</div>
+
+<ol>
+  <li><strong>getExistTask()</strong> — 检查是否已有相同任务在执行，防止重复提交</li>
+  <li><strong>executeNewTask()</strong> — 判断是否需要创建新任务</li>
+  <li><strong>initTask()</strong> — 初始化任务记录（写 DB 或写 Redis）</li>
+  <li><strong>doAsyncProcess()</strong> — 提交到线程池执行真正的业务逻辑</li>
+  <li><strong>onSuccess() / onError()</strong> — 完成回调，更新任务状态</li>
+</ol>
+
+<!-- ==================== Section 3 ==================== -->
+<h2>3. AutoLayoutWithImage 完整数据流</h2>
+
+<p>当用户提交"带图片的自动布局"请求时，完整链路如下：</p>
+
+<div class="flow">
+  <span class="flow-step">API 请求</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">SubmitAutoDesignV2AsyncProcessor</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">AutoLayoutWithImageProcessor</span>
+  <span class="flow-arrow">→</span>
+  <span class="flow-step">返回结果</span>
+</div>
+
+<h3>AutoLayoutWithImageProcessor.doProcessInner() 三步走</h3>
+
+<table>
+  <tr><th>步骤</th><th>方法</th><th>做了什么</th></tr>
+  <tr>
+    <td>1. 上色</td>
+    <td><code>coloringLayoutImage()</code></td>
+    <td>调用 <strong>AiNativeManager</strong>，把黑白户型图上色，生成彩色户型图</td>
+  </tr>
+  <tr>
+    <td>2. 分析</td>
+    <td><code>getLayoutWithImage()</code></td>
+    <td>调用 <strong>OpenaiManager</strong>，把彩色图发给 OpenAI Vision，识别房间类型和位置</td>
+  </tr>
+  <tr>
+    <td>3. 构建</td>
+    <td><code>buildAutoLayoutDesign()</code></td>
+    <td>根据 AI 识别结果，匹配家具、计算布局坐标，生成最终方案</td>
+  </tr>
+</table>
+
+<div class="card success">
+  <div class="card-label">设计亮点</div>
+  <p>步骤 1 和步骤 2 分别调用不同的 AI 服务（AiNative + OpenAI），通过 Manager 层封装实现了<strong>AI 服务的解耦</strong>。Processor 不关心 AI 具体怎么调，只管编排流程。</p>
+</div>
+
+<!-- ==================== Section 4 ==================== -->
+<h2>4. 双通道并行布局</h2>
+
+<p>系统设计了两条并行的布局通道，通过不同的策略生成布局方案：</p>
+
+<table>
+  <tr><th>通道</th><th>策略</th><th>适用场景</th></tr>
+  <tr>
+    <td><strong>RAG</strong></td>
+    <td>从历史案例库中检索相似户型，参考历史方案生成布局</td>
+    <td>常见户型、有历史数据的情况</td>
+  </tr>
+  <tr>
+    <td><strong>PRODUCT_CONFIG</strong></td>
+    <td>基于产品配置规则，按照户型参数和家具规格直接计算布局</td>
+    <td>新户型、无历史数据的情况</td>
+  </tr>
+</table>
+
+<div class="card info">
+  <div class="card-label">为什么双通道</div>
+  <p>单一策略容易出现盲区。RAG 在有历史数据时效果好，但新户型没有参考；PRODUCT_CONFIG 通用但缺乏个性化。双通道并行 + 择优，保证覆盖率和质量。</p>
+</div>
+
+<!-- ==================== Section 5 ==================== -->
+<h2>5. ThreadLocal 上下文传递</h2>
+
+<p>异步任务在不同线程间执行时，如何传递请求级别的上下文信息？</p>
+
+<p>auto-layout-service 使用 <code>AutoLayoutContext</code>（ThreadLocal 模式）来解决这个问题：</p>
+
+<pre>
+<span class="comment">// 在请求入口设置上下文</span>
+AutoLayoutContext context = <span class="keyword">new</span> AutoLayoutContext();
+context.setUserId(userId);
+context.setTaskId(taskId);
+AutoLayoutContext.<span class="important">set</span>(context);
+
+<span class="comment">// 在任何地方获取上下文</span>
+AutoLayoutContext ctx = AutoLayoutContext.<span class="important">get</span>();
+String taskId = ctx.getTaskId();
+</pre>
+
+<div class="card warning">
+  <div class="card-label">注意</div>
+  <p>ThreadLocal 在异步线程中会丢失！Processor 的 <code>doAsyncProcess()</code> 提交到线程池时，需要<strong>手动传递上下文</strong>到子线程。这也是为什么 <code>context/</code> 目录专门存放上下文类的原因。</p>
+</div>
+
+<!-- ==================== Section 6 ==================== -->
+<h2>6. Manager 层封装</h2>
+
+<p>Manager 层是 Processor 与外部服务之间的<strong>缓冲层</strong>。Processor 只管编排流程，具体的外部调用全交给 Manager。</p>
+
+<table>
+  <tr><th>Manager</th><th>职责</th></tr>
+  <tr><td><code>OpenaiManager</code></td><td>OpenAI API — chat completions、embeddings、图像分析（com.openai SDK）</td></tr>
+  <tr><td><code>AiNativeManager</code></td><td>AI Native 图像生成服务（ai-native-service-client）</td></tr>
+  <tr><td><code>AutoDesignInfoManager</code></td><td>任务 CRUD — 创建、查询、更新 AutoDesign 任务记录</td></tr>
+  <tr><td><code>KamManager</code></td><td>KAM 户型服务 — 户型数据查询</td></tr>
+  <tr><td><code>LOD200Manager</code> / <code>LOD300Manager</code></td><td>不同精度级别的户型处理服务</td></tr>
+</table>
+
+<div class="card success">
+  <div class="card-label">设计原则</div>
+  <p><strong>一个 Manager 对应一个外部依赖</strong>。如果要接入新的 AI 服务，只需要新建一个 Manager，Processor 层的编排逻辑不需要大改。</p>
+</div>
+
+<!-- ==================== Section 7 ==================== -->
+<h2>7. 关键目录速查</h2>
+
+<pre>
+auto-layout-service-web/src/main/java/.../web/
+├── <span class="dir">processor/</span>
+│   ├── <span class="dir">base/</span>              <span class="comment"># BaseProcessor、BaseAsyncProcessor 等基类</span>
+│   └── <span class="dir">layoutv2/</span>          <span class="comment"># Layout v2 具体 Processor 实现</span>
+│
+├── <span class="dir">manager/</span>               <span class="comment"># 业务逻辑 + 外部服务调用封装</span>
+│   ├── OpenaiManager.java
+│   ├── AiNativeManager.java
+│   ├── AutoDesignInfoManager.java
+│   └── ...
+│
+├── <span class="dir">service/</span>               <span class="comment"># Service 层</span>
+├── <span class="dir">mapper/</span>                <span class="comment"># MyBatis Mapper</span>
+├── <span class="dir">context/</span>               <span class="comment"># ThreadLocal 上下文</span>
+│   └── AutoLayoutContext.java
+├── <span class="dir">config/</span>                <span class="comment"># 配置类</span>
+├── <span class="dir">bean/</span>
+│   ├── <span class="dir">po/</span>               <span class="comment"># 持久化对象</span>
+│   ├── <span class="dir">vo/</span>               <span class="comment"># 请求/响应 VO</span>
+│   └── <span class="dir">dto/</span>              <span class="comment"># 数据传输对象</span>
+</pre>
+
+<!-- ==================== Quiz ==================== -->
+<h2>8. 自检 Quiz</h2>
+
+<div class="quiz" id="quiz1">
+  <div class="quiz-title">Q1: BaseRedisTaskAsyncProcessor 的任务状态存储在哪里？</div>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz1', 0)">A. MySQL 数据库</li>
+    <li onclick="checkQuiz('quiz1', 1)">B. Redis</li>
+    <li onclick="checkQuiz('quiz1', 2)">C. 本地内存</li>
+    <li onclick="checkQuiz('quiz1', 3)">D. Nacos 配置中心</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz2">
+  <div class="quiz-title">Q2: AutoLayoutWithImageProcessor 的三步流程中，coloringLayoutImage() 调用的是哪个 Manager？</div>
+  <ul class="quiz-options" data-correct="2">
+    <li onclick="checkQuiz('quiz2', 0)">A. OpenaiManager</li>
+    <li onclick="checkQuiz('quiz2', 1)">B. AutoDesignInfoManager</li>
+    <li onclick="checkQuiz('quiz2', 2)">C. AiNativeManager</li>
+    <li onclick="checkQuiz('quiz2', 3)">D. KamManager</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<div class="quiz" id="quiz3">
+  <div class="quiz-title">Q3: 双通道并行布局的两个通道分别是什么？</div>
+  <ul class="quiz-options" data-correct="0">
+    <li onclick="checkQuiz('quiz3', 0)">A. RAG 和 PRODUCT_CONFIG</li>
+    <li onclick="checkQuiz('quiz3', 1)">B. OpenAI 和 AiNative</li>
+    <li onclick="checkQuiz('quiz3', 2)">C. LOD200 和 LOD300</li>
+    <li onclick="checkQuiz('quiz3', 3)">D. DB 和 Redis</li>
+  </ul>
+  <div class="quiz-feedback"></div>
+</div>
+
+<!-- ==================== Next ==================== -->
+
+</div>
+</div>
+
+<script>
+function checkQuiz(quizId, selected) {
+  const quiz = document.getElementById(quizId);
+  const options = quiz.querySelector('.quiz-options');
+  const correct = parseInt(options.dataset.correct);
+  const items = options.querySelectorAll('li');
+  const feedback = quiz.querySelector('.quiz-feedback');
+
+  items.forEach((item, i) => {
+    item.onclick = null;
+    if (i === correct) item.classList.add('correct');
+    if (i === selected && i !== correct) item.classList.add('wrong');
+  });
+
+  const feedbacks = {
+    quiz1: {
+      correct: '✓ 对！BaseRedisTaskAsyncProcessor 用 Redis 管理任务状态，适合高并发场景。',
+      wrong: '✗ 是 Redis。从名字就能看出来 — BaseRedisTaskAsyncProcessor 用 Redis 存任务状态，BaseDbTaskAsyncProcessor 才用 MySQL。'
+    },
+    quiz2: {
+      correct: '✓ 对！coloringLayoutImage() 调用 AiNativeManager 生成彩色户型图。',
+      wrong: '✗ 是 AiNativeManager。上色功能由 AI Native 图像生成服务提供，OpenaiManager 负责的是下一步的图像分析。'
+    },
+    quiz3: {
+      correct: '✓ 对！RAG 从历史案例检索，PRODUCT_CONFIG 基于规则计算，双通道并行择优。',
+      wrong: '✗ 是 RAG 和 PRODUCT_CONFIG。这两个是布局策略通道，不是 AI 服务或存储通道。'
+    }
+  };
+
+  feedback.style.display = 'block';
+  feedback.textContent = selected === correct
+    ? feedbacks[quizId].correct
+    : feedbacks[quizId].wrong;
+  feedback.style.background = selected === correct ? '#dcfce7' : '#fee2e2';
+}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 047</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0046-ai-native-deep-dive.html">上一课：046 ai-native-service 深度追踪</a><a class="primary" href="0048-ai-home-deep-dive.html">下一课：048 ai-home 前端深度追踪</a></div></nav>
+</body>
+</html>

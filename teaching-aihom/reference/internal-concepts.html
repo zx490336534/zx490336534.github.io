@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIHom 公司内部概念速查</title>
+<style>
+  :root{--bg:#f8fafc;--surface:#fff;--text:#111827;--muted:#64748b;--border:#dbe3ee;--accent:#0f766e;--info:#2563eb;--warn:#b45309;--code:#f1f5f9}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:16px/1.75 -apple-system,BlinkMacSystemFont,"Noto Sans SC","Segoe UI",sans-serif}
+  main{max-width:980px;margin:0 auto;padding:3rem 1.4rem 5rem}
+  h1{font-size:2rem;line-height:1.25;margin:.2rem 0 .6rem}
+  h2{font-size:1.28rem;margin:2rem 0 .7rem;border-top:1px solid var(--border);padding-top:1.2rem}
+  h3{font-size:1rem;margin:1.3rem 0 .4rem;color:#334155}
+  p{margin:.35rem 0 1rem}.lead{color:#374151;max-width:820px}.muted{color:var(--muted)}
+  a{color:var(--info);text-decoration:none}a:hover{text-decoration:underline}
+  code{background:var(--code);border-radius:4px;padding:.12em .35em;font-family:Menlo,Consolas,monospace;font-size:.9em}
+  table{width:100%;border-collapse:collapse;margin:.7rem 0 1.2rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+  th,td{border-bottom:1px solid var(--border);padding:.65rem .75rem;text-align:left;vertical-align:top}
+  th{font-size:.82rem;color:var(--muted);font-weight:700;background:#f1f5f9}
+  tr:last-child td{border-bottom:0}
+  .card{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:8px;padding:1rem 1.15rem;margin:1rem 0}
+  .label{font-size:.76rem;font-weight:700;color:var(--accent);letter-spacing:.04em;text-transform:uppercase;margin-bottom:.35rem}
+  .nav{margin:2rem 0 0;padding:1rem;border:1px solid var(--border);background:#fff;border-radius:8px;display:flex;gap:.6rem;flex-wrap:wrap}
+  .nav a{border:1px solid var(--border);border-radius:6px;padding:.35rem .65rem;color:#334155}.nav a.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  @media(max-width:720px){main{padding:2rem 1rem 4rem}table{font-size:.92rem}th,td{padding:.55rem}}
+</style>
+</head>
+<body>
+<main>
+  <p class="muted">AIHom Teaching Workspace · Reference</p>
+  <h1>AIHom 公司内部概念速查</h1>
+  <p class="lead">这页专门解释课程里会遇到的公司内部词。读课程时如果卡在某个专有名词，先来这里查“它是什么、在 AIHom 哪条链路里出现、开发/测试时该看哪里”。</p>
+
+  <div class="card">
+    <div class="label">使用方式</div>
+    <p>不要把这些词当成必须背诵的理论。它们是定位代码和问题的路标：看到词，知道该去哪个仓库、哪类配置、哪条通信链路继续查。</p>
+  </div>
+
+  <h2>1. 产品与工程分层</h2>
+  <table>
+    <tr><th>概念</th><th>小白解释</th><th>AIHom 中的位置</th><th>开发/排查抓手</th></tr>
+    <tr><td><code>ai-home</code></td><td>用户真正打开的 AI 设计前端。</td><td>设计画布、AI 对话抽屉、2D/3D Viewer、前端工具执行。</td><td>先看 <code>package.json</code>、<code>src/app/App.tsx</code>、<code>ConversationManager</code>、<code>FRONT_TOOLS</code>。</td></tr>
+    <tr><td><code>agent-conversation-sdk</code></td><td>前端和 Agent 后端说话的协议层 SDK，不负责 UI 长相。</td><td>WebSocket 建连、会话生命周期、流式消息、取消/重试、前端 MCP 工具桥。</td><td>查连接状态、消息是否发出、<code>toolCall/toolResponse</code> 是否往返。</td></tr>
+    <tr><td><code>ai-native-service</code></td><td>AIHom 的后端 Agent 服务。</td><td>StateGraph 编排、模型调用、MCP 工具调度、消息/项目/权益持久化。</td><td>从 <code>SendMessageHandlerImpl</code>、<code>StateGraphFactory</code>、Tool/Agent 相关类往下追。</td></tr>
+    <tr><td><code>auto-layout-service</code></td><td>AI 自动布局和户型生成相关后端服务。</td><td>布局任务、Processor 异步处理、选品匹配、布局图/结构化结果。</td><td>看 Processor、任务状态、轮询接口、队列状态。</td></tr>
+    <tr><td><code>viewer-2d</code></td><td>2D 户型图/平面查看器。</td><td>PixiJS、Scene2D、Entity/Drawable/Selectable、2D 交互。</td><td>2D 不显示、选中/拖拽异常、户型元素错位时优先查。</td></tr>
+    <tr><td><code>render-3d</code></td><td>3D 渲染和离线出图容器。</td><td>3D 场景、相机、模板、渲染任务、截图/出图状态机。</td><td>3D 截图、渲染图、离线任务、iframe 同步异常时查。</td></tr>
+  </table>
+
+  <h2>2. 会话与实时通信</h2>
+  <table>
+    <tr><th>概念</th><th>小白解释</th><th>AIHom 中的位置</th><th>开发/排查抓手</th></tr>
+    <tr><td>STOMP / WebSocket</td><td>浏览器和后端之间保持一条实时双向通道。</td><td>用户消息、流式回复、notification、toolCall/toolResponse 都走这里。</td><td>浏览器 Network 的 WS frames，后端 socket handler，destination 获取接口。</td></tr>
+    <tr><td><code>RawSocketMessage</code></td><td>AIHom 自己封装的 WebSocket 业务消息外壳。</td><td>把消息类型、业务 key、data 包起来，让 SDK/后端识别该怎么处理。</td><td>排查“消息发了但没反应”时看 <code>key</code>、<code>data</code>、<code>requestId</code> 是否对齐。</td></tr>
+    <tr><td><code>ProcessorMessageType</code></td><td>消息类型枚举，告诉系统这条消息是发送、取消、通知还是工具响应。</td><td>前后端消息分发的关键 switch 条件。</td><td>新增消息类型时要同时看前端 SDK 和后端 handler。</td></tr>
+    <tr><td>会话并发锁</td><td>同一用户同一图一次只允许一个活跃会话，避免 StateGraph 状态被并发写乱。</td><td><code>graphId + userId</code> 维度的 Redisson 锁。</td><td>报 <code>only one conversation is allowed at a time</code> 时先查 Redis 锁 key 和 TTL。</td></tr>
+  </table>
+
+  <h2>3. Agent、工具与 MCP</h2>
+  <table>
+    <tr><th>概念</th><th>小白解释</th><th>AIHom 中的位置</th><th>开发/排查抓手</th></tr>
+    <tr><td>StateGraph / Graph</td><td>把 AI 工作流画成“节点 + 边 + 状态”的流程图。</td><td>后端 Agent 编排主干，决定先理解意图、再调哪个工具、何时结束。</td><td>看 graphId/version、节点构建类、条件边、状态对象。</td></tr>
+    <tr><td>Agent / Supervisor / Harness</td><td>Agent 是执行者；Supervisor 是路由者；Harness 是用代码兜底循环和前置校验的执行框架。</td><td>架构演进从多 Agent 路由逐步收敛到单 Agent + Harness，减少“说完成但没出图”。</td><td>重点看 <code>AihomHarnessLoopStrategy</code> 的 continue/break 条件。</td></tr>
+    <tr><td>MCP</td><td>让大模型调用外部工具的协议。</td><td>AIHom 里既有后端工具，也有必须让浏览器执行的前端工具。</td><td>看 tool name、schema、执行端、tool result 是否回传。</td></tr>
+    <tr><td>MCP 桥接</td><td>后端 Agent 需要前端资源时，通过 WebSocket 让前端执行工具。</td><td>例如搜索/替换模型、3D 截图、读 viewer 状态。</td><td>排查顺序：后端 toolCall → SDK MCPService → FRONT_TOOLS callback → toolResponse。</td></tr>
+    <tr><td>Nacos MCP Registry</td><td>内部 MCP 工具注册/发现相关体系。</td><td>用于管理 MCP 工具元信息、连接端点和存量服务转换方向。</td><td>工具名、端点、权限、schema 对不上时，需要查注册信息和中台配置。</td></tr>
+  </table>
+
+  <h2>4. 配置、环境与基础设施</h2>
+  <table>
+    <tr><th>概念</th><th>小白解释</th><th>AIHom 中的位置</th><th>开发/排查抓手</th></tr>
+    <tr><td>Pilot</td><td>公司 Java 服务运行和部署的一套基础框架/平台约定。</td><td>启动参数、环境信息、中间件版本、<code>/_appConfig/cicd.yml</code>。</td><td>服务本地启动、环境配置、多数据源、部署差异先查 Pilot 相关配置。</td></tr>
+    <tr><td>toad</td><td>公司配置中心，适合放环境差异配置，支持拉取、缓存和热更新。</td><td>如白名单、开关、环境阶段等会随环境变化的配置。</td><td>看配置 key、stage、是否热更新；Python 手册说明客户端会拉远端、写本地缓存、监听变更。</td></tr>
+    <tr><td>Nacos</td><td>配置/注册体系，在 AIHom 中重点承载 Agent 配置。</td><td>Agent、prompt、model、tool、graph 配置可能来自 Nacos。</td><td>查“为什么代码没改但 Agent 行为变了”时，不能只看 Git，要看 Nacos 配置。</td></tr>
+    <tr><td>Redis / Redisson</td><td>缓存、队列、锁。</td><td>会话并发锁、异步任务排队、消息临时缓存、上下文 TTL。</td><td>排查卡住、排队、幽灵锁、消息丢失时必须看 Redis key。</td></tr>
+    <tr><td>RocketMQ</td><td>异步消息队列。</td><td>部分异步持久化或跨服务异步事件。</td><td>关注消费状态、重试、死信队列。</td></tr>
+  </table>
+
+  <h2>4.1 部署与运行命令</h2>
+  <table>
+    <tr><th>概念</th><th>小白解释</th><th>AIHom 中的位置</th><th>开发/排查抓手</th></tr>
+    <tr><td><code>mvn clean deploy -U -DskipTests</code></td><td>后端 Maven 构建并发布制品到远程仓库。</td><td><code>ai-native-service</code> 和 <code>auto-layout-service</code> README 都记录了该命令。</td><td>它不是“启动本地服务”，而是构建/发布产物。启动还要看 IDE VM options、环境变量和 Pilot 配置。</td></tr>
+    <tr><td><code>_appconfig/cicd.yml</code></td><td>Pilot 部署时读取的应用启动配置。</td><td>后端两仓 README 都提示修改该文件设置启动参数。</td><td>发布到不同 stage 前，确认 <code>spring.profiles.active</code>、内存参数、toad stage 是否符合目标环境。</td></tr>
+    <tr><td><code>kjl dev</code></td><td>前端本地开发服务。</td><td><code>ai-home</code> 的 <code>yarn dev</code> 实际执行它。</td><td>页面白屏先看 Console 和入口资源；联调环境看 <code>-T</code> 指向。</td></tr>
+    <tr><td><code>kjl dev -T ...</code></td><td>本地前端资源对接指定目标站点。</td><td><code>ai-home</code> 的 <code>yarn beta</code> 指向 <code>https://prod-test-seoul.example.com</code>。</td><td>适合验证“本地前端 + 环境后端”。</td></tr>
+    <tr><td><code>kjl build</code></td><td>ai-home 生产构建。</td><td><code>ai-home/package.json</code>。</td><td>合并前检查类型、资源、bundle 构建问题。</td></tr>
+    <tr><td><code>kjl pub:dev</code> / <code>kjl pub:build</code></td><td>pub 体系下的前端开发和构建命令。</td><td><code>viewer-2d</code>、<code>render-3d</code> 的 <code>dev</code> / <code>pub-script</code>。</td><td>viewer 问题要分清是自身资源、父页面嵌入、还是 iframe/postMessage。</td></tr>
+    <tr><td><code>pub:deploy</code></td><td>前端发布任务声明。</td><td>三个前端仓库 <code>def.config.js</code> 都声明了 <code>pub:deploy</code>。</td><td>具体发布动作以团队发布平台/CI 为准；课程只把它作为部署入口概念。</td></tr>
+  </table>
+
+  <h2>4.2 Coops Agent 配置与 MCP 注入</h2>
+  <table>
+    <tr><th>配置/代码点</th><th>负责什么</th><th>AIHom 证据</th><th>第一排查点</th></tr>
+    <tr><td>Coops Agent 管理中心</td><td>查看和编辑 Agent、Prompt、Model、MCP Server、Skill 配置。</td><td>页面网络请求读取 <code>agent-base.json</code>、<code>model.json</code>、<code>mcp-servers.json</code>、<code>agent-skill.json</code>。</td><td>先确认 region、namespace、agentName 是否正确。</td></tr>
+    <tr><td><code>agent-base.json</code></td><td>Agent 描述、<code>promptKey</code>、最大迭代次数。</td><td>Nacos group 为 <code>ai-agent-{agentName}</code>。</td><td>Agent 行为变了但代码没变时，先查这里。</td></tr>
+    <tr><td><code>prompt-{promptKey}.json</code></td><td>System Prompt 模板。</td><td>Nacos group 为 <code>nacos-ai-meta</code>。</td><td>路由规则、输出约束、拒答策略优先看 Prompt。</td></tr>
+    <tr><td><code>mcp-servers.json</code></td><td>声明 Agent 直接挂载的 MCP Server、白名单 tools、headers、queryParams。</td><td>当前 <code>Ai_Home_Agent</code> Supervisor 直接 MCP Server 数量为 0。</td><td>工具不可见时看 <code>whiteTools</code> 是否漏配，MCP tool 是否 enabled。</td></tr>
+    <tr><td><code>state_graph</code> / <code>graph_nodes</code></td><td>AIHom Graph 与 Supervisor/SubAgent 配置。</td><td>查询 <code>graph_id='graph_ai_home'</code> 的激活图。</td><td>确认当前激活 graph version、Supervisor、SubAgent、localTools。</td></tr>
+    <tr><td><code>CustomNacosReactAgentBuilder</code></td><td>从 Nacos 加载 Agent、Prompt、Model、MCP Server，并汇总 local tools + MCP tools。</td><td><code>build()</code> 内调用 <code>NacosAgentInjector</code>、<code>NacosPromptInjector</code>、<code>NacosMcpToolsInjector</code>。</td><td>看 <code>allTools</code> 是否包含目标工具。</td></tr>
+    <tr><td><code>CustomNacosMcpGatewayToolsInitializer</code></td><td>解析 MCP Server 详情，按协议、白名单、enabled 开关创建 ToolCallback。</td><td>支持 <code>soa</code>、<code>http</code>、<code>https</code>、<code>mcp-sse</code>、<code>mcp-streamable</code>、<code>postmessage</code>。</td><td>工具加载失败时看协议、server detail、toolSpec、toolsMeta。</td></tr>
+    <tr><td><code>AgentLlmNode</code> / <code>AgentToolNode</code></td><td>前者把工具定义给模型，后者在模型返回 tool call 后执行工具。</td><td>ToolDefinition 给模型看的核心是 <code>name</code>、<code>description</code>、<code>inputSchema</code>。</td><td>模型没调用工具看描述和 schema；工具调用失败看 callback 执行端。</td></tr>
+  </table>
+
+  <h2>5. 前端内部框架与 viewer</h2>
+  <table>
+    <tr><th>概念</th><th>小白解释</th><th>AIHom 中的位置</th><th>开发/排查抓手</th></tr>
+    <tr><td><code>@qunhe/reactive-framework</code></td><td>内部响应式状态框架，类似“数据变了，组件跟着刷新”。</td><td><code>@observable</code>、<code>@observer</code>、<code>combine</code>、<code>connect</code>、StateManager。</td><td>UI 不刷新时看组件是否 observer/connect，字段是否 observable，manager 是否同一个实例。</td></tr>
+    <tr><td>KAF</td><td>公司前端应用/场景框架，viewer-2d 中用于 Entity 能力注册和状态组织。</td><td>Scene2D、Entity、DrawableAPI2D、RootStateManager 等。</td><td>实体不渲染或交互不生效时，看 Entity 是否注册正确的 API。</td></tr>
+    <tr><td>iframe / postMessage</td><td>页面里嵌另一个页面，通过消息沟通。</td><td><code>ai-home</code> 嵌 <code>viewer-2d</code> / <code>render-3d</code>。</td><td>同步异常时看消息方向、type、payload、目标窗口是否正确。</td></tr>
+    <tr><td>PixiJS</td><td>浏览器 2D/WebGL 渲染库。</td><td>viewer-2d 的平面图绘制。</td><td>图形不显示、层级/坐标异常时查 Pixi 容器和 Drawable。</td></tr>
+  </table>
+
+  <h2>6. 长任务、计费与质量</h2>
+  <table>
+    <tr><th>概念</th><th>小白解释</th><th>AIHom 中的位置</th><th>开发/排查抓手</th></tr>
+    <tr><td>异步任务排队</td><td>生图/布局太慢，先入队，轮到再执行，期间告诉前端排第几。</td><td>Redis ZSet、Lua 原子出队、<code>TaskQueueInfo</code> WebSocket notification。</td><td>看 queuePos/queueSize、taskId/taskType、取消状态、TTL 恢复。</td></tr>
+    <tr><td>Credits</td><td>AIHom 的点数/权益计费体系。</td><td>按结果计费，预扣、确认、回滚；纯对话通常不扣费，有产出才扣费。</td><td>排查扣费问题时看 submit/confirm/rollback 是否成对，失败是否补偿。</td></tr>
+    <tr><td>Langfuse / promptfoo</td><td>AI 调用链观测和 Agent 测评工具。</td><td>用于分析 LLM 调用、token、节点表现、架构改造回归。</td><td>Agent 说错、循环异常、工具没调时，用 trace/测评集复现定位。</td></tr>
+  </table>
+
+  <h2>7. Git、Kaptain 与发布分支</h2>
+  <table>
+    <tr><th>概念</th><th>小白解释</th><th>AIHom 开发中的用法</th><th>注意点</th></tr>
+    <tr><td>Kaptain 事项号</td><td>需求、任务、缺陷的唯一追踪入口，可以是数字 id，也可以是 <code>COOAI-xxx</code> 这类 key。</td><td>建议出现在分支、commit、MR 标题中；如果只有数字 id，先查出 key 和标题再建可读分支。</td><td>便于从代码回到需求背景，也便于发布和回滚追溯。</td></tr>
+    <tr><td>功能分支</td><td>单个需求的开发分支。</td><td>从团队约定基线拉出，开发完成后通过 MR 合入。</td><td>不要直接推关键分支；先看近期 MR 的目标分支。</td></tr>
+    <tr><td><code>release/YYYYMMDD</code></td><td>某个上线日期窗口的发布分支。</td><td>Confluence 有自动创建 <code>release/YYYYmmdd</code> 的 Git 插件实践。</td><td>具体日期、目标分支、合入规则以团队当期发布安排为准。</td></tr>
+    <tr><td>cherry-pick</td><td>只把指定 commit 拿到另一个分支。</td><td>适合把某几个 commit 带入 release，或复杂回滚时重建分支。</td><td>必须记录 commit 来源，避免漏拿依赖 commit。</td></tr>
+    <tr><td>Revert</td><td>用一个新提交撤销旧提交。</td><td>Release 分支回滚规范建议能用 GitLab Revert 就先用。</td><td>如果后续提交修改过同一内容，GitLab 自动 Revert 可能失败。</td></tr>
+    <tr><td><code>git worktree</code></td><td>同一仓库开多个工作目录，分别检出不同分支。</td><td>适合一边开发功能，一边验证 release 或处理 hotfix。</td><td>不要把 worktree 建在主仓库目录里面；每个 worktree 的依赖和环境变量独立检查。</td></tr>
+  </table>
+
+  <h2>资料来源</h2>
+  <table>
+    <tr><th>来源</th><th>用途</th></tr>
+    <tr><td><a href="https://cf.example.com/pages/viewpage.action?pageId=81467619317">Confluence: AI Home 产品技术栈总结</a></td><td>四层架构、前端/SDK/后端技术栈、页面初始化、发送消息、后端调用前端工具三条主链路。</td></tr>
+    <tr><td><a href="https://cf.example.com/pages/viewpage.action?pageId=81452869938">Confluence: toad-python-client 使用手册</a></td><td>toad 配置拉取、本地缓存、热更新、stage/环境切换等概念。</td></tr>
+    <tr><td><a href="https://cf.example.com/pages/viewpage.action?pageId=81452870188">Confluence: Nacos MCP Registry MCP连接端点调整&存量迁移</a></td><td>Nacos MCP Registry 作为内部 MCP 工具注册/端点治理资料入口；当前页面正文为空，以页面存在和相关系列文档为线索。</td></tr>
+    <tr><td><a href="https://cf.example.com/pages/viewpage.action?pageId=81475130844">Confluence: Git Worktree 使用教程</a></td><td>多工作目录、hotfix/review/release 并行验证、worktree 常用命令和避坑。</td></tr>
+    <tr><td><a href="https://cf.example.com/pages/viewpage.action?pageId=81250496209">Confluence: Git 插件与发布分支自动创建脚本实践</a></td><td>自动创建 <code>release/YYYYmmdd</code> 发布分支的内部实践资料。</td></tr>
+    <tr><td><a href="https://cf.example.com/pages/viewpage.action?pageId=80680447836">Confluence: Git Release分支回滚流程规范</a></td><td>GitLab Revert、配置开关屏蔽、复杂 cherry-pick 回滚处理。</td></tr>
+    <tr><td>本地笔记：<code>wiki/实体/coohom-ai-native.md</code></td><td>AIHom 产品定位、架构演进、会话并发锁、排队系统、Credits、评估体系等汇总。</td></tr>
+    <tr><td>本地笔记：<code>wiki/概念/mcp-桥接.md</code></td><td>后端调前端工具的定义、边界、风险和排查路径。</td></tr>
+    <tr><td>本地笔记：<code>wiki/概念/会话并发锁.md</code></td><td>单会话锁、幽灵锁、Redis key/TTL 排查方法。</td></tr>
+    <tr><td>本地笔记：<code>wiki/概念/异步任务排队.md</code></td><td>Redis ZSet 排队、上下文 TTL、取消与完成竞态。</td></tr>
+    <tr><td>本地笔记：<code>1-项目/工作/260617-【架构改造】ai native架构改造二期.md</code></td><td>Harness、LoopAgent、多消息队列、replyScene metadata、测试关注点。</td></tr>
+    <tr><td>本地文档：<code>3-资源/工作/Coohom AI Native/相关文档/AI-Home产品分析-借鉴置身钉内文章.md</code></td><td>MCP 桥接、SDK 协议层、会话驱动设计等产品架构背景。</td></tr>
+    <tr><td>本地笔记：<code>4-归档/资源/技术/工具链/Git/Git基础知识(七)--分支开发工作流.md</code></td><td>Gitflow、Feature、Release、Hotfix 分支的通用工作流基础。</td></tr>
+  </table>
+
+  <nav class="nav" aria-label="参考页导航">
+    <a class="primary" href="../lessons/index.html">回到完整学习地图</a>
+    <a href="../lessons/aihom/0008-local-config-nacos-pilot.html">配置/Nacos/Pilot</a>
+    <a href="../lessons/aihom/0009-backend-local-run-and-deploy.html">后端运行部署</a>
+    <a href="../lessons/aihom/0010-frontend-local-run-and-deploy.html">前端运行部署</a>
+    <a href="../lessons/aihom/0011-coops-agent-mcp-injection.html">Coops Agent 配置</a>
+    <a href="../lessons/aihom/0013-git-kaptain-release-flow.html">Git 发布流程</a>
+    <a href="../lessons/aihom/0038-agent-conversation-sdk-mcp.html">SDK + MCP 工具桥</a>
+    <a href="../lessons/aihom/0039-async-task-state-machine.html">异步任务与状态机</a>
+  </nav>
+</main>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>028 前端基础 08：浏览器、网络与 DOM</title>
+<style>
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--muted:#78716c;--accent:#b45309;--soft:#fef3c7;--border:#e7e5e4;--code:#f5f5f4;--info:#2563eb;--ok:#16a34a;--bad:#ef4444}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.8 -apple-system,BlinkMacSystemFont,"Noto Sans SC","Segoe UI",sans-serif}.container{max-width:780px;margin:0 auto;padding:3rem 2rem}h1{font-size:2rem;margin:.2rem 0 .5rem}.subtitle{color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:1.4rem;margin-bottom:2rem}h2{font-size:1.35rem;margin:2rem 0 .8rem}code{font-family:Menlo,Consolas,monospace;background:var(--code);padding:.15em .35em;border-radius:4px}pre{background:#1c1917;color:#e7e5e4;padding:1rem 1.2rem;border-radius:8px;overflow:auto}.card{background:#fff;border:1px solid var(--border);border-left:3px solid var(--info);border-radius:8px;padding:1rem 1.2rem;margin:1rem 0}.label{font-size:.75rem;color:var(--info);font-weight:700;text-transform:uppercase}table{width:100%;border-collapse:collapse;margin:1rem 0}th,td{border-bottom:1px solid var(--border);padding:.55rem;text-align:left;vertical-align:top}th{color:var(--muted)}.quiz{background:var(--soft);border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.2rem;margin:1.5rem 0}.quiz-options{list-style:none;margin:0;padding:0}.quiz-options li{padding:.45rem .65rem;margin:.35rem 0;border:1px solid transparent;border-radius:6px;cursor:pointer}.correct{background:#dcfce7!important;border-color:var(--ok)!important}.wrong{background:#fee2e2!important;border-color:var(--bad)!important}.quiz-feedback{display:none;margin-top:.6rem;padding:.6rem;border-radius:6px}.nav{margin-top:2.5rem;border:1px solid var(--border);border-radius:8px;background:#fff;padding:1rem}.nav a{display:inline-block;margin:.25rem;color:#444;text-decoration:none;border:1px solid var(--border);border-radius:6px;padding:.35rem .65rem}.nav a.primary{background:var(--accent);border-color:var(--accent);color:#fff}.nav a.map{background:#eff6ff;border-color:#bfdbfe;color:var(--info)}
+</style></head><body><div class="container">
+<h1>028 前端基础 08：浏览器、网络与 DOM</h1>
+<p class="subtitle">目标：知道浏览器里页面、DOM、Network、WebSocket、iframe/postMessage 各自是什么，能用 DevTools 定位前端问题。</p>
+
+<h2>1. 浏览器给前端代码的四类能力</h2>
+<table>
+  <tr><th>能力</th><th>你会在哪里看到</th><th>AIHom 场景</th></tr>
+  <tr><td>DOM</td><td>页面元素树</td><td>按钮、输入框、对话消息列表</td></tr>
+  <tr><td>Network</td><td>HTTP / WebSocket 请求</td><td>打开会话、发消息、取配置</td></tr>
+  <tr><td>Storage</td><td>本地缓存</td><td>用户偏好、临时状态、调试开关</td></tr>
+  <tr><td>iframe</td><td>嵌入另一个页面</td><td>ai-home 嵌 viewer-2d / render-3d</td></tr>
+</table>
+
+<h2>2. DOM 不是 React，但 React 会更新 DOM</h2>
+<p>React 组件返回 JSX，React 再把它变成真实 DOM。你在 Elements 面板看到的是结果，不是源码本身。</p>
+<pre>React state 变化
+  -> 组件重新 render
+  -> React 比较前后差异
+  -> 更新真实 DOM</pre>
+
+<h2>3. Network 面板：全栈排查第一站</h2>
+<p>前端出问题时，先看 Network：请求有没有发出去、状态码是多少、响应体是什么、WebSocket frame 里 <code>key</code> 和 <code>data</code> 是否符合预期。</p>
+<table>
+  <tr><th>问题</th><th>优先看</th></tr>
+  <tr><td>按钮点了没反应</td><td>Console 是否报错，Network 是否有请求</td></tr>
+  <tr><td>消息发了没回复</td><td>WebSocket frames 里是否有 <code>SendMessage</code> 和响应</td></tr>
+  <tr><td>viewer 不同步</td><td>iframe 的 postMessage 类型和方向</td></tr>
+</table>
+
+<h2>4. postMessage：iframe 边界的“传话筒”</h2>
+<p><code>ai-home</code> 和 viewer 不是同一个 JS 运行上下文。它们通过 <code>window.postMessage</code> 传消息。</p>
+<pre>ai-home
+  window.postMessage({ type: 'REFRESH_VIEWER', data })
+      ↓
+viewer iframe
+  window.addEventListener('message', handler)</pre>
+
+<div class="quiz" id="quiz1"><strong>Q1: viewer iframe 内部代码能直接读 ai-home 的 React state 吗？</strong>
+  <ul class="quiz-options" data-correct="1">
+    <li onclick="checkQuiz('quiz1',0)">A. 能，所有页面共享 state</li>
+    <li onclick="checkQuiz('quiz1',1)">B. 不能，要通过消息通信</li>
+    <li onclick="checkQuiz('quiz1',2)">C. 能，只要 CSS 同名</li>
+  </ul><div class="quiz-feedback"></div>
+</div>
+
+<div class="card"><div class="label">主资料</div><p>优先看 MDN 的 <a href="https://developer.mozilla.org/en-US/docs/Learn/Common_questions/Tools_and_setup/What_are_browser_developer_tools" target="_blank" rel="noopener">Browser developer tools</a> 和 <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage" target="_blank" rel="noopener">Window.postMessage</a>。</p></div>
+</div><script>
+function checkQuiz(id,s){const q=document.getElementById(id),o=q.querySelector('.quiz-options'),c=Number(o.dataset.correct),items=o.querySelectorAll('li'),f=q.querySelector('.quiz-feedback');items.forEach((x,i)=>{x.onclick=null;if(i===c)x.classList.add('correct');if(i===s&&i!==c)x.classList.add('wrong')});f.style.display='block';f.textContent=s===c?'对。iframe 是边界，跨边界协作靠 postMessage 等协议。':'不对。iframe 不是同一个 React 组件树，不能直接读宿主 state。';f.style.background=s===c?'#dcfce7':'#fee2e2'}
+</script>
+<nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 028</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0027-typescript-type-system-basics.html">上一课：027 前端基础 07：TypeScript 类型系统</a><a class="primary" href="0029-css-layout-basics.html">下一课：029 前端基础 09：CSS 布局与样式排查</a></div></nav>
+</body></html>

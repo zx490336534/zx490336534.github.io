@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>033 AIHom 前端入口 02：状态管理基础</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--muted:#78716c;--accent:#b45309;--accent-soft:#fff7ed;--border:#e7e5e4;--code:#f5f5f4;--blue:#2563eb;--green:#16a34a;--red:#dc2626}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:16px/1.8 'Noto Sans SC',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+  .container{max-width:880px;margin:0 auto;padding:3rem 1.6rem 4rem}
+  h1{font-size:2rem;line-height:1.25;margin:.2rem 0 .5rem}
+  h2{font-size:1.35rem;margin:2.2rem 0 .8rem}
+  h3{font-size:1.08rem;margin:1.4rem 0 .5rem;color:var(--accent)}
+  p{margin:.4rem 0 1rem}
+  ul,ol{margin:.4rem 0 1rem 1.4rem;padding:0}
+  li{margin:.25rem 0}
+  a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
+  code{font-family:'JetBrains Mono',Menlo,Consolas,monospace;background:var(--code);border-radius:4px;padding:.1em .35em;font-size:.9em}
+  pre{background:#1c1917;color:#e7e5e4;border-radius:8px;padding:1rem 1.1rem;overflow:auto;font:13px/1.65 'JetBrains Mono',Menlo,Consolas,monospace;margin:1rem 0}
+  table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:1rem 0}
+  th,td{padding:.65rem .75rem;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+  th{color:var(--muted);font-size:.82rem;background:#f5f5f4}
+  tr:last-child td{border-bottom:0}
+  .subtitle{color:var(--muted);padding-bottom:1.3rem;border-bottom:1px solid var(--border);margin-bottom:1.8rem}
+  .card{background:#fff;border:1px solid var(--border);border-left:4px solid var(--blue);border-radius:8px;padding:1rem 1.15rem;margin:1rem 0}
+  .card.soft{border-left-color:var(--accent);background:var(--accent-soft)}
+  .card.ok{border-left-color:var(--green)}
+  .label{font-size:.76rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;margin-bottom:.35rem}
+  .flow{display:grid;gap:.45rem;margin:1rem 0}
+  .flow-row{display:grid;grid-template-columns:9rem 1fr;gap:.75rem;align-items:start;background:#fff;border:1px solid var(--border);border-radius:8px;padding:.75rem}
+  .tag{font-weight:700;color:var(--accent)}
+  .mini{color:var(--muted);font-size:.92rem}
+  .quiz{background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.15rem;margin:1.4rem 0}
+  .quiz-title{font-weight:700;margin-bottom:.55rem;color:#92400e}
+  .quiz-options{list-style:none;margin:0;padding:0}
+  .quiz-options li{padding:.45rem .65rem;margin:.35rem 0;border-radius:6px;border:1px solid transparent;cursor:pointer}
+  .quiz-options li:hover{border-color:#f59e0b}
+  .correct{background:#dcfce7!important;border-color:#16a34a!important}
+  .wrong{background:#fee2e2!important;border-color:#ef4444!important}
+  .quiz-feedback{display:none;margin-top:.65rem;padding:.6rem;border-radius:6px}
+  .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;color:#1e40af;padding:1rem;margin:1.4rem 0}
+  .ask-agent:before{content:"提示：";font-weight:700}
+  .learning-map-quick-nav{margin:2.5rem 0 0;padding:1rem 1.1rem;border:1px solid #d6d3d1;border-radius:8px;background:#fff;display:grid;gap:.75rem}
+  .nav-title{font-size:.78rem;letter-spacing:.04em;text-transform:uppercase;color:#78716c}.nav-links{display:flex;flex-wrap:wrap;gap:.65rem;align-items:center}
+  .nav-links a{color:#44403c;text-decoration:none;border:1px solid #e7e5e4;border-radius:6px;padding:.35rem .65rem}.nav-links a.primary{color:#fff;border-color:#b45309;background:#b45309}.nav-links a.map{color:#2563eb;border-color:#bfdbfe;background:#eff6ff}
+  @media(max-width:640px){.container{padding:2rem 1rem 3.5rem}h1{font-size:1.65rem}.flow-row{grid-template-columns:1fr}pre{font-size:.78rem}}
+</style>
+</head>
+<body>
+<main class="container">
+  <h1>033 AIHom 前端入口 02：状态管理基础</h1>
+  <p class="subtitle">目标：不用先懂框架实现，先学会顺着一个页面变化，找到“数据在哪里、谁改了它、哪个组件读了它”。</p>
+
+  <section class="card soft">
+    <div class="label">先记这三句话</div>
+    <p><strong>状态</strong>就是页面需要记住的数据。比如“对话是否正在生成”“连接是否成功”“某个 viewer 是否正在刷新”。</p>
+    <p><strong>Manager</strong>就是专门管理一类状态的对象。比如 <code>ConversationManager</code> 管聊天状态，<code>ViewerStateManager</code> 管 viewer 状态。</p>
+    <p><strong>组件</strong>负责把状态显示出来。状态变了，组件重新渲染，用户就看到页面变了。</p>
+  </section>
+
+  <h2>1. 先看一个最小现象：聊天区显示“连接中”</h2>
+  <p>在 AIHom 里，如果后端对话 SDK 还没连上，聊天抽屉会显示连接状态。读代码不要从术语开始，先从这个现象倒推。</p>
+
+  <div class="flow">
+    <div class="flow-row"><div class="tag">用户看到</div><div>聊天抽屉上出现“连接中 / 重连中”。</div></div>
+    <div class="flow-row"><div class="tag">组件读取</div><div><code>AIChatDrawer.tsx</code> 在 <code>render()</code> 里读取 <code>conversationManager.connectionStatus</code>。</div></div>
+    <div class="flow-row"><div class="tag">状态存放</div><div><code>ConversationManager.ts</code> 里有 <code>@observable connectionStatus</code>。</div></div>
+    <div class="flow-row"><div class="tag">状态更新</div><div>SDK 连接状态变化后，调用 <code>conversationManager.handleConnectionStatusChange(...)</code> 修改它。</div></div>
+  </div>
+
+  <pre>AIChatDrawer render()
+  ↓ 读取
+conversationManager.connectionStatus
+  ↓ 来自
+ConversationManager.ts
+  ↓ 被 SDK 回调更新
+页面显示连接中 / 已连接 / 重连中</pre>
+
+  <p>这就是状态管理最核心的事：<strong>把页面变化，翻译成一条数据流</strong>。</p>
+
+  <h2>2. 第一条状态线：ConversationManager 管聊天</h2>
+  <p><code>ConversationManager</code> 是一个单例。你可以先把它理解成“聊天状态仓库”。它里面有这些真实字段：</p>
+
+  <pre>class ConversationManager {
+  @observable messages = [];
+  @observable streamMessage = undefined;
+  @observable status = ConversationStatus.done;
+  @observable connectionStatus = ConnectionStatus.disconnected;
+  @observable taskQueueInfo = null;
+}</pre>
+
+  <table>
+    <tr><th>字段</th><th>页面含义</th><th>你读代码时怎么用</th></tr>
+    <tr><td><code>messages</code></td><td>已经显示出来的聊天消息</td><td>消息列表为什么多了一条，先查它</td></tr>
+    <tr><td><code>streamMessage</code></td><td>正在流式生成的消息</td><td>AI 边生成边显示，先查它</td></tr>
+    <tr><td><code>status</code></td><td>发送中、处理中、完成</td><td>按钮 loading、输入框禁用，先查它</td></tr>
+    <tr><td><code>connectionStatus</code></td><td>连接、断开、重连</td><td>聊天区连接提示，先查它</td></tr>
+    <tr><td><code>taskQueueInfo</code></td><td>排队位置、队列长度</td><td>输入框上方排队提示，先查它</td></tr>
+  </table>
+
+  <h3><code>@observable</code> 是什么？</h3>
+  <p>你先不用理解内部实现。第一次读代码时，只要把 <code>@observable</code> 当作一个标记：<strong>这个字段变了，相关页面可能跟着变</strong>。</p>
+
+  <h3><code>@observer</code> 是什么？</h3>
+  <p><code>@observer</code> 标在组件上，意思是：这个组件会观察自己读过的 <code>@observable</code> 字段。字段变了，它有机会重新渲染。</p>
+
+  <pre>@observer
+class AIChatDrawer extends React.Component {
+  render() {
+    const status = conversationManager.status;
+    const connectionStatus = conversationManager.connectionStatus;
+    const isLoading = status === ConversationStatus.processing;
+    return ...;
+  }
+}</pre>
+
+  <section class="card ok">
+    <div class="label">读法</div>
+    <p>看到 <code>@observer</code> 组件，不要先慌。你只做一件事：看它的 <code>render()</code> 里读了哪些 <code>conversationManager.xxx</code>。这些 <code>xxx</code> 就是会影响页面的状态。</p>
+  </section>
+
+  <h2>3. 第二条状态线：RootStateManager 管画布和 viewer</h2>
+  <p>聊天状态主要在 <code>ConversationManager</code>。但画布、2D/3D viewer、用户信息这些状态更多，所以 AIHom 又有一个根状态：<code>RootStateManager</code>。</p>
+
+  <pre>export class RootStateManager extends combine({
+  scene2D: AIHomeScene2DStateManager,
+  viewerState: ViewerStateManager,
+  userInfo: UserInfoStateManager,
+}) {
+  @observable
+  declare designDoc: DesignDocument;
+}</pre>
+
+  <p>你可以把 <code>RootStateManager</code> 想成一个总目录：</p>
+
+  <table>
+    <tr><th>入口</th><th>负责什么</th><th>例子</th></tr>
+    <tr><td><code>rootState.scene2D</code></td><td>2D 画布状态</td><td>缩放、拖动画布、选中对象</td></tr>
+    <tr><td><code>rootState.viewerState</code></td><td>viewer 同步状态</td><td>刷新 loading、同步状态、布局进度</td></tr>
+    <tr><td><code>rootState.userInfo</code></td><td>用户信息</td><td>租户、会员、订阅状态</td></tr>
+    <tr><td><code>rootState.designDoc</code></td><td>当前设计文档</td><td>户型、容器、图片、视频来源</td></tr>
+  </table>
+
+  <h2>4. ViewerStateManager：一个真实的“改状态”例子</h2>
+  <p><code>ViewerStateManager</code> 里面有几个 <code>Map</code>，用来记录不同 viewer 的状态：</p>
+
+  <pre>interface State {
+  syncStatusMap: Map&lt;string, SyncStatus&gt;;
+  connectorLineLoadingMap: Map&lt;string, boolean&gt;;
+  layoutProgressMap: Map&lt;string, { current: number; total: number }&gt;;
+  refreshLoadingMap: Map&lt;string, boolean&gt;;
+}</pre>
+
+  <p>比如刷新某个 viewer 时，会调用 <code>setRefreshLoading</code>：</p>
+
+  <pre>setRefreshLoading(viewContainerId: string, isLoading: boolean) {
+  const newMap = new Map(this.state.refreshLoadingMap);
+  if (isLoading) {
+    newMap.set(viewContainerId, true);
+  } else {
+    newMap.delete(viewContainerId);
+  }
+
+  this.mergeState({
+    refreshLoadingMap: newMap,
+  });
+}</pre>
+
+  <p>这里有两个小细节：</p>
+  <ol>
+    <li><code>new Map(...)</code>：先复制一份新的 Map，再改它。</li>
+    <li><code>mergeState(...)</code>：告诉状态系统“这部分状态变了”。</li>
+  </ol>
+
+  <section class="card">
+    <div class="label">为什么不直接改原来的 Map？</div>
+    <p>直接改原对象，状态系统不一定知道你改了。复制一份新对象再 <code>mergeState</code>，是更明确的“通知更新”写法。</p>
+  </section>
+
+  <h2>5. connect：把 RootStateManager 接进组件</h2>
+  <p><code>connect</code> 做的事很朴素：从 <code>rootState</code> 里挑一些数据，塞给 React 组件当 props。</p>
+
+  <pre>export const Viewer2D = connect(
+  (rootState) =&gt; ({
+    viewerState: rootState.viewerState,
+  }),
+  (subs) =&gt; ({
+    syncStatusMap: subs.viewerState.syncStatusMap,
+    refreshLoadingMap: subs.viewerState.refreshLoadingMap,
+    layoutProgressMap: subs.viewerState.layoutProgressMap,
+  }),
+  Viewer2DImpl
+);</pre>
+
+  <table>
+    <tr><th>代码位置</th><th>你怎么读</th></tr>
+    <tr><td>第一个函数</td><td>从根状态里拿哪几个 manager</td></tr>
+    <tr><td>第二个函数</td><td>从 manager 里拿哪些字段给组件</td></tr>
+    <tr><td>第三个参数</td><td>真正要渲染的组件</td></tr>
+  </table>
+
+  <p>所以上面这段的意思就是：<code>Viewer2DImpl</code> 关心 <code>viewerState</code> 里的同步状态、刷新 loading、布局进度。</p>
+
+  <h2>6. 五个词，一次只理解到这个程度</h2>
+  <table>
+    <tr><th>词</th><th>小白版解释</th><th>AIHom 里怎么看</th></tr>
+    <tr><td><code>@observable</code></td><td>被追踪的数据</td><td>字段变了，页面可能变</td></tr>
+    <tr><td><code>@observer</code></td><td>会响应数据变化的组件</td><td>看 <code>render()</code> 读了什么</td></tr>
+    <tr><td><code>Manager</code></td><td>管理一组状态的对象</td><td><code>ConversationManager</code>、<code>ViewerStateManager</code></td></tr>
+    <tr><td><code>combine</code></td><td>把多个 manager 组合起来</td><td>组成 <code>RootStateManager</code></td></tr>
+    <tr><td><code>connect</code></td><td>把状态接到组件 props</td><td>看组件订阅了哪些字段</td></tr>
+  </table>
+
+  <h2>7. 以后读状态代码，就按这四步</h2>
+  <ol>
+    <li><strong>先说页面现象</strong>：比如“排队提示为什么出现？”</li>
+    <li><strong>找组件</strong>：搜索页面文字、样式名、组件名，找到负责渲染的 TSX。</li>
+    <li><strong>找读取字段</strong>：看它读了 <code>conversationManager.xxx</code> 还是 <code>props.xxx</code>。</li>
+    <li><strong>找更新方法</strong>：回到 manager 里搜索这个字段，看哪个方法 <code>mergeState</code> 或直接赋值。</li>
+  </ol>
+
+  <p>练习一个真实例子：排队提示来自 <code>InputArea</code> 读取 <code>conversationManager.taskQueueInfo</code>。所以如果排队文案不对，第一反应不是翻 CSS，而是追 <code>taskQueueInfo</code> 在哪里被设置。</p>
+
+  <h2>8. 本节你不需要先掌握的东西</h2>
+  <ul>
+    <li>不需要先搞懂 <code>@qunhe/reactive-framework</code> 的内部实现。</li>
+    <li>不需要先搞懂 <code>@qunhe/kaf</code> 的所有能力。</li>
+    <li>不需要背 <code>computed</code>。当前主线先抓 <code>@observable</code>、<code>@observer</code>、<code>mergeState</code>、<code>connect</code>。</li>
+  </ul>
+
+  <div class="quiz" id="quiz1">
+    <div class="quiz-title">Q1：<code>@observable</code> 最接近什么？</div>
+    <ul class="quiz-options" data-correct="0">
+      <li onclick="checkQuiz('quiz1',0)">A. 标记数据</li>
+      <li onclick="checkQuiz('quiz1',1)">B. 打包代码</li>
+      <li onclick="checkQuiz('quiz1',2)">C. 新建分支</li>
+      <li onclick="checkQuiz('quiz1',3)">D. 请求接口</li>
+    </ul>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz2">
+    <div class="quiz-title">Q2：<code>connect</code> 最接近什么？</div>
+    <ul class="quiz-options" data-correct="2">
+      <li onclick="checkQuiz('quiz2',0)">A. 连接后端</li>
+      <li onclick="checkQuiz('quiz2',1)">B. 合并样式</li>
+      <li onclick="checkQuiz('quiz2',2)">C. 注入状态</li>
+      <li onclick="checkQuiz('quiz2',3)">D. 发布上线</li>
+    </ul>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <div class="quiz" id="quiz3">
+    <div class="quiz-title">Q3：排队提示不对，优先追哪个字段？</div>
+    <ul class="quiz-options" data-correct="1">
+      <li onclick="checkQuiz('quiz3',0)">A. userAvatar</li>
+      <li onclick="checkQuiz('quiz3',1)">B. taskQueueInfo</li>
+      <li onclick="checkQuiz('quiz3',2)">C. refreshLoading</li>
+      <li onclick="checkQuiz('quiz3',3)">D. syncStatusMap</li>
+    </ul>
+    <div class="quiz-feedback"></div>
+  </div>
+
+  <div class="ask-agent">复习时可以问 agent：带我从 AIChatDrawer 的“连接中”提示出发，一步步找到 connectionStatus 的读取位置和更新位置。</div>
+
+  <section class="card">
+    <div class="label">真实代码入口</div>
+    <p><code>ai-home/src/app/agent/manager/ConversationManager.ts</code>：聊天状态。</p>
+    <p><code>ai-home/src/app/components/AIChatDrawer/AIChatDrawer.tsx</code>：聊天抽屉如何读取聊天状态。</p>
+    <p><code>ai-home/src/app/components/InputArea/index.tsx</code>：输入区如何读取排队状态。</p>
+    <p><code>ai-home/src/app/state.ts</code>：根状态如何组合 manager。</p>
+    <p><code>ai-home/src/app/StateManager/ViewerStateManager.ts</code>：viewer 状态如何更新。</p>
+  </section>
+
+  <nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 033</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0032-typescript-react-aihome-basics.html">上一课：032 AIHom 前端入口 01：读 TSX 组件</a><a class="primary" href="0034-aihome-frontend-data-flow.html">下一课：034 AIHom 前端入口 03：一次页面动作的数据流</a></div></nav>
+</main>
+
+<script>
+function checkQuiz(q,s){
+  const box=document.getElementById(q);
+  const opts=box.querySelector('.quiz-options');
+  const c=Number(opts.dataset.correct);
+  const items=opts.querySelectorAll('li');
+  const fb=box.querySelector('.quiz-feedback');
+  items.forEach((item,i)=>{
+    item.onclick=null;
+    if(i===c)item.classList.add('correct');
+    if(i===s&&i!==c)item.classList.add('wrong');
+  });
+  const text={
+    quiz1:['正确。observable 是“这个数据值得被追踪”的标记。','不对。observable 不是构建、分支或接口，它标记可追踪数据。'],
+    quiz2:['正确。connect 把 rootState 里的状态整理成组件 props。','不对。connect 在这里不是连后端，而是把状态接到组件。'],
+    quiz3:['正确。InputArea 显示排队状态时读的是 conversationManager.taskQueueInfo。','不对。排队提示先追 taskQueueInfo，它在 ConversationManager 里。']
+  };
+  fb.style.display='block';
+  fb.textContent=s===c?text[q][0]:text[q][1];
+  fb.style.background=s===c?'#dcfce7':'#fee2e2';
+}
+</script>
+</body>
+</html>
