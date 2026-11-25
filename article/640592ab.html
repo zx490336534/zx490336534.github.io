@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <title>测试开发进阶(二十三) · 测试游记</title>
-  <meta name="description" content="测试开发进阶(二十三)欢迎关注我的公众号：「测试游记」 数据库操作c(create) 使用模型内构造方法 123456789def create(self, **kwargs): &quot;&quot;&quot; Create a new object with the given kwargs, saving it to the database and returning the created o">
+  <meta name="description" content="测试开发进阶(二十三)欢迎关注我的公众号：「测试游记」 数据库操作c(create) 使用模型内构造方法 123456789def create(self, **kwargs): &quot;&quot;&quot; Create a new object with the given kwargs, saving it to the database and returning the">
   <meta property="og:title" content="测试开发进阶(二十三) · 测试游记">
-  <meta property="og:description" content="测试开发进阶(二十三)欢迎关注我的公众号：「测试游记」 数据库操作c(create) 使用模型内构造方法 123456789def create(self, **kwargs): &quot;&quot;&quot; Create a new object with the given kwargs, saving it to the database and returning the created o">
+  <meta property="og:description" content="测试开发进阶(二十三)欢迎关注我的公众号：「测试游记」 数据库操作c(create) 使用模型内构造方法 123456789def create(self, **kwargs): &quot;&quot;&quot; Create a new object with the given kwargs, saving it to the database and returning the">
   <meta property="og:url" content="https://www.zhongxin.website/article/640592ab.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/640592ab.html">
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
   <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
 
@@ -21,18 +22,26 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记<span>听白</span></a>
-      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
-      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      <nav aria-label="主导航"><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
     </div>
   </header>
   <main id="main" class="wrap">
   <article class="article">
     <header class="article-header">
-      <a class="back-link" href="/archives/">← 文章归档</a>
+      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/">后端开发</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/python-web/">Python Web</a></nav>
       <h1 class="post-title">测试开发进阶(二十三)</h1>
       <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2019-10-10T18:16:02+08:00">2019-10-10</time>
         <span class="post-category" hidden><a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">Python测试开发进阶</a></span>
-        <nav class="topic-context" aria-label="文章分类"><a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/">后端开发</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/python-web/">Python Web</a></nav></div>
+        <span class="read-time">约 3 分钟</span></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E6%93%8D%E4%BD%9C">数据库操作</a></li><li><a href="#c-create">c(create)</a></li><li><a href="#r-retrieve">r(retrieve)</a></li><li><a href="#%E5%A4%9A%E6%9D%A1%E4%BB%B6-%E4%B8%8E-%E6%9F%A5%E8%AF%A2">多条件 与 查询</a></li><li><a href="#u-update">u(update)</a></li><li><a href="#d-delete">d(delete)</a></li><li><a href="#%E6%8E%92%E5%BA%8F">排序</a></li><li><a href="#%E9%98%85%E8%AF%BB%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3">阅读官方文档</a></li></ol></details></aside>
@@ -130,7 +139,7 @@
 <p>「<a href="https://docs.djangoproject.com/en/2.2/howto/" rel="noopener" target="_blank">How-to guides</a> 」进阶内容：<a href="https://docs.djangoproject.com/en/2.2/howto/" rel="noopener" target="_blank">https://docs.djangoproject.com/en/2.2/howto/</a></p>
 <p><img alt="官方文档" decoding="async" height="470" loading="lazy" src="/images/blog-media/48789797fbc54a43351f.webp" width="1080"/></p></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/q0J0vlkMj0CC40SYcgbcxw">查看微信公众号原文 ↗</a></p>
-        <div class="post-tags"><a href="/tags/Django/">Django</a><a href="/tags/ORM/">ORM</a><a href="/tags/Python/">Python</a></div>
+        <div class="post-tags" aria-label="文章标签"><a href="/tags/Django/">Django</a><a href="/tags/ORM/">ORM</a><a href="/tags/Python/">Python</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
         <nav class="related" aria-label="相邻文章"><a href="/article/wechat-262d212ae30737.html"><small>较新文章</small>比Postman更方便的接口调试工具HTTPie</a><a href="/article/wechat-fd61a26139b851.html"><small>较早文章</small>c2py试用(一)</a></nav>
         <section class="comments" id="comments" hidden><div id="disqus_thread" data-identifier="article/640592ab.html"></div></section>
@@ -138,14 +147,17 @@
     </div>
   </article></main>
   <footer class="wrap footer">
-    <a class="footer-brand" href="/">测试游记</a>
-    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">
     <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
-    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
-    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
-    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
   </dialog>
 </body>
 </html>

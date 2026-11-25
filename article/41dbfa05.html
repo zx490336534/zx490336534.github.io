@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <title>13-Websocket协议与MQ协议 · 测试游记</title>
-  <meta name="description" content="13-Websocket协议与MQ协议Websocket协议 基于TCP全双工协议，即可以从客户端向服务器端发送请求，也可以从服务器端主动向客户端发送消息。 HTTP协议只能从客户端向服务器发送请求，服务器端收到请求后，做出响应，发送给客户端 Websocket和HTTP都是基于TCP协议的，所以使用抓包工具可以抓到websocket的数据 抓包 F12 Fiddler Charles W">
+  <meta name="description" content="13-Websocket协议与MQ协议Websocket协议 基于TCP全双工协议，即可以从客户端向服务器端发送请求，也可以从服务器端主动向客户端发送消息。 HTTP协议只能从客户端向服务器发送请求，服务器端收到请求后，做出响应，发送给客户端 Websocket和HTTP都是基于TCP协议的，所以使用抓包工具可以抓到websocket的数据 抓包 F12 F">
   <meta property="og:title" content="13-Websocket协议与MQ协议 · 测试游记">
-  <meta property="og:description" content="13-Websocket协议与MQ协议Websocket协议 基于TCP全双工协议，即可以从客户端向服务器端发送请求，也可以从服务器端主动向客户端发送消息。 HTTP协议只能从客户端向服务器发送请求，服务器端收到请求后，做出响应，发送给客户端 Websocket和HTTP都是基于TCP协议的，所以使用抓包工具可以抓到websocket的数据 抓包 F12 Fiddler Charles W">
+  <meta property="og:description" content="13-Websocket协议与MQ协议Websocket协议 基于TCP全双工协议，即可以从客户端向服务器端发送请求，也可以从服务器端主动向客户端发送消息。 HTTP协议只能从客户端向服务器发送请求，服务器端收到请求后，做出响应，发送给客户端 Websocket和HTTP都是基于TCP协议的，所以使用抓包工具可以抓到websocket的数据 抓包 F12 F">
   <meta property="og:url" content="https://www.zhongxin.website/article/41dbfa05.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/41dbfa05.html">
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
   <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
 
@@ -21,18 +22,26 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记<span>听白</span></a>
-      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
-      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      <nav aria-label="主导航"><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
     </div>
   </header>
   <main id="main" class="wrap">
   <article class="article">
     <header class="article-header">
-      <a class="back-link" href="/archives/">← 文章归档</a>
+      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/performance/">性能与监控</a> <span aria-hidden="true">/</span> <a href="/categories/testing/performance/load/">性能测试与压测</a></nav>
       <h1 class="post-title">13-Websocket协议与MQ协议</h1>
       <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2021-04-24T21:34:00+08:00">2021-04-24</time>
         <span class="post-category" hidden><a href="/categories/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a></span>
-        <nav class="topic-context" aria-label="文章分类"><a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/performance/">性能与监控</a> <span aria-hidden="true">/</span> <a href="/categories/testing/performance/load/">性能测试与压测</a></nav></div>
+        <span class="read-time">约 1 分钟</span></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#Websocket%E5%8D%8F%E8%AE%AE">Websocket协议</a></li><li><a href="#%E6%8A%93%E5%8C%85">抓包</a></li><li><a href="#Jmeter%E6%B5%8B%E8%AF%95Websocket">Jmeter测试Websocket</a></li><li><a href="#%E5%AE%89%E8%A3%85%E6%8F%92%E4%BB%B6">安装插件</a></li><li><a href="#MQ%E5%8D%8F%E8%AE%AE">MQ协议</a></li><li><a href="#%E5%AE%89%E8%A3%85%E6%8F%92%E4%BB%B6-1">安装插件</a></li></ol></details></aside>
@@ -99,7 +108,7 @@
 <p>从「主题」中可以看到，主题已经被推送过来了</p>
 <p><img alt="主题" decoding="async" height="960" loading="lazy" src="/images/blog-media/0ce00abf143acd5c9305.webp" width="1080"/></p></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/11p1SlDf1dCADjwd3hIWNw">查看微信公众号原文 ↗</a></p>
-        <div class="post-tags"><a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a><a href="/tags/WebSocket/">WebSocket</a><a href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">消息队列</a></div>
+        <div class="post-tags" aria-label="文章标签"><a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a><a href="/tags/WebSocket/">WebSocket</a><a href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/">消息队列</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a></div>
         <nav class="related" aria-label="相邻文章"><a href="/article/61019fc7.html"><small>较新文章</small>14-Dubbo测试</a><a href="/article/b1e20de1.html"><small>较早文章</small>12-使用JDBC读取与写入数据</a></nav>
         <section class="comments" id="comments" hidden><div id="disqus_thread" data-identifier="article/41dbfa05.html"></div></section>
@@ -107,14 +116,17 @@
     </div>
   </article></main>
   <footer class="wrap footer">
-    <a class="footer-brand" href="/">测试游记</a>
-    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">
     <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
-    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
-    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
-    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
   </dialog>
 </body>
 </html>

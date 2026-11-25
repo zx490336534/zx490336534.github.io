@@ -12,6 +12,7 @@
   <link rel="canonical" href="https://www.zhongxin.website/article/ea96619c.html">
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
   <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
 
@@ -21,18 +22,26 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记<span>听白</span></a>
-      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
-      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      <nav aria-label="主导航"><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
     </div>
   </header>
   <main id="main" class="wrap">
   <article class="article">
     <header class="article-header">
-      <a class="back-link" href="/archives/">← 文章归档</a>
+      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/">后端开发</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/python-web/">Python Web</a></nav>
       <h1 class="post-title">4.Flask:视图函数</h1>
       <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2020-06-14T15:14:00+08:00">2020-06-14</time>
         <span class="post-category" hidden><a href="/categories/Flask%E5%9F%BA%E7%A1%80/">Flask基础</a></span>
-        <nav class="topic-context" aria-label="文章分类"><a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/">后端开发</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/python-web/">Python Web</a></nav></div>
+        <span class="read-time">约 3 分钟</span></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#Flask-%E8%A7%86%E5%9B%BE%E5%87%BD%E6%95%B0-%E5%9B%9B">Flask(视图函数 四)</a></li><li><a href="#%E5%9F%BA%E4%BA%8E%E7%B1%BB%E7%9A%84%E8%A7%86%E5%9B%BE%EF%BC%8C%E5%8F%AF%E6%8F%92%E6%8B%94%E8%A7%86%E5%9B%BE">基于类的视图，可插拔视图</a></li><li><a href="#%E8%A3%85%E9%A5%B0%E8%BF%99%E4%B8%AA%E7%B1%BB%E8%A7%86%E5%9B%BE">装饰这个类视图</a></li><li><a href="#%E4%BD%BF%E7%94%A8MethodView">使用 MethodView</a></li><li><a href="#%E4%BD%BF%E7%94%A8MethodView%E5%AE%9E%E7%8E%B0reful%E9%A3%8E%E6%A0%BC%E6%8E%A5%E5%8F%A3">使用MethodView实现reful风格接口</a></li><li><a href="#request%E8%8E%B7%E5%8F%96%E8%AF%B7%E6%B1%82%E6%95%B0%E6%8D%AE">request获取请求数据</a></li><li><a href="#get">get</a></li><li><a href="#%E8%A1%A8%E5%8D%95">表单</a></li><li><a href="#json">json</a></li><li><a href="#file">file</a></li><li><a href="#%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6%E7%9A%84%E4%BB%A3%E7%A0%81">上传文件的代码</a></li><li><a href="#html">html</a></li><li><a href="#python%E4%BB%A3%E7%A0%81">python代码</a></li></ol></details></aside>
@@ -65,7 +74,7 @@
 <h3 id="python代码"><a class="headerlink" href="#python代码" title="python代码"></a>python代码</h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/><span class="line">20</span><br/><span class="line">21</span><br/><span class="line">22</span><br/><span class="line">23</span><br/><span class="line">24</span><br/><span class="line">25</span><br/><span class="line">26</span><br/><span class="line">27</span><br/><span class="line">28</span><br/><span class="line">29</span><br/><span class="line">30</span><br/><span class="line">31</span><br/><span class="line">32</span><br/><span class="line">33</span><br/><span class="line">34</span><br/><span class="line">35</span><br/><span class="line">36</span><br/><span class="line">37</span><br/><span class="line">38</span><br/><span class="line">39</span><br/><span class="line">40</span><br/></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- encoding: utf-8 -*-</span></span><br/><span class="line"><span class="string">"""</span></span><br/><span class="line"><span class="string">@File    : homework.py</span></span><br/><span class="line"><span class="string">@Time    : 2020/6/16 7:18 上午</span></span><br/><span class="line"><span class="string">@Author  : zhongxin</span></span><br/><span class="line"><span class="string">@Email   : 490336534@qq.com</span></span><br/><span class="line"><span class="string">"""</span></span><br/><span class="line"><span class="keyword">import</span> os</span><br/><span class="line"><span class="keyword">import</span> time</span><br/><span class="line"></span><br/><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask, request, render_template, redirect</span><br/><span class="line"></span><br/><span class="line">app = Flask(__name__)</span><br/><span class="line">print(app.instance_path)</span><br/><span class="line">print(app.root_path)</span><br/><span class="line">print(app.static_folder)</span><br/><span class="line"></span><br/><span class="line"></span><br/><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">'/'</span></span>)</span></span><br/><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span>():</span></span><br/><span class="line">    <span class="keyword">return</span> render_template(<span class="string">'index.html'</span>)</span><br/><span class="line"></span><br/><span class="line"></span><br/><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">'/uploads'</span>, methods=[<span class="string">'POST'</span>]</span>)</span></span><br/><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">upload</span>():</span></span><br/><span class="line">    file = request.files.get(<span class="string">'pic'</span>)</span><br/><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> file:</span><br/><span class="line">        <span class="keyword">return</span> render_template(<span class="string">'index.html'</span>)</span><br/><span class="line">    file_name = time.strftime(<span class="string">'%Y-%m-%d-%H-%M-%S'</span>) + file.filename</span><br/><span class="line">    file_url = <span class="string">f'/static/<span class="subst">{file_name}</span>'</span></span><br/><span class="line">    file.save(os.path.join(</span><br/><span class="line">        app.root_path,</span><br/><span class="line">        app.static_folder,</span><br/><span class="line">        file_name</span><br/><span class="line">    ))</span><br/><span class="line">    <span class="keyword">return</span> redirect(file_url)</span><br/><span class="line"></span><br/><span class="line"></span><br/><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br/><span class="line">    app.run()</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="上传文件" decoding="async" height="427" loading="lazy" src="/images/blog-media/d331ac504cbb7c2a3c4e.gif" width="639"/></p></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/pAN-9ZybU1JX7nc8hNwpUw">查看微信公众号原文 ↗</a></p>
-        <div class="post-tags"><a href="/tags/Flask/">Flask</a><a href="/tags/Python/">Python</a><a href="/tags/%E8%A7%86%E5%9B%BE/">视图</a></div>
+        <div class="post-tags" aria-label="文章标签"><a href="/tags/Flask/">Flask</a><a href="/tags/Python/">Python</a><a href="/tags/%E8%A7%86%E5%9B%BE/">视图</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/Flask/">Flask</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
         <nav class="related" aria-label="相邻文章"><a href="/article/f0298a5f.html"><small>较新文章</small>Git基础知识（三）</a><a href="/article/bd37290d.html"><small>较早文章</small>Git基础知识（二）</a></nav>
         <section class="comments" id="comments" hidden><div id="disqus_thread" data-identifier="article/ea96619c.html"></div></section>
@@ -73,14 +82,17 @@
     </div>
   </article></main>
   <footer class="wrap footer">
-    <a class="footer-brand" href="/">测试游记</a>
-    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">
     <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
-    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
-    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
-    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
   </dialog>
 </body>
 </html>

@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <title>测试开发进阶(三十九) · 测试游记</title>
-  <meta name="description" content="测试开发进阶(三十九)首页使用一个简单的get函数返回需要的内容 123456789101112statistics = { &#x27;projects_count&#x27;: projects_count, &#x27;interfaces_count&#x27;: interfaces_count, &#x27;testcases_count&#x27;: testcases_count, &#x27;testsuits_count&#x27;">
+  <meta name="description" content="测试开发进阶(三十九)首页使用一个简单的get函数返回需要的内容 123456789101112statistics = { &#x27;projects_count&#x27;: projects_count, &#x27;interfaces_count&#x27;: interfaces_count, &#x27;testcases_count&#x27;: testcases_count, &#x27;testsuit">
   <meta property="og:title" content="测试开发进阶(三十九) · 测试游记">
-  <meta property="og:description" content="测试开发进阶(三十九)首页使用一个简单的get函数返回需要的内容 123456789101112statistics = { &#x27;projects_count&#x27;: projects_count, &#x27;interfaces_count&#x27;: interfaces_count, &#x27;testcases_count&#x27;: testcases_count, &#x27;testsuits_count&#x27;">
+  <meta property="og:description" content="测试开发进阶(三十九)首页使用一个简单的get函数返回需要的内容 123456789101112statistics = { &#x27;projects_count&#x27;: projects_count, &#x27;interfaces_count&#x27;: interfaces_count, &#x27;testcases_count&#x27;: testcases_count, &#x27;testsuit">
   <meta property="og:url" content="https://www.zhongxin.website/article/2d7f092b.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/2d7f092b.html">
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
   <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
 
@@ -21,18 +22,26 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记<span>听白</span></a>
-      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
-      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      <nav aria-label="主导航"><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
     </div>
   </header>
   <main id="main" class="wrap">
   <article class="article">
     <header class="article-header">
-      <a class="back-link" href="/archives/">← 文章归档</a>
+      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/platforms/">测试平台与工具</a></nav>
       <h1 class="post-title">测试开发进阶(三十九)</h1>
       <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2019-11-17T18:02:45+08:00">2019-11-17</time>
         <span class="post-category" hidden><a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">Python测试开发进阶</a></span>
-        <nav class="topic-context" aria-label="文章分类"><a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/platforms/">测试平台与工具</a></nav></div>
+        <span class="read-time">约 4 分钟</span></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E9%A6%96%E9%A1%B5">首页</a></li><li><a href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8">如何使用</a></li><li><a href="#%E9%83%A8%E7%BD%B2">部署</a></li><li><a href="#%E6%B5%81%E7%A8%8B">流程</a></li><li><a href="#Shell">Shell</a></li><li><a href="#shell%E7%9A%84%E5%88%86%E7%B1%BB">shell的分类</a></li><li><a href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4">常用命令</a></li><li><a href="#%E5%8F%98%E9%87%8F">变量</a></li></ol></details></aside>
@@ -173,7 +182,7 @@
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br/><span class="line">echo "参数的总个数:$#"</span><br/><span class="line">echo "脚本名为:$0"</span><br/><span class="line">echo "第二个参数:$2"</span><br/><span class="line">echo "第十个参数:${10}"</span><br/><span class="line">echo "获取所有参数:$*"</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="8" decoding="async" height="384" loading="lazy" src="/images/blog-media/13b149b57c88f5557d5a.webp" width="1032"/></p></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/knty71Wyba8Hz26tu4aG-g">查看微信公众号原文 ↗</a></p>
-        <div class="post-tags"><a href="/tags/%E6%B5%8B%E8%AF%95%E5%B9%B3%E5%8F%B0/">测试平台</a><a href="/tags/Django/">Django</a></div>
+        <div class="post-tags" aria-label="文章标签"><a href="/tags/%E6%B5%8B%E8%AF%95%E5%B9%B3%E5%8F%B0/">测试平台</a><a href="/tags/Django/">Django</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
         <nav class="related" aria-label="相邻文章"><a href="/article/b294d54f.html"><small>较新文章</small>测试开发进阶(四十)</a><a href="/article/31aee3cf.html"><small>较早文章</small>测试开发进阶(三十八)</a></nav>
         <section class="comments" id="comments" hidden><div id="disqus_thread" data-identifier="article/2d7f092b.html"></div></section>
@@ -181,14 +190,17 @@
     </div>
   </article></main>
   <footer class="wrap footer">
-    <a class="footer-brand" href="/">测试游记</a>
-    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">
     <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
-    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
-    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
-    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
   </dialog>
 </body>
 </html>

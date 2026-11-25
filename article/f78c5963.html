@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <title>测试开发进阶(三) · 测试游记</title>
-  <meta name="description" content="测试开发进阶(三)生成器的三个方法 send()和生成器内部进行数据交互 close()关闭生成器 1234567891011gen = (i for i in range(0, 20, 2))print(next(gen)) # 0print(next(gen)) # 2gen.close()print(next(gen))&quot;&quot;&quot;Traceback (most recent call la">
+  <meta name="description" content="测试开发进阶(三)生成器的三个方法 send()和生成器内部进行数据交互 close()关闭生成器 1234567891011gen = (i for i in range(0, 20, 2))print(next(gen)) # 0print(next(gen)) # 2gen.close()print(next(gen))&quot;&quot;&quot;Traceback (mo">
   <meta property="og:title" content="测试开发进阶(三) · 测试游记">
-  <meta property="og:description" content="测试开发进阶(三)生成器的三个方法 send()和生成器内部进行数据交互 close()关闭生成器 1234567891011gen = (i for i in range(0, 20, 2))print(next(gen)) # 0print(next(gen)) # 2gen.close()print(next(gen))&quot;&quot;&quot;Traceback (most recent call la">
+  <meta property="og:description" content="测试开发进阶(三)生成器的三个方法 send()和生成器内部进行数据交互 close()关闭生成器 1234567891011gen = (i for i in range(0, 20, 2))print(next(gen)) # 0print(next(gen)) # 2gen.close()print(next(gen))&quot;&quot;&quot;Traceback (mo">
   <meta property="og:url" content="https://www.zhongxin.website/article/f78c5963.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/f78c5963.html">
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
   <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
 
@@ -21,18 +22,26 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记<span>听白</span></a>
-      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
-      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      <nav aria-label="主导航"><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
     </div>
   </header>
   <main id="main" class="wrap">
   <article class="article">
     <header class="article-header">
-      <a class="back-link" href="/archives/">← 文章归档</a>
+      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/python/">Python 编程</a></nav>
       <h1 class="post-title">测试开发进阶(三)</h1>
       <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2019-08-09T19:52:00+08:00">2019-08-09</time>
         <span class="post-category" hidden><a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">Python测试开发进阶</a></span>
-        <nav class="topic-context" aria-label="文章分类"><a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/python/">Python 编程</a></nav></div>
+        <span class="read-time">约 4 分钟</span></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E7%94%9F%E6%88%90%E5%99%A8%E7%9A%84%E4%B8%89%E4%B8%AA%E6%96%B9%E6%B3%95">生成器的三个方法</a></li><li><a href="#%E5%87%BD%E6%95%B0">函数</a></li><li><a href="#%E9%80%92%E5%BD%92%E5%87%BD%E6%95%B0">递归函数</a></li><li><a href="#%E7%BA%AF%E5%87%BD%E6%95%B0">纯函数</a></li><li><a href="#%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B0">匿名函数</a></li><li><a href="#%E5%81%8F%E5%87%BD%E6%95%B0">偏函数</a></li></ol></details></aside>
@@ -112,7 +121,7 @@
 <p>一个简单的例子：</p>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> partial</span><br/><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">func1</span>(<span class="params">a, b, c</span>):</span></span><br/><span class="line">    print(a, b, c)</span><br/><span class="line"></span><br/><span class="line">func1(<span class="number">11</span>, <span class="number">22</span>, <span class="number">33</span>)</span><br/><span class="line">func1(<span class="number">11</span>, <span class="string">'bb'</span>, <span class="string">'cc'</span>)</span><br/><span class="line">func1(<span class="number">11</span>, <span class="string">'dd'</span>, <span class="string">'ee'</span>)</span><br/><span class="line"></span><br/><span class="line">myfilter1 = partial(func1, <span class="number">11</span>)</span><br/><span class="line">myfilter1(<span class="number">22</span>, <span class="number">33</span>)</span><br/><span class="line">myfilter1(<span class="string">'bb'</span>, <span class="string">'cc'</span>)</span><br/><span class="line">myfilter1(<span class="string">'dd'</span>, <span class="string">'ee'</span>)</span><br/><span class="line"></span><br/><span class="line">myfilter2 = partial(func1, b=<span class="number">22</span>)</span><br/><span class="line">myfilter2(a=<span class="number">11</span>, c=<span class="string">'cc'</span>) <span class="comment"># 11 22 cc</span></span><br/><span class="line"></span><br/><span class="line">myfilter2 = partial(func1, a=<span class="number">11</span>, b=<span class="number">22</span>)</span><br/><span class="line">myfilter2(c=<span class="string">'cc'</span>) <span class="comment"># 11 22 cc</span></span><br/></pre></td></tr></tbody></table></figure></div>
 
-        <div class="post-tags"><a href="/tags/Python/">Python</a><a href="/tags/%E7%94%9F%E6%88%90%E5%99%A8/">生成器</a></div>
+        <div class="post-tags" aria-label="文章标签"><a href="/tags/Python/">Python</a><a href="/tags/%E7%94%9F%E6%88%90%E5%99%A8/">生成器</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
         <nav class="related" aria-label="相邻文章"><a href="/article/b64e111.html"><small>较新文章</small>测试开发进阶(五)</a><a href="/article/897f7948.html"><small>较早文章</small>测试开发进阶(二)</a></nav>
         <section class="comments" id="comments" hidden><div id="disqus_thread" data-identifier="article/f78c5963.html"></div></section>
@@ -120,14 +129,17 @@
     </div>
   </article></main>
   <footer class="wrap footer">
-    <a class="footer-brand" href="/">测试游记</a>
-    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">
     <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
-    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
-    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
-    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
   </dialog>
 </body>
 </html>

@@ -12,6 +12,7 @@
   <link rel="canonical" href="https://www.zhongxin.website/tags/%E5%B9%B6%E5%8F%91/">
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
   <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
 
@@ -21,20 +22,31 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记<span>听白</span></a>
-      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
-      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      <nav aria-label="主导航"><a href="/archives/">归档</a><a href="/categories/">分类</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
     </div>
   </header>
   <main id="main" class="wrap"><section class="listing"><h1>并发</h1><ul class="post-list"><li><time datetime="2019-08-27T18:19:57+08:00">2019-08-27</time><div><a class="row-title" href="/article/a5499375.html">测试开发进阶(十)</a><p>测试开发进阶(十)进程之间通信进程之间通信：使用队列 queue模块中的队列，只能用于一个进程中，各个线程之间进行通信 进程模块中的Queue:可以用于多个进程之间进行通信 ⚠️注意点：使用的时候要使用参数传递到各个进程</p></div><span class="categories"><a href="/categories/development/python/">Python 编程</a></span></li><li><time datetime="2019-08-23T19:52:00+08:00">2019-08-23</time><div><a class="row-title" href="/article/d8e0e401.html">测试开发进阶(九)</a><p>测试开发进阶(九)队列Queue模块中提供了同步的，线程安全的队列类，包括： FIFO Queue 先入先出 LIFO Queue 后入先出 Priority Queue：优先级队列 这些都实现了 锁原语，能够在多线程中</p></div><span class="categories"><a href="/categories/development/python/">Python 编程</a></span></li><li><time datetime="2019-08-21T19:53:00+08:00">2019-08-21</time><div><a class="row-title" href="/article/c4310ee5.html">测试开发进阶(八)</a><p>测试开发进阶(八)并发和并行 多任务：操作系统可以同时运行多个任务。 并发：任务数&gt;cpu核数，每个cpu快速切换任务 并行：任务数&lt;cpu核数，每个cpu执行一个任务 多线程模块：threading</p></div><span class="categories"><a href="/categories/development/python/">Python 编程</a></span></li></ul></section></main>
   <footer class="wrap footer">
-    <a class="footer-brand" href="/">测试游记</a>
-    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">
     <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
-    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
-    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
-    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
   </dialog>
 </body>
 </html>

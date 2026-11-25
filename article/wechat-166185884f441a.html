@@ -12,6 +12,7 @@
   <link rel="canonical" href="https://www.zhongxin.website/article/wechat-166185884f441a.html">
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
   <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
 
@@ -21,25 +22,33 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记<span>听白</span></a>
-      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
-      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      <nav aria-label="主导航"><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
     </div>
   </header>
   <main id="main" class="wrap">
   <article class="article">
     <header class="article-header">
-      <a class="back-link" href="/archives/">← 文章归档</a>
+      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/platforms/">测试平台与工具</a></nav>
       <h1 class="post-title">Django操作接口集编辑（十二）</h1>
       <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2019-03-08T00:00:00+08:00">2019-03-08</time>
         <span class="post-category" hidden><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span>
-        <nav class="topic-context" aria-label="文章分类"><a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/platforms/">测试平台与工具</a></nav></div>
+        <span class="read-time">约 2 分钟</span></div>
     </header>
     <div class="article-layout ">
 
       <div class="article-main">
         <div class="post-body"><section class="output_wrapper"><p>昨天完成了接口集的新增，今天继续完成它的编辑和删除功能。<br/>首先是先写前端的Javascript代码<br/>我们点击编辑之后应该要能跳出一个对话框，然后提示我们修改<span>因为没有实现后端代码，所以报错了。下面来看具体实现代码：</span></p><pre><code class="JavaScript language-JavaScript hljs"><span class="hljs-comment">// 编辑</span><br/>    <span class="hljs-keyword">let</span> $tagEdit = $(<span class="hljs-string">".btn-edit"</span>);  <span class="hljs-comment">// 1. 获取编辑按钮</span><br/>    $tagEdit.click(<span class="hljs-function"><span class="hljs-keyword">function</span> () </span>{    <span class="hljs-comment">// 2. 点击触发事件</span><br/>        <span class="hljs-keyword">let</span> _this = <span class="hljs-keyword">this</span>;<br/>        <span class="hljs-keyword">let</span> sTagId = $(<span class="hljs-keyword">this</span>).parents(<span class="hljs-string">'tr'</span>).data(<span class="hljs-string">'id'</span>);<br/>        <span class="hljs-keyword">let</span> sTagName = $(<span class="hljs-keyword">this</span>).parents(<span class="hljs-string">'tr'</span>).data(<span class="hljs-string">'name'</span>);<br/>        fAlert.alertOneInput({<br/>            <span class="hljs-attr">title</span>: <span class="hljs-string">"编辑接口集名称"</span>,<br/>            <span class="hljs-attr">text</span>: <span class="hljs-string">"你正在编辑 "</span> + sTagName + <span class="hljs-string">" 标签"</span>,<br/>            <span class="hljs-attr">placeholder</span>: <span class="hljs-string">"请输入接口集名称"</span>,<br/>            <span class="hljs-attr">value</span>: sTagName,<br/>            <span class="hljs-attr">confirmCallback</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">confirmCallback</span>(<span class="hljs-params">inputVal</span>) </span>{<br/>                <span class="hljs-built_in">console</span>.log(inputVal);<br/>                <span class="hljs-keyword">if</span> (inputVal === sTagName) {<br/>                    swal.showInputError(<span class="hljs-string">'接口集名称未变化'</span>);<br/>                    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br/>                }<br/>                <span class="hljs-keyword">let</span> sDataParams = {<br/>                    <span class="hljs-string">"name"</span>: inputVal<br/>                };<br/><br/>                $.ajax({<br/>                    <span class="hljs-comment">// 请求地址</span><br/>                    url: <span class="hljs-string">"/callections/"</span> + sTagId + <span class="hljs-string">"/"</span>,  <span class="hljs-comment">// url尾部需要添加/</span><br/>                    <span class="hljs-comment">// 请求方式</span><br/>                    type: <span class="hljs-string">"PUT"</span>,<br/>                    <span class="hljs-attr">data</span>: <span class="hljs-built_in">JSON</span>.stringify(sDataParams),<br/>                    <span class="hljs-comment">// 请求内容的数据类型（前端发给后端的格式）</span><br/>                    contentType: <span class="hljs-string">"application/json; charset=utf-8"</span>,<br/>                    <span class="hljs-comment">// 响应数据的格式（后端返回给前端的格式）</span><br/>                    dataType: <span class="hljs-string">"json"</span>,<br/>                })<br/>                    .done(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">res</span>) </span>{<br/>                        <span class="hljs-keyword">if</span> (res.errno === <span class="hljs-string">"0"</span>) {<br/>                            <span class="hljs-comment">// 更新标签成功</span><br/>                            $(_this).parents(<span class="hljs-string">'tr'</span>).find(<span class="hljs-string">'td:nth-child(1)'</span>).text(inputVal);<br/>                            swal.close();<br/>                            message.showSuccess(<span class="hljs-string">"接口集名称修改成功"</span>);<br/>                        } <span class="hljs-keyword">else</span> {<br/>                            swal.showInputError(res.errmsg);<br/>                        }<br/>                    })<br/>                    .fail(<span class="hljs-function"><span class="hljs-keyword">function</span> () </span>{<br/>                        message.showError(<span class="hljs-string">'服务器超时，请重试！'</span>);<br/>                    });<br/><br/>            }<br/>        });<br/>    });<br/></code></pre><p>$.ajax上面部分和新增类似，都是弹出的对话框中的一些内容<br/>其中666是通过sTagName动态加载的<br/></p><figure><img alt="" class="" decoding="async" height="574" loading="lazy" src="/images/blog-media/4d13420fd88b88582ad9.webp" width="952"/><figcaption>弹框</figcaption></figure><p>下面来看一下ajax中写了啥<br/><code>type: "PUT",</code>表示我们的接口的函数需要发起<code>PUT</code>请求。<br/><code>url: "/callections/" + sTagId + "/"</code>表明我们发送的PUT请求的url必须是由callections和一个ID拼接而成了。<br/>然后就是成功和失败的对应返回内容了<br/>成功就是.done(function (res)<br/>失败就是.fail(function () <br/>基本上由简单的英语能力就可以理解了。毕竟代码都是人写的。<br/>下面来写后台的代码了<br/>老办法，打断点，查看前台到底传了什么过来</p><figure><img alt="" class="" decoding="async" height="298" loading="lazy" src="/images/blog-media/f51c8f04ead88f14533f.webp" width="1080"/><figcaption>断点</figcaption></figure><br/>然后我们需要将它从byte类型转换成字典格式<br/>dict_data = json.loads(json_data.decode('utf8'))<br/>然后再拿到字典里面的东西：tag_name = dict_data.get('name')<br/>然后再从数据库里面取出id对应的内容<br/>models.Callections.objects.only('id').filter(id=callections_id).first()<br/><figure><img alt="" class="" decoding="async" height="759" loading="lazy" src="/images/blog-media/55671f0452e98b2c6870.webp" width="1080"/><figcaption>数据库</figcaption></figure><br/>然后我们判断一下，如果和数据库里面那个id存的内容一样的话，那就提示已经存在了，如果不是那就更新上去。<pre><code class="python language-python hljs">        <span class="hljs-keyword">if</span> tag:<br/>            <span class="hljs-keyword">if</span> tag_name <span class="hljs-keyword">and</span> tag_name.strip():<br/>                <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> models.Callections.objects.only(<span class="hljs-string">'id'</span>).filter(name=tag_name).exists():<br/>                    tag.name = tag_name<br/>                    tag.save(update_fields=[<span class="hljs-string">'name'</span>])<br/>                    <span class="hljs-keyword">return</span> to_json_data(errmsg=<span class="hljs-string">"接口集更新成功"</span>)<br/>                <span class="hljs-keyword">else</span>:<br/>                    <span class="hljs-keyword">return</span> to_json_data(errno=Code.DATAEXIST, errmsg=<span class="hljs-string">"接口集已存在"</span>)<br/>            <span class="hljs-keyword">else</span>:<br/>                <span class="hljs-keyword">return</span> to_json_data(errno=Code.PARAMERR, errmsg=<span class="hljs-string">"接口集为空"</span>)<br/><br/>        <span class="hljs-keyword">else</span>:<br/>            <span class="hljs-keyword">return</span> to_json_data(errno=Code.PARAMERR, errmsg=<span class="hljs-string">"需要更新的接口集不存在"</span>)<br/></code></pre><p>放开断点后测试一遍就可以看到接口集名称修改成功～～<br/></p><figure><img alt="" class="" decoding="async" height="237" loading="lazy" src="/images/blog-media/fd5dc67ad67f023a3383.webp" width="1080"/><figcaption>测试</figcaption></figure><p>欢迎关注我的公众号：zx94_11<br/></p><figure><img alt="" class="" decoding="async" height="1080" loading="lazy" src="/images/blog-media/9ef41dc51c567f8c8e80.webp" width="1080"/><figcaption>公众号</figcaption></figure></section></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/uMBo5JAvNF5aNRMx-Kgn4g">查看微信公众号原文 ↗</a></p>
-        <div class="post-tags"><a href="/tags/Django/">Django</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%B9%B3%E5%8F%B0/">测试平台</a><a href="/tags/%E6%8E%A5%E5%8F%A3%E7%AE%A1%E7%90%86/">接口管理</a></div>
+        <div class="post-tags" aria-label="文章标签"><a href="/tags/Django/">Django</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%B9%B3%E5%8F%B0/">测试平台</a><a href="/tags/%E6%8E%A5%E5%8F%A3%E7%AE%A1%E7%90%86/">接口管理</a></div>
         <div class="legacy-tags" hidden></div>
         <nav class="related" aria-label="相邻文章"><a href="/article/wechat-fb703c5427d337.html"><small>较新文章</small>Django操作接口集删除（十三）</a><a href="/article/wechat-89bf6151d5b51c.html"><small>较早文章</small>Django的新增接口集管理数据库操作（十一）</a></nav>
 
@@ -47,14 +56,17 @@
     </div>
   </article></main>
   <footer class="wrap footer">
-    <a class="footer-brand" href="/">测试游记</a>
-    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">
     <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
-    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
-    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
-    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
   </dialog>
 </body>
 </html>

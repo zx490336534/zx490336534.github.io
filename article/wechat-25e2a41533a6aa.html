@@ -12,6 +12,7 @@
   <link rel="canonical" href="https://www.zhongxin.website/article/wechat-25e2a41533a6aa.html">
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
   <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
 
@@ -21,25 +22,33 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记<span>听白</span></a>
-      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
-      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      <nav aria-label="主导航"><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
     </div>
   </header>
   <main id="main" class="wrap">
   <article class="article">
     <header class="article-header">
-      <a class="back-link" href="/archives/">← 文章归档</a>
+      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/frontend/">前端与应用</a> <span aria-hidden="true">/</span> <a href="/categories/development/frontend/apps/">浏览器与应用开发</a></nav>
       <h1 class="post-title">低版本chrome浏览器播放视频异常问题排查</h1>
       <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2023-05-06T18:42:03+08:00">2023-05-06</time>
         <span class="post-category" hidden><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span>
-        <nav class="topic-context" aria-label="文章分类"><a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/frontend/">前端与应用</a> <span aria-hidden="true">/</span> <a href="/categories/development/frontend/apps/">浏览器与应用开发</a></nav></div>
+        <span class="read-time">约 1 分钟</span></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E8%83%8C%E6%99%AF">背景</a></li><li><a href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA">环境搭建</a></li><li><a href="#%E4%BD%BF%E7%94%A8">使用</a></li></ol></details></aside>
       <div class="article-main">
         <div class="post-body"><section><h1 id="背景"><span>背景</span><br/></h1><p>据了解是由于设计师使用的chrome版本比较低导致</p><p>这个视频编解码方式是HEVC，标准比较新。会存在低版本浏览器不支持的情况，被降级当成了AAC音频格式来播放了</p><p><img alt="" class="rich_pages wxw-img" decoding="async" height="172" loading="lazy" src="/images/blog-media/3dd7051b966259c32277.webp" width="440"/></p><figure><figcaption>视频格式</figcaption></figure><p>在本地使用docker进行复现&amp;验证</p><h2 id="环境搭建"><span>环境搭建</span></h2><p>在服务器上使用docker虚拟化出一个ubuntu系统</p><pre><code><span>docker</span> run --restart=always --name xfce -d -p <span>3389</span>:<span>3389</span> -e USER_PASSWORD=password -v /Users/zhongxin/docker_data/vnc:/home/chrome  soff/ubuntu-xfce-vnc <br/></code></pre><p>下载chrome :https://www.chromedownloads.net/chrome64linux/</p><p>将下载到的google-chrome-stable_current_amd64.deb文件拷贝到/Users/zhongxin/docker_data/vnc中</p><ul class="list-paddingleft-1"><li><p><span>该路径为-v后的路径</span></p></li></ul><p>使用win远程工具远程该ubuntu系统</p><ul class="list-paddingleft-1"><li><p><span>登陆用户名：user</span></p></li><li><p><span>登陆的密码：password (对应USER_PASSWORD参数)</span></p></li></ul><p><img alt="" class="rich_pages wxw-img" decoding="async" height="624" loading="lazy" src="/images/blog-media/bcde1bc40110104a8515.webp" width="1080"/></p><figure><figcaption>vnc登录</figcaption></figure><p>命令行中输入:</p><pre><code>sudo su <br/>cd /home/chrome <br/>apt-get update <br/>apt-get install -y -f ./google-chrome-stable_current_amd64.deb <br/>sed -e '/chrome/ s/^<span>#*/#/' -i /opt/google/chrome/google-chrome </span><br/>echo 'exec -a <span>"$0"</span> <span>"$HERE/chrome"</span> <span>"<span>$@</span>"</span> --user-data-dir=<span>"$HOME/.config/chrome"</span> --no-sandbox --disable-dev-shm-usage' &gt;&gt; /opt/google/chrome/google-chrome<br/></code></pre><h2 id="使用"><span>使用</span></h2><p><img alt="" class="rich_pages wxw-img" decoding="async" height="383" loading="lazy" src="/images/blog-media/ccb65acda4ae7692832b.webp" width="361"/></p><figure><figcaption>打开浏览器</figcaption></figure><p><img alt="" class="rich_pages wxw-img" decoding="async" height="609" loading="lazy" src="/images/blog-media/ac8564d738e6161b1624.webp" width="1080"/></p><figure><figcaption>查看版本<br/></figcaption></figure><p><img alt="" class="rich_pages wxw-img" decoding="async" height="624" loading="lazy" src="/images/blog-media/1f479f331918084cd4b2.webp" width="1080"/></p><figure><figcaption>测试</figcaption></figure></section><section><p>参考文档:在Docker中运行一个Ubuntu桌面并安装Chrome浏览器</p><p>http://qclog.cn/1335?spm=wolai.workspace.0.0.7c496eceOZcPDK</p></section></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/J7NDsKMT2ZF4OJdrMX97nw">查看微信公众号原文 ↗</a></p>
-        <div class="post-tags"><a href="/tags/Chrome/">Chrome</a><a href="/tags/%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE/">视频播放</a></div>
+        <div class="post-tags" aria-label="文章标签"><a href="/tags/Chrome/">Chrome</a><a href="/tags/%E8%A7%86%E9%A2%91%E6%92%AD%E6%94%BE/">视频播放</a></div>
         <div class="legacy-tags" hidden></div>
         <nav class="related" aria-label="相邻文章"><a href="/article/wechat-ee812c18848a4e.html"><small>较新文章</small>Sonic新生态Sonic IDE体验</a><a href="/article/wechat-3e149d6ca19aba.html"><small>较早文章</small>python3 alfred-faker中文版改造过程</a></nav>
 
@@ -47,14 +56,17 @@
     </div>
   </article></main>
   <footer class="wrap footer">
-    <a class="footer-brand" href="/">测试游记</a>
-    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">
     <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
-    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
-    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
-    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
   </dialog>
 </body>
 </html>

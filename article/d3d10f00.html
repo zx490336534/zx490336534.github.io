@@ -12,6 +12,7 @@
   <link rel="canonical" href="https://www.zhongxin.website/article/d3d10f00.html">
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
   <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
 
@@ -21,18 +22,26 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记<span>听白</span></a>
-      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
-      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      <nav aria-label="主导航"><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
     </div>
   </header>
   <main id="main" class="wrap">
   <article class="article">
     <header class="article-header">
-      <a class="back-link" href="/archives/">← 文章归档</a>
+      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/">后端开发</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/python-web/">Python Web</a></nav>
       <h1 class="post-title">测试开发进阶(三十一)</h1>
       <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2019-10-29T17:51:38+08:00">2019-10-29</time>
         <span class="post-category" hidden><a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">Python测试开发进阶</a></span>
-        <nav class="topic-context" aria-label="文章分类"><a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/">后端开发</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/python-web/">Python Web</a></nav></div>
+        <span class="read-time">约 4 分钟</span></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E7%94%A8%E6%88%B7%E6%A8%A1%E5%9D%97">用户模块</a></li><li><a href="#Json-Web-Token%E8%AE%A4%E8%AF%81">Json Web Token认证</a></li><li><a href="#JWT%EF%BC%88Json-Web-Token%EF%BC%89">JWT（Json Web Token）</a></li><li><a href="#%E5%AE%89%E8%A3%85djangorestframework-jwt">安装djangorestframework-jwt</a></li><li><a href="#%E4%BD%BF%E7%94%A8">使用</a></li><li><a href="#%E6%B7%BB%E5%8A%A0%E8%B7%AF%E7%94%B1">添加路由</a></li><li><a href="#%E4%BD%BF%E7%94%A8httpie%E5%8F%91%E8%B5%B7%E5%8C%85%E5%90%ABtoken%E7%9A%84%E5%86%85%E5%AE%B9">使用httpie发起包含token的内容</a></li><li><a href="#%E4%BF%AE%E6%94%B9%E8%BD%BD%E8%8D%B7">修改载荷</a></li><li><a href="#Django%E8%87%AA%E5%B8%A6%E7%9A%84%E7%94%A8%E6%88%B7%E6%A8%A1%E5%9E%8B">Django自带的用户模型</a></li><li><a href="#%E6%B3%A8%E5%86%8C">注册</a></li></ol></details></aside>
@@ -117,7 +126,7 @@
 <p><code>user/views.py</code></p>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> rest_framework.generics <span class="keyword">import</span> CreateAPIView</span><br/><span class="line"><span class="keyword">from</span> rest_framework_jwt.authentication <span class="keyword">import</span> JSONWebTokenAuthentication</span><br/><span class="line"></span><br/><span class="line"><span class="keyword">from</span> user.serializers <span class="keyword">import</span> RegisterSerializer</span><br/><span class="line"></span><br/><span class="line"></span><br/><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RegisterView</span>(<span class="params">CreateAPIView</span>):</span></span><br/><span class="line">    serializer_class = RegisterSerializer</span><br/><span class="line">    authentication_classes = (JSONWebTokenAuthentication,)</span><br/></pre></td></tr></tbody></table></figure></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/3UA7xfW8f2PaTCZEuUIFgg">查看微信公众号原文 ↗</a></p>
-        <div class="post-tags"><a href="/tags/Django/">Django</a><a href="/tags/Python/">Python</a><a href="/tags/JWT/">JWT</a></div>
+        <div class="post-tags" aria-label="文章标签"><a href="/tags/Django/">Django</a><a href="/tags/Python/">Python</a><a href="/tags/JWT/">JWT</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
         <nav class="related" aria-label="相邻文章"><a href="/article/7ce09462.html"><small>较新文章</small>测试开发进阶(三十二)</a><a href="/article/wechat-e0ab4d3f54e678.html"><small>较早文章</small>Django REST framework思维导图</a></nav>
         <section class="comments" id="comments" hidden><div id="disqus_thread" data-identifier="article/d3d10f00.html"></div></section>
@@ -125,14 +134,17 @@
     </div>
   </article></main>
   <footer class="wrap footer">
-    <a class="footer-brand" href="/">测试游记</a>
-    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">
     <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
-    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
-    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
-    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
   </dialog>
 </body>
 </html>

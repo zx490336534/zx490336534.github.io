@@ -12,6 +12,7 @@
   <link rel="canonical" href="https://www.zhongxin.website/article/65eed160.html">
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
   <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
 
@@ -21,18 +22,26 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记<span>听白</span></a>
-      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
-      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      <nav aria-label="主导航"><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
     </div>
   </header>
   <main id="main" class="wrap">
   <article class="article">
     <header class="article-header">
-      <a class="back-link" href="/archives/">← 文章归档</a>
+      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/automation/">自动化测试</a> <span aria-hidden="true">/</span> <a href="/categories/testing/automation/api/">接口自动化</a></nav>
       <h1 class="post-title">Java自动化测试(参数化 19)</h1>
       <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2020-08-13T07:02:37+08:00">2020-08-13</time>
         <span class="post-category" hidden><a href="/categories/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">Java自动化测试</a></span>
-        <nav class="topic-context" aria-label="文章分类"><a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/automation/">自动化测试</a> <span aria-hidden="true">/</span> <a href="/categories/testing/automation/api/">接口自动化</a></nav></div>
+        <span class="read-time">约 3 分钟</span></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE%E4%BF%AE%E6%94%B9">测试数据修改</a></li><li><a href="#Maven%E5%AF%BC%E5%85%A5%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE%E7%94%9F%E6%88%90">Maven导入测试数据生成</a></li><li><a href="#%E9%9A%8F%E6%9C%BA%E6%B5%8B%E8%AF%95%E5%8F%82%E6%95%B0%E7%94%9F%E6%88%90">随机测试参数生成</a></li><li><a href="#%E6%B5%8B%E8%AF%95%E5%89%8D%E7%9A%84%E5%8F%82%E6%95%B0%E6%9B%BF%E6%8D%A2">测试前的参数替换</a></li><li><a href="#Maven%E4%B8%AD%E5%AF%BC%E5%85%A5%E5%BC%82%E5%B8%B8%E6%8E%92%E9%99%A4">Maven中导入异常排除</a></li><li><a href="#%E4%BD%BF%E7%94%A8%E5%B8%B8%E9%87%8F%E6%9B%BF%E4%BB%A3">使用常量替代</a></li><li><a href="#%E6%97%A5%E5%BF%97%E8%AE%B0%E5%BD%95">日志记录</a></li><li><a href="#%E5%BC%95%E5%85%A5Maven">引入Maven</a></li><li><a href="#%E5%AE%9A%E4%B9%89%E8%BE%93%E5%87%BA">定义输出</a></li><li><a href="#%E5%AE%9A%E4%B9%89logger">定义logger</a></li><li><a href="#%E4%BD%BF%E7%94%A8">使用</a></li><li><a href="#%E6%B5%8B%E8%AF%95%E6%97%A5%E5%BF%97%E6%89%93%E5%8D%B0">测试日志打印</a></li></ol></details></aside>
@@ -62,7 +71,7 @@
 <h3 id="使用"><a class="headerlink" href="#使用" title="使用"></a>使用</h3><figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line">logger.info(statusCode);</span><br/></pre></td></tr></tbody></table></figure>
 <h3 id="测试日志打印"><a class="headerlink" href="#测试日志打印" title="测试日志打印"></a>测试日志打印</h3><p><img alt="打印" decoding="async" height="245" loading="lazy" src="/images/blog-media/6756fe022f227a8152a9.webp" width="1080"/></p></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/BlR6PUWrmW1BrzOTl81x0Q">查看微信公众号原文 ↗</a></p>
-        <div class="post-tags"><a href="/tags/Java/">Java</a><a href="/tags/%E5%8F%82%E6%95%B0%E5%8C%96/">参数化</a><a href="/tags/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95/">接口测试</a><a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a></div>
+        <div class="post-tags" aria-label="文章标签"><a href="/tags/Java/">Java</a><a href="/tags/%E5%8F%82%E6%95%B0%E5%8C%96/">参数化</a><a href="/tags/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95/">接口测试</a><a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Java/">Java</a><a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a></div>
         <nav class="related" aria-label="相邻文章"><a href="/article/34a48abe.html"><small>较新文章</small>Java自动化测试(allure 20)</a><a href="/article/bfb7ec4.html"><small>较早文章</small>Java自动化测试(数据库断言 18)</a></nav>
         <section class="comments" id="comments" hidden><div id="disqus_thread" data-identifier="article/65eed160.html"></div></section>
@@ -70,14 +79,17 @@
     </div>
   </article></main>
   <footer class="wrap footer">
-    <a class="footer-brand" href="/">测试游记</a>
-    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">
     <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
-    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
-    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
-    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
   </dialog>
 </body>
 </html>

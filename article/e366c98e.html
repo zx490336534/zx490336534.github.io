@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <title>测试开发进阶(十五) · 测试游记</title>
-  <meta name="description" content="测试开发进阶(十五)欢迎关注我呀～「测试游记」「zx94_11」 ajax ajax技术的目的是让javascript发送http请求，与后台通信，获取数据和信息。 同步 异步 局部刷新 无刷新 ajax可以实现局部刷新，也叫做无刷新，无刷新指的是整个页面不刷新，只是局部刷新，ajax可以自己发送http请求，不用通过浏览器的地址栏，所以页面整体不会刷新，ajax获取到后台数据，更新页">
+  <meta name="description" content="测试开发进阶(十五)欢迎关注我呀～「测试游记」「zx94_11」 ajax ajax技术的目的是让javascript发送http请求，与后台通信，获取数据和信息。 同步 异步 局部刷新 无刷新 ajax可以实现局部刷新，也叫做无刷新，无刷新指的是整个页面不刷新，只是局部刷新，ajax可以自己发送http请求，不用通过浏览器的地址栏，所以页面整体不会刷新，a">
   <meta property="og:title" content="测试开发进阶(十五) · 测试游记">
-  <meta property="og:description" content="测试开发进阶(十五)欢迎关注我呀～「测试游记」「zx94_11」 ajax ajax技术的目的是让javascript发送http请求，与后台通信，获取数据和信息。 同步 异步 局部刷新 无刷新 ajax可以实现局部刷新，也叫做无刷新，无刷新指的是整个页面不刷新，只是局部刷新，ajax可以自己发送http请求，不用通过浏览器的地址栏，所以页面整体不会刷新，ajax获取到后台数据，更新页">
+  <meta property="og:description" content="测试开发进阶(十五)欢迎关注我呀～「测试游记」「zx94_11」 ajax ajax技术的目的是让javascript发送http请求，与后台通信，获取数据和信息。 同步 异步 局部刷新 无刷新 ajax可以实现局部刷新，也叫做无刷新，无刷新指的是整个页面不刷新，只是局部刷新，ajax可以自己发送http请求，不用通过浏览器的地址栏，所以页面整体不会刷新，a">
   <meta property="og:url" content="https://www.zhongxin.website/article/e366c98e.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/e366c98e.html">
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
   <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
 
@@ -21,18 +22,26 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记<span>听白</span></a>
-      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
-      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      <nav aria-label="主导航"><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
     </div>
   </header>
   <main id="main" class="wrap">
   <article class="article">
     <header class="article-header">
-      <a class="back-link" href="/archives/">← 文章归档</a>
+      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/frontend/">前端与应用</a> <span aria-hidden="true">/</span> <a href="/categories/development/frontend/web/">Web 基础</a></nav>
       <h1 class="post-title">测试开发进阶(十五)</h1>
       <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2019-09-06T18:19:49+08:00">2019-09-06</time>
         <span class="post-category" hidden><a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">Python测试开发进阶</a></span>
-        <nav class="topic-context" aria-label="文章分类"><a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/frontend/">前端与应用</a> <span aria-hidden="true">/</span> <a href="/categories/development/frontend/web/">Web 基础</a></nav></div>
+        <span class="read-time">约 6 分钟</span></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#ajax">ajax</a></li><li><a href="#%E9%9B%86%E5%90%88%E5%AE%9E%E4%BE%8B">集合实例</a></li><li><a href="#%E4%BD%BF%E7%94%A8ajax%E5%8F%91%E9%80%81%E8%B4%A6%E5%8F%B7%E5%AF%86%E7%A0%81%E4%BF%A1%E6%81%AF">使用ajax发送账号密码信息</a></li><li><a href="#%E4%BD%BF%E7%94%A8ajax%E8%8E%B7%E5%8F%96%E5%B9%B6%E4%BF%AE%E6%94%B9%E4%B8%8B%E6%8B%89%E6%A1%86">使用ajax获取并修改下拉框</a></li></ol></details></aside>
@@ -106,7 +115,7 @@
 <p>所以一份ajax请求为：</p>
 <figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/></pre></td><td class="code"><pre><span class="line">$.ajax({</span><br/><span class="line">    type: <span class="string">'xxx'</span>, <span class="comment">// 类型 get post ...</span></span><br/><span class="line">    url: <span class="string">'xxx'</span>, <span class="comment">//地址 同域名下</span></span><br/><span class="line">    data: {<span class="string">'xxx'</span>: <span class="string">'xxx'</span>}, <span class="comment">// post等发送数据时要使用</span></span><br/><span class="line">    dataType: <span class="string">'xxx'</span>,<span class="comment">//预期后台返回类型</span></span><br/><span class="line">    </span><br/><span class="line">}).done(<span class="function"><span class="keyword">function</span> (<span class="params">data</span>) </span>{ <span class="comment">//data-&gt;接口返回的内容</span></span><br/><span class="line">    <span class="comment">//成功后done</span></span><br/><span class="line">}).fail(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>{</span><br/><span class="line">    <span class="comment">// 失败后fail</span></span><br/><span class="line">});</span><br/></pre></td></tr></tbody></table></figure></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/RUiD-cOOeuxmhzDMMYPwcw">查看微信公众号原文 ↗</a></p>
-        <div class="post-tags"><a href="/tags/JavaScript/">JavaScript</a><a href="/tags/Ajax/">Ajax</a></div>
+        <div class="post-tags" aria-label="文章标签"><a href="/tags/JavaScript/">JavaScript</a><a href="/tags/Ajax/">Ajax</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
         <nav class="related" aria-label="相邻文章"><a href="/article/7a6981fc.html"><small>较新文章</small>测试开发进阶(十六)</a><a href="/article/e5cd9ef3.html"><small>较早文章</small>测试开发进阶(十四)</a></nav>
         <section class="comments" id="comments" hidden><div id="disqus_thread" data-identifier="article/e366c98e.html"></div></section>
@@ -114,14 +123,17 @@
     </div>
   </article></main>
   <footer class="wrap footer">
-    <a class="footer-brand" href="/">测试游记</a>
-    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">
     <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
-    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
-    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
-    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
   </dialog>
 </body>
 </html>

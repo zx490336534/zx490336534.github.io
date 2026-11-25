@@ -12,6 +12,7 @@
   <link rel="canonical" href="https://www.zhongxin.website/archives/2021/06/">
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
   <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
 
@@ -21,20 +22,31 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记<span>听白</span></a>
-      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
-      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      <nav aria-label="主导航"><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
     </div>
   </header>
   <main id="main" class="wrap"><section class="listing"><h1>2021 年 6 月文章</h1><ul class="post-list"><li><time datetime="2021-06-26T22:24:00+08:00">2021-06-26</time><div><a class="row-title" href="/article/88f586e9.html">30-服务器架构演进</a><p>30-服务器架构演进把服务包部署到多台设备 多台机器一起向外提供服务，合并在一起的软件：niginx 多台机器合并在一起：集群 nginx负载均衡，反向代理 nginx里面记录不同机器的ip，配置不同的分配策略 ngin</p></div><span class="categories"><a href="/categories/testing/performance/monitoring/">系统与性能监控</a></span></li><li><time datetime="2021-06-24T20:39:00+08:00">2021-06-24</time><div><a class="row-title" href="/article/91eff690.html">29-网络知识</a><p>29-网络知识通常说的网络，都是在TCP/IP协议族的基础上运作的，HTTP协议，只是这个协议族中的一个。 TCP协议：通过数据发送者和接收者相互回应对方发来的确认信息，可靠的进行数据传输 IP协议：指定数据发送的ip信</p></div><span class="categories"><a href="/categories/testing/performance/monitoring/">系统与性能监控</a></span></li><li><time datetime="2021-06-17T15:51:00+08:00">2021-06-17</time><div><a class="row-title" href="/article/daf73f86.html">28-磁盘知识</a><p>持久化的存储设备 存储设备，系统中容量最大的存储设备 存储数据之前，要先进行格式化 linux：ext4 windwos：FAT32、NTFS 在读写数据时，数据与磁盘间有个磁盘缓存（内存的一部分） 机械磁盘「HHD」由</p></div><span class="categories"><a href="/categories/testing/performance/monitoring/">系统与性能监控</a></span></li><li><time datetime="2021-06-05T10:44:00+08:00">2021-06-05</time><div><a class="row-title" href="/article/f32ce47c.html">27-内存知识</a><p>27-内存知识基础概念 内存又叫主存，是CPU与其他设备沟通的桥梁，主要用来临时存放数据，配合CPU工作，协调CPU的处理速度 硬盘数据，外设数据，玩了传输数据，要进CPU前，都要先进入内存 临时存放，在断电后，内存内容</p></div><span class="categories"><a href="/categories/testing/performance/monitoring/">系统与性能监控</a></span></li></ul></section></main>
   <footer class="wrap footer">
-    <a class="footer-brand" href="/">测试游记</a>
-    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">
     <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
-    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
-    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
-    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
   </dialog>
 </body>
 </html>

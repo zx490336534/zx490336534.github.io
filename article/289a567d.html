@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <title>Git基础知识（五） · 测试游记</title>
-  <meta name="description" content="Git基础知识(五)分支都说Git的分支是它的必杀技特性，由于没有接触过太多的版本管理工具，就使用过的SVN来说，两者真的差别巨大。SVN创建一个分支，需要将内容复制一遍！这个时间真的是非常的漫长，而Git只需要几秒钟。所以Git鼓励在工作流中频繁的使用分支和合并。 Git保存数据的方式Git保存的不是文件的变化或者差异，而是不同时刻的文件快照。 Git每次进行提交操作的时候，会保存一个提交对象：">
+  <meta name="description" content="Git基础知识(五)分支都说Git的分支是它的必杀技特性，由于没有接触过太多的版本管理工具，就使用过的SVN来说，两者真的差别巨大。SVN创建一个分支，需要将内容复制一遍！这个时间真的是非常的漫长，而Git只需要几秒钟。所以Git鼓励在工作流中频繁的使用分支和合并。 Git保存数据的方式Git保存的不是文件的变化或者差异，而是不同时刻的文件快照。 Git每次">
   <meta property="og:title" content="Git基础知识（五） · 测试游记">
-  <meta property="og:description" content="Git基础知识(五)分支都说Git的分支是它的必杀技特性，由于没有接触过太多的版本管理工具，就使用过的SVN来说，两者真的差别巨大。SVN创建一个分支，需要将内容复制一遍！这个时间真的是非常的漫长，而Git只需要几秒钟。所以Git鼓励在工作流中频繁的使用分支和合并。 Git保存数据的方式Git保存的不是文件的变化或者差异，而是不同时刻的文件快照。 Git每次进行提交操作的时候，会保存一个提交对象：">
+  <meta property="og:description" content="Git基础知识(五)分支都说Git的分支是它的必杀技特性，由于没有接触过太多的版本管理工具，就使用过的SVN来说，两者真的差别巨大。SVN创建一个分支，需要将内容复制一遍！这个时间真的是非常的漫长，而Git只需要几秒钟。所以Git鼓励在工作流中频繁的使用分支和合并。 Git保存数据的方式Git保存的不是文件的变化或者差异，而是不同时刻的文件快照。 Git每次">
   <meta property="og:url" content="https://www.zhongxin.website/article/289a567d.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/289a567d.html">
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
   <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
 
@@ -21,18 +22,26 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记<span>听白</span></a>
-      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
-      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      <nav aria-label="主导航"><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
     </div>
   </header>
   <main id="main" class="wrap">
   <article class="article">
     <header class="article-header">
-      <a class="back-link" href="/archives/">← 文章归档</a>
+      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/engineering/">工程工具</a> <span aria-hidden="true">/</span> <a href="/categories/engineering/git/">Git 与代码协作</a></nav>
       <h1 class="post-title">Git基础知识（五）</h1>
       <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2020-06-17T08:43:00+08:00">2020-06-17</time>
         <span class="post-category" hidden><a href="/categories/Git/">Git</a></span>
-        <nav class="topic-context" aria-label="文章分类"><a href="/categories/engineering/">工程工具</a> <span aria-hidden="true">/</span> <a href="/categories/engineering/git/">Git 与代码协作</a></nav></div>
+        <span class="read-time">约 2 分钟</span></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#Git%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86-%E4%BA%94">Git基础知识(五)</a></li><li><a href="#%E5%88%86%E6%94%AF">分支</a></li><li><a href="#Git%E4%BF%9D%E5%AD%98%E6%95%B0%E6%8D%AE%E7%9A%84%E6%96%B9%E5%BC%8F">Git保存数据的方式</a></li><li><a href="#%E6%9F%A5%E7%9C%8BGit%E7%9A%84%E5%AF%B9%E8%B1%A1">查看Git的对象</a></li><li><a href="#%E5%88%9B%E5%BB%BA%E5%88%86%E6%94%AF">创建分支</a></li><li><a href="#%E5%88%87%E6%8D%A2%E5%88%86%E6%94%AF">切换分支</a></li></ol></details></aside>
@@ -102,7 +111,7 @@
 <p><img alt="当前分支的内容" decoding="async" height="640" loading="lazy" src="/images/blog-media/3962746e4b3693e7597a.webp" width="1080"/></p>
 <p>以上就学会了Git基础的数据存放方式，分支的创建，当前状态的查看。</p></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/qi-h3tF9J0_BpMEJoxydHw">查看微信公众号原文 ↗</a></p>
-        <div class="post-tags"><a href="/tags/Git/">Git</a></div>
+        <div class="post-tags" aria-label="文章标签"><a href="/tags/Git/">Git</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/Git/">Git</a></div>
         <nav class="related" aria-label="相邻文章"><a href="/article/4d941da4.html"><small>较新文章</small>Git基础知识（六）</a><a href="/article/4704933a.html"><small>较早文章</small>Git基础知识（四）</a></nav>
         <section class="comments" id="comments" hidden><div id="disqus_thread" data-identifier="article/289a567d.html"></div></section>
@@ -110,14 +119,17 @@
     </div>
   </article></main>
   <footer class="wrap footer">
-    <a class="footer-brand" href="/">测试游记</a>
-    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">
     <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
-    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
-    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
-    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
   </dialog>
 </body>
 </html>

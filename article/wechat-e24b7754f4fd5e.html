@@ -12,6 +12,7 @@
   <link rel="canonical" href="https://www.zhongxin.website/article/wechat-e24b7754f4fd5e.html">
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
   <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
 
@@ -21,18 +22,26 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记<span>听白</span></a>
-      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
-      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      <nav aria-label="主导航"><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
     </div>
   </header>
   <main id="main" class="wrap">
   <article class="article">
     <header class="article-header">
-      <a class="back-link" href="/archives/">← 文章归档</a>
+      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/notes/">写作与复盘</a> <span aria-hidden="true">/</span> <a href="/categories/notes/career/">职业与实践</a></nav>
       <h1 class="post-title">ARTS第三周</h1>
       <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2019-04-19T22:43:44+08:00">2019-04-19</time>
         <span class="post-category" hidden><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span>
-        <nav class="topic-context" aria-label="文章分类"><a href="/categories/notes/">写作与复盘</a> <span aria-hidden="true">/</span> <a href="/categories/notes/career/">职业与实践</a></nav></div>
+        <span class="read-time">约 2 分钟</span></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#Algorithm">Algorithm</a></li><li><a href="#Review">Review</a></li><li><a href="#Tip">Tip</a></li><li><a href="#Share">Share</a></li></ol></details></aside>
@@ -42,7 +51,7 @@
   <p><strong>示例 3:</strong></p><pre><code class="hljs makefile"><span class="hljs-section">输入: 10</span><br/><span class="hljs-section">输出: false</span><br/><span class="hljs-section">解释: 从右向左读, 为 01 。因此它不是一个回文数。</span><br/></code></pre>
   <p><strong>进阶:</strong></p><p>你能不将整数转为字符串来解决这个问题吗？</p></blockquote><p>使用字符串</p><pre><code class="python language-python hljs"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Solution</span>:</span><br/>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">isPalindrome</span><span class="hljs-params">(self, x: int)</span> -&gt; bool:</span><br/>        <span class="hljs-keyword">if</span> x &lt; <span class="hljs-number">0</span>:<br/>            <span class="hljs-keyword">return</span> <span class="hljs-keyword">False</span><br/>        <span class="hljs-keyword">return</span> str(x)[::<span class="hljs-number">-1</span>] == str(x)<br/></code></pre><p>不使用字符串</p><pre><code class="python language-python hljs"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Solution</span>:</span><br/>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">isPalindrome</span><span class="hljs-params">(self, x: int)</span> -&gt; bool:</span><br/>        <span class="hljs-keyword">if</span> x &lt; <span class="hljs-number">0</span> <span class="hljs-keyword">or</span> x%<span class="hljs-number">10</span>==<span class="hljs-number">0</span> <span class="hljs-keyword">and</span> x!=<span class="hljs-number">0</span>:<br/>            <span class="hljs-keyword">return</span> <span class="hljs-keyword">False</span><br/>        <span class="hljs-keyword">if</span> x == <span class="hljs-number">0</span>:<br/>            <span class="hljs-keyword">return</span> <span class="hljs-keyword">True</span><br/>        y = int(x)<br/>        reverted = <span class="hljs-number">0</span><br/>        <span class="hljs-keyword">while</span> x:<br/>            reverted = reverted * <span class="hljs-number">10</span> + x %<span class="hljs-number">10</span>;<br/>            x = int(x/<span class="hljs-number">10</span>)<br/>        <span class="hljs-keyword">return</span> y == reverted<br/></code></pre><figure><img alt="" class="" decoding="async" height="836" loading="lazy" src="/images/blog-media/80510f067148d819304f.webp" width="1080"/><figcaption>结果</figcaption></figure><h2 id="Review"><span>Review</span></h2><p>今天阅读以下pipenv的文档：https://github.com/pypa/pipenv</p><ul class="list-paddingleft-2"><li><p>To initialize a Python 3 virtual environment, run <code>$ pipenv --three</code>.</p></li><li><p>To initialize a Python 2 virtual environment, run <code>$ pipenv --two</code>.</p></li></ul><p>安装：<code>pip install --user pipenv</code></p><p>更新：<code>pip install --user --upgrade pipenv</code></p><pre><code class="shell language-shell hljs"><span class="hljs-meta">$</span><span class="bash"> <span class="hljs-built_in">cd</span> myproject</span><br/><span class="hljs-meta">$</span><span class="bash"> pipenv install requests</span><br/></code></pre><figure><img alt="" class="" decoding="async" height="450" loading="lazy" src="/images/blog-media/1923b8347dea38f55b60.webp" width="1080"/><figcaption>开始</figcaption></figure><p>查看<code>/Users/zhongxin/.local/share/virtualenvs/test-4VdUxzDo</code></p><figure><img alt="" class="" decoding="async" height="260" loading="lazy" src="/images/blog-media/6cef5e5bb85d33e79e9e.webp" width="1080"/><figcaption>生成的环境</figcaption></figure><pre><code class="shell language-shell hljs"><span class="hljs-meta">$</span><span class="bash"> pipenv run python main.py</span><br/></code></pre><p><code>pipenv shell</code>进入一个该虚拟环境的交互模式下</p><figure><img alt="" class="" decoding="async" height="120" loading="lazy" src="/images/blog-media/66b588d83d7cc19ce82f.webp" width="1080"/><figcaption>pipenv shell</figcaption></figure><pre><code class="shell language-shell hljs"><span class="hljs-meta">$</span><span class="bash"> pipenv install [package names]</span><br/><span class="hljs-meta">$</span><span class="bash"> pipenv uninstall [package names]</span><br/></code></pre><p><code>pipenv lock</code></p><blockquote><p><code>$ pipenv lock</code> is used to create a <code>Pipfile.lock</code>, which declares <strong>all</strong> dependencies (and sub-dependencies) of your project, their latest available versions, and the current hashes for the downloaded files. This ensures repeatable, and most importantly <em>deterministic</em>, builds.</p></blockquote><figure><img alt="" class="" decoding="async" height="674" loading="lazy" src="/images/blog-media/9e07b71992afb85a2a22.webp" width="1080"/><figcaption>包管理</figcaption></figure><p>看完没有感受到特别的便利性。</p><h2 id="Tip"><span>Tip</span></h2><p>搭建了一个虚拟机，但是使用的镜像是30G的。</p><p>由于安装了Docker，并且运行了好几个容器，所以没几天就满了。然后就需要进行扩容</p><p>参考了：https://www.cnblogs.com/hrhguanli/p/3788704.html</p><p>不过发现无法将新增的空间合并至根目录下</p><p>所以采用曲线救国的方式，将Docker产生的东西存放至新挂载的空间上去。</p><p>修改路径的方法：https://blog.csdn.net/qq_37674858/article/details/81669082</p><h2 id="Share"><span>Share</span></h2><p>领导说需要探讨一下自动化测试的作用，整理输出了<a href="https://mp.weixin.qq.com/s?__biz=MzU5NTI3NDcxOA==&amp;mid=2247484041&amp;idx=1&amp;sn=79edf441db4a266429ff63405cf6effd&amp;scene=21#wechat_redirect" rel="noopener noreferrer">自动化测试</a>:https://mp.weixin.qq.com/s/mJiFadQrrgiikBBtIpRWXg</p></section></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/Z_594Dt7EKsh8yQ8tNxj4Q">查看微信公众号原文 ↗</a></p>
-        <div class="post-tags"><a href="/tags/ARTS/">ARTS</a><a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a></div>
+        <div class="post-tags" aria-label="文章标签"><a href="/tags/ARTS/">ARTS</a><a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a></div>
         <div class="legacy-tags" hidden></div>
         <nav class="related" aria-label="相邻文章"><a href="/article/wechat-b6b10aa1620a4e.html"><small>较新文章</small>ARTS第四周</a><a href="/article/wechat-b827a65e9ce216.html"><small>较早文章</small>从0开发一款IOS APP(第一天)</a></nav>
 
@@ -50,14 +59,17 @@
     </div>
   </article></main>
   <footer class="wrap footer">
-    <a class="footer-brand" href="/">测试游记</a>
-    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">
     <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
-    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
-    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
-    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
   </dialog>
 </body>
 </html>

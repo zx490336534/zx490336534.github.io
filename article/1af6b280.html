@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <title>测试开发进阶(二十二) · 测试游记</title>
-  <meta name="description" content="测试开发进阶(二十二)欢迎关注我的公众号「测试游记」 在projects/models.py中编写 123456789from django.db import modelsclass Person(models.Model): &quot;&quot;&quot; 创建Person类 &quot;&quot;&quot; first_name = models.CharField(max_length=30) last_na">
+  <meta name="description" content="测试开发进阶(二十二)欢迎关注我的公众号「测试游记」 在projects/models.py中编写 123456789from django.db import modelsclass Person(models.Model): &quot;&quot;&quot; 创建Person类 &quot;&quot;&quot; first_name = models.CharField(max_length=30) la">
   <meta property="og:title" content="测试开发进阶(二十二) · 测试游记">
-  <meta property="og:description" content="测试开发进阶(二十二)欢迎关注我的公众号「测试游记」 在projects/models.py中编写 123456789from django.db import modelsclass Person(models.Model): &quot;&quot;&quot; 创建Person类 &quot;&quot;&quot; first_name = models.CharField(max_length=30) last_na">
+  <meta property="og:description" content="测试开发进阶(二十二)欢迎关注我的公众号「测试游记」 在projects/models.py中编写 123456789from django.db import modelsclass Person(models.Model): &quot;&quot;&quot; 创建Person类 &quot;&quot;&quot; first_name = models.CharField(max_length=30) la">
   <meta property="og:url" content="https://www.zhongxin.website/article/1af6b280.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/1af6b280.html">
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
   <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
 
@@ -21,18 +22,26 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记<span>听白</span></a>
-      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
-      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      <nav aria-label="主导航"><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
     </div>
   </header>
   <main id="main" class="wrap">
   <article class="article">
     <header class="article-header">
-      <a class="back-link" href="/archives/">← 文章归档</a>
+      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/">后端开发</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/python-web/">Python Web</a></nav>
       <h1 class="post-title">测试开发进阶(二十二)</h1>
       <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2019-09-27T17:51:39+08:00">2019-09-27</time>
         <span class="post-category" hidden><a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">Python测试开发进阶</a></span>
-        <nav class="topic-context" aria-label="文章分类"><a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/">后端开发</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/python-web/">Python Web</a></nav></div>
+        <span class="read-time">约 4 分钟</span></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E4%BF%AE%E6%94%B9%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5%E6%9D%83%E9%99%90">修改数据库远程连接权限</a></li><li><a href="#%E8%BF%81%E7%A7%BB">迁移</a></li><li><a href="#%E5%AD%97%E6%AE%B5">字段</a></li><li><a href="#%E6%9F%A5%E7%9C%8B%E6%96%B0%E8%A1%A8">查看新表</a></li><li><a href="#%E6%9F%A5%E7%9C%8B%E8%A1%A8%E8%AE%BE%E8%AE%A1">查看表设计</a></li><li><a href="#%E4%BF%AE%E6%94%B9%E6%95%B0%E6%8D%AE%E8%A1%A8%E5%90%8D%E7%A7%B0">修改数据表名称</a></li><li><a href="#%E8%BF%81%E7%A7%BB%E5%89%8D%EF%BC%9A">迁移前：</a></li><li><a href="#%E8%BF%81%E7%A7%BB%E5%90%8E-%E7%82%B9%E5%87%BB%E5%88%B7%E6%96%B0-%EF%BC%9A">迁移后( 点击刷新 )：</a></li><li><a href="#%E5%90%8E%E5%8F%B0%E7%AB%99%E7%82%B9">后台站点</a></li><li><a href="#%E8%A1%A8%E5%85%B3%E8%81%94">表关联</a></li><li><a href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%BA%94%E7%94%A8">创建一个应用</a></li><li><a href="#%E6%B3%A8%E5%86%8C%E5%AD%90%E5%BA%94%E7%94%A8">注册子应用</a></li><li><a href="#%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%8F%82%E6%95%B0">第一个参数</a></li><li><a href="#%E7%AC%AC%E4%BA%8C%E4%B8%AA%E5%8F%82%E6%95%B0">第二个参数</a></li><li><a href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E6%93%8D%E4%BD%9C">数据库操作</a></li><li><a href="#%E6%9F%A5%E7%9C%8B%E6%95%B0%E6%8D%AE%E5%BA%93%E6%93%8D%E4%BD%9C%E8%AE%B0%E5%BD%95">查看数据库操作记录</a></li><li><a href="#%E5%A2%9E">增</a></li></ol></details></aside>
@@ -146,7 +155,7 @@
 <p>数据库操作记录</p>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre><span class="line">print(connection.queries[-<span class="number">1</span>])</span><br/><span class="line">{<span class="string">'sql'</span>: <span class="string">"INSERT INTO `tb_projects` (`name`, `leader`, `tester`, `programer`, `publish_app`, `desc`) VALUES ('「测试游记」-创建', 'zx_94', 'zx', 'zx', '公众号', '666')"</span>, <span class="string">'time'</span>: <span class="string">'0.003'</span>}</span><br/><span class="line"></span><br/></pre></td></tr></tbody></table></figure></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/79d2Spj3ybG76DflbklKEA">查看微信公众号原文 ↗</a></p>
-        <div class="post-tags"><a href="/tags/Django/">Django</a><a href="/tags/ORM/">ORM</a><a href="/tags/Python/">Python</a></div>
+        <div class="post-tags" aria-label="文章标签"><a href="/tags/Django/">Django</a><a href="/tags/ORM/">ORM</a><a href="/tags/Python/">Python</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
         <nav class="related" aria-label="相邻文章"><a href="/article/wechat-f91068c37e08c7.html"><small>较新文章</small>简单一行代码截图记录每次页面错误</a><a href="/article/b5c729e2.html"><small>较早文章</small>测试开发进阶(二十一)</a></nav>
         <section class="comments" id="comments" hidden><div id="disqus_thread" data-identifier="article/1af6b280.html"></div></section>
@@ -154,14 +163,17 @@
     </div>
   </article></main>
   <footer class="wrap footer">
-    <a class="footer-brand" href="/">测试游记</a>
-    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">
     <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
-    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
-    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
-    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
   </dialog>
 </body>
 </html>

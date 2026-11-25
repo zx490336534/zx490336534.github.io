@@ -12,6 +12,7 @@
   <link rel="canonical" href="https://www.zhongxin.website/article/wechat-e07aac85b1f0dd.html">
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
   <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
 
@@ -21,18 +22,26 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记<span>听白</span></a>
-      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
-      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      <nav aria-label="主导航"><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
     </div>
   </header>
   <main id="main" class="wrap">
   <article class="article">
     <header class="article-header">
-      <a class="back-link" href="/archives/">← 文章归档</a>
+      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/python/">Python 编程</a></nav>
       <h1 class="post-title">使用pipenv管理python环境</h1>
       <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2019-07-20T11:30:03+08:00">2019-07-20</time>
         <span class="post-category" hidden><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span>
-        <nav class="topic-context" aria-label="文章分类"><a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/python/">Python 编程</a></nav></div>
+        <span class="read-time">约 2 分钟</span></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E5%AE%89%E8%A3%85">安装</a></li><li><a href="#%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83">创建环境</a></li><li><a href="#%E6%BF%80%E6%B4%BB%E7%8E%AF%E5%A2%83">激活环境</a></li><li><a href="#%E5%AE%89%E8%A3%85%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93">安装第三方库</a></li><li><a href="#%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8D%E7%8E%AF%E5%A2%83%E7%9A%84%E4%BE%9D%E8%B5%96">查看当前环境的依赖</a></li><li><a href="#%E6%B5%8B%E8%AF%95">测试</a></li><li><a href="#%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E7%A7%BB%E6%A4%8D">开发环境移植</a></li><li><a href="#%E6%96%B0%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95">新开发环境测试</a></li><li><a href="#%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E7%A7%BB%E6%A4%8D">生产环境移植</a></li><li><a href="#%E5%8D%B8%E8%BD%BD%E5%8C%85">卸载包</a></li><li><a href="#%E5%85%B6%E4%BB%96">其他</a></li></ol></details></aside>
@@ -54,7 +63,7 @@ python_version = "3.7"</code></pre><section class="output_wrapper"><figure><img 
 app = Flask(__name__)<span class="hljs-decorator">@app.route('/')</span><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">index</span><span class="hljs-params">()</span>:</span>
    <span class="hljs-keyword">return</span> <span class="hljs-string">'&lt;h1&gt;Hello Pipenv&lt;/h1&gt;'</span></code></pre><p><img alt="" decoding="async" height="754" loading="lazy" src="/images/blog-media/e4b8e75d3ead6e1b80a1.webp" width="1080"/><img alt="" decoding="async" height="756" loading="lazy" src="/images/blog-media/ef1d6ce9850d57e83479.webp" width="1080"/></p><h2 id="开发环境移植">开发环境移植</h2><p>在一个新的环境中，将代码和Pipfile复制过去</p><p>由于Pipfile里面没有所有子依赖包或者确定的版本，因此该安装<strong>可能会更新未指定模块的版本号</strong>。</p><pre><code class="hljs language-shell">$ pipenv install --dev</code></pre><p><img alt="" decoding="async" height="976" loading="lazy" src="/images/blog-media/2b1d7c307f2c0325b2c1.webp" width="1080"/></p><h2 id="新开发环境测试">新开发环境测试</h2><pre><code class="hljs language-shell">$ pipenv run flask run</code></pre><p><img alt="" decoding="async" height="976" loading="lazy" src="/images/blog-media/a0074a8501ee182addcf.webp" width="1080"/></p><h2 id="生产环境移植">生产环境移植</h2><p>开发环境和生产环境稍微有点区别，开发环境中可能有一些不稳定的版本或依赖，而生产环境一般都比较固定</p><p>如果想只安装在开发环境才使用的包：</p><pre><code class="hljs language-shell">$ pipenv install &lt;第三方库&gt; --dev</code></pre><p>运行以下命令，把当前环境的模块lock住, 它会更新Pipfile.lock文件，该文件是用于生产环境的，不应该人为编辑它。</p><pre><code class="hljs language-shell">$ pipenv lock</code></pre><p>然后只需要把<code>代码</code>和<code>Pipfile.lock</code>放到生产环境，运行下面的代码，就可以创建和开发环境一样的环境，Pipfile.lock里记录了所有包和子依赖包的确切版本，因此是<strong>确定构建</strong>：</p><pre><code class="hljs language-shell">$ pipenv install --ignore-pipfile</code></pre><h2 id="卸载包">卸载包</h2><pre><code class="hljs language-shell">$ pipenv uninstall flask</code></pre><p><img alt="" decoding="async" height="1025" loading="lazy" src="/images/blog-media/3fa752a567217494bb1c.webp" width="1080"/></p><h2 id="其他">其他</h2><p>当前虚拟环境目录</p><pre><code class="hljs language-shell">$ pipenv --venv</code></pre><p>当前项目根目录</p><pre><code class="hljs language-shell">$ pipenv --where</code></pre><p>检查安全性和PEP508</p><pre><code class="hljs language-shell">$ pipenv check</code></pre><p><img alt="" decoding="async" height="773" loading="lazy" src="/images/blog-media/37cb5628dc1cb0a996b0.webp" width="1080"/></p><p>所以可以直接通过将Pipfile加入到版本管理来进行环境的管理</p><p>至于Pipfile.lock是否要加入就看具体需求了<br/></p></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/LqpU-65rhNFINApnXyjzpg">查看微信公众号原文 ↗</a></p>
-        <div class="post-tags"><a href="/tags/Pipenv/">Pipenv</a><a href="/tags/Python/">Python</a><a href="/tags/%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86/">依赖管理</a></div>
+        <div class="post-tags" aria-label="文章标签"><a href="/tags/Pipenv/">Pipenv</a><a href="/tags/Python/">Python</a><a href="/tags/%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86/">依赖管理</a></div>
         <div class="legacy-tags" hidden></div>
         <nav class="related" aria-label="相邻文章"><a href="/article/264ee22a.html"><small>较新文章</small>测试开发进阶(一)</a><a href="/article/f02e8a93.html"><small>较早文章</small>Jenkins(八)</a></nav>
 
@@ -62,14 +71,17 @@ app = Flask(__name__)<span class="hljs-decorator">@app.route('/')</span><span cl
     </div>
   </article></main>
   <footer class="wrap footer">
-    <a class="footer-brand" href="/">测试游记</a>
-    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">
     <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
-    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
-    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
-    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
   </dialog>
 </body>
 </html>

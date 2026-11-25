@@ -187,15 +187,16 @@ def import_posts(path, posts):
 
 def shell(title, path, content, description=DESCRIPTION, extra_head=""):
     title_tag = NAME if path == "/" else f"{title} · {NAME}"
-    nav = [("文章归档", "/archives/"), ("分类", "/categories/"), ("教学", "/#courses"), ("关于", "/about/")]
+    nav = [("归档", "/archives/"), ("分类", "/categories/"), ("工具与课程", "/lab/"), ("关于", "/about/")]
     links = []
     for label, url in nav:
         current = ' aria-current="page"' if url == path else ""
-        if not current and url == "/categories/" and path.startswith(url):
+        if not current and (path.startswith(url) or (path.startswith("/article/") and url == "/archives/")):
             current = ' aria-current="location"'
         links.append(f'<a href="{url}"{current}>{label}</a>')
-    links = "".join(links)
+    links_html = "".join(links)
     canonical = html(SITE + path)
+    summary = excerpt(description, 180)
     return f'''<!doctype html>
 <html lang="zh-CN">
 <head>
@@ -203,13 +204,14 @@ def shell(title, path, content, description=DESCRIPTION, extra_head=""):
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <title>{html(title_tag)}</title>
-  <meta name="description" content="{html(description)}">
+  <meta name="description" content="{summary}">
   <meta property="og:title" content="{html(title_tag)}">
-  <meta property="og:description" content="{html(description)}">
+  <meta property="og:description" content="{summary}">
   <meta property="og:url" content="{canonical}">
   <link rel="canonical" href="{canonical}">
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
   <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
   {extra_head}
@@ -219,20 +221,31 @@ def shell(title, path, content, description=DESCRIPTION, extra_head=""):
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记<span>听白</span></a>
-      <nav aria-label="主导航">{links}</nav>
-      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      <nav aria-label="主导航">{links_html}</nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
     </div>
   </header>
   <main id="main" class="wrap">{content}</main>
   <footer class="wrap footer">
-    <a class="footer-brand" href="/">测试游记</a>
-    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">
     <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
-    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
-    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
-    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
   </dialog>
 </body>
 </html>
@@ -283,19 +296,38 @@ def home_picture(post):
     return ""
 
 
-def home_story(post, picture, layout):
-    lead = layout == "front-lead"
-    heading = "h3" if layout == "front-card" else "h2"
+RESOURCES = [
+    ("在线工具", "测试用例脑图生成器", "把需求整理成测试点和用例，在脑图里查看和编辑。", f"{SITE}/tools/test-cases/"),
+    ("课程地图", "AIHom 全栈学习地图", "按模块了解前端、后端、Agent 和布局链路。", "/teaching-aihom/lessons/index.html"),
+    ("课程地图", "Kuai 测试平台学习地图", "从三仓基础读到测试平台的核心功能和实战。", "/teaching-kuai/lessons/index.html"),
+]
+
+
+def resource_cards():
+    return '<div class="resource-grid">' + "".join(
+        f'<a class="resource-card" href="{html(url)}"><span>{html(kind)}</span>'
+        f'<strong>{html(title)}</strong><p>{html(summary)}</p></a>'
+        for kind, title, summary, url in RESOURCES
+    ) + "</div>"
+
+
+def home_story(post, picture, lead=False):
+    heading = "h2" if lead else "h3"
     priority = 'fetchpriority="high"' if lead else 'loading="lazy"'
-    image = (f'<div class="front-media"><img src="{html(picture)}" alt="" '
-             f'decoding="async" {priority}></div>') if picture else ""
-    status = '<span class="front-kicker">最新发布</span>' if lead else ""
+    image = (
+        f'<div class="front-media"><img src="{html(picture)}" alt="" decoding="async" {priority}></div>'
+        if picture else ""
+    )
+    meta = post.topic.trail()[0].name if post.topic and post.topic.trail() else ""
+    label = f'<span>{html(meta)}</span>' if meta else ""
     action = '<span class="front-read">阅读全文 <span aria-hidden="true">↗</span></span>' if lead else ""
+    layout = "front-lead" if lead else "front-card"
+    with_picture = " with-picture" if picture else ""
     return f'''<article class="{layout}">
-      <a href="{html(post.path)}" class="front-story">
+      <a href="{html(post.path)}" class="front-story{with_picture}">
         {image}
         <div class="front-copy">
-          <div class="front-meta">{status}{date_label(post)}</div>
+          <div class="front-meta">{label}{date_label(post)}</div>
           <{heading}>{html(post.title)}</{heading}>
           <p>{excerpt(post.description, 150)}</p>
           {action}
@@ -304,7 +336,7 @@ def home_story(post, picture, layout):
     </article>'''
 
 
-def home(posts):
+def home(posts, catalog):
     feature = posts[0]
     photos = []
     for post in posts[1:40]:
@@ -314,42 +346,50 @@ def home(posts):
         if len(photos) == 8:
             break
 
-    aside = "".join(home_story(post, picture, "front-related") for post, picture in photos[:2])
-    rail = f'<div class="front-rail">{aside}</div>' if aside else ""
-    gallery = "".join(home_story(post, picture, "front-card") for post, picture in photos[2:])
+    gallery = "".join(home_story(post, picture) for post, picture in photos)
     illustrated = f'''
   <section class="section" aria-labelledby="illustrated-title">
-    <header class="section-title"><h2 id="illustrated-title">图文选读</h2></header>
+    <header class="section-title"><h2 id="illustrated-title">图文选读</h2><a href="/archives/">文章归档 ↗</a></header>
     <div class="front-gallery">{gallery}</div>
   </section>''' if gallery else ""
+    paths = "".join(
+        f'<a href="{child.url}"><strong>{html(child.name)}</strong><small>{len(child.members)} 篇</small></a>'
+        for child in catalog.children
+    )
     featured = {post.path for post, _ in photos}
     recent = [post for post in posts[1:] if post.path not in featured][:7]
     content = f'''
-  <header class="front-heading">
-    <h1>测试开发与 AI 工程实践</h1>
-    <a href="/archives/">浏览归档 <span aria-hidden="true">↗</span></a>
+  <header class="publication-heading">
+    <div>
+      <h1>测试开发与 AI 工程实践</h1>
+      <p>听白的技术博客</p>
+    </div>
+    <div class="publication-actions">
+      <a class="solid-link" href="/categories/">浏览分类 <span aria-hidden="true">↗</span></a>
+      <a href="/lab/">工具与课程 <span aria-hidden="true">↗</span></a>
+    </div>
   </header>
-  <section class="front-grid {'with-rail' if rail else ''}" aria-label="精选文章">
-    {home_story(feature, home_picture(feature), "front-lead")}
-    {rail}
+  <section class="publication-feature" aria-label="最新文章">
+    {home_story(feature, home_picture(feature), lead=True)}
   </section>
-  <section class="front-tool" aria-labelledby="tools-title">
-    <h2 id="tools-title">在线工具</h2>
-    <a href="{SITE}/tools/test-cases/">测试用例脑图生成器 <span aria-hidden="true">↗</span></a>
-  </section>
+  <nav class="publication-topics" aria-label="主要分类">{paths}</nav>
   {illustrated}
   <section class="section" aria-labelledby="recent-title">
-    <header class="section-title"><h2 id="recent-title">近期文章</h2><a href="/archives/">全部文章 <span aria-hidden="true">→</span></a></header>
+    <header class="section-title"><h2 id="recent-title">近期文章</h2><a href="/archives/">全部文章 ↗</a></header>
     {post_rows(recent)}
   </section>
-  <section class="section" id="courses" aria-labelledby="courses-title">
-    <header class="section-title"><h2 id="courses-title">教学专题</h2></header>
-    <div class="course-grid">
-      <a href="/teaching-aihom/lessons/index.html"><strong>AIHom 完整学习地图</strong><span aria-hidden="true">↗</span></a>
-      <a href="/teaching-kuai/lessons/index.html"><strong>Kuai 测试平台学习地图</strong><span aria-hidden="true">↗</span></a>
-    </div>
+  <section class="section" id="courses" aria-labelledby="tools-title">
+    <header class="section-title"><h2 id="tools-title">工具与课程</h2><a href="/lab/">前往工具页 ↗</a></header>
+    {resource_cards()}
   </section>'''
     return shell(NAME, "/", content)
+
+
+def reading_time(post):
+    words = len(re.findall(r"[A-Za-z0-9]+", post.search_text))
+    characters = len(re.findall(r"[\u3400-\u9fff]", post.search_text))
+    minutes = max(1, round(words / 220 + characters / 450))
+    return f"约 {minutes} 分钟"
 
 
 def article(post, older, newer):
@@ -367,18 +407,18 @@ def article(post, older, newer):
     content = f'''
   <article class="article">
     <header class="article-header">
-      <a class="back-link" href="/archives/">← 文章归档</a>
+      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> {trail}</nav>
       <h1 class="post-title">{html(post.title)}</h1>
       <div class="entry-meta"><span class="post-author">{html(post.author)}</span><time itemprop="datePublished" datetime="{html(post.published)}">{html(post.day)}</time>
         <span class="post-category" hidden>{original_categories}</span>
-        <nav class="topic-context" aria-label="文章分类">{trail}</nav></div>
+        <span class="read-time">{reading_time(post)}</span></div>
     </header>
     <div class="article-layout {'with-outline' if outline else ''}">
       {outline}
       <div class="article-main">
         <div class="post-body">{post.body}</div>
         {source}
-        <div class="post-tags">{tags}</div>
+        <div class="post-tags" aria-label="文章标签">{tags}</div>
         <div class="legacy-tags" hidden>{original_tags}</div>
         <nav class="related" aria-label="相邻文章">{related}</nav>
         {comments}
@@ -408,13 +448,20 @@ def write(path, content):
         target.write_text(content)
 
 
-def pagination(path, total):
+def pagination(path, total, current):
     if total <= 1:
         return ""
-    return '<nav class="pagination" aria-label="文章分页">' + "".join(
-        f'<a href="{html(path if page == 1 else f"{path}page/{page}/")}">{page}</a>'
-        for page in range(1, total + 1)
-    ) + '</nav>'
+    numbers = sorted({1, total, *range(max(1, current - 2), min(total, current + 2) + 1)})
+    items = []
+    previous = 0
+    for page in numbers:
+        if previous and page - previous > 1:
+            items.append('<span aria-hidden="true">…</span>')
+        url = path if page == 1 else f"{path}page/{page}/"
+        state = ' aria-current="page"' if page == current else ""
+        items.append(f'<a href="{html(url)}"{state}>{page}</a>')
+        previous = page
+    return '<nav class="pagination" aria-label="文章分页">' + "".join(items) + "</nav>"
 
 
 def taxonomy_groups(posts, attribute):
@@ -460,8 +507,10 @@ def tag_indexes(posts):
         (common if len(members) >= 2 else rest).append(item)
     more = ('<details class="catalog-history"><summary>更多标签</summary>'
             f'<ul class="taxonomy">{"".join(rest)}</ul></details>') if rest else ""
-    body = ('<section class="listing tag-library"><header class="section-title"><h1>标签</h1>'
-            '<a href="/categories/">按分类浏览 ↗</a></header>'
+    body = ('<section class="listing tag-library" data-tag-library>'
+            '<header class="page-heading"><h1>文章标签</h1><a href="/categories/">按分类浏览 ↗</a></header>'
+            '<label class="tag-search" hidden>筛选标签<input type="search" data-tag-filter placeholder="例如 Python 或 MCP"></label>'
+            '<p data-tag-status role="status"></p>'
             f'<ul class="taxonomy">{"".join(common)}</ul>{more}</section>')
     write("/tags/", shell("标签", "/tags/", body))
 
@@ -470,10 +519,16 @@ def archive(posts):
     by_year = defaultdict(list)
     for post in posts:
         by_year[post.day[:4]].append(post)
-    entries = "".join(f'<section class="archive-year" id="y{year}"><h2><a href="/archives/{year}/">{year}</a></h2>{post_rows(members)}</section>'
-                      for year, members in by_year.items())
-    years = "".join(f'<a href="#y{year}">{year}</a>' for year in by_year)
-    write("/archives/", shell("文章归档", "/archives/", f'<section class="listing"><h1>文章归档</h1><p>{len(posts)} 篇文章</p><nav class="pagination" aria-label="按年份浏览">{years}</nav>{entries}</section>'))
+    entries = "".join(
+        f'<section class="archive-year" id="y{year}"><h2><a href="/archives/{year}/">{year} 年</a>'
+        f'<small>{len(members)} 篇</small></h2>{post_rows(members)}</section>'
+        for year, members in by_year.items()
+    )
+    years = "".join(f'<a href="#y{year}">{year}<small>{len(members)} 篇</small></a>' for year, members in by_year.items())
+    content = (f'<section class="listing archive"><header class="page-heading"><div><h1>文章归档</h1>'
+               f'<p>{len(posts)} 篇文章</p></div><a href="/categories/">按分类浏览 ↗</a></header>'
+               f'<nav class="archive-nav" aria-label="按年份浏览">{years}</nav>{entries}</section>')
+    write("/archives/", shell("文章归档", "/archives/", content))
     for year, members in by_year.items():
         path = f"/archives/{year}/"
         write(path, listing(f"{year} 年文章", path, members))
@@ -497,15 +552,15 @@ def indexes(posts, catalog):
     for base in ("/", "/archives/"):
         for page in range(2, count + 1):
             path = f"{base}page/{page}/"
-            write(path, listing(f"全部文章 · 第 {page} 页", path, posts[(page - 1) * 10:page * 10], pagination(base, count)))
+            write(path, listing(f"全部文章 · 第 {page} 页", path, posts[(page - 1) * 10:page * 10], pagination(base, count, page)))
     for file in (ROOT / "archives/page").glob("*/index.html"):
         if file.parent.name == "1":
-            write(path_for(file), listing("文章归档", path_for(file), posts[:10], pagination("/archives/", count)))
+            write(path_for(file), listing("文章归档", path_for(file), posts[:10], pagination("/archives/", count, 1)))
     archive(posts)
     category_indexes(posts, catalog)
     tag_indexes(posts)
     search = [{"path": post.path, "title": post.title, "date": post.day,
-               "text": post.search_text, "topics": list(dict.fromkeys(
+               "text": post.search_text, "summary": unescape(excerpt(post.description, 180)), "topics": list(dict.fromkeys(
                    [topic.name for topic in post.topic.trail()] + [name for name, _ in post.editorial_tags or post.tags]
                ))} for post in posts]
     write("/search.json", json.dumps(search, ensure_ascii=False, separators=(",", ":")) + "\n")
@@ -555,16 +610,38 @@ def main():
         posts = import_posts(args.import_posts, posts)
     posts.sort(key=lambda post: (post.published, post.path), reverse=True)
     catalog = read_catalog(posts, ROOT / "scripts/topic_catalog.json")
-    write("/", home(posts))
+    write("/", home(posts, catalog))
     for i, post in enumerate(posts):
         older = posts[i + 1] if i + 1 < len(posts) else None
         newer = posts[i - 1] if i else None
         write(post.path, article(post, older, newer))
     indexes(posts, catalog)
+    lab = (
+        '<section class="listing resource-library"><header class="page-heading">'
+        '<div><h1>工具与课程</h1><p>打开在线工具，或按学习地图循序阅读。</p></div>'
+        '</header>' + resource_cards() + '</section>'
+    )
+    write("/lab/", shell("工具与课程", "/lab/", lab))
     about = BeautifulSoup((ROOT / "about/index.html").read_text(), "lxml").select_one(".post-body")
     assert about is not None
-    write("/about/", shell("关于", "/about/", f'<section class="listing"><h1>关于</h1><div class="post-body">{about.decode_contents().strip()}</div></section>'))
-    write("/404.html", shell("找不到页面", "/404.html", '<section class="listing"><h1>找不到页面</h1><p><a href="/archives/">浏览文章归档</a> · <a href="/">返回首页</a></p></section>'))
+    about_body = about.decode_contents().strip()
+    if about.get_text(strip=True) == "施工中⚠️":
+        about_body = (
+            "<p>我是听白。在测试游记，我记录测试开发、自动化测试和 AI 工程的实战经验。</p>"
+            "<p>可以按分类找一个主题，按年份回看文章，或从工具与课程开始上手。</p>"
+        )
+    profile = (
+        '<section class="listing profile"><header class="page-heading"><div><h1>关于测试游记</h1><p>听白</p></div>'
+        '<img class="profile-avatar" src="/images/avatar.jpeg" alt="" width="72" height="72"></header>'
+        f'<div class="post-body">{about_body}</div>'
+        '<nav class="profile-links" aria-label="继续浏览"><a href="/categories/">浏览分类 ↗</a>'
+        '<a href="/lab/">工具与课程 ↗</a><a href="/atom.xml">订阅 RSS ↗</a></nav></section>'
+    )
+    write("/about/", shell("关于", "/about/", profile))
+    missing = ('<section class="listing missing-page"><header class="page-heading"><h1>找不到页面</h1></header>'
+               '<div class="profile-links"><a href="/archives/">浏览文章归档 ↗</a><a href="/">返回首页 ↗</a>'
+               '<button type="button" data-open-search>搜索文章</button></div></section>')
+    write("/404.html", shell("找不到页面", "/404.html", missing))
     print(f"已生成 {len(posts)} 篇文章及首页、归档、分类、搜索和 RSS。")
 
 

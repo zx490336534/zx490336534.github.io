@@ -12,6 +12,7 @@
   <link rel="canonical" href="https://www.zhongxin.website/article/wechat-13268120edd300.html">
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
   <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
 
@@ -21,25 +22,33 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记<span>听白</span></a>
-      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
-      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      <nav aria-label="主导航"><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
     </div>
   </header>
   <main id="main" class="wrap">
   <article class="article">
     <header class="article-header">
-      <a class="back-link" href="/archives/">← 文章归档</a>
+      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/python/">Python 编程</a></nav>
       <h1 class="post-title">《流畅的Python》第四章学习笔记</h1>
       <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2020-12-06T15:06:38+08:00">2020-12-06</time>
         <span class="post-category" hidden><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span>
-        <nav class="topic-context" aria-label="文章分类"><a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/python/">Python 编程</a></nav></div>
+        <span class="read-time">约 3 分钟</span></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E6%96%B9%E6%A1%88">错误处理方案</a></li><li><a href="#%E8%87%AA%E8%A1%8C%E5%AE%9A%E4%B9%89%E7%BC%96%E7%A0%81%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E6%96%B9%E6%A1%88">自行定义编码错误处理方案</a></li><li><a href="#%E5%88%A4%E6%96%AD%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%BC%96%E7%A0%81">判断字符串编码</a></li><li><a href="#BOM">BOM</a></li><li><a href="#Unicode%E4%B8%89%E6%98%8E%E6%B2%BB-%E7%9B%AE%E5%89%8D%E5%A4%84%E7%90%86%E6%96%87%E6%9C%AC%E7%9A%84%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5">Unicode三明治-目前处理文本的最佳实践</a></li><li><a href="#%E8%A7%84%E8%8C%83%E5%8C%96%E6%96%87%E6%9C%AC%E5%8C%B9%E9%85%8D">规范化文本匹配</a></li></ol></details></aside>
       <div class="article-main">
         <div class="post-body"><section><section></section><h1><span><br/></span><br/></h1><blockquote><p>一个字符串是一个字符序列</p></blockquote><p>字节序列:机器磁芯转储</p><p>Unicode:人类可读的本文</p><p>把字节序列变成人类可读的文本字符串就是解码「decode」</p><p>把字符串变成用于存储或传输的字节序列激素编码「encode」</p><hr/><p>Python3的「str」类型<strong>基本相当</strong>于Python2的「unicode」类型</p><p>Python3默认使用「UTF-8」编码</p><p>Pyhon2默认使用ASCII</p><figure><img alt="" decoding="async" height="344" loading="lazy" src="/images/blog-media/39daa87d0cae696cd058.webp" width="842"/><figcaption>编解码</figcaption></figure><pre><code><span><span>def</span> <span>encode</span><span>(self, *args, **kwargs)</span>:</span> <span># real signature unknown</span><br/>    <span>"""<br/>    Encode the string using the codec registered for encoding.<br/><br/>      encoding「参数1:编码」<br/>        The encoding in which to encode the string.<br/>      errors「参数2:错误处理方案」<br/>        The error handling scheme to use for encoding errors.<br/>        The default is 'strict' meaning that encoding errors raise a<br/>        UnicodeEncodeError.  Other possible values are 'ignore', 'replace' and<br/>        'xmlcharrefreplace' as well as any other name registered with<br/>        codecs.register_error that can handle UnicodeEncodeErrors.<br/>    """</span><br/>    <span>pass</span><br/></code></pre><pre><code><span><span>def</span> <span>decode</span><span>(self, *args, **kwargs)</span>:</span> <span># real signature unknown</span><br/>    <span>"""<br/>    Decode the bytearray using the codec registered for encoding.<br/><br/>      encoding<br/>        The encoding with which to decode the bytearray.<br/>      errors<br/>        The error handling scheme to use for the handling of decoding errors.<br/>        The default is 'strict' meaning that decoding errors raise a<br/>        UnicodeDecodeError. Other possible values are 'ignore' and 'replace'<br/>        as well as any other name registered with codecs.register_error that<br/>        can handle UnicodeDecodeErrors.<br/>    """</span><br/>    <span>pass</span><br/></code></pre><h3 id="错误处理方案"><span>错误处理方案</span></h3><p>编解码器可以通过接受 <em>errors</em> 字符串参数来实现不同的错误处理方案。</p><div aria-label="数据表格" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th>值</th><th>含义</th></tr></thead><tbody><tr><td><code>'strict'</code></td><td>引发 <code>UnicodeError</code> (或其子类)；这是默认的方案。在 <code>strict_errors()</code> 中实现。</td></tr><tr><td><code>'ignore'</code></td><td>忽略错误格式的数据并且不加进一步通知就继续执行。在 <code>ignore_errors()</code> 中实现。</td></tr></tbody></table></div><p>以下错误处理方案仅适用于 文本编码:</p><div aria-label="数据表格" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th>值</th><th>含义</th></tr></thead><tbody><tr><td><code>'replace'</code></td><td>使用适当的替换标记进行替换；Python 内置编解码器将在解码时使用官方 <code>U+FFFD</code> 替换字符，而在编码时使用 '?' 。在 <code>replace_errors()</code> 中实现。</td></tr><tr><td><code>'xmlcharrefreplace'</code></td><td>使用适当的 XML 字符引用进行替换（仅在编码时）。在 <code>xmlcharrefreplace_errors()</code> 中实现。</td></tr><tr><td><code>'backslashreplace'</code></td><td>使用带反斜杠的转义序列进行替换。在 <code>backslashreplace_errors()</code> 中实现。</td></tr><tr><td><code>'namereplace'</code></td><td>使用 <code>\N{...}</code> 转义序列进行替换（仅在编码时）。在 <code>namereplace_errors()</code> 中实现。</td></tr><tr><td><code>'surrogateescape'</code></td><td>在解码时，将字节替换为 <code>U+DC80</code> 至 <code>U+DCFF</code> 范围内的单个代理代码。当在编码数据时使用 <code>'surrogateescape'</code> 错误处理方案时，此代理将被转换回相同的字节。（请参阅 <strong>PEP 383</strong> 了解详情。）</td></tr></tbody></table></div><p>此外，以下错误处理方案被专门用于指定的编解码器：</p><div aria-label="数据表格" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th>值</th><th>编解码器</th><th>含义</th></tr></thead><tbody><tr><td><code>'surrogatepass'</code></td><td>utf-8, utf-16, utf-32, utf-16-be, utf-16-le, utf-32-be, utf-32-le</td><td>允许编码和解码代理代码。这些编解</td></tr></tbody></table></div><h3 id="自行定义编码错误处理方案"><span>自行定义编码错误处理方案</span></h3><pre><code>codes.register_error(name,error_handler)<br/></code></pre><ul class="list-paddingleft-2"><li><p><span>name:名称</span></p></li><li><p><span>error_handler:错误处理函数</span></p></li></ul><figure><img alt="" decoding="async" height="336" loading="lazy" src="/images/blog-media/9f471d85340ce168b9b0.webp" width="817"/><figcaption>自定义错误处理</figcaption></figure><h2 id="判断字符串编码"><span>判断字符串编码</span></h2><pre><code><span>import</span> chardet<br/><br/>print(chardet.detect(<span>b'aaaa'</span>))<br/><span># {'encoding': 'ascii', 'confidence': 1.0, 'language': ''}</span><br/>print(chardet.detect(<span>b'\xfe\xff\xff\xff\x00\x00\x01\x00\x02\x00'</span>))<br/><span># {'encoding': 'UTF-16', 'confidence': 1.0, 'language': ''}</span><br/></code></pre><p>通过<code>chardet</code>模块可以判断出内容的编码方式</p><pre><code><span>import</span> locale<br/><br/>print(locale.getpreferredencoding())  <span># UTF-8</span><br/></code></pre><h2 id="BOM"><span>BOM</span></h2><p>在Windows上使用open打开utf-8编码的txt文件时开头会有一个多余的字符<code>\ufeff</code>，它叫BOM,是用来<strong>声明编码</strong>等信息的,但python会把它当作文本解析。</p><p>对UTF-16, Python将BOM解码为空字串。</p><p>对UTF-8, BOM被解码为一个字符<code>\ufeff</code>。</p><h2 id="Unicode三明治-目前处理文本的最佳实践"><span>Unicode三明治-目前处理文本的最佳实践</span></h2><ol class="list-paddingleft-2"><li><p><span>「bytest」-&gt;「str」解码输入的字节序列</span></p></li><li><p><span>「str」只处理文本</span></p></li><li><p><span>「str」-&gt;「bytest」编码输出的文本</span></p></li></ol><p>⚠️需要在多台设备或者多种场景下运行的代码，一定<strong>不能依赖「默认编码」</strong>。</p><h3 id="规范化文本匹配"><span>规范化文本匹配</span></h3><pre><code>unicodedata.normalize(form,unistr)<br/></code></pre><figure><img alt="" decoding="async" height="408" loading="lazy" src="/images/blog-media/901f006d2c6c1ca9ae16.webp" width="841"/><figcaption>normalize</figcaption></figure><pre><code><span>import</span> unicodedata<br/><br/><br/><span><span>def</span> <span>nfc_equal</span><span>(s1, s2)</span>:</span><br/>    print(unicodedata.normalize(<span>'NFC'</span>, s1))<br/>    print(unicodedata.normalize(<span>'NFC'</span>, s2))<br/>    <span>return</span> unicodedata.normalize(<span>'NFC'</span>, s1) == unicodedata.normalize(<span>'NFC'</span>, s2)<br/><br/><br/><span><span>def</span> <span>fold_equal</span><span>(s1, s2)</span>:</span><br/>    print(unicodedata.normalize(<span>'NFC'</span>, s1).casefold())<br/>    print(unicodedata.normalize(<span>'NFC'</span>, s2).casefold())<br/>    <span>return</span> unicodedata.normalize(<span>'NFC'</span>, s1).casefold() == unicodedata.normalize(<span>'NFC'</span>, s2).casefold()<br/><br/><br/>s1 = <span>'café'</span><br/>s2 = <span>'cafe\u0301'</span><br/>print(s1, s2)  <span># café café</span><br/>print(nfc_equal(s1, s2))<br/><span># café</span><br/><span># café</span><br/><span># True</span><br/>print(nfc_equal(<span>'A'</span>, <span>'a'</span>))<br/><span># A</span><br/><span># a</span><br/><span># False</span><br/>print(fold_equal(<span>'A'</span>, <span>'a'</span>))<br/><span># a</span><br/><span># a</span><br/><span># True</span><br/></code></pre></section></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/geZ9q4WhxciirkAmwKKL2Q">查看微信公众号原文 ↗</a></p>
-        <div class="post-tags"><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%81%E7%95%85%E7%9A%84-Python/">流畅的 Python</a></div>
+        <div class="post-tags" aria-label="文章标签"><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%81%E7%95%85%E7%9A%84-Python/">流畅的 Python</a></div>
         <div class="legacy-tags" hidden></div>
         <nav class="related" aria-label="相邻文章"><a href="/article/wechat-073ec45257be6f.html"><small>较新文章</small>《流畅的Python》第五章学习笔记</a><a href="/article/wechat-52a9da5682598f.html"><small>较早文章</small>《流畅的Python》第三章学习笔记</a></nav>
 
@@ -47,14 +56,17 @@
     </div>
   </article></main>
   <footer class="wrap footer">
-    <a class="footer-brand" href="/">测试游记</a>
-    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">
     <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
-    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
-    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
-    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
   </dialog>
 </body>
 </html>

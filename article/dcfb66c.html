@@ -12,6 +12,7 @@
   <link rel="canonical" href="https://www.zhongxin.website/article/dcfb66c.html">
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
   <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
 
@@ -21,18 +22,26 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记<span>听白</span></a>
-      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
-      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      <nav aria-label="主导航"><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
     </div>
   </header>
   <main id="main" class="wrap">
   <article class="article">
     <header class="article-header">
-      <a class="back-link" href="/archives/">← 文章归档</a>
+      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/python/">Python 编程</a></nav>
       <h1 class="post-title">测试开发进阶(四)</h1>
       <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2019-08-13T22:16:00+08:00">2019-08-13</time>
         <span class="post-category" hidden><a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">Python测试开发进阶</a></span>
-        <nav class="topic-context" aria-label="文章分类"><a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/python/">Python 编程</a></nav></div>
+        <span class="read-time">约 3 分钟</span></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E9%97%AD%E5%8C%85">闭包</a></li><li><a href="#%E6%BB%A1%E8%B6%B3%E9%97%AD%E5%8C%85%E7%9A%84%E6%9D%A1%E4%BB%B6">满足闭包的条件</a></li><li><a href="#%E9%97%AD%E5%8C%85%E7%9A%84%E4%BD%9C%E7%94%A8">闭包的作用</a></li><li><a href="#%E8%A3%85%E9%A5%B0%E5%99%A8">装饰器</a></li><li><a href="#%E4%B8%80%E4%B8%AA%E4%BD%9C%E7%94%A8%E5%9F%9F%E7%9A%84%E9%94%99%E8%AF%AF">一个作用域的错误</a></li><li><a href="#%E8%A3%85%E9%A5%B0%E5%99%A8%E5%B8%B8%E8%A7%81%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF">装饰器常见应用场景</a></li><li><a href="#%E5%B8%A6%E5%8F%82%E6%95%B0%E7%9A%84%E8%A3%85%E9%A5%B0%E5%99%A8">带参数的装饰器</a></li><li><a href="#%E7%B1%BB%E5%AE%9E%E7%8E%B0%E8%A3%85%E9%A5%B0%E5%99%A8">类实现装饰器</a></li><li><a href="#%E8%A3%85%E9%A5%B0%E5%99%A8%E8%A3%85%E9%A5%B0%E7%B1%BB">装饰器装饰类</a></li></ol></details></aside>
@@ -74,7 +83,7 @@
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyDecorator</span>(<span class="params"><span class="built_in">object</span></span>):</span></span><br/><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, func</span>):</span></span><br/><span class="line">        self.func = func <span class="comment">#⚠️⚠️⚠️</span></span><br/><span class="line"></span><br/><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span>(<span class="params">self, *args, **kwargs</span>):</span></span><br/><span class="line">        print(<span class="string">'这是__call__方法'</span>)</span><br/><span class="line">        self.func(*args, **kwargs)</span><br/><span class="line"></span><br/><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">func</span>(<span class="params">self</span>):</span></span><br/><span class="line">        print(<span class="string">'这是MyDecorator的func方法'</span>)</span><br/><span class="line"></span><br/><span class="line"></span><br/><span class="line"><span class="meta">@MyDecorator  </span><span class="comment"># add_num = MyDecorator(add_num)</span></span><br/><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add_num</span>(<span class="params">a, b</span>):</span></span><br/><span class="line">    print(<span class="string">f'sun=<span class="subst">{a + b}</span>'</span>)</span><br/><span class="line"></span><br/><span class="line"></span><br/><span class="line">add_num(<span class="number">1</span>, <span class="number">2</span>)</span><br/></pre></td></tr></tbody></table></figure>
 <h2 id="装饰器装饰类"><a class="headerlink" href="#装饰器装饰类" title="装饰器装饰类"></a>装饰器装饰类</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/><span class="line">20</span><br/><span class="line">21</span><br/><span class="line">22</span><br/><span class="line">23</span><br/></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dceorator</span>(<span class="params">func</span>):</span></span><br/><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span>(<span class="params">*args, **kwargs</span>):</span></span><br/><span class="line">        print(<span class="string">'111'</span>)</span><br/><span class="line">        obj = func(*args, **kwargs)</span><br/><span class="line">        print(<span class="string">'222'</span>)</span><br/><span class="line">        <span class="keyword">return</span> obj</span><br/><span class="line"></span><br/><span class="line">    <span class="keyword">return</span> wrapper</span><br/><span class="line"></span><br/><span class="line"><span class="meta">@dceorator  </span><span class="comment"># Hero = dceorator(Hero)</span></span><br/><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Hero</span>:</span></span><br/><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">func</span>(<span class="params">self</span>):</span></span><br/><span class="line">        print(<span class="string">'这是Hero的func'</span>)</span><br/><span class="line"></span><br/><span class="line">h = Hero()</span><br/><span class="line">print(h)</span><br/><span class="line">h.func()</span><br/><span class="line"><span class="string">"""</span></span><br/><span class="line"><span class="string">111</span></span><br/><span class="line"><span class="string">222</span></span><br/><span class="line"><span class="string">&lt;__main__.Hero object at 0x1033a4390&gt;</span></span><br/><span class="line"><span class="string">这是Hero的func</span></span><br/><span class="line"><span class="string">"""</span></span><br/></pre></td></tr></tbody></table></figure></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/4MsVj53-OIoHWhIUwzMZuw">查看微信公众号原文 ↗</a></p>
-        <div class="post-tags"><a href="/tags/Python/">Python</a><a href="/tags/%E9%97%AD%E5%8C%85/">闭包</a></div>
+        <div class="post-tags" aria-label="文章标签"><a href="/tags/Python/">Python</a><a href="/tags/%E9%97%AD%E5%8C%85/">闭包</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
         <nav class="related" aria-label="相邻文章"><a href="/article/926ba963.html"><small>较新文章</small>测试开发进阶(六)</a><a href="/article/b64e111.html"><small>较早文章</small>测试开发进阶(五)</a></nav>
         <section class="comments" id="comments" hidden><div id="disqus_thread" data-identifier="article/dcfb66c.html"></div></section>
@@ -82,14 +91,17 @@
     </div>
   </article></main>
   <footer class="wrap footer">
-    <a class="footer-brand" href="/">测试游记</a>
-    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">
     <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
-    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
-    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
-    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
   </dialog>
 </body>
 </html>

@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <title>测试开发进阶(四十五) · 测试游记</title>
-  <meta name="description" content="测试开发进阶(四十五)Docker Compose安装12345$ sudo curl -L &quot;https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)&quot; -o /usr/local/bin/docker-compose$ sudo chmod +x /usr/">
+  <meta name="description" content="测试开发进阶(四十五)Docker Compose安装12345$ sudo curl -L &quot;https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)&quot; -o /usr/local/bin/docker-compose$">
   <meta property="og:title" content="测试开发进阶(四十五) · 测试游记">
-  <meta property="og:description" content="测试开发进阶(四十五)Docker Compose安装12345$ sudo curl -L &quot;https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)&quot; -o /usr/local/bin/docker-compose$ sudo chmod +x /usr/">
+  <meta property="og:description" content="测试开发进阶(四十五)Docker Compose安装12345$ sudo curl -L &quot;https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)&quot; -o /usr/local/bin/docker-compose$">
   <meta property="og:url" content="https://www.zhongxin.website/article/94dbef35.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/94dbef35.html">
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
   <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
 
@@ -21,18 +22,26 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记<span>听白</span></a>
-      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
-      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      <nav aria-label="主导航"><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
     </div>
   </header>
   <main id="main" class="wrap">
   <article class="article">
     <header class="article-header">
-      <a class="back-link" href="/archives/">← 文章归档</a>
+      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/engineering/">工程工具</a> <span aria-hidden="true">/</span> <a href="/categories/engineering/systems/">系统与调试工具</a></nav>
       <h1 class="post-title">测试开发进阶(四十五)</h1>
       <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2019-12-07T17:51:39+08:00">2019-12-07</time>
         <span class="post-category" hidden><a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">Python测试开发进阶</a></span>
-        <nav class="topic-context" aria-label="文章分类"><a href="/categories/engineering/">工程工具</a> <span aria-hidden="true">/</span> <a href="/categories/engineering/systems/">系统与调试工具</a></nav></div>
+        <span class="read-time">约 3 分钟</span></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#Docker-Compose">Docker Compose</a></li><li><a href="#%E5%AE%89%E8%A3%85">安装</a></li><li><a href="#%E5%88%A0%E9%99%A4%E6%97%A0%E7%94%A8%E7%9A%84%E7%BD%91%E7%BB%9C">删除无用的网络</a></li><li><a href="#%E5%88%A0%E9%99%A4%E6%97%A0%E7%94%A8%E7%9A%84%E6%95%B0%E6%8D%AE%E5%8D%B7">删除无用的数据卷</a></li><li><a href="#%E7%BC%96%E5%86%99docker-compose-yml">编写docker-compose.yml</a></li><li><a href="#%E5%90%AF%E5%8A%A8">启动</a></li><li><a href="#%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2">项目部署</a></li><li><a href="#Docker-Swarm">Docker Swarm</a></li><li><a href="#Swarm-manager">Swarm manager</a></li><li><a href="#Swarm-work">Swarm work</a></li><li><a href="#%E5%88%9B%E5%BB%BA%E9%9B%86%E7%BE%A4">创建集群</a></li></ol></details></aside>
@@ -101,7 +110,7 @@
 <p>由于没有环境，所以不再深入</p>
 <p>见：<a href="https://docs.docker.com/swarm/" rel="noopener" target="_blank">https://docs.docker.com/swarm/</a></p></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/BDuHmOhVCT-TbcqTMTWl4Q">查看微信公众号原文 ↗</a></p>
-        <div class="post-tags"><a href="/tags/Docker-Compose/">Docker Compose</a><a href="/tags/%E5%AE%B9%E5%99%A8/">容器</a></div>
+        <div class="post-tags" aria-label="文章标签"><a href="/tags/Docker-Compose/">Docker Compose</a><a href="/tags/%E5%AE%B9%E5%99%A8/">容器</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
         <nav class="related" aria-label="相邻文章"><a href="/article/dd4a747.html"><small>较新文章</small>测试开发进阶(四十六)</a><a href="/article/wechat-c62eefa259965b.html"><small>较早文章</small>自动化设备管理平台</a></nav>
         <section class="comments" id="comments" hidden><div id="disqus_thread" data-identifier="article/94dbef35.html"></div></section>
@@ -109,14 +118,17 @@
     </div>
   </article></main>
   <footer class="wrap footer">
-    <a class="footer-brand" href="/">测试游记</a>
-    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">
     <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
-    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
-    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
-    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
   </dialog>
 </body>
 </html>

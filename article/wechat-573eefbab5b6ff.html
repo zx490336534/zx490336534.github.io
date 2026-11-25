@@ -12,6 +12,7 @@
   <link rel="canonical" href="https://www.zhongxin.website/article/wechat-573eefbab5b6ff.html">
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
   <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
 
@@ -21,25 +22,33 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记<span>听白</span></a>
-      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
-      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      <nav aria-label="主导航"><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
     </div>
   </header>
   <main id="main" class="wrap">
   <article class="article">
     <header class="article-header">
-      <a class="back-link" href="/archives/">← 文章归档</a>
+      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/engineering/">工程工具</a> <span aria-hidden="true">/</span> <a href="/categories/engineering/systems/">系统与调试工具</a></nav>
       <h1 class="post-title">使用「Stream」进行IOS抓包</h1>
       <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2021-11-12T14:32:27+08:00">2021-11-12</time>
         <span class="post-category" hidden><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span>
-        <nav class="topic-context" aria-label="文章分类"><a href="/categories/engineering/">工程工具</a> <span aria-hidden="true">/</span> <a href="/categories/engineering/systems/">系统与调试工具</a></nav></div>
+        <span class="read-time">约 1 分钟</span></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E8%83%8C%E6%99%AF">背景</a></li><li><a href="#Stream">Stream</a></li><li><a href="#%E5%AE%89%E8%A3%85">安装</a></li><li><a href="#%E4%BD%BF%E7%94%A8">使用</a></li></ol></details></aside>
       <div class="article-main">
         <div class="post-body"><section><h2 id="背景"><span>背景</span></h2><p>在测试手机上的软件的时候，需要抓包时，我们需要连接电脑配置代理才可以抓包，现在使用「Stream」就可以直接在手机上抓包了</p><h2 id="Stream"><span>Stream</span></h2><ol class="list-paddingleft-2"><li><p><span>Stream 面向对象为广大前端开发、客户端开发后端开发、运维工程师、测试工程师以及具备一定网络分析能力的普通用户。</span></p></li><li><p><span>Stream 的目的仅用于网络调试，除此以外没有其他目的。同时，开启 Stream 需要您授权 VPN 权限。</span></p></li><li><p><span>Stream 不会上传任何用户数据，请放心使用，同时也期望信任我们的用户传播给业内人士。</span></p></li></ol><p>如果您不认同以上的目的，不具备网络分析能力，或者对于敏感数据从心理上就不信任第三方 App,建议您慎重考虑后再下载</p><p>功能介绍：<br/>Stream 用于客户端本地抓包，仅用于 QA&amp;开发本地网络调试。只是利用了 iOs 9+ 的 Network Extension Api， 其实不具备连接von 的功能。</p><ol class="list-paddingleft-2"><li><p>抓取 HTTP&amp;HTTPS 请求，其中 HTTPS 请求需要配置CA证书。</p></li><li><p>访问抓包历史，预览请求体 (request body)以及响应体 (response body)，目前支持文本/SON/文件/表单。</p></li><li><p>支持构建请求和请求重放</p></li><li><p>支持配置 Hosts，实现在电脑端的 Hosts 功能，用于前端开发以及移动端开发便捷的切换测试环境和线上环境。</p></li><li><p>比较简单的支持打开 HAR 通用标准文件，可以将Charles /Fiddler/Chrome/Firefox 等网络记录导出HAR 然后在 Stream 打开并重放请求</p></li><li><p>完美适配 Iphon x 以及支持 iPad MutiTask。</p></li></ol><h2 id="安装"><span>安装</span></h2><ol class="list-paddingleft-2"><li><p><span>手机上搜索并安装「Stream」</span></p></li></ol><figure><img alt="图片" class="rich_pages wxw-img js_img_placeholder wx_img_placeholder" decoding="async" height="2337" loading="lazy" src="/images/blog-media/aafa265902ddd5ed7412.webp" width="1080"/><figcaption>Stream</figcaption></figure><ol class="list-paddingleft-2" start="2"><li><p><span>安装CA证书：根据软件提示安装证书（和平时配置代理的安装证书类似）</span></p></li></ol><h2 id="使用"><span>使用</span></h2><p>下面以抓取「微医记录仪」小程序 为例</p><p>1. 点击「开始抓包」</p><p>2. 搜索类型改为「xx」</p><p>3. 返回Stream点击「停止抓包」</p><p>4. 进入「抓包历史」中找到刚才的抓包记录</p><p>5. 找到我们关注的接口</p><section class="channels_iframe_wrp"><span class="js_img_placeholder wx_widget_placeholder"><span class="weui-primary-loading"><span class="weui-primary-loading__dot"></span></span></span></section><p><img alt="图片" class="rich_pages wxw-img js_weapp_entry js_img_placeholder wx_img_placeholder" decoding="async" height="430" loading="lazy" src="/images/blog-media/245db9b641daed9671bb.webp" width="430"/></p></section></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/obhvUiD8DvE4fcuICGxSTA">查看微信公众号原文 ↗</a></p>
-        <div class="post-tags"><a href="/tags/iOS/">iOS</a><a href="/tags/Stream/">Stream</a><a href="/tags/%E7%BD%91%E7%BB%9C%E6%8A%93%E5%8C%85/">网络抓包</a></div>
+        <div class="post-tags" aria-label="文章标签"><a href="/tags/iOS/">iOS</a><a href="/tags/Stream/">Stream</a><a href="/tags/%E7%BD%91%E7%BB%9C%E6%8A%93%E5%8C%85/">网络抓包</a></div>
         <div class="legacy-tags" hidden></div>
         <nav class="related" aria-label="相邻文章"><a href="/article/wechat-444a8211307a06.html"><small>较新文章</small>使用WEditor开发APP自动化测试脚本</a><a href="/article/wechat-16421ce31797cd.html"><small>较早文章</small>已有数据库情况下使用Python进行ORM操作</a></nav>
 
@@ -47,14 +56,17 @@
     </div>
   </article></main>
   <footer class="wrap footer">
-    <a class="footer-brand" href="/">测试游记</a>
-    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">
     <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
-    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
-    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
-    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
   </dialog>
 </body>
 </html>

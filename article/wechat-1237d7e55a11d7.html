@@ -12,6 +12,7 @@
   <link rel="canonical" href="https://www.zhongxin.website/article/wechat-1237d7e55a11d7.html">
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
   <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
 
@@ -21,18 +22,26 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记<span>听白</span></a>
-      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
-      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      <nav aria-label="主导航"><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
     </div>
   </header>
   <main id="main" class="wrap">
   <article class="article">
     <header class="article-header">
-      <a class="back-link" href="/archives/">← 文章归档</a>
+      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/automation/">自动化测试</a> <span aria-hidden="true">/</span> <a href="/categories/testing/automation/browser/">Web 与桌面自动化</a></nav>
       <h1 class="post-title">Electron自动化测试技术选型调研</h1>
       <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2023-09-21T11:54:47+08:00">2023-09-21</time>
         <span class="post-category" hidden><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span>
-        <nav class="topic-context" aria-label="文章分类"><a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/automation/">自动化测试</a> <span aria-hidden="true">/</span> <a href="/categories/testing/automation/browser/">Web 与桌面自动化</a></nav></div>
+        <span class="read-time">约 11 分钟</span></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#Electron%E7%AE%80%E4%BB%8B">Electron简介</a></li><li><a href="#%E6%A1%86%E6%9E%B6%E7%AE%80%E4%BB%8B">框架简介</a></li><li><a href="#%E5%89%8D%E7%BD%AE%E5%87%86%E5%A4%87">前置准备</a></li><li><a href="#%E6%A1%86%E6%9E%B6%E8%AF%95%E7%94%A8Demo">框架试用Demo</a></li><li><a href="#WebdriverIO">WebdriverIO</a></li><li><a href="#Selenium">Selenium</a></li><li><a href="#playwright">playwright</a></li><li><a href="#Puppeteer">Puppeteer</a></li><li><a href="#%E6%80%BB%E7%BB%93">总结</a></li></ol></details></aside>
@@ -306,7 +315,7 @@ spawn(    <span>"/Users/zhongxin/Downloads/mac-arm64/酷家乐.app/Contents/MacO
     setTimeout(async () =&gt; await app.close(), <span>5000</span>)
 })()</code></pre><h1 id="总结">总结</h1><div aria-label="数据表格" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th>框架</th><th>环境准备</th><th>支持情况</th></tr></thead><tbody><tr><td>WebdriverIO</td><td>简单:将下载到的安装包放到指定路径下即可</td><td>支持较好</td></tr><tr><td>Selenium</td><td>中等:将下载到的安装包放到指定路径+启动chromedriver</td><td>支持一般</td></tr><tr><td>playwright</td><td>困难:部署&amp;运行代码</td><td>实验性质</td></tr><tr><td>Puppeteer</td><td>中等:将下载到的安装包放到指定路径+启动应用</td><td>支持一般</td></tr></tbody></table></div><p>由于Hades采用的是Puppeteer,优先考虑使用Puppeteer</p><p>后续封装一个启动electron的操作,将它加在beforeAll里,就可以复用之前旧的UI自动化测试代码了</p></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/ElcWn428yb4Fd28Gj0IEIA">查看微信公众号原文 ↗</a></p>
-        <div class="post-tags"><a href="/tags/Electron/">Electron</a><a href="/tags/%E6%A1%8C%E9%9D%A2%E8%87%AA%E5%8A%A8%E5%8C%96/">桌面自动化</a><a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a></div>
+        <div class="post-tags" aria-label="文章标签"><a href="/tags/Electron/">Electron</a><a href="/tags/%E6%A1%8C%E9%9D%A2%E8%87%AA%E5%8A%A8%E5%8C%96/">桌面自动化</a><a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a></div>
         <div class="legacy-tags" hidden></div>
         <nav class="related" aria-label="相邻文章"><a href="/article/wechat-c2d88a44f52130.html"><small>较新文章</small>监听元素存在时间</a><a href="/article/wechat-41def6f6c9549b.html"><small>较早文章</small>使用React Hooks实现表格搜索功能</a></nav>
 
@@ -314,14 +323,17 @@ spawn(    <span>"/Users/zhongxin/Downloads/mac-arm64/酷家乐.app/Contents/MacO
     </div>
   </article></main>
   <footer class="wrap footer">
-    <a class="footer-brand" href="/">测试游记</a>
-    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">
     <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
-    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
-    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
-    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
   </dialog>
 </body>
 </html>

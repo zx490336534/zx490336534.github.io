@@ -12,6 +12,7 @@
   <link rel="canonical" href="https://www.zhongxin.website/article/b5c729e2.html">
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
   <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
 
@@ -21,18 +22,26 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记<span>听白</span></a>
-      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
-      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      <nav aria-label="主导航"><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
     </div>
   </header>
   <main id="main" class="wrap">
   <article class="article">
     <header class="article-header">
-      <a class="back-link" href="/archives/">← 文章归档</a>
+      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/frontend/">前端与应用</a> <span aria-hidden="true">/</span> <a href="/categories/development/frontend/web/">Web 基础</a></nav>
       <h1 class="post-title">测试开发进阶(二十一)</h1>
       <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2019-09-25T18:16:12+08:00">2019-09-25</time>
         <span class="post-category" hidden><a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">Python测试开发进阶</a></span>
-        <nav class="topic-context" aria-label="文章分类"><a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/frontend/">前端与应用</a> <span aria-hidden="true">/</span> <a href="/categories/development/frontend/web/">Web 基础</a></nav></div>
+        <span class="read-time">约 2 分钟</span></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E5%BC%80%E5%8F%91%E6%A8%A1%E5%BC%8F">开发模式</a></li><li><a href="#%E5%89%8D%E5%90%8E%E7%AB%AF%E4%B8%8D%E5%88%86%E7%A6%BB">前后端不分离</a></li><li><a href="#%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB">前后端分离</a></li><li><a href="#%E6%8E%A5%E6%94%B6%E5%8F%82%E6%95%B0">接收参数</a></li><li><a href="#url%E4%BC%A0%E5%8F%82">url传参</a></li><li><a href="#form%E8%A1%A8%E5%8D%95">form表单</a></li><li><a href="#json%E6%A0%BC%E5%BC%8F">json格式</a></li><li><a href="#url%E8%B7%AF%E5%BE%84%E5%8F%82%E6%95%B0">url路径参数</a></li><li><a href="#%E8%BF%94%E5%9B%9EJson">返回Json</a></li><li><a href="#ORM%E6%A1%86%E6%9E%B6">ORM框架</a></li><li><a href="#%E5%AE%9A%E4%B9%89">定义</a></li><li><a href="#%E6%AD%A5%E9%AA%A4">步骤</a></li></ol></details></aside>
@@ -127,7 +136,7 @@
 <p>修改<code>LearnDjango/settings.py</code>配置</p>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/></pre></td><td class="code"><pre><span class="line">DATABASES = {</span><br/><span class="line">    <span class="string">'default'</span>: {</span><br/><span class="line">        <span class="string">'ENGINE'</span>: <span class="string">'django.db.backends.mysql'</span>, <span class="comment"># 指定引擎</span></span><br/><span class="line">        <span class="string">'NAME'</span>: <span class="string">'my_django'</span>, <span class="comment"># databases名</span></span><br/><span class="line">        <span class="string">'USER'</span>: <span class="string">'my_django'</span>, <span class="comment"># 数据库用户名</span></span><br/><span class="line">        <span class="string">'PASSWORD'</span>: <span class="string">'123456'</span>, <span class="comment">#数据库密码</span></span><br/><span class="line">        <span class="string">'HOST'</span>: <span class="string">'localhost'</span>, <span class="comment"># 主机IP</span></span><br/><span class="line">        <span class="string">'PORT'</span>: <span class="number">3306</span> <span class="comment">#连接端口</span></span><br/><span class="line">    }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/K-NuUNVDdUIVXmMrUO13sQ">查看微信公众号原文 ↗</a></p>
-        <div class="post-tags"><a href="/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB/">前后端分离</a><a href="/tags/Web-%E5%BC%80%E5%8F%91/">Web 开发</a></div>
+        <div class="post-tags" aria-label="文章标签"><a href="/tags/%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB/">前后端分离</a><a href="/tags/Web-%E5%BC%80%E5%8F%91/">Web 开发</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
         <nav class="related" aria-label="相邻文章"><a href="/article/1af6b280.html"><small>较新文章</small>测试开发进阶(二十二)</a><a href="/article/ad343fa.html"><small>较早文章</small>测试开发进阶(二十)</a></nav>
         <section class="comments" id="comments" hidden><div id="disqus_thread" data-identifier="article/b5c729e2.html"></div></section>
@@ -135,14 +144,17 @@
     </div>
   </article></main>
   <footer class="wrap footer">
-    <a class="footer-brand" href="/">测试游记</a>
-    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">
     <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
-    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
-    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
-    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
   </dialog>
 </body>
 </html>

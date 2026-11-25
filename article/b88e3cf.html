@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <title>2019年对自动化测试的认知 · 测试游记</title>
-  <meta name="description" content="自动化测试自动化测试是，把人对软件的测试行为转化为由机器执行测试行为的一种实践。 自动化测试的本质是先写一段代码，然后去测试另一段代码，所以实现自动化测试用例本身属于开发工作，需要投入大量的时间和精力，并且已经开发完成的用例还必须随着被测对象的改变而不断更新，你还需要为此付出维护测试用例的成本。 自动化测试的优势 自动化测试可以替代大量的手工机械重复性操作，测试工程师可以把更多的时间花在更全面的用">
+  <meta name="description" content="自动化测试自动化测试是，把人对软件的测试行为转化为由机器执行测试行为的一种实践。 自动化测试的本质是先写一段代码，然后去测试另一段代码，所以实现自动化测试用例本身属于开发工作，需要投入大量的时间和精力，并且已经开发完成的用例还必须随着被测对象的改变而不断更新，你还需要为此付出维护测试用例的成本。 自动化测试的优势 自动化测试可以替代大量的手工机械重复性操作，">
   <meta property="og:title" content="2019年对自动化测试的认知 · 测试游记">
-  <meta property="og:description" content="自动化测试自动化测试是，把人对软件的测试行为转化为由机器执行测试行为的一种实践。 自动化测试的本质是先写一段代码，然后去测试另一段代码，所以实现自动化测试用例本身属于开发工作，需要投入大量的时间和精力，并且已经开发完成的用例还必须随着被测对象的改变而不断更新，你还需要为此付出维护测试用例的成本。 自动化测试的优势 自动化测试可以替代大量的手工机械重复性操作，测试工程师可以把更多的时间花在更全面的用">
+  <meta property="og:description" content="自动化测试自动化测试是，把人对软件的测试行为转化为由机器执行测试行为的一种实践。 自动化测试的本质是先写一段代码，然后去测试另一段代码，所以实现自动化测试用例本身属于开发工作，需要投入大量的时间和精力，并且已经开发完成的用例还必须随着被测对象的改变而不断更新，你还需要为此付出维护测试用例的成本。 自动化测试的优势 自动化测试可以替代大量的手工机械重复性操作，">
   <meta property="og:url" content="https://www.zhongxin.website/article/b88e3cf.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/b88e3cf.html">
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
   <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
 
@@ -21,18 +22,26 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记<span>听白</span></a>
-      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
-      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      <nav aria-label="主导航"><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
     </div>
   </header>
   <main id="main" class="wrap">
   <article class="article">
     <header class="article-header">
-      <a class="back-link" href="/archives/">← 文章归档</a>
+      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/quality/">质量工程</a></nav>
       <h1 class="post-title">2019年对自动化测试的认知</h1>
       <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2019-04-14T08:43:00+08:00">2019-04-14</time>
         <span class="post-category" hidden><a href="/categories/%E6%80%9D%E8%80%83/">思考</a></span>
-        <nav class="topic-context" aria-label="文章分类"><a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/quality/">质量工程</a></nav></div>
+        <span class="read-time">约 4 分钟</span></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95">自动化测试</a></li><li><a href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E7%9A%84%E4%BC%98%E5%8A%BF">自动化测试的优势</a></li><li><a href="#%E9%80%82%E5%90%88%E5%81%9A%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E7%9A%84%E9%A1%B9%E7%9B%AE">适合做自动化测试的项目</a></li><li><a href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E7%9A%84%E8%8C%83%E7%95%B4">自动化测试的范畴</a></li><li><a href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E7%9A%84%E7%9B%AE%E6%A0%87">自动化测试的目标</a></li><li><a href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E7%9A%84%E6%88%90%E6%9C%AC%E4%B8%8E%E6%94%B6%E7%9B%8A">自动化的成本与收益</a></li><li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%81%9A%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95">为什么要做自动化测试</a></li><li><a href="#%E5%BD%93%E5%89%8D%E7%9A%84%E8%87%AA%E5%8A%A8%E5%8C%96%E5%AE%9E%E8%B7%B5">当前的自动化实践</a></li></ol></details></aside>
@@ -131,7 +140,7 @@
 </li>
 </ul></div>
 
-        <div class="post-tags"><a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a><a href="/tags/%E6%B5%8B%E8%AF%95%E7%AD%96%E7%95%A5/">测试策略</a></div>
+        <div class="post-tags" aria-label="文章标签"><a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a><a href="/tags/%E6%B5%8B%E8%AF%95%E7%AD%96%E7%95%A5/">测试策略</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a></div>
         <nav class="related" aria-label="相邻文章"><a href="/article/wechat-f174f5c34d816e.html"><small>较新文章</small>pytest的一个demo</a><a href="/article/wechat-e24331548ad75f.html"><small>较早文章</small>ARTS第二周</a></nav>
         <section class="comments" id="comments" hidden><div id="disqus_thread" data-identifier="article/b88e3cf.html"></div></section>
@@ -139,14 +148,17 @@
     </div>
   </article></main>
   <footer class="wrap footer">
-    <a class="footer-brand" href="/">测试游记</a>
-    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">
     <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
-    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
-    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
-    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
   </dialog>
 </body>
 </html>

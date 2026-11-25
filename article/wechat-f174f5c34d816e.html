@@ -12,6 +12,7 @@
   <link rel="canonical" href="https://www.zhongxin.website/article/wechat-f174f5c34d816e.html">
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
   <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
 
@@ -21,25 +22,33 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记<span>听白</span></a>
-      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
-      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      <nav aria-label="主导航"><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
     </div>
   </header>
   <main id="main" class="wrap">
   <article class="article">
     <header class="article-header">
-      <a class="back-link" href="/archives/">← 文章归档</a>
+      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/platforms/">测试平台与工具</a></nav>
       <h1 class="post-title">pytest的一个demo</h1>
       <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2019-04-16T23:08:30+08:00">2019-04-16</time>
         <span class="post-category" hidden><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span>
-        <nav class="topic-context" aria-label="文章分类"><a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/platforms/">测试平台与工具</a></nav></div>
+        <span class="read-time">约 2 分钟</span></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#pytest%E7%9A%84%E4%B8%80%E4%B8%AAdemo">pytest的一个demo</a></li></ol></details></aside>
       <div class="article-main">
         <div class="post-body"><section class="xmteditor"></section><section class="output_wrapper"><h1 id="pytest的一个demo"><span>pytest的一个demo</span></h1><p>上周看了元类的实现方式后，对「代码块」的理解好像有了不一样的认知。</p><ul class="list-paddingleft-2"><li><p><span>函数是一段代码块</span></p></li><li><p><span>类也是一段代码块</span></p></li></ul><p>根据现在的工作中使用的pytest写一个demo</p><p>demo：</p><pre><code class="python language-python hljs"><span class="hljs-keyword">import</span> pytest<br/><span class="hljs-keyword">import</span> requests<br/><br/><span class="hljs-meta">@pytest.fixture(scope='module')</span><br/><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_request</span><span class="hljs-params">()</span>:</span><br/>    request_list = []<br/><br/>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">_get_request</span><span class="hljs-params">(data, flag=True)</span>:</span><br/>        <span class="hljs-keyword">if</span> flag:<br/>            x = requests.post(<span class="hljs-string">'http://httpbin.org/post'</span>, data=data)<br/>            request_list.append(x.json().get(<span class="hljs-string">'data'</span>))<br/>        <span class="hljs-keyword">return</span> request_list<br/><br/>    <span class="hljs-keyword">yield</span> _get_request<br/><br/><span class="hljs-meta">@pytest.mark.parametrize("i", [1, 2, 3])</span><br/><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">test_customer_records</span><span class="hljs-params">(i, get_request)</span>:</span><br/>    print(<span class="hljs-string">'\n'</span>)<br/>    print(<span class="hljs-string">f'第<span class="hljs-subst">{i}</span>次测试'</span>)<br/>    customer = get_request(<span class="hljs-string">f'<span class="hljs-subst">{{<span class="hljs-string">"a{i}"</span>, <span class="hljs-string">"b{i}"</span>}</span>}'</span>)<br/>    print(customer)<br/></code></pre><p>结果：</p><pre><code class="python language-python hljs">第<span class="hljs-number">1</span>次测试<br/>[<span class="hljs-string">'{"a1", "b1"}'</span>]<br/>.<br/><br/>第<span class="hljs-number">2</span>次测试<br/>[<span class="hljs-string">'{"a1", "b1"}'</span>, <span class="hljs-string">'{"a2", "b2"}'</span>]<br/>.<br/><br/>第<span class="hljs-number">3</span>次测试<br/>[<span class="hljs-string">'{"a1", "b1"}'</span>, <span class="hljs-string">'{"a2", "b2"}'</span>, <span class="hljs-string">'{"a3", "b3"}'</span>]<br/></code></pre><p>解释：</p><ol class="list-paddingleft-2"><li><p>使用module级别的fixture可以定义一个存放多次数据的空的列表<code>request_list</code></p></li><li><p>在fixture中写一个函数，并用<code>yield</code>将它返回以供调用</p></li><li><p>测试的时候使用<code>参数化构建</code>case会执行三次</p></li><li><p>从测试结果可以看出，列表内容持续增多</p></li></ol><p>写的时候感觉好像很神奇，后来想想其实和以下方式实现一样：</p><pre><code class="python language-python hljs">request_list = []<br/><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">_get_request2</span><span class="hljs-params">(request_list, data, flag=True)</span>:</span><br/>    <span class="hljs-keyword">if</span> flag:<br/>        x = requests.post(<span class="hljs-string">'http://httpbin.org/post'</span>, data=data)<br/>        request_list.append(x.json().get(<span class="hljs-string">'data'</span>))<br/>    <span class="hljs-keyword">return</span> request_list<br/><br/><span class="hljs-meta">@pytest.fixture(scope='module')</span><br/><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_request2</span><span class="hljs-params">()</span>:</span><br/>    <span class="hljs-keyword">yield</span> _get_request2<br/><br/><span class="hljs-meta">@pytest.mark.parametrize("i", [1, 2, 3])</span><br/><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">test_customer_records</span><span class="hljs-params">(i, get_request2)</span>:</span><br/>    print(<span class="hljs-string">'\n'</span>)<br/>    print(<span class="hljs-string">f'第<span class="hljs-subst">{i}</span>次测试'</span>)<br/>    customer = get_request2(request_list, <span class="hljs-string">f'<span class="hljs-subst">{{<span class="hljs-string">"a{i}"</span>, <span class="hljs-string">"b{i}"</span>}</span>}'</span>)<br/>    print(customer)<br/></code></pre><p>也不就是：</p><pre><code class="python language-python hljs">request_list = []<br/><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">_get_request2</span><span class="hljs-params">(request_list, data, flag=True)</span>:</span><br/>    <span class="hljs-keyword">if</span> flag:<br/>        x = requests.post(<span class="hljs-string">'http://httpbin.org/post'</span>, data=data)<br/>        request_list.append(x.json().get(<span class="hljs-string">'data'</span>))<br/>    <span class="hljs-keyword">return</span> request_list<br/><br/><span class="hljs-meta">@pytest.mark.parametrize("i", [1, 2, 3])</span><br/><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">test_customer_records</span><span class="hljs-params">(i)</span>:</span><br/>    print(<span class="hljs-string">'\n'</span>)<br/>    print(<span class="hljs-string">f'第<span class="hljs-subst">{i}</span>次测试'</span>)<br/>    customer = _get_request2(request_list, <span class="hljs-string">f'<span class="hljs-subst">{{<span class="hljs-string">"a{i}"</span>, <span class="hljs-string">"b{i}"</span>}</span>}'</span>)<br/>    print(customer)<br/></code></pre><p>额，好Low</p><p>不过其实也不是毫无用处，当<code>scope</code>等级改变之后</p><ul class="list-paddingleft-2"><li><p>session：项目级传递数据相当于<code>global</code></p></li><li><p>class：class级别传递数据，并可以使用pytest的<code>turndown</code>机制</p></li><li><p><span>function：函数级别，没啥用</span></p></li></ul></section></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/BHRLAOsyo083bs1xZ-kTGw">查看微信公众号原文 ↗</a></p>
-        <div class="post-tags"><a href="/tags/Pytest/">pytest</a><a href="/tags/%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6/">测试框架</a></div>
+        <div class="post-tags" aria-label="文章标签"><a href="/tags/Pytest/">pytest</a><a href="/tags/%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6/">测试框架</a></div>
         <div class="legacy-tags" hidden></div>
         <nav class="related" aria-label="相邻文章"><a href="/article/wechat-b827a65e9ce216.html"><small>较新文章</small>从0开发一款IOS APP(第一天)</a><a href="/article/b88e3cf.html"><small>较早文章</small>2019年对自动化测试的认知</a></nav>
 
@@ -47,14 +56,17 @@
     </div>
   </article></main>
   <footer class="wrap footer">
-    <a class="footer-brand" href="/">测试游记</a>
-    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">
     <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
-    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
-    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
-    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
   </dialog>
 </body>
 </html>

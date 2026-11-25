@@ -12,6 +12,7 @@
   <link rel="canonical" href="https://www.zhongxin.website/article/wechat-c2d88a44f52130.html">
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
   <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
 
@@ -21,25 +22,33 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记<span>听白</span></a>
-      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
-      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      <nav aria-label="主导航"><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
     </div>
   </header>
   <main id="main" class="wrap">
   <article class="article">
     <header class="article-header">
-      <a class="back-link" href="/archives/">← 文章归档</a>
+      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/frontend/">前端与应用</a> <span aria-hidden="true">/</span> <a href="/categories/development/frontend/web/">Web 基础</a></nav>
       <h1 class="post-title">监听元素存在时间</h1>
       <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2023-12-08T15:09:34+08:00">2023-12-08</time>
         <span class="post-category" hidden><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span>
-        <nav class="topic-context" aria-label="文章分类"><a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/frontend/">前端与应用</a> <span aria-hidden="true">/</span> <a href="/categories/development/frontend/web/">Web 基础</a></nav></div>
+        <span class="read-time">约 1 分钟</span></div>
     </header>
     <div class="article-layout ">
 
       <div class="article-main">
         <div class="post-body"><section><p><code>MutationObserver<span>提供了监视对 DOM 树所做更改的能力</span></code></p><p>https://developer.mozilla.org/zh-CN/docs/Web/API/MutationObserver</p><p>现在需要查看message的存在时间是否符合我的配置时长(3秒)</p><pre><code>message.config({<br/>  <span>top</span>: <span>300</span>, <span>// 距离顶部300px</span><br/>  duration: <span>3</span>, <span>// 停留时间3秒</span><br/>});<br/></code></pre><figure><img alt="" class="rich_pages wxw-img" decoding="async" height="160" loading="lazy" src="/images/blog-media/4190a522a3e3c183f7eb.webp" width="469"/><figcaption><br/></figcaption></figure><p>先定位到这个元素</p><pre><code><span>const</span> targetElementSelector = <span>"//div[@class='ant-message']//span[text()='查询成功']"</span>;<br/><span>const</span> observerOptions = { <span>childList</span>: <span>true</span>, <span>subtree</span>: <span>true</span> };<br/></code></pre><p>监听dom变化</p><ol class="list-paddingleft-1"><li><p><span>当出现该元素时拿到startTime</span></p></li><li><p><span>当该元素消失时拿到endTime</span></p></li><li><p><span>计算耗时</span></p></li></ol><p>监听元素变更的函数:<code>observe()</code></p><p>配置 <code>MutationObserver</code> 在 DOM 更改匹配给定选项时，通过其回调函数开始接收通知。</p><p>observerOptions表示监听的内容</p><p>当childList为 <code>true</code> 时，监听 <code>target</code> 节点中发生的节点的新增与删除（同时，如果 <code>subtree</code> 为 <code>true</code>，会针对整个子树生效）</p><pre><code><span>const</span> observerOptions = { <span>childList</span>: <span>true</span>, <span>subtree</span>: <span>true</span> };<br/></code></pre><p>监听代码:</p><ol class="list-paddingleft-1"><li><p><span>元素变化后startObserver开始监听,出现目标元素后执行observer,并结束自己的监听</span></p></li><li><p><span>元素再次变化后observer触发,目标消失后执行计算并结束监听</span></p></li></ol><pre><code><span>const</span> targetElementSelector = <span>"//div[@class='ant-message']//span[text()='查询成功']"</span>;<br/><span>const</span> observerOptions = { <span>childList</span>: <span>true</span>, <span>subtree</span>: <span>true</span> };<br/><br/><span>const</span> observer = <span>new</span> MutationObserver(<span><span>()</span> =&gt;</span> {<br/>  <span>const</span> targetElement = <span>document</span>.evaluate(targetElementSelector, <span>document</span>).iterateNext()<br/>  <span>if</span> (!targetElement) {<br/>    <span>// 元素消失后,记录结束时间</span><br/>    <span>const</span> endTime = performance.now()<br/>    <span>// 计算并打印耗时</span><br/>    <span>const</span> duration = endTime - startTime<br/>    <span>console</span>.log(<span>`元素存在<span>${duration}</span>毫秒`</span>)<br/>    <span>// 结束当前监听任务</span><br/>    observer.disconnect()<br/>  }<br/>})<br/><br/><span>const</span> startObserver = <span>new</span> MutationObserver(<span><span>()</span> =&gt;</span> {<br/>  <span>const</span> targetElement = <span>document</span>.evaluate(targetElementSelector, <span>document</span>).iterateNext()<br/>  <span>if</span> (targetElement) {<br/>    <span>// 元素出现后,记录开始时间</span><br/>    startTime = performance.now()<br/>    <span>// 开始新的监听任务</span><br/>    observer.observe(<span>document</span>.documentElement, observerOptions)<br/>    <span>// 结束当前监听任务</span><br/>    startObserver.disconnect()<br/>  }<br/>})<br/></code></pre><p>启动最初的监听任务</p><pre><code>startObserver.observe(<span>document</span>.documentElement, observerOptions);<br/></code></pre><p>执行后发现时长略大于配置的时间</p><p><img alt="" class="rich_pages wxw-img" decoding="async" height="420" loading="lazy" src="/images/blog-media/c84dcca04c4c0e02eb62.webp" width="611"/></p><figure><figcaption><br/></figcaption></figure></section></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/RlJRtbCcEuv4XwW4RNBIVw">查看微信公众号原文 ↗</a></p>
-        <div class="post-tags"><a href="/tags/JavaScript/">JavaScript</a><a href="/tags/DOM/">DOM</a></div>
+        <div class="post-tags" aria-label="文章标签"><a href="/tags/JavaScript/">JavaScript</a><a href="/tags/DOM/">DOM</a></div>
         <div class="legacy-tags" hidden></div>
         <nav class="related" aria-label="相邻文章"><a href="/article/wechat-6d859360cdd6f0.html"><small>较新文章</small>React项目依赖升级</a><a href="/article/wechat-1237d7e55a11d7.html"><small>较早文章</small>Electron自动化测试技术选型调研</a></nav>
 
@@ -47,14 +56,17 @@
     </div>
   </article></main>
   <footer class="wrap footer">
-    <a class="footer-brand" href="/">测试游记</a>
-    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">
     <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
-    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
-    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
-    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
   </dialog>
 </body>
 </html>
