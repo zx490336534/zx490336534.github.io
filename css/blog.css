@@ -643,3 +643,32 @@ time { font-variant-numeric: tabular-nums; white-space: nowrap; }
 .watch-page nav li a + a { color: var(--muted); font-size: .8rem; margin-inline-start: .35rem; }
 .footer .footer-contact { min-inline-size: 0; gap: .35rem .8rem; }
 .footer-contact a { overflow-wrap: anywhere; }
+
+/* Portfolio entry: compact on the front page, with publicly checkable evidence on About. */
+.home-work { border: 1px solid var(--line); border-radius: .45rem; background: var(--panel); padding: .75rem .9rem; }
+.home-work header { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: .2rem .7rem; }
+.home-work h2, .selected-work h2 { margin: 0; font: 750 1.28rem/1.25 var(--serif); }
+.home-work header a { color: var(--accent); font-size: .85rem; text-underline-offset: .18em; }
+.home-work ul, .work-card ul { list-style: none; margin: .4rem 0 0; padding: 0; }
+.home-work ul { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.home-work li + li { border-inline-start: 1px solid var(--line); padding-inline-start: .6rem; }
+.home-work li a { display: flex; flex-direction: column; justify-content: center; gap: .04rem; min-block-size: 2.8rem; padding-inline-end: .5rem; text-decoration: none; }
+.home-work li a:hover strong, .home-work li a:focus-visible strong { text-decoration: underline; }
+.home-work li span, .work-kind { color: var(--muted); font-size: .79rem; }
+.selected-work { margin-block: 1.6rem 2rem; }
+.selected-work > p { margin: .35rem 0 .8rem; color: var(--muted); }
+.work-cards { display: grid; gap: .75rem; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.work-card { display: flex; min-inline-size: 0; flex-direction: column; padding: 1rem; border: 1px solid var(--line); border-radius: .45rem; background: var(--panel); }
+.work-card:target { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-wash); }
+.work-card h3 { margin: .2rem 0 .6rem; font: 750 1.25rem/1.3 var(--serif); }
+.work-card p { margin: 0; }
+.work-card dl { border-block-start: 1px solid var(--line); margin: .9rem 0; padding-block-start: .55rem; font-size: .91rem; }
+.work-card dt { font-weight: 700; color: var(--ink); }
+.work-card dd { margin: .1rem 0 .45rem; color: var(--muted); }
+.work-card ul { margin-top: auto; }
+.work-card li a { display: inline-flex; align-items: center; gap: .22rem; min-block-size: 2.5rem; color: var(--accent); text-underline-offset: .2em; }
+@media (max-width: 720px) {
+  .home-work ul, .work-cards { grid-template-columns: 1fr; }
+  .home-work li + li { border-inline-start: 0; border-block-start: 1px solid var(--line); padding-inline-start: 0; }
+  .home-work li a { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: .5rem; }
+}

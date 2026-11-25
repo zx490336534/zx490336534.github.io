@@ -473,6 +473,7 @@ def home(posts, catalog, series):
     recent = [post for post in posts[1:] if post.path not in featured][:7]
     content = f'''
   {discovery.home_intro()}
+  {portfolio.home_work()}
   <section class="publication-feature" aria-label="最新文章">
     {home_story(feature, feature.display_cover, lead=True)}
   </section>
@@ -872,9 +873,12 @@ def main():
             "<p>可以按分类找一个主题，按年份回看文章，或从工具与课程开始上手。</p>"
         )
     profile = (
-        '<section class="listing profile"><header class="page-heading"><div><h1>关于测试游记</h1><p>听白</p></div>'
+        f'<section class="listing profile" id="tingbai"><header class="page-heading"><div><h1>听白的公开作品</h1><p>{portfolio.PROFILE_FOCUS}</p></div>'
         '<img class="profile-avatar" src="/images/avatar.jpeg" alt="" width="72" height="72"></header>'
-        f'<div class="post-body">{about_body}</div>'
+        '<div class="profile-links work-profile-links"><a href="#selected-work">看代表作品 ↓</a>'
+        '<a href="mailto:490336534@qq.com">邮件联系</a><a href="https://github.com/zx490336534">GitHub ↗</a></div>'
+        + portfolio.work_cards()
+        + f'<div class="post-body">{about_body}</div>'
         '<nav class="profile-links" aria-label="继续浏览"><a href="/categories/">浏览分类 ↗</a>'
         '<a href="/lab/">工具与课程 ↗</a><a href="/videos/">视频讲解目录 ↗</a><a href="/atom.xml">订阅 RSS ↗</a></nav>'
         '<section class="profile-contact" aria-labelledby="contact-title"><h2 id="contact-title">联系听白</h2>'
@@ -882,7 +886,7 @@ def main():
         '<p class="analytics-notice">本站使用 Umami 统计公开页面访问和常用入口点击。统计字段为页面路径、标题、来源站点和入口。'
         '浏览器的不跟踪或全局隐私信号会关闭统计。</p></section>'
     )
-    write("/about/", shell("关于", "/about/", profile))
+    write("/about/", shell("听白的公开作品", "/about/", profile, portfolio.PROFILE_SUMMARY, portfolio.profile_metadata(SITE)))
     missing = ('<section class="listing missing-page"><header class="page-heading"><h1>找不到页面</h1></header>'
                '<div class="profile-links"><a href="/archives/">浏览文章归档 ↗</a><a href="/">返回首页 ↗</a>'
                '<button type="button" data-open-search>搜索文章</button></div></section>')

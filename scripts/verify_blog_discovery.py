@@ -100,6 +100,21 @@ def main():
         footer = page(address).select_one("footer .footer-contact")
         assert [a["href"] for a in footer.select("a[href]")] == [must_email, "https://github.com/zx490336534"], address
     assert page("/about/").select_one(f'.profile-contact a[href="{must_email}"]')
+    profile = page("/about/")
+    cards = profile.select("#selected-work .work-card")
+    assert len(cards) == 3 and len(profile.select("h1")) == 1
+    assert "AI 应用开发" in profile.select_one(".page-heading p").get_text(strip=True)
+    assert profile.select_one(f'.work-profile-links a[href="{must_email}"]')
+    assert [a["href"] for a in home.select(".home-work li a")] == ["/about/#" + card["id"] for card in cards]
+    for card in cards:
+        assert [dt.get_text(strip=True) for dt in card.select("dt")] == ["怎么做", "怎么核对"]
+        for a in card.select('a[href^="/"]'):
+            link = urlsplit(a["href"])
+            assert target(link.path).is_file() and (not link.fragment or page(link.path).find(id=link.fragment)), a["href"]
+    assert profile.select_one('.work-card a[href="https://github.com/zx490336534/next-ai-test-cases"]')
+    assert must_email not in profile.select_one('script[type="application/ld+json"]').string
+    if args.baseline:
+        assert old_page(args.baseline, "/about/").select_one(".post-body").decode_contents() == profile.select_one(".post-body").decode_contents()
     assert not tool.select_one(f'a[href="{must_email}"]')
     assert "/videos/" in paths
     library = page("/videos/")

@@ -8,6 +8,58 @@ from urllib.parse import quote, urlsplit
 from blog_discovery import WATCH, json_ld, watch_path
 
 
+
+PROFILE_FOCUS = "AI 应用开发、Agent 评测与研发效能"
+PROFILE_SUMMARY = "听白的公开作品：TypeScript 测试用例脑图工具、Promptfoo Agent 回归案例，以及 Temporal Agent 恢复设计。可直接查看源码、演示和验证依据。"
+TOOL_REPO = "https://github.com/zx490336534/next-ai-test-cases"
+SELECTED_WORK = (
+    ("ai-test-cases", "开源应用", "AI 测试用例脑图",
+     "把需求变成可编辑的用例节点，支持对话式修改，再从当前脑图导出 CSV 或 XMind。",
+     "用 Next.js 和 TypeScript 实现对话、脑图编辑与导出；完整版用 SQLite 保存历史，单文件版用 IndexedDB。",
+     "仓库公开了界面示例、运行说明和测试代码。编辑和导出不需要模型；AI 生成需要配置模型。",
+     (("打开工具", "/tools/test-cases/"), ("查看 GitHub 源码", TOOL_REPO), ("查看测试代码", TOOL_REPO + "/tree/main/tests"))),
+    ("agent-regression", "可复跑案例", "把 Agent 失败变成回归测试",
+     "Agent 回复看似正确，任务状态却不对。案例把这类失败拆成可执行断言。",
+     "先固定输入和预期状态，再用 Promptfoo 分别验证回放样本和当前 Agent，区分两类结果能证明什么。",
+     "文章给出状态约定、样本和运行方法；视频页附文字稿，便于对照。",
+     (("看复跑步骤", "/article/promptfoo-agent-regression.html"), ("看视频与文字稿", "/videos/watch/promptfoo-agent-regression/"),
+      ("更多 Agent 评测", "/series/agent-development/#case-reads"))),
+    ("agent-recovery", "架构案例", "让 Agent 任务中断后能恢复",
+     "外部写入已经成功，完成回执却丢了。直接重试可能重复写入，不重试又可能丢结果。",
+     "用 Temporal 的 Workflow、Activity 和业务幂等拆分恢复责任，说明何时可以重试，何时需要查回已有结果。",
+     "公开文章给出故障时序和验收思路；这是设计案例，不是线上部署或性能报告。",
+     (("看恢复设计", "/article/temporal-agent-recovery.html"), ("看原文里的视频", "/article/temporal-agent-recovery.html#article-video-title"))),
+)
+
+
+def home_work():
+    links = "".join(f'<li><a href="/about/#{slug}"><strong>{escape(title)}</strong><span>{escape(kind)}</span></a></li>'
+                    for slug, kind, title, *_ in SELECTED_WORK)
+    return ('<section class="home-work" aria-labelledby="home-work-title">'
+            '<header><h2 id="home-work-title">代表作品</h2><a href="/about/#selected-work">作品与验证方式 →</a></header>'
+            f'<ul>{links}</ul></section>')
+
+
+def work_cards():
+    cards = []
+    for slug, kind, title, problem, method, proof, links in SELECTED_WORK:
+        actions = "".join(f'<li><a href="{escape(url)}">{escape(label)} <span aria-hidden="true">↗</span></a></li>' for label, url in links)
+        cards.append(f'<article class="work-card" id="{slug}" aria-labelledby="{slug}-title">'
+                     f'<p class="work-kind">{escape(kind)}</p><h3 id="{slug}-title">{escape(title)}</h3>'
+                     f'<p>{escape(problem)}</p><dl><dt>怎么做</dt><dd>{escape(method)}</dd>'
+                     f'<dt>怎么核对</dt><dd>{escape(proof)}</dd></dl><ul>{actions}</ul></article>')
+    return ('<section class="selected-work" id="selected-work" aria-labelledby="work-title"><h2 id="work-title">代表作品</h2>'
+            '<p>从能直接打开的工具，到可按步骤复跑的评测，再到故障恢复的设计。</p>'
+            '<div class="work-cards">' + "".join(cards) + '</div></section>')
+
+
+def profile_metadata(site):
+    path = site + "/about/"
+    return json_ld({"@type": "ProfilePage", "url": path, "inLanguage": "zh-CN",
+                    "description": PROFILE_SUMMARY, "mainEntity": {"@type": "Person",
+                    "@id": path + "#tingbai", "name": "听白", "url": path,
+                    "sameAs": "https://github.com/zx490336534"}})
+
 @lru_cache(maxsize=None)
 def dimensions(path, root):
     if not path.startswith("/images/article-covers/") or not path.endswith(".webp"):

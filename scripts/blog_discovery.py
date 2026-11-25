@@ -107,7 +107,7 @@ def article_metadata(post, site):
 def home_intro():
     return f"""<section class="publication-intro" aria-labelledby="publication-title">
       <h1 id="publication-title">测试游记：AI Agent 评测与测试开发实践</h1>
-      <p>{HOME_SUMMARY}</p>
+      <p>我是听白，关注 AI 应用开发、Agent 评测与研发效能。这里有开源工具、可复跑案例和工程设计笔记。</p>
       <a href="/series/agent-development/">浏览 Agent 开发与评测专题 →</a> · <a href="/about/">关于听白</a>
     </section>"""
 
@@ -115,7 +115,7 @@ def home_intro():
 def series_evidence():
     links = "".join(f'<li><a href="/article/{slug}.html">{escape(record[0])}</a></li>' for slug, record in EVIDENCE.items())
     return ('<section class="editorial-evidence" aria-labelledby="case-reads"><h2 id="case-reads">从五个可验证的案例开始</h2>'
-            f'<ul>{links}</ul><p><a href="{TOOL_PATH}">打开测试用例生成器与脑图编辑器 →</a></p></section>')
+            f'<ul>{links}</ul><p><a href="{TOOL_PATH}">打开测试用例生成器与脑图编辑器 →</a> · <a href="/about/#selected-work">查看代表作品和验证方式 →</a></p></section>')
 
 
 def evidence_card(post):
