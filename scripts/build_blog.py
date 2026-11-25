@@ -24,6 +24,10 @@ ROOT = Path(__file__).resolve().parents[1]
 SITE = "https://www.zhongxin.website"
 UMAMI_WEBSITE_ID = "1b24a540-f89e-43de-bf0f-d783133d4a28"
 NAME = "测试游记"
+GISCUS_REPO = "zx490336534/zx490336534.github.io"
+GISCUS_REPO_ID = "MDEwOlJlcG9zaXRvcnkzNDQwOTE0MTc="
+GISCUS_CATEGORY = "文章评论"
+GISCUS_CATEGORY_ID = "DIC_kwDOFIJrGc4DL60Q"
 DESCRIPTION = "听白的技术博客，记录测试开发、自动化与 AI 工程实践。"
 ALLOWED_TAGS = set("a abbr b blockquote br caption code col colgroup dd del details div dl dt em figcaption figure h1 h2 h3 h4 h5 h6 hr i img kbd li mark ol p pre s section small span strong sub summary sup table tbody td th thead tfoot tr u ul".split())
 ALLOWED_ATTRIBUTES = {
@@ -435,7 +439,23 @@ def article(post, older, newer):
     source = f'<p class="source"><a class="source-link" href="{html(post.source)}">查看微信公众号原文 ↗</a></p>' if post.source else ''
     related = "".join(f'<a href="{html(link.path)}"><small>{direction}</small>{html(link.title)}</a>'
                       for link, direction in [(newer, "较新文章"), (older, "较早文章")] if link)
-    comments = f'<section class="comments" id="comments" hidden><div id="disqus_thread" data-identifier="{html(post.path.lstrip("/"))}"></div></section>' if post.legacy_comments else ''
+    legacy_anchor = (
+        f'<div id="disqus_thread" data-identifier="{html(post.path.lstrip("/"))}" hidden></div>'
+        if post.legacy_comments else ""
+    )
+    comments = f'''<section class="article-comments" id="comments" aria-labelledby="comments-title"
+          data-repo="{GISCUS_REPO}" data-repo-id="{GISCUS_REPO_ID}"
+          data-category="{GISCUS_CATEGORY}" data-category-id="{GISCUS_CATEGORY_ID}" data-article-path="{html(post.path)}">
+          {legacy_anchor}
+          <h2 id="comments-title">评论与讨论</h2>
+          <p>使用 GitHub 账号留言，评论公开显示。</p>
+          <div class="comment-actions">
+            <button type="button" data-open-comments>打开评论</button>
+            <a href="https://github.com/{GISCUS_REPO}/discussions">GitHub 讨论区 ↗</a>
+          </div>
+          <p role="status"></p>
+          <div class="giscus"></div>
+        </section>'''
     cover = f'<meta name="blog-cover" content="{html(post.cover)}"><meta property="og:image" content="{html(SITE + post.cover)}">' if post.cover else ''
     content = f'''
   <article class="article">
@@ -445,7 +465,8 @@ def article(post, older, newer):
       <div class="entry-meta"><span class="post-author">{html(post.author)}</span><time itemprop="datePublished" datetime="{html(post.published)}">{html(post.day)}</time>
         <span class="post-category" hidden>{original_categories}</span>
         <span class="read-time">{reading_time(post)}</span>
-        {public_counter("reads", "近 30 天阅读", post.path)}</div>
+        {public_counter("reads", "近 30 天阅读", post.path)}
+        <a href="#comments" data-jump-comments>评论</a></div>
     </header>
     <div class="article-layout {'with-outline' if outline else ''}">
       {outline}
@@ -459,7 +480,11 @@ def article(post, older, newer):
       </div>
     </div>
   </article>'''
-    return shell(post.title, post.path, content, post.description, cover)
+    head = (
+        f'{cover}\n<meta name="giscus:backlink" content="{html(SITE + post.path)}">\n'
+        '<script src="/js/comments.js" defer></script>'
+    )
+    return shell(post.title, post.path, content, post.description, head)
 
 
 def listing(title, path, posts, pagination="", intro=""):
