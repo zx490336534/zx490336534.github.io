@@ -519,9 +519,6 @@ def article_video(post):
     if not post.video:
         return ""
     entry = post.video
-    seconds = entry["duration"]
-    voice_label = "晓晓普通话" if entry.get("voice") == "zh-CN-XiaoxiaoNeural" else "普通话"
-    time = f"{seconds // 60}:{seconds % 60:02}"
     src = html(entry["src"])
     poster = html(entry.get("poster", post.display_cover))
     track = (f'<track kind="captions" srclang="zh" label="简体中文" src="{html(entry["captions"])}">'
@@ -529,7 +526,6 @@ def article_video(post):
     return f"""<section class="article-video" aria-labelledby="article-video-title">
           <header class="article-video-header">
             <h2 id="article-video-title">本文视频讲解</h2>
-            <p>{voice_label} · <time datetime="PT{seconds}S">{time}</time></p>
           </header>
           <video controls playsinline preload="none" poster="{poster}" aria-label="本文视频讲解">
             <source src="{src}" type="video/mp4">
