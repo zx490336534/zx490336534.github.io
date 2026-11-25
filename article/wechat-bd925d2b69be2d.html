@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>IOS时间格式问题调试与解决 · 测试游记</title>
+  <meta name="description" content="使用苹果模拟器调试IOS问题">
+  <meta property="og:title" content="IOS时间格式问题调试与解决 · 测试游记">
+  <meta property="og:description" content="使用苹果模拟器调试IOS问题">
+  <meta property="og:url" content="https://www.zhongxin.website/article/wechat-bd925d2b69be2d.html">
+  <link rel="canonical" href="https://www.zhongxin.website/article/wechat-bd925d2b69be2d.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <link rel="stylesheet" href="/css/blog.css">
+  <script src="/js/blog.js" defer></script>
+
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记<span>听白</span></a>
+      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
+      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+    </div>
+  </header>
+  <main id="main" class="wrap">
+  <article class="article">
+    <header class="article-header">
+      <a class="back-link" href="/archives/">← 文章归档</a>
+      <h1 class="post-title">IOS时间格式问题调试与解决</h1>
+      <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2022-01-17T11:34:45+08:00">2022-01-17</time>
+        <span class="post-category categories"><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span></div>
+    </header>
+    <div class="article-layout with-outline">
+      <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E9%97%AE%E9%A2%98%E7%8E%B0%E8%B1%A1">问题现象</a></li><li><a href="#%E5%8E%9F%E5%9B%A0%E5%88%86%E6%9E%90">原因分析</a></li><li><a href="#%E8%B0%83%E8%AF%95%E6%96%B9%E6%A1%88">调试方案</a></li><li><a href="#%E6%9F%A5%E6%89%BE%E5%8F%AF%E7%94%A8%E7%9A%84%E8%8B%B9%E6%9E%9C%E6%A8%A1%E6%8B%9F%E5%99%A8%E5%B9%B6%E6%89%93%E5%BC%80">查找可用的苹果模拟器并打开</a></li><li><a href="#%E5%88%A4%E6%96%AD%E7%8E%AF%E5%A2%83%E5%B9%B6%E8%BD%AC%E5%8C%96%E6%A0%BC%E5%BC%8F">判断环境并转化格式</a></li><li><a href="#%E5%88%A4%E6%96%AD%E5%BD%93%E5%89%8D%E7%8E%AF%E5%A2%83">判断当前环境</a></li></ol></details></aside>
+      <div class="article-main">
+        <div class="post-body"><section><h2 id="问题现象"><span>问题现象</span></h2><p>在测试IOS中一个H5页面的时候发现保存时间接口传递的参数是<code>null</code></p><p>但是在Web-Chrome和安卓上测试发现是正常的</p><h2 id="原因分析"><span>原因分析</span></h2><pre><code><span>new</span> <span>Date</span>(<span>"2022-01-17 10:00"</span>).getTime()<br/></code></pre><p>也就是在执行上面代码的时候，返回的内容是<code>null</code></p><p>调试的时候看到提示：</p><blockquote><p>Deprecation warning: value provided is not in a recognized RFC2822 or ISO format. moment construction falls back to js Date(), which is not reliable across all browsers and versions. Non RFC2822/ISO date formats are discouraged and will be removed in an upcoming major release. Please refer to http://momentjs.com/guides/#/warnings/js-date/ for more info.</p></blockquote><p>找了下相关文档：</p><ul class="list-paddingleft-2"><li><p>IOS需要使用<code>/</code>连接年月日</p></li><li><p>安卓需要使用<code>-</code>连接年月日</p></li></ul><p>IOS设备在需要对时间戳进行判断的时候，如果不是使用的<code>/</code>则会出现问题，所以需要进行格式转换</p><h2 id="调试方案"><span>调试方案</span></h2><p>每次修改代码后重新部署后，然后使用IOS设备进行测试非常的不方便</p><p>所以如果有Mac电脑的话，直接使用模拟器进行测试</p><h3 id="查找可用的苹果模拟器并打开"><span>查找可用的苹果模拟器并打开</span></h3><p>找到可以用的模拟器，记住它的udid，例如<code>136437DC-4D51-4628-B8CF-A4A3F3DFF1B0</code></p><pre><code>xcrun simctl list<br/></code></pre><p>打开设备</p><pre><code>open -a Simulator --args -CurrentDeviceUDID xxxx<br/></code></pre><p>完整的语句为：</p><pre><code>open -a Simulator --args -CurrentDeviceUDID 136437DC-4D51-4628-B8CF-A4A3F3DFF1B0<br/></code></pre><figure><img alt="" class="rich_pages wxw-img" decoding="async" height="950" loading="lazy" src="/images/blog-media/2fbd4905ab7176f60029.webp" width="452"/><figcaption>image</figcaption></figure><p>打开电脑上的Safari浏览器</p><p>在<code>开发</code>-<code>模拟器</code>中打开Safari浏览器 <code>页面检查器</code></p><figure><img alt="" class="rich_pages wxw-img" decoding="async" height="209" loading="lazy" src="/images/blog-media/997171d27d3638618a45.webp" width="584"/><figcaption>image_1</figcaption></figure><figure><img alt="" class="rich_pages wxw-img" decoding="async" height="650" loading="lazy" src="/images/blog-media/42e585f44fec2d183450.webp" width="1000"/><figcaption>image_2</figcaption></figure><p>在控制台输入刚才出问题的代码</p><figure><img alt="" class="rich_pages wxw-img" decoding="async" height="44" loading="lazy" src="/images/blog-media/e96b4b1685cf5be0d4f8.webp" width="275"/><figcaption>image_3</figcaption></figure><pre><code>&gt; <span>new</span> <span>Date</span>(<span>"2022-01-17 10:00"</span>).getTime()<br/>&lt; <span>NaN</span><br/></code></pre><p>同样的操作在Chrome上操作</p><figure><img alt="" class="rich_pages wxw-img" decoding="async" height="36" loading="lazy" src="/images/blog-media/f8e3cbebea9276d98adc.webp" width="305"/><figcaption>image_4</figcaption></figure><h2 id="判断环境并转化格式"><span>判断环境并转化格式</span></h2><h3 id="判断当前环境"><span>判断当前环境</span></h3><p>使用<code>navigator.userAgent</code>可以拿到当前请求的userAgent</p><pre><code><span>let</span> ua = navigator.userAgent<br/><span>let</span> isIOS = !!ua.match(<span>/\(i[^;]+;( U;)? CPU.+Mac OS X/</span>)<br/></code></pre><p>根据<code>isIOS</code>就可以判断，当前环境是否是IOS了，然后就可以给出我们需要的时间格式了</p><pre><code><span>let</span> formatter = isIOS ? <span>'YYYY/MM/DD HH:mm'</span> : <span>'YYYY-MM-DD HH:mm'</span><br/></code></pre><p>在转化时间戳之前对格式进行处理</p><pre><code><span>let</span> t = <span>"2022-01-17 10:00"</span><br/>t = isIOS ? t.replace(<span>/-/g</span>,<span>'/'</span>) : t<br/><span>let</span> new_t = <span>new</span> <span>Date</span>(t).getTime()<br/></code></pre></section><p>zx钟诚挚邀请您注册并体验 wolai：</p><p>https://www.wolai.com/signup?invitation=AZRMVSI</p><p>https://www.wolai.com/mzwH2sMvxHGUirHwWPP2c5</p></div>
+        <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/zdldUvuD__BH8JZiJoc8tg">查看微信公众号原文 ↗</a></p>
+        <div class="post-tags"></div>
+        <nav class="related" aria-label="相邻文章"><a href="/article/wechat-cd827baa82fa50.html"><small>较新文章</small>安卓使用HttpCanary进行抓包</a><a href="/article/wechat-342478dc5d3149.html"><small>较早文章</small>测试结果存储并使用图表展示</a></nav>
+
+      </div>
+    </div>
+  </article></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记</a>
+    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
+    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

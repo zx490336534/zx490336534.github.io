@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>2.微信小程序自动化测试pytest版-失败截图 · 测试游记</title>
+  <meta name="description" content="两种断言失败后截图">
+  <meta property="og:title" content="2.微信小程序自动化测试pytest版-失败截图 · 测试游记">
+  <meta property="og:description" content="两种断言失败后截图">
+  <meta property="og:url" content="https://www.zhongxin.website/article/wechat-101997b10aaba3.html">
+  <link rel="canonical" href="https://www.zhongxin.website/article/wechat-101997b10aaba3.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <link rel="stylesheet" href="/css/blog.css">
+  <script src="/js/blog.js" defer></script>
+
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记<span>听白</span></a>
+      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
+      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+    </div>
+  </header>
+  <main id="main" class="wrap">
+  <article class="article">
+    <header class="article-header">
+      <a class="back-link" href="/archives/">← 文章归档</a>
+      <h1 class="post-title">2.微信小程序自动化测试pytest版-失败截图</h1>
+      <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2023-02-06T19:00:00+08:00">2023-02-06</time>
+        <span class="post-category categories"><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span></div>
+    </header>
+    <div class="article-layout with-outline">
+      <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E6%88%AA%E5%9B%BE">截图</a></li><li><a href="#%E4%B8%A4%E7%A7%8D%E6%96%AD%E8%A8%80%E6%96%B9%E5%BC%8F">两种断言方式</a></li><li><a href="#%E5%B8%B8%E8%A7%84%E6%96%B9%E5%BC%8F%E6%96%AD%E8%A8%80%E5%A4%B1%E8%B4%A5%E6%88%AA%E5%9B%BE">常规方式断言失败截图</a></li><li><a href="#%E5%A4%9A%E9%87%8D%E6%96%AD%E8%A8%80%E5%A4%B1%E8%B4%A5%E6%88%AA%E5%9B%BE">多重断言失败截图</a></li></ol></details></aside>
+      <div class="article-main">
+        <div class="post-body"><section><h2 id="截图"><span>截图</span></h2><p>在mini中截图使用的是<code>screenshot_pic</code>方法</p><pre><code><span>@allure.step("截图并存放到「{path}」中")</span><br/><span><span>def</span> <span>screenshot_pic</span><span>(self, path: str)</span>:</span><br/>    self.native.screen_shot(path)        <br/></code></pre><h2 id="两种断言方式"><span>两种断言方式</span></h2><p>在编写测试用例的时候会使用到两种断言方式</p><pre><code><span># 常规方式</span><br/><span>assert</span> <span>False</span>, <span>'错误描述'</span><br/><span># 多重断言 使用pytest-assume插件</span><br/>pytest.assume(<span>False</span>, <span>'错误描述'</span>)<br/></code></pre><h2 id="常规方式断言失败截图"><span>常规方式断言失败截图</span></h2><p>常规方式断言会在用例执行失败后结束当前用例,所以使用pytest自带的钩子:<code>pytest_runtest_makereport</code></p><p><img alt="" class="rich_pages wxw-img js_insertlocalimg" decoding="async" height="291" loading="lazy" src="/images/blog-media/da6594be3496ff079540.webp" width="886"/></p><pre><code><span>@hookspec(firstresult=True)</span><br/><span><span>def</span> <span>pytest_runtest_makereport</span><span>(<br/>    item: <span>"Item"</span>, call: <span>"CallInfo[None]"</span><br/>)</span> -&gt; Optional["TestReport"]:</span><br/>    <span>"""Called to create a :class:`~pytest.TestReport` for each of<br/>    the setup, call and teardown runtest phases of a test item.<br/><br/>    See :hook:`pytest_runtest_protocol` for a description of the runtest protocol.<br/><br/>    :param item: The item.<br/>    :param call: The :class:`~pytest.CallInfo` for the phase.<br/><br/>    Stops at first non-None result, see :ref:`firstresult`.<br/>    """</span><br/></code></pre><p>它会在用例执行完成后进入</p><p>在执行后判断一下当前case是否失败或异常,如果是则截图</p><p>所以当一个对象有native对象时,它就能进行截图</p><p>使用item.funcargs.items()从堆栈中找到包含native对象的对象,然后进行截图</p><pre><code><span>@pytest.hookimpl(tryfirst=True, hookwrapper=True)</span><br/><span><span>def</span> <span>pytest_runtest_makereport</span><span>(item, call)</span>:</span><br/>    <span>"""<br/>    pytest 失败后执行<br/>    :param item: 测试用例<br/>    :param call: 测试步骤<br/>    :return:<br/>    """</span><br/>    out = <span>yield</span><br/>    result = out.get_result()<br/>    <span>if</span> result.outcome <span>in</span> [<span>'failed'</span>, <span>'error'</span>]:<br/>        <span>for</span> k, v <span>in</span> item.funcargs.items():<br/>            <span>try</span>:<br/>                <span>if</span> hasattr(v, <span>'native'</span>):<br/>                    attach_png(<span>f'<span>{Constant().TEST_PIC}</span>/<span>{int(time.time())}</span>.png'</span>, <span>"失败截图"</span>, v)<br/>                    <span>break</span><br/>            <span>except</span> Exception <span>as</span> e:<br/>                logger.error(<span>f"失败截图异常:<span>{e}</span>"</span>)<br/></code></pre><h2 id="多重断言失败截图"><span>多重断言失败截图</span></h2><p>在pytest_assume插件中有一个hook:<code>pytest_assume.hooks.pytest_assume_fail</code></p><pre><code><span><span>def</span> <span>pytest_assume_fail</span><span>(lineno, entry)</span>:</span><br/>    <span>"""<br/>    Hook to manipulate user-defined data in-case of assumption failure.<br/>    lineno: Line in the code from where asumption failed.<br/>    entry: The assumption failure message generated from assume() call<br/>    """</span><br/>    <span>pass</span><br/></code></pre><p>当assume第一个参数是False时,它就会进入pytest_assume_fail钩子</p><p>同上,找到包含native对象的对象,然后进行截图</p><pre><code><span><span>def</span> <span>pytest_assume_fail</span><span>(lineno, entry)</span>:</span><br/>    <span>"""<br/>    assume 断言报错截图<br/>    """</span><br/>    <span>for</span> i <span>in</span> inspect.stack():<br/>        <span>if</span> os.path.split(i.filename)[<span>1</span>].startswith(<span>'test_'</span>):<br/>            <span>try</span>:<br/>                <span>for</span> k, v <span>in</span> i.frame.f_locals.items():<br/>                    <span>if</span> hasattr(v, <span>'native'</span>):<br/>                        attach_png(<span>f'<span>{Constant().TEST_PIC}</span>/<span>{int(time.time())}</span>.png'</span>, <span>f"失败截图_<span>{int(time.time())}</span>"</span>, v)<br/>                        <span>break</span><br/>            <span>except</span> Exception <span>as</span> e:<br/>                logger.error(<span>f"失败截图异常:<span>{e}</span>"</span>)<br/></code></pre><p><img alt="" class="rich_pages wxw-img js_insertlocalimg" decoding="async" height="282" loading="lazy" src="/images/blog-media/e6de43a0419b5598d2e5.webp" width="1080"/></p><figure><br/></figure></section></div>
+        <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/aNVtowB9cEhHSGE9I142eA">查看微信公众号原文 ↗</a></p>
+        <div class="post-tags"></div>
+        <nav class="related" aria-label="相邻文章"><a href="/article/wechat-a749a77c406181.html"><small>较新文章</small>3.微信小程序自动化测试pytest版-记录日志与接口</a><a href="/article/wechat-3e821fab046c86.html"><small>较早文章</small>1.微信小程序自动化测试pytest版-阅读unittest版</a></nav>
+
+      </div>
+    </div>
+  </article></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记</a>
+    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
+    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

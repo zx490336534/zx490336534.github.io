@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>14.寻光集后台管理系统-产品信息-筛选部分 · 测试游记</title>
+  <meta name="description" content="14.寻光集后台管理系统-产品信息-筛选部分">
+  <meta property="og:title" content="14.寻光集后台管理系统-产品信息-筛选部分 · 测试游记">
+  <meta property="og:description" content="14.寻光集后台管理系统-产品信息-筛选部分">
+  <meta property="og:url" content="https://www.zhongxin.website/article/wechat-b8ada88e4fa9d3.html">
+  <link rel="canonical" href="https://www.zhongxin.website/article/wechat-b8ada88e4fa9d3.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <link rel="stylesheet" href="/css/blog.css">
+  <script src="/js/blog.js" defer></script>
+
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记<span>听白</span></a>
+      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
+      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+    </div>
+  </header>
+  <main id="main" class="wrap">
+  <article class="article">
+    <header class="article-header">
+      <a class="back-link" href="/archives/">← 文章归档</a>
+      <h1 class="post-title">14.寻光集后台管理系统-产品信息-筛选部分</h1>
+      <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2022-09-25T09:00:00+08:00">2022-09-25</time>
+        <span class="post-category categories"><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span></div>
+    </header>
+    <div class="article-layout with-outline">
+      <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E6%9C%80%E7%BB%88%E6%95%88%E6%9E%9C">最终效果</a></li><li><a href="#%E5%88%97%E8%A1%A8%E5%B1%95%E7%A4%BA">列表展示</a></li><li><a href="#%E7%BC%96%E8%BE%91%E4%BA%A7%E5%93%81">编辑产品</a></li><li><a href="#%E7%AD%9B%E9%80%89%E9%83%A8%E5%88%86-%E5%90%8E%E7%AB%AF">筛选部分(后端)</a></li><li><a href="#%E7%AD%9B%E9%80%89%E9%83%A8%E5%88%86-%E5%89%8D%E7%AB%AF">筛选部分(前端)</a></li><li><a href="#%E6%8E%A5%E5%8F%A3">接口</a></li><li><a href="#%E9%A1%B5%E9%9D%A2">页面</a></li><li><a href="#%E6%B5%8B%E8%AF%95">测试</a></li></ol></details></aside>
+      <div class="article-main">
+        <div class="post-body"><section><p>在上一章中已经有了一个产品信息的空白页了</p><p>这一章来实现它</p><h2 id="最终效果"><span>最终效果</span></h2><p>最终页面大概长这样</p><h3 id="列表展示"><span>列表展示</span></h3><figure><img alt="" class="rich_pages wxw-img" decoding="async" height="514" loading="lazy" src="/images/blog-media/db47954b15f81dd5872d.webp" width="1080"/></figure><h3 id="编辑产品"><span>编辑产品</span></h3><figure><img alt="" class="rich_pages wxw-img" decoding="async" height="662" loading="lazy" src="/images/blog-media/c21a3bd6254d920be65a.webp" width="1080"/></figure><h2 id="筛选部分-后端"><span>筛选部分(后端)</span></h2><p>类别和品牌的内容都是根据实际添加产品的类别和品牌生成的,所以需要有一个接口来获取他们</p><p>也就是对产品表中<code>category</code>和<code>brand</code>进行去重操作</p><pre><code>category_list = Product.objects.values_list(<span>"category"</span>, flat=<span>True</span>).distinct()<br/></code></pre><p>去重之后再处理一下脏数据</p><pre><code>category_list = [i.strip() <span>for</span> i <span>in</span> category_list <span>if</span> i != <span>""</span> <span>and</span> i != <span>None</span>]<br/></code></pre><p>所以在<code>backend/apps/product/views.py</code>里面添加</p><pre><code><span>@action(methods=['get'], detail=False)</span><br/><span><span>def</span> <span>category_list</span><span>(self, request)</span>:</span><br/>    <span>"""<br/>    返回类别列表<br/>    """</span><br/>    category_list = Product.objects.values_list(<span>"category"</span>, flat=<span>True</span>).distinct()<br/>    category_list = [i.strip() <span>for</span> i <span>in</span> category_list <span>if</span> i != <span>""</span> <span>and</span> i != <span>None</span>]<br/>    <span>return</span> Response(data=category_list)<br/><br/><span>@action(methods=['get'], detail=False)</span><br/><span><span>def</span> <span>brand_list</span><span>(self, request)</span>:</span><br/>    <span>"""<br/>    返回品牌列表<br/>    """</span><br/>    brand_list = Product.objects.values_list(<span>"brand"</span>, flat=<span>True</span>).distinct()<br/>    brand_list = [i.strip() <span>for</span> i <span>in</span> brand_list <span>if</span> i != <span>""</span> <span>and</span> i != <span>None</span>]<br/>    <span>return</span> Response(data=brand_list)<br/></code></pre><h2 id="筛选部分-前端"><span>筛选部分(前端)</span></h2><h3 id="接口"><span>接口</span></h3><p>新建一个js文件来存放产品信息相关的接口</p><p><code>frontend/src/api/model/products.js</code></p><pre><code><span>import</span> config <span>from</span> <span>"@/config"</span><br/><span>import</span> http <span>from</span> <span>"@/utils/request"</span><br/><br/>export default {<br/>  list: {<br/>    url: `${config.API_URL1}/product/`,<br/>    name: <span>"获取产品列表"</span>,<br/>    get: <span>async</span> function (params) {<br/>      <span>return</span> <span>await</span> http.get(this.url, params);<br/>    }<br/>  },<br/>  add: {<br/>    url: `${config.API_URL1}/product/`,<br/>    name: <span>"添加产品"</span>,<br/>    post: <span>async</span> function (data) {<br/>      <span>return</span> <span>await</span> http.post(this.url, data);<br/>    }<br/>  },<br/>  edit: {<br/>    url: `${config.API_URL1}/product/`,<br/>    name: <span>"修改产品"</span>,<br/>    put: <span>async</span> function (id, data) {<br/>      <span>return</span> <span>await</span> http.put(`${this.url}${id}/`, data);<br/>    }<br/>  },<br/>  <span>del</span>: {<br/>    url: `${config.API_URL1}/product/`,<br/>    name: <span>"删除产品"</span>,<br/>    delete: <span>async</span> function (id) {<br/>      <span>return</span> <span>await</span> http.delete(`${this.url}${id}/`);<br/>    }<br/>  },<br/>  category_list: {<br/>    url: `${config.API_URL1}/product/category_list/`,<br/>    name: <span>"获取全部产品类别"</span>,<br/>    get: <span>async</span> function (params) {<br/>      <span>return</span> <span>await</span> http.get(this.url, params);<br/>    }<br/>  },<br/>  brand_list: {<br/>    url: `${config.API_URL1}/product/brand_list/`,<br/>    name: <span>"获取全部产品品牌"</span>,<br/>    get: <span>async</span> function (params) {<br/>      <span>return</span> <span>await</span> http.get(this.url, params);<br/>    }<br/>  },<br/>}<br/></code></pre><p>顺便放上它的增删改查接口</p><h3 id="页面"><span>页面</span></h3><p>先简单搭建一下页面结构</p><pre><code>&lt;template&gt;<br/>  &lt;el-container&gt;<br/>    &lt;el-header style="height: auto;"&gt;<br/>      &lt;sc-select-filter :data="filterData" :label-width="80"&gt;&lt;/sc-select-filter&gt;<br/>    &lt;/el-header&gt;<br/>  &lt;/el-container&gt;<br/>&lt;/template&gt;<br/><br/>&lt;script&gt;<br/>import scSelectFilter from '@/components/scSelectFilter'<br/><br/>export default {<br/>  name: "product",<br/>  components: {<br/>    scSelectFilter<br/>  },<br/>  data(){<br/>    return  {<br/>      filterData: [<br/>        {<br/>          title: "类别",<br/>          key: "category",<br/>          multiple: false,<br/>          options: [<br/>            {<br/>              label: "全部",<br/>              value: ""<br/>            },<br/>          ]<br/>        },<br/>        {<br/>          title: "品牌",<br/>          key: "brand",<br/>          multiple: false,<br/>          options: [<br/>            {<br/>              label: "全部",<br/>              value: ""<br/>            },<br/>          ]<br/>        }<br/>      ],<br/>    }<br/>  },<br/>  methods:{<br/>  }<br/>}<br/>&lt;/script&gt;<br/><br/>&lt;style scoped&gt;<br/><br/>&lt;/style&gt;<br/></code></pre><p>然后进行数据的获取</p><p>在created也就是进入该页面的时候就会去请求这两个接口,然后把数据合并到之前的对象里面,渲染的时候就会增加除了「全部」之外的部分</p><pre><code>methods:{<br/>    async get_category_list() {<br/>      var category_list = await this.$API.products.category_list.get()<br/>      this.filterData[0]["options"] = [{label: "全部", value: ""}]<br/>      for (const categoryListElement of category_list) {<br/>        this.filterData[0]["options"].push(<br/>          {<br/>            label: categoryListElement,<br/>            value: categoryListElement<br/>          },<br/>        )<br/>      }<br/>    },<br/>    async get_brand_list() {<br/>      var brand_list = await this.$API.products.brand_list.get()<br/>      this.filterData[1]["options"] = [{label: "全部", value: ""}]<br/>      for (const brandListElement of brand_list) {<br/>        this.filterData[1]["options"].push(<br/>          {<br/>            label: brandListElement,<br/>            value: brandListElement<br/>          },<br/>        )<br/>      }<br/>    },<br/>  },<br/>created() {<br/>  this.get_category_list()<br/>  this.get_brand_list()<br/>},<br/></code></pre><h3 id="测试"><span>测试</span></h3><p>查看页面可以发现,类别和品牌中的信息不单单只有「全部」了</p><figure><img alt="" class="rich_pages wxw-img" decoding="async" height="284" loading="lazy" src="/images/blog-media/27a8b1ec67c52d7b0fd8.webp" width="648"/></figure></section></div>
+        <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/-1C1DqjPRm3izLCrN8oMZA">查看微信公众号原文 ↗</a></p>
+        <div class="post-tags"></div>
+        <nav class="related" aria-label="相邻文章"><a href="/article/wechat-ad2c00e1257a43.html"><small>较新文章</small>15.寻光集后台管理系统-产品信息-数据部分</a><a href="/article/wechat-ccc54ccce501b3.html"><small>较早文章</small>13.寻光集后台管理系统-控制前端菜单栏展示内容</a></nav>
+
+      </div>
+    </div>
+  </article></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记</a>
+    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
+    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>微信小程序自动化测试pytest版工具使用方法 · 测试游记</title>
+  <meta name="description" content="pytest-mini:微信小程序自动化测试pytest插件/工具\x0d\x0a基于MiniTest进行pytest改造使用">
+  <meta property="og:title" content="微信小程序自动化测试pytest版工具使用方法 · 测试游记">
+  <meta property="og:description" content="pytest-mini:微信小程序自动化测试pytest插件/工具\x0d\x0a基于MiniTest进行pytest改造使用">
+  <meta property="og:url" content="https://www.zhongxin.website/article/wechat-4ed524b18de79d.html">
+  <link rel="canonical" href="https://www.zhongxin.website/article/wechat-4ed524b18de79d.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <link rel="stylesheet" href="/css/blog.css">
+  <script src="/js/blog.js" defer></script>
+
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记<span>听白</span></a>
+      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
+      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+    </div>
+  </header>
+  <main id="main" class="wrap">
+  <article class="article">
+    <header class="article-header">
+      <a class="back-link" href="/archives/">← 文章归档</a>
+      <h1 class="post-title">微信小程序自动化测试pytest版工具使用方法</h1>
+      <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2023-02-04T15:34:22+08:00">2023-02-04</time>
+        <span class="post-category categories"><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span></div>
+    </header>
+    <div class="article-layout with-outline">
+      <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#pytest-mini">pytest-mini</a></li><li><a href="#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95">使用方法</a></li><li><a href="#%E5%87%86%E5%A4%87%E6%B5%8B%E8%AF%95%E5%B0%8F%E7%A8%8B%E5%BA%8F">准备测试小程序</a></li><li><a href="#%E5%AE%89%E8%A3%85-%E6%9B%B4%E6%96%B0">安装&amp;更新</a></li><li><a href="#%E5%BC%95%E5%85%A5%E6%8F%92%E4%BB%B6">引入插件</a></li><li><a href="#%E7%BC%96%E5%86%99%E9%A1%B5%E9%9D%A2%E5%AF%B9%E8%B1%A1">编写页面对象</a></li><li><a href="#%E7%BC%96%E5%86%99%E6%B5%8B%E8%AF%95%E4%BB%A3%E7%A0%81">编写测试代码</a></li><li><a href="#%E7%BC%96%E5%86%99%E6%89%A7%E8%A1%8C-%E6%8A%A5%E5%91%8A%E5%B1%95%E7%A4%BA%E8%84%9A%E6%9C%AC">编写执行&amp;报告展示脚本</a></li><li><a href="#%E6%89%A7%E8%A1%8C%E6%B5%8B%E8%AF%95">执行测试</a></li><li><a href="#%E6%9F%A5%E7%9C%8B%E6%8A%A5%E5%91%8A">查看报告</a></li></ol></details></aside>
+      <div class="article-main">
+        <div class="post-body"><section><section><h1 id="pytest-mini"><span>pytest-mini</span></h1></section><p><span>https://github.com/zx490336534/pytest-mini</span></p><blockquote><p>微信小程序自动化测试pytest插件/工具</p><p>基于MiniTest进行pytest改造</p></blockquote><h2 id="使用方法"><span>使用方法</span></h2><h3 id="准备测试小程序"><span>准备测试小程序</span></h3><p>根据miniprogram-demo项目介绍运行一次项目</p><p>成功运行后关闭</p><h3 id="安装-更新"><span>安装&amp;更新</span></h3><pre><code>pip install pytest-mini --upgrade<br/></code></pre><h3 id="引入插件"><span>引入插件</span></h3><p>新建<code>conftest.py</code>文件</p><pre><code><span>from</span> pytest_mini <span>import</span> plugins<br/><br/>pytest_plugins = plugins(<br/>    <span>"待测试的小程序项目路径"</span>,<br/>    <span>"微信开发者工具路径"</span><br/>)<br/></code></pre><p>例如<code>demo/cases/conftest.py</code></p><pre><code><span>from</span> pytest_mini <span>import</span> plugins<br/><br/>pytest_plugins = plugins(<br/>    <span>"/Users/zhongxin/github/miniprogram-demo"</span>,  <span># 待测试的小程序项目路径</span><br/>    <span>"/Applications/wechatwebdevtools.app/Contents/MacOS/cli"</span>  <span># 微信开发者工具路径</span><br/>)<br/></code></pre><h3 id="编写页面对象"><span>编写页面对象</span></h3><p>在<code>demo/pages/components_page.py</code>编写元素定位</p><pre><code><span>from</span> pytest_mini <span>import</span> Mini, Locator<br/><br/><br/><span><span>class</span> <span>ComponentsPage</span><span>(Mini)</span>:</span><br/>    view_container = Locator(<span>'view'</span>, inner_text=<span>'视图容器'</span>, desc=<span>'组件页-视图容器'</span>)<br/></code></pre><p>在<code>conftest.py</code>中添加</p><pre><code><span>import</span> pytest<br/><span>from</span> pages.components_page <span>import</span> ComponentsPage<br/><br/><span>@pytest.fixture(scope="session")</span><br/><span><span>def</span> <span>components_page</span><span>(mini)</span>:</span><br/>    <span>yield</span> ComponentsPage(driver=mini.driver)<br/></code></pre><h3 id="编写测试代码"><span>编写测试代码</span></h3><p><code>demo/cases/test_home.py</code></p><pre><code><span>import</span> allure<br/><br/><span>from</span> pytest_mini <span>import</span> compose<br/><br/><br/><span>@compose(feature="小程序官方组件展示", story="组件", title='容器视图操作')</span><br/><span><span>def</span> <span>test_view_container</span><span>(components_page)</span>:</span><br/>    <span>with</span> allure.step(<span>"点击容器视图"</span>):<br/>        components_page.click(components_page.view_container)<br/>        <span>assert</span> <span>False</span>, <span>"故意失败,查看报告截图"</span><br/></code></pre><h3 id="编写执行-报告展示脚本"><span>编写执行&amp;报告展示脚本</span></h3><p><code>demo/cases/allure_debug.py</code></p><pre><code><span>import</span> os<br/><span>import</span> pytest<br/><span>from</span> pytest_mini.constant <span>import</span> Constant<br/><br/>test_cases = [<span>"test_home.py"</span>]  <span># 执行的脚本</span><br/><br/>main_list = [<br/>    <span>'-s'</span>, <span>'-v'</span>,<br/>    *test_cases,<br/>    <span>'--durations=0'</span>, <span>'--clean-alluredir'</span>,<br/>    <span>'--alluredir'</span>, <span>f'<span>{Constant().REPORT_PATH}</span>/allure_results'</span><br/>]<br/>pytest.main(main_list)<br/><span>if</span> <span>not</span> os.getenv(<span>"BUILD_URL"</span>):<br/>    os.system(<span>f"<span>{Constant.ALLURE_TOOL}</span> serve <span>{Constant().REPORT_PATH}</span>/allure_results"</span>)  <span># 本地执行</span><br/></code></pre><h3 id="执行测试"><span>执行测试</span></h3><p>运行<code>allure_debug.py</code>文件</p><h3 id="查看报告"><span>查看报告</span></h3><p><img alt="" class="rich_pages wxw-img js_insertlocalimg" decoding="async" height="595" loading="lazy" src="/images/blog-media/0f087676d7a9aaafdd97.webp" width="1080"/></p><figure><figcaption>报告截图</figcaption></figure></section></div>
+        <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/iJawoNQTdWAwQYzEv_9lzg">查看微信公众号原文 ↗</a></p>
+        <div class="post-tags"></div>
+        <nav class="related" aria-label="相邻文章"><a href="/article/wechat-3e821fab046c86.html"><small>较新文章</small>1.微信小程序自动化测试pytest版-阅读unittest版</a><a href="/article/wechat-8c23c5f61eb892.html"><small>较早文章</small>我的 2022 年终总结</a></nav>
+
+      </div>
+    </div>
+  </article></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记</a>
+    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
+    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

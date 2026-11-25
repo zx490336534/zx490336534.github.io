@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Sonic新生态Sonic IDE体验 · 测试游记</title>
+  <meta name="description" content="Sonic IDE试用">
+  <meta property="og:title" content="Sonic新生态Sonic IDE体验 · 测试游记">
+  <meta property="og:description" content="Sonic IDE试用">
+  <meta property="og:url" content="https://www.zhongxin.website/article/wechat-ee812c18848a4e.html">
+  <link rel="canonical" href="https://www.zhongxin.website/article/wechat-ee812c18848a4e.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <link rel="stylesheet" href="/css/blog.css">
+  <script src="/js/blog.js" defer></script>
+
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记<span>听白</span></a>
+      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
+      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+    </div>
+  </header>
+  <main id="main" class="wrap">
+  <article class="article">
+    <header class="article-header">
+      <a class="back-link" href="/archives/">← 文章归档</a>
+      <h1 class="post-title">Sonic新生态Sonic IDE体验</h1>
+      <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2023-05-22T18:43:12+08:00">2023-05-22</time>
+        <span class="post-category categories"><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span></div>
+    </header>
+    <div class="article-layout with-outline">
+      <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E8%83%8C%E6%99%AF">背景</a></li><li><a href="#Sonic-%E5%85%8D%E8%B4%B9%E5%BC%80%E6%BA%90%E7%9A%84%E4%BA%91%E7%9C%9F%E6%9C%BA%E6%B5%8B%E8%AF%95%E5%B9%B3%E5%8F%B0-%E7%94%A8%E5%BF%83%E6%89%93%E9%80%A0%E6%9B%B4%E5%A5%BD%E7%9A%84%E4%BD%BF%E7%94%A8%E4%BD%93%E9%AA%8C">Sonic:免费开源的云真机测试平台，用心打造更好的使用体验。</a></li><li><a href="#%E5%AE%89%E8%A3%85">安装</a></li><li><a href="#%E7%8E%AF%E5%A2%83">环境</a></li><li><a href="#%E6%95%B0%E6%8D%AE%E5%BA%93">数据库</a></li><li><a href="#%E5%89%8D%E5%90%8E%E7%AB%AF">前后端</a></li><li><a href="#Agent">Agent</a></li><li><a href="#IDE%E4%B8%8B%E8%BD%BD%E4%B8%8E%E4%BD%BF%E7%94%A8">IDE下载与使用</a></li></ol></details></aside>
+      <div class="article-main">
+        <div class="post-body"><section><h1 id="背景"><span>背景</span><br/></h1><blockquote><h3 id="Sonic-免费开源的云真机测试平台-用心打造更好的使用体验"><span>Sonic:免费开源的云真机测试平台，用心打造更好的使用体验。</span></h3></blockquote><p>之前在做APP的日常测试和UI自动化的时候,一直在使用Sonic</p><p>没有切换到平台上进行自动化测试的原因是由于现有脚本框架已经成熟,并且有很多自定义的拓展,所以Sonic的更多是一个设备管理员的角色</p><p>在Sonic的<code>v2.5.0</code>版本中新增了Sonic IDE,可以方便的将编码和调试过程进行结合</p><h2 id="安装"><span>安装</span></h2><h3 id="环境"><span>环境</span></h3><p>电脑是M1芯片的MAC,采用Docker的方式进行搭建</p><p>由于都在当前电脑上搭建,所以IP都是当前电脑的IP,我的当前IP为:<code>10.10.6.163</code></p><h3 id="数据库"><span>数据库</span></h3><pre><code>docker run --name mymariadb --restart=always -d -v mymariadb:/var/lib/mysql -e MARIADB_ROOT_PASSWORD=123456 -p 4002:3306 -e MARIADB_DATABASE=sonic mariadb:latest<br/></code></pre><h3 id="前后端"><span>前后端</span></h3><p>https://sonic-cloud.cn/deploy/back-end-deploy.html</p><p>下载<code>sonic-server-v2.5.0</code>并解压</p><p>修改<code>.env</code>文件</p><p>其中<code>SONIC_SERVER_HOST</code>和<code>MYSQL_HOST</code>修改为本机的IP</p><pre><code><span>################################################</span><br/><span>#         Do you need any help?                #</span><br/><span>#     Visit https://sonic-cloud.cn/deploy      #</span><br/><span>################################################</span><br/><br/><span>##################</span><br/><span># Service Config #</span><br/><span>##################</span><br/>SONIC_SERVER_HOST=10.10.6.163<br/>SONIC_SERVER_PORT=3000<br/>SONIC_EUREKA_USERNAME=sonic<br/>SONIC_EUREKA_PASSWORD=sonic<br/>SONIC_EUREKA_PORT=8761<br/><br/><span>################</span><br/><span># MySQL Config #</span><br/><span>################</span><br/>MYSQL_HOST=10.10.6.163<br/>MYSQL_PORT=4002<br/>MYSQL_DATABASE=sonic<br/>MYSQL_USERNAME=root<br/>MYSQL_PASSWORD=123456<br/><br/>...<br/></code></pre><p>构建</p><pre><code>docker-compose -f docker-compose-zh.yml up -d<br/></code></pre><p><img alt="" class="rich_pages wxw-img" decoding="async" height="600" loading="lazy" src="/images/blog-media/d4a41e8ed891ea4816e8.webp" width="750"/></p><figure><figcaption>orbstack.dev</figcaption></figure><p>部署完成后登录<code>本机IP:3000</code></p><p>新增一个Agent</p><p><img alt="" class="rich_pages wxw-img" decoding="async" height="224" loading="lazy" src="/images/blog-media/e0a7011b88de08d19420.webp" width="1080"/></p><figure><figcaption>新增Agent</figcaption></figure><h3 id="Agent"><span>Agent</span></h3><p>https://sonic-cloud.cn/deploy/agent-deploy.html</p><p>下载<code>sonic-agent-v2.5.0-macosx_arm64</code>后解压</p><p>修改<code>2.5.0/sonic-agent-v2.5.0-macosx_arm64/config/application-sonic-agent.yml</code>文件</p><p>修改<code>key</code>为上一步拿到的<code>Agent Key</code></p><p>修改<code>host</code>为本机IP</p><pre><code>sonic:<br/>  agent:<br/>    <span># Replace with ipv4 of the agent machine | 替换为部署Agent机器的ipv4</span><br/>    host: 10.10.6.163<br/>    <span># Replace with the port of the agent service, which can be changed by yourself | 替换为Agent服务的端口，可以自行更改</span><br/>    port: 7777<br/>    <span># Replace with the key of agent generated by the new front-end | 替换为前端新增Agent生成的key</span><br/>    key: 2aeaa359-896d-41ec-9586-ed5f0b42035b<br/>  server:<br/>    <span># Change to SONIC_SERVER_HOST of server | 改成server的SONIC_SERVER_HOST</span><br/>    host: 10.10.6.163<br/>    <span># Change to SONIC_SERVER_PORT of server | 改成server的SONIC_SERVER_PORT</span><br/>    port: 3000<br/></code></pre><p>运行:(注意java需要使用jdk17+)</p><pre><code>java -Dfile.encoding=utf-8 -jar sonic-agent-macosx-arm64.jar <br/></code></pre><p><img alt="" class="rich_pages wxw-img" decoding="async" height="582" loading="lazy" src="/images/blog-media/f46101c34bb47b41282d.webp" width="1080"/></p><figure><figcaption></figcaption></figure><h2 id="IDE下载与使用"><span>IDE下载与使用</span></h2><p>https://sonic-cloud.cn/ide/re-ide.html</p><p>下载IDE到本地</p><p>首先进行登录</p><p><img alt="" class="rich_pages wxw-img" decoding="async" height="593" loading="lazy" src="/images/blog-media/eb9538427ce1d66173d9.webp" width="1080"/></p><figure><figcaption></figcaption></figure><p>登录完成后打开原本的自动化测试项目</p><p><img alt="" class="rich_pages wxw-img" decoding="async" height="593" loading="lazy" src="/images/blog-media/c3c99606a083e6de8f8d.webp" width="1080"/></p><figure><figcaption></figcaption></figure><p>在右侧,点击「马上使用」即可直接使用Sonic平台上挂载的测试手机了<br/>点击「获取原生控件」即可拿到当前操作页面的元素定位dom树</p><p><img alt="" class="rich_pages wxw-img" decoding="async" height="593" loading="lazy" src="/images/blog-media/06519e279e14928cd10f.webp" width="1080"/></p><figure><figcaption></figcaption></figure><p>如果使用UITest框架的话</p><p>https://gitee.com/zx660644/uitest</p><p>修改<code>src/utils/constant.py</code>文件中的<code>REMOTE_URL</code>和<code>REMOTE_PORT</code></p><pre><code>REMOTE_PORT = get_env(<span>"remote_port"</span>, <span>"60500"</span>)  <span># 远程端口</span><br/>REMOTE_URL = get_env(<span>"remote_url"</span>, <span>"http://10.10.6.163"</span>)  <span># 远程地址</span><br/></code></pre><p>修改后再终端运行命令执行测试,即可在右侧直接看到运行效果</p><p>体验下来感觉比较适合元素定位的调试,真正编写代码体验还是在Pycharm中更舒服</p></section></div>
+        <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/yIxTp-XoXSTylEHu6ZtD9A">查看微信公众号原文 ↗</a></p>
+        <div class="post-tags"></div>
+        <nav class="related" aria-label="相邻文章"><a href="/article/wechat-926281bf509f3b.html"><small>较新文章</small>React中几种编写弹窗的方式</a><a href="/article/wechat-25e2a41533a6aa.html"><small>较早文章</small>低版本chrome浏览器播放视频异常问题排查</a></nav>
+
+      </div>
+    </div>
+  </article></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记</a>
+    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
+    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

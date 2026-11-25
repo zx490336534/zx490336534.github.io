@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>一次开发多端使用的H5页面该如何调试 · 测试游记</title>
+  <meta name="description" content="调试安卓APP里面的H5页面">
+  <meta property="og:title" content="一次开发多端使用的H5页面该如何调试 · 测试游记">
+  <meta property="og:description" content="调试安卓APP里面的H5页面">
+  <meta property="og:url" content="https://www.zhongxin.website/article/wechat-d2291acb4818a5.html">
+  <link rel="canonical" href="https://www.zhongxin.website/article/wechat-d2291acb4818a5.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <link rel="stylesheet" href="/css/blog.css">
+  <script src="/js/blog.js" defer></script>
+
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记<span>听白</span></a>
+      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
+      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+    </div>
+  </header>
+  <main id="main" class="wrap">
+  <article class="article">
+    <header class="article-header">
+      <a class="back-link" href="/archives/">← 文章归档</a>
+      <h1 class="post-title">一次开发多端使用的H5页面该如何调试</h1>
+      <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2021-10-12T15:52:20+08:00">2021-10-12</time>
+        <span class="post-category categories"><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span></div>
+    </header>
+    <div class="article-layout with-outline">
+      <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E9%97%AE%E9%A2%98">问题</a></li><li><a href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA">环境搭建</a></li><li><a href="#%E5%B0%8F%E7%BB%93">小结</a></li></ol></details></aside>
+      <div class="article-main">
+        <div class="post-body"><section><h2 id="问题"><span>问题</span></h2><p>在测试安卓APP中的H5的时候发现部分UI展示异常</p><p>例如该按钮的内容在IOS上正常，但是在安卓上却显示异常</p><figure><img alt="" decoding="async" height="135" loading="lazy" src="/images/blog-media/a107e1ee33ef778ffdc6.webp" width="290"/><figcaption>异常</figcaption></figure><p>但是拷贝当前H5地址到安卓的浏览器上查看却是正常的</p><p>那是因为APP中内置的<code>WebView</code>与浏览器的<code>WebView</code>版本是不一样的</p><p>所以我们需要在对应<code>WebView</code>下进行调试查看</p><p>调试基于WebView的Hybrid App最舒服的工具当然是Chrome自带的开发者工具，其中有我们熟悉的Dom树调试，JS调试，Network监视等等功能。</p><h2 id="环境搭建"><span>环境搭建</span></h2><ol class="list-paddingleft-2"><li><p><span>开启手机上的USB调试功能</span></p></li><li><p><span>打开Chrome浏览器，地址栏输入：Chrome://inspect，回车</span></p></li><li><p><span>Chrome会自动检测手机上打开的App，并列出可调试的WebView页面，如图：</span></p></li></ol><figure><img alt="" decoding="async" height="692" loading="lazy" src="/images/blog-media/25ced654d95c41c3ec74.webp" width="979"/><figcaption>页面</figcaption></figure><p>点击<code>inspect</code>就会弹出一个新的窗口</p><figure><img alt="" decoding="async" height="110" loading="lazy" src="/images/blog-media/15dbc9ed73b58d836e79.webp" width="788"/><figcaption>测试H5</figcaption></figure><blockquote><p><strong>注意</strong>：因为需要下载<code>WebView</code>所以需要翻墙</p></blockquote><figure><img alt="" decoding="async" height="594" loading="lazy" src="/images/blog-media/3740cb9ef1c2072c1949.webp" width="1080"/><figcaption>调试</figcaption></figure><p>这时我们就可以看到文字偏上是因为没有上下居中</p><figure><img alt="" decoding="async" height="118" loading="lazy" src="/images/blog-media/ff93f93ae28091f6577f.webp" width="220"/><figcaption>span修改前</figcaption></figure><p>添加</p><pre><code><span>line-height</span>: <span>normal</span><br/></code></pre><p>后内容就居中对齐了</p><figure><img alt="" decoding="async" height="154" loading="lazy" src="/images/blog-media/f2464096f849bfd49669.webp" width="1080"/><figcaption>修改后</figcaption></figure><h2 id="小结"><span>小结</span></h2><p>使用该方法可以调试小程序中嵌入H5、APP中嵌入H5的各种场景</p></section></div>
+        <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/jbWq3rNWe8B87AektY9MJA">查看微信公众号原文 ↗</a></p>
+        <div class="post-tags"></div>
+        <nav class="related" aria-label="相邻文章"><a href="/article/wechat-6939c1c9f606d2.html"><small>较新文章</small>使用spy-debugger进行H5页面调试</a><a href="/article/wechat-848fb141f8c985.html"><small>较早文章</small>使用mitmproxy进行埋点测试</a></nav>
+
+      </div>
+    </div>
+  </article></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记</a>
+    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
+    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

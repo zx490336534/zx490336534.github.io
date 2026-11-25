@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Obsidian接入MCP搭建智能笔记 · 测试游记</title>
+  <meta name="description" content="在Obsidian中结合mcp高效的使用AI来完成任务">
+  <meta property="og:title" content="Obsidian接入MCP搭建智能笔记 · 测试游记">
+  <meta property="og:description" content="在Obsidian中结合mcp高效的使用AI来完成任务">
+  <meta property="og:url" content="https://www.zhongxin.website/article/wechat-2bdff8f6172e61.html">
+  <link rel="canonical" href="https://www.zhongxin.website/article/wechat-2bdff8f6172e61.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <link rel="stylesheet" href="/css/blog.css">
+  <script src="/js/blog.js" defer></script>
+
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记<span>听白</span></a>
+      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
+      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+    </div>
+  </header>
+  <main id="main" class="wrap">
+  <article class="article">
+    <header class="article-header">
+      <a class="back-link" href="/archives/">← 文章归档</a>
+      <h1 class="post-title">Obsidian接入MCP搭建智能笔记</h1>
+      <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2025-05-07T12:18:46+08:00">2025-05-07</time>
+        <span class="post-category categories"><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span></div>
+    </header>
+    <div class="article-layout with-outline">
+      <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E8%83%8C%E6%99%AF">背景</a></li><li><a href="#%E5%AE%89%E8%A3%85%E6%8F%92%E4%BB%B6">安装插件</a></li><li><a href="#%E9%85%8D%E7%BD%AEMCP">配置MCP</a></li><li><a href="#%E9%85%8D%E7%BD%AEplaywright">配置playwright</a></li><li><a href="#%E6%B5%8B%E8%AF%95">测试</a></li></ol></details></aside>
+      <div class="article-main">
+        <div class="post-body"><section><h2 id="背景"><span><span>背景</span></span></h2><p><span>在Obsidian中结合mcp高效的使用AI来完成任务</span></p><h2 id="安装插件"><span><span>安装插件</span></span></h2><p><span>安装Smart Composer插件</span></p><figure><span><img alt="image.png" class="rich_pages wxw-img" decoding="async" height="319" loading="lazy" src="/images/blog-media/7ce4fc4237a88daa9022.webp" width="562"/></span><figcaption><span>image.png</span></figcaption></figure><br/><span>修改配置完成大模型的添加</span><br/><span>1、直接使用现有的大模型提供商</span><br/><span>2、添加自定义提供商，例如硅基流动</span><br/><span>base url：https://api.siliconflow.cn/v1</span><br/><figure><span><img alt="image.png" class="rich_pages wxw-img" decoding="async" height="724" loading="lazy" src="/images/blog-media/142dadcfe6acfff02ded.webp" width="778"/></span><figcaption><span>image.png</span></figcaption></figure><br/><span>添加大模型</span><br/><span>这边添加了Qwen/Qwen3-235B-A22B</span><figure><span><img alt="image.png" class="rich_pages wxw-img" decoding="async" height="132" loading="lazy" src="/images/blog-media/595cd03369e6407b03b1.webp" width="772"/></span><figcaption><span>image.png</span></figcaption></figure><br/><span>侧边栏打开聊天窗口</span><br/><figure><span><img alt="image.png" class="rich_pages wxw-img" decoding="async" height="70" loading="lazy" src="/images/blog-media/abc193b8db11cb641615.webp" width="209"/></span><figcaption><span>image.png</span></figcaption></figure><br/><figure><span><img alt="image.png" class="rich_pages wxw-img" decoding="async" height="747" loading="lazy" src="/images/blog-media/2e180aae279e01639956.webp" width="550"/></span><figcaption><span>image.png</span></figcaption></figure><h2 id="配置MCP"><span><span>配置MCP</span></span></h2><figure><span><img alt="image.png" class="rich_pages wxw-img" decoding="async" height="611" loading="lazy" src="/images/blog-media/6d8b7b72f1a89ea72ebf.webp" width="1080"/></span><figcaption><span>image.png</span></figcaption></figure><h3 id="配置playwright"><span><span>配置playwright</span></span></h3><figure><span><img alt="image.png" class="rich_pages wxw-img" decoding="async" height="514" loading="lazy" src="/images/blog-media/a523df74465d9d9d8f31.webp" width="694"/></span><figcaption><span>image.png</span></figcaption></figure><pre><code><span>{</span><br/><span>  </span><span><span>"command"</span></span><span>: </span><span><span>"npx"</span></span><span>,</span><br/><span>  </span><span><span>"args"</span></span><span>: [</span><br/><span>    </span><span><span>"-y"</span></span><span>,</span><br/><span>    </span><span><span>"@playwright/mcp@latest"</span></span><span>,</span><br/><span>    </span><span><span>"--headless"</span></span><br/><span>  ]</span><br/><span>}</span><br/></code></pre><p><span>其他本地的mcp配置也类似</span><br/><span>如果要配置sse类型的mcp则需要使用mcp-proxy，参考：</span></p><pre><code><span>{</span><br/><span>  </span><span><span>"command"</span></span><span>: </span><span><span>"mcp-proxy"</span></span><span>,</span><br/><span>  </span><span><span>"args"</span></span><span>: [</span><br/><span>    </span><span><span>"http://saas-help-mcp-dev.k8s-qunhe.qunhequnhe.com/cf-mcp"</span></span><br/><span>  ]</span><br/><span>}</span><br/></code></pre><h2 id="测试"><span><span>测试</span></span></h2><figure><span><img alt="image.png" class="rich_pages wxw-img" decoding="async" height="523" loading="lazy" src="/images/blog-media/5f32a4ddd51037fe1abc.webp" width="559"/></span><figcaption><span>image.png</span></figcaption></figure></section><section><span><br/></span></section></div>
+        <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/KOxQmqvUbyOkHJgzZv7rog">查看微信公众号原文 ↗</a></p>
+        <div class="post-tags"></div>
+        <nav class="related" aria-label="相邻文章"><a href="/article/wechat-a84143254a28b8.html"><small>较新文章</small>UV 包管理工具：替代 pip 的现代化解决方案</a><a href="/article/wechat-1657c4bd848a94.html"><small>较早文章</small>最强开源MCP平台【双向+本地MCP】n8n试用</a></nav>
+
+      </div>
+    </div>
+  </article></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记</a>
+    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
+    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

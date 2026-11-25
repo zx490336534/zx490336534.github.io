@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Electron自动化测试技术选型调研 · 测试游记</title>
+  <meta name="description" content="Electron自动化测试">
+  <meta property="og:title" content="Electron自动化测试技术选型调研 · 测试游记">
+  <meta property="og:description" content="Electron自动化测试">
+  <meta property="og:url" content="https://www.zhongxin.website/article/wechat-1237d7e55a11d7.html">
+  <link rel="canonical" href="https://www.zhongxin.website/article/wechat-1237d7e55a11d7.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <link rel="stylesheet" href="/css/blog.css">
+  <script src="/js/blog.js" defer></script>
+
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记<span>听白</span></a>
+      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
+      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+    </div>
+  </header>
+  <main id="main" class="wrap">
+  <article class="article">
+    <header class="article-header">
+      <a class="back-link" href="/archives/">← 文章归档</a>
+      <h1 class="post-title">Electron自动化测试技术选型调研</h1>
+      <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2023-09-21T11:54:47+08:00">2023-09-21</time>
+        <span class="post-category categories"><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span></div>
+    </header>
+    <div class="article-layout with-outline">
+      <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#Electron%E7%AE%80%E4%BB%8B">Electron简介</a></li><li><a href="#%E6%A1%86%E6%9E%B6%E7%AE%80%E4%BB%8B">框架简介</a></li><li><a href="#%E5%89%8D%E7%BD%AE%E5%87%86%E5%A4%87">前置准备</a></li><li><a href="#%E6%A1%86%E6%9E%B6%E8%AF%95%E7%94%A8Demo">框架试用Demo</a></li><li><a href="#WebdriverIO">WebdriverIO</a></li><li><a href="#Selenium">Selenium</a></li><li><a href="#playwright">playwright</a></li><li><a href="#Puppeteer">Puppeteer</a></li><li><a href="#%E6%80%BB%E7%BB%93">总结</a></li></ol></details></aside>
+      <div class="article-main">
+        <div class="post-body"><h1 id="Electron简介"><span>Electron简介</span><br/></h1><p>Electron是一个开源的框架，用于构建跨平台的桌面应用程序。它由GitHub开发并于2013年首次发布。Electron允许开发人员使用Web技术（如HTML、CSS和JavaScript）来构建桌面应用程序，同时可以在Windows、macOS和Linux等操作系统上运行。</p><p>以下是一些关键特点和优势：</p><ol class="list-paddingleft-1"><li><p>跨平台：Electron可以在多个操作系统上运行，包括Windows、macOS和Linux。这意味着开发人员可以使用相同的代码库构建应用程序，并在不同的平台上进行部署。</p></li><li><p>基于Web技术：Electron使用Web技术作为应用程序的构建基础。开发人员可以使用HTML、CSS和JavaScript来构建用户界面和应用逻辑，这使得开发过程更加熟悉和容易上手。</p></li><li><p>强大的生态系统：Electron拥有庞大的开发者社区和丰富的第三方库和插件。开发人员可以利用这些资源来加速开发过程、解决问题和扩展应用程序功能。</p></li><li><p>自定义能力：Electron提供了丰富的API，可以访问底层操作系统的功能。开发人员可以利用这些API来实现与操作系统交互、访问文件系统、创建系统托盘应用等功能。</p></li><li><p>调试和工具支持：Electron集成了开发者工具，包括Chrome开发者工具，可以帮助开发人员进行调试和性能优化。此外，还有许多第三方工具和库可以用于构建、测试和部署Electron应用程序。</p></li><li><p>应用程序分发：Electron提供了打包和分发应用程序的工具。开发人员可以将应用程序打包为可执行文件或安装程序，并将其发布到应用商店或通过其他方式分发给用户。</p></li></ol><p>Electron已经被广泛应用于各种领域，包括代码编辑器、聊天应用程序、桌面客户端等。许多知名的应用程序，如Visual Studio Code、Slack和GitHub Desktop，都是使用Electron构建的。</p><p>总之，Electron提供了一种简化和加速桌面应用程序开发的方式，使开发人员能够利用熟悉的Web技术构建跨平台的应用程序。</p><p>是当前酷家乐桌面客户端的底层技术</p><h1 id="框架简介">框架简介</h1><p>在官方文档中介绍了3种(使用 WebDriver 接口,使用 Playwright,使用自定义测试驱动)进行自动化测试的方式:</p><p>https://www.electronjs.org/zh/docs/latest/tutorial/automated-testing</p><p>根据实际操作后发现,官网的操作的省略了很多关键步骤,而且无法直接跑通我们自己项目,需要一定的调研</p><p>查阅puppeteer-electron相关仓库:</p><p>https://github.com/peterdanis/electron-puppeteer-demo</p><p>https://github.com/nondanee/puppeteer-electron</p><div aria-label="数据表格" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th>方式</th><th>框架</th><th>star数量</th><th>GPT给出的优点</th><th>GPT给出的缺点</th></tr></thead><tbody><tr><td><span>使用 WebDriver 接口</span></td><td><span>WebdriverIO</span></td><td><span>8.2k</span></td><td><span>WebdriverIO是一个成熟的Web自动化测试框架，支持多种浏览器和平台。它提供了丰富的API和插件，使得测试编写更加方便和灵活。具有强大的等待机制，可确保元素可见性和页面加载完成。支持并行测试执行，提高测试效率。社区活跃，文档丰富，易于学习和使用。</span></td><td><span>由于WebdriverIO是基于WebDriver协议的，因此执行速度可能相对较慢。在处理某些特殊情况下，如处理模态对话框和桌面应用程序时，可能会遇到一些困难。</span></td></tr><tr><td><span>Selenium</span></td><td>/<br/></td><td><span>27.2k</span></td><td><span>Seleniu</span><span>m是最广泛使用的Web自动化测试框架，支持多种编程语言和浏览器。</span><span>具有强大的定位元素的能力，能够灵活地与页面交互。</span><span>支持并行执行测试，提高了测试效率。</span><span>社区庞大，</span><span>可以获得广泛的支持和资源。</span></td><td><span>Selenium不是为桌面应用程序设计的，因此在测试Electron应用程序时可能会遇到一些限制和问题。</span><span>对于某些高级功能，如处理模态对话框和文件上传，可能需要编写自</span><span>定义逻辑。</span></td></tr><tr><td><span>使用 Playwright</span></td><td><span>playwright</span></td><td><span>53.6k</span></td><td><span>Playwright是一个新兴的跨浏览器自动化测试框架，支持多个浏览器和平台。它提供了一个简洁的API，可以轻松地与页面交互和操作元素。具有强大的等待机制，可以等待元素出现和页面加载完成。支持截图、录屏等高级功能。</span></td><td><span>相对于Selenium和WebdriverIO，Playwright的社区规模较小，可能会找到较少的资源和支持。在某些特殊情况下，如处理桌面应用程序和模态对话框时，可能会遇到一些限制。</span></td></tr><tr><td><span>使用自定义测试驱动</span></td><td><span>node</span></td><td><span>96.9k</span></td><td><span>/</span></td><td><span>/</span></td></tr><tr><td><span>远程debug</span></td><td><span>Puppeteer</span></td><td><span>84.1k</span></td><td><span>强大的浏览器自动化：Puppeteer提供了一套简洁而强大的API，可以用于模拟用户在浏览器中进行各种操作，如点击、填写表单、截图等。完全控制浏览器环境：Puppeteer可以控制底层的Chromium浏览器实例，从而能够修改和监控浏览器的各个方面，例如网络请求、用户代理、存储等，使得测试更加灵活和可靠。支持调试和错误排查：Puppeteer具有调试工具，可以帮助开发人员定位和修复测试中的问题，包括视觉回归问题、性能问题等。多平台支持：Puppeteer可以运行在多个平台上，包括Windows、Mac和Linux，适用于跨平台的Electron应用程序的自动化测试。</span></td><td><span>学习曲线陡峭：Puppeteer的API相对复杂，需要一定的学习成本，特别是对于没有过多浏览器自动化经验的人来说。执行速度相对较慢：由于需要通过启动浏览器、模拟用户交互等步骤，使用Puppeteer进行自动化测试可能会比其他测试框架的执行速度慢一些。测试环境配置：使用Puppeteer进行Electron自动化测试需要配置好相关环境，包括安装正确版本的Chromium浏览器和Puppeteer库，这可能会带来一些麻烦。</span></td></tr></tbody></table></div><h1 id="前置准备">前置准备</h1><p>使用navigator.appVersion查看当前客户端使用的chromedriver版本</p><pre><code>&gt; navigator.appVersion
+&lt; '<span>104</span>.<span>0</span>.<span>5112</span>.<span>124</span> qunheclient/<span>1</span>.<span>0</span>.<span>0</span> kujialesoft/<span>12</span>.<span>3</span>.<span>9</span> kujialeclient/<span>12</span>.<span>3</span>.<span>9</span> utm_industry=kujiale/<span>12</span>.<span>3</span>.<span>9</span> utm_campaign=autoUpdate'</code></pre><p>使用process.versions.electron查看当前客户端electron版本</p><pre><code>&gt; process.versions.electron
+&lt; '<span>20</span>.<span>3</span>.<span>8</span>'</code></pre><p>设置国内ELECTRON源</p><pre><code>npm config <span>set</span> ELECTRON_MIRROR https://npm.taobao.org/mirrors/electron/</code></pre><h1 id="框架试用Demo">框架试用Demo</h1><h2 id="WebdriverIO">WebdriverIO</h2><p>相关文档:https://webdriver.io/docs/desktop-testing/electron/</p><section><p><a href="https://mp.weixin.qq.com/s/ElcWn428yb4Fd28Gj0IEIA" rel="noopener noreferrer">在公众号原文查看媒体</a></p></section><p>需要node版本为16+</p><p>使用脚手架安装:</p><pre><code>yarn create wdio .</code></pre><p>选择:</p><p><br/><img alt="" class="rich_pages wxw-img" decoding="async" height="307" loading="lazy" src="/images/blog-media/410ed32b507a66cfb8e8.webp" width="1080"/></p><pre><code> zhongxin@zhongxindeMacBook-Pro demo2 % yarn create wdio .
+ yarn create v1.<span>22</span>.<span>19</span>
+ [<span>1</span>/<span>4</span>]   Resolving packages...
+ [<span>2</span>/<span>4</span>]   Fetching packages...
+ [<span>3</span>/<span>4</span>]   Linking dependencies...
+ [<span>4</span>/<span>4</span>]   Building fresh packages...
+
+ success Installed "create-wdio@<span>8</span>.<span>2</span>.<span>5</span>" with binaries:
+       - create-wdio
+ [#####################################################] <span>53</span>/<span>53</span>
+                  -:...........................-:.
+                  +                              +
+               `` +      `...`        `...`      + `
+             ./+/ +    .:://:::`    `::///::`  ` + ++/.
+            .+oo+ +    /:+ooo+-/    /-+ooo+-/ ./ + +oo+.
+            -ooo+ +    /-+ooo+-/    /-+ooo+-/ .: + +ooo.
+             -+o+ +    `::///:-`    `::///::`    + +o+-
+              ``. /.     `````        `````     .: .``
+                   .----------------------------.
+            `-::::::::::::::::::::::::::::::::::::::::-`
+           .+oooo/:------------------------------:/oooo+.
+       `.--/oooo-                                  :oooo/--.`<span>     .::-``:<span>oooo</span>`                                  .<span>oooo</span>-``-::.
+   ./-`    -<span>oooo</span>`--.: :.--                         .<span>oooo</span>-    `-/.
+  -/`    `-/<span>oooo</span>////////////////////////////////////<span>oooo</span>/.`    `/-
+ `+`   `/+<span>oooooooooooooooooooooooooooooooooooooooooooooooo</span>+:`   .+`
+ -/    +<span>o</span>/.:<span>oooooooooooooooooooooooooooooooooooooooooooo</span>:-/<span>o</span>/    +.
+ -/   .<span>o</span>+  -<span>oooosoooososssssooooo</span>------------------:<span>oooo</span>- `<span>oo</span>`   +.
+ -/   .<span>o</span>+  -<span>oooodooohyyssosshoooo</span>`                 .<span>oooo</span>-  <span>oo</span>.   +.
+ -/   .<span>o</span>+  -<span>oooodooysdooooooyyooo</span>` `.--.``     .:::-<span>oooo</span>-  <span>oo</span>.   +.
+ -/   .<span>o</span>+  -<span>oooodoyyodsoooooyyooo</span>.//-..-:/:.`.//.`./<span>oooo</span>-  <span>oo</span>.   +.
+ -/   .<span>o</span>+  -<span>oooohsyoooyysssysoooo</span>+-`     `-:::.    .<span>oooo</span>-  <span>oo</span>.   +.
+ -/   .<span>o</span>+  -<span>ooooosooooooosooooooo</span>+//////////////////<span>oooo</span>-  <span>oo</span>.   +.
+ -/   .<span>o</span>+  -<span>oooooooooooooooooooooooooooooooooooooooooooo</span>-  <span>oo</span>.   +.
+ -/   .<span>o</span>+  -<span>oooooooooooooooooooooooooooooooooooooooooooo</span>-  <span>oo</span>.   +.
+ -+////<span>o</span>+` -<span>oooo</span>---:///:----://::------------------:<span>oooo</span>- `<span>oo</span>////+-
+ +<span>ooooooo</span>/`-<span>oooo</span>``:-```.:`.:.`.+/-    .::::::::::` .<span>oooo</span>-`+<span>ooooooo</span>+ <span>oooooooo</span>+`-<span>oooo</span>`-- `/` .:+  -/-`/`   .::::::::::  .<span>oooo</span>-.+<span>oooooooo</span>
+ +-/+://-/ -<span>oooo</span>-`:`.<span>o</span>-`:.:-````.:    .///:``````  -<span>oooo</span>-`/-//:+:-+
+ : :..--:-:.+<span>ooo</span>+/://<span>o</span>+/-.-:////:-....-::::-....--/+<span>ooo</span>+.:.:--.-- /
+ - /./`-:-` .:///+/<span>ooooo</span>/+///////////////+++<span>ooooo</span>/+///:. .-:.`+./ :
+ :-:/.           :`<span>ooooo</span>`/`              .:.<span>ooooo</span> :           ./---
+                 :`<span>ooooo</span>`/`              .:.<span>ooooo</span> :
+                 :`<span>ooooo</span>./`              .:-<span>ooooo</span> :
+                 :`<span>ooooo</span>./`              .:-<span>ooooo</span> :
+             `...:-+++++:/.              ./:+++++-:...`
+            :-.````````/../              /.-:````````.:-
+           -/::::::::://:/+             `+/:+::::::::::+.
+           :<span>oooooooooooo</span>++/              +++<span>oooooooooooo</span>-                            <span>Webdriver.IO</span>
+               <span>Next</span>-<span>gen</span> <span>browser</span> <span>and</span> <span>mobile</span> <span>automation</span>
+                     <span>test</span> <span>framework</span> <span>for</span> <span>Node.js</span>
+
+
+ <span>Installing</span> @<span>wdio</span>/<span>cli</span> <span>to</span> <span>initialize</span> <span>project</span>...
+ ✔ <span>Success</span>!
+
+ ===============================  <span>WDIO</span> <span>Configuration</span> <span>Wizard</span>
+ ===============================
+
+ ? <span>What</span> <span>type</span> <span>of</span> <span>testing</span> <span>would</span> <span>you</span> <span>like</span> <span>to</span> <span>do</span>? <span>Desktop</span> <span>Testing</span> - <span>of</span> <span>Electron</span> <span>Applications</span>
+     &gt; <span>https</span>://<span>webdriver.io</span>/<span>docs</span>/<span>desktop</span>-<span>testing</span>/<span>electron</span>
+ ? <span>What</span> <span>is</span> <span>the</span> <span>path</span> <span>to</span> <span>your</span> <span>compiled</span> <span>Electron</span> <span>app</span>? ./<span>dist</span>
+ ? <span>Which</span> <span>framework</span> <span>do</span> <span>you</span> <span>want</span> <span>to</span> <span>use</span>? <span>Jasmine</span> (<span>https</span>://<span>jasmine.github.io</span>/)
+ ? <span>Do</span> <span>you</span> <span>want</span> <span>to</span> <span>use</span> <span>a</span> <span>compiler</span>? <span>No</span>!
+ ? <span>Do</span> <span>you</span> <span>want</span> <span>WebdriverIO</span> <span>to</span> <span>autogenerate</span> <span>some</span> <span>test</span> <span>files</span>? <span>Yes</span>
+ ? <span>Where</span> <span>should</span> <span>these</span> <span>files</span> <span>be</span> <span>located</span>? /<span>Users</span>/<span>zhongxin</span>/<span>gitproject</span>/<span>desktopui</span>/<span>demo2</span>/<span>test</span>/<span>specs</span>/**/*.<span>js</span>
+ ? <span>Which</span> <span>reporter</span> <span>do</span> <span>you</span> <span>want</span> <span>to</span> <span>use</span>? <span>spec</span>, <span>allure</span>
+ ? <span>Do</span> <span>you</span> <span>want</span> <span>to</span> <span>add</span> <span>a</span> <span>plugin</span> <span>to</span> <span>your</span> <span>test</span> <span>setup</span>?
+ ? <span>Do</span> <span>you</span> <span>want</span> <span>to</span> <span>add</span> <span>a</span> <span>service</span> <span>to</span> <span>your</span> <span>test</span> <span>setup</span>? <span>electron</span>
+ ? <span>Do</span> <span>you</span> <span>want</span> <span>me</span> <span>to</span> <span>run</span> `<span>npm</span> <span>install</span>` <span>Yes</span>
+
+
+ <span>Installing</span> <span>wdio</span> <span>packages</span>:
+ - @<span>wdio</span>/<span>local</span>-<span>runner</span>@<span>latest</span>
+ - @<span>wdio</span>/<span>jasmine</span>-<span>framework</span>@<span>latest</span>
+ - @<span>wdio</span>/<span>spec</span>-<span>reporter</span>@<span>latest</span>
+ - @<span>wdio</span>/<span>allure</span>-<span>reporter</span>@<span>latest</span>
+ - <span>wdio</span>-<span>electron</span>-<span>service</span>
+
+ <span>added</span> 78 <span>packages</span>, <span>and</span> <span>changed</span> 1 <span>package</span> <span>in</span> 11<span>s</span>
+
+ 97 <span>packages</span> <span>are</span> <span>looking</span> <span>for</span> <span>funding</span>
+   <span>run</span> `<span>npm</span> <span>fund</span>` <span>for</span> <span>details</span>
+ ✔ <span>Success</span>! <span>Creating</span> <span>a</span> <span>WebdriverIO</span> <span>config</span> <span>file</span>...
+ ✔ <span>Success</span>! <span>Autogenerating</span> <span>test</span> <span>files</span>...
+ ✔ <span>Success</span>! <span>Adding</span> "<span>wdio</span>" <span>script</span> <span>to</span> <span>package.json</span>.
+ ✔ <span>Success</span>! <span>Successfully</span> <span>setup</span> <span>project</span> <span>at</span> /<span>Users</span>/<span>zhongxin</span>/<span>gitproject</span>/<span>desktopui</span>/<span>demo2</span>
+
+ <span>Join</span> <span>our</span> <span>Discord</span> <span>Community</span> <span>Server</span> <span>and</span> <span>instantly</span> <span>find</span> <span>answers</span> <span>to</span> <span>your</span> <span>issues</span> <span>or</span> <span>queries</span>. <span>Or</span> <span>just</span> <span>join</span> <span>and</span> <span>say</span> <span>hi</span> !    <span>https</span>://<span>discord.webdriver.io</span>
+
+ <span>Visit</span> <span>the</span> <span>project</span> <span>on</span> <span>GitHub</span> <span>to</span> <span>report</span> <span>bugs</span>  <span>or</span> <span>raise</span> <span>feature</span> <span>requests</span> :    <span>https</span>://<span>github.com</span>/<span>webdriverio</span>/<span>webdriverio</span>
+
+ <span>To</span> <span>run</span> <span>your</span> <span>tests</span>, <span>execute</span>:
+ $ <span>cd</span> /<span>Users</span>/<span>zhongxin</span>/<span>gitproject</span>/<span>desktopui</span>/<span>demo2</span>
+ $ <span>npm</span> <span>run</span> <span>wdio</span>
+
+   <span>Done</span> <span>in</span> 72.80<span>s</span>.</span></code></pre><p>安装chromedriver</p><pre><code>npm i -D chromedriver@<span>104</span></code></pre><p>修改wdio.conf.js文件</p><pre><code>capabilities: [{
+        browserName: <span>'chrome'</span>,        <span>'goog:chromeOptions'</span>: {
+            binary: <span>'chromedriver/bin/chromedriver'</span>, <span>// Electron 二进制文件的路径</span>
+            args: [<span>/* 命令行参数 */</span>] <span>// 可选, 比如 'app=' + /path/to/your/app/</span>
+        }
+    }],
+
+services: [[        <span>'electron'</span>,
+        {
+            appPath: <span>'/Users/zhongxin/Downloads'</span>,
+            appName: <span>"酷家乐"</span>,
+            appArgs: [<span>'foo'</span>, <span>'bar=baz'</span>],
+            chromedriver: {
+                port: <span>9519</span>,
+                logFileName: <span>'wdio-chromedriver.log'</span>,
+                chromedriverCustomPath: <span>'chromedriver/bin/chromedriver'</span> <span>// resolves to chromedriver binary</span>
+            },
+            electronVersion: <span>'20.3.8'</span>,
+        }
+    ]],</code></pre><p>以mac m1电脑为例,从官网下载客户端后,打开dmg文件,将酷家乐.app放到/Users/zhongxin/Downloads/mac-arm64/酷家乐.app位置</p><p>修改一下测试脚本test.e2e.js,完成登录</p><pre><code>import { browser } from <span>'@wdio/globals'</span>describe(<span>'Electron Testing'</span>, () =&gt; {
+    it(<span>'should print application metadata'</span>, async () =&gt; {        <span>console</span>.log(<span>'听白测试'</span>)
+        await browser.$(<span>'//*[text()="账号登录"]'</span>).click()
+        await browser.$(<span>'//input[@placeholder="输入手机号/邮箱"]'</span>).setValue(<span>"xxxx@xxxx.com"</span>)
+        await browser.$(<span>'//input[@placeholder="输入密码"]'</span>).setValue(<span>"xxxx"</span>)
+        await browser.$(<span>'//button[text()="登录"]'</span>).click()
+        await browser.pause(<span>5000</span>)
+        await browser.saveScreenshot(<span>'./test.png'</span>)
+    })
+})</code></pre><p>运行测试wdio run ./wdio.conf.js后会唤起客户端并完成登录操作,然后进行截图</p><h2 id="Selenium">Selenium</h2><section><p><a href="https://mp.weixin.qq.com/s/ElcWn428yb4Fd28Gj0IEIA" rel="noopener noreferrer">在公众号原文查看媒体</a></p></section><p>新建一个空文件夹,使用npm进行初始化</p><pre><code>npm init</code></pre><pre><code>zhongxin@zhongxindeMacBook-Pro demo2 % npm init
+This utility will walk you through creating a package.json file.
+It only covers the most common items, and tries to guess sensible defaults.
+
+See `npm <span>help</span> init` <span>for</span> definitive documentation on these fields
+and exactly what they <span>do</span>.
+
+Use `npm install &lt;pkg&gt;` afterwards to install a package and
+save it as a dependency <span>in</span> the package.json file.
+
+Press ^C <span>at</span> any <span>time</span> to quit.
+package name: (demo2)<span>version: (1.0.0)<span>description</span>:<span>entry</span> <span>point</span>: (<span>index.js</span>)<span>test</span> <span>command</span>:<span>git</span> <span>repository</span>:<span>keywords</span>:<span>author</span>:<span>license</span>: (<span>ISC</span>)<span>About</span> <span>to</span> <span>write</span> <span>to</span> /<span>Users</span>/<span>zhongxin</span>/<span>gitproject</span>/<span>desktopui</span>/<span>demo2</span>/<span>package.json</span>:
+
+{
+  "<span>name</span>": "<span>demo2</span>",
+  "<span>version</span>": "1.0.0",
+  "<span>description</span>": "",
+  "<span>main</span>": "<span>index.js</span>",
+  "<span>scripts</span>": {
+    "<span>test</span>": "<span>echo</span> \"<span>Error</span>: <span>no</span> <span>test</span> <span>specified</span>\" &amp;&amp; <span>exit</span> 1"
+  },
+  "<span>author</span>": "",
+  "<span>license</span>": "<span>ISC</span>"
+}<span>Is</span> <span>this</span> <span>OK</span>? (<span>yes</span>)</span></code></pre><p>安装&amp;运行chromedriver</p><pre><code>npm install --save-dev electron-chromedriver@<span>20</span>.<span>0</span>.<span>0</span>./node_modules/.bin/chromedriver</code></pre><p>安装selenium</p><pre><code>npm install --save-dev selenium-webdriver</code></pre><p>编写测试脚本</p><pre><code><span>const</span> webdriver = <span>require</span>(<span>'selenium-webdriver'</span>)<span>const</span> { Builder } = <span>require</span>(<span>'selenium-webdriver'</span>);
+
+(async <span><span>function</span> <span>myTest</span><span>()</span> </span>{    <span>let</span> driver = await <span>new</span> Builder()
+        .usingServer(<span>'http://localhost:9515'</span>)
+        .withCapabilities({            <span>'goog:chromeOptions'</span>: {
+                binary: <span>'/Users/zhongxin/Downloads/mac-arm64/酷家乐.app/Contents/MacOS/酷家乐'</span>
+            }
+        })
+        .forBrowser(<span>'chrome'</span>) <span>// 注意: 使用 .forBrowser('electron') for selenium-webdriver &lt;= 3.6.0</span>
+        .build()    <span>console</span>.log(<span>'听白测试'</span>)
+    await driver.sleep(<span>5000</span>)
+    await driver.findElement(webdriver.By.xpath(<span>'//*[text()="账号登录"]'</span>)).click()
+    await driver.findElement(webdriver.By.xpath(<span>'//input[@placeholder="输入手机号/邮箱"]'</span>)).sendKeys(<span>"xxxx@xxxx.com"</span>)
+    await driver.findElement(webdriver.By.xpath(<span>'//input[@placeholder="输入密码"]'</span>)).sendKeys(<span>"xxxx"</span>)
+    await driver.findElement(webdriver.By.xpath(<span>'//button[text()="登录"]'</span>)).click()
+    await driver.sleep(<span>5000</span>)
+    await driver.takeScreenshot().then(        <span><span>function</span> <span>(image, err)</span> </span>{            <span>require</span>(<span>'fs'</span>).writeFile(<span>'test.png'</span>, image, <span>'base64'</span>, <span><span>function</span> <span>(err)</span> </span>{                <span>console</span>.log(err)
+            })
+        })
+    await driver.quit()
+})();</code></pre><h2 id="playwright">playwright</h2><p>官方文档:https://playwright.dev/docs/api/class-electron</p><section><p><a href="https://mp.weixin.qq.com/s/ElcWn428yb4Fd28Gj0IEIA" rel="noopener noreferrer">在公众号原文查看媒体</a></p></section><p>安装</p><pre><code>npm init playwright@latest</code></pre><p><img alt="" class="rich_pages wxw-img" decoding="async" height="218" loading="lazy" src="/images/blog-media/36e9b8cd631c47d0db08.webp" width="1061"/></p><pre><code>zhongxin@zhongxindeMacBook-Pro demo3 % npm init playwright@latest
+Need to install the following packages:
+  create-playwright@<span>1</span>.<span>17</span>.<span>128</span>Ok to proceed? (y)
+Getting started with writing end-to-end tests with Playwright:
+Initializing project <span>in</span> '.'
+✔ <span>Do</span> you want to use TypeScript or JavaScript? · JavaScript
+✔ Where to put your end-to-end tests? · tests
+✔ Add a GitHub Actions workflow? (y/N) · false
+✔ Install Playwright browsers (can be done manually via 'npx playwright install')? (Y/n) · true
+Initializing NPM project (npm init -y)…
+Wrote to /Users/zhongxin/gitproject/desktopui/demo3/package.json:
+
+{
+  "name": "demo3",
+  "version": "<span>1</span>.<span>0</span>.<span>0</span>",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "<span>echo</span> \"Error: no test specified\" &amp;&amp; <span>exit</span> <span>1</span>"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
+
+
+Installing Playwright Test (npm install --save-dev @playwright/test)…
+
+added <span>3</span> packages <span>in</span> <span>5</span>s
+Downloading browsers (npx playwright install)…
+Writing playwright.config.js.
+Writing tests/example.spec.js.
+Writing tests-examples/demo-todo-app.spec.js.
+Writing package.json.
+✔ Success! Created a Playwright Test project <span>at</span> /Users/zhongxin/gitproject/desktopui/demo3
+
+Inside that directory, you can run several commands:
+
+  npx playwright test
+    Runs the end-to-end tests.
+
+  npx playwright test --ui
+    Starts the interactive UI <span>mode</span>.
+
+  npx playwright test --project=chromium
+    Runs the tests only on Desktop Chrome.
+
+  npx playwright test example
+    Runs the tests <span>in</span> a specific file.
+
+  npx playwright test --debug
+    Runs the tests <span>in</span> debug <span>mode</span>.
+
+  npx playwright codegen
+    Auto generate tests with Codegen.
+
+We suggest that you begin by typing:
+
+    npx playwright test
+
+And check out the following files:
+  - ./tests/example.spec.js - Example end-to-end test
+  - ./tests-examples/demo-todo-app.spec.js - Demo Todo App end-to-end tests
+  - ./playwright.config.js - Playwright Test configuration
+
+Visit https://playwright.dev/docs/intro <span>for</span> <span>more</span> information. ✨
+
+Happy hacking!</code></pre><p>安装electron</p><pre><code>npm i electron@<span>20</span>.<span>3</span>.<span>8</span></code></pre><p>运行开发项目:</p><p>https://gitlab.qunhequnhe.com/fe/up/desktop</p><p>https://gitlab.qunhequnhe.com/desktop/base/main</p><p>生成入口文件:/Users/zhongxin/gitproject/main/app/dist/main.js</p><p>测试脚本:</p><pre><code><span>const</span> {_electron: electron} = <span>require</span>(<span>'@playwright/test'</span>);
+
+(async () =&gt; {    <span>const</span> electronApp = await electron.launch({
+        cwd: <span>'/Users/zhongxin/gitproject/main/app/dist'</span>,
+        args: [<span>'main.js'</span>]
+    });    <span>console</span>.log(<span>'开始测试'</span>)    <span>const</span> <span>window</span> = await electronApp.firstWindow();
+    await <span>window</span>.waitForTimeout(<span>3000</span>)    <span>window</span>.on(<span>'console'</span>, <span>console</span>.log);    <span>console</span>.log(await <span>window</span>.title());
+    await <span>window</span>.screenshot({path: <span>'intro.png'</span>});
+    await <span>window</span>.click(<span>'text=账号登录'</span>);
+    await <span>window</span>.fill(<span>'input[placeholder="输入手机号/邮箱"]'</span>, <span>'xxxx@xxxx.com'</span>)
+    await <span>window</span>.fill(<span>'input[placeholder="输入密码"]'</span>, <span>'xxxx'</span>)
+    await <span>window</span>.click(<span>'button[title="账密登录"]'</span>);
+    await <span>window</span>.waitForTimeout(<span>3000</span>)
+    await <span>window</span>.locator(<span>'text=登录'</span>).last().click();
+    await <span>window</span>.waitForTimeout(<span>3000</span>)
+    await <span>window</span>.screenshot({path: <span>'test.png'</span>});
+    await electronApp.close();
+})();</code></pre><p>这种方式非常的麻烦,比较适合在开发阶段进行测试</p><h2 id="Puppeteer">Puppeteer</h2><section><p><a href="https://mp.weixin.qq.com/s/ElcWn428yb4Fd28Gj0IEIA" rel="noopener noreferrer">在公众号原文查看媒体</a></p></section><p>新建一个空文件夹,使用npm进行初始化</p><pre><code>npm init</code></pre><p>安装相关包</p><pre><code>npm i electron@<span>20</span>.<span>3</span>.<span>8</span> puppeteer-core</code></pre><p>运行本地electron并开启调试</p><pre><code><span>const</span> {spawn} = <span>require</span>(<span>"child_process"</span>);<span>const</span> port = <span>9200</span>;
+
+spawn(    <span>"/Users/zhongxin/Downloads/mac-arm64/酷家乐.app/Contents/MacOS/酷家乐"</span>,
+    [`--remote-debugging-port=${port}`],
+    {shell: <span>true</span>}
+);</code></pre><p>编写测试脚本</p><pre><code><span>const</span> puppeteer = <span>require</span>(<span>"puppeteer-core"</span>);<span>const</span> port = <span>9200</span>;
+
+(async () =&gt; {    <span>let</span> app = await puppeteer.connect({
+        browserURL: `http:<span>//localhost:${port}`,</span>
+    });    <span>const</span> pages = await app.pages();    <span>const</span> [page] = pages;
+    await (await page.$x(<span>'//button[text()="账号登录"]'</span>))[<span>0</span>].click();
+    await (await page.$x(<span>'//input[@placeholder="输入手机号/邮箱"]'</span>))[<span>0</span>].type(<span>'xxxx@xxxx.com'</span>)
+    await (await page.$x(<span>'//input[@placeholder="输入密码"]'</span>))[<span>0</span>].type(<span>'xxxx'</span>);
+    await (await page.$x(<span>'//button[text()="登录"]'</span>))[<span>0</span>].click();
+    await page.screenshot({path: <span>'test.png'</span>});
+    setTimeout(async () =&gt; await app.close(), <span>5000</span>)
+})()</code></pre><h1 id="总结">总结</h1><div aria-label="数据表格" class="table-scroll" role="region" tabindex="0"><table><thead><tr><th>框架</th><th>环境准备</th><th>支持情况</th></tr></thead><tbody><tr><td>WebdriverIO</td><td>简单:将下载到的安装包放到指定路径下即可</td><td>支持较好</td></tr><tr><td>Selenium</td><td>中等:将下载到的安装包放到指定路径+启动chromedriver</td><td>支持一般</td></tr><tr><td>playwright</td><td>困难:部署&amp;运行代码</td><td>实验性质</td></tr><tr><td>Puppeteer</td><td>中等:将下载到的安装包放到指定路径+启动应用</td><td>支持一般</td></tr></tbody></table></div><p>由于Hades采用的是Puppeteer,优先考虑使用Puppeteer</p><p>后续封装一个启动electron的操作,将它加在beforeAll里,就可以复用之前旧的UI自动化测试代码了</p></div>
+        <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/ElcWn428yb4Fd28Gj0IEIA">查看微信公众号原文 ↗</a></p>
+        <div class="post-tags"></div>
+        <nav class="related" aria-label="相邻文章"><a href="/article/wechat-c2d88a44f52130.html"><small>较新文章</small>监听元素存在时间</a><a href="/article/wechat-41def6f6c9549b.html"><small>较早文章</small>使用React Hooks实现表格搜索功能</a></nav>
+
+      </div>
+    </div>
+  </article></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记</a>
+    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
+    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>
