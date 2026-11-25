@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <title>31-redis · 测试游记</title>
+  <title>Redis 性能测试与缓存问题：穿透、击穿和雪崩 · 测试游记</title>
   <meta name="description" content="最开始使用memcache做缓存数据库，但是它不能进行数据持久化，而是放在内存中 持久化：把数据存储在磁盘上 内存中的数据的特点：一旦断电，数据就会丢失 使用redis做缓存数据库，可以把数据存在内存中，加快我们读取数据的速度，同时，它可以定时去同步数据到磁盘，进行内存数据持久化。它还有个重大优势：缓存数据库之间可以自动同步 功能强大，但是比较复杂，所以在使">
-  <meta property="og:title" content="31-redis · 测试游记">
+  <meta property="og:title" content="Redis 性能测试与缓存问题：穿透、击穿和雪崩 · 测试游记">
   <meta property="og:description" content="最开始使用memcache做缓存数据库，但是它不能进行数据持久化，而是放在内存中 持久化：把数据存储在磁盘上 内存中的数据的特点：一旦断电，数据就会丢失 使用redis做缓存数据库，可以把数据存在内存中，加快我们读取数据的速度，同时，它可以定时去同步数据到磁盘，进行内存数据持久化。它还有个重大优势：缓存数据库之间可以自动同步 功能强大，但是比较复杂，所以在使">
   <meta property="og:url" content="https://www.zhongxin.website/article/664114f3.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/664114f3.html">
@@ -43,7 +43,7 @@
   <article class="article">
     <header class="article-header">
       <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/performance/">性能与监控</a> <span aria-hidden="true">/</span> <a href="/categories/testing/performance/monitoring/">系统与性能监控</a></nav>
-      <h1 class="post-title">31-redis</h1>
+      <h1 class="post-title">Redis 性能测试与缓存问题：穿透、击穿和雪崩</h1>
       <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2021-07-26T20:07:00+08:00">2021-07-26</time>
         <span class="post-category" hidden><a href="/categories/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a></span>
         <span class="read-time">约 2 分钟</span>
@@ -114,7 +114,7 @@
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/TZrNlQ7M0uupJjAurfZybw">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Redis/">Redis</a><a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a></div>
-        <section class="series-continuation"><h2><a href="/series/performance-testing/">查看系列目录 ↗</a></h2><nav class="related" aria-label="同系列文章"><a href="/article/88f586e9.html"><small>同系列上一篇</small>服务器架构演进</a></nav></section>
+        <section class="series-continuation"><h2><a href="/series/performance-testing/">查看系列目录 ↗</a></h2><nav class="related" aria-label="同系列文章"><a href="/article/88f586e9.html"><small>同系列上一篇</small>分析服务端性能：Nginx 负载均衡、Tomcat 与慢查询</a></nav></section>
         <section class="article-comments" id="comments" aria-labelledby="comments-title"
           data-repo="zx490336534/zx490336534.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzNDQwOTE0MTc="
           data-category="文章评论" data-category-id="DIC_kwDOFIJrGc4DL60Q" data-article-path="/article/664114f3.html">
