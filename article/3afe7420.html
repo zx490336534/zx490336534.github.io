@@ -20,8 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/3afe7420.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/3afe7420.html">
-<script src="/js/comments.js?v=3" defer></script>
-<script src="/js/comment-quotes.js" defer></script>
+<script type="module" src="/js/discussions.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -57,81 +56,94 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#HTTP%E8%AF%B7%E6%B1%82%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9">HTTP请求注意事项</a></li><li><a href="#Web%E6%9C%8D%E5%8A%A1%E5%99%A8-%E5%8D%8F%E8%AE%AE">Web服务器-协议</a></li><li><a href="#Web%E6%9C%8D%E5%8A%A1%E5%99%A8-%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%8D%E7%A7%B0%E6%88%96IP">Web服务器-服务器名称或IP</a></li><li><a href="#Web%E6%9C%8D%E5%8A%A1%E5%99%A8-%E7%AB%AF%E5%8F%A3">Web服务器-端口</a></li><li><a href="#HTTP%E8%AF%B7%E6%B1%82-%E6%96%B9%E6%B3%95">HTTP请求-方法</a></li><li><a href="#HTTP%E8%AF%B7%E6%B1%82-%E8%B7%AF%E5%BE%84">HTTP请求-路径</a></li><li><a href="#HTTP%E8%AF%B7%E6%B1%82-%E5%86%85%E5%AE%B9%E7%BC%96%E7%A0%81">HTTP请求-内容编码</a></li><li><a href="#HTTP%E8%AF%B7%E6%B1%82-%E8%87%AA%E5%8A%A8%E9%87%8D%E5%AE%9A%E5%90%91">HTTP请求-自动重定向</a></li><li><a href="#HTTP%E8%AF%B7%E6%B1%82-%E8%B7%9F%E9%9A%8F%E9%87%8D%E5%AE%9A%E5%90%91">HTTP请求-跟随重定向</a></li><li><a href="#HTTP%E8%AF%B7%E6%B1%82-%E4%BD%BF%E7%94%A8KeepAlive">HTTP请求-使用KeepAlive</a></li><li><a href="#HTTP%E8%AF%B7%E6%B1%82-%E6%B6%88%E6%81%AF%E4%BD%93%E6%95%B0%E6%8D%AE">HTTP请求-消息体数据</a></li><li><a href="#%E4%BC%98%E5%85%88%E7%BA%A7">优先级</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><span id="5-HTTP请求注意事项"></span><h2 id="HTTP请求注意事项"><a class="headerlink" href="#HTTP请求注意事项" title="HTTP请求注意事项"></a>HTTP请求注意事项</h2><h3 id="Web服务器-协议"><a class="headerlink" href="#Web服务器-协议" title="Web服务器-协议"></a>Web服务器-协议</h3><p><img alt="协议" decoding="async" height="478" loading="lazy" src="/images/blog-media/5158ca9ea636af5621a0.webp" width="1059"/></p>
-<p><code>http</code>可以写，可以不写</p>
-<p><code>https</code>必须写</p>
+        <div class="post-body" id="article-text"><span id="5-HTTP请求注意事项"></span><h2 data-passage-key="bc655b40e545" id="HTTP请求注意事项"><a class="headerlink" href="#HTTP请求注意事项" title="HTTP请求注意事项"></a>HTTP请求注意事项</h2><h3 data-passage-key="a1882f4ad5fe" id="Web服务器-协议"><a class="headerlink" href="#Web服务器-协议" title="Web服务器-协议"></a>Web服务器-协议</h3><p><img alt="协议" decoding="async" height="478" loading="lazy" src="/images/blog-media/5158ca9ea636af5621a0.webp" width="1059"/></p>
+<p data-passage-key="2c54c480b36f" id="passage-ee98610ede19"><code>http</code>可以写，可以不写</p>
+<p data-passage-key="66942fda4680" id="passage-0c078d2912e5"><code>https</code>必须写</p>
 <span id="more"></span>
-<h3 id="Web服务器-服务器名称或IP"><a class="headerlink" href="#Web服务器-服务器名称或IP" title="Web服务器-服务器名称或IP"></a>Web服务器-服务器名称或IP</h3><p><img alt="服务器名称或IP" decoding="async" height="478" loading="lazy" src="/images/blog-media/adfcf2c46802200d013b.webp" width="1059"/></p>
-<p>只能写域名或者IP。不能有<code>/</code></p>
-<h3 id="Web服务器-端口"><a class="headerlink" href="#Web服务器-端口" title="Web服务器-端口"></a>Web服务器-端口</h3><p><img alt="端口" decoding="async" height="478" loading="lazy" src="/images/blog-media/a88a6b1949a5a8bacd42.webp" width="1059"/></p>
-<p>不写默认为80端口</p>
-<h3 id="HTTP请求-方法"><a class="headerlink" href="#HTTP请求-方法" title="HTTP请求-方法"></a>HTTP请求-方法</h3><p><img alt="方法" decoding="async" height="478" loading="lazy" src="/images/blog-media/3224bc2669e1bbe4407e.webp" width="1059"/></p>
-<p>根据接口文档选择</p>
-<blockquote>
-<p>浏览器地址栏中，只能执行get方法，不能执行post方法</p>
+<h3 data-passage-key="c972d55bc5e9" id="Web服务器-服务器名称或IP"><a class="headerlink" href="#Web服务器-服务器名称或IP" title="Web服务器-服务器名称或IP"></a>Web服务器-服务器名称或IP</h3><p><img alt="服务器名称或IP" decoding="async" height="478" loading="lazy" src="/images/blog-media/adfcf2c46802200d013b.webp" width="1059"/></p>
+<p data-passage-key="e267e756e2f2" id="passage-8c6e9cd4280c">只能写域名或者IP。不能有<code>/</code></p>
+<h3 data-passage-key="8fd0561f76df" id="Web服务器-端口"><a class="headerlink" href="#Web服务器-端口" title="Web服务器-端口"></a>Web服务器-端口</h3><p><img alt="端口" decoding="async" height="478" loading="lazy" src="/images/blog-media/a88a6b1949a5a8bacd42.webp" width="1059"/></p>
+<p data-passage-key="d1d879980418" id="passage-ff55f607ba93">不写默认为80端口</p>
+<h3 data-passage-key="d5293408af61" id="HTTP请求-方法"><a class="headerlink" href="#HTTP请求-方法" title="HTTP请求-方法"></a>HTTP请求-方法</h3><p><img alt="方法" decoding="async" height="478" loading="lazy" src="/images/blog-media/3224bc2669e1bbe4407e.webp" width="1059"/></p>
+<p data-passage-key="e89e272f5750" id="passage-5d24d6337c2a">根据接口文档选择</p>
+<blockquote data-passage-key="4bb7889c73f0" id="passage-e81e1f3fea74">
+<p data-passage-key="152d21b71cdd" id="passage-964131dff983">浏览器地址栏中，只能执行get方法，不能执行post方法</p>
 </blockquote>
-<h3 id="HTTP请求-路径"><a class="headerlink" href="#HTTP请求-路径" title="HTTP请求-路径"></a>HTTP请求-路径</h3><p><img alt="路径" decoding="async" height="478" loading="lazy" src="/images/blog-media/fb4fceebb8177888f2df.webp" width="1059"/></p>
-<p>不要在这个地址中写<code>domain</code>和<code>端口</code>信息，只写路径信息</p>
-<p>不要忘记开头的<code>/</code></p>
-<p>前后的空格要删除。如果没有删除，请求的时候会多<code>%20</code></p>
-<h3 id="HTTP请求-内容编码"><a class="headerlink" href="#HTTP请求-内容编码" title="HTTP请求-内容编码"></a>HTTP请求-内容编码</h3><p><img alt="内容编码" decoding="async" height="478" loading="lazy" src="/images/blog-media/48599c12283703caf515.webp" width="1059"/></p>
-<p>默认<code>utf-8</code></p>
-<p>只对<strong>请求体</strong>进行编码，对<strong>响应体</strong>无效</p>
-<p>http请求的四部分：</p>
+<h3 data-passage-key="4adee0e856b2" id="HTTP请求-路径"><a class="headerlink" href="#HTTP请求-路径" title="HTTP请求-路径"></a>HTTP请求-路径</h3><p><img alt="路径" decoding="async" height="478" loading="lazy" src="/images/blog-media/fb4fceebb8177888f2df.webp" width="1059"/></p>
+<p data-passage-key="b92c75e3425a" id="passage-f776615a0b2e">不要在这个地址中写<code>domain</code>和<code>端口</code>信息，只写路径信息</p>
+<p data-passage-key="4cc2f5896dc6" id="passage-07e2aa90fd54">不要忘记开头的<code>/</code></p>
+<p data-passage-key="0e5879f34aa1" id="passage-bcff4fdf2341">前后的空格要删除。如果没有删除，请求的时候会多<code>%20</code></p>
+<h3 data-passage-key="ef215474004e" id="HTTP请求-内容编码"><a class="headerlink" href="#HTTP请求-内容编码" title="HTTP请求-内容编码"></a>HTTP请求-内容编码</h3><p><img alt="内容编码" decoding="async" height="478" loading="lazy" src="/images/blog-media/48599c12283703caf515.webp" width="1059"/></p>
+<p data-passage-key="5df09e0def29" id="passage-ecc0d9dc859c">默认<code>utf-8</code></p>
+<p data-passage-key="4503d302e04a" id="passage-b216a011ab5c">只对<strong>请求体</strong>进行编码，对<strong>响应体</strong>无效</p>
+<p data-passage-key="eace750b4414" id="passage-c5d5d1f44957">http请求的四部分：</p>
 <ul>
-<li>请求行</li>
-<li>请求头 request-header</li>
-<li>空行</li>
-<li>请求体 request-body</li>
+<li data-passage-key="c641e2966470" id="passage-6d863ce6320b">请求行</li>
+<li data-passage-key="804f99a550db" id="passage-95f263eaa60c">请求头 request-header</li>
+<li data-passage-key="07e781543a30" id="passage-47c3f3de6184">空行</li>
+<li data-passage-key="fa1615c5baca" id="passage-48b3a0e25d7a">请求体 request-body</li>
 </ul>
-<p>http响应的四部分</p>
+<p data-passage-key="99cd13d1bf63" id="passage-a1f22fde4984">http响应的四部分</p>
 <ul>
-<li>响应头</li>
-<li>响应体 response-header</li>
-<li>空行</li>
-<li>响应体 response-body</li>
+<li data-passage-key="cb1bd1a7ffcf" id="passage-0c85a43710cc">响应头</li>
+<li data-passage-key="a857116644c7" id="passage-7c3beb65c4c9">响应体 response-header</li>
+<li data-passage-key="5c432a7ec766" id="passage-47c3f3de6184-2">空行</li>
+<li data-passage-key="dc0998fa37a3" id="passage-a50d44cf30b3">响应体 response-body</li>
 </ul>
-<h4 id="当请求中出现乱码"><a class="headerlink" href="#当请求中出现乱码" title="当请求中出现乱码"></a>当请求中出现乱码</h4><ol>
-<li>内容编码设置为utf-8</li>
-<li>消息头<code>Content-Type:;charset=utf-8</code></li>
-<li>参数格式中的<code>编码</code>复选框<ol>
-<li>当参数为中文时一定要勾选编码</li>
-<li>当参数为<code>+=</code>等特殊符号时「常见于密码被加密」一定要勾选编码</li>
+<h4 data-passage-key="60810d6ff454" id="当请求中出现乱码"><a class="headerlink" href="#当请求中出现乱码" title="当请求中出现乱码"></a>当请求中出现乱码</h4><ol>
+<li data-passage-key="a518237fe3cb" id="passage-e500b20632da">内容编码设置为utf-8</li>
+<li data-passage-key="3963c0c8fb3a" id="passage-a245c1012512">消息头<code>Content-Type:;charset=utf-8</code></li>
+<li data-passage-key="82d4ed5754ca" id="passage-af9bfbf2088e">参数格式中的<code>编码</code>复选框<ol>
+<li data-passage-key="d605b09591ad" id="passage-c40dbfc66752">当参数为中文时一定要勾选编码</li>
+<li data-passage-key="a77c038fe42c" id="passage-bd0455134470">当参数为<code>+=</code>等特殊符号时「常见于密码被加密」一定要勾选编码</li>
 </ol>
 </li>
 </ol>
 <p><img alt="编码" decoding="async" height="478" loading="lazy" src="/images/blog-media/71a5569fbf96dfaf46e0.webp" width="1059"/></p>
-<h4 id="当响应中出现乱码"><a class="headerlink" href="#当响应中出现乱码" title="当响应中出现乱码"></a>当响应中出现乱码</h4><blockquote>
-<p>原因：jmeter的gui图形界面，默认的编码是操作系统的编码</p>
-<p>国内Windows系统的编码是 936gbk</p>
+<h4 data-passage-key="d45c83209352" id="当响应中出现乱码"><a class="headerlink" href="#当响应中出现乱码" title="当响应中出现乱码"></a>当响应中出现乱码</h4><blockquote data-passage-key="7800a2ac6315" id="passage-868efaf2a34d">
+<p data-passage-key="7493f8fb2262" id="passage-35a417df9df4">原因：jmeter的gui图形界面，默认的编码是操作系统的编码</p>
+<p data-passage-key="ada886723a04" id="passage-f69950f297c9">国内Windows系统的编码是 936gbk</p>
 </blockquote>
-<p>解决办法</p>
-<p>打开<code>/apache-jmeter-5.1.1/bin/jmeter.properties</code></p>
-<p>找到</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre><span class="line"># The encoding to be used if none is provided (default ISO-8859-1)</span><br/><span class="line">#sampleresult.default.encoding=ISO-8859-1</span><br/></pre></td></tr></tbody></table></figure>
-<p>根据响应信息中的编码修改<code>sampleresult.default.encoding</code>值。修改后保存重启Jmeter</p>
-<p>查看方法：</p>
-<p>请求相应地址后查看<code>网页源代码</code>在头部找到「meta-content」</p>
-<figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"X-UA-Compatible"</span> <span class="attr">content</span>=<span class="string">"IE=edge,chrome=1"</span>&gt;</span></span><br/><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"content-type"</span> <span class="attr">content</span>=<span class="string">"text/html;charset=utf-8"</span>&gt;</span></span><br/><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">content</span>=<span class="string">"always"</span> <span class="attr">name</span>=<span class="string">"referrer"</span>&gt;</span></span><br/><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"theme-color"</span> <span class="attr">content</span>=<span class="string">"#2932e1"</span>&gt;</span></span><br/><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"shortcut icon"</span> <span class="attr">href</span>=<span class="string">"/favicon.ico"</span> <span class="attr">type</span>=<span class="string">"image/x-icon"</span> /&gt;</span></span><br/><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"icon"</span> <span class="attr">sizes</span>=<span class="string">"any"</span> <span class="attr">mask</span> <span class="attr">href</span>=<span class="string">"//www.baidu.com/img/baidu_85beaf5496f291521eb75ba38eacbd87.svg"</span>&gt;</span></span><br/><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"search"</span> <span class="attr">type</span>=<span class="string">"application/opensearchdescription+xml"</span> <span class="attr">href</span>=<span class="string">"/content-search.xml"</span> <span class="attr">title</span>=<span class="string">"百度搜索"</span> /&gt;</span></span><br/></pre></td></tr></tbody></table></figure>
-<p>可以看出上面这段代码的编码为<code>utf-8</code></p>
-<h3 id="HTTP请求-自动重定向"><a class="headerlink" href="#HTTP请求-自动重定向" title="HTTP请求-自动重定向"></a>HTTP请求-自动重定向</h3><p><img alt="重定向" decoding="async" height="478" loading="lazy" src="/images/blog-media/4f902d64840a0c3070a2.webp" width="1059"/></p>
+<p data-passage-key="0cc289d9dab1" id="passage-cd1718e1176e">解决办法</p>
+<p data-passage-key="14be4e08b5c1" id="passage-3d5a400fffb5">打开<code>/apache-jmeter-5.1.1/bin/jmeter.properties</code></p>
+<p data-passage-key="237184071bce" id="passage-a69c2f43a88d">找到</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="ff761467e8ec" id="passage-bfe75f4b5e5f"><span class="line"># The encoding to be used if none is provided (default ISO-8859-1)</span><br/><span class="line">#sampleresult.default.encoding=ISO-8859-1</span><br/></pre></td></tr></tbody></table></figure>
+<p data-passage-key="fe6e134426c2" id="passage-33e69b729f75">根据响应信息中的编码修改<code>sampleresult.default.encoding</code>值。修改后保存重启Jmeter</p>
+<p data-passage-key="3552f28448cc" id="passage-b2f930ab63f3">查看方法：</p>
+<p data-passage-key="f3c24e5f521e" id="passage-60b1fd2da331">请求相应地址后查看<code>网页源代码</code>在头部找到「meta-content」</p>
+<figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/></pre></td><td class="code"><pre data-passage-key="9b33dfea2cea" id="passage-11d475469579"><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"X-UA-Compatible"</span> <span class="attr">content</span>=<span class="string">"IE=edge,chrome=1"</span>&gt;</span></span><br/><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"content-type"</span> <span class="attr">content</span>=<span class="string">"text/html;charset=utf-8"</span>&gt;</span></span><br/><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">content</span>=<span class="string">"always"</span> <span class="attr">name</span>=<span class="string">"referrer"</span>&gt;</span></span><br/><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"theme-color"</span> <span class="attr">content</span>=<span class="string">"#2932e1"</span>&gt;</span></span><br/><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"shortcut icon"</span> <span class="attr">href</span>=<span class="string">"/favicon.ico"</span> <span class="attr">type</span>=<span class="string">"image/x-icon"</span> /&gt;</span></span><br/><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"icon"</span> <span class="attr">sizes</span>=<span class="string">"any"</span> <span class="attr">mask</span> <span class="attr">href</span>=<span class="string">"//www.baidu.com/img/baidu_85beaf5496f291521eb75ba38eacbd87.svg"</span>&gt;</span></span><br/><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"search"</span> <span class="attr">type</span>=<span class="string">"application/opensearchdescription+xml"</span> <span class="attr">href</span>=<span class="string">"/content-search.xml"</span> <span class="attr">title</span>=<span class="string">"百度搜索"</span> /&gt;</span></span><br/></pre></td></tr></tbody></table></figure>
+<p data-passage-key="f175468640fc" id="passage-51e9af1cdbf3">可以看出上面这段代码的编码为<code>utf-8</code></p>
+<h3 data-passage-key="c2b606a644a2" id="HTTP请求-自动重定向"><a class="headerlink" href="#HTTP请求-自动重定向" title="HTTP请求-自动重定向"></a>HTTP请求-自动重定向</h3><p><img alt="重定向" decoding="async" height="478" loading="lazy" src="/images/blog-media/4f902d64840a0c3070a2.webp" width="1059"/></p>
 <p><img alt="自动重定向" decoding="async" height="957" loading="lazy" src="/images/blog-media/5128b92f7f5d0bb740cb.webp" width="1080"/></p>
-<p>都是重定向。HTTP响应码都是300系列</p>
-<p>没有中间过程，无法进行中间数据提取</p>
-<h3 id="HTTP请求-跟随重定向"><a class="headerlink" href="#HTTP请求-跟随重定向" title="HTTP请求-跟随重定向"></a>HTTP请求-跟随重定向</h3><p><img alt="跟随重定向" decoding="async" height="960" loading="lazy" src="/images/blog-media/763d1c3e275b432f9f10.webp" width="1080"/></p>
-<p>默认勾选</p>
-<p>可以提取中间过程，用于后续关联</p>
-<p>从图中可以看到，它将每次跳转都展示给了我们，可以展开查看每次跳转情况</p>
-<h3 id="HTTP请求-使用KeepAlive"><a class="headerlink" href="#HTTP请求-使用KeepAlive" title="HTTP请求-使用KeepAlive"></a>HTTP请求-使用KeepAlive</h3><p><img alt="使用KeepAlive" decoding="async" height="478" loading="lazy" src="/images/blog-media/d73e18d6bed4a03e012c.webp" width="1059"/></p>
-<p>默认都是长连接</p>
-<h3 id="HTTP请求-消息体数据"><a class="headerlink" href="#HTTP请求-消息体数据" title="HTTP请求-消息体数据"></a>HTTP请求-消息体数据</h3><p>参数-消息体数据是互斥的，写了之后无法写另一个</p>
-<h2 id="优先级"><a class="headerlink" href="#优先级" title="优先级"></a>优先级</h2><blockquote>
-<p>优先级越高，越先执行</p>
+<p data-passage-key="397e6c3ccd6b" id="passage-c9720d536116">都是重定向。HTTP响应码都是300系列</p>
+<p data-passage-key="ecdb14135bb4" id="passage-c816ee51485b">没有中间过程，无法进行中间数据提取</p>
+<h3 data-passage-key="96acf7c95a3a" id="HTTP请求-跟随重定向"><a class="headerlink" href="#HTTP请求-跟随重定向" title="HTTP请求-跟随重定向"></a>HTTP请求-跟随重定向</h3><p><img alt="跟随重定向" decoding="async" height="960" loading="lazy" src="/images/blog-media/763d1c3e275b432f9f10.webp" width="1080"/></p>
+<p data-passage-key="077542716196" id="passage-10ab11928295">默认勾选</p>
+<p data-passage-key="9192fdf5bbca" id="passage-d725d4b6fb6f">可以提取中间过程，用于后续关联</p>
+<p data-passage-key="a0016add9459" id="passage-051e43d51194">从图中可以看到，它将每次跳转都展示给了我们，可以展开查看每次跳转情况</p>
+<h3 data-passage-key="b6dcf31b424b" id="HTTP请求-使用KeepAlive"><a class="headerlink" href="#HTTP请求-使用KeepAlive" title="HTTP请求-使用KeepAlive"></a>HTTP请求-使用KeepAlive</h3><p><img alt="使用KeepAlive" decoding="async" height="478" loading="lazy" src="/images/blog-media/d73e18d6bed4a03e012c.webp" width="1059"/></p>
+<p data-passage-key="25ae8aedbd9e" id="passage-9746315532cc">默认都是长连接</p>
+<h3 data-passage-key="bbb7ef5c52b5" id="HTTP请求-消息体数据"><a class="headerlink" href="#HTTP请求-消息体数据" title="HTTP请求-消息体数据"></a>HTTP请求-消息体数据</h3><p data-passage-key="556652d33492" id="passage-f9e986dbf14a">参数-消息体数据是互斥的，写了之后无法写另一个</p>
+<h2 data-passage-key="565d64601d4d" id="优先级"><a class="headerlink" href="#优先级" title="优先级"></a>优先级</h2><blockquote data-passage-key="fe2d04272905" id="passage-43c119bf9666">
+<p data-passage-key="fadf05dd34dc" id="passage-9dd531c7e52f">优先级越高，越先执行</p>
 </blockquote>
-<p>配置元件中的所有元件，优先级是最高的</p>
-<p>前置处理器-取样器-后置处理器 </p>
+<p data-passage-key="ebdb68ac0497" id="passage-e3a1e7c0cdf3">配置元件中的所有元件，优先级是最高的</p>
+<p data-passage-key="2121ae508279" id="passage-43075a28a151">前置处理器-取样器-后置处理器 </p>
 <p><img alt="优先级" decoding="async" height="248" loading="lazy" src="/images/blog-media/c75dde8de682b266fd36.webp" width="358"/></p></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
+        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
+        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
+          <header class="passage-dialog-header">
+            <h2 id="passage-comment-title">段落评论</h2>
+            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
+          </header>
+          <div class="passage-dialog-content">
+            <blockquote data-passage-excerpt></blockquote>
+            <a data-passage-source>查看原文</a>
+            <p data-passage-status role="status"></p>
+            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
+            <div data-passage-widget></div>
+          </div>
+        </dialog>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/Y8nL6RdYHl82RN7gJQcIog">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/HTTP/">HTTP</a><a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a></div>
@@ -143,16 +155,6 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
-          <div class="comment-quote" data-comment-quote hidden>
-            <blockquote data-comment-quote-text></blockquote>
-            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
-            <p data-comment-quote-status role="status"></p>
-            <div class="comment-quote-actions">
-              <button type="button" data-copy-comment-quote>复制引用</button>
-              <a data-comment-quote-source>返回原文</a>
-              <button type="button" data-clear-comment-quote>取消引用</button>
-            </div>
-          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

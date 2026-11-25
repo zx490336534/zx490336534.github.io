@@ -20,8 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/5b8e00c1.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/5b8e00c1.html">
-<script src="/js/comments.js?v=3" defer></script>
-<script src="/js/comment-quotes.js" defer></script>
+<script type="module" src="/js/discussions.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -57,128 +56,141 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E7%94%B5%E9%87%8F">电量</a></li><li><a href="#%E7%BB%9F%E8%AE%A1%E6%96%B9%E6%B3%95-%E5%B7%A5%E5%85%B7">统计方法/工具</a></li><li><a href="#%E6%89%8B%E6%9C%BA%E6%8A%95%E5%B1%8F%E8%BD%AF%E4%BB%B6">手机投屏软件</a></li><li><a href="#Battery-Historian">Battery Historian</a></li><li><a href="#%E6%B5%81%E7%95%85%E5%BA%A6">流畅度</a></li><li><a href="#%E5%B8%A7%E7%8E%87-amp-%E5%88%B7%E6%96%B0%E9%A2%91%E7%8E%87">帧率 &amp; 刷新频率</a></li><li><a href="#%E5%8D%A1%E9%A1%BFroot-cause">卡顿root cause</a></li><li><a href="#FPS%E6%8C%87%E6%A0%87">FPS指标</a></li><li><a href="#%E8%AE%A1%E7%AE%97%E6%B5%81%E7%95%85%E5%BA%A6">计算流畅度</a></li><li><a href="#%E6%8C%87%E6%A0%87%E8%8E%B7%E5%8F%96">指标获取</a></li><li><a href="#%E6%B5%81%E7%95%85%E5%BA%A6%E5%BD%B1%E5%93%8D%E5%9B%A0%E7%B4%A0">流畅度影响因素</a></li><li><a href="#UI%E6%B8%B2%E6%9F%93">UI渲染</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><span id="测试开发进阶-四十八"></span><h2 id="电量"><a class="headerlink" href="#电量" title="电量"></a>电量</h2><p>统计耗电本身也是一件耗电行为，所以软件统计方式其实都不是很精确</p>
-<h3 id="统计方法-工具"><a class="headerlink" href="#统计方法-工具" title="统计方法/工具"></a>统计方法/工具</h3><ul>
-<li>功耗仪：统计整机的耗电</li>
-<li>腾讯GT工具</li>
-<li>Battery Historian(Google 官方提供的工具，5.0及以后系统适用)</li>
+        <div class="post-body" id="article-text"><span id="测试开发进阶-四十八"></span><h2 data-passage-key="1c69b1aa723a" id="电量"><a class="headerlink" href="#电量" title="电量"></a>电量</h2><p data-passage-key="ce2c7d710bd9" id="passage-394e72e552c4">统计耗电本身也是一件耗电行为，所以软件统计方式其实都不是很精确</p>
+<h3 data-passage-key="10ace0bf1569" id="统计方法-工具"><a class="headerlink" href="#统计方法-工具" title="统计方法/工具"></a>统计方法/工具</h3><ul>
+<li data-passage-key="522ceb33e932" id="passage-b220a235090e">功耗仪：统计整机的耗电</li>
+<li data-passage-key="c9a74f96fc27" id="passage-c2fd6d70c02d">腾讯GT工具</li>
+<li data-passage-key="dba1cfeef922" id="passage-e2fec1fd39b9">Battery Historian(Google 官方提供的工具，5.0及以后系统适用)</li>
 </ul>
-<p><a href="https://github.com/google/battery-historian" rel="noopener" target="_blank">https://github.com/google/battery-historian</a></p>
+<p data-passage-key="18aef915d0ce" id="passage-0b669f365c25"><a href="https://github.com/google/battery-historian" rel="noopener" target="_blank">https://github.com/google/battery-historian</a></p>
 <span id="more"></span>
-<h3 id="手机投屏软件"><a class="headerlink" href="#手机投屏软件" title="手机投屏软件"></a>手机投屏软件</h3><p>windows：apowermirror</p>
-<h3 id="Battery-Historian"><a class="headerlink" href="#Battery-Historian" title="Battery Historian"></a>Battery Historian</h3><p>从手机中导出bugreport文件上传至页面，在网页中生成详细的图表数据来展示手机各模块电量消耗过程，然后通过App数据的分析制定出相关的电量优化的方法</p>
+<h3 data-passage-key="634ef6af9360" id="手机投屏软件"><a class="headerlink" href="#手机投屏软件" title="手机投屏软件"></a>手机投屏软件</h3><p data-passage-key="94a09f380b48" id="passage-78deba3ccbbd">windows：apowermirror</p>
+<h3 data-passage-key="a850ace37499" id="Battery-Historian"><a class="headerlink" href="#Battery-Historian" title="Battery Historian"></a>Battery Historian</h3><p data-passage-key="bd12a5302abf" id="passage-28b3e460abe2">从手机中导出bugreport文件上传至页面，在网页中生成详细的图表数据来展示手机各模块电量消耗过程，然后通过App数据的分析制定出相关的电量优化的方法</p>
 <ul>
-<li>安装GO python Java</li>
-<li>使用Docker</li>
+<li data-passage-key="780090547581" id="passage-63ab28a5a4a3">安装GO python Java</li>
+<li data-passage-key="633a653cfefd" id="passage-27e8824f7001">使用Docker</li>
 </ul>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker run -p 9999:9999 registry.cn-beijing.aliyuncs.com/center1/google_battery</span></span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="773f64e0c11f" id="passage-8545ef98a233"><span class="line"><span class="meta">$</span><span class="bash"> docker run -p 9999:9999 registry.cn-beijing.aliyuncs.com/center1/google_battery</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="google_battery" decoding="async" height="595" loading="lazy" src="/images/blog-media/04f3f510e972d899f72b.webp" width="1080"/></p>
-<h4 id="获取方式"><a class="headerlink" href="#获取方式" title="获取方式"></a>获取方式</h4><h5 id="记录唤醒锁的信息"><a class="headerlink" href="#记录唤醒锁的信息" title="记录唤醒锁的信息"></a>记录唤醒锁的信息</h5><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> adb shell dumpsys batterystats --<span class="built_in">enable</span> full-wake-history</span></span><br/></pre></td></tr></tbody></table></figure>
-<h5 id="重置电量数据"><a class="headerlink" href="#重置电量数据" title="重置电量数据"></a>重置电量数据</h5><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> adb shell dumpsys batterystats --reset</span></span><br/></pre></td></tr></tbody></table></figure>
+<h4 data-passage-key="84a87cde9320" id="获取方式"><a class="headerlink" href="#获取方式" title="获取方式"></a>获取方式</h4><h5 data-passage-key="7d197303b931" id="记录唤醒锁的信息"><a class="headerlink" href="#记录唤醒锁的信息" title="记录唤醒锁的信息"></a>记录唤醒锁的信息</h5><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="aceaaf10be9a" id="passage-538345b4dbc9"><span class="line"><span class="meta">$</span><span class="bash"> adb shell dumpsys batterystats --<span class="built_in">enable</span> full-wake-history</span></span><br/></pre></td></tr></tbody></table></figure>
+<h5 data-passage-key="552f59a744eb" id="重置电量数据"><a class="headerlink" href="#重置电量数据" title="重置电量数据"></a>重置电量数据</h5><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="19dcd9708f10" id="passage-59342b316d88"><span class="line"><span class="meta">$</span><span class="bash"> adb shell dumpsys batterystats --reset</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="重置" decoding="async" height="115" loading="lazy" src="/images/blog-media/bf002e9f6dfdd31042ac.webp" width="1080"/></p>
-<h5 id="采集电量数据"><a class="headerlink" href="#采集电量数据" title="采集电量数据"></a>采集电量数据</h5><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> Android7.0之后</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> adb bugreport bugreport.zip</span></span><br/><span class="line"><span class="meta">#</span><span class="bash"> Android7.0之前</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> adb bugreport &gt; bugreport.txt</span></span><br/></pre></td></tr></tbody></table></figure>
+<h5 data-passage-key="0b2d33d33004" id="采集电量数据"><a class="headerlink" href="#采集电量数据" title="采集电量数据"></a>采集电量数据</h5><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre data-passage-key="a480fbdc7605" id="passage-6ee6048d3303"><span class="line"><span class="meta">#</span><span class="bash"> Android7.0之后</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> adb bugreport bugreport.zip</span></span><br/><span class="line"><span class="meta">#</span><span class="bash"> Android7.0之前</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> adb bugreport &gt; bugreport.txt</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="电量数据" decoding="async" height="1072" loading="lazy" src="/images/blog-media/364e9cb231ff8d0e977f.webp" width="1080"/></p>
-<h2 id="流畅度"><a class="headerlink" href="#流畅度" title="流畅度"></a>流畅度</h2><h3 id="帧率-amp-刷新频率"><a class="headerlink" href="#帧率-amp-刷新频率" title="帧率 &amp; 刷新频率"></a>帧率 &amp; 刷新频率</h3><p><code>Refresh Rate</code>屏幕在一秒内刷新屏幕的次数，取决于硬件的固定参数，如60Hz</p>
-<p><code>Frame Rate</code>GPU在一秒内绘制操作的帧数，例如30fps，60fps</p>
-<h3 id="卡顿root-cause"><a class="headerlink" href="#卡顿root-cause" title="卡顿root cause"></a>卡顿root cause</h3><p>大多数用户感受到卡顿等性能问题的主要根源都是因为渲染性能，android系统无法及时完成那些复杂的界面渲染操作，就产生了卡顿/不流畅的想象</p>
-<h3 id="FPS指标"><a class="headerlink" href="#FPS指标" title="FPS指标"></a>FPS指标</h3><ul>
-<li>fps低，但是不觉得App卡</li>
+<h2 data-passage-key="e3184a7e532f" id="流畅度"><a class="headerlink" href="#流畅度" title="流畅度"></a>流畅度</h2><h3 data-passage-key="0052cc325521" id="帧率-amp-刷新频率"><a class="headerlink" href="#帧率-amp-刷新频率" title="帧率 &amp; 刷新频率"></a>帧率 &amp; 刷新频率</h3><p data-passage-key="8da6cdb06db8" id="passage-0c2055e1e15a"><code>Refresh Rate</code>屏幕在一秒内刷新屏幕的次数，取决于硬件的固定参数，如60Hz</p>
+<p data-passage-key="bd602f542139" id="passage-7d65dbfcb73e"><code>Frame Rate</code>GPU在一秒内绘制操作的帧数，例如30fps，60fps</p>
+<h3 data-passage-key="8a0ee82a8945" id="卡顿root-cause"><a class="headerlink" href="#卡顿root-cause" title="卡顿root cause"></a>卡顿root cause</h3><p data-passage-key="425740247dad" id="passage-81587d5f8afb">大多数用户感受到卡顿等性能问题的主要根源都是因为渲染性能，android系统无法及时完成那些复杂的界面渲染操作，就产生了卡顿/不流畅的想象</p>
+<h3 data-passage-key="87399b5c49c3" id="FPS指标"><a class="headerlink" href="#FPS指标" title="FPS指标"></a>FPS指标</h3><ul>
+<li data-passage-key="8af9947a4022" id="passage-f5d92e389ac1">fps低，但是不觉得App卡</li>
 </ul>
-<p>因为本来就用不到那么高的fps，屏幕没有绘制要求，那么fps就为0</p>
+<p data-passage-key="5dd2597d212a" id="passage-358a94409a45">因为本来就用不到那么高的fps，屏幕没有绘制要求，那么fps就为0</p>
 <ul>
-<li>app停止操作后，fps还是一直变化</li>
+<li data-passage-key="899488b3fcc9" id="passage-2ea37f0e5365">app停止操作后，fps还是一直变化</li>
 </ul>
-<p>屏幕每一帧的合成都是针对手机里面所有的进程，当前app停止后其他进程可能还在绘制</p>
-<h3 id="计算流畅度"><a class="headerlink" href="#计算流畅度" title="计算流畅度"></a>计算流畅度</h3><ul>
-<li>系统合成帧率</li>
+<p data-passage-key="bb41e5923606" id="passage-ac1afacc3729">屏幕每一帧的合成都是针对手机里面所有的进程，当前app停止后其他进程可能还在绘制</p>
+<h3 data-passage-key="26c39f7a1de5" id="计算流畅度"><a class="headerlink" href="#计算流畅度" title="计算流畅度"></a>计算流畅度</h3><ul>
+<li data-passage-key="2fe5d69a0fde" id="passage-6efcb24bb4f7">系统合成帧率</li>
 </ul>
-<blockquote>
-<p>数据形式最为直观，游戏/视频等连续绘制的应用可以考虑选用，但不适用于绝大多数非连续绘制的应用</p>
+<blockquote data-passage-key="5bbd3dfe5f7f" id="passage-633baedead75">
+<p data-passage-key="c940d4e1b1af" id="passage-b93c023b1553">数据形式最为直观，游戏/视频等连续绘制的应用可以考虑选用，但不适用于绝大多数非连续绘制的应用</p>
 </blockquote>
 <ul>
-<li>流畅度(SM:SMoothness)</li>
+<li data-passage-key="71ea5ded936b" id="passage-88eff9a51c2a">流畅度(SM:SMoothness)</li>
 </ul>
-<blockquote>
-<p>数据形式和FPS类似，可以很好的弥补FPS无法准确刻画非连续绘制的应用显示性能的缺陷</p>
+<blockquote data-passage-key="0410ae9d050a" id="passage-e5fa16731a26">
+<p data-passage-key="5f82b30f8766" id="passage-c6cc30060540">数据形式和FPS类似，可以很好的弥补FPS无法准确刻画非连续绘制的应用显示性能的缺陷</p>
 <ul>
-<li>原理：在VSync机制中1s内Loop运行的次数</li>
-<li>当流畅度越小的时候说明当前程序越卡顿</li>
+<li data-passage-key="3ee93926aea9" id="passage-8198b2a6d0af">原理：在VSync机制中1s内Loop运行的次数</li>
+<li data-passage-key="66a522bd5e31" id="passage-c8d6444b5b0a">当流畅度越小的时候说明当前程序越卡顿</li>
 </ul>
 </blockquote>
-<h3 id="指标获取"><a class="headerlink" href="#指标获取" title="指标获取"></a>指标获取</h3><h4 id="FPS获取"><a class="headerlink" href="#FPS获取" title="FPS获取"></a>FPS获取</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> adb shell dumpsys gfxinfo 包名</span></span><br/><span class="line"><span class="meta">#</span><span class="bash"> 例如</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> adb shell dumpsys gfxinfo com.sankuai.meituan</span></span><br/></pre></td></tr></tbody></table></figure>
-<p>Draw+Prepare+Process+Execute=完整显示一帧的时间</p>
-<p>这个时间需要小于16.67ms才能保证不丢帧</p>
+<h3 data-passage-key="3609be67440e" id="指标获取"><a class="headerlink" href="#指标获取" title="指标获取"></a>指标获取</h3><h4 data-passage-key="eee2f529ab8f" id="FPS获取"><a class="headerlink" href="#FPS获取" title="FPS获取"></a>FPS获取</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre data-passage-key="5f1d292291af" id="passage-e12826f03350"><span class="line"><span class="meta">$</span><span class="bash"> adb shell dumpsys gfxinfo 包名</span></span><br/><span class="line"><span class="meta">#</span><span class="bash"> 例如</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> adb shell dumpsys gfxinfo com.sankuai.meituan</span></span><br/></pre></td></tr></tbody></table></figure>
+<p data-passage-key="338d47b76d11" id="passage-4869320976ad">Draw+Prepare+Process+Execute=完整显示一帧的时间</p>
+<p data-passage-key="eb4d46c5ba5c" id="passage-bf9562b17129">这个时间需要小于16.67ms才能保证不丢帧</p>
 <ul>
-<li>计算总数据的行数(跳过第一行)</li>
+<li data-passage-key="5f3ed71b1048" id="passage-9c1305fa0ffa">计算总数据的行数(跳过第一行)</li>
 </ul>
-<blockquote>
-<p>frameCount = rowNum</p>
+<blockquote data-passage-key="ae06db055d16" id="passage-c07ab39629ca">
+<p data-passage-key="1e0007ec2554" id="passage-487d16c0a9e5">frameCount = rowNum</p>
 </blockquote>
 <ul>
-<li>计算每帧的渲染时间</li>
+<li data-passage-key="4c2d702d9058" id="passage-0d6a277515ad">计算每帧的渲染时间</li>
 </ul>
-<blockquote>
-<p>renderTime = Draw + Prepare + Process + Execute</p>
+<blockquote data-passage-key="32d5918e0b4a" id="passage-a35d4af7e42d">
+<p data-passage-key="cc84050e211b" id="passage-fd74f82ebf27">renderTime = Draw + Prepare + Process + Execute</p>
 </blockquote>
 <ul>
-<li>当渲染时间renderTime大于16.67ms，该帧渲染超时,算一次丢帧，需要用掉额外的Vsync个数为(多需要同步的信号)</li>
+<li data-passage-key="acec9991334b" id="passage-0e5aea2da005">当渲染时间renderTime大于16.67ms，该帧渲染超时,算一次丢帧，需要用掉额外的Vsync个数为(多需要同步的信号)</li>
 </ul>
-<blockquote>
+<blockquote data-passage-key="dfe8f2929020" id="passage-3b5ce7a8203d">
 <ul>
-<li>16.67整数倍</li>
+<li data-passage-key="49bca5aa7036" id="passage-78b6f9849242">16.67整数倍</li>
 </ul>
-<p>vsyncOverNum=int(renderTime/16.67)-1</p>
+<p data-passage-key="fe1b038394c8" id="passage-33e9be744fc4">vsyncOverNum=int(renderTime/16.67)-1</p>
 <ul>
-<li>非16.67整数倍</li>
+<li data-passage-key="aab6546d60ca" id="passage-25b576dbefc0">非16.67整数倍</li>
 </ul>
-<p>vsyncOverNum=int(renderTime/16.67)-1</p>
+<p data-passage-key="e69467658833" id="passage-33e9be744fc4-2">vsyncOverNum=int(renderTime/16.67)-1</p>
 </blockquote>
 <ul>
-<li>fps计算公式</li>
+<li data-passage-key="508030f1a8ee" id="passage-68e5a3d7256c">fps计算公式</li>
 </ul>
-<blockquote>
-<p>fps=frameCount*60/(frameCount+vsyncOverNum=int)</p>
+<blockquote data-passage-key="d789ed8f5825" id="passage-469f3a12f264">
+<p data-passage-key="1dbc520e72a2" id="passage-978a2faa5393">fps=frameCount*60/(frameCount+vsyncOverNum=int)</p>
 </blockquote>
-<h4 id="SM获取"><a class="headerlink" href="#SM获取" title="SM获取"></a>SM获取</h4><p>腾讯GT</p>
+<h4 data-passage-key="660913e8436f" id="SM获取"><a class="headerlink" href="#SM获取" title="SM获取"></a>SM获取</h4><p data-passage-key="406c48d698b1" id="passage-6135b4aef241">腾讯GT</p>
 <p><img alt="GT" decoding="async" height="1601" loading="lazy" src="/images/blog-media/e9ae5a99536f753879c1.webp" width="1080"/></p>
-<h3 id="流畅度影响因素"><a class="headerlink" href="#流畅度影响因素" title="流畅度影响因素"></a>流畅度影响因素</h3><ul>
-<li>UI渲染</li>
+<h3 data-passage-key="1eb5ca262d2c" id="流畅度影响因素"><a class="headerlink" href="#流畅度影响因素" title="流畅度影响因素"></a>流畅度影响因素</h3><ul>
+<li data-passage-key="1f18b3310a7a" id="passage-06031a4299e5">UI渲染</li>
 </ul>
-<blockquote>
-<p>界面过度渲染</p>
-<p>布局边界合理性</p>
+<blockquote data-passage-key="65b0eaef2eae" id="passage-02b2205b1f79">
+<p data-passage-key="cc9ca6f546e4" id="passage-00e6e49e6e60">界面过度渲染</p>
+<p data-passage-key="81089715275c" id="passage-51ba8e1dd657">布局边界合理性</p>
 </blockquote>
 <ul>
-<li>UI线程复杂运算</li>
-<li>频繁GC垃圾回收</li>
+<li data-passage-key="b15564290209" id="passage-ac35adc5fc20">UI线程复杂运算</li>
+<li data-passage-key="60e33fcca171" id="passage-5a910820109a">频繁GC垃圾回收</li>
 </ul>
-<h3 id="UI渲染"><a class="headerlink" href="#UI渲染" title="UI渲染"></a>UI渲染</h3><p>UI渲染由CPU和GPU两个部分协同完成</p>
+<h3 data-passage-key="a600d308f9be" id="UI渲染"><a class="headerlink" href="#UI渲染" title="UI渲染"></a>UI渲染</h3><p data-passage-key="07042cb3a045" id="passage-b083c9c055a7">UI渲染由CPU和GPU两个部分协同完成</p>
 <ul>
-<li>CPU负责UI布局元素的Measure，Layout，Draw等相关运算执行。如果布局边界不合理，会导致卡顿</li>
-<li>GPU负责栅格化，将UI元素绘制到屏幕上，如果界面过度绘制，也可能导致卡顿</li>
+<li data-passage-key="60f3e6449c72" id="passage-07ab5ee2e915">CPU负责UI布局元素的Measure，Layout，Draw等相关运算执行。如果布局边界不合理，会导致卡顿</li>
+<li data-passage-key="5fdb028ef0f8" id="passage-ef5c6a730881">GPU负责栅格化，将UI元素绘制到屏幕上，如果界面过度绘制，也可能导致卡顿</li>
 </ul>
-<h4 id="页面的过度绘制"><a class="headerlink" href="#页面的过度绘制" title="页面的过度绘制"></a>页面的过度绘制</h4><p>一个像素点绘制次数超过1次</p>
-<p>开发者选项-&gt;调试GPU过度绘制</p>
+<h4 data-passage-key="af1f2085d649" id="页面的过度绘制"><a class="headerlink" href="#页面的过度绘制" title="页面的过度绘制"></a>页面的过度绘制</h4><p data-passage-key="e27fced06723" id="passage-25c388d4d7bf">一个像素点绘制次数超过1次</p>
+<p data-passage-key="3e55341878fc" id="passage-7a4567928b41">开发者选项-&gt;调试GPU过度绘制</p>
 <ul>
-<li>没颜色：没有过度绘制</li>
-<li>蓝色：1倍过度绘制，1个像素点绘制2次</li>
-<li>绿色：2倍 3次</li>
-<li>浅红色：3倍 4次</li>
-<li>深红色：4倍以上 5次以上</li>
+<li data-passage-key="d676153c3ced" id="passage-7adf0ac5da9a">没颜色：没有过度绘制</li>
+<li data-passage-key="5ca977c57672" id="passage-36a6d211cf12">蓝色：1倍过度绘制，1个像素点绘制2次</li>
+<li data-passage-key="9584726aea8f" id="passage-56fddda5e0a8">绿色：2倍 3次</li>
+<li data-passage-key="d5bb7b76e621" id="passage-2bead9a3aa7b">浅红色：3倍 4次</li>
+<li data-passage-key="a4bd5961a940" id="passage-5deb1a3f111f">深红色：4倍以上 5次以上</li>
 </ul>
-<p>蓝色和绿色可以接受</p>
-<h4 id="UI线程复杂运算"><a class="headerlink" href="#UI线程复杂运算" title="UI线程复杂运算"></a>UI线程复杂运算</h4><p>当android应用启动时，系统会为应用创建一个主线程，负责和UI组件进行交互</p>
-<p>如果主线程里面进行复杂运算就会造成界面无响应/卡顿/不流畅(ANR已经是卡顿的极致了)</p>
+<p data-passage-key="5e6fc43879a4" id="passage-c5449dfafd38">蓝色和绿色可以接受</p>
+<h4 data-passage-key="9b72255f19db" id="UI线程复杂运算"><a class="headerlink" href="#UI线程复杂运算" title="UI线程复杂运算"></a>UI线程复杂运算</h4><p data-passage-key="37bc86f33a0c" id="passage-0f97e20bede8">当android应用启动时，系统会为应用创建一个主线程，负责和UI组件进行交互</p>
+<p data-passage-key="562a225f3fb0" id="passage-d672093c67ab">如果主线程里面进行复杂运算就会造成界面无响应/卡顿/不流畅(ANR已经是卡顿的极致了)</p>
 <ul>
-<li>TraceView</li>
+<li data-passage-key="fc348cdbf741" id="passage-e12f0278a549">TraceView</li>
 </ul>
-<p>分析方法执行时间</p>
+<p data-passage-key="7af210a7044c" id="passage-72cee9bc5e80">分析方法执行时间</p>
 <ul>
-<li>StrictMode(严苛模式)</li>
+<li data-passage-key="4c3084172bc4" id="passage-6a155ed131bd">StrictMode(严苛模式)</li>
 </ul>
-<p>在代码里或者开发者选项中开启，查看应用哪些操作在主线程上执行时间过长</p>
-<p>当一些操作违背了严格模式时，屏幕四周会闪烁红色，同时输出StrictMode的相关信息到LOGCAT日志中</p></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
+<p data-passage-key="c27daefa3650" id="passage-ff74c8777c63">在代码里或者开发者选项中开启，查看应用哪些操作在主线程上执行时间过长</p>
+<p data-passage-key="3290c2d76b6d" id="passage-d3fe8737a365">当一些操作违背了严格模式时，屏幕四周会闪烁红色，同时输出StrictMode的相关信息到LOGCAT日志中</p></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
+        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
+          <header class="passage-dialog-header">
+            <h2 id="passage-comment-title">段落评论</h2>
+            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
+          </header>
+          <div class="passage-dialog-content">
+            <blockquote data-passage-excerpt></blockquote>
+            <a data-passage-source>查看原文</a>
+            <p data-passage-status role="status"></p>
+            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
+            <div data-passage-widget></div>
+          </div>
+        </dialog>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/KNQHp4NouQ4r1geX5fbZaA">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Android/">Android</a><a href="/tags/%E5%8A%9F%E8%80%97/">功耗</a><a href="/tags/App-%E6%B5%8B%E8%AF%95/">App 测试</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
@@ -190,16 +202,6 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
-          <div class="comment-quote" data-comment-quote hidden>
-            <blockquote data-comment-quote-text></blockquote>
-            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
-            <p data-comment-quote-status role="status"></p>
-            <div class="comment-quote-actions">
-              <button type="button" data-copy-comment-quote>复制引用</button>
-              <a data-comment-quote-source>返回原文</a>
-              <button type="button" data-clear-comment-quote>取消引用</button>
-            </div>
-          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

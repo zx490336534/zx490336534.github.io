@@ -20,8 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/8a8ca739.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/8a8ca739.html">
-<script src="/js/comments.js?v=3" defer></script>
-<script src="/js/comment-quotes.js" defer></script>
+<script type="module" src="/js/discussions.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -57,50 +56,63 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#Xpath-Helper">Xpath Helper</a></li><li><a href="#%E5%85%83%E7%B4%A0%E5%AE%9A%E4%BD%8D">元素定位</a></li><li><a href="#%E5%88%9D%E6%AD%A5%E8%8E%B7%E5%8F%96Xpath">初步获取Xpath</a></li><li><a href="#JSON-handle">JSON-handle</a></li><li><a href="#%E5%88%92%E8%AF%8D%E7%BF%BB%E8%AF%91">划词翻译</a></li><li><a href="#Tampermonkey">Tampermonkey</a></li><li><a href="#Enhanced-GitHub">Enhanced GitHub</a></li><li><a href="#octotree">octotree</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><span id="Chrome实用插件推荐"></span><p>Chrome浏览器上有很多非常实用的插件，可以显著的提升工作的效率。</p>
-<p>不过由于Google的插件需要前往它自己的商店进行下载。</p>
-<p>所以如果没有梯子的话，只能先安装「谷歌访问助手」了（自行百度）。</p>
+        <div class="post-body" id="article-text"><span id="Chrome实用插件推荐"></span><p data-passage-key="d10ba5bdbec6" id="passage-c23bd2d215c5">Chrome浏览器上有很多非常实用的插件，可以显著的提升工作的效率。</p>
+<p data-passage-key="db6c39cdee5d" id="passage-c9dd08ac737c">不过由于Google的插件需要前往它自己的商店进行下载。</p>
+<p data-passage-key="355247390d3c" id="passage-e4d90eb3fb35">所以如果没有梯子的话，只能先安装「谷歌访问助手」了（自行百度）。</p>
 <span id="more"></span>
-<h2 id="Xpath-Helper"><a class="headerlink" href="#Xpath-Helper" title="Xpath Helper"></a>Xpath Helper</h2><p><img alt="Xpath定位" decoding="async" height="125" loading="lazy" src="/images/blog-media/a04de0866fea9fb9262a.webp" width="1080"/></p>
-<p>Xpath定位有很多的优势</p>
+<h2 data-passage-key="4c2a5ec5d617" id="Xpath-Helper"><a class="headerlink" href="#Xpath-Helper" title="Xpath Helper"></a>Xpath Helper</h2><p><img alt="Xpath定位" decoding="async" height="125" loading="lazy" src="/images/blog-media/a04de0866fea9fb9262a.webp" width="1080"/></p>
+<p data-passage-key="84be99d03e78" id="passage-753ce5a0782f">Xpath定位有很多的优势</p>
 <ol>
-<li>没有id可以进行定位</li>
-<li>需要定位多个符合要求的元素</li>
+<li data-passage-key="153a0189d187" id="passage-c8179d6a1db8">没有id可以进行定位</li>
+<li data-passage-key="2154902f4750" id="passage-03a55bb24d91">需要定位多个符合要求的元素</li>
 </ol>
-<p>使用脚本断点调试定位是否正确是一个方法，当时在我的实际工作中，元素定位代码的封装较深，所以修改查询元素的内容较麻烦，所以直接使用Xpath Helper可以方便的进行开发前的测试。不管是爬虫爬去页面内容还是自动化测试都很实用。</p>
-<p>下面是使用它的方法：</p>
-<h3 id="元素定位"><a class="headerlink" href="#元素定位" title="元素定位"></a>元素定位</h3><p>使用浏览器自带的定位工具进行元素的定位</p>
+<p data-passage-key="0239a0d43bea" id="passage-972e35191399">使用脚本断点调试定位是否正确是一个方法，当时在我的实际工作中，元素定位代码的封装较深，所以修改查询元素的内容较麻烦，所以直接使用Xpath Helper可以方便的进行开发前的测试。不管是爬虫爬去页面内容还是自动化测试都很实用。</p>
+<p data-passage-key="7a380bbd1928" id="passage-6dbde1965de2">下面是使用它的方法：</p>
+<h3 data-passage-key="5c97dd361b13" id="元素定位"><a class="headerlink" href="#元素定位" title="元素定位"></a>元素定位</h3><p data-passage-key="368c318e300f" id="passage-84c6c399e65e">使用浏览器自带的定位工具进行元素的定位</p>
 <p><img alt="元素定位" decoding="async" height="688" loading="lazy" src="/images/blog-media/2f2b37869170c893500b.webp" width="1080"/></p>
-<h3 id="初步获取Xpath"><a class="headerlink" href="#初步获取Xpath" title="初步获取Xpath"></a>初步获取Xpath</h3><p><img alt="获取Xpath" decoding="async" height="727" loading="lazy" src="/images/blog-media/18489e6dc9615ea0c7dd.webp" width="1080"/></p>
-<p>获取到的Xpath为：</p>
-<p><code>//*[@id="dashboard"]/div/div[3]/div[2]/div/div/div/div[2]/div/div[1]/a</code></p>
-<p>这个路径为绝对路径，假如我们需要获取的是一个元素的列表，那就可以进行删减</p>
-<p>将它删减为：<code>//*[@id="dashboard"]/div/div[3]/div//a</code>可以发现页面中标黄的都是定位到的部分内容，「RESULTS(156)」中也可以看到相关结果</p>
+<h3 data-passage-key="63febe78bc7c" id="初步获取Xpath"><a class="headerlink" href="#初步获取Xpath" title="初步获取Xpath"></a>初步获取Xpath</h3><p><img alt="获取Xpath" decoding="async" height="727" loading="lazy" src="/images/blog-media/18489e6dc9615ea0c7dd.webp" width="1080"/></p>
+<p data-passage-key="edbb6bf5166b" id="passage-2ebcd3141b60">获取到的Xpath为：</p>
+<p data-passage-key="f46182920f8d" id="passage-f054b8a3a0e0"><code>//*[@id="dashboard"]/div/div[3]/div[2]/div/div/div/div[2]/div/div[1]/a</code></p>
+<p data-passage-key="5e8d94d9d57b" id="passage-64606a0812c3">这个路径为绝对路径，假如我们需要获取的是一个元素的列表，那就可以进行删减</p>
+<p data-passage-key="99e8dbb6b6e6" id="passage-2dc07b1d3492">将它删减为：<code>//*[@id="dashboard"]/div/div[3]/div//a</code>可以发现页面中标黄的都是定位到的部分内容，「RESULTS(156)」中也可以看到相关结果</p>
 <p><img alt="定位元素列表" decoding="async" height="688" loading="lazy" src="/images/blog-media/237872f88038a3df03ed.webp" width="1080"/></p>
 <p><img alt="RESULTS" decoding="async" height="219" loading="lazy" src="/images/blog-media/a88c1269ebe520512a91.webp" width="1080"/></p>
-<h2 id="JSON-handle"><a class="headerlink" href="#JSON-handle" title="JSON-handle"></a>JSON-handle</h2><p><img alt="JSON-handle" decoding="async" height="837" loading="lazy" src="/images/blog-media/0d886ef1287e8c4c0780.webp" width="1080"/></p>
-<p>一个Json的转换工具</p>
+<h2 data-passage-key="6a04b4b7801f" id="JSON-handle"><a class="headerlink" href="#JSON-handle" title="JSON-handle"></a>JSON-handle</h2><p><img alt="JSON-handle" decoding="async" height="837" loading="lazy" src="/images/blog-media/0d886ef1287e8c4c0780.webp" width="1080"/></p>
+<p data-passage-key="e740c824ec6f" id="passage-bc26fd2f8c49">一个Json的转换工具</p>
 <p><img alt="转换后" decoding="async" height="837" loading="lazy" src="/images/blog-media/fd42109c0505b72c4207.webp" width="1080"/></p>
-<p>有了它，可以直观的看到接口中的元素类型，内容，个数等情况。</p>
-<p>一眼看出诡异的传参</p>
-<h2 id="划词翻译"><a class="headerlink" href="#划词翻译" title="划词翻译"></a>划词翻译</h2><p>由于四级没过，还要强行敲代码的我，看起英文文档就非常痛苦了，所以我选择使用翻译软件。</p>
-<p><a href="https://github.com/Selection-Translator/crx-selection-translate" rel="noopener" target="_blank">划词翻译</a></p>
-<p>GitHub地址:<a href="https://github.com/Selection-Translator/crx-selection-translate" rel="noopener" target="_blank">https://github.com/Selection-Translator/crx-selection-translate</a></p>
+<p data-passage-key="d720e4c0e241" id="passage-5e4ed011ee4e">有了它，可以直观的看到接口中的元素类型，内容，个数等情况。</p>
+<p data-passage-key="dd224a0ce86e" id="passage-df0faad9b402">一眼看出诡异的传参</p>
+<h2 data-passage-key="3b02edcd404d" id="划词翻译"><a class="headerlink" href="#划词翻译" title="划词翻译"></a>划词翻译</h2><p data-passage-key="7313bd5b8dc2" id="passage-4abf704aa6d9">由于四级没过，还要强行敲代码的我，看起英文文档就非常痛苦了，所以我选择使用翻译软件。</p>
+<p data-passage-key="47cb5972543c" id="passage-7855d60d0f37"><a href="https://github.com/Selection-Translator/crx-selection-translate" rel="noopener" target="_blank">划词翻译</a></p>
+<p data-passage-key="18a7b9700803" id="passage-86fa26519e01">GitHub地址:<a href="https://github.com/Selection-Translator/crx-selection-translate" rel="noopener" target="_blank">https://github.com/Selection-Translator/crx-selection-translate</a></p>
 <p><img alt="翻译" decoding="async" height="688" loading="lazy" src="/images/blog-media/3482f698ef7faf05489a.webp" width="1080"/></p>
-<p>虽然有时候直译过来还是有点混乱，但是大致意思可以理解。</p>
-<h2 id="Tampermonkey"><a class="headerlink" href="#Tampermonkey" title="Tampermonkey"></a>Tampermonkey</h2><p>可以安装脚本的百宝箱</p>
-<p>例如：</p>
+<p data-passage-key="670cbe6782c7" id="passage-e59aa0703eae">虽然有时候直译过来还是有点混乱，但是大致意思可以理解。</p>
+<h2 data-passage-key="80a1f21041e7" id="Tampermonkey"><a class="headerlink" href="#Tampermonkey" title="Tampermonkey"></a>Tampermonkey</h2><p data-passage-key="e8d55441ed38" id="passage-903b8fb3832b">可以安装脚本的百宝箱</p>
+<p data-passage-key="cef6785402f5" id="passage-4016a0066f7f">例如：</p>
 <p><img alt="Tampermonkey" decoding="async" height="688" loading="lazy" src="/images/blog-media/c78b58ad9f1cc006ba3f.webp" width="1080"/></p>
-<p>这样在看CSDN的时候就不用去点那个「展开全部」了。也可以自己编写，或者去搜索他人写好的。当然，脚本可能存在安全问题，风险自理。</p>
-<p><a href="https://greasyfork.org/zh-CN/scripts" rel="noopener" target="_blank">https://greasyfork.org/zh-CN/scripts</a></p>
+<p data-passage-key="dfe25a877b35" id="passage-380d77edfb47">这样在看CSDN的时候就不用去点那个「展开全部」了。也可以自己编写，或者去搜索他人写好的。当然，脚本可能存在安全问题，风险自理。</p>
+<p data-passage-key="ee20c8954261" id="passage-1370f0d2acd9"><a href="https://greasyfork.org/zh-CN/scripts" rel="noopener" target="_blank">https://greasyfork.org/zh-CN/scripts</a></p>
 <p><img alt="查找脚本" decoding="async" height="688" loading="lazy" src="/images/blog-media/32abde2676c39d85ea03.webp" width="1080"/></p>
-<h2 id="Enhanced-GitHub"><a class="headerlink" href="#Enhanced-GitHub" title="Enhanced GitHub"></a>Enhanced GitHub</h2><p>在GitHub上下载代码需要下载整个项目的Zip包，这对于只需要其中某个文件的情况就非常不使用，所以使用这个工具就可以单独下载一个文件了</p>
-<p><a href="https://github.com/softvar/enhanced-github" rel="noopener" target="_blank">https://github.com/softvar/enhanced-github</a></p>
+<h2 data-passage-key="34afeb0477b6" id="Enhanced-GitHub"><a class="headerlink" href="#Enhanced-GitHub" title="Enhanced GitHub"></a>Enhanced GitHub</h2><p data-passage-key="8e53179d1111" id="passage-c5a66b1f82bc">在GitHub上下载代码需要下载整个项目的Zip包，这对于只需要其中某个文件的情况就非常不使用，所以使用这个工具就可以单独下载一个文件了</p>
+<p data-passage-key="627dea5391fd" id="passage-1b679bae4ff2"><a href="https://github.com/softvar/enhanced-github" rel="noopener" target="_blank">https://github.com/softvar/enhanced-github</a></p>
 <p><img alt="已安装脚本" decoding="async" height="688" loading="lazy" src="/images/blog-media/a917d8dac3f36e4f8221.webp" width="1080"/></p>
-<h2 id="octotree"><a class="headerlink" href="#octotree" title="octotree"></a>octotree</h2><p>上图左侧的GitHub文件树状展示使用的插件</p>
-<p><a href="https://www.octotree.io/" rel="noopener" target="_blank">https://www.octotree.io/</a></p>
+<h2 data-passage-key="8585fca6d8ca" id="octotree"><a class="headerlink" href="#octotree" title="octotree"></a>octotree</h2><p data-passage-key="b84be44810ce" id="passage-d2e20088e7f6">上图左侧的GitHub文件树状展示使用的插件</p>
+<p data-passage-key="0e3cc8fbb175" id="passage-21d2789ccc6c"><a href="https://www.octotree.io/" rel="noopener" target="_blank">https://www.octotree.io/</a></p>
 <p><img alt="octotree" decoding="async" height="688" loading="lazy" src="/images/blog-media/ff9f8ebcb72d1a6dc771.webp" width="1080"/></p></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
+        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
+        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
+          <header class="passage-dialog-header">
+            <h2 id="passage-comment-title">段落评论</h2>
+            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
+          </header>
+          <div class="passage-dialog-content">
+            <blockquote data-passage-excerpt></blockquote>
+            <a data-passage-source>查看原文</a>
+            <p data-passage-status role="status"></p>
+            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
+            <div data-passage-widget></div>
+          </div>
+        </dialog>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/2g9bzTCekEi52LfdnZqIhg">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Chrome-%E6%89%A9%E5%B1%95/">Chrome 扩展</a><a href="/tags/%E6%95%88%E7%8E%87%E5%B7%A5%E5%85%B7/">效率工具</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
@@ -112,16 +124,6 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
-          <div class="comment-quote" data-comment-quote hidden>
-            <blockquote data-comment-quote-text></blockquote>
-            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
-            <p data-comment-quote-status role="status"></p>
-            <div class="comment-quote-actions">
-              <button type="button" data-copy-comment-quote>复制引用</button>
-              <a data-comment-quote-source>返回原文</a>
-              <button type="button" data-clear-comment-quote>取消引用</button>
-            </div>
-          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

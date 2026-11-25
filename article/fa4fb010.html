@@ -20,8 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/fa4fb010.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/fa4fb010.html">
-<script src="/js/comments.js?v=3" defer></script>
-<script src="/js/comment-quotes.js" defer></script>
+<script type="module" src="/js/discussions.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -57,71 +56,84 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E4%BD%BF%E7%94%A8Gitlab%E8%BF%9B%E8%A1%8C%E4%BB%A3%E7%A0%81%E7%AE%A1%E7%90%86%EF%BC%88Merge-requests%EF%BC%89">使用Gitlab进行代码管理（Merge requests）</a></li><li><a href="#Gitlab%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA">Gitlab环境搭建</a></li><li><a href="#Merge-requests">Merge requests</a></li><li><a href="#%E5%8F%91%E8%B5%B7%E4%B8%80%E6%AC%A1%E5%90%88%E5%B9%B6%E8%AF%B7%E6%B1%82">发起一次合并请求</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><h1 id="使用Gitlab进行代码管理（Merge-requests）"><a class="headerlink" href="#使用Gitlab进行代码管理（Merge-requests）" title="使用Gitlab进行代码管理（Merge requests）"></a>使用Gitlab进行代码管理（Merge requests）</h1><p><img alt="image-20190324220607374" decoding="async" height="592" loading="lazy" src="/images/blog-media/311663951c6dd64c2ff4.webp" width="1080"/></p>
-<p>从<a href="https://about.gitlab.com/" rel="noopener" target="_blank">Gitlab官网</a>的图中可以看到Gitlab支持软件开发的全流程。</p>
+        <div class="post-body" id="article-text"><h1 data-passage-key="831f36132ace" id="使用Gitlab进行代码管理（Merge-requests）"><a class="headerlink" href="#使用Gitlab进行代码管理（Merge-requests）" title="使用Gitlab进行代码管理（Merge requests）"></a>使用Gitlab进行代码管理（Merge requests）</h1><p><img alt="image-20190324220607374" decoding="async" height="592" loading="lazy" src="/images/blog-media/311663951c6dd64c2ff4.webp" width="1080"/></p>
+<p data-passage-key="e1c18ec19aab" id="passage-cafd60b00259">从<a href="https://about.gitlab.com/" rel="noopener" target="_blank">Gitlab官网</a>的图中可以看到Gitlab支持软件开发的全流程。</p>
 <span id="more"></span>
-<h2 id="Gitlab环境搭建"><a class="headerlink" href="#Gitlab环境搭建" title="Gitlab环境搭建"></a>Gitlab环境搭建</h2><p>由于准备在内网中使用，所以使用的是开源版。</p>
-<p>网上有很多的搭建方式，但是为了简单直接采用官网的Docker镜像进行搭建。</p>
-<p>可以访问<a href="https://hub.docker.com/" rel="noopener" target="_blank">Docker Hub</a>或者直接使用<code>docker search gitlab</code>来进行搜索</p>
+<h2 data-passage-key="745c9a035705" id="Gitlab环境搭建"><a class="headerlink" href="#Gitlab环境搭建" title="Gitlab环境搭建"></a>Gitlab环境搭建</h2><p data-passage-key="915624706bb5" id="passage-e925361c510a">由于准备在内网中使用，所以使用的是开源版。</p>
+<p data-passage-key="8bbe062613d0" id="passage-6e5308a1121e">网上有很多的搭建方式，但是为了简单直接采用官网的Docker镜像进行搭建。</p>
+<p data-passage-key="91bc250b0c76" id="passage-e356783a2ad2">可以访问<a href="https://hub.docker.com/" rel="noopener" target="_blank">Docker Hub</a>或者直接使用<code>docker search gitlab</code>来进行搜索</p>
 <p><img alt="image-20190324221130310" decoding="async" height="675" loading="lazy" src="/images/blog-media/e633980f316ad192bdbb.webp" width="1080"/></p>
-<p>根据STARS和描述选择gitlab/gitlab-ce</p>
-<blockquote>
-<p>docker run -d –name gitlab -p 8443:443 -p 9000:9000 -p 8022:22 –restart always -v /home/zx/data/gitlab/config:/etc/gitlab -v /home/zx/data/gitlab/logs:/var/log/gitlab -v /home/zx/data/gitlab/data:/var/opt/gitlab gitlab/gitlab-ce</p>
+<p data-passage-key="456307f254b6" id="passage-79ff59ae9024">根据STARS和描述选择gitlab/gitlab-ce</p>
+<blockquote data-passage-key="04de500f9c0d" id="passage-e90e175b479b">
+<p data-passage-key="13b1b24828f4" id="passage-64aa73b774be">docker run -d –name gitlab -p 8443:443 -p 9000:9000 -p 8022:22 –restart always -v /home/zx/data/gitlab/config:/etc/gitlab -v /home/zx/data/gitlab/logs:/var/log/gitlab -v /home/zx/data/gitlab/data:/var/opt/gitlab gitlab/gitlab-ce</p>
 </blockquote>
-<p>使用docker运行该镜像，简单解释一下各个参数的作用：</p>
-<p><code>--name</code>：指定容器的名称</p>
-<p><code>-p </code>：端口映射</p>
-<p><code>—restart always</code>：出现异常后自动重启</p>
-<p><code>-v</code>：挂载至本地位置</p>
-<p>执行完成后等待一段时间就可以通过页面访问本地搭建的Gitlab了</p>
+<p data-passage-key="47f91d557304" id="passage-715802de21c7">使用docker运行该镜像，简单解释一下各个参数的作用：</p>
+<p data-passage-key="5a07d3a864b6" id="passage-c31e7c08a06b"><code>--name</code>：指定容器的名称</p>
+<p data-passage-key="e187266417da" id="passage-28aebac5d962"><code>-p </code>：端口映射</p>
+<p data-passage-key="43c26f85c21d" id="passage-0bed793e0f6d"><code>—restart always</code>：出现异常后自动重启</p>
+<p data-passage-key="c2e715b78239" id="passage-35f849f68af0"><code>-v</code>：挂载至本地位置</p>
+<p data-passage-key="8c66ab870bf7" id="passage-c751de3f2620">执行完成后等待一段时间就可以通过页面访问本地搭建的Gitlab了</p>
 <p><img alt="image-20190324221501025" decoding="async" height="658" loading="lazy" src="/images/blog-media/f5dba790cc7f5694fa61.webp" width="1080"/></p>
-<p>自行注册一个账号后就可以登录了。</p>
-<p>登录之后点击<code>New project</code>就可以自行创建一个新的项目了</p>
+<p data-passage-key="4108af9ca58b" id="passage-027389040085">自行注册一个账号后就可以登录了。</p>
+<p data-passage-key="a9f943d1c4e0" id="passage-4bbc866ac200">登录之后点击<code>New project</code>就可以自行创建一个新的项目了</p>
 <p><img alt="image-20190324221936260" decoding="async" height="196" loading="lazy" src="/images/blog-media/e185555227a335da0ab0.webp" width="1080"/></p>
-<h2 id="Merge-requests"><a class="headerlink" href="#Merge-requests" title="Merge requests"></a>Merge requests</h2><p>首先介绍合并请求这一个功能，如果你是项目的管理者， 可以进入Settings中找到<code>Merge requests</code>的配置</p>
+<h2 data-passage-key="12fa0944a009" id="Merge-requests"><a class="headerlink" href="#Merge-requests" title="Merge requests"></a>Merge requests</h2><p data-passage-key="93b8a866fdec" id="passage-65a761ede9c8">首先介绍合并请求这一个功能，如果你是项目的管理者， 可以进入Settings中找到<code>Merge requests</code>的配置</p>
 <p><img alt="image-20190324222123653" decoding="async" height="658" loading="lazy" src="/images/blog-media/3a0b87796e36a63f030a.webp" width="1080"/></p>
-<p><img alt="image-20190324222209377" decoding="async" height="607" loading="lazy" src="/images/blog-media/559cf39688bb69976409.webp" width="1080"/>翻译一下之后：</p>
+<p data-passage-key="eba41f8594e5" id="passage-068fc87df3a4"><img alt="image-20190324222209377" decoding="async" height="607" loading="lazy" src="/images/blog-media/559cf39688bb69976409.webp" width="1080"/>翻译一下之后：</p>
 <p><img alt="image-20190324222322972" decoding="async" height="571" loading="lazy" src="/images/blog-media/1d949ca09da10277a628.webp" width="1080"/></p>
-<p>由于没有强制的一支线开发的要求，所以不采用变基的方式进行合并，所以选择第一个选项<code>合并提交</code></p>
-<p>下面的选项看上去蛮有用的，所以全钩上了</p>
-<h3 id="发起一次合并请求"><a class="headerlink" href="#发起一次合并请求" title="发起一次合并请求"></a>发起一次合并请求</h3><p>首先将代码从远端克隆至本地</p>
+<p data-passage-key="f5e17386249c" id="passage-2a4ece4a7def">由于没有强制的一支线开发的要求，所以不采用变基的方式进行合并，所以选择第一个选项<code>合并提交</code></p>
+<p data-passage-key="12387ed79213" id="passage-05bd215e150d">下面的选项看上去蛮有用的，所以全钩上了</p>
+<h3 data-passage-key="01b01702ca99" id="发起一次合并请求"><a class="headerlink" href="#发起一次合并请求" title="发起一次合并请求"></a>发起一次合并请求</h3><p data-passage-key="a07468703980" id="passage-69a9773ccdc7">首先将代码从远端克隆至本地</p>
 <p><img alt="image-20190324222750440" decoding="async" height="309" loading="lazy" src="/images/blog-media/8e46c3604a3abcb43529.webp" width="1080"/></p>
 <p><img alt="image-20190324222841889" decoding="async" height="756" loading="lazy" src="/images/blog-media/56a5bf418594b7a07c48.webp" width="1080"/></p>
-<blockquote>
-<p>git clone <a href="http://123.56.13.233:9000/z05035/gitlab_test.git" rel="noopener" target="_blank">http://123.56.13.233:9000/z05035/gitlab_test.git</a></p>
+<blockquote data-passage-key="855cb971bc7d" id="passage-b1e62fc83efa">
+<p data-passage-key="d0290dac26bb" id="passage-09db4007d45b">git clone <a href="http://123.56.13.233:9000/z05035/gitlab_test.git" rel="noopener" target="_blank">http://123.56.13.233:9000/z05035/gitlab_test.git</a></p>
 </blockquote>
-<p>现在项目已经在本地了，由于是刚克隆下来的，所以默认在master分支上</p>
-<p>我们从当前的的节点拉出一个新的分支tmp，并切换至tmp分支</p>
-<blockquote>
-<p>git branch tmp</p>
-<p>git checkout tmp</p>
+<p data-passage-key="b46b64cbc90b" id="passage-47f67aea0e3d">现在项目已经在本地了，由于是刚克隆下来的，所以默认在master分支上</p>
+<p data-passage-key="7fc8ed151dfa" id="passage-89b5c603abe7">我们从当前的的节点拉出一个新的分支tmp，并切换至tmp分支</p>
+<blockquote data-passage-key="5640375bac69" id="passage-549d51b64819">
+<p data-passage-key="64a71fb0bda3" id="passage-12439441f1a9">git branch tmp</p>
+<p data-passage-key="f19b7a5377c1" id="passage-53c428368e30">git checkout tmp</p>
 </blockquote>
 <p><img alt="image-20190324223047959" decoding="async" height="158" loading="lazy" src="/images/blog-media/c90f8e7affb5cf0488cd.webp" width="1080"/></p>
-<p>下面在tmp分支上进行修改</p>
-<blockquote>
-<p>vim 1.py</p>
-<p>git add 1.py </p>
-<p>git commit -m ‘add for’</p>
-<p>git push –set-upstream origin tmp</p>
+<p data-passage-key="b2e418399e20" id="passage-c80c4f11e70c">下面在tmp分支上进行修改</p>
+<blockquote data-passage-key="cdc867562f3a" id="passage-c213d9220355">
+<p data-passage-key="24a79d590a67" id="passage-41ac67a27016">vim 1.py</p>
+<p data-passage-key="a513b56460d1" id="passage-308cd76fc12a">git add 1.py </p>
+<p data-passage-key="9029dcb9b0a0" id="passage-250ee565e8ce">git commit -m ‘add for’</p>
+<p data-passage-key="72cc7139c062" id="passage-e3eace663f91">git push –set-upstream origin tmp</p>
 </blockquote>
 <p><img alt="image-20190324223349583" decoding="async" height="752" loading="lazy" src="/images/blog-media/9adc1622296bba1aaf49.webp" width="1080"/></p>
-<p>根据提示信息一步步完成分支的创建，修改，提交</p>
-<p>下面来到gitlab服务器发起<code>合并请求</code></p>
+<p data-passage-key="a4a91b424d4a" id="passage-0d8fb1f3567a">根据提示信息一步步完成分支的创建，修改，提交</p>
+<p data-passage-key="ea85bd34e00d" id="passage-43e9994fb364">下面来到gitlab服务器发起<code>合并请求</code></p>
 <p><img alt="image-20190324223454433" decoding="async" height="658" loading="lazy" src="/images/blog-media/cf703dee33009666701a.webp" width="1080"/></p>
-<p>gitlab自动识别到我们新建了一个分支，所以它会有一行蓝色的创建合并的语句，以下分别是中英文的提交请求页面<img alt="Xnip2019-03-24_22-36-51" decoding="async" height="1123" loading="lazy" src="/images/blog-media/b52a367cf1f1df218e99.webp" width="1080"/></p>
+<p data-passage-key="19a0a394ef2b" id="passage-9508b42afee6">gitlab自动识别到我们新建了一个分支，所以它会有一行蓝色的创建合并的语句，以下分别是中英文的提交请求页面<img alt="Xnip2019-03-24_22-36-51" decoding="async" height="1123" loading="lazy" src="/images/blog-media/b52a367cf1f1df218e99.webp" width="1080"/></p>
 <p><img alt="Xnip2019-03-24_22-36-14" decoding="async" height="1054" loading="lazy" src="/images/blog-media/e295b36d8a84442742e9.webp" width="1080"/></p>
-<p>写一下描述就可以提交了，大部分内容没有特殊需求可以不用更改</p>
+<p data-passage-key="27b8934f3978" id="passage-d6a1e998feed">写一下描述就可以提交了，大部分内容没有特殊需求可以不用更改</p>
 <p><img alt="Xnip2019-03-24_22-39-22" decoding="async" height="687" loading="lazy" src="/images/blog-media/414bf45b730f33b7742b.webp" width="1080"/></p>
-<p>点击Merge就可以合并了</p>
-<p>不过这样就自己的项目自己合并没什么意义，所以现在新建一个用户来进行提交</p>
-<p>把新创建的用户加入到项目的成员中，并且身份是开发者</p>
+<p data-passage-key="bb85be6cfa3b" id="passage-83974190dae1">点击Merge就可以合并了</p>
+<p data-passage-key="6f5ba2151910" id="passage-4d6c9b47e057">不过这样就自己的项目自己合并没什么意义，所以现在新建一个用户来进行提交</p>
+<p data-passage-key="4f9c857a82f3" id="passage-e955ff11de93">把新创建的用户加入到项目的成员中，并且身份是开发者</p>
 <p><img alt="image-20190324224257551" decoding="async" height="658" loading="lazy" src="/images/blog-media/67a9dffa685c7a30916f.webp" width="1080"/></p>
 <p><img alt="image-20190324224349249" decoding="async" height="204" loading="lazy" src="/images/blog-media/291e2aabe4cc65e2bf69.webp" width="1080"/></p>
-<p>成员表中就增加了新创建的那个用户了。</p>
-<p>下面用开发者账户发起一个合并请求</p>
+<p data-passage-key="b06903b0f4fa" id="passage-171b81ce1320">成员表中就增加了新创建的那个用户了。</p>
+<p data-passage-key="0290b5970296" id="passage-f6461b7784db">下面用开发者账户发起一个合并请求</p>
 <p><img alt="image-20190324224711611" decoding="async" height="876" loading="lazy" src="/images/blog-media/84130cf6f21f97be7f4c.webp" width="1080"/></p>
-<p>可以看到请求无法直接被合并，需要有写权限的用户才能合并，切换回管理员账户进行查看，发现按钮变绿了。可以正常合并和提交了。</p></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
+<p data-passage-key="ffe9fd94f379" id="passage-b767df566877">可以看到请求无法直接被合并，需要有写权限的用户才能合并，切换回管理员账户进行查看，发现按钮变绿了。可以正常合并和提交了。</p></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
+        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
+          <header class="passage-dialog-header">
+            <h2 id="passage-comment-title">段落评论</h2>
+            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
+          </header>
+          <div class="passage-dialog-content">
+            <blockquote data-passage-excerpt></blockquote>
+            <a data-passage-source>查看原文</a>
+            <p data-passage-status role="status"></p>
+            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
+            <div data-passage-widget></div>
+          </div>
+        </dialog>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/SBM5i-HqbZc-P4b-CkKGAA">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Git/">Git</a><a href="/tags/GitLab/">GitLab</a><a href="/tags/%E5%90%88%E5%B9%B6%E8%AF%B7%E6%B1%82/">合并请求</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/Git/">Git</a></div>
@@ -133,16 +145,6 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
-          <div class="comment-quote" data-comment-quote hidden>
-            <blockquote data-comment-quote-text></blockquote>
-            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
-            <p data-comment-quote-status role="status"></p>
-            <div class="comment-quote-actions">
-              <button type="button" data-copy-comment-quote>复制引用</button>
-              <a data-comment-quote-source>返回原文</a>
-              <button type="button" data-clear-comment-quote>取消引用</button>
-            </div>
-          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

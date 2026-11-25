@@ -20,8 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/49ec7e33.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/49ec7e33.html">
-<script src="/js/comments.js?v=3" defer></script>
-<script src="/js/comment-quotes.js" defer></script>
+<script type="module" src="/js/discussions.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -57,117 +56,130 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#CSV%E6%95%B0%E6%8D%AE%E6%96%87%E4%BB%B6%E8%AE%BE%E7%BD%AE">CSV数据文件设置</a></li><li><a href="#%E6%96%87%E4%BB%B6%E5%90%8D">文件名</a></li><li><a href="#%E5%BF%BD%E7%95%A5%E9%A6%96%E8%A1%8C">忽略首行</a></li><li><a href="#%E5%88%86%E9%9A%94%E7%AC%A6">分隔符</a></li><li><a href="#%E6%98%AF%E5%90%A6%E5%85%81%E8%AE%B8%E5%B8%A6%E5%BC%95%E5%8F%B7%EF%BC%88%E8%8B%B1%E6%96%87%E5%8F%8C%E5%BC%95%E5%8F%B7%EF%BC%89">是否允许带引号（英文双引号）</a></li><li><a href="#%E9%81%87%E5%88%B0%E6%96%87%E4%BB%B6%E7%BB%93%E6%9D%9F%E7%AC%A6%E5%86%8D%E6%AC%A1%E5%BE%AA%E7%8E%AF">遇到文件结束符再次循环</a></li><li><a href="#%E9%81%87%E5%88%B0%E6%96%87%E4%BB%B6%E7%BB%93%E6%9D%9F%E7%AC%A6%E5%81%9C%E6%AD%A2%E7%BA%BF%E7%A8%8B">遇到文件结束符停止线程</a></li><li><a href="#%E5%85%B6%E4%BB%96%E5%8D%8F%E8%AE%AE">其他协议</a></li><li><a href="#SOAP">SOAP</a></li><li><a href="#JDBC">JDBC</a></li><li><a href="#%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE">环境配置</a></li><li><a href="#%E8%BF%9E%E6%8E%A5%E6%B5%8B%E8%AF%95">连接测试</a></li><li><a href="#Query-Type">Query Type</a></li><li><a href="#%E8%84%9A%E6%9C%AC%E6%80%A7%E8%83%BD%E8%BD%AC%E6%8D%A2">脚本性能转换</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><span id="11-其他协议"></span><h2 id="CSV数据文件设置"><a class="headerlink" href="#CSV数据文件设置" title="CSV数据文件设置"></a>CSV数据文件设置</h2><h3 id="文件名"><a class="headerlink" href="#文件名" title="文件名"></a>文件名</h3><ul>
-<li><p>通过「浏览」来选择，这个路径是「绝对路径」</p>
+        <div class="post-body" id="article-text"><span id="11-其他协议"></span><h2 data-passage-key="58c62f62fb05" id="CSV数据文件设置"><a class="headerlink" href="#CSV数据文件设置" title="CSV数据文件设置"></a>CSV数据文件设置</h2><h3 data-passage-key="a6e48adc26d6" id="文件名"><a class="headerlink" href="#文件名" title="文件名"></a>文件名</h3><ul>
+<li data-passage-key="8898be8bca2f" id="passage-17a3b5dcbbee"><p data-passage-key="caf61b6399a1" id="passage-e6fffdaa8e21">通过「浏览」来选择，这个路径是「绝对路径」</p>
 </li>
-<li><p>「相对路径」</p>
+<li data-passage-key="64e8567bc29e" id="passage-c425a9296dd1"><p data-passage-key="7e9cd6ce80a6" id="passage-a888384acf31">「相对路径」</p>
 </li>
 </ul>
-<p>写法：</p>
-<p>使用<code>./</code> 或<code>.\</code>开始。建议使用<code>.\</code>。因为这个是linux下的写法，并且在windows下也可以正常使用</p>
-<p>从哪个地方相对开始：</p>
-<p>从当前<code>jmx</code>文件保存的路径</p>
+<p data-passage-key="5af6a483d7f9" id="passage-844ab1d249cf">写法：</p>
+<p data-passage-key="afbfd9612b69" id="passage-93b0b36dd58d">使用<code>./</code> 或<code>.\</code>开始。建议使用<code>.\</code>。因为这个是linux下的写法，并且在windows下也可以正常使用</p>
+<p data-passage-key="6beb1e26a9ea" id="passage-4d6f468e48ce">从哪个地方相对开始：</p>
+<p data-passage-key="12f4c2bd9ef4" id="passage-b0d1560091e3">从当前<code>jmx</code>文件保存的路径</p>
 <span id="more"></span>
-<h3 id="忽略首行"><a class="headerlink" href="#忽略首行" title="忽略首行"></a>忽略首行</h3><p>选择「True」，则从第二行开始</p>
-<h3 id="分隔符"><a class="headerlink" href="#分隔符" title="分隔符"></a>分隔符</h3><p>默认以「，」来进行分隔</p>
-<p>当分隔出多列，但是其中某些列不需要使用。在「变量名称」中使用「空格+英文逗号」进行占位</p>
-<h3 id="是否允许带引号（英文双引号）"><a class="headerlink" href="#是否允许带引号（英文双引号）" title="是否允许带引号（英文双引号）"></a>是否允许带引号（英文双引号）</h3><ul>
-<li>True：引用变量携带引号</li>
-<li>False：引用变量自动去除引号</li>
+<h3 data-passage-key="49b048974295" id="忽略首行"><a class="headerlink" href="#忽略首行" title="忽略首行"></a>忽略首行</h3><p data-passage-key="27e4f68767cf" id="passage-d3cd4ab3c633">选择「True」，则从第二行开始</p>
+<h3 data-passage-key="0415f31a96cd" id="分隔符"><a class="headerlink" href="#分隔符" title="分隔符"></a>分隔符</h3><p data-passage-key="59941c1fc5ca" id="passage-68538eebfab4">默认以「，」来进行分隔</p>
+<p data-passage-key="e876c0e43f55" id="passage-c056966842f6">当分隔出多列，但是其中某些列不需要使用。在「变量名称」中使用「空格+英文逗号」进行占位</p>
+<h3 data-passage-key="5f4987dc0bdb" id="是否允许带引号（英文双引号）"><a class="headerlink" href="#是否允许带引号（英文双引号）" title="是否允许带引号（英文双引号）"></a>是否允许带引号（英文双引号）</h3><ul>
+<li data-passage-key="98e3661684ff" id="passage-405fbfe6a8fd">True：引用变量携带引号</li>
+<li data-passage-key="97a15db1b865" id="passage-43ff763a1252">False：引用变量自动去除引号</li>
 </ul>
-<h3 id="遇到文件结束符再次循环"><a class="headerlink" href="#遇到文件结束符再次循环" title="遇到文件结束符再次循环"></a>遇到文件结束符再次循环</h3><p>比如文件有2行，循环6次，</p>
+<h3 data-passage-key="7c8c30680e5a" id="遇到文件结束符再次循环"><a class="headerlink" href="#遇到文件结束符再次循环" title="遇到文件结束符再次循环"></a>遇到文件结束符再次循环</h3><p data-passage-key="2b1f03c719ce" id="passage-fcefcf7b912b">比如文件有2行，循环6次，</p>
 <ul>
-<li>True：则2行2行的运行6次</li>
-<li>False：运行2行后剩余4次运行失败</li>
+<li data-passage-key="81ed2c127739" id="passage-4e667d15041b">True：则2行2行的运行6次</li>
+<li data-passage-key="ca7cb892f19c" id="passage-6ca7e4d2d583">False：运行2行后剩余4次运行失败</li>
 </ul>
-<h3 id="遇到文件结束符停止线程"><a class="headerlink" href="#遇到文件结束符停止线程" title="遇到文件结束符停止线程"></a>遇到文件结束符停止线程</h3><ul>
-<li>True：文件读取完停止任务</li>
-<li>False：运行到线程次数结束</li>
+<h3 data-passage-key="2864f9776db6" id="遇到文件结束符停止线程"><a class="headerlink" href="#遇到文件结束符停止线程" title="遇到文件结束符停止线程"></a>遇到文件结束符停止线程</h3><ul>
+<li data-passage-key="c19f8114db82" id="passage-83e3eb472e5f">True：文件读取完停止任务</li>
+<li data-passage-key="c3fa7c3eda76" id="passage-9d55653d5bc9">False：运行到线程次数结束</li>
 </ul>
-<h2 id="其他协议"><a class="headerlink" href="#其他协议" title="其他协议"></a>其他协议</h2><blockquote>
-<p>soap</p>
-<p>jdbc</p>
-<p>websocket</p>
-<p>mq</p>
-<p>dubbo</p>
+<h2 data-passage-key="03be1576a4d4" id="其他协议"><a class="headerlink" href="#其他协议" title="其他协议"></a>其他协议</h2><blockquote data-passage-key="8ba5feb81cf0" id="passage-126036025b5d">
+<p data-passage-key="719a042ec3e8" id="passage-b2895d64b664">soap</p>
+<p data-passage-key="0a6a915ee68f" id="passage-7c127914b44d">jdbc</p>
+<p data-passage-key="2954449d3a4d" id="passage-b9c9f9600421">websocket</p>
+<p data-passage-key="6b30fb691a9f" id="passage-812ed11d01f3">mq</p>
+<p data-passage-key="e6a78f5ff2c0" id="passage-1322ca280ca9">dubbo</p>
 </blockquote>
-<h3 id="SOAP"><a class="headerlink" href="#SOAP" title="SOAP"></a>SOAP</h3><p><code>webservice</code>是一个web的应用程序，使用xml向外界暴露可供调用的API接口</p>
-<p>SOAP以「http+xml」进行数据传输</p>
-<p>测试地址：<a href="http://www.webxml.com.cn/zh_cn/web_services.aspx" rel="noopener" target="_blank">http://www.webxml.com.cn/zh_cn/web_services.aspx</a></p>
-<p> 获得中国省份、直辖市、地区和与之对应的ID：<a href="http://ws.webxml.com.cn/WebServices/WeatherWS.asmx?op=getRegionProvince" rel="noopener" target="_blank">http://ws.webxml.com.cn/WebServices/WeatherWS.asmx?op=getRegionProvince</a></p>
-<h4 id="soap1-1"><a class="headerlink" href="#soap1-1" title="soap1.1"></a>soap1.1</h4><blockquote>
-<p>xml中为soap</p>
-<p>头部中需要有：<code>SOAPAction</code></p>
+<h3 data-passage-key="2e460ba72bb8" id="SOAP"><a class="headerlink" href="#SOAP" title="SOAP"></a>SOAP</h3><p data-passage-key="8dff0dba50bb" id="passage-85a5846ddb5c"><code>webservice</code>是一个web的应用程序，使用xml向外界暴露可供调用的API接口</p>
+<p data-passage-key="e3de74eb22da" id="passage-9491578924dc">SOAP以「http+xml」进行数据传输</p>
+<p data-passage-key="da6e34e7f501" id="passage-edae4ff307f5">测试地址：<a href="http://www.webxml.com.cn/zh_cn/web_services.aspx" rel="noopener" target="_blank">http://www.webxml.com.cn/zh_cn/web_services.aspx</a></p>
+<p data-passage-key="284921c00274" id="passage-b69a3bed22a3"> 获得中国省份、直辖市、地区和与之对应的ID：<a href="http://ws.webxml.com.cn/WebServices/WeatherWS.asmx?op=getRegionProvince" rel="noopener" target="_blank">http://ws.webxml.com.cn/WebServices/WeatherWS.asmx?op=getRegionProvince</a></p>
+<h4 data-passage-key="2bdabc73cf23" id="soap1-1"><a class="headerlink" href="#soap1-1" title="soap1.1"></a>soap1.1</h4><blockquote data-passage-key="9c7f67a7227c" id="passage-7d48f8ef6155">
+<p data-passage-key="2eb2bc6fbe57" id="passage-be8215296bda">xml中为soap</p>
+<p data-passage-key="2668a2bba5de" id="passage-629b0117c58b">头部中需要有：<code>SOAPAction</code></p>
 </blockquote>
-<figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/></pre></td><td class="code"><pre><span class="line">POST /WebServices/WeatherWS.asmx HTTP/1.1</span><br/><span class="line">Host: ws.webxml.com.cn</span><br/><span class="line">Content-Type: text/xml; charset=utf-8</span><br/><span class="line">Content-Length: length</span><br/><span class="line">SOAPAction: "http://WebXml.com.cn/getRegionProvince"</span><br/><span class="line"></span><br/><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br/><span class="line"><span class="tag">&lt;<span class="name">soap:Envelope</span> <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span> <span class="attr">xmlns:xsd</span>=<span class="string">"http://www.w3.org/2001/XMLSchema"</span> <span class="attr">xmlns:soap</span>=<span class="string">"http://schemas.xmlsoap.org/soap/envelope/"</span>&gt;</span></span><br/><span class="line">  <span class="tag">&lt;<span class="name">soap:Body</span>&gt;</span></span><br/><span class="line">    <span class="tag">&lt;<span class="name">getRegionProvince</span> <span class="attr">xmlns</span>=<span class="string">"http://WebXml.com.cn/"</span> /&gt;</span></span><br/><span class="line">  <span class="tag">&lt;/<span class="name">soap:Body</span>&gt;</span></span><br/><span class="line"><span class="tag">&lt;/<span class="name">soap:Envelope</span>&gt;</span></span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/></pre></td><td class="code"><pre data-passage-key="8e37c6470725" id="passage-f1690bcb6c62"><span class="line">POST /WebServices/WeatherWS.asmx HTTP/1.1</span><br/><span class="line">Host: ws.webxml.com.cn</span><br/><span class="line">Content-Type: text/xml; charset=utf-8</span><br/><span class="line">Content-Length: length</span><br/><span class="line">SOAPAction: "http://WebXml.com.cn/getRegionProvince"</span><br/><span class="line"></span><br/><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br/><span class="line"><span class="tag">&lt;<span class="name">soap:Envelope</span> <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span> <span class="attr">xmlns:xsd</span>=<span class="string">"http://www.w3.org/2001/XMLSchema"</span> <span class="attr">xmlns:soap</span>=<span class="string">"http://schemas.xmlsoap.org/soap/envelope/"</span>&gt;</span></span><br/><span class="line">  <span class="tag">&lt;<span class="name">soap:Body</span>&gt;</span></span><br/><span class="line">    <span class="tag">&lt;<span class="name">getRegionProvince</span> <span class="attr">xmlns</span>=<span class="string">"http://WebXml.com.cn/"</span> /&gt;</span></span><br/><span class="line">  <span class="tag">&lt;/<span class="name">soap:Body</span>&gt;</span></span><br/><span class="line"><span class="tag">&lt;/<span class="name">soap:Envelope</span>&gt;</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="请求头" decoding="async" height="364" loading="lazy" src="/images/blog-media/3bed429d5a6f40dfd425.webp" width="1080"/></p>
 <p><img alt="请求" decoding="async" height="364" loading="lazy" src="/images/blog-media/007c314d65b6aca26b4c.webp" width="1080"/></p>
 <p><img alt="结果" decoding="async" height="746" loading="lazy" src="/images/blog-media/c59c676c67b1cb540c2f.webp" width="1080"/></p>
-<h4 id="soap1-2"><a class="headerlink" href="#soap1-2" title="soap1.2"></a>soap1.2</h4><blockquote>
-<p>xml中为soap12</p>
+<h4 data-passage-key="a348dd9b6423" id="soap1-2"><a class="headerlink" href="#soap1-2" title="soap1.2"></a>soap1.2</h4><blockquote data-passage-key="37b19217dab6" id="passage-10014b245d72">
+<p data-passage-key="96c0177c22ba" id="passage-167134526178">xml中为soap12</p>
 </blockquote>
-<figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/></pre></td><td class="code"><pre><span class="line">POST /WebServices/WeatherWS.asmx HTTP/1.1</span><br/><span class="line">Host: ws.webxml.com.cn</span><br/><span class="line">Content-Type: application/soap+xml; charset=utf-8</span><br/><span class="line">Content-Length: length</span><br/><span class="line"></span><br/><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br/><span class="line"><span class="tag">&lt;<span class="name">soap12:Envelope</span> <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span> <span class="attr">xmlns:xsd</span>=<span class="string">"http://www.w3.org/2001/XMLSchema"</span> <span class="attr">xmlns:soap12</span>=<span class="string">"http://www.w3.org/2003/05/soap-envelope"</span>&gt;</span></span><br/><span class="line">  <span class="tag">&lt;<span class="name">soap12:Body</span>&gt;</span></span><br/><span class="line">    <span class="tag">&lt;<span class="name">getRegionProvince</span> <span class="attr">xmlns</span>=<span class="string">"http://WebXml.com.cn/"</span> /&gt;</span></span><br/><span class="line">  <span class="tag">&lt;/<span class="name">soap12:Body</span>&gt;</span></span><br/><span class="line"><span class="tag">&lt;/<span class="name">soap12:Envelope</span>&gt;</span></span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/></pre></td><td class="code"><pre data-passage-key="b689ec048a62" id="passage-b3045a036b34"><span class="line">POST /WebServices/WeatherWS.asmx HTTP/1.1</span><br/><span class="line">Host: ws.webxml.com.cn</span><br/><span class="line">Content-Type: application/soap+xml; charset=utf-8</span><br/><span class="line">Content-Length: length</span><br/><span class="line"></span><br/><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br/><span class="line"><span class="tag">&lt;<span class="name">soap12:Envelope</span> <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span> <span class="attr">xmlns:xsd</span>=<span class="string">"http://www.w3.org/2001/XMLSchema"</span> <span class="attr">xmlns:soap12</span>=<span class="string">"http://www.w3.org/2003/05/soap-envelope"</span>&gt;</span></span><br/><span class="line">  <span class="tag">&lt;<span class="name">soap12:Body</span>&gt;</span></span><br/><span class="line">    <span class="tag">&lt;<span class="name">getRegionProvince</span> <span class="attr">xmlns</span>=<span class="string">"http://WebXml.com.cn/"</span> /&gt;</span></span><br/><span class="line">  <span class="tag">&lt;/<span class="name">soap12:Body</span>&gt;</span></span><br/><span class="line"><span class="tag">&lt;/<span class="name">soap12:Envelope</span>&gt;</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="请求头" decoding="async" height="174" loading="lazy" src="/images/blog-media/ee4426823897a205946f.webp" width="1080"/></p>
 <p><img alt="请求体" decoding="async" height="342" loading="lazy" src="/images/blog-media/439dfb33d6fa8d624874.webp" width="1080"/></p>
 <p><img alt="结果" decoding="async" height="735" loading="lazy" src="/images/blog-media/61afec6aab575674f901.webp" width="1080"/></p>
-<h2 id="JDBC"><a class="headerlink" href="#JDBC" title="JDBC"></a>JDBC</h2><blockquote>
-<p>是一种用于执行SQL语句的JAVA API</p>
-<p>通过这个api可以直接直接sql脚本</p>
+<h2 data-passage-key="f98cbc2dd7c9" id="JDBC"><a class="headerlink" href="#JDBC" title="JDBC"></a>JDBC</h2><blockquote data-passage-key="1fdaf5ad5d0d" id="passage-20d24f5e65f5">
+<p data-passage-key="49b67a0c9ba3" id="passage-e27a8eaa4285">是一种用于执行SQL语句的JAVA API</p>
+<p data-passage-key="27271beccc82" id="passage-4c3769e6b06a">通过这个api可以直接直接sql脚本</p>
 </blockquote>
-<h3 id="环境配置"><a class="headerlink" href="#环境配置" title="环境配置"></a>环境配置</h3><ul>
-<li><p>将<code>mysql-connector-java-***.jar</code>放到jmeter的<code>lib</code>目录下</p>
+<h3 data-passage-key="521571f8e32e" id="环境配置"><a class="headerlink" href="#环境配置" title="环境配置"></a>环境配置</h3><ul>
+<li data-passage-key="fcd326d5e290" id="passage-923a15c302b3"><p data-passage-key="91f63f902e78" id="passage-434d4e8e4577">将<code>mysql-connector-java-***.jar</code>放到jmeter的<code>lib</code>目录下</p>
 </li>
-<li><p>重启jmeter</p>
+<li data-passage-key="7bb9d7ba4f07" id="passage-1e1a567f1f69"><p data-passage-key="7c373f7d8f7e" id="passage-7a787058750a">重启jmeter</p>
 </li>
-<li><p>配置元件Config Element&gt;数据库连接配置JDBC Connection Configuration</p>
+<li data-passage-key="e3d7592c9ef7" id="passage-ef4ba59a8727"><p data-passage-key="7074d0d91521" id="passage-832815ff15a9">配置元件Config Element&gt;数据库连接配置JDBC Connection Configuration</p>
 </li>
 </ul>
 <p><img alt="截屏2021-04-21 下午7.49.36" decoding="async" height="427" loading="lazy" src="/images/blog-media/c65179e06992ab3cbe98.webp" width="308"/></p>
-<blockquote>
-<p>jmeter中引入jar包，建议放入到<code>lib</code>路径下</p>
-<p>不推荐使用引入的方式</p>
+<blockquote data-passage-key="6e9d4a281802" id="passage-a06ec285fc06">
+<p data-passage-key="e68394ee33f7" id="passage-552a8e4dd63a">jmeter中引入jar包，建议放入到<code>lib</code>路径下</p>
+<p data-passage-key="f37a29118bff" id="passage-66340aeceef9">不推荐使用引入的方式</p>
 </blockquote>
-<h3 id="连接测试"><a class="headerlink" href="#连接测试" title="连接测试"></a>连接测试</h3><ul>
-<li>添加取样器&gt;JDBC Request</li>
+<h3 data-passage-key="200f465659c1" id="连接测试"><a class="headerlink" href="#连接测试" title="连接测试"></a>连接测试</h3><ul>
+<li data-passage-key="ce5e516ebbb2" id="passage-5260293184b2">添加取样器&gt;JDBC Request</li>
 </ul>
 <p><img alt="取样器" decoding="async" height="446" loading="lazy" src="/images/blog-media/6616ee19a6027d114469.webp" width="228"/></p>
 <ul>
-<li>添加数据库连接信息</li>
+<li data-passage-key="f16c7db11a15" id="passage-ae283d322292">添加数据库连接信息</li>
 </ul>
 <ol>
-<li>Variable Name for created pool 创建一个连接池</li>
-<li>database URL：不同数据库的连接方式不一样。</li>
+<li data-passage-key="85015770b86e" id="passage-c59f5846eff3">Variable Name for created pool 创建一个连接池</li>
+<li data-passage-key="3e061c752962" id="passage-fc977ce9d127">database URL：不同数据库的连接方式不一样。</li>
 </ol>
-<p>sqLite:<code>jdbc:sqlite:c:\*.db</code></p>
-<p>mysql:<code>jdbc:mysql://&lt;host&gt;:&lt;port&gt;/&lt;database_name&gt;</code></p>
-<p>Oracle:<code>oracle:thin:@//&lt;host&gt;:&lt;port&gt;/ServiceName</code></p>
-<p>Microsoft SQL Server:<code>jdbc:sqlserver://&lt;server_name&gt;:&lt;port&gt;</code></p>
+<p data-passage-key="192370974b6e" id="passage-4a8529a12c73">sqLite:<code>jdbc:sqlite:c:\*.db</code></p>
+<p data-passage-key="d2745da424b8" id="passage-c9760a87de65">mysql:<code>jdbc:mysql://&lt;host&gt;:&lt;port&gt;/&lt;database_name&gt;</code></p>
+<p data-passage-key="280300c8aa3b" id="passage-66b118d06b8c">Oracle:<code>oracle:thin:@//&lt;host&gt;:&lt;port&gt;/ServiceName</code></p>
+<p data-passage-key="d1960da6760b" id="passage-f90bec722515">Microsoft SQL Server:<code>jdbc:sqlserver://&lt;server_name&gt;:&lt;port&gt;</code></p>
 <p><img alt="数据库连接" decoding="async" height="960" loading="lazy" src="/images/blog-media/cf0d1652745695bf3f77.webp" width="1080"/></p>
 <ol start="3">
-<li>在取样器中填写上连接池的名字</li>
+<li data-passage-key="46e6f625ad98" id="passage-2c924a9b62b4">在取样器中填写上连接池的名字</li>
 </ol>
 <p><img alt="取样器" decoding="async" height="215" loading="lazy" src="/images/blog-media/a02a61ce18a040ece059.webp" width="1080"/></p>
 <ol start="4">
-<li>运行后查看结果</li>
+<li data-passage-key="a83a0902d20f" id="passage-942880c9188d">运行后查看结果</li>
 </ol>
 <p><img alt="运行结果" decoding="async" height="802" loading="lazy" src="/images/blog-media/a3a7360a95bc779058bb.webp" width="1080"/></p>
-<h3 id="Query-Type"><a class="headerlink" href="#Query-Type" title="Query Type"></a>Query Type</h3><p><img alt="查询方式" decoding="async" height="296" loading="lazy" src="/images/blog-media/1d8f01fdba98bafd6640.webp" width="1080"/></p>
-<p>不带参数：</p>
+<h3 data-passage-key="09ba7bbf3c06" id="Query-Type"><a class="headerlink" href="#Query-Type" title="Query Type"></a>Query Type</h3><p><img alt="查询方式" decoding="async" height="296" loading="lazy" src="/images/blog-media/1d8f01fdba98bafd6640.webp" width="1080"/></p>
+<p data-passage-key="f71c9fe8bc41" id="passage-636a840a0cd6">不带参数：</p>
 <ul>
-<li>Select Statement 查询</li>
-<li>Update Statement 更新</li>
+<li data-passage-key="07ac22d9f989" id="passage-a6c87dd4ac65">Select Statement 查询</li>
+<li data-passage-key="1e4dc0ec885f" id="passage-012bf87fef74">Update Statement 更新</li>
 </ul>
-<p>携带参数：</p>
+<p data-passage-key="c8647d62ab18" id="passage-95b67b45b525">携带参数：</p>
 <ul>
-<li>Prepared Select Statement</li>
-<li>Prepared Update Statement</li>
+<li data-passage-key="c174103bf343" id="passage-1ab44ad339cb">Prepared Select Statement</li>
+<li data-passage-key="1f579a96d6e2" id="passage-da898d20f257">Prepared Update Statement</li>
 </ul>
-<h2 id="脚本性能转换"><a class="headerlink" href="#脚本性能转换" title="脚本性能转换"></a>脚本性能转换</h2><ul>
-<li>逻辑控制器：事务控制器</li>
-<li>造测试数据库：DDT数据驱动性能测试（CSV文件设置）</li>
-<li>线程组配置（性能场景设计）</li>
+<h2 data-passage-key="0798413c0f5c" id="脚本性能转换"><a class="headerlink" href="#脚本性能转换" title="脚本性能转换"></a>脚本性能转换</h2><ul>
+<li data-passage-key="4b3d32aa5fd3" id="passage-984a72009473">逻辑控制器：事务控制器</li>
+<li data-passage-key="be9a910e1c78" id="passage-2cf0293ca3c9">造测试数据库：DDT数据驱动性能测试（CSV文件设置）</li>
+<li data-passage-key="e9b3f5ee54c7" id="passage-3b46e2651616">线程组配置（性能场景设计）</li>
 </ul></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
+        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
+        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
+          <header class="passage-dialog-header">
+            <h2 id="passage-comment-title">段落评论</h2>
+            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
+          </header>
+          <div class="passage-dialog-content">
+            <blockquote data-passage-excerpt></blockquote>
+            <a data-passage-source>查看原文</a>
+            <p data-passage-status role="status"></p>
+            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
+            <div data-passage-widget></div>
+          </div>
+        </dialog>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/BUwme3YEnM5P4hsr9MZdrQ">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a><a href="/tags/%E5%8D%8F%E8%AE%AE/">协议</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a></div>
@@ -179,16 +191,6 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
-          <div class="comment-quote" data-comment-quote hidden>
-            <blockquote data-comment-quote-text></blockquote>
-            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
-            <p data-comment-quote-status role="status"></p>
-            <div class="comment-quote-actions">
-              <button type="button" data-copy-comment-quote>复制引用</button>
-              <a data-comment-quote-source>返回原文</a>
-              <button type="button" data-clear-comment-quote>取消引用</button>
-            </div>
-          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

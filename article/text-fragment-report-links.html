@@ -20,8 +20,7 @@
   <meta name="blog-cover" content="/images/blog-covers/text-fragment-report-links.webp">
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/text-fragment-report-links.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/text-fragment-report-links.html">
-<script src="/js/comments.js?v=3" defer></script>
-<script src="/js/comment-quotes.js" defer></script>
+<script type="module" src="/js/discussions.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -57,35 +56,48 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E5%85%88%E4%BB%8E%E4%B8%80%E6%AE%B5%E8%83%BD%E5%94%AF%E4%B8%80%E5%8C%B9%E9%85%8D%E7%9A%84%E6%96%87%E5%AD%97%E5%BC%80%E5%A7%8B">先从一段能唯一匹配的文字开始</a></li><li><a href="#%E5%90%8C%E4%B8%80%E4%B8%AA%E5%87%BD%E6%95%B0%E5%90%8D%E5%87%BA%E7%8E%B0%E4%B8%A4%E6%AC%A1%E6%80%8E%E4%B9%88%E5%8A%9E">同一个函数名出现两次怎么办</a></li><li><a href="#report-demo">在这篇里试一下</a></li><li><a href="#%E9%93%BE%E6%8E%A5%E4%BB%8D%E7%84%B6%E8%A6%81%E8%AE%A9%E4%BA%BA%E6%89%8B%E5%8A%A8%E6%89%BE%E5%BE%97%E5%88%B0">链接仍然要让人手动找得到</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><p>测试结果列出一个未覆盖的函数。点开覆盖率报告后，还得用搜索在页面里找函数名。如果报告已经给这一行分配了稳定的 <code>id</code>，直接用普通的章节锚点即可。只有可见文字时，可以用 URL 文本片段补上定位。</p>
-<h2 id="先从一段能唯一匹配的文字开始">先从一段能唯一匹配的文字开始</h2>
-<p>用户点击链接后，在支持文本片段的浏览器里，地址末尾的 <code>#:~:text=</code> 会告诉浏览器要查找哪段文字。找到后，页面会滚动过去并高亮。以下地址是格式示例，域名和报告路径都是构造的。<a href="https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Fragment/Text_fragments">MDN 文本片段说明</a></p>
-<pre class="text"><code class="language-text">https://example.com/report.html#:~:text=calculateTotal</code></pre>
+        <div class="post-body" id="article-text"><p data-passage-key="3912ef089741" id="passage-6f1f5d02c1db">测试结果列出一个未覆盖的函数。点开覆盖率报告后，还得用搜索在页面里找函数名。如果报告已经给这一行分配了稳定的 <code>id</code>，直接用普通的章节锚点即可。只有可见文字时，可以用 URL 文本片段补上定位。</p>
+<h2 data-passage-key="bb6c5837712c" id="先从一段能唯一匹配的文字开始">先从一段能唯一匹配的文字开始</h2>
+<p data-passage-key="5b879e509437" id="passage-fd495f4ec587">用户点击链接后，在支持文本片段的浏览器里，地址末尾的 <code>#:~:text=</code> 会告诉浏览器要查找哪段文字。找到后，页面会滚动过去并高亮。以下地址是格式示例，域名和报告路径都是构造的。<a href="https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Fragment/Text_fragments">MDN 文本片段说明</a></p>
+<pre class="text" data-passage-key="ff0b0e33cc5c" id="passage-6e4d572d0258"><code class="language-text">https://example.com/report.html#:~:text=calculateTotal</code></pre>
 <figure class="article-figure article-figure--supplement">
 <img alt="链接打开并定位目标函数" decoding="async" height="630" loading="lazy" src="/images/blog-media/text-fragment-report-links-diagram.webp" width="1120"/>
-<figcaption aria-hidden="true">构造的覆盖率报告示意。匹配成功后，浏览器滚动并高亮目标函数名。</figcaption>
+<figcaption aria-hidden="true" data-passage-key="dc9691d5a892" id="passage-a7dbd228dc2a">构造的覆盖率报告示意。匹配成功后，浏览器滚动并高亮目标函数名。</figcaption>
 </figure>
-<p>生成链接时，拿报告上确实显示的文字当输入。先只编码文字部分，再拼浏览器要识别的分隔符。空格转成 <code>%20</code>。词里出现的短横线转成 <code>%2D</code>，语法里用来连接前文和目标文字的短横线照原样写。</p>
-<h2 id="同一个函数名出现两次怎么办">同一个函数名出现两次怎么办</h2>
-<p>假如报告把两个模块的函数列表写在同一页，两个模块都可能出现 <code>calculateTotal</code>。单独搜索函数名，浏览器会命中第一个符合条件的地方。可以先给浏览器一小段相邻的前文，缩小范围。</p>
-<pre class="text"><code class="language-text">https://example.com/report.html#:~:text=module%20B-,calculateTotal</code></pre>
-<p>在这个链接里，浏览器要找的是紧邻 <code>module B</code> 之后的函数名，两段之间允许有空白。如果模块名放在另外的标题里，中间还隔着几个字段，就要换一段真正相邻的文字，或者直接改用模块的章节锚点。</p>
-<figure class="article-figure article-figure--supplement"><img alt="报告里出现两段相同文字，第二段连同邻近的前文被框出" decoding="async" height="800" loading="lazy" src="/images/blog-media/text-fragment-report-links-illustration.webp" width="1200"/><figcaption>AI 生成示意。目标文字重复时，紧邻文字的上下文可以把匹配范围缩小。</figcaption></figure>
-<h3 id="report-demo">在这篇里试一下</h3>
-<p>这两行是构造的报告内容。只给函数名，正文里其他地方也可能匹配。加上前文条件，下面的链接就会找第二行里的函数名。</p>
-<p id="report-module-a">
+<p data-passage-key="2928cd8b0193" id="passage-ec5fcfc8fdb0">生成链接时，拿报告上确实显示的文字当输入。先只编码文字部分，再拼浏览器要识别的分隔符。空格转成 <code>%20</code>。词里出现的短横线转成 <code>%2D</code>，语法里用来连接前文和目标文字的短横线照原样写。</p>
+<h2 data-passage-key="7376c55e3b29" id="同一个函数名出现两次怎么办">同一个函数名出现两次怎么办</h2>
+<p data-passage-key="5b05ce2ac1cd" id="passage-1791282a6f08">假如报告把两个模块的函数列表写在同一页，两个模块都可能出现 <code>calculateTotal</code>。单独搜索函数名，浏览器会命中第一个符合条件的地方。可以先给浏览器一小段相邻的前文，缩小范围。</p>
+<pre class="text" data-passage-key="b30964d4c2af" id="passage-8d94951067a5"><code class="language-text">https://example.com/report.html#:~:text=module%20B-,calculateTotal</code></pre>
+<p data-passage-key="137f27e93e3a" id="passage-c88ed5af517d">在这个链接里，浏览器要找的是紧邻 <code>module B</code> 之后的函数名，两段之间允许有空白。如果模块名放在另外的标题里，中间还隔着几个字段，就要换一段真正相邻的文字，或者直接改用模块的章节锚点。</p>
+<figure class="article-figure article-figure--supplement"><img alt="报告里出现两段相同文字，第二段连同邻近的前文被框出" decoding="async" height="800" loading="lazy" src="/images/blog-media/text-fragment-report-links-illustration.webp" width="1200"/><figcaption data-passage-key="efec9fb4fde3" id="passage-a341760adf45">AI 生成示意。目标文字重复时，紧邻文字的上下文可以把匹配范围缩小。</figcaption></figure>
+<h3 data-passage-key="3b90266312b4" id="report-demo">在这篇里试一下</h3>
+<p data-passage-key="79f277b3bb6e" id="passage-4f509766294a">这两行是构造的报告内容。只给函数名，正文里其他地方也可能匹配。加上前文条件，下面的链接就会找第二行里的函数名。</p>
+<p data-passage-key="002ba2a93123" id="report-module-a">
 module A calculateTotal
 </p>
-<p id="report-module-b">
+<p data-passage-key="4b08315208e2" id="report-module-b">
 module B calculateTotal
 </p>
 <ul>
-<li><a href="/article/text-fragment-report-links.html#:~:text=module%20B-,calculateTotal" rel="noopener" target="_blank">跳到 module B 的函数</a></li>
-<li><a href="#report-module-b">使用普通锚点跳到第二行</a></li>
+<li data-passage-key="e92a88fdc2c7" id="passage-7bdc7ea0e76e"><a href="/article/text-fragment-report-links.html#:~:text=module%20B-,calculateTotal" rel="noopener" target="_blank">跳到 module B 的函数</a></li>
+<li data-passage-key="e167d5dec4ef" id="passage-b77a6e839ec2"><a href="#report-module-b">使用普通锚点跳到第二行</a></li>
 </ul>
-<h2 id="链接仍然要让人手动找得到">链接仍然要让人手动找得到</h2>
-<p>报告重新生成以后，展示文字可能变化。文本片段没有匹配，或者浏览器不支持时，读者仍然能打开报告。链接旁留着模块名和函数名，方便手动搜索。生成链接后，至少点一次正常样本和一次重复函数名，看看落点是否符合预期，再把链接放进测试结果里。</p></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
+<h2 data-passage-key="1eadc3f5ce63" id="链接仍然要让人手动找得到">链接仍然要让人手动找得到</h2>
+<p data-passage-key="41181672baee" id="passage-8473dbce80af">报告重新生成以后，展示文字可能变化。文本片段没有匹配，或者浏览器不支持时，读者仍然能打开报告。链接旁留着模块名和函数名，方便手动搜索。生成链接后，至少点一次正常样本和一次重复函数名，看看落点是否符合预期，再把链接放进测试结果里。</p></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
+        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
+          <header class="passage-dialog-header">
+            <h2 id="passage-comment-title">段落评论</h2>
+            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
+          </header>
+          <div class="passage-dialog-content">
+            <blockquote data-passage-excerpt></blockquote>
+            <a data-passage-source>查看原文</a>
+            <p data-passage-status role="status"></p>
+            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
+            <div data-passage-widget></div>
+          </div>
+        </dialog>
 
         <div class="post-tags" aria-label="文章标签"><a href="/tags/%E6%96%87%E6%9C%AC%E7%89%87%E6%AE%B5/">文本片段</a><a href="/tags/%E6%B5%8B%E8%AF%95%E6%8A%A5%E5%91%8A/">测试报告</a><a href="/tags/%E6%B5%8F%E8%A7%88%E5%99%A8/">浏览器</a></div>
         <div class="legacy-tags" hidden></div>
@@ -97,16 +109,6 @@ module B calculateTotal
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
-          <div class="comment-quote" data-comment-quote hidden>
-            <blockquote data-comment-quote-text></blockquote>
-            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
-            <p data-comment-quote-status role="status"></p>
-            <div class="comment-quote-actions">
-              <button type="button" data-copy-comment-quote>复制引用</button>
-              <a data-comment-quote-source>返回原文</a>
-              <button type="button" data-clear-comment-quote>取消引用</button>
-            </div>
-          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

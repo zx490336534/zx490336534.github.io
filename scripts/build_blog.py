@@ -8,6 +8,7 @@ import argparse
 from collections import defaultdict
 from dataclasses import dataclass, field
 from datetime import date
+from hashlib import sha256
 from html import escape, unescape
 import json
 from pathlib import Path
@@ -108,6 +109,23 @@ def prepare_body(body, title):
             ids.add(anchor)
         if heading.name in {"h1", "h2", "h3"}:
             headings.append((heading["id"], label))
+    passages = "p, li, dt, dd, pre, blockquote, figcaption, h1, h2, h3, h4, h5, h6, section, div"
+    for block in body.select(passages):
+        if block.find_parent(class_="gutter") or (block.name in {"section", "div"} and block.select_one(passages)):
+            continue
+        text = compact(block.get_text(" ", strip=True))
+        if not text:
+            continue
+        if not block.get("id"):
+            base = "passage-" + sha256(f"{block.name}\n{text}".encode()).hexdigest()[:12]
+            anchor = base
+            suffix = 2
+            while anchor in ids:
+                anchor = f"{base}-{suffix}"
+                suffix += 1
+            block["id"] = anchor
+            ids.add(anchor)
+        block["data-passage-key"] = sha256(block["id"].encode()).hexdigest()[:12]
     for table in body.find_all("table"):
         if table.find_parent("figure", class_="highlight") or table.find_parent(class_="table-scroll"):
             continue
@@ -559,16 +577,6 @@ def article(post, older, newer, series_position=None):
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
-          <div class="comment-quote" data-comment-quote hidden>
-            <blockquote data-comment-quote-text></blockquote>
-            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
-            <p data-comment-quote-status role="status"></p>
-            <div class="comment-quote-actions">
-              <button type="button" data-copy-comment-quote>复制引用</button>
-              <a data-comment-quote-source>返回原文</a>
-              <button type="button" data-clear-comment-quote>取消引用</button>
-            </div>
-          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>
@@ -601,7 +609,20 @@ def article(post, older, newer, series_position=None):
       {outline}
       <div class="article-main">
         <div class="post-body" id="article-text">{post.body}</div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>{article_video(post)}
+        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
+        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
+          <header class="passage-dialog-header">
+            <h2 id="passage-comment-title">段落评论</h2>
+            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
+          </header>
+          <div class="passage-dialog-content">
+            <blockquote data-passage-excerpt></blockquote>
+            <a data-passage-source>查看原文</a>
+            <p data-passage-status role="status"></p>
+            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
+            <div data-passage-widget></div>
+          </div>
+        </dialog>{article_video(post)}
         {source}
         <div class="post-tags" aria-label="文章标签">{tags}</div>
         <div class="legacy-tags" hidden>{original_tags}</div>
@@ -612,8 +633,7 @@ def article(post, older, newer, series_position=None):
   </article>'''
     head = (
         f'{cover_meta}\n<meta name="giscus:backlink" content="{html(SITE + post.path)}">\n'
-        '<script src="/js/comments.js?v=3" defer></script>'
-        '\n<script src="/js/comment-quotes.js" defer></script>'
+        '<script type="module" src="/js/discussions.js"></script>'
     )
     return shell(post.display_title, post.path, content, post.description, head)
 

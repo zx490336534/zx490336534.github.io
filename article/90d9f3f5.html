@@ -20,8 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/90d9f3f5.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/90d9f3f5.html">
-<script src="/js/comments.js?v=3" defer></script>
-<script src="/js/comment-quotes.js" defer></script>
+<script type="module" src="/js/discussions.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -57,56 +56,69 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E9%9B%86%E7%BE%A4">集群</a></li><li><a href="#%E6%80%A7%E8%83%BD%E5%88%86%E5%B8%83%E5%BC%8F">性能分布式</a></li><li><a href="#%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E7%94%A8%E5%88%86%E5%B8%83%E5%BC%8F">什么时候用分布式</a></li><li><a href="#%E5%88%86%E5%B8%83%E5%BC%8F%E7%9A%84%E9%85%8D%E7%BD%AE">分布式的配置</a></li><li><a href="#%E5%89%8D%E6%8F%90%E6%9D%A1%E4%BB%B6">前提条件</a></li><li><a href="#slave">slave</a></li><li><a href="#master">master</a></li><li><a href="#%E5%90%AF%E5%8A%A8">启动</a></li><li><a href="#%E6%B3%A8%E6%84%8F">注意</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><span id="23-分布式"></span><h2 id="集群"><a class="headerlink" href="#集群" title="集群"></a>集群</h2><p>集合在一起的一群机器，多台机器向外提供服务器能力</p>
-<h2 id="性能分布式"><a class="headerlink" href="#性能分布式" title="性能分布式"></a>性能分布式</h2><p>多台机器分摊压力机，产生更大的并发，向服务器发起请求</p>
-<h2 id="什么时候用分布式"><a class="headerlink" href="#什么时候用分布式" title="什么时候用分布式"></a>什么时候用分布式</h2><p>在单台机器无法虚拟出更高并发数时</p>
+        <div class="post-body" id="article-text"><span id="23-分布式"></span><h2 data-passage-key="5318ca46e3da" id="集群"><a class="headerlink" href="#集群" title="集群"></a>集群</h2><p data-passage-key="ed5adf47f5b7" id="passage-a1edaa2849bc">集合在一起的一群机器，多台机器向外提供服务器能力</p>
+<h2 data-passage-key="8ddaa72b4510" id="性能分布式"><a class="headerlink" href="#性能分布式" title="性能分布式"></a>性能分布式</h2><p data-passage-key="f60b0b3d7085" id="passage-8534762376f2">多台机器分摊压力机，产生更大的并发，向服务器发起请求</p>
+<h2 data-passage-key="7437040d8382" id="什么时候用分布式"><a class="headerlink" href="#什么时候用分布式" title="什么时候用分布式"></a>什么时候用分布式</h2><p data-passage-key="90e4846cf89b" id="passage-aa1633a1483a">在单台机器无法虚拟出更高并发数时</p>
 <span id="more"></span>
-<h2 id="分布式的配置"><a class="headerlink" href="#分布式的配置" title="分布式的配置"></a>分布式的配置</h2><h3 id="前提条件"><a class="headerlink" href="#前提条件" title="前提条件"></a>前提条件</h3><ul>
-<li>安装jdk，且大版本一致</li>
+<h2 data-passage-key="c991b5150cc0" id="分布式的配置"><a class="headerlink" href="#分布式的配置" title="分布式的配置"></a>分布式的配置</h2><h3 data-passage-key="948fd8083430" id="前提条件"><a class="headerlink" href="#前提条件" title="前提条件"></a>前提条件</h3><ul>
+<li data-passage-key="16cfaa36412f" id="passage-8e4c846639fd">安装jdk，且大版本一致</li>
 </ul>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line">java -version</span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="b2da1b1c0f46" id="passage-4a93b79b88df"><span class="line">java -version</span><br/></pre></td></tr></tbody></table></figure>
 <ul>
-<li>jmeter的版本一致「包括插件」</li>
-<li>一个局域网中</li>
-<li>开放防火墙端口或者关闭防火墙</li>
+<li data-passage-key="208251c66635" id="passage-dfaaa09ea407">jmeter的版本一致「包括插件」</li>
+<li data-passage-key="805de0bf6545" id="passage-939e03cc5859">一个局域网中</li>
+<li data-passage-key="a3d4c4ca65c0" id="passage-1ce74b5526f8">开放防火墙端口或者关闭防火墙</li>
 </ul>
-<h3 id="slave"><a class="headerlink" href="#slave" title="slave"></a>slave</h3><ol>
-<li>操作系统可以任选，但是不能混合多种操作系统，最好是统一一种</li>
-<li>本地jmeter包上传到从机上，并修改bin文件中文件的执行权限</li>
+<h3 data-passage-key="183936b010c6" id="slave"><a class="headerlink" href="#slave" title="slave"></a>slave</h3><ol>
+<li data-passage-key="06210040ac5e" id="passage-f0a8f608b7b3">操作系统可以任选，但是不能混合多种操作系统，最好是统一一种</li>
+<li data-passage-key="c3a2d0424c8a" id="passage-dcf590363682">本地jmeter包上传到从机上，并修改bin文件中文件的执行权限</li>
 </ol>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line">chmod -R +x * #对当前文件夹下所有文件增加执行权限</span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="6ce5f6b530fe" id="passage-0c3af0c979a1"><span class="line">chmod -R +x * #对当前文件夹下所有文件增加执行权限</span><br/></pre></td></tr></tbody></table></figure>
 <ol start="3">
-<li>开启并修改<code>jmeter.properties</code>中</li>
+<li data-passage-key="b7ddc89d027d" id="passage-20949ba5a61c">开启并修改<code>jmeter.properties</code>中</li>
 </ol>
-<blockquote>
-<p>server_port 和 server.rmi.port 修改为同一个端口</p>
+<blockquote data-passage-key="5e6d2f41f0a7" id="passage-a2c37e9d5fcc">
+<p data-passage-key="23dc744b9c0c" id="passage-03f56e69fe08">server_port 和 server.rmi.port 修改为同一个端口</p>
 </blockquote>
 <ul>
-<li><code>server_port</code> </li>
-<li><code>server.rmi.port</code> </li>
-<li><code>server.rmi.ssl.disable=true</code>:不开启加密认证传输</li>
+<li data-passage-key="7d43542e2672" id="passage-48c98747f6f2"><code>server_port</code> </li>
+<li data-passage-key="2dbfe39d4a2a" id="passage-926d7d59b734"><code>server.rmi.port</code> </li>
+<li data-passage-key="56bfa6504b38" id="passage-e74035899907"><code>server.rmi.ssl.disable=true</code>:不开启加密认证传输</li>
 </ul>
 <ol start="4">
-<li>启动服务</li>
+<li data-passage-key="0f84044101dd" id="passage-181a8da6e9ad">启动服务</li>
 </ol>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> Linux</span></span><br/><span class="line">./jmeter-server -Djava.rmi.server.hostname=当前机器IP</span><br/><span class="line"><span class="meta">#</span><span class="bash"> Windows</span></span><br/><span class="line">jmeter-server.bat -Djava.rmi.server.hostname=当前机器IP</span><br/></pre></td></tr></tbody></table></figure>
-<h3 id="master"><a class="headerlink" href="#master" title="master"></a>master</h3><ol>
-<li>开启并修改<code>jmeter.properties</code>中</li>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre data-passage-key="da7cf43cf6cc" id="passage-f7d9adbe21bb"><span class="line"><span class="meta">#</span><span class="bash"> Linux</span></span><br/><span class="line">./jmeter-server -Djava.rmi.server.hostname=当前机器IP</span><br/><span class="line"><span class="meta">#</span><span class="bash"> Windows</span></span><br/><span class="line">jmeter-server.bat -Djava.rmi.server.hostname=当前机器IP</span><br/></pre></td></tr></tbody></table></figure>
+<h3 data-passage-key="fc613b4dfd67" id="master"><a class="headerlink" href="#master" title="master"></a>master</h3><ol>
+<li data-passage-key="dc4b59f22790" id="passage-20949ba5a61c-2">开启并修改<code>jmeter.properties</code>中</li>
 </ol>
 <ul>
-<li><code>remote_hosts</code>=<code>slaveIP:端口</code>,<code>slaveIP:端口</code>,<code>slaveIP:端口</code></li>
-<li><code>server.rmi.ssl.disable=true</code></li>
-<li><code>mode=Standard</code>:在slave机器上显示监控结果数据</li>
+<li data-passage-key="d5e573304546" id="passage-e3eec223b310"><code>remote_hosts</code>=<code>slaveIP:端口</code>,<code>slaveIP:端口</code>,<code>slaveIP:端口</code></li>
+<li data-passage-key="1c2a22a7bd65" id="passage-faf227de86ca"><code>server.rmi.ssl.disable=true</code></li>
+<li data-passage-key="b956cd2c5e49" id="passage-9e512e44618b"><code>mode=Standard</code>:在slave机器上显示监控结果数据</li>
 </ul>
-<h3 id="启动"><a class="headerlink" href="#启动" title="启动"></a>启动</h3><ol>
-<li><p>打开jmeter图形界面</p>
+<h3 data-passage-key="56410fc65314" id="启动"><a class="headerlink" href="#启动" title="启动"></a>启动</h3><ol>
+<li data-passage-key="4c69e14f37ed" id="passage-8bd7f2acd116"><p data-passage-key="336b71da17e6" id="passage-a4087463becc">打开jmeter图形界面</p>
 </li>
-<li><p>在<code>运行</code>-&gt;<code>远程启动</code>中选择<code>Slave</code>地址项</p>
+<li data-passage-key="f7561671f88f" id="passage-88ac0d6d1ef2"><p data-passage-key="b255dbc274ef" id="passage-c8cdec785261">在<code>运行</code>-&gt;<code>远程启动</code>中选择<code>Slave</code>地址项</p>
 </li>
 </ol>
 <p><img alt="远程启动" decoding="async" height="364" loading="lazy" src="/images/blog-media/f82940ccde038de7931c.webp" width="284"/></p>
-<h2 id="注意"><a class="headerlink" href="#注意" title="注意"></a>注意</h2><p>Slave上的机器执行完全按照Master机器的指令执行。包括场景、脚本。所以我们只需要修改master上的脚本就可以了，无需修改slave上的内容</p></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
+<h2 data-passage-key="4ffef8f3113a" id="注意"><a class="headerlink" href="#注意" title="注意"></a>注意</h2><p data-passage-key="a8b89afcc1b9" id="passage-ca0a073a444d">Slave上的机器执行完全按照Master机器的指令执行。包括场景、脚本。所以我们只需要修改master上的脚本就可以了，无需修改slave上的内容</p></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
+        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
+          <header class="passage-dialog-header">
+            <h2 id="passage-comment-title">段落评论</h2>
+            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
+          </header>
+          <div class="passage-dialog-content">
+            <blockquote data-passage-excerpt></blockquote>
+            <a data-passage-source>查看原文</a>
+            <p data-passage-status role="status"></p>
+            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
+            <div data-passage-widget></div>
+          </div>
+        </dialog>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/CGaYfaes6g91vb_qO-cN5A">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/">分布式系统</a><a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a></div>
@@ -118,16 +130,6 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
-          <div class="comment-quote" data-comment-quote hidden>
-            <blockquote data-comment-quote-text></blockquote>
-            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
-            <p data-comment-quote-status role="status"></p>
-            <div class="comment-quote-actions">
-              <button type="button" data-copy-comment-quote>复制引用</button>
-              <a data-comment-quote-source>返回原文</a>
-              <button type="button" data-clear-comment-quote>取消引用</button>
-            </div>
-          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

@@ -20,8 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/307fc095.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/307fc095.html">
-<script src="/js/comments.js?v=3" defer></script>
-<script src="/js/comment-quotes.js" defer></script>
+<script type="module" src="/js/discussions.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -57,84 +56,97 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E9%9D%A2%E5%90%91%E7%9B%AE%E6%A0%87%E7%9A%84%E5%9C%BA%E6%99%AF">面向目标的场景</a></li><li><a href="#%E6%B7%B7%E5%90%88%E5%9C%BA%E6%99%AF">混合场景</a></li><li><a href="#%E9%94%99%E8%AF%AF%E7%9A%84%E6%B7%B7%E5%90%88%E5%9C%BA%E6%99%AF">错误的混合场景</a></li><li><a href="#%E7%9C%9F%E6%AD%A3%E7%9A%84%E6%B7%B7%E5%90%88%E5%9C%BA%E6%99%AF">真正的混合场景</a></li><li><a href="#%E9%9A%BE%E7%82%B9">难点</a></li><li><a href="#%E5%B1%9E%E6%80%A7%E8%B7%A8%E7%BA%BF%E7%A8%8B%E7%BB%84">属性跨线程组</a></li><li><a href="#%E7%BA%BF%E7%A8%8B1%EF%BC%9A%E6%B3%A8%E5%86%8C">线程1：注册</a></li><li><a href="#%E7%BA%BF%E7%A8%8B2%EF%BC%9A%E7%99%BB%E5%BD%95">线程2：登录</a></li><li><a href="#%E9%97%AE%E9%A2%98">问题</a></li><li><a href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95">解决方法</a></li><li><a href="#%E6%B3%A2%E6%B5%AA%E5%9C%BA%E6%99%AF">波浪场景</a></li><li><a href="#jp-gc-Ultimate-Thread-Group">jp@gc - Ultimate Thread Group</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><span id="17-混合场景设计"></span><h2 id="面向目标的场景"><a class="headerlink" href="#面向目标的场景" title="面向目标的场景"></a>面向目标的场景</h2><ul>
-<li>Target Rate：TPS</li>
-<li>Ramp Up Time：启动时间</li>
-<li>Ramp-Up Steps Count：启动步长 总共可以调整的次数，如果少于总次数可以达到目标，那么后面剩余的次数就不会再调整。如果所有的调整次数都用完了，也无法达到目标，就是无法实现目标</li>
+        <div class="post-body" id="article-text"><span id="17-混合场景设计"></span><h2 data-passage-key="1df8c4d53599" id="面向目标的场景"><a class="headerlink" href="#面向目标的场景" title="面向目标的场景"></a>面向目标的场景</h2><ul>
+<li data-passage-key="aa2f6a8fb8b1" id="passage-5e014410234b">Target Rate：TPS</li>
+<li data-passage-key="8d2096f086a3" id="passage-dab49d9a8490">Ramp Up Time：启动时间</li>
+<li data-passage-key="76c596a06be3" id="passage-1ef25aeea811">Ramp-Up Steps Count：启动步长 总共可以调整的次数，如果少于总次数可以达到目标，那么后面剩余的次数就不会再调整。如果所有的调整次数都用完了，也无法达到目标，就是无法实现目标</li>
 </ul>
-<blockquote>
-<p>调整次数，调整的是「并发用户数」</p>
+<blockquote data-passage-key="42a83778245a" id="passage-89f4052575b0">
+<p data-passage-key="ebadafcd35dc" id="passage-c9327cb8bae0">调整次数，调整的是「并发用户数」</p>
 </blockquote>
-<p>在这个场景中，完全没有设置「并发用户数」的地方，是通过自动调整并发用户数来实现的</p>
+<p data-passage-key="048b9634ae91" id="passage-8a1e3b4055c5">在这个场景中，完全没有设置「并发用户数」的地方，是通过自动调整并发用户数来实现的</p>
 <p><img alt="bzm - Arrivals Thread Group" decoding="async" height="491" loading="lazy" src="/images/blog-media/676aa2dd0405cbb3e656.webp" width="1053"/></p>
 <span id="more"></span>
-<h2 id="混合场景"><a class="headerlink" href="#混合场景" title="混合场景"></a>混合场景</h2><h3 id="错误的混合场景"><a class="headerlink" href="#错误的混合场景" title="错误的混合场景"></a>错误的混合场景</h3><ol>
-<li><p>一个线程组中，挂载多个接口，向服务器发起请求。但是这种严格意义上来说，属于伪混合场景</p>
+<h2 data-passage-key="724805d86845" id="混合场景"><a class="headerlink" href="#混合场景" title="混合场景"></a>混合场景</h2><h3 data-passage-key="711aebb46003" id="错误的混合场景"><a class="headerlink" href="#错误的混合场景" title="错误的混合场景"></a>错误的混合场景</h3><ol>
+<li data-passage-key="1e366777c755" id="passage-6ada17156a57"><p data-passage-key="877d0f8da657" id="passage-f84a6c014f7c">一个线程组中，挂载多个接口，向服务器发起请求。但是这种严格意义上来说，属于伪混合场景</p>
 </li>
-<li><p>加吞吐量控制器当作混合场景：完全不知道如何做性能测试的思路</p>
+<li data-passage-key="220591ffbaa4" id="passage-d81fe1226c6b"><p data-passage-key="690c5efaf7b5" id="passage-d9a56da03384">加吞吐量控制器当作混合场景：完全不知道如何做性能测试的思路</p>
 </li>
-<li><p>if条件控制器来做混合场景，也是伪混合场景</p>
+<li data-passage-key="b9fa3e7063c9" id="passage-dd9c255ffcbc"><p data-passage-key="ae7fb831e3ea" id="passage-bf2fc22a6f5a">if条件控制器来做混合场景，也是伪混合场景</p>
 </li>
 </ol>
-<h3 id="真正的混合场景"><a class="headerlink" href="#真正的混合场景" title="真正的混合场景"></a>真正的混合场景</h3><p>不同数量的并发用户，向服务器发起不同的接口请求</p>
-<p>因为并发用户数量设置，是要使用线程组的。所以「不同数量的并发用户」需要使用多个线程组</p>
+<h3 data-passage-key="de4a16c86468" id="真正的混合场景"><a class="headerlink" href="#真正的混合场景" title="真正的混合场景"></a>真正的混合场景</h3><p data-passage-key="2368c4861ce2" id="passage-82615cf2337e">不同数量的并发用户，向服务器发起不同的接口请求</p>
+<p data-passage-key="4be7a0dfbf65" id="passage-a67b8cc0ba05">因为并发用户数量设置，是要使用线程组的。所以「不同数量的并发用户」需要使用多个线程组</p>
 <p><img alt="多个线程组" decoding="async" height="120" loading="lazy" src="/images/blog-media/9b56379413fed7254657.webp" width="108"/></p>
-<h3 id="难点"><a class="headerlink" href="#难点" title="难点"></a>难点</h3><p>jmeter中，写脚本，最难的技术点，是跨线程组传参</p>
-<blockquote>
-<p>用户定义变量：全局变量，可以跨线程组。在启动时获取一次，在运行过程中不会动态获取值</p>
-<p>用户参数：局部变量，不能直接跨线程组</p>
+<h3 data-passage-key="ff4fe34f530f" id="难点"><a class="headerlink" href="#难点" title="难点"></a>难点</h3><p data-passage-key="b84c2984446e" id="passage-12a3afcc81c4">jmeter中，写脚本，最难的技术点，是跨线程组传参</p>
+<blockquote data-passage-key="eacfdc098885" id="passage-bcdbf560ca31">
+<p data-passage-key="1c689f93bd5e" id="passage-bf78255c67fa">用户定义变量：全局变量，可以跨线程组。在启动时获取一次，在运行过程中不会动态获取值</p>
+<p data-passage-key="3897021850ef" id="passage-9031276579c0">用户参数：局部变量，不能直接跨线程组</p>
 </blockquote>
 <ol>
-<li>属性</li>
+<li data-passage-key="0998b800b245" id="passage-1f28e0235295">属性</li>
 </ol>
-<blockquote>
-<p>jmeter属性</p>
+<blockquote data-passage-key="418271032cf6" id="passage-7aac2c9f6675">
+<p data-passage-key="6134584730c0" id="passage-3ca329298738">jmeter属性</p>
 <ul>
-<li>静态属性：properties</li>
-<li>动态属性：setPorperty</li>
+<li data-passage-key="ee99e3e722fa" id="passage-a31d08e4116f">静态属性：properties</li>
+<li data-passage-key="931f4fb1b75a" id="passage-bcb55e0660c6">动态属性：setPorperty</li>
 </ul>
-<p>系统属性：</p>
+<p data-passage-key="3bd92febd98f" id="passage-d920eb10abc5">系统属性：</p>
 </blockquote>
 <ul>
-<li>前面线程组中的接口参数值，设置为jmeter的属性</li>
-<li>后面的线程组，获取jmeter属性值</li>
-<li>线程组设置不同的并发用户数 </li>
+<li data-passage-key="7924a19410f1" id="passage-72d3802fbdd1">前面线程组中的接口参数值，设置为jmeter的属性</li>
+<li data-passage-key="ad0451cd7f23" id="passage-b603aed49f0b">后面的线程组，获取jmeter属性值</li>
+<li data-passage-key="811e9ace366d" id="passage-8414503baafe">线程组设置不同的并发用户数 </li>
 </ul>
 <ol start="2">
-<li>文件嫁接：使用「数据库」方式比使用「csv」方式性能要好 消耗本机的资源要小</li>
+<li data-passage-key="c0a5453bdb48" id="passage-021dca3f5f33">文件嫁接：使用「数据库」方式比使用「csv」方式性能要好 消耗本机的资源要小</li>
 </ol>
-<h2 id="属性跨线程组"><a class="headerlink" href="#属性跨线程组" title="属性跨线程组"></a>属性跨线程组</h2><h3 id="线程1：注册"><a class="headerlink" href="#线程1：注册" title="线程1：注册"></a>线程1：注册</h3><p>为了让数据读取的比较整齐，将注册与属性设置放在一个「事务控制器」中</p>
+<h2 data-passage-key="be53d3fdb7d6" id="属性跨线程组"><a class="headerlink" href="#属性跨线程组" title="属性跨线程组"></a>属性跨线程组</h2><h3 data-passage-key="4e611bde8670" id="线程1：注册"><a class="headerlink" href="#线程1：注册" title="线程1：注册"></a>线程1：注册</h3><p data-passage-key="f0366398ac37" id="passage-1eaaca42242e">为了让数据读取的比较整齐，将注册与属性设置放在一个「事务控制器」中</p>
 <p><img alt="事务控制器" decoding="async" height="195" loading="lazy" src="/images/blog-media/b2bfba905e69b62e304a.webp" width="964"/></p>
 <p><img alt="HTTP请求" decoding="async" height="477" loading="lazy" src="/images/blog-media/2b7e0e9f1de0d88d1a6d.webp" width="1071"/></p>
 <p><img alt="用户参数" decoding="async" height="236" loading="lazy" src="/images/blog-media/694f03b3bf2d5c985c17.webp" width="881"/></p>
-<p>使用JSON取样器将返回内容进行提取</p>
+<p data-passage-key="20512d13fe5d" id="passage-08c2c32e456d">使用JSON取样器将返回内容进行提取</p>
 <p><img alt="JSON取样器" decoding="async" height="281" loading="lazy" src="/images/blog-media/0f20faff833ac8e0393b.webp" width="1080"/></p>
-<p>编写两个「调试取样器」进行属性的设置</p>
-<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre><span class="line">${__setProperty(pro_mobile,${gmobile},)}</span><br/><span class="line">${__setProperty(pro_gqid,${gqid},)}</span><br/></pre></td></tr></tbody></table></figure>
+<p data-passage-key="c19cc93d19f6" id="passage-f7e7d393db71">编写两个「调试取样器」进行属性的设置</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="2063b9318c31" id="passage-ddfcb3297f23"><span class="line">${__setProperty(pro_mobile,${gmobile},)}</span><br/><span class="line">${__setProperty(pro_gqid,${gqid},)}</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="设置手机号" decoding="async" height="218" loading="lazy" src="/images/blog-media/ee4d0b5af5888d142215.webp" width="792"/></p>
 <p><img alt="设置gqid" decoding="async" height="227" loading="lazy" src="/images/blog-media/c5322cf7da8578459023.webp" width="767"/></p>
-<p>运行一次查看「属性显示」</p>
+<p data-passage-key="4d5edfbcfe29" id="passage-0ff90873a7e5">运行一次查看「属性显示」</p>
 <p><img alt="image-20210509104547525" decoding="async" height="613" loading="lazy" src="/images/blog-media/c80f8378a0f3cc4c51f5.webp" width="1080"/></p>
-<h3 id="线程2：登录"><a class="headerlink" href="#线程2：登录" title="线程2：登录"></a>线程2：登录</h3><p>在HTTP请求中电话号码和gqid设置为</p>
-<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre><span class="line">${__property(pro_mobile,,)}</span><br/><span class="line">${__property(pro_gqid,,)}</span><br/></pre></td></tr></tbody></table></figure>
+<h3 data-passage-key="bc239c995f0b" id="线程2：登录"><a class="headerlink" href="#线程2：登录" title="线程2：登录"></a>线程2：登录</h3><p data-passage-key="4c51cfdfb362" id="passage-e2da71658b7c">在HTTP请求中电话号码和gqid设置为</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="1fe5019df3bd" id="passage-e540a948d032"><span class="line">${__property(pro_mobile,,)}</span><br/><span class="line">${__property(pro_gqid,,)}</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="HTTP请求" decoding="async" height="386" loading="lazy" src="/images/blog-media/6c13264baafb5b581829.webp" width="1080"/></p>
-<h3 id="问题"><a class="headerlink" href="#问题" title="问题"></a>问题</h3><p>由于Jmeter中线程数同时运行的，所以会出现获取到的值为上一次的值</p>
-<p>当并发数量增加后，会出现多个请求使用了同一个属性</p>
-<h3 id="解决方法"><a class="headerlink" href="#解决方法" title="解决方法"></a>解决方法</h3><p>属性名称设置时携带「线程号」</p>
-<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/></pre></td><td class="code"><pre><span class="line">${__setProperty(pro_mobile_${__threadNum},${gmobile},)}</span><br/><span class="line">${__setProperty(pro_gqid_${__threadNum},${gqid},)}</span><br/><span class="line"></span><br/><span class="line">登录接口</span><br/><span class="line">{</span><br/><span class="line">    <span class="string">"mobile"</span>: <span class="string">"${__property(pro_mobile_${__threadNum},,)}"</span>,</span><br/><span class="line">    <span class="string">"gqid"</span>:<span class="string">"${__property(pro_gqid_${__threadNum},,)}"</span>,</span><br/><span class="line">    <span class="string">"password"</span>: <span class="string">"123456"</span></span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
-<h2 id="波浪场景"><a class="headerlink" href="#波浪场景" title="波浪场景"></a>波浪场景</h2><p>波浪：有一定的时间规律</p>
-<p>x轴：时间</p>
-<p>y轴：并发用户数</p>
-<h3 id="jp-gc-Ultimate-Thread-Group"><a class="headerlink" href="#jp-gc-Ultimate-Thread-Group" title="jp@gc - Ultimate Thread Group"></a>jp@gc - Ultimate Thread Group</h3><p>终极线程组</p>
-<p>添加三条：</p>
+<h3 data-passage-key="33a8618cb671" id="问题"><a class="headerlink" href="#问题" title="问题"></a>问题</h3><p data-passage-key="de43eb7c07bd" id="passage-52346df0bc37">由于Jmeter中线程数同时运行的，所以会出现获取到的值为上一次的值</p>
+<p data-passage-key="9582dccdbcc3" id="passage-4f33a9b28d15">当并发数量增加后，会出现多个请求使用了同一个属性</p>
+<h3 data-passage-key="9fd1fc2a1bea" id="解决方法"><a class="headerlink" href="#解决方法" title="解决方法"></a>解决方法</h3><p data-passage-key="83a5532cf48f" id="passage-18e6fb8cba6a">属性名称设置时携带「线程号」</p>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/></pre></td><td class="code"><pre data-passage-key="bfd79437a668" id="passage-41e84a89b47f"><span class="line">${__setProperty(pro_mobile_${__threadNum},${gmobile},)}</span><br/><span class="line">${__setProperty(pro_gqid_${__threadNum},${gqid},)}</span><br/><span class="line"></span><br/><span class="line">登录接口</span><br/><span class="line">{</span><br/><span class="line">    <span class="string">"mobile"</span>: <span class="string">"${__property(pro_mobile_${__threadNum},,)}"</span>,</span><br/><span class="line">    <span class="string">"gqid"</span>:<span class="string">"${__property(pro_gqid_${__threadNum},,)}"</span>,</span><br/><span class="line">    <span class="string">"password"</span>: <span class="string">"123456"</span></span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
+<h2 data-passage-key="f13446863fbf" id="波浪场景"><a class="headerlink" href="#波浪场景" title="波浪场景"></a>波浪场景</h2><p data-passage-key="06eb55b58919" id="passage-5362517e19df">波浪：有一定的时间规律</p>
+<p data-passage-key="ab2323390657" id="passage-16d4a17e41ce">x轴：时间</p>
+<p data-passage-key="76acafd664e1" id="passage-f2a716777368">y轴：并发用户数</p>
+<h3 data-passage-key="ad199e2ffc1c" id="jp-gc-Ultimate-Thread-Group"><a class="headerlink" href="#jp-gc-Ultimate-Thread-Group" title="jp@gc - Ultimate Thread Group"></a>jp@gc - Ultimate Thread Group</h3><p data-passage-key="0b1400bfa474" id="passage-df1e469ec7cc">终极线程组</p>
+<p data-passage-key="ea8791c7b770" id="passage-ac45ca0afbfd">添加三条：</p>
 <ul>
-<li>线程数100，开始时间0秒，起线程时间30秒，持续60秒，停止线程时间10秒</li>
-<li>线程数100，开始时间110秒，起线程时间30秒，持续60秒，停止线程时间10秒</li>
-<li>线程数100，开始时间220秒，起线程时间30秒，持续60秒，停止线程时间10秒</li>
+<li data-passage-key="f296861c6887" id="passage-b0fb07c505c1">线程数100，开始时间0秒，起线程时间30秒，持续60秒，停止线程时间10秒</li>
+<li data-passage-key="b93ea1ee2ac1" id="passage-1146e1a7e574">线程数100，开始时间110秒，起线程时间30秒，持续60秒，停止线程时间10秒</li>
+<li data-passage-key="496c61355db4" id="passage-0f73bf9e43b3">线程数100，开始时间220秒，起线程时间30秒，持续60秒，停止线程时间10秒</li>
 </ul>
-<p>110秒=第一条的30秒+60秒+10秒+ 10秒等待时间</p>
+<p data-passage-key="5de8b056b1ab" id="passage-a1b76a59ea8f">110秒=第一条的30秒+60秒+10秒+ 10秒等待时间</p>
 <p><img alt="波浪" decoding="async" height="682" loading="lazy" src="/images/blog-media/6fab0d072e88ea288a0f.webp" width="1080"/></p></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
+        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
+        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
+          <header class="passage-dialog-header">
+            <h2 id="passage-comment-title">段落评论</h2>
+            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
+          </header>
+          <div class="passage-dialog-content">
+            <blockquote data-passage-excerpt></blockquote>
+            <a data-passage-source>查看原文</a>
+            <p data-passage-status role="status"></p>
+            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
+            <div data-passage-widget></div>
+          </div>
+        </dialog>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/HKK9gtfaIWNY__47ICJ99g">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a><a href="/tags/%E5%9C%BA%E6%99%AF%E8%AE%BE%E8%AE%A1/">场景设计</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a></div>
@@ -146,16 +158,6 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
-          <div class="comment-quote" data-comment-quote hidden>
-            <blockquote data-comment-quote-text></blockquote>
-            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
-            <p data-comment-quote-status role="status"></p>
-            <div class="comment-quote-actions">
-              <button type="button" data-copy-comment-quote>复制引用</button>
-              <a data-comment-quote-source>返回原文</a>
-              <button type="button" data-clear-comment-quote>取消引用</button>
-            </div>
-          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

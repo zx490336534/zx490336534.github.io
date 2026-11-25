@@ -20,8 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/68ff4278.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/68ff4278.html">
-<script src="/js/comments.js?v=3" defer></script>
-<script src="/js/comment-quotes.js" defer></script>
+<script type="module" src="/js/discussions.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -57,48 +56,61 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#Git%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86-%E5%85%AB-%E2%80%93%E5%8F%98%E5%9F%BA">Git基础知识(八)–变基</a></li><li><a href="#%E5%8F%98%E5%9F%BA">变基</a></li><li><a href="#merge">merge</a></li><li><a href="#rebase">rebase</a></li><li><a href="#%E4%B8%A4%E8%80%85%E5%B7%AE%E5%88%AB">两者差别</a></li><li><a href="#%E6%8C%91%E6%8B%A3%E5%8F%98%E5%9F%BA">挑拣变基</a></li><li><a href="#%E5%8F%98%E5%9F%BA%E9%A3%8E%E9%99%A9">变基风险</a></li><li><a href="#%E5%8F%98%E5%9F%BA%E5%8E%9F%E5%88%99">变基原则</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><h1 id="Git基础知识-八-–变基"><a class="headerlink" href="#Git基础知识-八-–变基" title="Git基础知识(八)–变基"></a>Git基础知识(八)–变基</h1><p><img alt="变基图示" decoding="async" height="790" loading="lazy" src="/images/blog-media/b50a67c0e167477f3584.webp" width="1080"/></p>
-<h2 id="变基"><a class="headerlink" href="#变基" title="变基"></a>变基</h2><p>在 Git 中整合来自不同分支的修改主要有两种方法：</p>
+        <div class="post-body" id="article-text"><h1 data-passage-key="1b0de12c6fe5" id="Git基础知识-八-–变基"><a class="headerlink" href="#Git基础知识-八-–变基" title="Git基础知识(八)–变基"></a>Git基础知识(八)–变基</h1><p><img alt="变基图示" decoding="async" height="790" loading="lazy" src="/images/blog-media/b50a67c0e167477f3584.webp" width="1080"/></p>
+<h2 data-passage-key="1e8ff95c90e4" id="变基"><a class="headerlink" href="#变基" title="变基"></a>变基</h2><p data-passage-key="9d4c6d3293aa" id="passage-d75165b0bf4d">在 Git 中整合来自不同分支的修改主要有两种方法：</p>
 <ul>
-<li>merge </li>
-<li>rebase</li>
+<li data-passage-key="7a931091222d" id="passage-7e96bb4cb6d4">merge </li>
+<li data-passage-key="3ba3eb9e2c81" id="passage-e0f6e6aa0c68">rebase</li>
 </ul>
 <span id="more"></span>
-<h3 id="merge"><a class="headerlink" href="#merge" title="merge"></a>merge</h3><p>从master分支的C2提交拉取分支experiment并创建C4提交</p>
-<p>从C2创建C3提交</p>
-<p>将experiment分支合入master，master前进至C5</p>
+<h3 data-passage-key="283128acef14" id="merge"><a class="headerlink" href="#merge" title="merge"></a>merge</h3><p data-passage-key="74e04a5124f1" id="passage-46ce0e2c2e27">从master分支的C2提交拉取分支experiment并创建C4提交</p>
+<p data-passage-key="176a3be3812e" id="passage-2eda674cc60f">从C2创建C3提交</p>
+<p data-passage-key="8fe0fc891694" id="passage-caadf420040d">将experiment分支合入master，master前进至C5</p>
 <p><img alt="merge" decoding="async" height="402" loading="lazy" src="/images/blog-media/245820c4d4e0487a71a0.webp" width="1080"/></p>
-<h3 id="rebase"><a class="headerlink" href="#rebase" title="rebase"></a>rebase</h3><p>将上例中的C4的修改直接基于C3进行提交。</p>
-<p>相当于提取在 C4 中引入的补丁和修改，然后在 C3 的基础上应用一次。</p>
-<p>也就是<code>将C4中的修改变基到C3上</code></p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git checkout experiment</span> </span><br/><span class="line"><span class="meta">$</span><span class="bash"> git rebase master</span></span><br/></pre></td></tr></tbody></table></figure>
+<h3 data-passage-key="a66eb0bb9047" id="rebase"><a class="headerlink" href="#rebase" title="rebase"></a>rebase</h3><p data-passage-key="125c707ded9a" id="passage-c5d149c45eb8">将上例中的C4的修改直接基于C3进行提交。</p>
+<p data-passage-key="524628e3c46e" id="passage-b98a562e9891">相当于提取在 C4 中引入的补丁和修改，然后在 C3 的基础上应用一次。</p>
+<p data-passage-key="6ef03c945241" id="passage-283d5cd5dfc8">也就是<code>将C4中的修改变基到C3上</code></p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="dacb6adc1afb" id="passage-94573321c5d9"><span class="line"><span class="meta">$</span><span class="bash"> git checkout experiment</span> </span><br/><span class="line"><span class="meta">$</span><span class="bash"> git rebase master</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="rebase" decoding="async" height="316" loading="lazy" src="/images/blog-media/ee0134c1bfc08160cdf3.webp" width="1080"/></p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git checkout master</span> </span><br/><span class="line"><span class="meta">$</span><span class="bash"> git merge experiment</span></span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="4ec048726993" id="passage-e07bfe160ec1"><span class="line"><span class="meta">$</span><span class="bash"> git checkout master</span> </span><br/><span class="line"><span class="meta">$</span><span class="bash"> git merge experiment</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="rebase2" decoding="async" height="320" loading="lazy" src="/images/blog-media/f8f493467872828d8b3f.webp" width="1080"/></p>
-<h3 id="两者差别"><a class="headerlink" href="#两者差别" title="两者差别"></a>两者差别</h3><p>这两种整合方法的最终结果<code>没有任何区别</code>，但是<strong>变基使得提交历史更加整洁</strong>。</p>
-<p>你在查看一个经过变基的分支的历史记录时会发现，尽管实际的开发工作是并行的，但它们看上去就像是串行的一样，提交历史是一条直线没有分叉。</p>
-<h3 id="挑拣变基"><a class="headerlink" href="#挑拣变基" title="挑拣变基"></a>挑拣变基</h3><p>现在需要将client里面的内容(C8，C9)变基到master分支的C6后。</p>
+<h3 data-passage-key="06749910207c" id="两者差别"><a class="headerlink" href="#两者差别" title="两者差别"></a>两者差别</h3><p data-passage-key="b1a65e1721ad" id="passage-4d038796f7d3">这两种整合方法的最终结果<code>没有任何区别</code>，但是<strong>变基使得提交历史更加整洁</strong>。</p>
+<p data-passage-key="cd33b75d0b36" id="passage-02999b368419">你在查看一个经过变基的分支的历史记录时会发现，尽管实际的开发工作是并行的，但它们看上去就像是串行的一样，提交历史是一条直线没有分叉。</p>
+<h3 data-passage-key="596c627cd74f" id="挑拣变基"><a class="headerlink" href="#挑拣变基" title="挑拣变基"></a>挑拣变基</h3><p data-passage-key="8c1c423b9146" id="passage-f3343b8957fa">现在需要将client里面的内容(C8，C9)变基到master分支的C6后。</p>
 <p><img alt="挑拣变基" decoding="async" height="599" loading="lazy" src="/images/blog-media/eeadf5a1845135a30883.webp" width="1080"/></p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git rebase --onto master server client</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git checkout master</span> </span><br/><span class="line"><span class="meta">$</span><span class="bash"> git merge client</span></span><br/></pre></td></tr></tbody></table></figure>
-<p>使用<code>--onto</code>选中在client分支里，但是不在server分支里面的修改，将它在master分支上重放。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre data-passage-key="6baede491446" id="passage-761a0a5c43e3"><span class="line"><span class="meta">$</span><span class="bash"> git rebase --onto master server client</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git checkout master</span> </span><br/><span class="line"><span class="meta">$</span><span class="bash"> git merge client</span></span><br/></pre></td></tr></tbody></table></figure>
+<p data-passage-key="8f7ef0d8894e" id="passage-aa8ee7480beb">使用<code>--onto</code>选中在client分支里，但是不在server分支里面的修改，将它在master分支上重放。</p>
 <p><img alt="快进合并 master 分支，使之包含来自 client 分支的修改" decoding="async" height="355" loading="lazy" src="/images/blog-media/f9069fe1452a86dbc784.webp" width="1080"/></p>
-<p>整合server变更</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> git rebase [basebranch] [topicbranch]</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git rebase master server</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git checkout master</span> </span><br/><span class="line"><span class="meta">$</span><span class="bash"> git merge server</span></span><br/></pre></td></tr></tbody></table></figure>
+<p data-passage-key="640a016fdbcd" id="passage-257f3916c925">整合server变更</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre data-passage-key="76bb0d79ef13" id="passage-fab90caf9216"><span class="line"><span class="meta">#</span><span class="bash"> git rebase [basebranch] [topicbranch]</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git rebase master server</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git checkout master</span> </span><br/><span class="line"><span class="meta">$</span><span class="bash"> git merge server</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="将 server 中的修改变基到 master 上" decoding="async" height="177" loading="lazy" src="/images/blog-media/e303be874348b00129ce.webp" width="1080"/></p>
-<h2 id="变基风险"><a class="headerlink" href="#变基风险" title="变基风险"></a>变基风险</h2><p>注意⚠️：<strong>不要对在你的仓库外有副本的分支执行变基。</strong></p>
-<p>变基操作的实质是<code>丢弃一些现有的提交,然后相应地新建一些内容一样但实际上不同的提交</code>。</p>
-<p>如果有人拉取了一个分支并在此基础上进行开发，但是该分支被你执行了变更。</p>
-<p>那么当那个人提交的时候就需要处理<code>额外的合并工作</code>（将相同的内容又合并一次，并生成了一个新的提交）。</p>
-<p>不过这个情况可以使用变基来解决，Git能分辨哪些提交已经存在，并且会基于此处进行后续不同内容的整合。</p>
-<h2 id="变基原则"><a class="headerlink" href="#变基原则" title="变基原则"></a>变基原则</h2><ul>
-<li><p><strong>只对尚未推送或分享给别人的本地修改执行变基操作清理历史。</strong></p>
+<h2 data-passage-key="5fabf6a9e31f" id="变基风险"><a class="headerlink" href="#变基风险" title="变基风险"></a>变基风险</h2><p data-passage-key="1163123b0ae4" id="passage-d902aa0ed96e">注意⚠️：<strong>不要对在你的仓库外有副本的分支执行变基。</strong></p>
+<p data-passage-key="8920546cf6b9" id="passage-7d319961445c">变基操作的实质是<code>丢弃一些现有的提交,然后相应地新建一些内容一样但实际上不同的提交</code>。</p>
+<p data-passage-key="ed78675dca73" id="passage-2d6be3b2bda4">如果有人拉取了一个分支并在此基础上进行开发，但是该分支被你执行了变更。</p>
+<p data-passage-key="a5db0b9a2967" id="passage-31e70c167c74">那么当那个人提交的时候就需要处理<code>额外的合并工作</code>（将相同的内容又合并一次，并生成了一个新的提交）。</p>
+<p data-passage-key="4846883e8c39" id="passage-891e04acec1e">不过这个情况可以使用变基来解决，Git能分辨哪些提交已经存在，并且会基于此处进行后续不同内容的整合。</p>
+<h2 data-passage-key="362791d12426" id="变基原则"><a class="headerlink" href="#变基原则" title="变基原则"></a>变基原则</h2><ul>
+<li data-passage-key="34283a93ee40" id="passage-6ec9bced5564"><p data-passage-key="11b1636bdaa9" id="passage-19f910857809"><strong>只对尚未推送或分享给别人的本地修改执行变基操作清理历史。</strong></p>
 </li>
-<li><p><strong>从不对已推送至别处的提交执行变基操作。</strong></p>
+<li data-passage-key="54cd09a58d75" id="passage-f42d7a4f014b"><p data-passage-key="d012481e1ec7" id="passage-1ba94a7d2425"><strong>从不对已推送至别处的提交执行变基操作。</strong></p>
 </li>
 </ul>
-<p>所以在还未上库之前，随便怎么搞，但是上库之后的东西，就别乱动了！</p>
-<p>变基使版本变更走向清晰，合并使实际发生的事情有迹可循，两者各有好处，需要结合实际情况进行选择与使用。</p></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
+<p data-passage-key="3f5be1cbfeb2" id="passage-cca464c9d903">所以在还未上库之前，随便怎么搞，但是上库之后的东西，就别乱动了！</p>
+<p data-passage-key="9751c413c17a" id="passage-2362642e22bb">变基使版本变更走向清晰，合并使实际发生的事情有迹可循，两者各有好处，需要结合实际情况进行选择与使用。</p></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
+        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
+          <header class="passage-dialog-header">
+            <h2 id="passage-comment-title">段落评论</h2>
+            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
+          </header>
+          <div class="passage-dialog-content">
+            <blockquote data-passage-excerpt></blockquote>
+            <a data-passage-source>查看原文</a>
+            <p data-passage-status role="status"></p>
+            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
+            <div data-passage-widget></div>
+          </div>
+        </dialog>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/41V0-9hocUVtpwvzjjWxbg">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Git/">Git</a><a href="/tags/%E5%8F%98%E5%9F%BA/">变基</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/Git/">Git</a></div>
@@ -110,16 +122,6 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
-          <div class="comment-quote" data-comment-quote hidden>
-            <blockquote data-comment-quote-text></blockquote>
-            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
-            <p data-comment-quote-status role="status"></p>
-            <div class="comment-quote-actions">
-              <button type="button" data-copy-comment-quote>复制引用</button>
-              <a data-comment-quote-source>返回原文</a>
-              <button type="button" data-clear-comment-quote>取消引用</button>
-            </div>
-          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

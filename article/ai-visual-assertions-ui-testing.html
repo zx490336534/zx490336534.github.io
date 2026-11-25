@@ -20,8 +20,7 @@
   <meta name="blog-cover" content="/images/blog-covers/ai-visual-assertions-ui-testing.webp">
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/ai-visual-assertions-ui-testing.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/ai-visual-assertions-ui-testing.html">
-<script src="/js/comments.js?v=3" defer></script>
-<script src="/js/comment-quotes.js" defer></script>
+<script type="module" src="/js/discussions.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -57,24 +56,24 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E6%8A%8A%E8%A6%81%E5%88%A4%E6%96%AD%E7%9A%84%E7%8E%B0%E8%B1%A1%E8%AF%B4%E7%AA%84%E4%B8%80%E7%82%B9">把要判断的现象说窄一点</a></li><li><a href="#%E8%AE%A9%E8%84%9A%E6%9C%AC%E8%AF%BB%E5%88%B0%E5%88%A4%E6%96%AD%E8%BF%98%E8%83%BD%E6%9F%A5%E5%AE%83%E7%9A%84%E4%BE%9D%E6%8D%AE">让脚本读到判断，还能查它的依据</a></li><li><a href="#%E5%85%88%E6%8A%8A%E6%AD%A3%E5%B8%B8%E5%9B%BE%E5%92%8C%E5%BC%82%E5%B8%B8%E5%9B%BE%E4%B8%80%E8%B5%B7%E8%B7%91%E4%B8%80%E9%81%8D">先把正常图和异常图一起跑一遍</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><p>脚本确认画布存在，按钮也能点，截图里却有一块不该出现的黑区。遇到这种问题，我会保留原来的元素和状态断言，再补一项画面检查。模型要看的范围和现象，尽量提前写清楚。</p>
-<h2 id="把要判断的现象说窄一点">把要判断的现象说窄一点</h2>
-<p>直接问“页面有没有问题”，模型可能去评配色，也可能把正常的暗色背景当成异常。在下面的合成示例里，问题缩到一个动作。检查画布内的连续黑区有没有盖住应当可见的内容。顶部导航、侧栏和正常的暗色背景都排除在判断范围外。</p>
+        <div class="post-body" id="article-text"><p data-passage-key="7ad5d9182eac" id="passage-1077c4698023">脚本确认画布存在，按钮也能点，截图里却有一块不该出现的黑区。遇到这种问题，我会保留原来的元素和状态断言，再补一项画面检查。模型要看的范围和现象，尽量提前写清楚。</p>
+<h2 data-passage-key="ec5d869dbe95" id="把要判断的现象说窄一点">把要判断的现象说窄一点</h2>
+<p data-passage-key="017c3d4ce8f0" id="passage-319f65c120ae">直接问“页面有没有问题”，模型可能去评配色，也可能把正常的暗色背景当成异常。在下面的合成示例里，问题缩到一个动作。检查画布内的连续黑区有没有盖住应当可见的内容。顶部导航、侧栏和正常的暗色背景都排除在判断范围外。</p>
 <figure class="article-figure article-figure--supplement">
 <img alt="正常暗色内容与异常遮挡对照" decoding="async" height="630" loading="lazy" src="/images/blog-media/ai-visual-assertions-ui-testing-diagram.webp" width="1120"/>
-<figcaption aria-hidden="true">构造的页面对照。导航和正常暗色背景不参加判断，只看画布内的遮挡。</figcaption>
+<figcaption aria-hidden="true" data-passage-key="15666f60626c" id="passage-cb4927d4e3aa">构造的页面对照。导航和正常暗色背景不参加判断，只看画布内的遮挡。</figcaption>
 </figure>
-<p>脚本等画布进入可截图状态，再截取内容区。<strong>报告里保留实际送给模型的那张图。</strong> 回看失败时，读者需要知道模型看到了什么，还要能在图上找到它说的那个位置。</p>
-<figure class="article-figure article-figure--supplement"><img alt="青色边框只框住画布，导航栏和侧栏在框外，画布内有黑色遮挡" decoding="async" height="675" loading="lazy" src="/images/blog-media/ai-visual-assertions-ui-testing-illustration.webp" width="1200"/><figcaption>AI 生成示意。青色框圈出待检查的画布，顶部导航和侧栏留在框外。</figcaption></figure>
-<h2 id="让脚本读到判断还能查它的依据">让脚本读到判断，还能查它的依据</h2>
-<p>我会让模型只返回三个字段。<code>verdict</code> 是判断，<code>evidence</code> 写图里实际可见的内容，<code>region</code> 说明画面位置。下面是合成图对应的示例，展示输出格式。</p>
-<pre class="json"><code class="language-json">{
+<p data-passage-key="00319a59351a" id="passage-731611e4da27">脚本等画布进入可截图状态，再截取内容区。<strong>报告里保留实际送给模型的那张图。</strong> 回看失败时，读者需要知道模型看到了什么，还要能在图上找到它说的那个位置。</p>
+<figure class="article-figure article-figure--supplement"><img alt="青色边框只框住画布，导航栏和侧栏在框外，画布内有黑色遮挡" decoding="async" height="675" loading="lazy" src="/images/blog-media/ai-visual-assertions-ui-testing-illustration.webp" width="1200"/><figcaption data-passage-key="07a3b618dbe4" id="passage-c975ff3b2dd2">AI 生成示意。青色框圈出待检查的画布，顶部导航和侧栏留在框外。</figcaption></figure>
+<h2 data-passage-key="872fa8ac9982" id="让脚本读到判断还能查它的依据">让脚本读到判断，还能查它的依据</h2>
+<p data-passage-key="cdbc03cd03b9" id="passage-065db5da7786">我会让模型只返回三个字段。<code>verdict</code> 是判断，<code>evidence</code> 写图里实际可见的内容，<code>region</code> 说明画面位置。下面是合成图对应的示例，展示输出格式。</p>
+<pre class="json" data-passage-key="dd5527a40cea" id="passage-3e32cbd8d6d0"><code class="language-json">{
   "verdict": "fail",
   "evidence": "黑色矩形盖住了原本应该可见的图形",
   "region": "画布右侧"
 }</code></pre>
-<p>脚本先解析 JSON，确认状态在 <code>pass</code>、<code>fail</code>、<code>uncertain</code> 里，并检查依据和位置两个字段是字符串。对于 <code>fail</code>，还要能定位到具体画面。示例中的黑块有明确位置，复核者能回到截图上检查。</p>
-<div aria-labelledby="comparison-1" class="table-scroll" role="region" tabindex="0"><table class="article-comparison"><caption id="comparison-1">视觉断言的处理方式</caption>
+<p data-passage-key="ab637cc4b59f" id="passage-3bae30741219">脚本先解析 JSON，确认状态在 <code>pass</code>、<code>fail</code>、<code>uncertain</code> 里，并检查依据和位置两个字段是字符串。对于 <code>fail</code>，还要能定位到具体画面。示例中的黑块有明确位置，复核者能回到截图上检查。</p>
+<div aria-labelledby="comparison-1" class="table-scroll" data-passage-key="f1dc2e71828e" id="passage-29488e2c6db8" role="region" tabindex="0"><table class="article-comparison"><caption id="comparison-1">视觉断言的处理方式</caption>
 <thead>
 <tr>
 <th scope="col">模型或调用的结果</th>
@@ -100,11 +99,24 @@
 </tr>
 </tbody>
 </table></div>
-<p>如果画面还在加载，就先查截图时机。此时模型可能看到占位区域，格式再规整的回答也不能用于判断最终画面。</p>
-<h2 id="先把正常图和异常图一起跑一遍">先把正常图和异常图一起跑一遍</h2>
-<p>元素是否出现、文字、可读取的颜色值和尺寸，能从页面直接判断的部分继续交给原来的自动化脚本。视觉断言集中在脚本难以表达的画面组合，比如一块遮挡盖住了该显示的组件。</p>
-<p>接入后先拿人工标过的正常暗色图和遮挡图做对照，分别看误报、漏报和无法判断的情况。当前示例能说明检查方式和结果怎么回到报告里。实际项目要不要把这项结果用于发布判定，先看这批真实样本的复核结果。</p></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
+<p data-passage-key="e5f48c6076d5" id="passage-b8944e07e18d">如果画面还在加载，就先查截图时机。此时模型可能看到占位区域，格式再规整的回答也不能用于判断最终画面。</p>
+<h2 data-passage-key="e28fdb257e71" id="先把正常图和异常图一起跑一遍">先把正常图和异常图一起跑一遍</h2>
+<p data-passage-key="3bef76f92820" id="passage-da40bd595417">元素是否出现、文字、可读取的颜色值和尺寸，能从页面直接判断的部分继续交给原来的自动化脚本。视觉断言集中在脚本难以表达的画面组合，比如一块遮挡盖住了该显示的组件。</p>
+<p data-passage-key="30e08fe6ede2" id="passage-7a95270cc778">接入后先拿人工标过的正常暗色图和遮挡图做对照，分别看误报、漏报和无法判断的情况。当前示例能说明检查方式和结果怎么回到报告里。实际项目要不要把这项结果用于发布判定，先看这批真实样本的复核结果。</p></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
+        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
+          <header class="passage-dialog-header">
+            <h2 id="passage-comment-title">段落评论</h2>
+            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
+          </header>
+          <div class="passage-dialog-content">
+            <blockquote data-passage-excerpt></blockquote>
+            <a data-passage-source>查看原文</a>
+            <p data-passage-status role="status"></p>
+            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
+            <div data-passage-widget></div>
+          </div>
+        </dialog>
 
         <div class="post-tags" aria-label="文章标签"><a href="/tags/UI-%E8%87%AA%E5%8A%A8%E5%8C%96/">UI 自动化</a><a href="/tags/%E8%A7%86%E8%A7%89%E6%96%AD%E8%A8%80/">视觉断言</a><a href="/tags/AI-%E6%B5%8B%E8%AF%95/">AI 测试</a></div>
         <div class="legacy-tags" hidden></div>
@@ -116,16 +128,6 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
-          <div class="comment-quote" data-comment-quote hidden>
-            <blockquote data-comment-quote-text></blockquote>
-            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
-            <p data-comment-quote-status role="status"></p>
-            <div class="comment-quote-actions">
-              <button type="button" data-copy-comment-quote>复制引用</button>
-              <a data-comment-quote-source>返回原文</a>
-              <button type="button" data-clear-comment-quote>取消引用</button>
-            </div>
-          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

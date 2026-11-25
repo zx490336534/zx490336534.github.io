@@ -20,8 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/e64c544a.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/e64c544a.html">
-<script src="/js/comments.js?v=3" defer></script>
-<script src="/js/comment-quotes.js" defer></script>
+<script type="module" src="/js/discussions.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -57,92 +56,105 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E5%85%A8%E9%93%BE%E8%B7%AF%E6%B5%8B%E8%AF%95">全链路测试</a></li><li><a href="#%E6%A8%A1%E6%8B%9F%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%EF%BC%8C%E7%9C%9F%E5%AE%9E%E7%94%A8%E6%88%B7%E5%AF%B9%E4%B8%9A%E5%8A%A1%E4%BD%BF%E7%94%A8%E5%88%86%E9%85%8D">模拟生产环境，真实用户对业务使用分配</a></li><li><a href="#%E9%97%AE%E9%A2%98">问题</a></li><li><a href="#%E5%A6%82%E4%BD%95%E5%BC%80%E5%B1%95">如何开展</a></li><li><a href="#%E5%A6%82%E4%BD%95%E4%BC%98%E5%8C%96">如何优化</a></li><li><a href="#%E6%80%A7%E8%83%BD%E5%9C%BA%E6%99%AF%E8%AE%BE%E8%AE%A1">性能场景设计</a></li><li><a href="#%E6%80%A7%E8%83%BD%E5%9C%BA%E6%99%AF%E8%AE%BE%E8%AE%A1-%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E5%9C%BA%E6%99%AF">性能场景设计-性能测试场景</a></li><li><a href="#%E8%BF%90%E8%A1%8C%E6%B5%8B%E8%AF%95">运行测试</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><span id="15-性能测试场景"></span><h2 id="全链路测试"><a class="headerlink" href="#全链路测试" title="全链路测试"></a>全链路测试</h2><blockquote>
-<p>听起来，很高大上，但是没几家能落地</p>
-<p>真正做全链路性能测试，只有大公司才可能落地</p>
+        <div class="post-body" id="article-text"><span id="15-性能测试场景"></span><h2 data-passage-key="99c042169dab" id="全链路测试"><a class="headerlink" href="#全链路测试" title="全链路测试"></a>全链路测试</h2><blockquote data-passage-key="43b95908893c" id="passage-7e34d317b0b3">
+<p data-passage-key="4e73283f4e64" id="passage-4fb432e0974d">听起来，很高大上，但是没几家能落地</p>
+<p data-passage-key="668989f9551b" id="passage-b6dafe0c2108">真正做全链路性能测试，只有大公司才可能落地</p>
 </blockquote>
-<p>全链路：就一个请求，从头到尾所有的环境，都进行性能测试</p>
-<p>例如，公司中的一个登录业务，需要经过多少个服务，要调用多少个接口，这个接口的完整数据流是否清楚。</p>
+<p data-passage-key="39e73bcea078" id="passage-314df8a72fab">全链路：就一个请求，从头到尾所有的环境，都进行性能测试</p>
+<p data-passage-key="561c11e0305a" id="passage-220ee99af384">例如，公司中的一个登录业务，需要经过多少个服务，要调用多少个接口，这个接口的完整数据流是否清楚。</p>
 <ol>
-<li>一个一个接口把性能测试做下来。</li>
-<li>每一个业务的性能测试做下来。</li>
-<li>多个业务的性能测试做下来。</li>
+<li data-passage-key="ed159da4ca0f" id="passage-db8cf540625b">一个一个接口把性能测试做下来。</li>
+<li data-passage-key="14cb9eb3cb9c" id="passage-c58962212166">每一个业务的性能测试做下来。</li>
+<li data-passage-key="b47d34986d6e" id="passage-eb691e7c3e8f">多个业务的性能测试做下来。</li>
 </ol>
-<p>需要解决单个接口，单个业务的性能瓶颈后，才可以开始全链路测试。</p>
+<p data-passage-key="001144cba8b9" id="passage-305196ff47f1">需要解决单个接口，单个业务的性能瓶颈后，才可以开始全链路测试。</p>
 <span id="more"></span>
-<h3 id="模拟生产环境，真实用户对业务使用分配"><a class="headerlink" href="#模拟生产环境，真实用户对业务使用分配" title="模拟生产环境，真实用户对业务使用分配"></a>模拟生产环境，真实用户对业务使用分配</h3><ol>
-<li>各种业务</li>
-<li>各种业务的用户量不相同</li>
-<li>业务覆盖广，深度深</li>
+<h3 data-passage-key="016d8d696ca7" id="模拟生产环境，真实用户对业务使用分配"><a class="headerlink" href="#模拟生产环境，真实用户对业务使用分配" title="模拟生产环境，真实用户对业务使用分配"></a>模拟生产环境，真实用户对业务使用分配</h3><ol>
+<li data-passage-key="09e9c9cdc5a9" id="passage-9a1611414a95">各种业务</li>
+<li data-passage-key="f4dc43aaddbc" id="passage-b6f5beafc8a2">各种业务的用户量不相同</li>
+<li data-passage-key="996c458490d1" id="passage-3372a8a5212d">业务覆盖广，深度深</li>
 </ol>
-<h3 id="问题"><a class="headerlink" href="#问题" title="问题"></a>问题</h3><ol>
-<li>涉及系统多</li>
-<li>如何模拟用户真实流量分配</li>
-<li>接口业务多</li>
+<h3 data-passage-key="33a8618cb671" id="问题"><a class="headerlink" href="#问题" title="问题"></a>问题</h3><ol>
+<li data-passage-key="ed26bf76198a" id="passage-4c63e14461b1">涉及系统多</li>
+<li data-passage-key="b098f0392d10" id="passage-371436b68baf">如何模拟用户真实流量分配</li>
+<li data-passage-key="1e2cde260196" id="passage-c001dfd754f6">接口业务多</li>
 </ol>
-<h3 id="如何开展"><a class="headerlink" href="#如何开展" title="如何开展"></a>如何开展</h3><ol>
-<li>分析生产用户流量</li>
-<li>各个业务接口性能测试脚本开发</li>
-<li>压测环境要模拟生产环境</li>
-<li>压测数据</li>
-<li>实时全流程监控</li>
+<h3 data-passage-key="a455c4ec7551" id="如何开展"><a class="headerlink" href="#如何开展" title="如何开展"></a>如何开展</h3><ol>
+<li data-passage-key="645b5dd81bc0" id="passage-c57500e8bf01">分析生产用户流量</li>
+<li data-passage-key="111bf6c7ec7a" id="passage-5914b7b95311">各个业务接口性能测试脚本开发</li>
+<li data-passage-key="af9629d29214" id="passage-41dfb3846733">压测环境要模拟生产环境</li>
+<li data-passage-key="58bd7d9514e2" id="passage-2bc2c76c141b">压测数据</li>
+<li data-passage-key="7c53347a13a6" id="passage-f7be19cca152">实时全流程监控</li>
 </ol>
-<h3 id="如何优化"><a class="headerlink" href="#如何优化" title="如何优化"></a>如何优化</h3><ol>
-<li>单系统优化</li>
-<li>关键点优化</li>
-<li>业务流程优化</li>
+<h3 data-passage-key="0742ebb80ec0" id="如何优化"><a class="headerlink" href="#如何优化" title="如何优化"></a>如何优化</h3><ol>
+<li data-passage-key="94c60447968e" id="passage-fa6e274803c3">单系统优化</li>
+<li data-passage-key="63c7c16d401d" id="passage-077c51354861">关键点优化</li>
+<li data-passage-key="3dbb3780b1b1" id="passage-421251dd9fd7">业务流程优化</li>
 </ol>
-<h2 id="性能场景设计"><a class="headerlink" href="#性能场景设计" title="性能场景设计"></a>性能场景设计</h2><ul>
-<li>性能测试场景</li>
-<li>负载测试场景</li>
-<li>压力测试场景</li>
-<li>面向目标场景</li>
-<li>混合场景</li>
-<li>波浪形场景</li>
+<h2 data-passage-key="bc618aed00c0" id="性能场景设计"><a class="headerlink" href="#性能场景设计" title="性能场景设计"></a>性能场景设计</h2><ul>
+<li data-passage-key="1bdc69f793e4" id="passage-4a477bb55b48">性能测试场景</li>
+<li data-passage-key="1dd3535c1770" id="passage-875932da4ee6">负载测试场景</li>
+<li data-passage-key="77e8dac43631" id="passage-0830fb914993">压力测试场景</li>
+<li data-passage-key="5efa3d4a3b1a" id="passage-1caa37737bc4">面向目标场景</li>
+<li data-passage-key="51fa282a8abb" id="passage-ab76e4949430">混合场景</li>
+<li data-passage-key="daf0a917862c" id="passage-ae67bfa8e82e">波浪形场景</li>
 </ul>
-<h2 id="性能场景设计-性能测试场景"><a class="headerlink" href="#性能场景设计-性能测试场景" title="性能场景设计-性能测试场景"></a>性能场景设计-性能测试场景</h2><ol>
-<li>普通线程组</li>
-<li>服务器接口性能测试，一定要是多用户并发</li>
-<li>多用户：jmeter线程组中的「线程数」</li>
+<h2 data-passage-key="31174a6e47ae" id="性能场景设计-性能测试场景"><a class="headerlink" href="#性能场景设计-性能测试场景" title="性能场景设计-性能测试场景"></a>性能场景设计-性能测试场景</h2><ol>
+<li data-passage-key="4e902947e2ac" id="passage-838e5b9ca311">普通线程组</li>
+<li data-passage-key="744a1111f10b" id="passage-2a0c9ae77027">服务器接口性能测试，一定要是多用户并发</li>
+<li data-passage-key="414f0abfcc35" id="passage-86d91f68446a">多用户：jmeter线程组中的「线程数」</li>
 </ol>
 <ul>
-<li><p>多用户并发=多个人</p>
+<li data-passage-key="16c933537bd2" id="passage-774cfd85a384"><p data-passage-key="da6acf0ef4ef" id="passage-a9860744b04e">多用户并发=多个人</p>
 </li>
-<li><p>在性能测试中，这个「人」是如何模拟的？</p>
+<li data-passage-key="dbdcea4cad37" id="passage-0d2047bfa73b"><p data-passage-key="2e2878cc20ab" id="passage-0546d83f9727">在性能测试中，这个「人」是如何模拟的？</p>
 </li>
 </ul>
-<blockquote>
-<p>一个软件、程序、代码运行起来，就会生产一个进程</p>
-<p>一个进程中真正干活的是线程</p>
+<blockquote data-passage-key="2ca3241b6f99" id="passage-db5baeb65e92">
+<p data-passage-key="94430ea0bd32" id="passage-74335403bdd9">一个软件、程序、代码运行起来，就会生产一个进程</p>
+<p data-passage-key="757da0f7ba69" id="passage-6c134dc6384a">一个进程中真正干活的是线程</p>
 </blockquote>
-<blockquote>
-<p>性能测试中，模拟多用户并发，不同工具可能使用不同的方式。</p>
-<p>jmeter使用的是线程</p>
-<p>loadrunner可以使用进程、线程，默认是线程</p>
-<p>locust使用的是协程</p>
+<blockquote data-passage-key="6ace613aab86" id="passage-42dbf4e57c3f">
+<p data-passage-key="8ac75a24253a" id="passage-3ce923e58581">性能测试中，模拟多用户并发，不同工具可能使用不同的方式。</p>
+<p data-passage-key="347315cf21b1" id="passage-d6b6220de6aa">jmeter使用的是线程</p>
+<p data-passage-key="59072368e733" id="passage-20d007577719">loadrunner可以使用进程、线程，默认是线程</p>
+<p data-passage-key="23391ee9c80f" id="passage-d981a42e81a3">locust使用的是协程</p>
 </blockquote>
 <p><img alt="线程组" decoding="async" height="393" loading="lazy" src="/images/blog-media/e0d8efdb980519c1ec16.webp" width="1080"/></p>
-<p><strong>线程数</strong>：相当于用户个数</p>
-<p><strong>Ramp-Up时间（秒）</strong>：启动所有线程数的时间。在这个时间内，线程只要启动了，就去执行请求，是广义的并发</p>
-<p>例如：当「Ramp-Up」设置为2，「线程数」设置为10：在2秒钟结束，10个用户都启动好。不保证在2秒钟过程中，到底是怎么启动的。</p>
-<p>理论上 Jmeter没有显示线程数的数量，可以设置为任意大的数字。</p>
-<p>实际上，受电脑本身的资源影响，不可能无限大。</p>
-<p>一台电脑，cpu的频率直接影响线程数量，一般而言，一台电脑jmeter（http协议）能创建的线程数，大约在2000左右，保守在1000-1500</p>
-<p>ramp-up设置：</p>
+<p data-passage-key="af4ddb272fd1" id="passage-132c497d0bf7"><strong>线程数</strong>：相当于用户个数</p>
+<p data-passage-key="0c53350ff030" id="passage-3e4766824c9e"><strong>Ramp-Up时间（秒）</strong>：启动所有线程数的时间。在这个时间内，线程只要启动了，就去执行请求，是广义的并发</p>
+<p data-passage-key="7dc131ac5a2b" id="passage-094b79fd85bb">例如：当「Ramp-Up」设置为2，「线程数」设置为10：在2秒钟结束，10个用户都启动好。不保证在2秒钟过程中，到底是怎么启动的。</p>
+<p data-passage-key="62c4e98c2205" id="passage-45fa5d3809ea">理论上 Jmeter没有显示线程数的数量，可以设置为任意大的数字。</p>
+<p data-passage-key="c0ce40df86f0" id="passage-ecb2415d7cdc">实际上，受电脑本身的资源影响，不可能无限大。</p>
+<p data-passage-key="e2d3a9344c5a" id="passage-fa9f207f7340">一台电脑，cpu的频率直接影响线程数量，一般而言，一台电脑jmeter（http协议）能创建的线程数，大约在2000左右，保守在1000-1500</p>
+<p data-passage-key="576e70f9d849" id="passage-aa6de43be697">ramp-up设置：</p>
 <ul>
-<li>线程数&lt;100，1s</li>
-<li>线程数&lt;200，2～3s</li>
-<li>200&lt;线程数&lt;1000 3～5s</li>
+<li data-passage-key="284492a0fe4e" id="passage-fa9ac24cdb60">线程数&lt;100，1s</li>
+<li data-passage-key="7221f997981a" id="passage-dd93922ea9be">线程数&lt;200，2～3s</li>
+<li data-passage-key="25ed79c7d234" id="passage-96d0eeb0e89d">200&lt;线程数&lt;1000 3～5s</li>
 </ul>
-<p><strong>循环次数</strong>：至少设置为1</p>
-<p><strong>永远</strong>：勾选后会持续运行直到手动停止</p>
-<p><strong>调度器</strong>：需要配合「永远」一起使用。输入一个<strong>持续时间</strong>可以指定任务运行一段时间后停止</p>
-<p><strong>启动延迟</strong>：线程起来后等待一段时间后再执行</p>
-<h3 id="运行测试"><a class="headerlink" href="#运行测试" title="运行测试"></a>运行测试</h3><p>配置「线程数」10，「Ramp-U」p为2，「循环次数」为「永远」，勾选「调度器」，设置「持续时间」为180秒</p>
+<p data-passage-key="3e2c3cbe7607" id="passage-2268e3829952"><strong>循环次数</strong>：至少设置为1</p>
+<p data-passage-key="54ac764dfa3b" id="passage-95fa2dbc2a43"><strong>永远</strong>：勾选后会持续运行直到手动停止</p>
+<p data-passage-key="afc73677c975" id="passage-0bbd8181408c"><strong>调度器</strong>：需要配合「永远」一起使用。输入一个<strong>持续时间</strong>可以指定任务运行一段时间后停止</p>
+<p data-passage-key="2a70bbb7e340" id="passage-f3ca31035060"><strong>启动延迟</strong>：线程起来后等待一段时间后再执行</p>
+<h3 data-passage-key="ca02ccbd4edd" id="运行测试"><a class="headerlink" href="#运行测试" title="运行测试"></a>运行测试</h3><p data-passage-key="05079a1907f4" id="passage-ab5706a8ca44">配置「线程数」10，「Ramp-U」p为2，「循环次数」为「永远」，勾选「调度器」，设置「持续时间」为180秒</p>
 <p><img alt="线程属性" decoding="async" height="281" loading="lazy" src="/images/blog-media/76241fb75f65ccb56f83.webp" width="243"/></p>
-<p>运行后查看「聚合报告」</p>
+<p data-passage-key="79d144e7f02b" id="passage-445533ebbd37">运行后查看「聚合报告」</p>
 <p><img alt="聚合报告" decoding="async" height="350" loading="lazy" src="/images/blog-media/16c6078c34f3b0e833c8.webp" width="1062"/></p></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
+        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
+        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
+          <header class="passage-dialog-header">
+            <h2 id="passage-comment-title">段落评论</h2>
+            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
+          </header>
+          <div class="passage-dialog-content">
+            <blockquote data-passage-excerpt></blockquote>
+            <a data-passage-source>查看原文</a>
+            <p data-passage-status role="status"></p>
+            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
+            <div data-passage-widget></div>
+          </div>
+        </dialog>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/ccGhEHN51U-oZAYsG0YeEw">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a><a href="/tags/%E5%9C%BA%E6%99%AF%E8%AE%BE%E8%AE%A1/">场景设计</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a></div>
@@ -154,16 +166,6 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
-          <div class="comment-quote" data-comment-quote hidden>
-            <blockquote data-comment-quote-text></blockquote>
-            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
-            <p data-comment-quote-status role="status"></p>
-            <div class="comment-quote-actions">
-              <button type="button" data-copy-comment-quote>复制引用</button>
-              <a data-comment-quote-source>返回原文</a>
-              <button type="button" data-clear-comment-quote>取消引用</button>
-            </div>
-          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

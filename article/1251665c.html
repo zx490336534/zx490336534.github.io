@@ -20,8 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/1251665c.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/1251665c.html">
-<script src="/js/comments.js?v=3" defer></script>
-<script src="/js/comment-quotes.js" defer></script>
+<script type="module" src="/js/discussions.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -57,50 +56,63 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#pipeline">pipeline</a></li><li><a href="#Jenkins%E5%AE%89%E8%A3%85">Jenkins安装</a></li><li><a href="#%E5%88%9B%E5%BB%BA%E7%AC%AC%E4%B8%80%E4%B8%AApipeline">创建第一个pipeline</a></li><li><a href="#%E5%9C%A8Jenkins%E4%B8%AD%E6%96%B0%E5%BB%BA%E4%B8%80%E4%B8%AApipeline%E9%A1%B9%E7%9B%AE">在Jenkins中新建一个pipeline项目</a></li><li><a href="#%E5%9C%A8Pipeline%E8%8A%82%E7%82%B9%E4%B8%8B%E8%BE%93%E5%85%A5%E4%BB%A5%E4%B8%8B%E5%86%85%E5%AE%B9">在Pipeline节点下输入以下内容</a></li><li><a href="#%E6%89%A7%E8%A1%8C">执行</a></li><li><a href="#%E7%BB%93%E6%9E%9C%E6%9F%A5%E7%9C%8B">结果查看</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><span id="Jenkins-一"></span><blockquote>
-<p>从某种抽象层次上讲，部署流水线(Deployment pipeline)是指从软件版本控制库到用户手中这一过程的自动化表现形式。—《持续交付-发布可靠软件的系统方法》</p>
+        <div class="post-body" id="article-text"><span id="Jenkins-一"></span><blockquote data-passage-key="122852483141" id="passage-b1090d333dd9">
+<p data-passage-key="0a4b028951a3" id="passage-6c18eaf33083">从某种抽象层次上讲，部署流水线(Deployment pipeline)是指从软件版本控制库到用户手中这一过程的自动化表现形式。—《持续交付-发布可靠软件的系统方法》</p>
 </blockquote>
-<h2 id="pipeline"><a class="headerlink" href="#pipeline" title="pipeline"></a>pipeline</h2><p>Jenkins1.x只能通过界面手动操作来「描述」部署流水线。</p>
-<p>Jenkins2.x支持pipeline as code，可以通过代码来「描述」部署流水线。</p>
-<p>使用「代码」而非「UI」的意义：</p>
+<h2 data-passage-key="23bf0d244a4c" id="pipeline"><a class="headerlink" href="#pipeline" title="pipeline"></a>pipeline</h2><p data-passage-key="e4ba3e822d0a" id="passage-55953fe3de90">Jenkins1.x只能通过界面手动操作来「描述」部署流水线。</p>
+<p data-passage-key="cbc11a43e869" id="passage-6f79cf1562c5">Jenkins2.x支持pipeline as code，可以通过代码来「描述」部署流水线。</p>
+<p data-passage-key="5d7d56d40af5" id="passage-f69be4e9431d">使用「代码」而非「UI」的意义：</p>
 <ul>
-<li>更好的版本化：将pipeline进行版本控制。</li>
-<li>更好的协作：每次修改对他人可见，并可以进行代码审查。</li>
-<li>更好的重用性：手动操作无法简单的复制粘贴。<span id="more"></span>
-<h2 id="Jenkins安装"><a class="headerlink" href="#Jenkins安装" title="Jenkins安装"></a>Jenkins安装</h2></li>
+<li data-passage-key="3880ca6d9dc6" id="passage-fa59ecc57904">更好的版本化：将pipeline进行版本控制。</li>
+<li data-passage-key="64fd2b1a99de" id="passage-62cbafe58632">更好的协作：每次修改对他人可见，并可以进行代码审查。</li>
+<li data-passage-key="f0e54ae791dc" id="passage-eaa79d42f899">更好的重用性：手动操作无法简单的复制粘贴。<span id="more"></span>
+<h2 data-passage-key="1f161885f00b" id="Jenkins安装"><a class="headerlink" href="#Jenkins安装" title="Jenkins安装"></a>Jenkins安装</h2></li>
 </ul>
-<p>Jenkins下载地址：<a href="https://jenkins.io/zh/download/" rel="noopener" target="_blank">https://jenkins.io/zh/download/</a></p>
-<p>Jenkins Docker：<a href="https://hub.docker.com/r/jenkins/jenkins" rel="noopener" target="_blank">https://hub.docker.com/r/jenkins/jenkins</a></p>
-<p>由于用于测试，所以使用Docker搭建一个Jenkins服务器</p>
+<p data-passage-key="0798693450d1" id="passage-4c5eaeae8d29">Jenkins下载地址：<a href="https://jenkins.io/zh/download/" rel="noopener" target="_blank">https://jenkins.io/zh/download/</a></p>
+<p data-passage-key="0fb4034e932c" id="passage-6bb423de9264">Jenkins Docker：<a href="https://hub.docker.com/r/jenkins/jenkins" rel="noopener" target="_blank">https://hub.docker.com/r/jenkins/jenkins</a></p>
+<p data-passage-key="e80ba8dff591" id="passage-5772639c648f">由于用于测试，所以使用Docker搭建一个Jenkins服务器</p>
 <p><img alt="使用Docker搭建Jenkins" decoding="async" height="754" loading="lazy" src="/images/blog-media/fbe703d5ac4f7e34c49f.webp" width="1080"/></p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker pull jenkins/jenkins:lts</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> docker run -d -v jenkins_home:/var/jenkins_home -p 8080:8080 -p 50000:50000 jenkins/jenkins:lts</span></span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="0a71c7d9e22d" id="passage-60fa2342e71f"><span class="line"><span class="meta">$</span><span class="bash"> docker pull jenkins/jenkins:lts</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> docker run -d -v jenkins_home:/var/jenkins_home -p 8080:8080 -p 50000:50000 jenkins/jenkins:lts</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="访问Jenkins" decoding="async" height="688" loading="lazy" src="/images/blog-media/0fb959e609a4cd2d955e.webp" width="1080"/></p>
-<p>等待一段时间后…</p>
+<p data-passage-key="c529c751918a" id="passage-6bf88f702dbc">等待一段时间后…</p>
 <p><img alt="入门1" decoding="async" height="688" loading="lazy" src="/images/blog-media/ff22d67637a9aed16307.webp" width="1080"/></p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> [name] tail /var/jenkins_home/secrets/initialAdminPassword</span></span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="a62ac3d2a2ff" id="passage-57c50cf502f6"><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> [name] tail /var/jenkins_home/secrets/initialAdminPassword</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="image-20190710000348232" decoding="async" height="682" loading="lazy" src="/images/blog-media/2c6fc6d4a441481ee545.webp" width="1080"/></p>
-<p>输入密码进入下一步，安装推荐的插件即可</p>
+<p data-passage-key="778d446c97aa" id="passage-0759df817579">输入密码进入下一步，安装推荐的插件即可</p>
 <p><img alt="安装推荐的插件" decoding="async" height="688" loading="lazy" src="/images/blog-media/02049784066ec37bbfbe.webp" width="1080"/></p>
 <p><img alt="插件安装" decoding="async" height="688" loading="lazy" src="/images/blog-media/d0ab5f609e8a43cbcb16.webp" width="1080"/></p>
 <p><img alt="创建管理员账号" decoding="async" height="688" loading="lazy" src="/images/blog-media/1dbaa6fea7efa869eb28.webp" width="1080"/></p>
 <p><img alt="URL设置" decoding="async" height="688" loading="lazy" src="/images/blog-media/5c670ff48eed0ef6b669.webp" width="1080"/></p>
 <p><img alt="安装完成" decoding="async" height="688" loading="lazy" src="/images/blog-media/4474b442c302ee153263.webp" width="1080"/></p>
 <p><img alt="完成" decoding="async" height="744" loading="lazy" src="/images/blog-media/c988c67d8e1c5bdd96c6.webp" width="1080"/></p>
-<h4 id="遇到问题：Jenkins登录后页面为空"><a class="headerlink" href="#遇到问题：Jenkins登录后页面为空" title="遇到问题：Jenkins登录后页面为空"></a>遇到问题：Jenkins登录后页面为空</h4><p>解决办法：</p>
+<h4 data-passage-key="e46ed5f0f284" id="遇到问题：Jenkins登录后页面为空"><a class="headerlink" href="#遇到问题：Jenkins登录后页面为空" title="遇到问题：Jenkins登录后页面为空"></a>遇到问题：Jenkins登录后页面为空</h4><p data-passage-key="5b13c2d537fa" id="passage-749c0b78bb19">解决办法：</p>
 <ol>
-<li><p>打开一个新的窗口，输入网址<a href="http://localhost:8080/jenkins/pluginManager/advanced" rel="noopener" target="_blank">http://localhost:8080/jenkins/pluginManager/advanced</a></p>
+<li data-passage-key="a18afb83630c" id="passage-747823003c18"><p data-passage-key="17b7178dabde" id="passage-36f7f1962444">打开一个新的窗口，输入网址<a href="http://localhost:8080/jenkins/pluginManager/advanced" rel="noopener" target="_blank">http://localhost:8080/jenkins/pluginManager/advanced</a></p>
 </li>
-<li><p>输入网址打开后滑动到页面下方，最底下有个【升级站点】，把其中的链接改成这个http的链接   <a href="http://updates.jenkins.io/update-center.json%E3%80%82" rel="noopener" target="_blank">http://updates.jenkins.io/update-center.json。</a></p>
+<li data-passage-key="d5f9ad81785d" id="passage-707972626506"><p data-passage-key="c5db738daa59" id="passage-71e02aa5c1e8">输入网址打开后滑动到页面下方，最底下有个【升级站点】，把其中的链接改成这个http的链接   <a href="http://updates.jenkins.io/update-center.json%E3%80%82" rel="noopener" target="_blank">http://updates.jenkins.io/update-center.json。</a></p>
 </li>
-<li><p>输入：<a href="http://localhost:8080/exit" rel="noopener" target="_blank">http://localhost:8080/r</a>estart 重启Jenkins</p>
+<li data-passage-key="7a8da65459fc" id="passage-180e0d0737f2"><p data-passage-key="61edc4bf8d17" id="passage-51c4be8dd07b">输入：<a href="http://localhost:8080/exit" rel="noopener" target="_blank">http://localhost:8080/r</a>estart 重启Jenkins</p>
 </li>
 </ol>
-<h2 id="创建第一个pipeline"><a class="headerlink" href="#创建第一个pipeline" title="创建第一个pipeline"></a>创建第一个pipeline</h2><h3 id="在Jenkins中新建一个pipeline项目"><a class="headerlink" href="#在Jenkins中新建一个pipeline项目" title="在Jenkins中新建一个pipeline项目"></a>在Jenkins中新建一个pipeline项目</h3><p><img alt="任务创建" decoding="async" height="744" loading="lazy" src="/images/blog-media/f29ee8b247655caf5090.webp" width="1080"/></p>
-<h3 id="在Pipeline节点下输入以下内容"><a class="headerlink" href="#在Pipeline节点下输入以下内容" title="在Pipeline节点下输入以下内容"></a>在Pipeline节点下输入以下内容</h3><figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/></pre></td><td class="code"><pre><span class="line">pipeline{</span><br/><span class="line">    agent any</span><br/><span class="line">    stages{</span><br/><span class="line">        stage(<span class="string">'Build'</span>){</span><br/><span class="line">            steps{</span><br/><span class="line">                echo <span class="string">'Hello World'</span></span><br/><span class="line">            }</span><br/><span class="line">        }</span><br/><span class="line">    }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
+<h2 data-passage-key="ff0539f6910a" id="创建第一个pipeline"><a class="headerlink" href="#创建第一个pipeline" title="创建第一个pipeline"></a>创建第一个pipeline</h2><h3 data-passage-key="5f90fa030b14" id="在Jenkins中新建一个pipeline项目"><a class="headerlink" href="#在Jenkins中新建一个pipeline项目" title="在Jenkins中新建一个pipeline项目"></a>在Jenkins中新建一个pipeline项目</h3><p><img alt="任务创建" decoding="async" height="744" loading="lazy" src="/images/blog-media/f29ee8b247655caf5090.webp" width="1080"/></p>
+<h3 data-passage-key="1f5a8d676165" id="在Pipeline节点下输入以下内容"><a class="headerlink" href="#在Pipeline节点下输入以下内容" title="在Pipeline节点下输入以下内容"></a>在Pipeline节点下输入以下内容</h3><figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/></pre></td><td class="code"><pre data-passage-key="f8787db3e4cc" id="passage-3f348e242df0"><span class="line">pipeline{</span><br/><span class="line">    agent any</span><br/><span class="line">    stages{</span><br/><span class="line">        stage(<span class="string">'Build'</span>){</span><br/><span class="line">            steps{</span><br/><span class="line">                echo <span class="string">'Hello World'</span></span><br/><span class="line">            }</span><br/><span class="line">        }</span><br/><span class="line">    }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="流水线" decoding="async" height="744" loading="lazy" src="/images/blog-media/054c4ec2aa120035f67d.webp" width="1080"/></p>
-<h3 id="执行"><a class="headerlink" href="#执行" title="执行"></a>执行</h3><p><img alt="构建" decoding="async" height="744" loading="lazy" src="/images/blog-media/4a0c9b8c862692f3734c.webp" width="1080"/></p>
-<h3 id="结果查看"><a class="headerlink" href="#结果查看" title="结果查看"></a>结果查看</h3><p><img alt="结果查看" decoding="async" height="744" loading="lazy" src="/images/blog-media/934752316807ba9ab8b7.webp" width="1080"/></p></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
+<h3 data-passage-key="32c8d373afe0" id="执行"><a class="headerlink" href="#执行" title="执行"></a>执行</h3><p><img alt="构建" decoding="async" height="744" loading="lazy" src="/images/blog-media/4a0c9b8c862692f3734c.webp" width="1080"/></p>
+<h3 data-passage-key="024ba64656cb" id="结果查看"><a class="headerlink" href="#结果查看" title="结果查看"></a>结果查看</h3><p><img alt="结果查看" decoding="async" height="744" loading="lazy" src="/images/blog-media/934752316807ba9ab8b7.webp" width="1080"/></p></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
+        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
+          <header class="passage-dialog-header">
+            <h2 id="passage-comment-title">段落评论</h2>
+            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
+          </header>
+          <div class="passage-dialog-content">
+            <blockquote data-passage-excerpt></blockquote>
+            <a data-passage-source>查看原文</a>
+            <p data-passage-status role="status"></p>
+            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
+            <div data-passage-widget></div>
+          </div>
+        </dialog>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/MMkEonigR3p2BaEHVzEg3g">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Jenkins/">Jenkins</a><a href="/tags/CI/">CI</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/Jenkins/">Jenkins</a></div>
@@ -112,16 +124,6 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
-          <div class="comment-quote" data-comment-quote hidden>
-            <blockquote data-comment-quote-text></blockquote>
-            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
-            <p data-comment-quote-status role="status"></p>
-            <div class="comment-quote-actions">
-              <button type="button" data-copy-comment-quote>复制引用</button>
-              <a data-comment-quote-source>返回原文</a>
-              <button type="button" data-clear-comment-quote>取消引用</button>
-            </div>
-          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

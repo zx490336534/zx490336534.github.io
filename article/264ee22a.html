@@ -20,8 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/264ee22a.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/264ee22a.html">
-<script src="/js/comments.js?v=3" defer></script>
-<script src="/js/comment-quotes.js" defer></script>
+<script type="module" src="/js/discussions.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -57,105 +56,118 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83">虚拟环境</a></li><li><a href="#%E5%AE%89%E8%A3%85">安装</a></li><li><a href="#%E6%9F%A5%E7%9C%8B%E5%B7%B2%E5%AE%89%E8%A3%85%E7%9A%84%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83">查看已安装的虚拟环境</a></li><li><a href="#Windows%E4%BF%AE%E6%94%B9%E5%AE%89%E8%A3%85%E7%9A%84%E4%BD%8D%E7%BD%AE">Windows修改安装的位置</a></li><li><a href="#Linux%E4%BF%AE%E6%94%B9%E5%AE%89%E8%A3%85%E7%9A%84%E4%BD%8D%E7%BD%AE">Linux修改安装的位置</a></li><li><a href="#%E5%88%9B%E5%BB%BA%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83">创建虚拟环境</a></li><li><a href="#%E8%BF%9B%E5%85%A5%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83">进入虚拟环境</a></li><li><a href="#%E9%80%80%E5%87%BA%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83">退出虚拟环境</a></li><li><a href="#%E5%88%A0%E9%99%A4%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83">删除虚拟环境</a></li><li><a href="#%E5%AF%BC%E5%87%BA%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83%E4%B8%AD%E6%89%80%E6%9C%89%E7%9A%84%E6%A8%A1%E5%9D%97%E5%92%8C%E5%8C%85">导出虚拟环境中所有的模块和包</a></li><li><a href="#%E5%AE%89%E8%A3%85requirements-txt%E4%B8%AD%E7%9A%84%E5%8C%85">安装requirements.txt中的包</a></li><li><a href="#virtualenv%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98">virtualenv存在的问题</a></li><li><a href="#pipenv">pipenv</a></li><li><a href="#%E5%88%9B%E5%BB%BA%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83-1">创建虚拟环境</a></li><li><a href="#%E8%BF%9B%E5%85%A5%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83-1">进入虚拟环境</a></li><li><a href="#%E9%80%80%E5%87%BA%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83-1">退出虚拟环境</a></li><li><a href="#%E5%AE%89%E8%A3%85%E5%8C%85">安装包</a></li><li><a href="#%E6%9F%A5%E7%9C%8B%E4%BE%9D%E8%B5%96">查看依赖</a></li><li><a href="#%E5%8D%B8%E8%BD%BD%E5%8C%85">卸载包</a></li><li><a href="#%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85">开发环境安装</a></li><li><a href="#%E5%AF%BC%E5%87%BA%E5%8C%85">导出包</a></li><li><a href="#%E5%88%A0%E9%99%A4%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83-1">删除虚拟环境</a></li><li><a href="#%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83">编码规范</a></li><li><a href="#%E7%BC%A9%E8%BF%9B">缩进</a></li><li><a href="#%E8%A1%8C%E7%9A%84%E6%9C%80%E5%A4%A7%E9%95%BF%E5%BA%A6">行的最大长度</a></li><li><a href="#%E7%A9%BA%E8%A1%8C">空行</a></li><li><a href="#%E6%B3%A8%E9%87%8A">注释</a></li><li><a href="#%E6%A8%A1%E5%9D%97%E5%8C%85%E5%AF%BC%E5%85%A5">模块包导入</a></li><li><a href="#%E7%BB%93%E6%9E%84%E5%8C%96%E5%B7%A5%E7%A8%8B">结构化工程</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><span id="测试开发进阶-一"></span><h2 id="虚拟环境"><a class="headerlink" href="#虚拟环境" title="虚拟环境"></a>虚拟环境</h2><h3 id="安装"><a class="headerlink" href="#安装" title="安装"></a>安装</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pip install virtualenv</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> pip install virtualenvwrapper-win <span class="comment"># windows下的管理工具</span></span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> pip install virtualenvwrapper</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> pip install pipenv</span></span><br/></pre></td></tr></tbody></table></figure>
+        <div class="post-body" id="article-text"><span id="测试开发进阶-一"></span><h2 data-passage-key="6b453214f432" id="虚拟环境"><a class="headerlink" href="#虚拟环境" title="虚拟环境"></a>虚拟环境</h2><h3 data-passage-key="e8f88f51ccb0" id="安装"><a class="headerlink" href="#安装" title="安装"></a>安装</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre data-passage-key="46ebe4a963bc" id="passage-7a4bd2512d64"><span class="line"><span class="meta">$</span><span class="bash"> pip install virtualenv</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> pip install virtualenvwrapper-win <span class="comment"># windows下的管理工具</span></span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> pip install virtualenvwrapper</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> pip install pipenv</span></span><br/></pre></td></tr></tbody></table></figure>
 <span id="more"></span>
-<h3 id="查看已安装的虚拟环境"><a class="headerlink" href="#查看已安装的虚拟环境" title="查看已安装的虚拟环境"></a>查看已安装的虚拟环境</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> workon</span> </span><br/></pre></td></tr></tbody></table></figure>
-<h3 id="Windows修改安装的位置"><a class="headerlink" href="#Windows修改安装的位置" title="Windows修改安装的位置"></a>Windows修改安装的位置</h3><p>新增环境变量</p>
+<h3 data-passage-key="9cf257f4b79b" id="查看已安装的虚拟环境"><a class="headerlink" href="#查看已安装的虚拟环境" title="查看已安装的虚拟环境"></a>查看已安装的虚拟环境</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="c41f531b5c1e" id="passage-76f5452b9381"><span class="line"><span class="meta">$</span><span class="bash"> workon</span> </span><br/></pre></td></tr></tbody></table></figure>
+<h3 data-passage-key="5f9dd0dfc113" id="Windows修改安装的位置"><a class="headerlink" href="#Windows修改安装的位置" title="Windows修改安装的位置"></a>Windows修改安装的位置</h3><p data-passage-key="638bf463bb56" id="passage-7a0622c0c8a8">新增环境变量</p>
 <ul>
-<li>变量名：<code>WORKON_HOME</code></li>
-<li>变量值：虚拟环境存放路径</li>
+<li data-passage-key="590af11b4fac" id="passage-07fd08461e11">变量名：<code>WORKON_HOME</code></li>
+<li data-passage-key="72f77db597d2" id="passage-8fbcb6eda04a">变量值：虚拟环境存放路径</li>
 </ul>
-<h3 id="Linux修改安装的位置"><a class="headerlink" href="#Linux修改安装的位置" title="Linux修改安装的位置"></a>Linux修改安装的位置</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> pip后建立软连接</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> ln -s /usr/<span class="built_in">local</span>/python3/bin/virtualenv /usr/bin/virtualenv</span></span><br/><span class="line"></span><br/><span class="line"><span class="meta">#</span><span class="bash"> Linux配置虚拟环境路径</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> vim ~/.bashrc</span></span><br/><span class="line"><span class="meta">#</span><span class="bash"> mac配置</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> vim ~/.bash_profile</span></span><br/><span class="line"></span><br/><span class="line"><span class="meta">#</span><span class="bash"> 新增</span></span><br/><span class="line">export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python</span><br/><span class="line">export WORKON_HOME=$HOME/.virtualenvs</span><br/><span class="line"></span><br/><span class="line">source /usr/local/python3/bin/virtualenvwrapper.sh</span><br/><span class="line"></span><br/><span class="line"><span class="meta">#</span><span class="bash"> 执行命令，让配置生效</span></span><br/><span class="line"><span class="meta">#</span><span class="bash"> Linux</span></span><br/><span class="line">source ~/.bashrc</span><br/><span class="line"><span class="meta">#</span><span class="bash"> mac</span></span><br/><span class="line">source ~/.bash_profile</span><br/></pre></td></tr></tbody></table></figure>
-<h3 id="创建虚拟环境"><a class="headerlink" href="#创建虚拟环境" title="创建虚拟环境"></a>创建虚拟环境</h3><p><code>-p</code>指定解释器</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> mkvirtualenv -p python3 test_py3</span></span><br/></pre></td></tr></tbody></table></figure>
-<h3 id="进入虚拟环境"><a class="headerlink" href="#进入虚拟环境" title="进入虚拟环境"></a>进入虚拟环境</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> workon test_py3</span></span><br/></pre></td></tr></tbody></table></figure>
-<h3 id="退出虚拟环境"><a class="headerlink" href="#退出虚拟环境" title="退出虚拟环境"></a>退出虚拟环境</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> deactivate</span></span><br/></pre></td></tr></tbody></table></figure>
-<h3 id="删除虚拟环境"><a class="headerlink" href="#删除虚拟环境" title="删除虚拟环境"></a>删除虚拟环境</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> rmvirtualenv test_py3</span></span><br/></pre></td></tr></tbody></table></figure>
-<h3 id="导出虚拟环境中所有的模块和包"><a class="headerlink" href="#导出虚拟环境中所有的模块和包" title="导出虚拟环境中所有的模块和包"></a>导出虚拟环境中所有的模块和包</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pip frezz &gt;requirements.txt</span></span><br/></pre></td></tr></tbody></table></figure>
-<h3 id="安装requirements-txt中的包"><a class="headerlink" href="#安装requirements-txt中的包" title="安装requirements.txt中的包"></a>安装requirements.txt中的包</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pip install -r requirements.txt</span></span><br/></pre></td></tr></tbody></table></figure>
-<h3 id="virtualenv存在的问题"><a class="headerlink" href="#virtualenv存在的问题" title="virtualenv存在的问题"></a>virtualenv存在的问题</h3><p>virtualenv卸载一个包之后，相关依赖不会被同步卸载</p>
-<h2 id="pipenv"><a class="headerlink" href="#pipenv" title="pipenv"></a>pipenv</h2><p><strong>与项目绑定</strong></p>
-<h3 id="创建虚拟环境-1"><a class="headerlink" href="#创建虚拟环境-1" title="创建虚拟环境"></a>创建虚拟环境</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pipenv install</span></span><br/></pre></td></tr></tbody></table></figure>
-<h3 id="进入虚拟环境-1"><a class="headerlink" href="#进入虚拟环境-1" title="进入虚拟环境"></a>进入虚拟环境</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pipenv shell</span></span><br/></pre></td></tr></tbody></table></figure>
-<h3 id="退出虚拟环境-1"><a class="headerlink" href="#退出虚拟环境-1" title="退出虚拟环境"></a>退出虚拟环境</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line">exit</span><br/></pre></td></tr></tbody></table></figure>
-<h3 id="安装包"><a class="headerlink" href="#安装包" title="安装包"></a>安装包</h3><p>在哪个路径下操作，就安装到哪个环境</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pipenv install requests</span></span><br/></pre></td></tr></tbody></table></figure>
-<h3 id="查看依赖"><a class="headerlink" href="#查看依赖" title="查看依赖"></a>查看依赖</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pipenv graph</span></span><br/></pre></td></tr></tbody></table></figure>
-<h3 id="卸载包"><a class="headerlink" href="#卸载包" title="卸载包"></a>卸载包</h3><p>当前环境的依赖不会被卸载</p>
-<p>移植<code>Pipfile</code>和<code>Pipfile.lock</code>后重新生成不会携带</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pipenv uninstall requests</span></span><br/></pre></td></tr></tbody></table></figure>
-<h3 id="开发环境安装"><a class="headerlink" href="#开发环境安装" title="开发环境安装"></a>开发环境安装</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pipenv install --dev requests</span></span><br/></pre></td></tr></tbody></table></figure>
-<h3 id="导出包"><a class="headerlink" href="#导出包" title="导出包"></a>导出包</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pipenv lock -r &gt;requirements.txt</span></span><br/></pre></td></tr></tbody></table></figure>
-<h3 id="删除虚拟环境-1"><a class="headerlink" href="#删除虚拟环境-1" title="删除虚拟环境"></a>删除虚拟环境</h3><p><code>Pipfile</code>和<code>Pipfile.lock</code>不会被删除</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pipenv --rm</span></span><br/></pre></td></tr></tbody></table></figure>
-<h2 id="编码规范"><a class="headerlink" href="#编码规范" title="编码规范"></a>编码规范</h2><blockquote>
-<p>python之禅</p>
+<h3 data-passage-key="399cead25656" id="Linux修改安装的位置"><a class="headerlink" href="#Linux修改安装的位置" title="Linux修改安装的位置"></a>Linux修改安装的位置</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/></pre></td><td class="code"><pre data-passage-key="22f17fcaa188" id="passage-8bc7ab9ebf1f"><span class="line"><span class="meta">#</span><span class="bash"> pip后建立软连接</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> ln -s /usr/<span class="built_in">local</span>/python3/bin/virtualenv /usr/bin/virtualenv</span></span><br/><span class="line"></span><br/><span class="line"><span class="meta">#</span><span class="bash"> Linux配置虚拟环境路径</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> vim ~/.bashrc</span></span><br/><span class="line"><span class="meta">#</span><span class="bash"> mac配置</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> vim ~/.bash_profile</span></span><br/><span class="line"></span><br/><span class="line"><span class="meta">#</span><span class="bash"> 新增</span></span><br/><span class="line">export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python</span><br/><span class="line">export WORKON_HOME=$HOME/.virtualenvs</span><br/><span class="line"></span><br/><span class="line">source /usr/local/python3/bin/virtualenvwrapper.sh</span><br/><span class="line"></span><br/><span class="line"><span class="meta">#</span><span class="bash"> 执行命令，让配置生效</span></span><br/><span class="line"><span class="meta">#</span><span class="bash"> Linux</span></span><br/><span class="line">source ~/.bashrc</span><br/><span class="line"><span class="meta">#</span><span class="bash"> mac</span></span><br/><span class="line">source ~/.bash_profile</span><br/></pre></td></tr></tbody></table></figure>
+<h3 data-passage-key="3267231246b3" id="创建虚拟环境"><a class="headerlink" href="#创建虚拟环境" title="创建虚拟环境"></a>创建虚拟环境</h3><p data-passage-key="b1f594604788" id="passage-17773ee919da"><code>-p</code>指定解释器</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="160e58fbbae3" id="passage-fddeb265b958"><span class="line"><span class="meta">$</span><span class="bash"> mkvirtualenv -p python3 test_py3</span></span><br/></pre></td></tr></tbody></table></figure>
+<h3 data-passage-key="48a97b36b78d" id="进入虚拟环境"><a class="headerlink" href="#进入虚拟环境" title="进入虚拟环境"></a>进入虚拟环境</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="b93a0f209706" id="passage-997dd8c20c83"><span class="line"><span class="meta">$</span><span class="bash"> workon test_py3</span></span><br/></pre></td></tr></tbody></table></figure>
+<h3 data-passage-key="ae479e053169" id="退出虚拟环境"><a class="headerlink" href="#退出虚拟环境" title="退出虚拟环境"></a>退出虚拟环境</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="a55887662522" id="passage-b21b27446c5e"><span class="line"><span class="meta">$</span><span class="bash"> deactivate</span></span><br/></pre></td></tr></tbody></table></figure>
+<h3 data-passage-key="d64f6f4ff416" id="删除虚拟环境"><a class="headerlink" href="#删除虚拟环境" title="删除虚拟环境"></a>删除虚拟环境</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="83acb086defe" id="passage-83e968f0498d"><span class="line"><span class="meta">$</span><span class="bash"> rmvirtualenv test_py3</span></span><br/></pre></td></tr></tbody></table></figure>
+<h3 data-passage-key="effdd6dcb356" id="导出虚拟环境中所有的模块和包"><a class="headerlink" href="#导出虚拟环境中所有的模块和包" title="导出虚拟环境中所有的模块和包"></a>导出虚拟环境中所有的模块和包</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="8b10b51f2dcd" id="passage-167319848f00"><span class="line"><span class="meta">$</span><span class="bash"> pip frezz &gt;requirements.txt</span></span><br/></pre></td></tr></tbody></table></figure>
+<h3 data-passage-key="7d2894c7fc4b" id="安装requirements-txt中的包"><a class="headerlink" href="#安装requirements-txt中的包" title="安装requirements.txt中的包"></a>安装requirements.txt中的包</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="6dc99b3d1384" id="passage-8a570ecd1c55"><span class="line"><span class="meta">$</span><span class="bash"> pip install -r requirements.txt</span></span><br/></pre></td></tr></tbody></table></figure>
+<h3 data-passage-key="a6b0b6ec7e51" id="virtualenv存在的问题"><a class="headerlink" href="#virtualenv存在的问题" title="virtualenv存在的问题"></a>virtualenv存在的问题</h3><p data-passage-key="9ec2aab2a569" id="passage-2d6e95124eee">virtualenv卸载一个包之后，相关依赖不会被同步卸载</p>
+<h2 data-passage-key="4eecba34e059" id="pipenv"><a class="headerlink" href="#pipenv" title="pipenv"></a>pipenv</h2><p data-passage-key="2427f6b5b8b6" id="passage-08624f13cc1b"><strong>与项目绑定</strong></p>
+<h3 data-passage-key="87d971462ce6" id="创建虚拟环境-1"><a class="headerlink" href="#创建虚拟环境-1" title="创建虚拟环境"></a>创建虚拟环境</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="7c1d4bd39e3d" id="passage-64fbd2952bbe"><span class="line"><span class="meta">$</span><span class="bash"> pipenv install</span></span><br/></pre></td></tr></tbody></table></figure>
+<h3 data-passage-key="f603418f0de1" id="进入虚拟环境-1"><a class="headerlink" href="#进入虚拟环境-1" title="进入虚拟环境"></a>进入虚拟环境</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="d4bf3f6878b0" id="passage-61904d1a5c2e"><span class="line"><span class="meta">$</span><span class="bash"> pipenv shell</span></span><br/></pre></td></tr></tbody></table></figure>
+<h3 data-passage-key="cf9206ae5857" id="退出虚拟环境-1"><a class="headerlink" href="#退出虚拟环境-1" title="退出虚拟环境"></a>退出虚拟环境</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="4fb90b1ea3c6" id="passage-30c9d6996ef4"><span class="line">exit</span><br/></pre></td></tr></tbody></table></figure>
+<h3 data-passage-key="4ef515abfdb8" id="安装包"><a class="headerlink" href="#安装包" title="安装包"></a>安装包</h3><p data-passage-key="72ba2efea9fb" id="passage-def9fa59cc27">在哪个路径下操作，就安装到哪个环境</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="2779d107a246" id="passage-0fc7a968daa9"><span class="line"><span class="meta">$</span><span class="bash"> pipenv install requests</span></span><br/></pre></td></tr></tbody></table></figure>
+<h3 data-passage-key="41ce17f743b3" id="查看依赖"><a class="headerlink" href="#查看依赖" title="查看依赖"></a>查看依赖</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="396f5a8ad6f9" id="passage-c78f7e4456c5"><span class="line"><span class="meta">$</span><span class="bash"> pipenv graph</span></span><br/></pre></td></tr></tbody></table></figure>
+<h3 data-passage-key="0a4cb4dfcfdc" id="卸载包"><a class="headerlink" href="#卸载包" title="卸载包"></a>卸载包</h3><p data-passage-key="5fe9e065e7b8" id="passage-89098b96e450">当前环境的依赖不会被卸载</p>
+<p data-passage-key="525462a5600e" id="passage-041045964f5f">移植<code>Pipfile</code>和<code>Pipfile.lock</code>后重新生成不会携带</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="dcf664ca93ab" id="passage-993fc6040608"><span class="line"><span class="meta">$</span><span class="bash"> pipenv uninstall requests</span></span><br/></pre></td></tr></tbody></table></figure>
+<h3 data-passage-key="e1867b527d1d" id="开发环境安装"><a class="headerlink" href="#开发环境安装" title="开发环境安装"></a>开发环境安装</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="9a00338e8f6e" id="passage-2adcd46893c0"><span class="line"><span class="meta">$</span><span class="bash"> pipenv install --dev requests</span></span><br/></pre></td></tr></tbody></table></figure>
+<h3 data-passage-key="33ea689b433e" id="导出包"><a class="headerlink" href="#导出包" title="导出包"></a>导出包</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="f2b1a7e60834" id="passage-2b2af44eabc9"><span class="line"><span class="meta">$</span><span class="bash"> pipenv lock -r &gt;requirements.txt</span></span><br/></pre></td></tr></tbody></table></figure>
+<h3 data-passage-key="8bf7a4fd8d7e" id="删除虚拟环境-1"><a class="headerlink" href="#删除虚拟环境-1" title="删除虚拟环境"></a>删除虚拟环境</h3><p data-passage-key="1780dabfb67a" id="passage-1c0f806c649d"><code>Pipfile</code>和<code>Pipfile.lock</code>不会被删除</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="eb0814fd4eb5" id="passage-e6aea2226a03"><span class="line"><span class="meta">$</span><span class="bash"> pipenv --rm</span></span><br/></pre></td></tr></tbody></table></figure>
+<h2 data-passage-key="467c3b6bd279" id="编码规范"><a class="headerlink" href="#编码规范" title="编码规范"></a>编码规范</h2><blockquote data-passage-key="7fa9cf525d74" id="passage-bd9ffc2fdbb8">
+<p data-passage-key="c14e6ce8db69" id="passage-5538a5ce5a65">python之禅</p>
 </blockquote>
-<blockquote>
-<p>import this</p>
-<p>The Zen of Python, by Tim Peters</p>
-<p>Beautiful is better than ugly.</p>
-<p>Explicit is better than implicit.</p>
-<p>Simple is better than complex.</p>
-<p>Complex is better than complicated.</p>
-<p>Flat is better than nested.</p>
-<p>Sparse is better than dense.</p>
-<p>Readability counts.</p>
-<p>Special cases aren’t special enough to break the rules.</p>
-<p>Although practicality beats purity.</p>
-<p>Errors should never pass silently.</p>
-<p>Unless explicitly silenced.</p>
-<p>In the face of ambiguity, refuse the temptation to guess.</p>
-<p>There should be one– and preferably only one –obvious way to do it.</p>
-<p>Although that way may not be obvious at first unless you’re Dutch.</p>
-<p>Now is better than never.</p>
-<p>Although never is often better than <em>right</em> now.</p>
-<p>If the implementation is hard to explain, it’s a bad idea.</p>
-<p>If the implementation is easy to explain, it may be a good idea.</p>
-<p>Namespaces are one honking great idea – let’s do more of those!</p>
+<blockquote data-passage-key="c1fa12d502f6" id="passage-ffe774e9f087">
+<p data-passage-key="98d71283c577" id="passage-0d1cb2650634">import this</p>
+<p data-passage-key="4a19b7e42ee7" id="passage-e84086f9ac3b">The Zen of Python, by Tim Peters</p>
+<p data-passage-key="20bd2722e47d" id="passage-4e07ab54fd71">Beautiful is better than ugly.</p>
+<p data-passage-key="dc9ed9915cef" id="passage-77883f1d5948">Explicit is better than implicit.</p>
+<p data-passage-key="9df2106dd471" id="passage-f44de781298a">Simple is better than complex.</p>
+<p data-passage-key="941b6f9162f3" id="passage-acf5f43e225d">Complex is better than complicated.</p>
+<p data-passage-key="549121652c48" id="passage-4f9e432902f8">Flat is better than nested.</p>
+<p data-passage-key="5a763ad10713" id="passage-b5e1af3b16c6">Sparse is better than dense.</p>
+<p data-passage-key="df5b7c70b1b5" id="passage-c47a3654d96d">Readability counts.</p>
+<p data-passage-key="61f809257f82" id="passage-2dc8767c3434">Special cases aren’t special enough to break the rules.</p>
+<p data-passage-key="e24442656a1a" id="passage-790d611542f2">Although practicality beats purity.</p>
+<p data-passage-key="5c06594bd62a" id="passage-446579bce83b">Errors should never pass silently.</p>
+<p data-passage-key="6bbdc0a142dc" id="passage-6ad7315cac1e">Unless explicitly silenced.</p>
+<p data-passage-key="89a99e1a2b06" id="passage-492137e694e1">In the face of ambiguity, refuse the temptation to guess.</p>
+<p data-passage-key="8872d4646d5e" id="passage-128f08e8fd6f">There should be one– and preferably only one –obvious way to do it.</p>
+<p data-passage-key="e5e89086e0fd" id="passage-a511f12b3a34">Although that way may not be obvious at first unless you’re Dutch.</p>
+<p data-passage-key="67b0fc831315" id="passage-e1e26a9394c1">Now is better than never.</p>
+<p data-passage-key="0e7cf7806d92" id="passage-dd75ca205dd9">Although never is often better than <em>right</em> now.</p>
+<p data-passage-key="e14253df5b54" id="passage-058d894c3c92">If the implementation is hard to explain, it’s a bad idea.</p>
+<p data-passage-key="0c4816e783bd" id="passage-d489913395fb">If the implementation is easy to explain, it may be a good idea.</p>
+<p data-passage-key="3896f38378aa" id="passage-14835eb1d810">Namespaces are one honking great idea – let’s do more of those!</p>
 </blockquote>
-<h3 id="缩进"><a class="headerlink" href="#缩进" title="缩进"></a>缩进</h3><ul>
-<li>每一级缩进使用4个空格</li>
+<h3 data-passage-key="66c740387e6b" id="缩进"><a class="headerlink" href="#缩进" title="缩进"></a>缩进</h3><ul>
+<li data-passage-key="de4b0d0fcf1b" id="passage-dc8abe0067e4">每一级缩进使用4个空格</li>
 </ul>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/></pre></td><td class="code"><pre><span class="line"><span class="comment"># 左对齐</span></span><br/><span class="line">foo = long_function_name(var_one, var_two,</span><br/><span class="line">                         var_three, var_four)</span><br/><span class="line"><span class="comment"># 换行缩进</span></span><br/><span class="line">foo = long_function_name(</span><br/><span class="line">   var_one, var_two,</span><br/><span class="line">   var_three, var_four)</span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 用更多的缩进来与其他行区分</span></span><br/><span class="line">foo = long_function_name(</span><br/><span class="line">   var_one, var_two, var_three,</span><br/><span class="line">   var_four)</span><br/><span class="line"></span><br/></pre></td></tr></tbody></table></figure>
-<h3 id="行的最大长度"><a class="headerlink" href="#行的最大长度" title="行的最大长度"></a>行的最大长度</h3><ul>
-<li>最大79</li>
-<li>注释最大72</li>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/></pre></td><td class="code"><pre data-passage-key="cbfb236379de" id="passage-4cee934e73eb"><span class="line"><span class="comment"># 左对齐</span></span><br/><span class="line">foo = long_function_name(var_one, var_two,</span><br/><span class="line">                         var_three, var_four)</span><br/><span class="line"><span class="comment"># 换行缩进</span></span><br/><span class="line">foo = long_function_name(</span><br/><span class="line">   var_one, var_two,</span><br/><span class="line">   var_three, var_four)</span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 用更多的缩进来与其他行区分</span></span><br/><span class="line">foo = long_function_name(</span><br/><span class="line">   var_one, var_two, var_three,</span><br/><span class="line">   var_four)</span><br/><span class="line"></span><br/></pre></td></tr></tbody></table></figure>
+<h3 data-passage-key="69175ac2d38d" id="行的最大长度"><a class="headerlink" href="#行的最大长度" title="行的最大长度"></a>行的最大长度</h3><ul>
+<li data-passage-key="a44671b5e896" id="passage-974894f1e1af">最大79</li>
+<li data-passage-key="b2fc0477c593" id="passage-304318c4d09c">注释最大72</li>
 </ul>
-<h3 id="空行"><a class="headerlink" href="#空行" title="空行"></a>空行</h3><ul>
-<li>函数之间2个空行</li>
-<li>类的方法之间1个空行</li>
+<h3 data-passage-key="fa6c621fea8d" id="空行"><a class="headerlink" href="#空行" title="空行"></a>空行</h3><ul>
+<li data-passage-key="493041d2db26" id="passage-a1bea094c407">函数之间2个空行</li>
+<li data-passage-key="f2ecaad8bb78" id="passage-17d663e7f9fa">类的方法之间1个空行</li>
 </ul>
-<h3 id="注释"><a class="headerlink" href="#注释" title="注释"></a>注释</h3><ul>
-<li><p>块注释 </p>
-<blockquote>
-<p>与代码在同一行</p>
-</blockquote>
-</li>
-<li><p>行内注释</p>
-</li>
-<li><p>文档注释</p>
-<blockquote>
-<p>第一行：对函数/类整体功能说明</p>
-<p>参数说明</p>
-<p>:param var_one: 参数1 是干嘛的</p>
-<p>:type var_one:int</p>
-<p>返回值说明</p>
-<p>:return:</p>
+<h3 data-passage-key="508bf3307053" id="注释"><a class="headerlink" href="#注释" title="注释"></a>注释</h3><ul>
+<li data-passage-key="a6a56d977ab2" id="passage-1333028731c4"><p data-passage-key="ef1302eb8368" id="passage-fd6c84e2d3e9">块注释 </p>
+<blockquote data-passage-key="ea611a524b87" id="passage-74b803945b3d">
+<p data-passage-key="6b4e30cb86f7" id="passage-fea8b416cde2">与代码在同一行</p>
 </blockquote>
 </li>
-</ul>
-<p>PEP257:<a href="https://github.com/qiuxiang/pep/blob/master/peps/257.md" rel="noopener" target="_blank">https://github.com/qiuxiang/pep/blob/master/peps/257.md</a></p>
-<h3 id="模块包导入"><a class="headerlink" href="#模块包导入" title="模块包导入"></a>模块包导入</h3><ul>
-<li>先导入python内置模块和包</li>
-<li>导入第三方的模块和包</li>
-<li>导入自定义的模块和包</li>
-</ul>
-<blockquote>
-<p><code>__all__=[]</code> 使用<code>*</code>导入时候只会导入all的[]中的的内容</p>
+<li data-passage-key="cad90d74b2ff" id="passage-cabb3dd40625"><p data-passage-key="1058b9468628" id="passage-7002562a7326">行内注释</p>
+</li>
+<li data-passage-key="fdfee479c8d3" id="passage-2b82b9264db2"><p data-passage-key="6a4199f2588a" id="passage-c1e7353f9e78">文档注释</p>
+<blockquote data-passage-key="fa8d41b4e519" id="passage-e563418f8294">
+<p data-passage-key="7f1ce982552d" id="passage-9c99b161145d">第一行：对函数/类整体功能说明</p>
+<p data-passage-key="15fae28657ef" id="passage-e3dbfb550691">参数说明</p>
+<p data-passage-key="e2ffef5b2e3b" id="passage-a922faf18948">:param var_one: 参数1 是干嘛的</p>
+<p data-passage-key="01600d635968" id="passage-61b57bf145b9">:type var_one:int</p>
+<p data-passage-key="c736aa9ae848" id="passage-0cd6b4a8f813">返回值说明</p>
+<p data-passage-key="00f96fc2404a" id="passage-03fd4cdefd38">:return:</p>
 </blockquote>
-<h2 id="结构化工程"><a class="headerlink" href="#结构化工程" title="结构化工程"></a>结构化工程</h2><p><a href="https://pythonguidecn.readthedocs.io/zh/latest/writing/structure.html" rel="noopener" target="_blank">https://pythonguidecn.readthedocs.io/zh/latest/writing/structure.html</a></p></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
+</li>
+</ul>
+<p data-passage-key="ad72731c2079" id="passage-88198242e644">PEP257:<a href="https://github.com/qiuxiang/pep/blob/master/peps/257.md" rel="noopener" target="_blank">https://github.com/qiuxiang/pep/blob/master/peps/257.md</a></p>
+<h3 data-passage-key="ba3434a43c58" id="模块包导入"><a class="headerlink" href="#模块包导入" title="模块包导入"></a>模块包导入</h3><ul>
+<li data-passage-key="2985ce045706" id="passage-98edc3f473de">先导入python内置模块和包</li>
+<li data-passage-key="ea44cdc2112a" id="passage-5abae25774d3">导入第三方的模块和包</li>
+<li data-passage-key="4dda0d179314" id="passage-ece543f2d8e8">导入自定义的模块和包</li>
+</ul>
+<blockquote data-passage-key="b3b781a05857" id="passage-17d0ccf30f44">
+<p data-passage-key="8039e2469be4" id="passage-2fe4b9176702"><code>__all__=[]</code> 使用<code>*</code>导入时候只会导入all的[]中的的内容</p>
+</blockquote>
+<h2 data-passage-key="e7cb9e71ed8b" id="结构化工程"><a class="headerlink" href="#结构化工程" title="结构化工程"></a>结构化工程</h2><p data-passage-key="7660923d547d" id="passage-f7a98ee60c71"><a href="https://pythonguidecn.readthedocs.io/zh/latest/writing/structure.html" rel="noopener" target="_blank">https://pythonguidecn.readthedocs.io/zh/latest/writing/structure.html</a></p></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
+        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
+          <header class="passage-dialog-header">
+            <h2 id="passage-comment-title">段落评论</h2>
+            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
+          </header>
+          <div class="passage-dialog-content">
+            <blockquote data-passage-excerpt></blockquote>
+            <a data-passage-source>查看原文</a>
+            <p data-passage-status role="status"></p>
+            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
+            <div data-passage-widget></div>
+          </div>
+        </dialog>
 
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Python/">Python</a><a href="/tags/%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/">虚拟环境</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
@@ -167,16 +179,6 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
-          <div class="comment-quote" data-comment-quote hidden>
-            <blockquote data-comment-quote-text></blockquote>
-            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
-            <p data-comment-quote-status role="status"></p>
-            <div class="comment-quote-actions">
-              <button type="button" data-copy-comment-quote>复制引用</button>
-              <a data-comment-quote-source>返回原文</a>
-              <button type="button" data-clear-comment-quote>取消引用</button>
-            </div>
-          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

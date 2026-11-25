@@ -20,8 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/39d0321a.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/39d0321a.html">
-<script src="/js/comments.js?v=3" defer></script>
-<script src="/js/comment-quotes.js" defer></script>
+<script type="module" src="/js/discussions.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -57,60 +56,60 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C">文件目录相关操作</a></li><li><a href="#%E5%88%B6%E5%93%81%E7%9B%B8%E5%85%B3%E6%AD%A5%E9%AA%A4">制品相关步骤</a></li><li><a href="#%E5%91%BD%E4%BB%A4%E7%9B%B8%E5%85%B3">命令相关</a></li><li><a href="#%E5%85%B6%E4%BB%96%E6%AD%A5%E9%AA%A4">其他步骤</a></li><li><a href="#%E7%BC%96%E5%86%99Jenkinsfile">编写Jenkinsfile</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><span id="Jenkins-四"></span><h2 id="文件目录相关操作"><a class="headerlink" href="#文件目录相关操作" title="文件目录相关操作"></a>文件目录相关操作</h2><ul>
-<li><p>deleteDir：删除当前目录</p>
+        <div class="post-body" id="article-text"><span id="Jenkins-四"></span><h2 data-passage-key="4153529aa14b" id="文件目录相关操作"><a class="headerlink" href="#文件目录相关操作" title="文件目录相关操作"></a>文件目录相关操作</h2><ul>
+<li data-passage-key="82ffe5fddf5d" id="passage-74ff0421ca45"><p data-passage-key="f46b4ba8d960" id="passage-e5c3d342bb29">deleteDir：删除当前目录</p>
 </li>
-<li><p>dir：切换到目录</p>
+<li data-passage-key="fc9087489c92" id="passage-26898a5b3e53"><p data-passage-key="9822a432c309" id="passage-b38f06cdc913">dir：切换到目录</p>
 <ul>
-<li>默认流水线工作在工作空间目录下，dir步骤可以让我们切换到其他目录</li>
+<li data-passage-key="33afe25067a2" id="passage-342e677a14ca">默认流水线工作在工作空间目录下，dir步骤可以让我们切换到其他目录</li>
 </ul>
-<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre><span class="line">dir(<span class="string">'/tmp'</span>){</span><br/><span class="line">   deleteDir()</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure></li>
-<li><p>fileExists：判断文件是否存在，结果返回布尔值</p>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre data-passage-key="499d3e46feb3" id="passage-5bbb1a8d7475"><span class="line">dir(<span class="string">'/tmp'</span>){</span><br/><span class="line">   deleteDir()</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure></li>
+<li data-passage-key="29c3e7660d8d" id="passage-348825d8977e"><p data-passage-key="291d6ad2413e" id="passage-b6ae87276814">fileExists：判断文件是否存在，结果返回布尔值</p>
 </li>
-<li><p>isUnix：判断是非为UNIX系统，如果是则返回true</p>
+<li data-passage-key="96e92aaf7148" id="passage-6a12d41c26cf"><p data-passage-key="0bef04429d04" id="passage-296cee72956d">isUnix：判断是非为UNIX系统，如果是则返回true</p>
 </li>
-<li><p>pwd：返回当前所在目录</p>
+<li data-passage-key="e532d293eaf1" id="passage-c87914c1b335"><p data-passage-key="35e93a2afb05" id="passage-c7eb9ce4e347">pwd：返回当前所在目录</p>
 </li>
-<li><p>有一个布尔类型的可选参数tmp，如果为true，则返回与当前工作空间关联的临时目录</p>
+<li data-passage-key="3f3ff1835a54" id="passage-31a843e5b934"><p data-passage-key="96308f22e844" id="passage-4eb5b99ac8e2">有一个布尔类型的可选参数tmp，如果为true，则返回与当前工作空间关联的临时目录</p>
 </li>
-<li><p>writeFile：将内容写入指定文件中</p>
+<li data-passage-key="21026717c7f9" id="passage-b57562f389b5"><p data-passage-key="8b7c100b8570" id="passage-72f86addfa80">writeFile：将内容写入指定文件中</p>
 <ul>
-<li>file：文件路径，可以是<strong>绝对路径</strong>，也可以是<strong>相对路径</strong></li>
-<li>text：要写入的文件内容</li>
-<li>encoding：目标文件的编码。如果为空，则使用操作系统默认的编码</li>
+<li data-passage-key="6f69fbe901d9" id="passage-942b42948388">file：文件路径，可以是<strong>绝对路径</strong>，也可以是<strong>相对路径</strong></li>
+<li data-passage-key="bd2292ebc188" id="passage-53267834e0c0">text：要写入的文件内容</li>
+<li data-passage-key="176949dcfe57" id="passage-51fcbf815f4d">encoding：目标文件的编码。如果为空，则使用操作系统默认的编码</li>
 </ul>
 </li>
-<li><p>readFile：读取文件</p>
+<li data-passage-key="286d909f9762" id="passage-bbd54ff16e8e"><p data-passage-key="ccee590a045a" id="passage-9e0fd2e3efde">readFile：读取文件</p>
 <ul>
-<li>file：路径，同上</li>
-<li>encoding：编码，同上<span id="more"></span>
-<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/></pre></td><td class="code"><pre><span class="line">script{</span><br/><span class="line">   writeFile(<span class="attr">file:</span><span class="string">"base64File"</span>, <span class="attr">text:</span><span class="string">"amVua2lucyBib29r"</span>, <span class="attr">encoding:</span><span class="string">"Base64"</span>)</span><br/><span class="line">   <span class="keyword">def</span> content = readFile(<span class="attr">file:</span><span class="string">"base64File"</span>, <span class="attr">encoding:</span> <span class="string">"UTF-8"</span>)</span><br/><span class="line">   echo <span class="string">"${content}"</span></span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure></li>
+<li data-passage-key="d8492948e147" id="passage-9269c2ac0874">file：路径，同上</li>
+<li data-passage-key="7f501198debd" id="passage-134d9594474a">encoding：编码，同上<span id="more"></span>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/></pre></td><td class="code"><pre data-passage-key="01d6952c988d" id="passage-252de0ac6cb4"><span class="line">script{</span><br/><span class="line">   writeFile(<span class="attr">file:</span><span class="string">"base64File"</span>, <span class="attr">text:</span><span class="string">"amVua2lucyBib29r"</span>, <span class="attr">encoding:</span><span class="string">"Base64"</span>)</span><br/><span class="line">   <span class="keyword">def</span> content = readFile(<span class="attr">file:</span><span class="string">"base64File"</span>, <span class="attr">encoding:</span> <span class="string">"UTF-8"</span>)</span><br/><span class="line">   echo <span class="string">"${content}"</span></span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure></li>
 </ul>
 </li>
 </ul>
 <p><img alt="修改Jenkinsfile" decoding="async" height="688" loading="lazy" src="/images/blog-media/5bb0cd7aebe8cfd13263.webp" width="1080"/></p>
 <p><img alt="执行结果" decoding="async" height="688" loading="lazy" src="/images/blog-media/da4ed3dfc3aa1c1b0259.webp" width="1080"/></p>
-<p><code>amVua2lucyBib29r</code>是<code>jenkins book</code>的Base64编码</p>
+<p data-passage-key="4a1541517746" id="passage-08a5e7ded5eb"><code>amVua2lucyBib29r</code>是<code>jenkins book</code>的Base64编码</p>
 <p><img alt="转码" decoding="async" height="754" loading="lazy" src="/images/blog-media/287e10b613a38bfe1426.webp" width="1080"/></p>
-<h2 id="制品相关步骤"><a class="headerlink" href="#制品相关步骤" title="制品相关步骤"></a>制品相关步骤</h2><ul>
-<li><p>stash：保存临时文件</p>
-<blockquote>
-<p>将文件保存起来，以便同一次构建的其他步骤或阶段使用。</p>
-<p>如果整个流水线在同一台机器上执行，那stash是多余的，一般用于跨Jenkins node使用。</p>
-<p>stash步骤会将文件存储在tar文件中，对于大文件的stash操作会消耗Jenkins master的计算资源。</p>
+<h2 data-passage-key="8c5a362543f8" id="制品相关步骤"><a class="headerlink" href="#制品相关步骤" title="制品相关步骤"></a>制品相关步骤</h2><ul>
+<li data-passage-key="203ec104c3f2" id="passage-269d5d443928"><p data-passage-key="8e1dd6de172a" id="passage-06a835b51f5a">stash：保存临时文件</p>
+<blockquote data-passage-key="86873a308036" id="passage-72fd6dc84480">
+<p data-passage-key="399c0b2ecbe5" id="passage-1770f36a7df8">将文件保存起来，以便同一次构建的其他步骤或阶段使用。</p>
+<p data-passage-key="db7b40fa4a42" id="passage-6ae54fc76a4a">如果整个流水线在同一台机器上执行，那stash是多余的，一般用于跨Jenkins node使用。</p>
+<p data-passage-key="97bc245804d3" id="passage-8e9494da01b5">stash步骤会将文件存储在tar文件中，对于大文件的stash操作会消耗Jenkins master的计算资源。</p>
 </blockquote>
 <ul>
-<li><p>name：字符串类型，保存文件的集合的唯一标识</p>
+<li data-passage-key="f4595866b7f4" id="passage-ec787c58bbfa"><p data-passage-key="0c9195f5bfd6" id="passage-a71c9a1a8973">name：字符串类型，保存文件的集合的唯一标识</p>
 </li>
-<li><p>allowEmpty：布尔类型，允许stash内容为空</p>
+<li data-passage-key="77dbe220b772" id="passage-0a3ccbfbfd8a"><p data-passage-key="a8d2d1c2b753" id="passage-bfc15739df2b">allowEmpty：布尔类型，允许stash内容为空</p>
 </li>
-<li><p>excludes：字符串类型，排除文件，如果排除多个使用「逗号」分隔</p>
+<li data-passage-key="e5f000dea477" id="passage-92919f4ccf55"><p data-passage-key="726b0bf49ecc" id="passage-528be58f0dc2">excludes：字符串类型，排除文件，如果排除多个使用「逗号」分隔</p>
 </li>
-<li><p>includes：字符串类型，stash文件，留空表示全部</p>
+<li data-passage-key="9ba8922389b0" id="passage-22ae4d9064fa"><p data-passage-key="f905d823d6b3" id="passage-5faf804534dd">includes：字符串类型，stash文件，留空表示全部</p>
 </li>
-<li><p>useDefaultExcludes：布尔类型，true：使用Ant风格路径默认排除文件</p>
-<p> Ant风格</p>
-<div aria-label="数据表格" class="table-scroll" role="region" tabindex="0"><table>
+<li data-passage-key="0de0b263e6cf" id="passage-7c21ab31316b"><p data-passage-key="573f4289a5ab" id="passage-5f94d9e67770">useDefaultExcludes：布尔类型，true：使用Ant风格路径默认排除文件</p>
+<p data-passage-key="293faf9a04fc" id="passage-7a43b36e5159"> Ant风格</p>
+<div aria-label="数据表格" class="table-scroll" data-passage-key="5c50edd89fec" id="passage-51d396897f01" role="region" tabindex="0"><table>
 <thead>
 <tr>
 <th>通配符</th>
@@ -185,93 +184,106 @@
 </li>
 </ul>
 </li>
-<li><p>unstash：取出之前stash的文件</p>
-<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/><span class="line">20</span><br/><span class="line">21</span><br/><span class="line">22</span><br/></pre></td><td class="code"><pre><span class="line">pipeline {</span><br/><span class="line">    agent none</span><br/><span class="line">    stages {</span><br/><span class="line">        stage(<span class="string">'stash'</span>) {</span><br/><span class="line">            agent {label <span class="string">"master"</span>}</span><br/><span class="line">            steps {</span><br/><span class="line">                writeFile <span class="attr">file:</span> <span class="string">"a.txt"</span>,<span class="attr">text:</span> <span class="string">"$BUILD_NUMBER"</span></span><br/><span class="line">                stash(<span class="attr">name:</span> <span class="string">"abc"</span>, <span class="attr">includes:</span> <span class="string">"a.txt"</span>)</span><br/><span class="line">            }</span><br/><span class="line">        }</span><br/><span class="line">        stage(<span class="string">'unstash'</span>) {</span><br/><span class="line">            agent {label <span class="string">"node2"</span>}</span><br/><span class="line">            steps {</span><br/><span class="line">                script {</span><br/><span class="line">                    unstash(<span class="string">"abc"</span>)</span><br/><span class="line">                    <span class="keyword">def</span> content = readFile(<span class="string">"a.txt"</span>)</span><br/><span class="line">                    echo <span class="string">"${content}"</span></span><br/><span class="line">                }</span><br/><span class="line">            }</span><br/><span class="line">        }</span><br/><span class="line">    }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
+<li data-passage-key="4848f3a87921" id="passage-bbb6ee87da77"><p data-passage-key="b6095d38c036" id="passage-3080d72ff577">unstash：取出之前stash的文件</p>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/><span class="line">20</span><br/><span class="line">21</span><br/><span class="line">22</span><br/></pre></td><td class="code"><pre data-passage-key="5de74b72a39f" id="passage-f63e00f67255"><span class="line">pipeline {</span><br/><span class="line">    agent none</span><br/><span class="line">    stages {</span><br/><span class="line">        stage(<span class="string">'stash'</span>) {</span><br/><span class="line">            agent {label <span class="string">"master"</span>}</span><br/><span class="line">            steps {</span><br/><span class="line">                writeFile <span class="attr">file:</span> <span class="string">"a.txt"</span>,<span class="attr">text:</span> <span class="string">"$BUILD_NUMBER"</span></span><br/><span class="line">                stash(<span class="attr">name:</span> <span class="string">"abc"</span>, <span class="attr">includes:</span> <span class="string">"a.txt"</span>)</span><br/><span class="line">            }</span><br/><span class="line">        }</span><br/><span class="line">        stage(<span class="string">'unstash'</span>) {</span><br/><span class="line">            agent {label <span class="string">"node2"</span>}</span><br/><span class="line">            steps {</span><br/><span class="line">                script {</span><br/><span class="line">                    unstash(<span class="string">"abc"</span>)</span><br/><span class="line">                    <span class="keyword">def</span> content = readFile(<span class="string">"a.txt"</span>)</span><br/><span class="line">                    echo <span class="string">"${content}"</span></span><br/><span class="line">                }</span><br/><span class="line">            }</span><br/><span class="line">        }</span><br/><span class="line">    }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
 </li>
 </ul>
-<h2 id="命令相关"><a class="headerlink" href="#命令相关" title="命令相关"></a>命令相关</h2><ul>
-<li><p>sh：执行shell命令</p>
+<h2 data-passage-key="054a684129a6" id="命令相关"><a class="headerlink" href="#命令相关" title="命令相关"></a>命令相关</h2><ul>
+<li data-passage-key="2d5c129342cd" id="passage-26d8a4d87dea"><p data-passage-key="a5c2b6f5e922" id="passage-992147d4a8b7">sh：执行shell命令</p>
 <ul>
-<li><p>script：要执行的shell脚本</p>
+<li data-passage-key="24d0d6f00ce3" id="passage-1696f0e97eea"><p data-passage-key="5f19d1efca20" id="passage-67c8efe05e5c">script：要执行的shell脚本</p>
 </li>
-<li><p>encoding：脚本执行后输出日志的编码，默认为系统编码</p>
+<li data-passage-key="d507bb85d1f1" id="passage-1d62f6f16f34"><p data-passage-key="31403eb955e2" id="passage-9059038cbd74">encoding：脚本执行后输出日志的编码，默认为系统编码</p>
 </li>
-<li><p>returnStatus：布尔类型，默认返回状态码，如果是非零则流水线执行失败。设置为true后，无论什么状态码，流水线执行都不受影响</p>
+<li data-passage-key="851a4dda6717" id="passage-21c10d76109a"><p data-passage-key="1bdaf5d40b37" id="passage-89623ed8012e">returnStatus：布尔类型，默认返回状态码，如果是非零则流水线执行失败。设置为true后，无论什么状态码，流水线执行都不受影响</p>
 </li>
-<li><p>returnStdout：布尔类型，如果为true，任务的标准输出将作为步骤的返回值，而不是打印到构建日志中（如果有错误，则依旧会打印到日志中）</p>
-<p> ⚠️returnStatus和returnStdout同时使用，只有returnStatus生效</p>
+<li data-passage-key="150dc72d21a8" id="passage-c1618f47bf5f"><p data-passage-key="bdac6d2502bd" id="passage-39df3ed29626">returnStdout：布尔类型，如果为true，任务的标准输出将作为步骤的返回值，而不是打印到构建日志中（如果有错误，则依旧会打印到日志中）</p>
+<p data-passage-key="4c15c2e6541d" id="passage-b459f89ad0ca"> ⚠️returnStatus和returnStdout同时使用，只有returnStatus生效</p>
 </li>
 </ul>
 </li>
-<li><p>bat，powershell步骤</p>
+<li data-passage-key="6841e55e4da6" id="passage-0106c7a4aebf"><p data-passage-key="a42f11417fd7" id="passage-8aa9432b1fa8">bat，powershell步骤</p>
 <ul>
-<li>bat步骤执行Windows的批处理命令<ul>
-<li>支持参数类型sh</li>
+<li data-passage-key="6cf7e1514275" id="passage-44b953d713d9">bat步骤执行Windows的批处理命令<ul>
+<li data-passage-key="c8d438acccf1" id="passage-2f6b2eb33680">支持参数类型sh</li>
 </ul>
 </li>
-<li>powershell执行的是PowerShell脚本<ul>
-<li>支持参数类似sh<h2 id="其他步骤"><a class="headerlink" href="#其他步骤" title="其他步骤"></a>其他步骤</h2></li>
+<li data-passage-key="217ddb637db3" id="passage-18dbc907587a">powershell执行的是PowerShell脚本<ul>
+<li data-passage-key="de2ca8d5fddc" id="passage-54dc27c54e1e">支持参数类似sh<h2 data-passage-key="c4af93a2b533" id="其他步骤"><a class="headerlink" href="#其他步骤" title="其他步骤"></a>其他步骤</h2></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><p>error：主动报错，中止pipeline</p>
+<li data-passage-key="0b628602d8b0" id="passage-72237fe0b52b"><p data-passage-key="32539605120f" id="passage-a09e568cc73f">error：主动报错，中止pipeline</p>
 <ul>
-<li><code>error（“there is a error”）</code></li>
+<li data-passage-key="b55233ba107f" id="passage-f9615097694d"><code>error（“there is a error”）</code></li>
 </ul>
 </li>
-<li><p>tool：使用预定义的工具</p>
+<li data-passage-key="1356bbbd493e" id="passage-8eff20438ef4"><p data-passage-key="b64ce72522bd" id="passage-36c1b86de1aa">tool：使用预定义的工具</p>
 <ul>
-<li><p>name：工具名称</p>
+<li data-passage-key="21c4b612fbc0" id="passage-100b4e59b8cb"><p data-passage-key="bd286d3d96ba" id="passage-b38489decb4e">name：工具名称</p>
 </li>
-<li><p>type（可选）：工具类型，指该工具安装类的全路径类名</p>
+<li data-passage-key="b3338fbeaaa8" id="passage-95a988c981cd"><p data-passage-key="a46b8725f564" id="passage-30dd87034401">type（可选）：工具类型，指该工具安装类的全路径类名</p>
 </li>
-<li><blockquote>
-<p>在Global Tool Configuration（全局工具配置）中配置了工具</p>
+<li data-passage-key="3de10a762a91" id="passage-530188638ae8"><blockquote data-passage-key="97e1aedc41f2" id="passage-7e42f210ed2a">
+<p data-passage-key="91fd41eb26ba" id="passage-9a4ff8ff6660">在Global Tool Configuration（全局工具配置）中配置了工具</p>
 </blockquote>
 <p> <img alt="全局工具配置" decoding="async" height="688" loading="lazy" src="/images/blog-media/d1b20c1f9e0dc86c7b16.webp" width="1080"/></p>
 <p> <img alt="image-20190712222337303" decoding="async" height="688" loading="lazy" src="/images/blog-media/f8083f55b1785e081ece.webp" width="1080"/></p>
 </li>
 </ul>
 </li>
-<li><p>timeout：代码块超时时间</p>
+<li data-passage-key="91d58dcc333a" id="passage-1f8660589d91"><p data-passage-key="67b3496ef056" id="passage-7ebffd22d03b">timeout：代码块超时时间</p>
 <ul>
-<li>time：整型</li>
-<li>unit（可选）：时间单位，默认分钟。支持NANOSECONDS，MICROSECONDS，MILLISECONDS，SECONDS，MINUTES（默认），HOURS，DAYS</li>
-<li>activity（可选）：布尔类型，true时 只有当日志没活动才算真正的超时</li>
+<li data-passage-key="9ca7ec776d25" id="passage-6086f030b6ec">time：整型</li>
+<li data-passage-key="7387963239f5" id="passage-91aca4d0be10">unit（可选）：时间单位，默认分钟。支持NANOSECONDS，MICROSECONDS，MILLISECONDS，SECONDS，MINUTES（默认），HOURS，DAYS</li>
+<li data-passage-key="6c936ef15cfd" id="passage-0e7fd30d2c9b">activity（可选）：布尔类型，true时 只有当日志没活动才算真正的超时</li>
 </ul>
 </li>
-<li><p>waitUntil：等待条件满足</p>
-<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/></pre></td><td class="code"><pre><span class="line">timeout(<span class="number">50</span>) {</span><br/><span class="line">   waitUntil{</span><br/><span class="line">      script{</span><br/><span class="line">         <span class="keyword">def</span> r = sh <span class="attr">script:</span> <span class="string">'curl http://exmple'</span>,<span class="keyword">return</span> <span class="attr">Status:</span> <span class="literal">true</span></span><br/><span class="line">         <span class="keyword">return</span> (r == <span class="number">0</span>)</span><br/><span class="line">      }</span><br/><span class="line">   }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
+<li data-passage-key="071b6c2ad560" id="passage-6546c437c960"><p data-passage-key="08596f8f8307" id="passage-deab7f05b984">waitUntil：等待条件满足</p>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/></pre></td><td class="code"><pre data-passage-key="e1381e8d7736" id="passage-3f6a14367443"><span class="line">timeout(<span class="number">50</span>) {</span><br/><span class="line">   waitUntil{</span><br/><span class="line">      script{</span><br/><span class="line">         <span class="keyword">def</span> r = sh <span class="attr">script:</span> <span class="string">'curl http://exmple'</span>,<span class="keyword">return</span> <span class="attr">Status:</span> <span class="literal">true</span></span><br/><span class="line">         <span class="keyword">return</span> (r == <span class="number">0</span>)</span><br/><span class="line">      }</span><br/><span class="line">   }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
 </li>
-<li><p>retry：重复执行块</p>
-<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/></pre></td><td class="code"><pre><span class="line">steps {</span><br/><span class="line">   retry(<span class="number">20</span>){</span><br/><span class="line">      script{</span><br/><span class="line">         sh <span class="attr">script:</span> <span class="string">'curl http://exmple'</span>,<span class="keyword">return</span> <span class="attr">Status:</span> <span class="literal">true</span></span><br/><span class="line">      }</span><br/><span class="line">   }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
-<p> ⚠️如果某次retry抛出异常，只中止当次，不会中止整个retry的执行</p>
-<p> 在执行retry的过程中，用户是无法中止流水线的</p>
+<li data-passage-key="ebe5396b2520" id="passage-5b9a7d9e3e68"><p data-passage-key="3a5ae1e518dd" id="passage-daaf5b61c35a">retry：重复执行块</p>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/></pre></td><td class="code"><pre data-passage-key="7b78ef323137" id="passage-ce3591ee911f"><span class="line">steps {</span><br/><span class="line">   retry(<span class="number">20</span>){</span><br/><span class="line">      script{</span><br/><span class="line">         sh <span class="attr">script:</span> <span class="string">'curl http://exmple'</span>,<span class="keyword">return</span> <span class="attr">Status:</span> <span class="literal">true</span></span><br/><span class="line">      }</span><br/><span class="line">   }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
+<p data-passage-key="b08fa62a9880" id="passage-92a42ce64e48"> ⚠️如果某次retry抛出异常，只中止当次，不会中止整个retry的执行</p>
+<p data-passage-key="9cbd548a0d9a" id="passage-e35fda4715a7"> 在执行retry的过程中，用户是无法中止流水线的</p>
 </li>
-<li><p>sleep：休眠一段时间</p>
+<li data-passage-key="77438d44ab56" id="passage-70275498788a"><p data-passage-key="1f49d9fe0696" id="passage-df8bec2d9ae7">sleep：休眠一段时间</p>
 <ul>
-<li>time：整型，休眠时间</li>
-<li>unit（可选）：时间单位，默认秒，与<code>timeout</code>类似</li>
-<li>示例：<code>sleep(120) // 休眠120秒</code>，<code>sleep(time:'2',unit:"MINUTES") // 休眠2分钟</code></li>
+<li data-passage-key="92eef658ad3a" id="passage-abfd22e87a92">time：整型，休眠时间</li>
+<li data-passage-key="72eb066904ff" id="passage-1a7065543ce1">unit（可选）：时间单位，默认秒，与<code>timeout</code>类似</li>
+<li data-passage-key="54b04561011c" id="passage-0a6c812eea82">示例：<code>sleep(120) // 休眠120秒</code>，<code>sleep(time:'2',unit:"MINUTES") // 休眠2分钟</code></li>
 </ul>
 </li>
 </ul>
-<h2 id="编写Jenkinsfile"><a class="headerlink" href="#编写Jenkinsfile" title="编写Jenkinsfile"></a>编写Jenkinsfile</h2><p>推荐VS Code扩展：Jenkins Pipeline Linter Connector</p>
+<h2 data-passage-key="9d3d1f7faa57" id="编写Jenkinsfile"><a class="headerlink" href="#编写Jenkinsfile" title="编写Jenkinsfile"></a>编写Jenkinsfile</h2><p data-passage-key="d3f69114cbc6" id="passage-5923aad01a24">推荐VS Code扩展：Jenkins Pipeline Linter Connector</p>
 <ol>
-<li>安装</li>
-<li>配置扩展</li>
-<li>配置Jenkins服务器</li>
-<li>运行</li>
+<li data-passage-key="ad0ceee4412c" id="passage-30de4714fe1a">安装</li>
+<li data-passage-key="ec2444d49f46" id="passage-fb69a22cba03">配置扩展</li>
+<li data-passage-key="7e84a9b9477b" id="passage-c381dc36cfe3">配置Jenkins服务器</li>
+<li data-passage-key="0591ea803327" id="passage-3f62e7344151">运行</li>
 </ol>
 <p><img alt="Jenkins Pipeline Linter Connector" decoding="async" height="688" loading="lazy" src="/images/blog-media/477fd2b52e7bc90acdd6.webp" width="1080"/></p>
 <p><img alt="配置插件" decoding="async" height="688" loading="lazy" src="/images/blog-media/55e751fa9eae96967e5f.webp" width="1080"/></p>
 <p><img alt="配置CSRF" decoding="async" height="688" loading="lazy" src="/images/blog-media/904cb262448eed5d2495.webp" width="1080"/></p>
 <p><img alt="运行校验" decoding="async" height="688" loading="lazy" src="/images/blog-media/db7a2dcd60b6752179a0.webp" width="1080"/></p>
-<p>故意写错了进行校验：</p>
+<p data-passage-key="03dc8eeef726" id="passage-d0513f33f264">故意写错了进行校验：</p>
 <p><img alt="错误进行校验" decoding="async" height="688" loading="lazy" src="/images/blog-media/3d345610d7f17b2d86c7.webp" width="1080"/></p>
-<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre><span class="line">Errors encountered validating Jenkinsfile:</span><br/><span class="line">WorkflowScript: 14: unexpected token: } @ line 14, column 1.</span><br/><span class="line">   }</span><br/><span class="line">   ^</span><br/></pre></td></tr></tbody></table></figure></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre data-passage-key="a2d3a263c9e2" id="passage-e2e1d4ac4295"><span class="line">Errors encountered validating Jenkinsfile:</span><br/><span class="line">WorkflowScript: 14: unexpected token: } @ line 14, column 1.</span><br/><span class="line">   }</span><br/><span class="line">   ^</span><br/></pre></td></tr></tbody></table></figure></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
+        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
+          <header class="passage-dialog-header">
+            <h2 id="passage-comment-title">段落评论</h2>
+            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
+          </header>
+          <div class="passage-dialog-content">
+            <blockquote data-passage-excerpt></blockquote>
+            <a data-passage-source>查看原文</a>
+            <p data-passage-status role="status"></p>
+            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
+            <div data-passage-widget></div>
+          </div>
+        </dialog>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/K-4G81fySEk5q8M-cmxdgg">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Jenkins/">Jenkins</a><a href="/tags/CI/">CI</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/Jenkins/">Jenkins</a></div>
@@ -283,16 +295,6 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
-          <div class="comment-quote" data-comment-quote hidden>
-            <blockquote data-comment-quote-text></blockquote>
-            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
-            <p data-comment-quote-status role="status"></p>
-            <div class="comment-quote-actions">
-              <button type="button" data-copy-comment-quote>复制引用</button>
-              <a data-comment-quote-source>返回原文</a>
-              <button type="button" data-clear-comment-quote>取消引用</button>
-            </div>
-          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

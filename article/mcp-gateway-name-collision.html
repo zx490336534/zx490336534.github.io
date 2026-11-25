@@ -20,8 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/article-covers/mcp-gateway-name-collision.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/mcp-gateway-name-collision.html">
-<script src="/js/comments.js?v=3" defer></script>
-<script src="/js/comment-quotes.js" defer></script>
+<script type="module" src="/js/discussions.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -57,12 +56,12 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E5%85%88%E8%A7%A3%E5%86%B3%E5%88%97%E8%A1%A8%E5%92%8C%E5%AE%9E%E9%99%85%E8%B0%83%E7%94%A8%E9%87%8C%E7%9A%84%E5%90%8D%E5%AD%97">工具公开名要能直接查到后端</a></li><li><a href="#%E5%88%86%E7%BB%84%E5%92%8C%E6%9D%83%E9%99%90%E5%90%84%E8%87%AA%E6%94%B9%E5%8F%98%E4%BB%80%E4%B9%88">列表可以精简，调用时还要检查权限</a></li><li><a href="#%E6%8E%A5%E5%85%A5%E7%9C%9F%E5%AE%9E%E4%BC%9A%E8%AF%9D%E5%90%8E-%E5%AE%B9%E6%98%93%E6%BC%8F%E6%8E%89%E5%93%AA%E4%BA%9B%E7%8A%B6%E6%80%81">接真服务，失败来源要保留下来</a></li><li><a href="#%E5%8F%82%E8%80%83">参考</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><p class="article-lead">文档服务和产品目录服务都可以有一个 <code>search</code>。两个服务单独接入时没问题，聚合到一个客户端后，网关必须知道某次搜索发给谁。最难排查的是请求没报错，返回的 JSON 也对，数据却来自另一个服务。</p>
-<p>我用两个模拟后端测试，互换注册顺序后，两种公开名都还能找到各自的服务。再把目录工具从权限里去掉，客户端即使知道名字，调用也停在网关。</p>
+        <div class="post-body" id="article-text"><p class="article-lead" data-passage-key="4bced1834313" id="passage-407f129c29eb">文档服务和产品目录服务都可以有一个 <code>search</code>。两个服务单独接入时没问题，聚合到一个客户端后，网关必须知道某次搜索发给谁。最难排查的是请求没报错，返回的 JSON 也对，数据却来自另一个服务。</p>
+<p data-passage-key="8fa6728cb929" id="passage-910297043fd0">我用两个模拟后端测试，互换注册顺序后，两种公开名都还能找到各自的服务。再把目录工具从权限里去掉，客户端即使知道名字，调用也停在网关。</p>
 <span id="先让每个调用有唯一去处"></span>
-<h2 id="先解决列表和实际调用里的名字">工具公开名要能直接查到后端</h2>
-<p>网关收到上游工具列表后，给工具加稳定前缀。映射里记住连接和工具原名。客户端看到两个不同的名字，后端仍各自使用自己的 <code>search</code>。</p>
-<div aria-labelledby="article-table-1" class="table-scroll article-evidence" role="region" tabindex="0"><table><caption id="article-table-1">两个同名工具的公开名和目标服务</caption>
+<h2 data-passage-key="d6dd9301174b" id="先解决列表和实际调用里的名字">工具公开名要能直接查到后端</h2>
+<p data-passage-key="407f778a8d28" id="passage-8cdf0a82dd06">网关收到上游工具列表后，给工具加稳定前缀。映射里记住连接和工具原名。客户端看到两个不同的名字，后端仍各自使用自己的 <code>search</code>。</p>
+<div aria-labelledby="article-table-1" class="table-scroll article-evidence" data-passage-key="b0fb807b5ffd" id="passage-288caf7fc8b3" role="region" tabindex="0"><table><caption id="article-table-1">两个同名工具的公开名和目标服务</caption>
 <thead>
 <tr>
 <th scope="col">客户端工具名</th>
@@ -83,36 +82,49 @@
 </tr>
 </tbody>
 </table></div>
-<p>收到 <code>tools/call</code> 后，用请求携带的公开名查显式路由。如果在多个会话里直接找第一个叫 <code>search</code> 的工具，注册顺序变化就会改变调用结果。</p>
-<figure class="article-figure article-figure--edited"><a href="/images/article-figures/mcp-gateway-name-collision.webp" title="查看原图"><img alt="网关将两个唯一公开名称映射到不同后端各自的 search" decoding="async" height="480" loading="lazy" src="/images/article-figures/mcp-gateway-name-collision.webp" width="1200"/></a><figcaption>查路由用公开名，调用后端时换回各自的原名。</figcaption></figure>
-<p>前缀用服务标识，配置加载时检查最终名称是否冲突。维护显式映射也便于调整命名规则。旧客户端确实依赖短名时，只给归属明确的调用留兼容入口。两个后端都叫 <code>search</code> 时，让含义不清的短名报错。</p>
+<p data-passage-key="775846ebcbef" id="passage-881367dfa0f3">收到 <code>tools/call</code> 后，用请求携带的公开名查显式路由。如果在多个会话里直接找第一个叫 <code>search</code> 的工具，注册顺序变化就会改变调用结果。</p>
+<figure class="article-figure article-figure--edited"><a href="/images/article-figures/mcp-gateway-name-collision.webp" title="查看原图"><img alt="网关将两个唯一公开名称映射到不同后端各自的 search" decoding="async" height="480" loading="lazy" src="/images/article-figures/mcp-gateway-name-collision.webp" width="1200"/></a><figcaption data-passage-key="264199ff212a" id="passage-69ac09a711c1">查路由用公开名，调用后端时换回各自的原名。</figcaption></figure>
+<p data-passage-key="3a353369b1d1" id="passage-4966d094b454">前缀用服务标识，配置加载时检查最终名称是否冲突。维护显式映射也便于调整命名规则。旧客户端确实依赖短名时，只给归属明确的调用留兼容入口。两个后端都叫 <code>search</code> 时，让含义不清的短名报错。</p>
 <span id="分组能缩小模型的选择范围"></span>
-<h2 id="分组和权限各自改变什么">列表可以精简，调用时还要检查权限</h2>
-<p>做文档问答时，工具列表可以只显示文档工具。描述里写明搜索范围、输入含义和返回内容，模型更容易选对。调用时还要检查当前身份和会话的许可，因为客户端可能记着以前看见过的工具名。</p>
-<figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/mcp-gateway-name-collision-scene.webp" title="查看原图"><img alt="网关在工具列表之后还有调用检查，已不允许的请求停在检查点。" decoding="async" height="854" loading="lazy" src="/images/article-figures/mcp-gateway-name-collision-scene.webp" width="1280"/></a><figcaption>教学示意。客户端知道工具名，网关仍按当前权限作出调用决定。</figcaption></figure>
-<p>下面只展示路由顺序。网关先判断工具名是否允许，再找到目标连接。完整实现还要处理认证、协议报文和参数校验。</p>
-<pre class="article-code"><code class="language-python">def dispatch(routes, allowed, sessions, name, arguments):
+<h2 data-passage-key="f96a6a13439c" id="分组和权限各自改变什么">列表可以精简，调用时还要检查权限</h2>
+<p data-passage-key="2620c860fa57" id="passage-f4d6f6a24ef2">做文档问答时，工具列表可以只显示文档工具。描述里写明搜索范围、输入含义和返回内容，模型更容易选对。调用时还要检查当前身份和会话的许可，因为客户端可能记着以前看见过的工具名。</p>
+<figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/mcp-gateway-name-collision-scene.webp" title="查看原图"><img alt="网关在工具列表之后还有调用检查，已不允许的请求停在检查点。" decoding="async" height="854" loading="lazy" src="/images/article-figures/mcp-gateway-name-collision-scene.webp" width="1280"/></a><figcaption data-passage-key="60d8ddba0232" id="passage-fbfdfab35f64">教学示意。客户端知道工具名，网关仍按当前权限作出调用决定。</figcaption></figure>
+<p data-passage-key="701291da9c4f" id="passage-56cc4cabed27">下面只展示路由顺序。网关先判断工具名是否允许，再找到目标连接。完整实现还要处理认证、协议报文和参数校验。</p>
+<pre class="article-code" data-passage-key="9ea13a00e476" id="passage-b725af46960a"><code class="language-python">def dispatch(routes, allowed, sessions, name, arguments):
     if name not in allowed:
         raise PermissionError('tool unavailable')
     server, native_name = routes[name]
     return sessions[server].call_tool(native_name, arguments)
 </code></pre>
-<p>用模拟后端跑两遍，可以把两个判断拆开验证。</p>
+<p data-passage-key="7a052a2bc832" id="passage-6d58ace50e27">用模拟后端跑两遍，可以把两个判断拆开验证。</p>
 <ol>
-<li>调换注册顺序，两种公开名都应到各自的后端，两个后端收到的原名仍是 <code>search</code>。</li>
-<li>只开放文档工具时，再调 <code>catalog__search</code> 或短名 <code>search</code>。网关应拒绝，任何后端都不应收到请求。</li>
+<li data-passage-key="c2a672182408" id="passage-0d49088f4185">调换注册顺序，两种公开名都应到各自的后端，两个后端收到的原名仍是 <code>search</code>。</li>
+<li data-passage-key="7bd42b959de6" id="passage-f3b1d3fe9155">只开放文档工具时，再调 <code>catalog__search</code> 或短名 <code>search</code>。网关应拒绝，任何后端都不应收到请求。</li>
 </ol>
-<p>这两项在本地模拟测试里都通过。接真实 MCP 服务时，再用目标客户端验证协议、参数和会话行为。</p>
-<h2 id="接入真实会话后-容易漏掉哪些状态">接真服务，失败来源要保留下来</h2>
-<p>上游可以用 stdio 或 Streamable HTTP。只要路由表同样能找到正确会话，换传输方式时，公开工具名与输入 Schema 可以保持一致。会话如果带有用户身份，连接复用也要受这个身份约束。</p>
-<p>网关找不到公开名、连接断了、后端工具执行失败，分别记录。收到正常协议响应且工具返回执行错误，就把工具错误给调用方。三类都变成空列表，调用方会以为真的没有搜索结果。</p>
-<figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/mcp-gateway-name-collision-detail.webp" title="查看原图"><img alt="分别区分网关拒绝、连接或请求超时，以及后端工具自身执行失败。" decoding="async" height="609" loading="lazy" src="/images/article-figures/mcp-gateway-name-collision-detail.webp" width="900"/></a><figcaption>返回具体错误类别，调用方就能找到相应的排查入口。</figcaption></figure>
-<p>后端改工具定义或网关改权限时，更新后的工具列表和路由应来自同一份配置。如果配置支持动态加载，可以先建好一份完整的表，再把列表和调用查询一起指向新版本。这样一轮更新不会暂时暴露只有名字、没有目标的工具。发布前我会刷新一次列表，再拿新参数调用一个更新过的工具，确认请求确实到了预期的会话。工具数量继续增加时，再考虑用语义检索缩小模型看到的候选。结果该发给哪个后端，继续用显式路由确定。</p>
-<h2 id="参考">参考</h2>
+<p data-passage-key="845604ee3210" id="passage-c068bc1fe25d">这两项在本地模拟测试里都通过。接真实 MCP 服务时，再用目标客户端验证协议、参数和会话行为。</p>
+<h2 data-passage-key="faea180ca0ee" id="接入真实会话后-容易漏掉哪些状态">接真服务，失败来源要保留下来</h2>
+<p data-passage-key="dfc0e907344c" id="passage-0e2333f51dc5">上游可以用 stdio 或 Streamable HTTP。只要路由表同样能找到正确会话，换传输方式时，公开工具名与输入 Schema 可以保持一致。会话如果带有用户身份，连接复用也要受这个身份约束。</p>
+<p data-passage-key="0b38217e25c2" id="passage-f367c411fe20">网关找不到公开名、连接断了、后端工具执行失败，分别记录。收到正常协议响应且工具返回执行错误，就把工具错误给调用方。三类都变成空列表，调用方会以为真的没有搜索结果。</p>
+<figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/mcp-gateway-name-collision-detail.webp" title="查看原图"><img alt="分别区分网关拒绝、连接或请求超时，以及后端工具自身执行失败。" decoding="async" height="609" loading="lazy" src="/images/article-figures/mcp-gateway-name-collision-detail.webp" width="900"/></a><figcaption data-passage-key="6379fc9d6b8d" id="passage-0222303fce36">返回具体错误类别，调用方就能找到相应的排查入口。</figcaption></figure>
+<p data-passage-key="ff77012cc160" id="passage-e761eb5a944b">后端改工具定义或网关改权限时，更新后的工具列表和路由应来自同一份配置。如果配置支持动态加载，可以先建好一份完整的表，再把列表和调用查询一起指向新版本。这样一轮更新不会暂时暴露只有名字、没有目标的工具。发布前我会刷新一次列表，再拿新参数调用一个更新过的工具，确认请求确实到了预期的会话。工具数量继续增加时，再考虑用语义检索缩小模型看到的候选。结果该发给哪个后端，继续用显式路由确定。</p>
+<h2 data-passage-key="c6f305e9b180" id="参考">参考</h2>
 <ul>
-<li><a href="https://modelcontextprotocol.io/specification/latest/server/tools">MCP 工具协议与错误处理</a></li>
+<li data-passage-key="a420f9720c90" id="passage-8653d219229e"><a href="https://modelcontextprotocol.io/specification/latest/server/tools">MCP 工具协议与错误处理</a></li>
 </ul></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
+        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
+        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
+          <header class="passage-dialog-header">
+            <h2 id="passage-comment-title">段落评论</h2>
+            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
+          </header>
+          <div class="passage-dialog-content">
+            <blockquote data-passage-excerpt></blockquote>
+            <a data-passage-source>查看原文</a>
+            <p data-passage-status role="status"></p>
+            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
+            <div data-passage-widget></div>
+          </div>
+        </dialog>
 
         <div class="post-tags" aria-label="文章标签"><a href="/tags/MCP/">MCP</a><a href="/tags/%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8/">工具调用</a><a href="/tags/%E7%BD%91%E5%85%B3/">网关</a></div>
         <div class="legacy-tags" hidden></div>
@@ -124,16 +136,6 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
-          <div class="comment-quote" data-comment-quote hidden>
-            <blockquote data-comment-quote-text></blockquote>
-            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
-            <p data-comment-quote-status role="status"></p>
-            <div class="comment-quote-actions">
-              <button type="button" data-copy-comment-quote>复制引用</button>
-              <a data-comment-quote-source>返回原文</a>
-              <button type="button" data-clear-comment-quote>取消引用</button>
-            </div>
-          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

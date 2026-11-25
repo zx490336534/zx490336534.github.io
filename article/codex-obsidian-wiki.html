@@ -20,8 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/article-covers/codex-obsidian-wiki.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/codex-obsidian-wiki.html">
-<script src="/js/comments.js?v=3" defer></script>
-<script src="/js/comment-quotes.js" defer></script>
+<script type="module" src="/js/discussions.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -57,12 +56,12 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E4%B8%80%E6%AC%A1%E7%AC%94%E8%AE%B0%E5%86%99%E5%85%A5%E5%92%8C%E4%B8%80%E6%AC%A1%E7%9F%A5%E8%AF%86%E7%BC%96%E8%AF%91">新证据来了，先改原来的结论</a></li><li><a href="#%E7%BB%99-Codex-%E7%9A%84%E8%BE%93%E5%85%A5%E5%8F%AF%E4%BB%A5%E6%AF%94%E6%95%B4%E4%B8%AA%E5%BA%93%E5%B0%8F%E5%BE%97%E5%A4%9A">新会话从索引开始读</a></li><li><a href="#%E8%B0%83%E5%BA%A6%E6%98%BE%E7%A4%BA%E6%88%90%E5%8A%9F%E5%90%8E-%E8%BF%98%E8%A6%81%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6%E7%9C%8B%E4%B8%80%E6%AC%A1">调度显示成功，先打开文件复核</a></li><li><a href="#%E5%8F%82%E8%80%83">参考</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><p class="article-lead">以前在 Obsidian 搜一个技术词，我常常要把几份笔记按时间翻一遍。第一份是当时的现象，第二份是猜测，后面还有一份修正。每次有人问「现在应该怎么做」，都得把这段考据重走一遍。</p>
-<p>我沿用 PARA 收资料，借了 Karpathy 的 LLM Wiki 思路，用 Codex 更新主题页。<strong>下次先从主题页读当前结论，要核对时再顺着来源找回原笔记。</strong></p>
-<figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/codex-obsidian-wiki-scene.webp" title="查看原图"><img alt="多条原始笔记共同指向一页结论，结论更新后仍保留来源。" decoding="async" height="854" loading="lazy" src="/images/article-figures/codex-obsidian-wiki-scene.webp" width="1280"/></a><figcaption>教学示意。新证据进入现有主题，先前的来源仍然可查。</figcaption></figure>
+        <div class="post-body" id="article-text"><p class="article-lead" data-passage-key="cb4d765ee95f" id="passage-e669a6a379d9">以前在 Obsidian 搜一个技术词，我常常要把几份笔记按时间翻一遍。第一份是当时的现象，第二份是猜测，后面还有一份修正。每次有人问「现在应该怎么做」，都得把这段考据重走一遍。</p>
+<p data-passage-key="e52bf3eadeb0" id="passage-36b14a0b50f7">我沿用 PARA 收资料，借了 Karpathy 的 LLM Wiki 思路，用 Codex 更新主题页。<strong>下次先从主题页读当前结论，要核对时再顺着来源找回原笔记。</strong></p>
+<figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/codex-obsidian-wiki-scene.webp" title="查看原图"><img alt="多条原始笔记共同指向一页结论，结论更新后仍保留来源。" decoding="async" height="854" loading="lazy" src="/images/article-figures/codex-obsidian-wiki-scene.webp" width="1280"/></a><figcaption data-passage-key="e079743b6231" id="passage-4c8c1387a993">教学示意。新证据进入现有主题，先前的来源仍然可查。</figcaption></figure>
 <span id="一条结论可以写回原来的页面"></span>
-<h2 id="一次笔记写入和一次知识编译">新证据来了，先改原来的结论</h2>
-<div aria-labelledby="article-table-1" class="table-scroll article-evidence" role="region" tabindex="0"><table><caption id="article-table-1">原始资料、主题页与维护记录的写入规则</caption>
+<h2 data-passage-key="2a5b034fcf6f" id="一次笔记写入和一次知识编译">新证据来了，先改原来的结论</h2>
+<div aria-labelledby="article-table-1" class="table-scroll article-evidence" data-passage-key="b003c507316c" id="passage-750ad9fc933d" role="region" tabindex="0"><table><caption id="article-table-1">原始资料、主题页与维护记录的写入规则</caption>
 <thead>
 <tr>
 <th scope="col">放在哪里</th>
@@ -88,32 +87,45 @@
 </tr>
 </tbody>
 </table></div>
-<p>拿同名 MCP 工具做例子。第一份记录写两个服务都有 <code>search</code>。第二份查出网关按连接顺序找同名工具，调换顺序就可能选到另一个服务。后续才补上工具名前缀和显式路由。</p>
-<p>写进主题页时，用一条判断把三份材料串起来。多个服务的工具名可能重复，聚合层要提供唯一公开名，并保留它到后端原名的映射。以前怎样复现错路由，仍然留在原始记录里。</p>
-<p>如果新材料只是重复这个判断，最多补一个来源。发现原来没写的成立条件，更新条件。碰到反例推翻了判断，改正文并在日志注明原因。能在原页处理，就少建一页「最新结论」。</p>
-<figure class="article-figure article-figure--edited"><a href="/images/article-figures/codex-obsidian-wiki.webp" title="查看原图"><img alt="原始记录、主题结论和索引日志之间的关系" decoding="async" height="480" loading="lazy" src="/images/article-figures/codex-obsidian-wiki.webp" width="1200"/></a><figcaption>查结论从索引进主题页，查细节再回原始记录。</figcaption></figure>
-<h2 id="给-Codex-的输入可以比整个库小得多">新会话从索引开始读</h2>
-<p>Codex 先读总规则和索引，再打开一至三个相关主题。碰到会改变判断的细节，沿着来源读原始 Markdown。语义检索也可以用来找候选，最终引用哪一条，仍要看原文。</p>
-<p>原始笔记的结构可以很轻。下面用同名工具示例说明，哪些内容足够支持以后复查。来源用普通 Markdown 链接指向原始文件和相关段落。</p>
-<pre class="article-code"><code class="language-text">主题  MCP 工具聚合
+<p data-passage-key="6818cf4a5959" id="passage-402cb696023e">拿同名 MCP 工具做例子。第一份记录写两个服务都有 <code>search</code>。第二份查出网关按连接顺序找同名工具，调换顺序就可能选到另一个服务。后续才补上工具名前缀和显式路由。</p>
+<p data-passage-key="266e97907127" id="passage-59c83769773d">写进主题页时，用一条判断把三份材料串起来。多个服务的工具名可能重复，聚合层要提供唯一公开名，并保留它到后端原名的映射。以前怎样复现错路由，仍然留在原始记录里。</p>
+<p data-passage-key="7cb3e5f34770" id="passage-48da3b86e9b4">如果新材料只是重复这个判断，最多补一个来源。发现原来没写的成立条件，更新条件。碰到反例推翻了判断，改正文并在日志注明原因。能在原页处理，就少建一页「最新结论」。</p>
+<figure class="article-figure article-figure--edited"><a href="/images/article-figures/codex-obsidian-wiki.webp" title="查看原图"><img alt="原始记录、主题结论和索引日志之间的关系" decoding="async" height="480" loading="lazy" src="/images/article-figures/codex-obsidian-wiki.webp" width="1200"/></a><figcaption data-passage-key="3511b0506d6c" id="passage-f149eaeff5a3">查结论从索引进主题页，查细节再回原始记录。</figcaption></figure>
+<h2 data-passage-key="2fdb2aaf362b" id="给-Codex-的输入可以比整个库小得多">新会话从索引开始读</h2>
+<p data-passage-key="a2c5a955203d" id="passage-fc96df365d69">Codex 先读总规则和索引，再打开一至三个相关主题。碰到会改变判断的细节，沿着来源读原始 Markdown。语义检索也可以用来找候选，最终引用哪一条，仍要看原文。</p>
+<p data-passage-key="050ed5911496" id="passage-07baac658e55">原始笔记的结构可以很轻。下面用同名工具示例说明，哪些内容足够支持以后复查。来源用普通 Markdown 链接指向原始文件和相关段落。</p>
+<pre class="article-code" data-passage-key="b2597b93fd63" id="passage-ed00d1460fd8"><code class="language-text">主题  MCP 工具聚合
 判断  调用按公开工具名查显式路由
 条件  多个服务可能暴露同一个本地工具名
 证据  同一个测试在调换两个服务的注册顺序后仍应返回同一后端
 来源  两份原始记录的相对路径和相关段落
 </code></pre>
-<p>还有一些材料根本用不到 Wiki。当前项目的下一步留在项目记录里，一次排查的经过留在原笔记里，会改变下一次判断的做法才更新主题页。这样新会话可以按任务打开需要的文件。</p>
-<p>日常只归位新资料。周度编译看最近一周的新增和修改。孤立主题、重复页面、断链和过时结论，放到月度巡检。没发现会改变做法的新材料时，这一轮可以只在日志里记「现有结论仍适用」。</p>
+<p data-passage-key="562192ae0750" id="passage-82b23c2ba584">还有一些材料根本用不到 Wiki。当前项目的下一步留在项目记录里，一次排查的经过留在原笔记里，会改变下一次判断的做法才更新主题页。这样新会话可以按任务打开需要的文件。</p>
+<p data-passage-key="74aadac1e0a2" id="passage-1cbedf4dbddb">日常只归位新资料。周度编译看最近一周的新增和修改。孤立主题、重复页面、断链和过时结论，放到月度巡检。没发现会改变做法的新材料时，这一轮可以只在日志里记「现有结论仍适用」。</p>
 <span id="有一天调度说成功-产物却没交齐"></span>
-<h2 id="调度显示成功后-还要打开文件看一次">调度显示成功，先打开文件复核</h2>
-<p>2026 年 10 月有一轮周度编译，调度标了 <code>ok</code>，报告却写明日志、统计和文件改动都没有做完整。我回查时，没法从日志判断这批材料到底处理了多少。</p>
-<p>后来我加了写后回读。先打开声称更新的主题，确认新结论已写入。然后沿索引点进去，检查是不是指到了同名的另一页。最后把更新记录和本轮来源对一遍，没找到原文或没写完整的部分，在报告里列出来。</p>
-<figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/codex-obsidian-wiki-detail.webp" title="查看原图"><img alt="编译完成后核对主题页、索引、日志、未完成项。" decoding="async" height="729" loading="lazy" src="/images/article-figures/codex-obsidian-wiki-detail.webp" width="900"/></a><figcaption>回读时核对页面、索引、日志和缺项报告。</figcaption></figure>
-<p>同一批任务重试时，先按主题和来源查已有改动，再补缺项。只核对文件存在，仍可能漏掉写错结论或重复追加。小规模试点可以从一个常查的主题开始。下一次开新会话，请它给出结论、成立条件和来源。三样都找得到，就够检验这一页能不能用。</p>
-<h2 id="参考">参考</h2>
+<h2 data-passage-key="38eba718de0f" id="调度显示成功后-还要打开文件看一次">调度显示成功，先打开文件复核</h2>
+<p data-passage-key="e25bae7ba2d1" id="passage-0db1fe63fc07">2026 年 10 月有一轮周度编译，调度标了 <code>ok</code>，报告却写明日志、统计和文件改动都没有做完整。我回查时，没法从日志判断这批材料到底处理了多少。</p>
+<p data-passage-key="97fdc888dfed" id="passage-3938b17cfa7f">后来我加了写后回读。先打开声称更新的主题，确认新结论已写入。然后沿索引点进去，检查是不是指到了同名的另一页。最后把更新记录和本轮来源对一遍，没找到原文或没写完整的部分，在报告里列出来。</p>
+<figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/codex-obsidian-wiki-detail.webp" title="查看原图"><img alt="编译完成后核对主题页、索引、日志、未完成项。" decoding="async" height="729" loading="lazy" src="/images/article-figures/codex-obsidian-wiki-detail.webp" width="900"/></a><figcaption data-passage-key="799b48c1705c" id="passage-42091a6f8ce6">回读时核对页面、索引、日志和缺项报告。</figcaption></figure>
+<p data-passage-key="4b47c00d2117" id="passage-a8d68c9b132c">同一批任务重试时，先按主题和来源查已有改动，再补缺项。只核对文件存在，仍可能漏掉写错结论或重复追加。小规模试点可以从一个常查的主题开始。下一次开新会话，请它给出结论、成立条件和来源。三样都找得到，就够检验这一页能不能用。</p>
+<h2 data-passage-key="c6f305e9b180" id="参考">参考</h2>
 <ul>
-<li><a href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f">Karpathy 的 LLM Wiki 说明</a></li>
+<li data-passage-key="b43138899399" id="passage-c6d257a6e0c4"><a href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f">Karpathy 的 LLM Wiki 说明</a></li>
 </ul></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
+        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
+        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
+          <header class="passage-dialog-header">
+            <h2 id="passage-comment-title">段落评论</h2>
+            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
+          </header>
+          <div class="passage-dialog-content">
+            <blockquote data-passage-excerpt></blockquote>
+            <a data-passage-source>查看原文</a>
+            <p data-passage-status role="status"></p>
+            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
+            <div data-passage-widget></div>
+          </div>
+        </dialog>
 
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Obsidian/">Obsidian</a><a href="/tags/Codex/">Codex</a><a href="/tags/%E7%9F%A5%E8%AF%86%E5%BA%93/">知识库</a></div>
         <div class="legacy-tags" hidden></div>
@@ -125,16 +137,6 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
-          <div class="comment-quote" data-comment-quote hidden>
-            <blockquote data-comment-quote-text></blockquote>
-            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
-            <p data-comment-quote-status role="status"></p>
-            <div class="comment-quote-actions">
-              <button type="button" data-copy-comment-quote>复制引用</button>
-              <a data-comment-quote-source>返回原文</a>
-              <button type="button" data-clear-comment-quote>取消引用</button>
-            </div>
-          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

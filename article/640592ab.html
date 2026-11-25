@@ -20,8 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/640592ab.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/640592ab.html">
-<script src="/js/comments.js?v=3" defer></script>
-<script src="/js/comment-quotes.js" defer></script>
+<script type="module" src="/js/discussions.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -57,99 +56,112 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E6%93%8D%E4%BD%9C">数据库操作</a></li><li><a href="#c-create">c(create)</a></li><li><a href="#r-retrieve">r(retrieve)</a></li><li><a href="#%E5%A4%9A%E6%9D%A1%E4%BB%B6-%E4%B8%8E-%E6%9F%A5%E8%AF%A2">多条件 与 查询</a></li><li><a href="#u-update">u(update)</a></li><li><a href="#d-delete">d(delete)</a></li><li><a href="#%E6%8E%92%E5%BA%8F">排序</a></li><li><a href="#%E9%98%85%E8%AF%BB%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3">阅读官方文档</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><span id="测试开发进阶-二十三"></span><p><strong>欢迎关注我的公众号：「测试游记」</strong></p>
-<h2 id="数据库操作"><a class="headerlink" href="#数据库操作" title="数据库操作"></a>数据库操作</h2><h3 id="c-create"><a class="headerlink" href="#c-create" title="c(create)"></a>c(create)</h3><ul>
-<li>使用模型内构造方法</li>
+        <div class="post-body" id="article-text"><span id="测试开发进阶-二十三"></span><p data-passage-key="90d4e866076c" id="passage-c1727c21693d"><strong>欢迎关注我的公众号：「测试游记」</strong></p>
+<h2 data-passage-key="ed9a41e59406" id="数据库操作"><a class="headerlink" href="#数据库操作" title="数据库操作"></a>数据库操作</h2><h3 data-passage-key="ec4129882265" id="c-create"><a class="headerlink" href="#c-create" title="c(create)"></a>c(create)</h3><ul>
+<li data-passage-key="20a1d05f3e32" id="passage-b75ee27adc72">使用模型内构造方法</li>
 </ul>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create</span>(<span class="params">self, **kwargs</span>):</span></span><br/><span class="line">    <span class="string">"""</span></span><br/><span class="line"><span class="string">    Create a new object with the given kwargs, saving it to the database</span></span><br/><span class="line"><span class="string">    and returning the created object.</span></span><br/><span class="line"><span class="string">    """</span></span><br/><span class="line">    obj = self.model(**kwargs)</span><br/><span class="line">    self._for_write = <span class="literal">True</span></span><br/><span class="line">    obj.save(force_insert=<span class="literal">True</span>, using=self.db)</span><br/><span class="line">    <span class="keyword">return</span> obj</span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/></pre></td><td class="code"><pre data-passage-key="27f371a23337" id="passage-6c62a34ee06b"><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create</span>(<span class="params">self, **kwargs</span>):</span></span><br/><span class="line">    <span class="string">"""</span></span><br/><span class="line"><span class="string">    Create a new object with the given kwargs, saving it to the database</span></span><br/><span class="line"><span class="string">    and returning the created object.</span></span><br/><span class="line"><span class="string">    """</span></span><br/><span class="line">    obj = self.model(**kwargs)</span><br/><span class="line">    self._for_write = <span class="literal">True</span></span><br/><span class="line">    obj.save(force_insert=<span class="literal">True</span>, using=self.db)</span><br/><span class="line">    <span class="keyword">return</span> obj</span><br/></pre></td></tr></tbody></table></figure>
 <span id="more"></span>
-<p>从代码中可以看出自带了<code>save</code>操作</p>
-<h3 id="r-retrieve"><a class="headerlink" href="#r-retrieve" title="r(retrieve)"></a>r(retrieve)</h3><ul>
-<li>获取一个数据表的所有数据</li>
+<p data-passage-key="a10c8b6b7801" id="passage-ab4635b10de3">从代码中可以看出自带了<code>save</code>操作</p>
+<h3 data-passage-key="c1ceb99ab63c" id="r-retrieve"><a class="headerlink" href="#r-retrieve" title="r(retrieve)"></a>r(retrieve)</h3><ul>
+<li data-passage-key="be8f425d8847" id="passage-3e4529a55746">获取一个数据表的所有数据</li>
 </ul>
-<blockquote>
-<p>返回所有记录组成的模型和对象集合(queryset查询集)</p>
+<blockquote data-passage-key="e96a7a293446" id="passage-0b2d6d294c12">
+<p data-passage-key="3000dc102346" id="passage-d835d033ef9c">返回所有记录组成的模型和对象集合(queryset查询集)</p>
 </blockquote>
 <ul>
-<li>获取指定记录</li>
+<li data-passage-key="b12317918f5b" id="passage-0aff7f6870dd">获取指定记录</li>
 </ul>
-<blockquote>
-<p>get</p>
-<p>filter</p>
-<p>exclude</p>
+<blockquote data-passage-key="ce5d8555af3c" id="passage-6e4f8a4bc8dd">
+<p data-passage-key="793424459b29" id="passage-9a8319025572">get</p>
+<p data-passage-key="ceb6dbc3c81c" id="passage-79d6f86ee575">filter</p>
+<p data-passage-key="d2cffcc609a6" id="passage-ebc007d088c7">exclude</p>
 </blockquote>
-<h4 id="获取一个数据的所有记录"><a class="headerlink" href="#获取一个数据的所有记录" title="获取一个数据的所有记录"></a>获取一个数据的所有记录</h4><blockquote>
-<p>QuerySet查询集，就相当于一个列表(存放所有项目对象的列表)</p>
+<h4 data-passage-key="5363ce56a820" id="获取一个数据的所有记录"><a class="headerlink" href="#获取一个数据的所有记录" title="获取一个数据的所有记录"></a>获取一个数据的所有记录</h4><blockquote data-passage-key="9a894b82c8e4" id="passage-88abfcf11e62">
+<p data-passage-key="e43360951d41" id="passage-6a85d2939798">QuerySet查询集，就相当于一个列表(存放所有项目对象的列表)</p>
 </blockquote>
 <p><img alt="all" decoding="async" height="622" loading="lazy" src="/images/blog-media/f7acad1cbd0553acf014.webp" width="1080"/></p>
-<p>对QuerySet查询集进行遍历</p>
+<p data-passage-key="5cbd324b35f3" id="passage-7f35b4b71886">对QuerySet查询集进行遍历</p>
 <p><img alt="遍历" decoding="async" height="703" loading="lazy" src="/images/blog-media/753fb2a9841464695a77.webp" width="1080"/></p>
-<h4 id="获取单个数据"><a class="headerlink" href="#获取单个数据" title="获取单个数据"></a>获取单个数据</h4><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre><span class="line">Projects.objects.get(<span class="built_in">id</span>=<span class="number">1</span>)</span><br/><span class="line"><span class="comment"># 通过.可以获取到具体的内容</span></span><br/><span class="line">Projects.objects.get(<span class="built_in">id</span>=<span class="number">1</span>).name</span><br/><span class="line">Projects.objects.get(<span class="built_in">id</span>=<span class="number">1</span>).leader</span><br/></pre></td></tr></tbody></table></figure>
+<h4 data-passage-key="47cfae6e16d4" id="获取单个数据"><a class="headerlink" href="#获取单个数据" title="获取单个数据"></a>获取单个数据</h4><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre data-passage-key="621ef73273ea" id="passage-8a025e81e3ae"><span class="line">Projects.objects.get(<span class="built_in">id</span>=<span class="number">1</span>)</span><br/><span class="line"><span class="comment"># 通过.可以获取到具体的内容</span></span><br/><span class="line">Projects.objects.get(<span class="built_in">id</span>=<span class="number">1</span>).name</span><br/><span class="line">Projects.objects.get(<span class="built_in">id</span>=<span class="number">1</span>).leader</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="get" decoding="async" height="602" loading="lazy" src="/images/blog-media/ede8b4cc5c6039d2c11e.webp" width="1080"/></p>
 <p><img alt="具体内容" decoding="async" height="622" loading="lazy" src="/images/blog-media/c17f480f9e4bb20eef93.webp" width="1080"/></p>
 <ol>
-<li>get返回多条记录会报错</li>
+<li data-passage-key="fe7de3272f72" id="passage-fc353b0c8b90">get返回多条记录会报错</li>
 </ol>
 <p><img alt="错误1" decoding="async" height="817" loading="lazy" src="/images/blog-media/df096b07c085a9fc9868.webp" width="1080"/></p>
 <ol start="2">
-<li>get查询的记录不存在会报出异常</li>
+<li data-passage-key="2e95858faa0a" id="passage-17fb57bb9793">get查询的记录不存在会报出异常</li>
 </ol>
 <p><img alt="错误2" decoding="async" height="622" loading="lazy" src="/images/blog-media/5373147fe9e30fc45003.webp" width="1080"/></p>
-<h4 id="获取某一些记录。filter-或者exclude"><a class="headerlink" href="#获取某一些记录。filter-或者exclude" title="获取某一些记录。filter()或者exclude()"></a>获取某一些记录。filter()或者exclude()</h4><p><code>filter</code>查询返回的是一个列表</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line">Projects.objects.<span class="built_in">filter</span>(<span class="built_in">id</span>=<span class="number">1</span>)</span><br/></pre></td></tr></tbody></table></figure>
+<h4 data-passage-key="c8e07a5b3d0a" id="获取某一些记录。filter-或者exclude"><a class="headerlink" href="#获取某一些记录。filter-或者exclude" title="获取某一些记录。filter()或者exclude()"></a>获取某一些记录。filter()或者exclude()</h4><p data-passage-key="d46d173435ff" id="passage-2e88a312ab95"><code>filter</code>查询返回的是一个列表</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="2043c3313df3" id="passage-d8e8a72caa96"><span class="line">Projects.objects.<span class="built_in">filter</span>(<span class="built_in">id</span>=<span class="number">1</span>)</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="filter" decoding="async" height="622" loading="lazy" src="/images/blog-media/a77bd101d921339b9ce9.webp" width="1080"/></p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line">Projects.objects.<span class="built_in">filter</span>(leader=<span class="string">'zx_94'</span>)</span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="4cf4a1d2012c" id="passage-f37ba2519054"><span class="line">Projects.objects.<span class="built_in">filter</span>(leader=<span class="string">'zx_94'</span>)</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="filter2" decoding="async" height="622" loading="lazy" src="/images/blog-media/f0718baebd9a98ea81a9.webp" width="1080"/></p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line">Projects.objects.<span class="built_in">filter</span>(leader__contains=<span class="string">'zx'</span>)</span><br/></pre></td></tr></tbody></table></figure>
-<p>使用<code>leader__contains</code>获取符合条件的查询集「模糊查询」</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="da60e0b4748c" id="passage-28dedf96403e"><span class="line">Projects.objects.<span class="built_in">filter</span>(leader__contains=<span class="string">'zx'</span>)</span><br/></pre></td></tr></tbody></table></figure>
+<p data-passage-key="1d05e15e904b" id="passage-cc640d23dbeb">使用<code>leader__contains</code>获取符合条件的查询集「模糊查询」</p>
 <p><img alt="leader__contains" decoding="async" height="801" loading="lazy" src="/images/blog-media/02b88b65994dadc75bcc.webp" width="1080"/></p>
-<p>还有一些其他的操作，可以根据名称或SQL常识进行使用</p>
-<p>以<code>i</code>开头(不是单词的一部分，例如<code>in</code>，<code>is</code>等)表示「忽略大小写」</p>
+<p data-passage-key="d4c91e5cad26" id="passage-ed5b6690d6bb">还有一些其他的操作，可以根据名称或SQL常识进行使用</p>
+<p data-passage-key="baaa29eb7472" id="passage-699704d84876">以<code>i</code>开头(不是单词的一部分，例如<code>in</code>，<code>is</code>等)表示「忽略大小写」</p>
 <p><img alt="其他" decoding="async" height="722" loading="lazy" src="/images/blog-media/15806c217dcaf26e0dd3.webp" width="1010"/></p>
 <p><img alt="其他2" decoding="async" height="722" loading="lazy" src="/images/blog-media/aa20e3dcec6e01794f62.webp" width="1010"/></p>
-<p><code>exclude</code>反向查询</p>
-<p>下面可以获取到<code>id ！= 1</code>的内容</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line">Projects.objects.exclude(<span class="built_in">id</span>=<span class="number">1</span>)</span><br/></pre></td></tr></tbody></table></figure>
+<p data-passage-key="4bbb5351fcd2" id="passage-3dd5408dadf3"><code>exclude</code>反向查询</p>
+<p data-passage-key="7dad24e9fd69" id="passage-8f3bc38df07b">下面可以获取到<code>id ！= 1</code>的内容</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="c6d83c905291" id="passage-c5cd831e84c5"><span class="line">Projects.objects.exclude(<span class="built_in">id</span>=<span class="number">1</span>)</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="image-20191010074604404" decoding="async" height="785" loading="lazy" src="/images/blog-media/5a0cb73dfac2297fef21.webp" width="1080"/></p>
-<h4 id="关联查询"><a class="headerlink" href="#关联查询" title="关联查询"></a>关联查询</h4><p>查询语句：<code>外键字段__从表的字段名__条件</code></p>
-<p>在<code>tb_interfaces</code>表中添加一条内容</p>
+<h4 data-passage-key="88fd696df643" id="关联查询"><a class="headerlink" href="#关联查询" title="关联查询"></a>关联查询</h4><p data-passage-key="41ac9c2ebb9e" id="passage-2828f61cc138">查询语句：<code>外键字段__从表的字段名__条件</code></p>
+<p data-passage-key="13152aef6597" id="passage-528aa05664be">在<code>tb_interfaces</code>表中添加一条内容</p>
 <p><img alt="添加内容" decoding="async" height="196" loading="lazy" src="/images/blog-media/813383ac47b3be1774d7.webp" width="1080"/></p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line">Projects.objects.<span class="built_in">filter</span>(interfaces__name=<span class="string">'登录接口'</span>)</span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="7d4279f58a26" id="passage-0a8f3fd05f2a"><span class="line">Projects.objects.<span class="built_in">filter</span>(interfaces__name=<span class="string">'登录接口'</span>)</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="查询" decoding="async" height="622" loading="lazy" src="/images/blog-media/5ae6b5053acfa7ae5d0b.webp" width="1080"/></p>
-<p>通过<code>interfaces</code>的<code>name</code>「登录接口」来找到关联表中的具体内容</p>
-<p>查看SQL语句</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.db <span class="keyword">import</span> connection</span><br/><span class="line">print(connection.queries[-<span class="number">1</span>])</span><br/><span class="line">{<span class="string">'sql'</span>: <span class="string">"SELECT `tb_projects`.`id`, `tb_projects`.`name`, `tb_projects`.`leader`, `tb_projects`.`tester`, `tb_projects`.`programer`, `tb_projects`.`publish_app`, `tb_projects`.`desc` FROM `tb_projects` INNER JOIN `tb_interfaces` ON (`tb_projects`.`id` = `tb_interfaces`.`project_id`) WHERE `tb_interfaces`.`name` = '登录接口'  LIMIT 21"</span>, <span class="string">'time'</span>: <span class="string">'0.001'</span>}</span><br/></pre></td></tr></tbody></table></figure>
-<h4 id="比较查询"><a class="headerlink" href="#比较查询" title="比较查询"></a>比较查询</h4><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line">Projects.objects.<span class="built_in">filter</span>(id__gt=<span class="number">2</span>)</span><br/></pre></td></tr></tbody></table></figure>
+<p data-passage-key="31558cdd31eb" id="passage-7676023cbd32">通过<code>interfaces</code>的<code>name</code>「登录接口」来找到关联表中的具体内容</p>
+<p data-passage-key="c34ae16e0a4b" id="passage-0b127b83dfa2">查看SQL语句</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre data-passage-key="39acebf049df" id="passage-e86a12082ee0"><span class="line"><span class="keyword">from</span> django.db <span class="keyword">import</span> connection</span><br/><span class="line">print(connection.queries[-<span class="number">1</span>])</span><br/><span class="line">{<span class="string">'sql'</span>: <span class="string">"SELECT `tb_projects`.`id`, `tb_projects`.`name`, `tb_projects`.`leader`, `tb_projects`.`tester`, `tb_projects`.`programer`, `tb_projects`.`publish_app`, `tb_projects`.`desc` FROM `tb_projects` INNER JOIN `tb_interfaces` ON (`tb_projects`.`id` = `tb_interfaces`.`project_id`) WHERE `tb_interfaces`.`name` = '登录接口'  LIMIT 21"</span>, <span class="string">'time'</span>: <span class="string">'0.001'</span>}</span><br/></pre></td></tr></tbody></table></figure>
+<h4 data-passage-key="e357da99bed3" id="比较查询"><a class="headerlink" href="#比较查询" title="比较查询"></a>比较查询</h4><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="9bd9bc4091c6" id="passage-633b616c1fd3"><span class="line">Projects.objects.<span class="built_in">filter</span>(id__gt=<span class="number">2</span>)</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="比较查询" decoding="async" height="766" loading="lazy" src="/images/blog-media/0d3336f51a9d3bf2b926.webp" width="1080"/></p>
-<blockquote>
-<p><code>__gt</code>:大于</p>
-<p><code>__gte</code>:大于等于</p>
-<p><code>__lt</code>:小于</p>
-<p><code>__lte</code>:小于等于</p>
+<blockquote data-passage-key="6fb171b591fc" id="passage-38e078d2fb16">
+<p data-passage-key="b0762a8fe615" id="passage-d19a335efa70"><code>__gt</code>:大于</p>
+<p data-passage-key="120ae49ccc08" id="passage-c3c20912b995"><code>__gte</code>:大于等于</p>
+<p data-passage-key="b84a07dfa0f6" id="passage-d4a7a715ce6b"><code>__lt</code>:小于</p>
+<p data-passage-key="afc0047c2289" id="passage-5b1ad8b3b481"><code>__lte</code>:小于等于</p>
 </blockquote>
-<h4 id="多条件-或-查询"><a class="headerlink" href="#多条件-或-查询" title="多条件 或 查询"></a>多条件 或 查询</h4><p>以下语句表示查询<code>leader='zx'</code>或<code>id=1</code>的内容</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line">Projects.objects.<span class="built_in">filter</span>(Q(leader=<span class="string">'zx'</span>) | Q(<span class="built_in">id</span>=<span class="number">1</span>))</span><br/></pre></td></tr></tbody></table></figure>
-<h3 id="多条件-与-查询"><a class="headerlink" href="#多条件-与-查询" title="多条件 与 查询"></a>多条件 与 查询</h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line">Projects.objects.<span class="built_in">filter</span>(leader=<span class="string">'zx'</span>, <span class="built_in">id</span>=<span class="number">1</span>)</span><br/></pre></td></tr></tbody></table></figure>
-<h4 id="查询集的操作"><a class="headerlink" href="#查询集的操作" title="查询集的操作"></a>查询集的操作</h4><blockquote>
-<p>查询集相当于一个列表，支持列表中的大多数操作（索引，正向切片，for)<br/>查询集是对数据库操作的一种优化<br/>查询集会缓存结果</p>
+<h4 data-passage-key="45d411d351e0" id="多条件-或-查询"><a class="headerlink" href="#多条件-或-查询" title="多条件 或 查询"></a>多条件 或 查询</h4><p data-passage-key="ad8b5aa6eaba" id="passage-38a69fc863c6">以下语句表示查询<code>leader='zx'</code>或<code>id=1</code>的内容</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="2008332024db" id="passage-2f44aaba00bf"><span class="line">Projects.objects.<span class="built_in">filter</span>(Q(leader=<span class="string">'zx'</span>) | Q(<span class="built_in">id</span>=<span class="number">1</span>))</span><br/></pre></td></tr></tbody></table></figure>
+<h3 data-passage-key="362024ccd85d" id="多条件-与-查询"><a class="headerlink" href="#多条件-与-查询" title="多条件 与 查询"></a>多条件 与 查询</h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="8a86df0633e4" id="passage-d4e4d3e8b63a"><span class="line">Projects.objects.<span class="built_in">filter</span>(leader=<span class="string">'zx'</span>, <span class="built_in">id</span>=<span class="number">1</span>)</span><br/></pre></td></tr></tbody></table></figure>
+<h4 data-passage-key="701593d36b53" id="查询集的操作"><a class="headerlink" href="#查询集的操作" title="查询集的操作"></a>查询集的操作</h4><blockquote data-passage-key="2749988f1297" id="passage-05aca297004a">
+<p data-passage-key="3c558a04c394" id="passage-3ad3361b4973">查询集相当于一个列表，支持列表中的大多数操作（索引，正向切片，for)<br/>查询集是对数据库操作的一种优化<br/>查询集会缓存结果</p>
 </blockquote>
-<h3 id="u-update"><a class="headerlink" href="#u-update" title="u(update)"></a>u(update)</h3><p>先获取，后修改，再保存</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre><span class="line">p = Projects.objects.get(<span class="built_in">id</span>=<span class="number">1</span>)</span><br/><span class="line">p.leader = <span class="string">'zx'</span></span><br/><span class="line">p.save()</span><br/></pre></td></tr></tbody></table></figure>
-<h3 id="d-delete"><a class="headerlink" href="#d-delete" title="d(delete)"></a>d(delete)</h3><p>获取后，删除</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre><span class="line">p = Projects.objects.get(<span class="built_in">id</span>=<span class="number">1</span>)</span><br/><span class="line">p.delete()</span><br/></pre></td></tr></tbody></table></figure>
-<h3 id="排序"><a class="headerlink" href="#排序" title="排序"></a>排序</h3><p>从小到大</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line">Projects.objects.<span class="built_in">filter</span>(id__gte=<span class="number">3</span>).order_by(<span class="string">'name'</span>)</span><br/></pre></td></tr></tbody></table></figure>
-<p>从大到小</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line">Projects.objects.<span class="built_in">filter</span>(id__gte=<span class="number">3</span>).order_by(<span class="string">'-name'</span>)</span><br/></pre></td></tr></tbody></table></figure>
-<p>当前一个字段相同，以后一个来排序</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line">Projects.objects.<span class="built_in">filter</span>(id__gte=<span class="number">3</span>).order_by(<span class="string">'name'</span>,<span class="string">'-publish_app'</span>)</span><br/></pre></td></tr></tbody></table></figure>
-<h2 id="阅读官方文档"><a class="headerlink" href="#阅读官方文档" title="阅读官方文档"></a>阅读官方文档</h2><p><a href="https://docs.djangoproject.com/en/2.2/" rel="noopener" target="_blank">https://docs.djangoproject.com/en/2.2/</a></p>
-<p>「<a href="https://docs.djangoproject.com/en/2.2/intro/" rel="noopener" target="_blank">Tutorials</a>」入门：<a href="https://docs.djangoproject.com/en/2.2/intro/" rel="noopener" target="_blank">https://docs.djangoproject.com/en/2.2/intro/</a></p>
-<p>「<a href="https://docs.djangoproject.com/en/2.2/topics/" rel="noopener" target="_blank">Topic guides</a>」专题：<a href="https://docs.djangoproject.com/en/2.2/topics/" rel="noopener" target="_blank">https://docs.djangoproject.com/en/2.2/topics/</a></p>
-<p>「<a href="https://docs.djangoproject.com/en/2.2/ref/" rel="noopener" target="_blank">Reference guides</a> 」接口：<a href="https://docs.djangoproject.com/en/2.2/ref/" rel="noopener" target="_blank">https://docs.djangoproject.com/en/2.2/ref/</a></p>
-<p>「<a href="https://docs.djangoproject.com/en/2.2/howto/" rel="noopener" target="_blank">How-to guides</a> 」进阶内容：<a href="https://docs.djangoproject.com/en/2.2/howto/" rel="noopener" target="_blank">https://docs.djangoproject.com/en/2.2/howto/</a></p>
+<h3 data-passage-key="0ce24eac62f9" id="u-update"><a class="headerlink" href="#u-update" title="u(update)"></a>u(update)</h3><p data-passage-key="3a51a6ef9bda" id="passage-f451c483c228">先获取，后修改，再保存</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre data-passage-key="7c3f45a9cc8d" id="passage-ed4da0b87365"><span class="line">p = Projects.objects.get(<span class="built_in">id</span>=<span class="number">1</span>)</span><br/><span class="line">p.leader = <span class="string">'zx'</span></span><br/><span class="line">p.save()</span><br/></pre></td></tr></tbody></table></figure>
+<h3 data-passage-key="0fd74a6814c6" id="d-delete"><a class="headerlink" href="#d-delete" title="d(delete)"></a>d(delete)</h3><p data-passage-key="4581304d2d77" id="passage-aa66c180c2e0">获取后，删除</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="48af54aa39c7" id="passage-1617473b63bc"><span class="line">p = Projects.objects.get(<span class="built_in">id</span>=<span class="number">1</span>)</span><br/><span class="line">p.delete()</span><br/></pre></td></tr></tbody></table></figure>
+<h3 data-passage-key="a96c9a854190" id="排序"><a class="headerlink" href="#排序" title="排序"></a>排序</h3><p data-passage-key="0c6ee25fc460" id="passage-16557a65aa0a">从小到大</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="c8c16a782ecd" id="passage-3dcd3eed11d0"><span class="line">Projects.objects.<span class="built_in">filter</span>(id__gte=<span class="number">3</span>).order_by(<span class="string">'name'</span>)</span><br/></pre></td></tr></tbody></table></figure>
+<p data-passage-key="4519421b8a67" id="passage-937257160b82">从大到小</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="880d36a1a91d" id="passage-6e9e345f8cce"><span class="line">Projects.objects.<span class="built_in">filter</span>(id__gte=<span class="number">3</span>).order_by(<span class="string">'-name'</span>)</span><br/></pre></td></tr></tbody></table></figure>
+<p data-passage-key="0d682bffb549" id="passage-07376fa4a78d">当前一个字段相同，以后一个来排序</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="c3b98e9f6d22" id="passage-9d5f44747436"><span class="line">Projects.objects.<span class="built_in">filter</span>(id__gte=<span class="number">3</span>).order_by(<span class="string">'name'</span>,<span class="string">'-publish_app'</span>)</span><br/></pre></td></tr></tbody></table></figure>
+<h2 data-passage-key="173bc106d186" id="阅读官方文档"><a class="headerlink" href="#阅读官方文档" title="阅读官方文档"></a>阅读官方文档</h2><p data-passage-key="ae15ecb2a2ea" id="passage-5f9bc98f5516"><a href="https://docs.djangoproject.com/en/2.2/" rel="noopener" target="_blank">https://docs.djangoproject.com/en/2.2/</a></p>
+<p data-passage-key="8e0968ef80c5" id="passage-461307eab276">「<a href="https://docs.djangoproject.com/en/2.2/intro/" rel="noopener" target="_blank">Tutorials</a>」入门：<a href="https://docs.djangoproject.com/en/2.2/intro/" rel="noopener" target="_blank">https://docs.djangoproject.com/en/2.2/intro/</a></p>
+<p data-passage-key="787607ecaa9e" id="passage-19cb504df8c7">「<a href="https://docs.djangoproject.com/en/2.2/topics/" rel="noopener" target="_blank">Topic guides</a>」专题：<a href="https://docs.djangoproject.com/en/2.2/topics/" rel="noopener" target="_blank">https://docs.djangoproject.com/en/2.2/topics/</a></p>
+<p data-passage-key="7f3ff9996d02" id="passage-67b1afe0a087">「<a href="https://docs.djangoproject.com/en/2.2/ref/" rel="noopener" target="_blank">Reference guides</a> 」接口：<a href="https://docs.djangoproject.com/en/2.2/ref/" rel="noopener" target="_blank">https://docs.djangoproject.com/en/2.2/ref/</a></p>
+<p data-passage-key="c22aaaa02080" id="passage-96ca79c8ecb5">「<a href="https://docs.djangoproject.com/en/2.2/howto/" rel="noopener" target="_blank">How-to guides</a> 」进阶内容：<a href="https://docs.djangoproject.com/en/2.2/howto/" rel="noopener" target="_blank">https://docs.djangoproject.com/en/2.2/howto/</a></p>
 <p><img alt="官方文档" decoding="async" height="470" loading="lazy" src="/images/blog-media/48789797fbc54a43351f.webp" width="1080"/></p></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
+        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
+        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
+          <header class="passage-dialog-header">
+            <h2 id="passage-comment-title">段落评论</h2>
+            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
+          </header>
+          <div class="passage-dialog-content">
+            <blockquote data-passage-excerpt></blockquote>
+            <a data-passage-source>查看原文</a>
+            <p data-passage-status role="status"></p>
+            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
+            <div data-passage-widget></div>
+          </div>
+        </dialog>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/q0J0vlkMj0CC40SYcgbcxw">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Django/">Django</a><a href="/tags/ORM/">ORM</a><a href="/tags/Python/">Python</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
@@ -161,16 +173,6 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
-          <div class="comment-quote" data-comment-quote hidden>
-            <blockquote data-comment-quote-text></blockquote>
-            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
-            <p data-comment-quote-status role="status"></p>
-            <div class="comment-quote-actions">
-              <button type="button" data-copy-comment-quote>复制引用</button>
-              <a data-comment-quote-source>返回原文</a>
-              <button type="button" data-clear-comment-quote>取消引用</button>
-            </div>
-          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

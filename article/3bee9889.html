@@ -20,8 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/3bee9889.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/3bee9889.html">
-<script src="/js/comments.js?v=3" defer></script>
-<script src="/js/comment-quotes.js" defer></script>
+<script type="module" src="/js/discussions.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -57,101 +56,114 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E5%87%A0%E7%A7%8D%E5%B8%B8%E8%A7%81%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%B5%81">几种常见的工作流</a></li><li><a href="#%E5%B0%86%E5%A4%9A%E4%B8%AA%E6%8F%90%E4%BA%A4%E5%90%88%E5%B9%B6%E4%B8%BA%E4%B8%80%E4%B8%AA">将多个提交合并为一个</a></li><li><a href="#Gitlab%E7%9A%84%E5%90%88%E5%B9%B6%E8%AF%B7%E6%B1%82">Gitlab的合并请求</a></li><li><a href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA">环境搭建</a></li><li><a href="#Merge-commit">Merge commit</a></li><li><a href="#Merge-commit-with-semi-linear-history">Merge commit with semi-linear history</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><span id="Git通过变基将提交变得更美观"></span><h2 id="几种常见的工作流"><a class="headerlink" href="#几种常见的工作流" title="几种常见的工作流"></a>几种常见的工作流</h2><p>全部在主干上进行开发的<code>主干开发</code>工作流</p>
+        <div class="post-body" id="article-text"><span id="Git通过变基将提交变得更美观"></span><h2 data-passage-key="716ef38292b7" id="几种常见的工作流"><a class="headerlink" href="#几种常见的工作流" title="几种常见的工作流"></a>几种常见的工作流</h2><p data-passage-key="4d1e4c23493d" id="passage-3458eda784d4">全部在主干上进行开发的<code>主干开发</code>工作流</p>
 <span id="more"></span>
 <p><img alt="主干开发" decoding="async" height="675" loading="lazy" src="/images/blog-media/25c5303f987295fbd748.webp" width="1080"/></p>
 <p><img alt="Git Flow" decoding="async" height="789" loading="lazy" src="/images/blog-media/6460986091ad5f7e3510.webp" width="1080"/></p>
 <p><img alt="GitHub Flow" decoding="async" height="736" loading="lazy" src="/images/blog-media/5f4a83a20d188d66913f.webp" width="1080"/></p>
 <p><img alt="GitLab Flow" decoding="async" height="759" loading="lazy" src="/images/blog-media/7ed9aa858d9a149003a6.webp" width="1080"/></p>
 <p><img alt="GitLab Flow" decoding="async" height="726" loading="lazy" src="/images/blog-media/4ef63b1db40edf5c8ee3.webp" width="1080"/><img alt="GitLab Flow" decoding="async" height="788" loading="lazy" src="/images/blog-media/ea53a0a59d039822a559.webp" width="1080"/></p>
-<h2 id="将多个提交合并为一个"><a class="headerlink" href="#将多个提交合并为一个" title="将多个提交合并为一个"></a>将多个提交合并为一个</h2><ol>
-<li>首先在一个空的文件夹中使用<code>git init</code>创建一个空的仓库 </li>
-<li>创建多次提交</li>
+<h2 data-passage-key="4d4e53fd49f1" id="将多个提交合并为一个"><a class="headerlink" href="#将多个提交合并为一个" title="将多个提交合并为一个"></a>将多个提交合并为一个</h2><ol>
+<li data-passage-key="ba0fe142be06" id="passage-58e8eca699c7">首先在一个空的文件夹中使用<code>git init</code>创建一个空的仓库 </li>
+<li data-passage-key="237c4a7e0157" id="passage-d3eef6452a58">创建多次提交</li>
 </ol>
 <p><img alt="多次提交" decoding="async" height="639" loading="lazy" src="/images/blog-media/acda666400b66d7878ae.webp" width="1080"/></p>
 <ol start="3">
-<li>现在使用<code>git log --graph</code>查看当前提交情况</li>
+<li data-passage-key="bb21be3d9007" id="passage-31bcc0dbc1ba">现在使用<code>git log --graph</code>查看当前提交情况</li>
 </ol>
 <p><img alt="提交情况" decoding="async" height="599" loading="lazy" src="/images/blog-media/8a4cf231605e964a1ae9.webp" width="1080"/></p>
 <ol start="4">
-<li>使用<code>git rebase -i &lt;哈希值&gt;</code>进行变基，合并的是这个哈希值对应提交之后的东西，所以选择最开始的那个提交  <code>04a25d7dec4ef8b4428916df33f17abc91de0746 </code></li>
+<li data-passage-key="67db6f072e0f" id="passage-2452625420e0">使用<code>git rebase -i &lt;哈希值&gt;</code>进行变基，合并的是这个哈希值对应提交之后的东西，所以选择最开始的那个提交  <code>04a25d7dec4ef8b4428916df33f17abc91de0746 </code></li>
 </ol>
 <ul>
-<li><p> <code>git rebase -i 04a25d7dec4ef8b4428916df33f17abc91de0746</code></p>
+<li data-passage-key="a9fcb6a6c89c" id="passage-d44e41f089f7"><p data-passage-key="f92a986874a8" id="passage-78fbeb7969d1"> <code>git rebase -i 04a25d7dec4ef8b4428916df33f17abc91de0746</code></p>
 </li>
-<li><p>会跳转至一个新的页面</p>
+<li data-passage-key="770eff22137a" id="passage-be050766b38d"><p data-passage-key="f0e7bc5f0a44" id="passage-e20ae14b7e4b">会跳转至一个新的页面</p>
 </li>
 <li><p><img alt="变基操作页面" decoding="async" height="918" loading="lazy" src="/images/blog-media/f8b0ce3035e0462a294f.webp" width="1080"/></p>
 </li>
-<li><p>阅读命令的提示信息，这两个提交一个作为变基之后的节点，一个作为合入的节点</p>
+<li data-passage-key="a4fbcf6373f5" id="passage-86034b7932dc"><p data-passage-key="330045909560" id="passage-801dc3ec0a35">阅读命令的提示信息，这两个提交一个作为变基之后的节点，一个作为合入的节点</p>
 </li>
-<li><p>我们把<code>e1eba39</code>当作合入的节点</p>
+<li data-passage-key="b3827185778e" id="passage-525fec9d5bf3"><p data-passage-key="a0b2a1962542" id="passage-96f57d232d24">我们把<code>e1eba39</code>当作合入的节点</p>
 </li>
 <li><p><img alt="使用命令" decoding="async" height="94" loading="lazy" src="/images/blog-media/e93913b080572730f8b9.webp" width="664"/></p>
 </li>
-<li><p>点击esc然后输入<code>:wq!</code></p>
+<li data-passage-key="d6f50826df50" id="passage-828b1314b807"><p data-passage-key="f396e240b175" id="passage-7f6f41c9b37a">点击esc然后输入<code>:wq!</code></p>
 </li>
-<li><p>会跳转至一个写描述信息的新的页面</p>
+<li data-passage-key="e1cefd179806" id="passage-c9d2b05d00f5"><p data-passage-key="557aa8b141fc" id="passage-615c236f1e96">会跳转至一个写描述信息的新的页面</p>
 </li>
 <li><p><img alt="新的页面" decoding="async" height="828" loading="lazy" src="/images/blog-media/fab6da31eaa5dce35d9e.webp" width="1080"/></p>
 </li>
-<li><p>点击esc然后输入<code>:wq!</code></p>
+<li data-passage-key="8b0c0e412950" id="passage-828b1314b807-2"><p data-passage-key="8442d9f0591d" id="passage-7f6f41c9b37a-2">点击esc然后输入<code>:wq!</code></p>
 </li>
 </ul>
 <p><img alt="变基成功" decoding="async" height="537" loading="lazy" src="/images/blog-media/94101566f3118114a8cf.webp" width="1080"/></p>
-<p>通过<code>git log --graph</code>我们可以看到，之前是三个提交的，现在前面两个提交已经合为了一个</p>
-<h2 id="Gitlab的合并请求"><a class="headerlink" href="#Gitlab的合并请求" title="Gitlab的合并请求"></a>Gitlab的合并请求</h2><h3 id="环境搭建"><a class="headerlink" href="#环境搭建" title="环境搭建"></a>环境搭建</h3><p>搭建一个如图的测试环境<img alt="测试环境" decoding="async" height="374" loading="lazy" src="/images/blog-media/9fd8d55ddb351ca33757.webp" width="852"/></p>
-<blockquote>
-<p>master</p>
-<blockquote>
-<p>test1</p>
-<p>test2</p>
+<p data-passage-key="359766256303" id="passage-80c8dac1bf13">通过<code>git log --graph</code>我们可以看到，之前是三个提交的，现在前面两个提交已经合为了一个</p>
+<h2 data-passage-key="a82b05017ae8" id="Gitlab的合并请求"><a class="headerlink" href="#Gitlab的合并请求" title="Gitlab的合并请求"></a>Gitlab的合并请求</h2><h3 data-passage-key="2f0bf1577a92" id="环境搭建"><a class="headerlink" href="#环境搭建" title="环境搭建"></a>环境搭建</h3><p data-passage-key="14d7eed9febf" id="passage-f98562d44d29">搭建一个如图的测试环境<img alt="测试环境" decoding="async" height="374" loading="lazy" src="/images/blog-media/9fd8d55ddb351ca33757.webp" width="852"/></p>
+<blockquote data-passage-key="cfd79cbe2408" id="passage-3cd2b635e8e2">
+<p data-passage-key="2f83ec7e05a1" id="passage-6000c6ca51bf">master</p>
+<blockquote data-passage-key="61f32a10beb3" id="passage-fc510643ce67">
+<p data-passage-key="b6f9ea2e5c62" id="passage-983ec29e0d4b">test1</p>
+<p data-passage-key="38ab1314f89d" id="passage-c2fffc979a08">test2</p>
 </blockquote>
 </blockquote>
-<h3 id="Merge-commit"><a class="headerlink" href="#Merge-commit" title="Merge commit"></a>Merge commit</h3><p><img alt="合并的方式" decoding="async" height="589" loading="lazy" src="/images/blog-media/e8ca3fe0f3df50e61c88.webp" width="1080"/></p>
-<p>发起一个<code>合并请求</code></p>
+<h3 data-passage-key="f865e84f1994" id="Merge-commit"><a class="headerlink" href="#Merge-commit" title="Merge commit"></a>Merge commit</h3><p><img alt="合并的方式" decoding="async" height="589" loading="lazy" src="/images/blog-media/e8ca3fe0f3df50e61c88.webp" width="1080"/></p>
+<p data-passage-key="85c47b22b424" id="passage-af5103cada9a">发起一个<code>合并请求</code></p>
 <p><img alt="将test1合入master" decoding="async" height="267" loading="lazy" src="/images/blog-media/698d6e84bcf889c4f047.webp" width="1080"/></p>
 <p><img alt="合并" decoding="async" height="657" loading="lazy" src="/images/blog-media/0688d9ba18e6f07c6e92.webp" width="1080"/></p>
-<p>查看现在的分支图</p>
+<p data-passage-key="0b44bdf6131f" id="passage-ddbbdfa92cc7">查看现在的分支图</p>
 <p><img alt="分支图" decoding="async" height="327" loading="lazy" src="/images/blog-media/3cd2bd8b864eab8efa54.webp" width="1080"/></p>
-<p>同理合入test2查看分支图</p>
+<p data-passage-key="46fef20e778f" id="passage-dacc85f65357">同理合入test2查看分支图</p>
 <p><img alt="合入test2的分支图" decoding="async" height="438" loading="lazy" src="/images/blog-media/2ee8c379cb15063a35ad.webp" width="1058"/></p>
-<h3 id="Merge-commit-with-semi-linear-history"><a class="headerlink" href="#Merge-commit-with-semi-linear-history" title="Merge commit with semi-linear history"></a><strong>Merge commit with semi-linear history</strong></h3><p><img alt="线性历史" decoding="async" height="591" loading="lazy" src="/images/blog-media/51784c36347d4e28c064.webp" width="1080"/></p>
-<p>在合并<code>test2</code>的时候会</p>
+<h3 data-passage-key="79fe6bc6b703" id="Merge-commit-with-semi-linear-history"><a class="headerlink" href="#Merge-commit-with-semi-linear-history" title="Merge commit with semi-linear history"></a><strong>Merge commit with semi-linear history</strong></h3><p><img alt="线性历史" decoding="async" height="591" loading="lazy" src="/images/blog-media/51784c36347d4e28c064.webp" width="1080"/></p>
+<p data-passage-key="fd58c0aec628" id="passage-b1f246449ae1">在合并<code>test2</code>的时候会</p>
 <p><img alt="合并test2" decoding="async" height="732" loading="lazy" src="/images/blog-media/b8e10cdec7d100988d41.webp" width="1080"/></p>
-<p>在本地进行变基</p>
-<blockquote>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre><span class="line">git fetch origin</span><br/><span class="line">git checkout -b test2 origin/test2</span><br/></pre></td></tr></tbody></table></figure>
+<p data-passage-key="fff9beb071be" id="passage-721362b742d6">在本地进行变基</p>
+<blockquote data-passage-key="9192a0ab06b8" id="passage-17d21a46e16e">
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="6f7643dd925d" id="passage-f4fc20ac939f"><span class="line">git fetch origin</span><br/><span class="line">git checkout -b test2 origin/test2</span><br/></pre></td></tr></tbody></table></figure>
 </blockquote>
-<p>检出test2之后使用<code>git log --graph</code>查看test2的信息</p>
+<p data-passage-key="1af29a8b147e" id="passage-cab4937e3b8c">检出test2之后使用<code>git log --graph</code>查看test2的信息</p>
 <p><img alt="image-20190329222401030" decoding="async" height="679" loading="lazy" src="/images/blog-media/57120d06342b61487119.webp" width="1080"/></p>
-<p>再使用<code>git log --graph --all</code>查看全部分支的信息</p>
+<p data-passage-key="d5c611c922db" id="passage-8f415efac5e4">再使用<code>git log --graph --all</code>查看全部分支的信息</p>
 <p><img alt="全部分支信息" decoding="async" height="903" loading="lazy" src="/images/blog-media/8acfa421cb15fd5bdaec.webp" width="1080"/></p>
-<p>我们要做的就是把test2的提交移到master之后</p>
-<p>记一下几个关键的节点</p>
+<p data-passage-key="ff3a72559b3c" id="passage-ed168a3b3807">我们要做的就是把test2的提交移到master之后</p>
+<p data-passage-key="d859a310998a" id="passage-f831418b6645">记一下几个关键的节点</p>
 <ul>
-<li><p><code>父节点</code>：2a69d1839c03e5ff2b968bbfd687a5bd673013f2</p>
+<li data-passage-key="dac43da1066c" id="passage-18398c519a63"><p data-passage-key="438140ec6c52" id="passage-139bf8f4d937"><code>父节点</code>：2a69d1839c03e5ff2b968bbfd687a5bd673013f2</p>
 </li>
-<li><p><code>test2节点</code>：28be9089b6bd914a1cac598690720a78c6419b9f</p>
+<li data-passage-key="d81269dd2c6f" id="passage-740402aefb73"><p data-passage-key="3c53977ce618" id="passage-ac30ddb51323"><code>test2节点</code>：28be9089b6bd914a1cac598690720a78c6419b9f</p>
 </li>
-<li><p><code>master节点</code>：5bbcbdfd3bd0e25a39cd14a1b94a88890b2b0ca0</p>
+<li data-passage-key="bb7c0c081cb1" id="passage-1e27cba75b11"><p data-passage-key="9dbaef80f50d" id="passage-9f6d63213b24"><code>master节点</code>：5bbcbdfd3bd0e25a39cd14a1b94a88890b2b0ca0</p>
 </li>
 </ul>
-<p>现在要做的是把test2放到master之后</p>
-<p>所以使用<code>git rebase -i 5bbcbdfd3bd0e25a39cd14a1b94a88890b2b0ca0</code></p>
+<p data-passage-key="7becfbf08a98" id="passage-7567efe5aa6e">现在要做的是把test2放到master之后</p>
+<p data-passage-key="8658350c6319" id="passage-affb3ecfebc1">所以使用<code>git rebase -i 5bbcbdfd3bd0e25a39cd14a1b94a88890b2b0ca0</code></p>
 <p><img alt="解决冲突" decoding="async" height="274" loading="lazy" src="/images/blog-media/5edc58d74e0a906d4a1d.webp" width="1080"/></p>
-<p>根据提示输入 <code>git rebase --continue</code>来解决冲突</p>
+<p data-passage-key="fa92cc3199ac" id="passage-d235ff9d37c1">根据提示输入 <code>git rebase --continue</code>来解决冲突</p>
 <p><img alt="提示信息" decoding="async" height="122" loading="lazy" src="/images/blog-media/7e7582a360454f20ac8e.webp" width="1080"/></p>
-<p>进入1.py解决冲突</p>
+<p data-passage-key="1e460c188147" id="passage-8f6e85670510">进入1.py解决冲突</p>
 <p><img alt="解决冲突前" decoding="async" height="274" loading="lazy" src="/images/blog-media/76fbf189af2a4b0fab51.webp" width="1076"/></p>
 <p><img alt="解决冲突后" decoding="async" height="148" loading="lazy" src="/images/blog-media/8a3e75472d3449968965.webp" width="1080"/></p>
-<p>将修改add至缓存区，然后使用commit提交至本地仓库</p>
+<p data-passage-key="09b9528187b8" id="passage-4006d168ab0c">将修改add至缓存区，然后使用commit提交至本地仓库</p>
 <p><img alt="提交变更" decoding="async" height="612" loading="lazy" src="/images/blog-media/0171279d412cd10b0d9f.webp" width="1080"/></p>
-<p><img alt="变基之后的分支图" decoding="async" height="1009" loading="lazy" src="/images/blog-media/88f5df7241b08acda287.webp" width="1080"/>从变基之后的分支图可以看出，我们只需要把当前的HEAD当作master提交到远端就完成了变基</p>
-<p>下面切换至master分支<code>git checkout master</code>使用挑拣提交拿到变基操作的提交<code>git cherry-pick 43104b5</code>最后使用<code>git push origin master</code>将master推送至远端</p>
+<p data-passage-key="e775fa784522" id="passage-8295597c4fc3"><img alt="变基之后的分支图" decoding="async" height="1009" loading="lazy" src="/images/blog-media/88f5df7241b08acda287.webp" width="1080"/>从变基之后的分支图可以看出，我们只需要把当前的HEAD当作master提交到远端就完成了变基</p>
+<p data-passage-key="8146f880e28b" id="passage-7d146fb36ecc">下面切换至master分支<code>git checkout master</code>使用挑拣提交拿到变基操作的提交<code>git cherry-pick 43104b5</code>最后使用<code>git push origin master</code>将master推送至远端</p>
 <p><img alt="变基后" decoding="async" height="354" loading="lazy" src="/images/blog-media/6d003211e0e196576219.webp" width="1080"/></p>
-<p>通过以上操作之后发现，合并按钮还是灰色的。。。。理论上是成功了，所以，现在我也不知道咋办了。所以算了，今天就当学习变基了。</p></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
+<p data-passage-key="cd872055874f" id="passage-ac2f80af47b4">通过以上操作之后发现，合并按钮还是灰色的。。。。理论上是成功了，所以，现在我也不知道咋办了。所以算了，今天就当学习变基了。</p></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
+        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
+          <header class="passage-dialog-header">
+            <h2 id="passage-comment-title">段落评论</h2>
+            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
+          </header>
+          <div class="passage-dialog-content">
+            <blockquote data-passage-excerpt></blockquote>
+            <a data-passage-source>查看原文</a>
+            <p data-passage-status role="status"></p>
+            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
+            <div data-passage-widget></div>
+          </div>
+        </dialog>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/Bgvy34YelAm-Rolncv27ow">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Git/">Git</a><a href="/tags/%E5%8F%98%E5%9F%BA/">变基</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/Git/">Git</a></div>
@@ -163,16 +175,6 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
-          <div class="comment-quote" data-comment-quote hidden>
-            <blockquote data-comment-quote-text></blockquote>
-            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
-            <p data-comment-quote-status role="status"></p>
-            <div class="comment-quote-actions">
-              <button type="button" data-copy-comment-quote>复制引用</button>
-              <a data-comment-quote-source>返回原文</a>
-              <button type="button" data-clear-comment-quote>取消引用</button>
-            </div>
-          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

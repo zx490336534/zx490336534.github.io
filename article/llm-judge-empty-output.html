@@ -20,8 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/article-covers/llm-judge-empty-output.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/llm-judge-empty-output.html">
-<script src="/js/comments.js?v=3" defer></script>
-<script src="/js/comment-quotes.js" defer></script>
+<script type="module" src="/js/discussions.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -57,12 +56,12 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E7%A9%BA%E6%A0%B7%E6%9C%AC%E6%80%8E%E6%A0%B7%E6%94%B9%E5%8F%98%E4%B8%80%E4%B8%AA%E6%AD%A3%E7%A1%AE%E7%9A%84%E6%95%B0%E5%AD%97">多放几条空样本，一致率就会上升</a></li><li><a href="#%E6%B1%87%E6%80%BB%E7%9B%B8%E5%85%B3%E6%80%A7%E9%AB%98-%E4%B9%9F%E5%8F%AF%E8%83%BD%E6%80%BB%E9%80%89%E9%94%99%E5%90%8C%E9%A2%98%E7%BB%93%E6%9E%9C">相关性 0.92，同题却一次都没选对</a></li><li><a href="#%E6%A0%A1%E5%87%86%E6%97%B6-%E8%AE%A9%E6%A8%A1%E5%9E%8B%E5%9B%9E%E7%AD%94%E5%87%86%E5%A4%87%E6%9B%BF%E4%BA%BA%E5%81%9A%E7%9A%84%E5%88%A4%E6%96%AD">校准时就问模型上线那道题</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><p class="article-lead">同一个模型裁判，对有产物的四条样本只和人工一致了两条。如果再混进四条双方都判失败的空输出，总体一致率就会报到 75%。后面的数字算得对，但它很容易被读成「模型能判断产物好坏」。</p>
-<p>我会把<strong>有没有产物、产物质量如何、同题两个候选选谁</strong>分开看。下面用两组构造数据说明，有些总体数字看起来很好，离上线要做的决定却还很远。</p>
+        <div class="post-body" id="article-text"><p class="article-lead" data-passage-key="15bb81b24bd2" id="passage-45f14325a128">同一个模型裁判，对有产物的四条样本只和人工一致了两条。如果再混进四条双方都判失败的空输出，总体一致率就会报到 75%。后面的数字算得对，但它很容易被读成「模型能判断产物好坏」。</p>
+<p data-passage-key="adfa1e8de4c0" id="passage-58fc2bf09f14">我会把<strong>有没有产物、产物质量如何、同题两个候选选谁</strong>分开看。下面用两组构造数据说明，有些总体数字看起来很好，离上线要做的决定却还很远。</p>
 <span id="把同一组结果算两遍"></span>
-<h2 id="空样本怎样改变一个正确的数字">多放几条空样本，一致率就会上升</h2>
-<p>假设四条样本完全没交付产物，人和模型都判失败。另外四条有产物，两边只有两次判定一致。</p>
-<div aria-labelledby="article-table-1" class="table-scroll article-evidence" role="region" tabindex="0"><table><caption id="article-table-1">按空输出分组的一致率</caption>
+<h2 data-passage-key="0e10aeaa859e" id="空样本怎样改变一个正确的数字">多放几条空样本，一致率就会上升</h2>
+<p data-passage-key="18ab394bfd82" id="passage-6f575ec86c51">假设四条样本完全没交付产物，人和模型都判失败。另外四条有产物，两边只有两次判定一致。</p>
+<div aria-labelledby="article-table-1" class="table-scroll article-evidence" data-passage-key="c577b254b669" id="passage-1e473b243e98" role="region" tabindex="0"><table><caption id="article-table-1">按空输出分组的一致率</caption>
 <thead>
 <tr>
 <th scope="col">统计范围</th>
@@ -92,12 +91,12 @@
 </tr>
 </tbody>
 </table></div>
-<figure class="article-figure article-figure--edited"><a href="/images/article-figures/llm-judge-empty-output.webp" title="查看原图"><img alt="四条空输出四次一致，四条有输出两次一致，汇总六次一致" decoding="async" height="480" loading="lazy" src="/images/article-figures/llm-judge-empty-output.webp" width="1200"/></a><figcaption>构造数据，混合一致率的分母同时包括两组样本。</figcaption></figure>
-<p>再加八条两边都判失败的空输出，总体变成 <code>14/16</code>，即 87.5%。有产物的四条仍是 <code>2/4</code>。裁判在这一组的表现没变，样本里容易判断的部分增多了。</p>
-<p>任务已经结束，用户还拿不到产物，这次要记为产出失败。我会先约定空字符串、任务未结束、只有标题、无效附件怎么归类。规则能稳定识别的空输出单列，有产物的部分再做质量判断。分组标准先写好，评测开始后才能比较不同版本。</p>
-<h2 id="汇总相关性高-也可能总选错同题结果">相关性 0.92，同题却一次都没选对</h2>
-<p>如果线上要做的是从同一张图的两个生成结果里选一个，可以再看下面的例子。人的评分与模型的评分都给第三张图整体打得更高，但在每一张图内部，双方对两个候选的顺序相反。</p>
-<div aria-labelledby="article-table-2" class="table-scroll article-evidence" role="region" tabindex="0"><table><caption id="article-table-2">三个输入各自的 A、B 候选评分</caption>
+<figure class="article-figure article-figure--edited"><a href="/images/article-figures/llm-judge-empty-output.webp" title="查看原图"><img alt="四条空输出四次一致，四条有输出两次一致，汇总六次一致" decoding="async" height="480" loading="lazy" src="/images/article-figures/llm-judge-empty-output.webp" width="1200"/></a><figcaption data-passage-key="3fd4f0856580" id="passage-7e04181f441a">构造数据，混合一致率的分母同时包括两组样本。</figcaption></figure>
+<p data-passage-key="be4607c7442e" id="passage-23bbe1378ec9">再加八条两边都判失败的空输出，总体变成 <code>14/16</code>，即 87.5%。有产物的四条仍是 <code>2/4</code>。裁判在这一组的表现没变，样本里容易判断的部分增多了。</p>
+<p data-passage-key="5a9dc8fb8d08" id="passage-138ce447be48">任务已经结束，用户还拿不到产物，这次要记为产出失败。我会先约定空字符串、任务未结束、只有标题、无效附件怎么归类。规则能稳定识别的空输出单列，有产物的部分再做质量判断。分组标准先写好，评测开始后才能比较不同版本。</p>
+<h2 data-passage-key="2a94e895f9e4" id="汇总相关性高-也可能总选错同题结果">相关性 0.92，同题却一次都没选对</h2>
+<p data-passage-key="e906a2b9a1b0" id="passage-bf151b5562a4">如果线上要做的是从同一张图的两个生成结果里选一个，可以再看下面的例子。人的评分与模型的评分都给第三张图整体打得更高，但在每一张图内部，双方对两个候选的顺序相反。</p>
+<div aria-labelledby="article-table-2" class="table-scroll article-evidence" data-passage-key="2618a88a99eb" id="passage-87080514c68f" role="region" tabindex="0"><table><caption id="article-table-2">三个输入各自的 A、B 候选评分</caption>
 <thead>
 <tr>
 <th scope="col">同一输入</th>
@@ -127,23 +126,36 @@
 </tr>
 </tbody>
 </table></div>
-<p>把六个分数平铺，Pearson 相关系数是 <code>0.92</code>。按同一输入比较，三个候选对都选反，结果是 <code>0/3</code>。要看分数有没有总体漂移，可以读总体分布。要选一个候选上架，就看同题排序。候选超过两个时，可以按输入计算排名相关，再汇总，先约定并列怎么计。</p>
-<figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/llm-judge-empty-output-detail.webp" title="查看原图"><img alt="三组候选在人和模型的评分中都排反。总体 Pearson 相关为 0.92，逐组选对为零次。" decoding="async" height="730" loading="lazy" src="/images/article-figures/llm-judge-empty-output-detail.webp" width="900"/></a><figcaption>构造数据。每行是同一道题，只在行内比较 A 和 B。</figcaption></figure>
-<p>下面可以直接复算总体相关系数。</p>
-<pre class="article-code"><code class="language-python">from statistics import correlation
+<p data-passage-key="7d4b911df3b1" id="passage-5dea235b55f4">把六个分数平铺，Pearson 相关系数是 <code>0.92</code>。按同一输入比较，三个候选对都选反，结果是 <code>0/3</code>。要看分数有没有总体漂移，可以读总体分布。要选一个候选上架，就看同题排序。候选超过两个时，可以按输入计算排名相关，再汇总，先约定并列怎么计。</p>
+<figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/llm-judge-empty-output-detail.webp" title="查看原图"><img alt="三组候选在人和模型的评分中都排反。总体 Pearson 相关为 0.92，逐组选对为零次。" decoding="async" height="730" loading="lazy" src="/images/article-figures/llm-judge-empty-output-detail.webp" width="900"/></a><figcaption data-passage-key="909bd9c7a775" id="passage-7e6d528cf61b">构造数据。每行是同一道题，只在行内比较 A 和 B。</figcaption></figure>
+<p data-passage-key="d5a3c9b6d97e" id="passage-29e19168c0d5">下面可以直接复算总体相关系数。</p>
+<pre class="article-code" data-passage-key="68ad2b8aa45a" id="passage-86cb31c90450"><code class="language-python">from statistics import correlation
 
 human = [1, 2, 4, 5, 7, 8]
 judge = [2, 1, 5, 4, 8, 7]
 print(round(correlation(human, judge), 2))  # 0.92
 </code></pre>
 <span id="空输出应该怎么算"></span>
-<h2 id="校准时-让模型回答准备替人做的判断">校准时就问模型上线那道题</h2>
-<p>如果裁判准备辅助发布，我会先挑有产物而且质量接近的候选，让人工按同一份标准独立标注。再核对模型和人的分歧，保留每条判断的输入、裁判版本和证据。只存最后一个分数，下次改提示词很难定位进步发生在哪里。</p>
-<figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/llm-judge-empty-output-scene.webp" title="查看原图"><img alt="相比不同输入间明显的差异，用放大镜查看同一输入下两个相似候选。" decoding="async" height="854" loading="lazy" src="/images/article-figures/llm-judge-empty-output-scene.webp" width="1280"/></a><figcaption>教学示意。校准时让人工和模型在同一输入的相近候选中选。</figcaption></figure>
-<p>发布门禁还要单独数误报和漏报。人工认为应拦截，模型却放行，是漏报。人工认为可以通过，模型却拦了，是误报。每组样本少时，直接写清分子和分母。四条里一致三条，跟十二条里一致九条都能写成 75%，可用来做决定的证据量不同。</p>
-<p>我的报告会留三组数。终态后无产物的样本数，能产出时的人工一致数，以及同题候选中选对的组数。各组都保留分母，需要拦截的案例另外列出误报和漏报。</p>
-<p>打开评测报告，我会先找同题排序的结果，再翻一组人工和模型明确分歧的样本。要不要让模型替人做选择，先看它能不能处理这一组。</p></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
+<h2 data-passage-key="d08ee0a3c236" id="校准时-让模型回答准备替人做的判断">校准时就问模型上线那道题</h2>
+<p data-passage-key="30d79b713321" id="passage-ef3637d1f19c">如果裁判准备辅助发布，我会先挑有产物而且质量接近的候选，让人工按同一份标准独立标注。再核对模型和人的分歧，保留每条判断的输入、裁判版本和证据。只存最后一个分数，下次改提示词很难定位进步发生在哪里。</p>
+<figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/llm-judge-empty-output-scene.webp" title="查看原图"><img alt="相比不同输入间明显的差异，用放大镜查看同一输入下两个相似候选。" decoding="async" height="854" loading="lazy" src="/images/article-figures/llm-judge-empty-output-scene.webp" width="1280"/></a><figcaption data-passage-key="0348835f1a99" id="passage-b1993d3f8f73">教学示意。校准时让人工和模型在同一输入的相近候选中选。</figcaption></figure>
+<p data-passage-key="679ea07ccc9f" id="passage-ac507b041a48">发布门禁还要单独数误报和漏报。人工认为应拦截，模型却放行，是漏报。人工认为可以通过，模型却拦了，是误报。每组样本少时，直接写清分子和分母。四条里一致三条，跟十二条里一致九条都能写成 75%，可用来做决定的证据量不同。</p>
+<p data-passage-key="1e88bd938314" id="passage-d616248bc646">我的报告会留三组数。终态后无产物的样本数，能产出时的人工一致数，以及同题候选中选对的组数。各组都保留分母，需要拦截的案例另外列出误报和漏报。</p>
+<p data-passage-key="01ec11c2252e" id="passage-92c2e1889de4">打开评测报告，我会先找同题排序的结果，再翻一组人工和模型明确分歧的样本。要不要让模型替人做选择，先看它能不能处理这一组。</p></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
+        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
+          <header class="passage-dialog-header">
+            <h2 id="passage-comment-title">段落评论</h2>
+            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
+          </header>
+          <div class="passage-dialog-content">
+            <blockquote data-passage-excerpt></blockquote>
+            <a data-passage-source>查看原文</a>
+            <p data-passage-status role="status"></p>
+            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
+            <div data-passage-widget></div>
+          </div>
+        </dialog>
 
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Agent-%E8%AF%84%E6%B5%8B/">Agent 评测</a><a href="/tags/LLM-Judge/">LLM Judge</a><a href="/tags/%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE/">测试数据</a></div>
         <div class="legacy-tags" hidden></div>
@@ -155,16 +167,6 @@ print(round(correlation(human, judge), 2))  # 0.92
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
-          <div class="comment-quote" data-comment-quote hidden>
-            <blockquote data-comment-quote-text></blockquote>
-            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
-            <p data-comment-quote-status role="status"></p>
-            <div class="comment-quote-actions">
-              <button type="button" data-copy-comment-quote>复制引用</button>
-              <a data-comment-quote-source>返回原文</a>
-              <button type="button" data-clear-comment-quote>取消引用</button>
-            </div>
-          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

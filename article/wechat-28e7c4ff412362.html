@@ -20,8 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/wechat-28e7c4ff412362.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/wechat-28e7c4ff412362.html">
-<script src="/js/comments.js?v=3" defer></script>
-<script src="/js/comment-quotes.js" defer></script>
+<script type="module" src="/js/discussions.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -57,8 +56,21 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E9%97%AE%E9%A2%98">问题</a></li><li><a href="#%E5%8F%91%E7%8E%B0%E8%BF%87%E7%A8%8B">发现过程</a></li><li><a href="#%E9%97%AE%E9%A2%98%E5%8E%9F%E5%9B%A0">问题原因</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><section><h2 id="问题"><span>问题</span></h2><p>在编写APP的UI自动化用例的时候，发现使用脚本跳转页面后，APP出现没有响应的问题，但是手工操作却没有这个问题</p><pre><code>with allure.step("点击立即购买，跳转到收银台"):<br/>    vip.click(vip.jiaxiang_img, duration=None)<br/>    assert vip.has_element(checkstand.pay_page), '跳转到收银台失败'<br/></code></pre><p>脚本上也只是操作了两步</p><ol class="list-paddingleft-1"><li><p><span>点击元素</span></p></li><li><p><span>查看元素是否存在</span></p></li></ol><p>使用工具测试时候发现，点击获取元素的时候，APP也会出现奔溃的问题</p><p>所以大概率是代码上有问题</p><h2 id="发现过程"><span>发现过程</span></h2><p>由于导出奔溃日志给开发和查看Appium的输出日志都没有找到问题的具体原因，所以只能采用逐行注释代码的方式找到出错的位置。</p><p>在第一步点击「立即购买」之后，页面会跳转到「收银台」页面</p><p>收银台页面会先并行请求<code>7</code>个接口，然后将数据渲染到页面，然后再请求<code>2</code>个接口重新渲染一次页面</p><p>先将全部操作都去除，只请求1个接口，依次增加，直至请求了7个接口，没有卡死。</p><p>将第一次页面数据渲染也恢复，仍没有卡死。</p><p>将后2次接口请求也恢复，仍没有卡死。</p><p>将最后一次页面渲染添加上去，页面出现了卡死。</p><p>从上面的尝试中可以发现，页面卡死是因为最后一次的页面渲染导致的。</p><p>所以着重分析这一部分代码</p><h2 id="问题原因"><span>问题原因</span></h2><p>页面上显示的是：「购买即视为同意《微医会员协议》」，其中「《微医会员协议》」被标记为了黄色</p><p>对应的代码为</p><pre><code><span>int</span> index = warnInfo.indexOf(<span>"\n"</span>);<br/><span>if</span> (index &lt;= <span>0</span>){<br/>    index = warnInfo.length();<br/>}<br/></code></pre><pre><code>spannable.setSpan(clickableSpanMember,<span>7</span>,<span>15</span>,Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);<br/>spannable.setSpan(clickableSpanSource,<span>15</span>,index,Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);<br/></code></pre><blockquote><p><code>Spanned.SPAN_EXCLUSIVE_EXCLUSIVE</code> (前后都不包括)。用来标识在 Span 范围内的文本前后输入新的字符时是否把它们也应用这个效果。</p><p><code>clickableSpanMember</code>和<code>clickableSpanSource</code>是两个点击事件</p></blockquote><p>所以</p><ul class="list-paddingleft-1"><li><p>7-15个字符的点击事件是<code>clickableSpanMember</code></p></li><li><p>15+后的字符的点击事件是<code>clickableSpanSource</code></p></li></ul><p>但是实际上接口没有返回这么多内容，只有「购买即视为同意《微医会员协议》」这15个字符，现在代码中对后面的空字符串也设置了点击事件。</p><p>这部分代码编译和运行的时候都不会出错，但是使用Appium进行元素查找的时候就会出错</p><p>改为先判断字符长度然后设置点击事件:</p><pre><code><span>if</span> (warnInfo.length() &gt;<span>16</span>){<br/>    spannable.setSpan(clickableSpanSource,<span>15</span>,index,Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);<br/>}<br/></code></pre><p>修改之后Appium可以正常查找元素，不会出现APP奔溃现象</p></section></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
+        <div class="post-body" id="article-text"><section><h2 data-passage-key="33a8618cb671" id="问题"><span>问题</span></h2><p data-passage-key="6c2528c49532" id="passage-b5f31d511e8b">在编写APP的UI自动化用例的时候，发现使用脚本跳转页面后，APP出现没有响应的问题，但是手工操作却没有这个问题</p><pre data-passage-key="4e7ec65bea1d" id="passage-85d3d54360be"><code>with allure.step("点击立即购买，跳转到收银台"):<br/>    vip.click(vip.jiaxiang_img, duration=None)<br/>    assert vip.has_element(checkstand.pay_page), '跳转到收银台失败'<br/></code></pre><p data-passage-key="b370f4d916e0" id="passage-15a98ca83794">脚本上也只是操作了两步</p><ol class="list-paddingleft-1"><li data-passage-key="6de5bb2e25ba" id="passage-62a836213a48"><p data-passage-key="55460a58a1a0" id="passage-8422725959a3"><span>点击元素</span></p></li><li data-passage-key="dc4cd29e758e" id="passage-527bb029e2f8"><p data-passage-key="55f0b6e0878e" id="passage-9b107e2dd911"><span>查看元素是否存在</span></p></li></ol><p data-passage-key="ed42f17100e7" id="passage-6fdcc09dae84">使用工具测试时候发现，点击获取元素的时候，APP也会出现奔溃的问题</p><p data-passage-key="8b03a381887f" id="passage-b9a2baa34494">所以大概率是代码上有问题</p><h2 data-passage-key="a294caaccca8" id="发现过程"><span>发现过程</span></h2><p data-passage-key="59419748a4f8" id="passage-e38a54cbc5d3">由于导出奔溃日志给开发和查看Appium的输出日志都没有找到问题的具体原因，所以只能采用逐行注释代码的方式找到出错的位置。</p><p data-passage-key="4c4e26f4d1f7" id="passage-7a03c4c5e709">在第一步点击「立即购买」之后，页面会跳转到「收银台」页面</p><p data-passage-key="737d488e3c92" id="passage-5603da5499ea">收银台页面会先并行请求<code>7</code>个接口，然后将数据渲染到页面，然后再请求<code>2</code>个接口重新渲染一次页面</p><p data-passage-key="5c520894f6b7" id="passage-8135165ff6cc">先将全部操作都去除，只请求1个接口，依次增加，直至请求了7个接口，没有卡死。</p><p data-passage-key="9c8f06ee9f66" id="passage-d5df0f7e1ebb">将第一次页面数据渲染也恢复，仍没有卡死。</p><p data-passage-key="b3eb4fe40608" id="passage-569197effa42">将后2次接口请求也恢复，仍没有卡死。</p><p data-passage-key="5c92b3aeb841" id="passage-3c59dc7b5818">将最后一次页面渲染添加上去，页面出现了卡死。</p><p data-passage-key="b458295fc637" id="passage-3512b377c694">从上面的尝试中可以发现，页面卡死是因为最后一次的页面渲染导致的。</p><p data-passage-key="4cbc65c7f84d" id="passage-b6e0e0add6ab">所以着重分析这一部分代码</p><h2 data-passage-key="252406dc88ed" id="问题原因"><span>问题原因</span></h2><p data-passage-key="1a723664617b" id="passage-a2f836515901">页面上显示的是：「购买即视为同意《微医会员协议》」，其中「《微医会员协议》」被标记为了黄色</p><p data-passage-key="5e7f4da7d682" id="passage-17701f921f15">对应的代码为</p><pre data-passage-key="f05aa55f7161" id="passage-1b6be639a38f"><code><span>int</span> index = warnInfo.indexOf(<span>"\n"</span>);<br/><span>if</span> (index &lt;= <span>0</span>){<br/>    index = warnInfo.length();<br/>}<br/></code></pre><pre data-passage-key="de2e57ca5440" id="passage-b69a9897946f"><code>spannable.setSpan(clickableSpanMember,<span>7</span>,<span>15</span>,Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);<br/>spannable.setSpan(clickableSpanSource,<span>15</span>,index,Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);<br/></code></pre><blockquote data-passage-key="13dab4b6c1cf" id="passage-e5063be4ab62"><p data-passage-key="ec5b55c020ae" id="passage-91f458e07ee6"><code>Spanned.SPAN_EXCLUSIVE_EXCLUSIVE</code> (前后都不包括)。用来标识在 Span 范围内的文本前后输入新的字符时是否把它们也应用这个效果。</p><p data-passage-key="200b4a35ad8d" id="passage-2d3b1d2e2fa6"><code>clickableSpanMember</code>和<code>clickableSpanSource</code>是两个点击事件</p></blockquote><p data-passage-key="4635306882ff" id="passage-f10f20af488d">所以</p><ul class="list-paddingleft-1"><li data-passage-key="98588707512d" id="passage-8f4914ec4781"><p data-passage-key="f067ef2ffe37" id="passage-7aa3d34717b6">7-15个字符的点击事件是<code>clickableSpanMember</code></p></li><li data-passage-key="3c17373de43e" id="passage-16f7a68e7981"><p data-passage-key="cb8cd32e1d69" id="passage-89f5cfeda18e">15+后的字符的点击事件是<code>clickableSpanSource</code></p></li></ul><p data-passage-key="486b0769f873" id="passage-3f4f51798eb7">但是实际上接口没有返回这么多内容，只有「购买即视为同意《微医会员协议》」这15个字符，现在代码中对后面的空字符串也设置了点击事件。</p><p data-passage-key="bcc5d4032c29" id="passage-a3416582899e">这部分代码编译和运行的时候都不会出错，但是使用Appium进行元素查找的时候就会出错</p><p data-passage-key="6f51849190d8" id="passage-41ce23461586">改为先判断字符长度然后设置点击事件:</p><pre data-passage-key="22ffb8a4bc0c" id="passage-6bbfce23bb38"><code><span>if</span> (warnInfo.length() &gt;<span>16</span>){<br/>    spannable.setSpan(clickableSpanSource,<span>15</span>,index,Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);<br/>}<br/></code></pre><p data-passage-key="60c83eb81f6d" id="passage-59b9752c8810">修改之后Appium可以正常查找元素，不会出现APP奔溃现象</p></section></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
+        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
+          <header class="passage-dialog-header">
+            <h2 id="passage-comment-title">段落评论</h2>
+            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
+          </header>
+          <div class="passage-dialog-content">
+            <blockquote data-passage-excerpt></blockquote>
+            <a data-passage-source>查看原文</a>
+            <p data-passage-status role="status"></p>
+            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
+            <div data-passage-widget></div>
+          </div>
+        </dialog>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/EtrNAtdY35PN_r58zXWPOQ">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/App-%E6%B5%8B%E8%AF%95/">App 测试</a><a href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/">故障排查</a><a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a></div>
         <div class="legacy-tags" hidden></div>
@@ -70,16 +82,6 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
-          <div class="comment-quote" data-comment-quote hidden>
-            <blockquote data-comment-quote-text></blockquote>
-            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
-            <p data-comment-quote-status role="status"></p>
-            <div class="comment-quote-actions">
-              <button type="button" data-copy-comment-quote>复制引用</button>
-              <a data-comment-quote-source>返回原文</a>
-              <button type="button" data-clear-comment-quote>取消引用</button>
-            </div>
-          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

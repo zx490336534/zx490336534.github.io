@@ -20,8 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/68335747.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/68335747.html">
-<script src="/js/comments.js?v=3" defer></script>
-<script src="/js/comment-quotes.js" defer></script>
+<script type="module" src="/js/discussions.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -57,83 +56,96 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#Docker">Docker</a></li><li><a href="#%E5%AE%89%E8%A3%85Docker">安装Docker</a></li><li><a href="#%E4%BE%8B%E5%AD%90-%E4%BD%BF%E7%94%A8Docker%E8%BF%90%E8%A1%8Cpython%E7%A8%8B%E5%BA%8F">例子:使用Docker运行python程序</a></li><li><a href="#%E9%95%9C%E5%83%8F-amp-%E5%AE%B9%E5%99%A8">镜像&amp;容器</a></li><li><a href="#%E9%95%9C%E5%83%8F">镜像</a></li><li><a href="#%E5%AE%B9%E5%99%A8">容器</a></li><li><a href="#%E8%BF%90%E8%A1%8C%E5%AE%B9%E5%99%A8">运行容器</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><span id="测试开发进阶-四十三"></span><h2 id="Docker"><a class="headerlink" href="#Docker" title="Docker"></a>Docker</h2><h3 id="安装Docker"><a class="headerlink" href="#安装Docker" title="安装Docker"></a>安装Docker</h3><p><a href="https://www.cnblogs.com/keyou1/p/11511067.html" rel="noopener" target="_blank">史上最全Docker环境安装指南-让安装docker简单到爆</a>:<a href="https://www.cnblogs.com/keyou1/p/11511067.html" rel="noopener" target="_blank">https://www.cnblogs.com/keyou1/p/11511067.html</a></p>
-<h2 id="例子-使用Docker运行python程序"><a class="headerlink" href="#例子-使用Docker运行python程序" title="例子:使用Docker运行python程序"></a>例子:使用Docker运行python程序</h2><p>新建一个py文件</p>
+        <div class="post-body" id="article-text"><span id="测试开发进阶-四十三"></span><h2 data-passage-key="e6169e958b37" id="Docker"><a class="headerlink" href="#Docker" title="Docker"></a>Docker</h2><h3 data-passage-key="d6387fc5f673" id="安装Docker"><a class="headerlink" href="#安装Docker" title="安装Docker"></a>安装Docker</h3><p data-passage-key="32610bb3a513" id="passage-1d37d6e1e918"><a href="https://www.cnblogs.com/keyou1/p/11511067.html" rel="noopener" target="_blank">史上最全Docker环境安装指南-让安装docker简单到爆</a>:<a href="https://www.cnblogs.com/keyou1/p/11511067.html" rel="noopener" target="_blank">https://www.cnblogs.com/keyou1/p/11511067.html</a></p>
+<h2 data-passage-key="5907e4d0ebb1" id="例子-使用Docker运行python程序"><a class="headerlink" href="#例子-使用Docker运行python程序" title="例子:使用Docker运行python程序"></a>例子:使用Docker运行python程序</h2><p data-passage-key="fc177ff3e5c9" id="passage-1ef318525202">新建一个py文件</p>
 <span id="more"></span>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> <span class="string">"print('Hello Docker')"</span> &gt;&gt; test.py</span></span><br/></pre></td></tr></tbody></table></figure>
-<p>运行</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker run -it --name mypy --rm -v <span class="variable">$PWD</span>:/app -w /app python:alpine python test.py</span></span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="2ba0f57fd673" id="passage-a04f3290f9fc"><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> <span class="string">"print('Hello Docker')"</span> &gt;&gt; test.py</span></span><br/></pre></td></tr></tbody></table></figure>
+<p data-passage-key="474fa6320e6a" id="passage-85b3726bf929">运行</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="d2a6dff273b1" id="passage-9e596a49a3bf"><span class="line"><span class="meta">$</span><span class="bash"> docker run -it --name mypy --rm -v <span class="variable">$PWD</span>:/app -w /app python:alpine python test.py</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="运行" decoding="async" height="533" loading="lazy" src="/images/blog-media/c63e8c77cf6b1c772f4b.webp" width="1080"/></p>
-<h2 id="镜像-amp-容器"><a class="headerlink" href="#镜像-amp-容器" title="镜像&amp;容器"></a>镜像&amp;容器</h2><h3 id="镜像"><a class="headerlink" href="#镜像" title="镜像"></a>镜像</h3><ul>
-<li>Docker Hub查找现有镜像</li>
+<h2 data-passage-key="99453553e8dc" id="镜像-amp-容器"><a class="headerlink" href="#镜像-amp-容器" title="镜像&amp;容器"></a>镜像&amp;容器</h2><h3 data-passage-key="176c09844e0f" id="镜像"><a class="headerlink" href="#镜像" title="镜像"></a>镜像</h3><ul>
+<li data-passage-key="86b64f0e1250" id="passage-1aaee6a7d567">Docker Hub查找现有镜像</li>
 </ul>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker search xxx</span></span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="525898c5ae99" id="passage-589a14ef48c9"><span class="line"><span class="meta">$</span><span class="bash"> docker search xxx</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="查找" decoding="async" height="685" loading="lazy" src="/images/blog-media/a7cf704168905ed88f6e.webp" width="1080"/></p>
 <ul>
-<li>查看本地镜像</li>
+<li data-passage-key="5934066b6ad4" id="passage-23e1401a9007">查看本地镜像</li>
 </ul>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker images</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> docker image ls</span></span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="e86ebd8860dd" id="passage-2124e896539d"><span class="line"><span class="meta">$</span><span class="bash"> docker images</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> docker image ls</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="查看本地镜像" decoding="async" height="682" loading="lazy" src="/images/blog-media/fe39b01c77883465d801.webp" width="1080"/></p>
 <ul>
-<li>查看<code>IMAGE ID</code></li>
+<li data-passage-key="223332859914" id="passage-af48efcc8884">查看<code>IMAGE ID</code></li>
 </ul>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker images -q</span></span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="c5fcbf4c95ee" id="passage-afa74be6b99f"><span class="line"><span class="meta">$</span><span class="bash"> docker images -q</span></span><br/></pre></td></tr></tbody></table></figure>
 <ul>
-<li>查看镜像<code>具体信息</code></li>
+<li data-passage-key="49a54a95d3d4" id="passage-dd1533e5f5fc">查看镜像<code>具体信息</code></li>
 </ul>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker inspect python</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> docker image inspect python</span></span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="20126a1f371b" id="passage-fec9eecee237"><span class="line"><span class="meta">$</span><span class="bash"> docker inspect python</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> docker image inspect python</span></span><br/></pre></td></tr></tbody></table></figure>
 <ul>
-<li>删除镜像</li>
+<li data-passage-key="d01e904bb6f7" id="passage-b10892972694">删除镜像</li>
 </ul>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker rmi xxx</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> docker image rm xxx</span></span><br/></pre></td></tr></tbody></table></figure>
-<h3 id="容器"><a class="headerlink" href="#容器" title="容器"></a>容器</h3><ul>
-<li>查看正在运行的容器</li>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="db919e2b4a96" id="passage-5c131958122a"><span class="line"><span class="meta">$</span><span class="bash"> docker rmi xxx</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> docker image rm xxx</span></span><br/></pre></td></tr></tbody></table></figure>
+<h3 data-passage-key="6d23f04b2696" id="容器"><a class="headerlink" href="#容器" title="容器"></a>容器</h3><ul>
+<li data-passage-key="9d1bc0767bd0" id="passage-54aa5bf2efb4">查看正在运行的容器</li>
 </ul>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker ps</span></span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="5434a5c0af42" id="passage-8fb4e9012355"><span class="line"><span class="meta">$</span><span class="bash"> docker ps</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="ps其他操作" decoding="async" height="395" loading="lazy" src="/images/blog-media/92642f0ce1da60dda7ed.webp" width="1080"/></p>
 <ul>
-<li>查看全部容器</li>
+<li data-passage-key="57c81b4a6259" id="passage-95449e8802f3">查看全部容器</li>
 </ul>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker ps -a</span></span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="c7aaa981f9d5" id="passage-f6ecaf39ba71"><span class="line"><span class="meta">$</span><span class="bash"> docker ps -a</span></span><br/></pre></td></tr></tbody></table></figure>
 <ul>
-<li>停止容器</li>
-<li>重启容器</li>
+<li data-passage-key="c978f9d8d08b" id="passage-343070021fd1">停止容器</li>
+<li data-passage-key="9298fe2c8bd8" id="passage-a4bc5e612373">重启容器</li>
 </ul>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker stop xxx</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> docker restart xxx</span></span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="b1a855df11a5" id="passage-5e321f48c095"><span class="line"><span class="meta">$</span><span class="bash"> docker stop xxx</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> docker restart xxx</span></span><br/></pre></td></tr></tbody></table></figure>
 <ul>
-<li>暂停容器</li>
-<li>恢复容器</li>
+<li data-passage-key="42fba8d8f0ce" id="passage-74e61b8f7583">暂停容器</li>
+<li data-passage-key="151cc59051e9" id="passage-e874ec884b1e">恢复容器</li>
 </ul>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker pause xxx</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> docker unpause xxx</span></span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="d9efd4ab6866" id="passage-0feb9a28ab6c"><span class="line"><span class="meta">$</span><span class="bash"> docker pause xxx</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> docker unpause xxx</span></span><br/></pre></td></tr></tbody></table></figure>
 <ul>
-<li>列出容器上运行的所有历史命令</li>
+<li data-passage-key="f3155abbeb8a" id="passage-2ef68ced112d">列出容器上运行的所有历史命令</li>
 </ul>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">history</span> xxx</span></span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="2ff19c07bc12" id="passage-536d516a70c9"><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">history</span> xxx</span></span><br/></pre></td></tr></tbody></table></figure>
 <ul>
-<li>查看容器的进程和资源利用</li>
+<li data-passage-key="b26cc6c3c415" id="passage-cca5abfbbcd2">查看容器的进程和资源利用</li>
 </ul>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker top xxx</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> docker stats xxx</span></span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="f670424d3abe" id="passage-b336a6ecd959"><span class="line"><span class="meta">$</span><span class="bash"> docker top xxx</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> docker stats xxx</span></span><br/></pre></td></tr></tbody></table></figure>
 <ul>
-<li>删除容器</li>
+<li data-passage-key="a3a4cc6ea401" id="passage-5916c34131c7">删除容器</li>
 </ul>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker rm xxx</span></span><br/></pre></td></tr></tbody></table></figure>
-<h2 id="运行容器"><a class="headerlink" href="#运行容器" title="运行容器"></a>运行容器</h2><p>几个重要的命令</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker run --<span class="built_in">help</span>| grep -E <span class="string">'\-i,|\-t,|\-d,|\-v,|\-p,|\-P,|\-\-name'</span></span></span><br/><span class="line">  -d, --detach                         Run container in background and print container ID</span><br/><span class="line">  -i, --interactive                    Keep STDIN open even if not attached</span><br/><span class="line">      --name string                    Assign a name to the container</span><br/><span class="line">  -p, --publish list                   Publish a container's port(s) to the host</span><br/><span class="line">  -P, --publish-all                    Publish all exposed ports to random ports</span><br/><span class="line">  -t, --tty                            Allocate a pseudo-TTY</span><br/><span class="line">  -v, --volume list                    Bind mount a volume</span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="c8df8e6bbee3" id="passage-4d295619b972"><span class="line"><span class="meta">$</span><span class="bash"> docker rm xxx</span></span><br/></pre></td></tr></tbody></table></figure>
+<h2 data-passage-key="e663a196bf82" id="运行容器"><a class="headerlink" href="#运行容器" title="运行容器"></a>运行容器</h2><p data-passage-key="ebc4b45d078f" id="passage-1f754ac01ea9">几个重要的命令</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/></pre></td><td class="code"><pre data-passage-key="b8b0a1a7d00d" id="passage-0aae08cfc189"><span class="line"><span class="meta">$</span><span class="bash"> docker run --<span class="built_in">help</span>| grep -E <span class="string">'\-i,|\-t,|\-d,|\-v,|\-p,|\-P,|\-\-name'</span></span></span><br/><span class="line">  -d, --detach                         Run container in background and print container ID</span><br/><span class="line">  -i, --interactive                    Keep STDIN open even if not attached</span><br/><span class="line">      --name string                    Assign a name to the container</span><br/><span class="line">  -p, --publish list                   Publish a container's port(s) to the host</span><br/><span class="line">  -P, --publish-all                    Publish all exposed ports to random ports</span><br/><span class="line">  -t, --tty                            Allocate a pseudo-TTY</span><br/><span class="line">  -v, --volume list                    Bind mount a volume</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="常用命令" decoding="async" height="205" loading="lazy" src="/images/blog-media/3e130ddd153e58bf9fab.webp" width="1080"/></p>
-<p><code>-i</code>与容器交互</p>
-<p><code>-t</code>开启终端</p>
-<p>一般<code>-i</code>和<code>-t</code>需要一起使用</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker run -it centos /bin/bash</span></span><br/></pre></td></tr></tbody></table></figure>
+<p data-passage-key="87c5c6b548b7" id="passage-6a7ba45d125d"><code>-i</code>与容器交互</p>
+<p data-passage-key="a897f3275f67" id="passage-c895ac894b3f"><code>-t</code>开启终端</p>
+<p data-passage-key="be75c2ff2244" id="passage-0695050001f6">一般<code>-i</code>和<code>-t</code>需要一起使用</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="80965c6957ef" id="passage-398cf53d5fb1"><span class="line"><span class="meta">$</span><span class="bash"> docker run -it centos /bin/bash</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="进入容器" decoding="async" height="567" loading="lazy" src="/images/blog-media/134e7724c5032579ad5d.webp" width="1080"/></p>
-<p><code>--name</code>给容器命名</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker run --name 666 -it centos</span></span><br/></pre></td></tr></tbody></table></figure>
+<p data-passage-key="39e0926fcb8f" id="passage-7b18a86e8ff0"><code>--name</code>给容器命名</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="4f0eeff7bccf" id="passage-3d3d2513c6f7"><span class="line"><span class="meta">$</span><span class="bash"> docker run --name 666 -it centos</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="命名" decoding="async" height="132" loading="lazy" src="/images/blog-media/1d3589b0b8a504ebbdd6.webp" width="1080"/></p>
-<p><code>-d</code>在后台运行</p>
+<p data-passage-key="fe1c2c2b0f8c" id="passage-425bc2eaffc6"><code>-d</code>在后台运行</p>
 <ul>
-<li>进入正在运行的容器</li>
+<li data-passage-key="62cdf3919ab2" id="passage-347d27ed0705">进入正在运行的容器</li>
 </ul>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it 666 /bin/bash</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it 666 /bin/sh</span></span><br/></pre></td></tr></tbody></table></figure></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="55b43e2312a6" id="passage-311cdda5bfdc"><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it 666 /bin/bash</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it 666 /bin/sh</span></span><br/></pre></td></tr></tbody></table></figure></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
+        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
+          <header class="passage-dialog-header">
+            <h2 id="passage-comment-title">段落评论</h2>
+            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
+          </header>
+          <div class="passage-dialog-content">
+            <blockquote data-passage-excerpt></blockquote>
+            <a data-passage-source>查看原文</a>
+            <p data-passage-status role="status"></p>
+            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
+            <div data-passage-widget></div>
+          </div>
+        </dialog>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/8yqQNSUGxft2ozX-9lcErg">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Docker/">Docker</a><a href="/tags/%E5%AE%B9%E5%99%A8/">容器</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
@@ -145,16 +157,6 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
-          <div class="comment-quote" data-comment-quote hidden>
-            <blockquote data-comment-quote-text></blockquote>
-            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
-            <p data-comment-quote-status role="status"></p>
-            <div class="comment-quote-actions">
-              <button type="button" data-copy-comment-quote>复制引用</button>
-              <a data-comment-quote-source>返回原文</a>
-              <button type="button" data-clear-comment-quote>取消引用</button>
-            </div>
-          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

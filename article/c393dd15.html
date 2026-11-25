@@ -20,8 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/c393dd15.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/c393dd15.html">
-<script src="/js/comments.js?v=3" defer></script>
-<script src="/js/comment-quotes.js" defer></script>
+<script type="module" src="/js/discussions.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -57,138 +56,151 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#pipeline%E8%AF%AD%E6%B3%95">pipeline语法</a></li><li><a href="#%E5%9F%BA%E7%A1%80Groovy">基础Groovy</a></li><li><a href="#pipeline%E7%9A%84%E7%BB%84%E6%88%90">pipeline的组成</a></li><li><a href="#%E5%9C%A8%E5%A3%B0%E6%98%8E%E5%BC%8F%E6%B5%81%E6%B0%B4%E7%BA%BF%E4%B8%AD%E4%BD%BF%E7%94%A8%E8%84%9A%E6%9C%AC">在声明式流水线中使用脚本</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><span id="Jenkins-三"></span><h2 id="pipeline语法"><a class="headerlink" href="#pipeline语法" title="pipeline语法"></a>pipeline语法</h2><p>pipeline语法可以分为</p>
+        <div class="post-body" id="article-text"><span id="Jenkins-三"></span><h2 data-passage-key="0a347e34ef00" id="pipeline语法"><a class="headerlink" href="#pipeline语法" title="pipeline语法"></a>pipeline语法</h2><p data-passage-key="7638f822414f" id="passage-1f097e8c0a2e">pipeline语法可以分为</p>
 <ul>
-<li><p>「声明式流水线」</p>
+<li data-passage-key="406fd4c5fd44" id="passage-a50ffc96cbd2"><p data-passage-key="3b5bb867ba1e" id="passage-7062d28ab167">「声明式流水线」</p>
 </li>
-<li><p>「脚本化流水线」</p>
+<li data-passage-key="4238d5cb398f" id="passage-119d9922afd7"><p data-passage-key="23d439fe83aa" id="passage-31d643894579">「脚本化流水线」</p>
 </li>
 </ul>
-<p>但是由于脚本化流水线需要学习Groovy，所以我放弃了。</p>
-<p>虽然放弃了通篇学习一整门语言，但是为了在声明式流水线中使用简单的逻辑操作还是需要学习一点Groovy的基础内容。</p>
+<p data-passage-key="361e0d1ddac8" id="passage-522520edd639">但是由于脚本化流水线需要学习Groovy，所以我放弃了。</p>
+<p data-passage-key="7c34d69e1823" id="passage-e09bc9f2f6da">虽然放弃了通篇学习一整门语言，但是为了在声明式流水线中使用简单的逻辑操作还是需要学习一点Groovy的基础内容。</p>
 <span id="more"></span>
-<h3 id="基础Groovy"><a class="headerlink" href="#基础Groovy" title="基础Groovy"></a>基础Groovy</h3><ul>
-<li>定义变量</li>
+<h3 data-passage-key="805fb3a08a10" id="基础Groovy"><a class="headerlink" href="#基础Groovy" title="基础Groovy"></a>基础Groovy</h3><ul>
+<li data-passage-key="054744733903" id="passage-6fcce8ab9b58">定义变量</li>
 </ul>
-<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> x = <span class="string">"abc"</span></span><br/><span class="line"><span class="keyword">def</span> y = <span class="number">1</span></span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="3cdb1325c8bd" id="passage-754ec2b564e9"><span class="line"><span class="keyword">def</span> x = <span class="string">"abc"</span></span><br/><span class="line"><span class="keyword">def</span> y = <span class="number">1</span></span><br/></pre></td></tr></tbody></table></figure>
 <ul>
-<li>Groovy语句最后的分号不是必须的</li>
-<li>方法调用可以参略括号</li>
-<li>支持命名参数</li>
+<li data-passage-key="6e9334a975e0" id="passage-208f3e471cb1">Groovy语句最后的分号不是必须的</li>
+<li data-passage-key="761ea8346f5d" id="passage-9e0d8e97fe36">方法调用可以参略括号</li>
+<li data-passage-key="b8b235c9de65" id="passage-5113032852cc">支持命名参数</li>
 </ul>
-<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> func(String a, String b){</span><br/><span class="line">   <span class="keyword">return</span> a + <span class="string">" "</span> + b</span><br/><span class="line">}</span><br/><span class="line"><span class="comment">// 调用</span></span><br/><span class="line">func b = <span class="string">"Lee"</span>, a = <span class="string">"Bruce"</span></span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/></pre></td><td class="code"><pre data-passage-key="2cccff5481bf" id="passage-af574bea93d8"><span class="line"><span class="keyword">def</span> func(String a, String b){</span><br/><span class="line">   <span class="keyword">return</span> a + <span class="string">" "</span> + b</span><br/><span class="line">}</span><br/><span class="line"><span class="comment">// 调用</span></span><br/><span class="line">func b = <span class="string">"Lee"</span>, a = <span class="string">"Bruce"</span></span><br/></pre></td></tr></tbody></table></figure>
 <ul>
-<li>支持默认参数值</li>
+<li data-passage-key="eeed26d41301" id="passage-862103af8c0a">支持默认参数值</li>
 </ul>
-<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> sayHello(String name = <span class="string">"humans"</span>){</span><br/><span class="line">   print <span class="string">"hello ${name}"</span></span><br/><span class="line">}</span><br/><span class="line">sayHello()</span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre data-passage-key="2e279f6f7c87" id="passage-efc29d708e0c"><span class="line"><span class="keyword">def</span> sayHello(String name = <span class="string">"humans"</span>){</span><br/><span class="line">   print <span class="string">"hello ${name}"</span></span><br/><span class="line">}</span><br/><span class="line">sayHello()</span><br/></pre></td></tr></tbody></table></figure>
 <ul>
-<li>支持单引号，双引号<ul>
-<li>双引号<strong>支持插值</strong></li>
-<li>单引号<strong>不支持插值</strong></li>
+<li data-passage-key="fef655d17355" id="passage-c6d5e3e2f546">支持单引号，双引号<ul>
+<li data-passage-key="6632f3f016cf" id="passage-1dedee39fe36">双引号<strong>支持插值</strong></li>
+<li data-passage-key="12555e5fd9ed" id="passage-bed5b8ff3b28">单引号<strong>不支持插值</strong></li>
 </ul>
 </li>
 </ul>
-<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> name = <span class="string">'world'</span></span><br/><span class="line">print <span class="string">"hello ${name}"</span> <span class="comment">//输出：hello world</span></span><br/><span class="line">print <span class="string">'hello ${name}'</span> <span class="comment">//输出：hello ${name}</span></span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre data-passage-key="363e161227d5" id="passage-df1a9ce701b9"><span class="line"><span class="keyword">def</span> name = <span class="string">'world'</span></span><br/><span class="line">print <span class="string">"hello ${name}"</span> <span class="comment">//输出：hello world</span></span><br/><span class="line">print <span class="string">'hello ${name}'</span> <span class="comment">//输出：hello ${name}</span></span><br/></pre></td></tr></tbody></table></figure>
 <ul>
-<li><p>支持三引号</p>
+<li data-passage-key="a7955ad68727" id="passage-acd3b9216f62"><p data-passage-key="bcc5eeadade9" id="passage-62bc0bd84e94">支持三引号</p>
 <ul>
-<li>三双引号<strong>支持插值</strong></li>
-<li>三单引号<strong>不支持插值</strong></li>
+<li data-passage-key="bcf0dec20ad7" id="passage-dc11ce9fc9b9">三双引号<strong>支持插值</strong></li>
+<li data-passage-key="237140e6816f" id="passage-57b9ce5d5e7f">三单引号<strong>不支持插值</strong></li>
 </ul>
 </li>
-<li><p>支持闭包</p>
+<li data-passage-key="77fe04772993" id="passage-a15d0d44df3f"><p data-passage-key="e3a562530283" id="passage-53316438e879">支持闭包</p>
 </li>
 </ul>
-<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> func = {print <span class="string">"hello world"</span>} <span class="comment">//定义闭包</span></span><br/><span class="line">func() <span class="comment">//调用闭包</span></span><br/><span class="line"></span><br/><span class="line"><span class="comment">// 定义一个接收闭包参数的pipeline函数</span></span><br/><span class="line"><span class="keyword">def</span> pipeline(a){</span><br/><span class="line">   a()</span><br/><span class="line">}</span><br/><span class="line">pipeline(func) <span class="comment">// 调用pipeline</span></span><br/><span class="line"><span class="comment">// 把func直接写入⬇️</span></span><br/><span class="line">pipeline({print <span class="string">"hello world"</span>})</span><br/><span class="line"><span class="comment">// 括号可以省略⬇️</span></span><br/><span class="line">pipeline{print <span class="string">"hello world"</span>} </span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/></pre></td><td class="code"><pre data-passage-key="79014a774237" id="passage-e1153ae7b3c0"><span class="line"><span class="keyword">def</span> func = {print <span class="string">"hello world"</span>} <span class="comment">//定义闭包</span></span><br/><span class="line">func() <span class="comment">//调用闭包</span></span><br/><span class="line"></span><br/><span class="line"><span class="comment">// 定义一个接收闭包参数的pipeline函数</span></span><br/><span class="line"><span class="keyword">def</span> pipeline(a){</span><br/><span class="line">   a()</span><br/><span class="line">}</span><br/><span class="line">pipeline(func) <span class="comment">// 调用pipeline</span></span><br/><span class="line"><span class="comment">// 把func直接写入⬇️</span></span><br/><span class="line">pipeline({print <span class="string">"hello world"</span>})</span><br/><span class="line"><span class="comment">// 括号可以省略⬇️</span></span><br/><span class="line">pipeline{print <span class="string">"hello world"</span>} </span><br/></pre></td></tr></tbody></table></figure>
 <ul>
-<li>闭包的另类用法</li>
+<li data-passage-key="34d334ba7792" id="passage-035f67b10681">闭包的另类用法</li>
 </ul>
-<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> stage(String name, a){</span><br/><span class="line">   println name <span class="comment">//输出字符串name</span></span><br/><span class="line">   a() <span class="comment">//调用闭包函数a</span></span><br/><span class="line">}</span><br/><span class="line"><span class="comment">// 正常使用stage函数⬇️</span></span><br/><span class="line">stage(<span class="string">"stage name"</span>,{print <span class="string">"hello world"</span>})</span><br/><span class="line"><span class="comment">// Groovy提供的另一种使用stage函数的方法⬇️</span></span><br/><span class="line">stage(<span class="string">"stage name"</span>){</span><br/><span class="line">   print <span class="string">"hello world"</span></span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
-<h3 id="pipeline的组成"><a class="headerlink" href="#pipeline的组成" title="pipeline的组成"></a>pipeline的组成</h3><blockquote>
-<p>Jenkins pipeline其实就是基于Groovy语言实现的一种DSL(领域特定语言)，用于描述整条流水线上如何进行的。</p>
-<p>流水线的内容包括：执行编译，打包，测试，输出测试报告等。</p>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/></pre></td><td class="code"><pre data-passage-key="3e78f05d8126" id="passage-79cdb750c2c0"><span class="line"><span class="keyword">def</span> stage(String name, a){</span><br/><span class="line">   println name <span class="comment">//输出字符串name</span></span><br/><span class="line">   a() <span class="comment">//调用闭包函数a</span></span><br/><span class="line">}</span><br/><span class="line"><span class="comment">// 正常使用stage函数⬇️</span></span><br/><span class="line">stage(<span class="string">"stage name"</span>,{print <span class="string">"hello world"</span>})</span><br/><span class="line"><span class="comment">// Groovy提供的另一种使用stage函数的方法⬇️</span></span><br/><span class="line">stage(<span class="string">"stage name"</span>){</span><br/><span class="line">   print <span class="string">"hello world"</span></span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
+<h3 data-passage-key="5d0f016238c3" id="pipeline的组成"><a class="headerlink" href="#pipeline的组成" title="pipeline的组成"></a>pipeline的组成</h3><blockquote data-passage-key="1a29312acd20" id="passage-b0900fc32d89">
+<p data-passage-key="c5fef38439bd" id="passage-5c27626c9969">Jenkins pipeline其实就是基于Groovy语言实现的一种DSL(领域特定语言)，用于描述整条流水线上如何进行的。</p>
+<p data-passage-key="5d6219711fa8" id="passage-d33b7cc033db">流水线的内容包括：执行编译，打包，测试，输出测试报告等。</p>
 </blockquote>
-<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/></pre></td><td class="code"><pre><span class="line">pipeline {</span><br/><span class="line">   agent any</span><br/><span class="line">   stages {</span><br/><span class="line">      stage(<span class="string">'build'</span>){</span><br/><span class="line">         steps{</span><br/><span class="line">            echo <span class="string">"hello world"</span></span><br/><span class="line">         }</span><br/><span class="line">      }</span><br/><span class="line">   }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/></pre></td><td class="code"><pre data-passage-key="bbf7a80320fa" id="passage-f95f0aa97615"><span class="line">pipeline {</span><br/><span class="line">   agent any</span><br/><span class="line">   stages {</span><br/><span class="line">      stage(<span class="string">'build'</span>){</span><br/><span class="line">         steps{</span><br/><span class="line">            echo <span class="string">"hello world"</span></span><br/><span class="line">         }</span><br/><span class="line">      }</span><br/><span class="line">   }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
 <ul>
-<li>pipeline:整条流水线</li>
-<li>stages:流水线可以有多个stages，每个stages至少包含一个stage</li>
-<li>stage:阶段，每个阶段都必须有名称，例如<code>build</code></li>
-<li>steps:具体步骤，ech就是一个步骤。<strong>在一个stage中有且只有一个steps</strong></li>
-<li>agent:执行位置，在某个（物理机，虚拟机，Docker）环境中执行</li>
+<li data-passage-key="34339fee481e" id="passage-41042298b11e">pipeline:整条流水线</li>
+<li data-passage-key="515f50ad71a0" id="passage-7e53db508461">stages:流水线可以有多个stages，每个stages至少包含一个stage</li>
+<li data-passage-key="2e0392cdfb50" id="passage-8cab8c12e367">stage:阶段，每个阶段都必须有名称，例如<code>build</code></li>
+<li data-passage-key="40b423f1b907" id="passage-b1a028a2b7b5">steps:具体步骤，ech就是一个步骤。<strong>在一个stage中有且只有一个steps</strong></li>
+<li data-passage-key="bfdb4ee261d2" id="passage-ee629c05562c">agent:执行位置，在某个（物理机，虚拟机，Docker）环境中执行</li>
 </ul>
-<h4 id="步骤"><a class="headerlink" href="#步骤" title="步骤"></a>步骤</h4><p>类似于<code>echo</code>,<code>sh</code>等步骤，Jenkins有很多插件可以通过一定的修改来当作步骤使用</p>
-<p><strong>适配Jenkins pipeline的插件列表：</strong></p>
-<p><a href="https://github.com/jenkinsci/pipeline-plugin/blob/master/COMPATIBILITY.md" rel="noopener" target="_blank">https://github.com/jenkinsci/pipeline-plugin/blob/master/COMPATIBILITY.md</a></p>
-<p>通过「流水线语法」可以可视化的进行插件步骤的编辑与生成，降低学习成本。</p>
+<h4 data-passage-key="4ec7d4554df9" id="步骤"><a class="headerlink" href="#步骤" title="步骤"></a>步骤</h4><p data-passage-key="1a671ff54af5" id="passage-645d5ffd4112">类似于<code>echo</code>,<code>sh</code>等步骤，Jenkins有很多插件可以通过一定的修改来当作步骤使用</p>
+<p data-passage-key="f7c4d457a5fa" id="passage-668d05561cd2"><strong>适配Jenkins pipeline的插件列表：</strong></p>
+<p data-passage-key="8bc6f3b030c2" id="passage-42d885e1f565"><a href="https://github.com/jenkinsci/pipeline-plugin/blob/master/COMPATIBILITY.md" rel="noopener" target="_blank">https://github.com/jenkinsci/pipeline-plugin/blob/master/COMPATIBILITY.md</a></p>
+<p data-passage-key="39fccdb38d20" id="passage-554e11be6435">通过「流水线语法」可以可视化的进行插件步骤的编辑与生成，降低学习成本。</p>
 <p><img alt="流水线语法自动生成1" decoding="async" height="688" loading="lazy" src="/images/blog-media/2a7b3d40d3021fd947b9.webp" width="1080"/><img alt="流水线语法自动生成2" decoding="async" height="688" loading="lazy" src="/images/blog-media/81594e6d140786612a06.webp" width="1080"/></p>
-<h4 id="post部分"><a class="headerlink" href="#post部分" title="post部分"></a>post部分</h4><p>在pipeline执行之后会执行post部分</p>
-<p>根据pipeline的完成状态，post可以分成不同的条件块</p>
+<h4 data-passage-key="32d815d5f0b0" id="post部分"><a class="headerlink" href="#post部分" title="post部分"></a>post部分</h4><p data-passage-key="7c3b92794525" id="passage-ec6c8feb4964">在pipeline执行之后会执行post部分</p>
+<p data-passage-key="842e6b47cb95" id="passage-5006470c0b43">根据pipeline的完成状态，post可以分成不同的条件块</p>
 <ul>
-<li>always：完成后就执行</li>
-<li>changed：完成状态与上一次不一致执行</li>
-<li>fixed：失败或不稳定执行</li>
-<li>regression：上一次成功，这一次失败/不稳定/中止（aborted）时执行</li>
-<li>aborted：中止（aborted）时执行</li>
-<li>failure：失败时执行</li>
-<li>success：成功时执行</li>
-<li>unstable：不稳定时执行</li>
-<li>cleanup：清理条件块。无论完成状态是什么</li>
+<li data-passage-key="578ef67d92f5" id="passage-061ce66e1d07">always：完成后就执行</li>
+<li data-passage-key="29cc2d6e0b2c" id="passage-6bba327f773f">changed：完成状态与上一次不一致执行</li>
+<li data-passage-key="4327bc33e4bd" id="passage-8177c6fe5e28">fixed：失败或不稳定执行</li>
+<li data-passage-key="e3557d450cfb" id="passage-6b77644feb23">regression：上一次成功，这一次失败/不稳定/中止（aborted）时执行</li>
+<li data-passage-key="c61e934eacfa" id="passage-067f47b9cb51">aborted：中止（aborted）时执行</li>
+<li data-passage-key="7c217d035bc7" id="passage-c20a047eb8e0">failure：失败时执行</li>
+<li data-passage-key="67c8d9161158" id="passage-98a4950193d6">success：成功时执行</li>
+<li data-passage-key="a71437541edf" id="passage-cf75e1680839">unstable：不稳定时执行</li>
+<li data-passage-key="1eb0bb1014d0" id="passage-da16165792da">cleanup：清理条件块。无论完成状态是什么</li>
 </ul>
-<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/><span class="line">20</span><br/><span class="line">21</span><br/><span class="line">22</span><br/><span class="line">23</span><br/><span class="line">24</span><br/><span class="line">25</span><br/><span class="line">26</span><br/></pre></td><td class="code"><pre><span class="line">pipeline{</span><br/><span class="line">   agent any</span><br/><span class="line">   stages{</span><br/><span class="line">      stage(<span class="string">'build'</span>){</span><br/><span class="line">         steps{</span><br/><span class="line">            echo <span class="string">"build stage"</span></span><br/><span class="line">         }</span><br/><span class="line">         post{</span><br/><span class="line">            always{</span><br/><span class="line">               echo <span class="string">"stage post alwasy"</span></span><br/><span class="line">            }</span><br/><span class="line">         }</span><br/><span class="line">      }</span><br/><span class="line">   }</span><br/><span class="line">   post{</span><br/><span class="line">      changed{</span><br/><span class="line">         echo <span class="string">"pipeline post changed"</span></span><br/><span class="line">      }</span><br/><span class="line">      always{</span><br/><span class="line">         echo <span class="string">"pipeline post alwasy"</span></span><br/><span class="line">      }</span><br/><span class="line">      success{</span><br/><span class="line">         echo <span class="string">"pipeline post success"</span></span><br/><span class="line">      }</span><br/><span class="line">   }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
-<h4 id="支持的命令"><a class="headerlink" href="#支持的命令" title="支持的命令"></a>支持的命令</h4><ul>
-<li><p>Environment：用于设置环境变量，可定义在stage或pipeline部分</p>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/><span class="line">20</span><br/><span class="line">21</span><br/><span class="line">22</span><br/><span class="line">23</span><br/><span class="line">24</span><br/><span class="line">25</span><br/><span class="line">26</span><br/></pre></td><td class="code"><pre data-passage-key="d84bc65f5e41" id="passage-885281aa6302"><span class="line">pipeline{</span><br/><span class="line">   agent any</span><br/><span class="line">   stages{</span><br/><span class="line">      stage(<span class="string">'build'</span>){</span><br/><span class="line">         steps{</span><br/><span class="line">            echo <span class="string">"build stage"</span></span><br/><span class="line">         }</span><br/><span class="line">         post{</span><br/><span class="line">            always{</span><br/><span class="line">               echo <span class="string">"stage post alwasy"</span></span><br/><span class="line">            }</span><br/><span class="line">         }</span><br/><span class="line">      }</span><br/><span class="line">   }</span><br/><span class="line">   post{</span><br/><span class="line">      changed{</span><br/><span class="line">         echo <span class="string">"pipeline post changed"</span></span><br/><span class="line">      }</span><br/><span class="line">      always{</span><br/><span class="line">         echo <span class="string">"pipeline post alwasy"</span></span><br/><span class="line">      }</span><br/><span class="line">      success{</span><br/><span class="line">         echo <span class="string">"pipeline post success"</span></span><br/><span class="line">      }</span><br/><span class="line">   }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
+<h4 data-passage-key="b967d77edead" id="支持的命令"><a class="headerlink" href="#支持的命令" title="支持的命令"></a>支持的命令</h4><ul>
+<li data-passage-key="0627079d1b3e" id="passage-b852e0a15826"><p data-passage-key="9d634ff05d68" id="passage-f89c4883b0ac">Environment：用于设置环境变量，可定义在stage或pipeline部分</p>
 </li>
-<li><p>tools：自动下载安装指定的工具，并将其加入PATH变量中，可定义在stage或pipeline部分</p>
+<li data-passage-key="830b520129fc" id="passage-2333eb113eda"><p data-passage-key="70f7e802d2b6" id="passage-c60d8e21fabf">tools：自动下载安装指定的工具，并将其加入PATH变量中，可定义在stage或pipeline部分</p>
 </li>
-<li><p>input：暂停pipeline，提示输入内容，定义在stage部分</p>
+<li data-passage-key="ca659d497c7b" id="passage-560530e98cb6"><p data-passage-key="dd434ae85e03" id="passage-82e6b20d6fc1">input：暂停pipeline，提示输入内容，定义在stage部分</p>
 </li>
-<li><p>options：配置Jenkins pipeline本身的选项，可以定义在stage或pipeline中。</p>
+<li data-passage-key="f322befc9fc8" id="passage-75f764a3ae5d"><p data-passage-key="fc8b7f1ac752" id="passage-f99940c3007c">options：配置Jenkins pipeline本身的选项，可以定义在stage或pipeline中。</p>
 <ul>
-<li>buildDiscarder：保存历史构建数</li>
+<li data-passage-key="df16b00b41bf" id="passage-3a40bf7e3b53">buildDiscarder：保存历史构建数</li>
 </ul>
-<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre><span class="line">options{</span><br/><span class="line">   buildDiscarder(logRotator(<span class="attr">numToKeepStr:</span><span class="number">10</span>))</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre data-passage-key="61bac128131e" id="passage-34aa04b69938"><span class="line">options{</span><br/><span class="line">   buildDiscarder(logRotator(<span class="attr">numToKeepStr:</span><span class="number">10</span>))</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
 <ul>
-<li>disableConcurrentBuilds：禁止同时执行</li>
+<li data-passage-key="8e462f84dee7" id="passage-3d6f58a9a7c1">disableConcurrentBuilds：禁止同时执行</li>
 </ul>
-<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre><span class="line">options{</span><br/><span class="line">   disableConcurrentBuilds()</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre data-passage-key="cd0bf79023fa" id="passage-e0ac7dbc77bb"><span class="line">options{</span><br/><span class="line">   disableConcurrentBuilds()</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
 <ul>
-<li>overrideIndexTriggers</li>
-<li>skipDefaultCheckout</li>
-<li>skipStagesAfterUnstable</li>
-<li>checkoutToSubdirectory：指定代码检出路径</li>
+<li data-passage-key="b18afbf24ef7" id="passage-a5b3c0a90780">overrideIndexTriggers</li>
+<li data-passage-key="2052e65629fc" id="passage-c01e0ac32f27">skipDefaultCheckout</li>
+<li data-passage-key="af29679665b9" id="passage-5d1b15e2ff58">skipStagesAfterUnstable</li>
+<li data-passage-key="0b844aaeac77" id="passage-fbed726ea4ad">checkoutToSubdirectory：指定代码检出路径</li>
 </ul>
-<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre><span class="line">options{</span><br/><span class="line">   checkoutToSubdirectory(<span class="string">'subdir'</span>)</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre data-passage-key="a811a034fa13" id="passage-ec53b2b1d78a"><span class="line">options{</span><br/><span class="line">   checkoutToSubdirectory(<span class="string">'subdir'</span>)</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
 <ul>
-<li>newContainerPerStage：当agent为docker或dockerfile时，指定在同一个Jenkins节点上，每个stage分别运行在一个新的Docker容器中，而不是所有stage都运行在一个容器中。</li>
+<li data-passage-key="fb1233c77f38" id="passage-7853c863a7a5">newContainerPerStage：当agent为docker或dockerfile时，指定在同一个Jenkins节点上，每个stage分别运行在一个新的Docker容器中，而不是所有stage都运行在一个容器中。</li>
 </ul>
-<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre><span class="line">options{</span><br/><span class="line">   newContainerPerStage()</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre data-passage-key="bd52baad813a" id="passage-7703e719d304"><span class="line">options{</span><br/><span class="line">   newContainerPerStage()</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
 <ul>
-<li>timeout：运行的超时时间</li>
+<li data-passage-key="370f433e7763" id="passage-0cd67ab61a63">timeout：运行的超时时间</li>
 </ul>
-<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre><span class="line">options{</span><br/><span class="line">   timeout(<span class="attr">time:</span><span class="number">10</span>,<span class="attr">unit:</span><span class="string">'HOURS'</span>)</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre data-passage-key="52401b7c5d14" id="passage-19b06ef37ad1"><span class="line">options{</span><br/><span class="line">   timeout(<span class="attr">time:</span><span class="number">10</span>,<span class="attr">unit:</span><span class="string">'HOURS'</span>)</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
 <ul>
-<li>retry：在失败时，重新尝试整个管道的指定次数</li>
+<li data-passage-key="042e4d93f436" id="passage-041f1af861db">retry：在失败时，重新尝试整个管道的指定次数</li>
 </ul>
-<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre><span class="line">options{</span><br/><span class="line">   retry(<span class="number">4</span>)</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre data-passage-key="3bb8af438f1f" id="passage-df8edb6b5936"><span class="line">options{</span><br/><span class="line">   retry(<span class="number">4</span>)</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
 <ul>
-<li>timestamps：显示运行时候的时间</li>
+<li data-passage-key="53cb3ec696f9" id="passage-e5e1b4054cab">timestamps：显示运行时候的时间</li>
 </ul>
 </li>
-<li><p>parallel：并行执行多个step</p>
+<li data-passage-key="e34c4d1a50d5" id="passage-2a498709d3e4"><p data-passage-key="fa4d09e036e3" id="passage-1d2e2c609efd">parallel：并行执行多个step</p>
 </li>
-<li><p>parameters：参数化构建部分</p>
+<li data-passage-key="29ffc2e9f6e4" id="passage-94f39f461260"><p data-passage-key="4c39041bc974" id="passage-156fa7085fab">parameters：参数化构建部分</p>
 </li>
-<li><p>triggers：触发器（定时/钩子）</p>
+<li data-passage-key="a70ae288b88f" id="passage-a2a0caa86d1d"><p data-passage-key="078b5ec6ed72" id="passage-7e9bcc22a2dd">triggers：触发器（定时/钩子）</p>
 </li>
-<li><p>when：当满足条件时才执行</p>
+<li data-passage-key="2ef34114bbdf" id="passage-7dcd13a7da21"><p data-passage-key="8867b4d59da5" id="passage-2568bd573328">when：当满足条件时才执行</p>
 </li>
 </ul>
-<p>没有例子的直接百度咯，仿照着写多测测就行了。</p>
-<h3 id="在声明式流水线中使用脚本"><a class="headerlink" href="#在声明式流水线中使用脚本" title="在声明式流水线中使用脚本"></a>在声明式流水线中使用脚本</h3><p>在一些不得不用代码的地方使用<code>script</code>就可以写Groovy代码了</p>
-<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/></pre></td><td class="code"><pre><span class="line">pipeline{</span><br/><span class="line">   agent any</span><br/><span class="line">   stages{</span><br/><span class="line">      stage(<span class="string">'Example'</span>){</span><br/><span class="line">         steps{</span><br/><span class="line">            script{</span><br/><span class="line">               <span class="keyword">def</span> browsers = [<span class="string">'chrome'</span>,<span class="string">'firefox'</span>]</span><br/><span class="line">               <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; browsers.size(); ++i){</span><br/><span class="line">                  echo <span class="string">"Testing the ${browsers[i]} browsers"</span></span><br/><span class="line">               }</span><br/><span class="line">            }</span><br/><span class="line">         }</span><br/><span class="line">      }</span><br/><span class="line">   }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
-<p>修改Jenkinsfile并推送至GitHub。</p>
+<p data-passage-key="afed3c933f70" id="passage-d7b9f5384b44">没有例子的直接百度咯，仿照着写多测测就行了。</p>
+<h3 data-passage-key="05c5baa3b835" id="在声明式流水线中使用脚本"><a class="headerlink" href="#在声明式流水线中使用脚本" title="在声明式流水线中使用脚本"></a>在声明式流水线中使用脚本</h3><p data-passage-key="c7b40b95c2bd" id="passage-341b1a8fa486">在一些不得不用代码的地方使用<code>script</code>就可以写Groovy代码了</p>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/></pre></td><td class="code"><pre data-passage-key="6b8ec38e558a" id="passage-f521510546d6"><span class="line">pipeline{</span><br/><span class="line">   agent any</span><br/><span class="line">   stages{</span><br/><span class="line">      stage(<span class="string">'Example'</span>){</span><br/><span class="line">         steps{</span><br/><span class="line">            script{</span><br/><span class="line">               <span class="keyword">def</span> browsers = [<span class="string">'chrome'</span>,<span class="string">'firefox'</span>]</span><br/><span class="line">               <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; browsers.size(); ++i){</span><br/><span class="line">                  echo <span class="string">"Testing the ${browsers[i]} browsers"</span></span><br/><span class="line">               }</span><br/><span class="line">            }</span><br/><span class="line">         }</span><br/><span class="line">      }</span><br/><span class="line">   }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
+<p data-passage-key="2a80a52295ea" id="passage-4a414f9476ab">修改Jenkinsfile并推送至GitHub。</p>
 <p><img alt="运行" decoding="async" height="688" loading="lazy" src="/images/blog-media/aef1d2cf7aaeca0caff9.webp" width="1080"/></p></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
+        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
+        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
+          <header class="passage-dialog-header">
+            <h2 id="passage-comment-title">段落评论</h2>
+            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
+          </header>
+          <div class="passage-dialog-content">
+            <blockquote data-passage-excerpt></blockquote>
+            <a data-passage-source>查看原文</a>
+            <p data-passage-status role="status"></p>
+            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
+            <div data-passage-widget></div>
+          </div>
+        </dialog>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/IyqAKhX4u1UDpkFjRYGnpA">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Jenkins/">Jenkins</a><a href="/tags/CI/">CI</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/Jenkins/">Jenkins</a></div>
@@ -200,16 +212,6 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
-          <div class="comment-quote" data-comment-quote hidden>
-            <blockquote data-comment-quote-text></blockquote>
-            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
-            <p data-comment-quote-status role="status"></p>
-            <div class="comment-quote-actions">
-              <button type="button" data-copy-comment-quote>复制引用</button>
-              <a data-comment-quote-source>返回原文</a>
-              <button type="button" data-clear-comment-quote>取消引用</button>
-            </div>
-          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>
