@@ -18,6 +18,8 @@ import xml.etree.ElementTree as ET
 from bs4 import BeautifulSoup
 import nh3
 
+import blog_discovery as discovery
+
 from blog_series import article_navigation, cards as series_cards, catalog_page, chapter_title, load_series, position_link, series_page
 from blog_topics import Topic, browser_page, links as taxonomy_links, read_catalog, topic_trail
 
@@ -224,7 +226,7 @@ def add_analytics_to_resources():
 
 def shell(title, path, content, description=DESCRIPTION, extra_head=""):
     is_article = path.startswith("/article/")
-    title_tag = NAME if path == "/" else f"{title} · {NAME}"
+    title_tag = discovery.HOME_TITLE if path == "/" else f"{title} · {NAME}"
     nav = [
         ("首页", "/"), ("归档", "/archives/"), ("分类", "/categories/"),
         ("系列", "/series/"), ("工具与课程", "/lab/"), ("关于", "/about/"),
@@ -388,7 +390,7 @@ def resource_cards():
 
 
 def home_story(post, picture, lead=False):
-    heading = "h1" if lead else "h3"
+    heading = "h2" if lead else "h3"
     priority = 'fetchpriority="high"' if lead else 'loading="lazy"'
     image = (
         f'<div class="front-media"><img src="{html(picture)}" alt="" decoding="async" {priority}></div>'
@@ -458,6 +460,7 @@ def home(posts, catalog, series):
     featured = {post.path for post, _ in photos}
     recent = [post for post in posts[1:] if post.path not in featured][:7]
     content = f'''
+  {discovery.home_intro()}
   <section class="publication-feature" aria-label="最新文章">
     {home_story(feature, feature.display_cover, lead=True)}
   </section>
@@ -477,7 +480,7 @@ def home(posts, catalog, series):
     <header class="section-title"><h2 id="tools-title">工具与课程</h2><a href="/lab/">前往工具页 ↗</a></header>
     {resource_cards()}
   </section>'''
-    return shell(NAME, "/", content)
+    return shell(NAME, "/", content, discovery.HOME_SUMMARY, discovery.json_ld({"@type": "WebSite", "name": NAME, "url": SITE + "/"}))
 
 
 def reading_time(post):
@@ -584,6 +587,9 @@ def article(post, older, newer, series_position=None):
             f'<figure class="article-cover" style="--cover-art:{cover_art}">'
             f'<img src="{html(post.display_cover)}" alt="" fetchpriority="high" decoding="async"></figure>'
         )
+    stem = Path(post.path).stem
+    watch_link = (f'<p class="watch-link"><a href="{discovery.watch_path(stem)}">打开独立观看页和文字稿 →</a></p>'
+                  if stem in discovery.WATCH else "")
     topic_title = f' data-topic-title="{html(post.title)}"' if post.numbered_title else ""
     content = f'''
   <article class="article">
@@ -602,7 +608,8 @@ def article(post, older, newer, series_position=None):
     <div class="wrap article-layout{' with-outline' if outline else ''}">
       {outline}
       <div class="article-main">
-        <div class="post-body" id="article-text">{post.body}</div>{article_video(post)}
+        {discovery.evidence_card(post)}
+        <div class="post-body" id="article-text">{post.body}</div>{article_video(post)}{watch_link}
         {source}
         <div class="post-tags" aria-label="文章标签">{tags}</div>
         <div class="legacy-tags" hidden>{original_tags}</div>
@@ -613,7 +620,8 @@ def article(post, older, newer, series_position=None):
   </article>'''
     head = (
         f'{cover_meta}\n<meta name="giscus:backlink" content="{html(SITE + post.path)}">\n'
-        '<script src="/js/comments.js?v=4" defer></script>'
+        '<script src="/js/comments.js?v=4" defer></script>\n'
+        + discovery.article_metadata(post, SITE)
     )
     return shell(post.display_title, post.path, content, post.description, head)
 
@@ -811,12 +819,20 @@ def main():
     write("/", home(posts, catalog, series))
     write("/series/", shell("系列阅读", "/series/", catalog_page(series, thumbnail)))
     for record in series:
-        write(record.url, shell(record.title, record.url, series_page(record, thumbnail), record.description))
+        series_content = series_page(record, thumbnail)
+        if record.url == "/series/agent-development/":
+            series_content += discovery.series_evidence()
+        write(record.url, shell(record.title, record.url, series_content, record.description))
     for i, post in enumerate(posts):
         older = posts[i + 1] if i + 1 < len(posts) else None
         newer = posts[i - 1] if i else None
         write(post.path, article(post, older, newer, positions.get(post.path)))
     indexes(posts, catalog)
+    for post in posts:
+        if Path(post.path).stem in discovery.WATCH:
+            path, content, description, head = discovery.video_watch(post, ROOT, SITE)
+            write(path, shell(post.display_title + "｜视频讲解", path, content, description, head))
+    write("/sitemap.xml", discovery.sitemap(posts, series, SITE))
     lab = (
         '<section class="listing resource-library"><header class="page-heading">'
         '<div><h1>工具与课程</h1><p>打开在线工具，或按学习地图循序阅读。</p></div>'
@@ -846,6 +862,19 @@ def main():
                '<button type="button" data-open-search>搜索文章</button></div></section>')
     write("/404.html", shell("找不到页面", "/404.html", missing))
     add_analytics_to_resources()
+    tool = ROOT / "tools/test-cases/index.html"
+    original_tool = tool.read_text()
+    # Replace only our own metadata block when the standalone tool is rebuilt.
+    stripped_tool = re.sub(r'<!-- seo-meta:start -->.*?<!-- seo-meta:end -->', '<title></title>',
+                           original_tool, count=1, flags=re.S)
+    tool_page, title_count = re.subn(r'<title>[^<]*</title>',
+                                   lambda _: '<!-- seo-meta:start -->\n  ' + discovery.tool_metadata(SITE) + '\n  <!-- seo-meta:end -->',
+                                   stripped_tool, count=1, flags=re.I)
+    assert title_count == 1 and '<div id="root"></div>' in tool_page, "工具入口结构变更，需复核 SEO 页面"
+    tool_page = re.sub(r'<details class="tool-guide">.*?</details>\s*', "", tool_page, count=1, flags=re.S)
+    tool_page = tool_page.replace('<div id="root"></div>', discovery.tool_intro() + '\n  <div id="root"></div>', 1)
+    if tool_page != original_tool:
+        tool.write_text(tool_page)
     print(f"已生成 {len(posts)} 篇文章及首页、归档、分类、搜索和 RSS。")
 
 
