@@ -531,8 +531,12 @@ def article_video(post):
 
 def article(post, older, newer, series_position=None):
     toc = "".join(f'<li><a href="#{quote(anchor, safe="")}">{html(label)}</a></li>' for anchor, label in post.toc)
-    outline = (f'<aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>'
-               f'本文目录</summary><ol>{toc}</ol></details></aside>') if toc else ''
+    outline = (
+        '<aside class="outline"><details open><summary>'
+        '<span class="outline-label">本文目录</span>'
+        '<span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span>'
+        f'</summary><ol>{toc}</ol></details></aside>'
+    ) if toc else ''
     tags = taxonomy_links(post.editorial_tags or post.tags)
     original_tags = taxonomy_links(post.tags)
     original_categories = taxonomy_links(post.categories)

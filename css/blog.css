@@ -238,11 +238,27 @@ time { font-variant-numeric: tabular-nums; white-space: nowrap; }
 .article-main { grid-row: 1; grid-column: 1; min-inline-size: 0; }
 .outline { grid-column: 2; grid-row: 1; align-self: start; position: sticky; inset-block-start: 1.3rem; max-block-size: 85vh; overflow: auto; padding: .66rem .75rem; border: 1px solid var(--line); border-radius: .35rem; background: var(--panel); }
 .outline summary { font-size: .9rem; font-weight: 700; cursor: pointer; }
-.outline-rail-icon { display: none; }
-.outline:has(details:not([open])) { inline-size: 2.65rem; padding: 0; overflow: visible; }
-.outline details:not([open]) > summary { display: flex; align-items: center; justify-content: center; gap: .4rem; min-height: 5.65rem; writing-mode: vertical-rl; list-style: none; }
+.outline-rail-icon, .outline-rail-label { display: none; }
+.outline:has(details:not([open])) { inline-size: 2.65rem; padding: 0; border: 0; background: transparent; overflow: visible; }
+.outline details:not([open]) > summary {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: .42rem;
+  min-block-size: 4.85rem;
+  padding-block: .55rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--accent-wash);
+  color: var(--accent);
+  box-shadow: 0 .15rem .45rem #0001;
+  list-style: none;
+}
+.outline details:not([open]) > summary:hover { border-color: var(--accent); }
 .outline details:not([open]) > summary::-webkit-details-marker { display: none; }
-.outline details:not([open]) .outline-rail-icon { display: block; width: .38rem; height: .38rem; border-left: 1px solid var(--accent); border-bottom: 1px solid var(--accent); transform: rotate(45deg); }
+.outline details:not([open]) .outline-label { display: none; }
+.outline details:not([open]) .outline-rail-label { display: block; writing-mode: vertical-rl; font-size: .83rem; letter-spacing: .12em; }
+.outline details:not([open]) .outline-rail-icon { display: block; inline-size: .38rem; block-size: .38rem; border-left: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translateX(1px) rotate(45deg); }
 .outline ol { margin-block-start: .65rem; }
 .outline a { display: block; color: var(--muted); font-size: .8rem; line-height: 1.42; padding: .28rem 0; overflow-wrap: anywhere; }
 .outline a:hover { color: var(--accent); }
