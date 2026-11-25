@@ -27,7 +27,7 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记<span>听白</span></a>
-      <nav aria-label="主导航"><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <nav aria-label="主导航"><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
       <div class="masthead-actions">
         <label class="visually-hidden" for="site-appearance">外观</label>
         <select id="site-appearance" class="site-appearance" hidden>
@@ -48,7 +48,7 @@
         <span class="post-category" hidden><a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">Python测试开发进阶</a></span>
         <span class="read-time">约 3 分钟</span>
         <span class="public-counter" data-public-count="reads" data-article-path="/article/264ee22a.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a></div>
+        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/python-test-development/#chapter-1">Python 测试开发进阶 · 第 1/48 篇</a></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83">虚拟环境</a></li><li><a href="#%E5%AE%89%E8%A3%85">安装</a></li><li><a href="#%E6%9F%A5%E7%9C%8B%E5%B7%B2%E5%AE%89%E8%A3%85%E7%9A%84%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83">查看已安装的虚拟环境</a></li><li><a href="#Windows%E4%BF%AE%E6%94%B9%E5%AE%89%E8%A3%85%E7%9A%84%E4%BD%8D%E7%BD%AE">Windows修改安装的位置</a></li><li><a href="#Linux%E4%BF%AE%E6%94%B9%E5%AE%89%E8%A3%85%E7%9A%84%E4%BD%8D%E7%BD%AE">Linux修改安装的位置</a></li><li><a href="#%E5%88%9B%E5%BB%BA%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83">创建虚拟环境</a></li><li><a href="#%E8%BF%9B%E5%85%A5%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83">进入虚拟环境</a></li><li><a href="#%E9%80%80%E5%87%BA%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83">退出虚拟环境</a></li><li><a href="#%E5%88%A0%E9%99%A4%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83">删除虚拟环境</a></li><li><a href="#%E5%AF%BC%E5%87%BA%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83%E4%B8%AD%E6%89%80%E6%9C%89%E7%9A%84%E6%A8%A1%E5%9D%97%E5%92%8C%E5%8C%85">导出虚拟环境中所有的模块和包</a></li><li><a href="#%E5%AE%89%E8%A3%85requirements-txt%E4%B8%AD%E7%9A%84%E5%8C%85">安装requirements.txt中的包</a></li><li><a href="#virtualenv%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98">virtualenv存在的问题</a></li><li><a href="#pipenv">pipenv</a></li><li><a href="#%E5%88%9B%E5%BB%BA%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83-1">创建虚拟环境</a></li><li><a href="#%E8%BF%9B%E5%85%A5%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83-1">进入虚拟环境</a></li><li><a href="#%E9%80%80%E5%87%BA%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83-1">退出虚拟环境</a></li><li><a href="#%E5%AE%89%E8%A3%85%E5%8C%85">安装包</a></li><li><a href="#%E6%9F%A5%E7%9C%8B%E4%BE%9D%E8%B5%96">查看依赖</a></li><li><a href="#%E5%8D%B8%E8%BD%BD%E5%8C%85">卸载包</a></li><li><a href="#%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85">开发环境安装</a></li><li><a href="#%E5%AF%BC%E5%87%BA%E5%8C%85">导出包</a></li><li><a href="#%E5%88%A0%E9%99%A4%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83-1">删除虚拟环境</a></li><li><a href="#%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83">编码规范</a></li><li><a href="#%E7%BC%A9%E8%BF%9B">缩进</a></li><li><a href="#%E8%A1%8C%E7%9A%84%E6%9C%80%E5%A4%A7%E9%95%BF%E5%BA%A6">行的最大长度</a></li><li><a href="#%E7%A9%BA%E8%A1%8C">空行</a></li><li><a href="#%E6%B3%A8%E9%87%8A">注释</a></li><li><a href="#%E6%A8%A1%E5%9D%97%E5%8C%85%E5%AF%BC%E5%85%A5">模块包导入</a></li><li><a href="#%E7%BB%93%E6%9E%84%E5%8C%96%E5%B7%A5%E7%A8%8B">结构化工程</a></li></ol></details></aside>
@@ -155,7 +155,7 @@
 
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Python/">Python</a><a href="/tags/%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/">虚拟环境</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
-        <nav class="related" aria-label="相邻文章"><a href="/article/897f7948.html"><small>较新文章</small>测试开发进阶(二)</a><a href="/article/wechat-e07aac85b1f0dd.html"><small>较早文章</small>使用pipenv管理python环境</a></nav>
+        <section class="series-continuation"><h2><a href="/series/python-test-development/">查看系列目录 ↗</a></h2><nav class="related" aria-label="同系列文章"><a href="/article/897f7948.html"><small>同系列下一篇</small>工程结构和 Python 数据类型</a></nav></section>
         <section class="article-comments" id="comments" aria-labelledby="comments-title"
           data-repo="zx490336534/zx490336534.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzNDQwOTE0MTc="
           data-category="文章评论" data-category-id="DIC_kwDOFIJrGc4DL60Q" data-article-path="/article/264ee22a.html">
@@ -175,7 +175,7 @@
   <footer class="wrap footer">
     <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
     <nav aria-label="页脚导航">
-      <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
     </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">

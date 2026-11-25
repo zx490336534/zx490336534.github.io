@@ -19,6 +19,7 @@ from bs4 import BeautifulSoup
 from bs4.element import NavigableString
 import nh3
 
+from blog_series import article_navigation, cards as series_cards, catalog_page, load_series, position_link, series_page
 from blog_topics import Topic, browser_page, links as taxonomy_links, read_catalog, topic_trail
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -218,7 +219,7 @@ def add_analytics_to_resources():
 
 def shell(title, path, content, description=DESCRIPTION, extra_head=""):
     title_tag = NAME if path == "/" else f"{title} · {NAME}"
-    nav = [("归档", "/archives/"), ("分类", "/categories/"), ("工具与课程", "/lab/"), ("关于", "/about/")]
+    nav = [("归档", "/archives/"), ("分类", "/categories/"), ("系列", "/series/"), ("工具与课程", "/lab/"), ("关于", "/about/")]
     links = []
     for label, url in nav:
         current = ' aria-current="page"' if url == path else ""
@@ -270,7 +271,7 @@ def shell(title, path, content, description=DESCRIPTION, extra_head=""):
   <footer class="wrap footer">
     <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
     <nav aria-label="页脚导航">
-      <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
     </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">
@@ -412,7 +413,7 @@ def home_story(post, picture, lead=False):
     </article>'''
 
 
-def home(posts, catalog):
+def home(posts, catalog, series):
     feature = posts[0]
     photos = []
     for post in posts[1:40]:
@@ -432,6 +433,12 @@ def home(posts, catalog):
         f'<a href="{child.url}"><strong>{html(child.name)}</strong><small>{len(child.members)} 篇</small></a>'
         for child in catalog.children
     )
+    featured_series = [item for item in series if item.featured]
+    routes = (
+        '<section class="section" id="start" aria-labelledby="start-title">'
+        '<header class="section-title"><h2 id="start-title">从这里开始</h2><a href="/series/">全部系列 ↗</a></header>'
+        + series_cards(featured_series, thumbnail) + '</section>'
+    ) if featured_series else ""
     featured = {post.path for post, _ in photos}
     recent = [post for post in posts[1:] if post.path not in featured][:7]
     content = f'''
@@ -450,6 +457,7 @@ def home(posts, catalog):
     {home_story(feature, feature.display_cover, lead=True)}
   </section>
   <nav class="publication-topics" aria-label="主要分类">{paths}</nav>
+  {routes}
   {illustrated}
   <section class="section" aria-labelledby="recent-title">
     <header class="section-title"><h2 id="recent-title">近期文章</h2><a href="/archives/">全部文章 ↗</a></header>
@@ -469,7 +477,7 @@ def reading_time(post):
     return f"约 {minutes} 分钟"
 
 
-def article(post, older, newer):
+def article(post, older, newer, series_position=None):
     toc = "".join(f'<li><a href="#{quote(anchor, safe="")}">{html(label)}</a></li>' for anchor, label in post.toc)
     outline = f'<aside class="outline"><details open><summary>本文目录</summary><ol>{toc}</ol></details></aside>' if toc else ''
     tags = taxonomy_links(post.editorial_tags or post.tags)
@@ -477,8 +485,12 @@ def article(post, older, newer):
     original_categories = taxonomy_links(post.categories)
     trail = topic_trail(post.topic) if post.topic else original_categories
     source = f'<p class="source"><a class="source-link" href="{html(post.source)}">查看微信公众号原文 ↗</a></p>' if post.source else ''
-    related = "".join(f'<a href="{html(link.path)}"><small>{direction}</small>{html(link.title)}</a>'
-                      for link, direction in [(newer, "较新文章"), (older, "较早文章")] if link)
+    if series_position:
+        related = article_navigation(series_position)
+    else:
+        links = "".join(f'<a href="{html(link.path)}"><small>{direction}</small>{html(link.title)}</a>'
+                        for link, direction in [(newer, "较新文章"), (older, "较早文章")] if link)
+        related = f'<nav class="related" aria-label="相邻文章">{links}</nav>'
     legacy_anchor = (
         f'<div id="disqus_thread" data-identifier="{html(post.path.lstrip("/"))}" hidden></div>'
         if post.legacy_comments else ""
@@ -515,7 +527,7 @@ def article(post, older, newer):
         <span class="post-category" hidden>{original_categories}</span>
         <span class="read-time">{reading_time(post)}</span>
         {public_counter("reads", "近 30 天阅读", post.path)}
-        <a href="#comments" data-jump-comments>评论</a></div>
+        <a href="#comments" data-jump-comments>评论</a>{position_link(series_position)}</div>
     </header>
     <div class="article-layout {'with-outline' if outline else ''}">
       {outline}
@@ -525,7 +537,7 @@ def article(post, older, newer):
         {source}
         <div class="post-tags" aria-label="文章标签">{tags}</div>
         <div class="legacy-tags" hidden>{original_tags}</div>
-        <nav class="related" aria-label="相邻文章">{related}</nav>
+        {related}
         {comments}
       </div>
     </div>
@@ -722,11 +734,15 @@ def main():
     catalog = read_catalog(posts, ROOT / "scripts/topic_catalog.json")
     openings = json.loads((ROOT / "scripts/cover_openings.json").read_text())
     set_display_covers(posts, openings)
-    write("/", home(posts, catalog))
+    series, positions = load_series(posts, ROOT / "scripts/series_catalog.json")
+    write("/", home(posts, catalog, series))
+    write("/series/", shell("系列阅读", "/series/", catalog_page(series, thumbnail)))
+    for record in series:
+        write(record.url, shell(record.title, record.url, series_page(record, thumbnail), record.description))
     for i, post in enumerate(posts):
         older = posts[i + 1] if i + 1 < len(posts) else None
         newer = posts[i - 1] if i else None
-        write(post.path, article(post, older, newer))
+        write(post.path, article(post, older, newer, positions.get(post.path)))
     indexes(posts, catalog)
     lab = (
         '<section class="listing resource-library"><header class="page-heading">'

@@ -39,6 +39,7 @@
       return 'article_link_click';
     }
     if (destination.startsWith('/categories/')) return 'category_click';
+    if (destination.startsWith('/series/')) return 'series_link_click';
     if (destination.startsWith('/tags/')) return 'tag_click';
     if (destination.startsWith('/tools/test-cases/')) return 'tool_entry_click';
     if (destination.startsWith('/teaching-aihom/') || destination.startsWith('/teaching-kuai/')) return 'course_link_click';
