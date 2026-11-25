@@ -6,9 +6,9 @@
 
 import argparse
 from collections import defaultdict
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from datetime import date
-from html import escape
+from html import escape, unescape
 import json
 from pathlib import Path
 import re
@@ -244,37 +244,86 @@ def post_rows(posts):
     ) + '</ul>'
 
 
+def home_picture(post):
+    authored_cover = f"/images/blog-covers/{Path(post.path).stem}.webp"
+    for path in (authored_cover, post.cover):
+        if path.startswith("/images/") and (ROOT / path.lstrip("/")).is_file():
+            return path
+    for img in BeautifulSoup(post.body, "lxml").select("img[src][width][height]"):
+        width, height = str(img["width"]), str(img["height"])
+        if not (width.isdigit() and height.isdigit()):
+            continue
+        path = img["src"]
+        if (int(width) >= 560 and int(height) >= 240 and int(width) >= int(height)
+                and path.startswith("/images/blog-media/") and Path(path).suffix in {".webp", ".jpg", ".png"}
+                and (ROOT / path.lstrip("/")).is_file()):
+            return path
+    return ""
+
+
+def home_story(post, picture, layout):
+    lead = layout == "front-lead"
+    heading = "h3" if layout == "front-card" else "h2"
+    priority = 'fetchpriority="high"' if lead else 'loading="lazy"'
+    image = (f'<div class="front-media"><img src="{html(picture)}" alt="" '
+             f'decoding="async" {priority}></div>') if picture else ""
+    status = '<span class="front-kicker">最新发布</span>' if lead else ""
+    action = '<span class="front-read">阅读全文 <span aria-hidden="true">↗</span></span>' if lead else ""
+    return f'''<article class="{layout}">
+      <a href="{html(post.path)}" class="front-story">
+        {image}
+        <div class="front-copy">
+          <div class="front-meta">{status}{date_label(post)}</div>
+          <{heading}>{html(post.title)}</{heading}>
+          <p>{html(post.description[:150])}</p>
+          {action}
+        </div>
+      </a>
+    </article>'''
+
+
 def home(posts):
+    # WeChat descriptions can carry escaped HTML entities from their page metadata.
+    posts = [
+        replace(post, description=unescape(re.sub(r"\\x26(?=(?:[a-zA-Z]+|#[xX]?[0-9a-fA-F]+);)", "&", post.description)))
+        for post in posts
+    ]
     feature = posts[0]
-    cover = f'<img src="{html(feature.cover)}" alt="" fetchpriority="high">' if feature.cover else ""
-    recent = "".join(
-        f'<article>{date_label(post)}<h3><a href="{html(post.path)}">{html(post.title)}</a></h3>'
-        f'<p>{html(post.description[:95])}</p><span class="categories">{category_links(post)}</span></article>'
-        for post in posts[1:4]
-    )
+    photos = []
+    for post in posts[1:40]:
+        picture = home_picture(post)
+        if picture:
+            photos.append((post, picture))
+        if len(photos) == 8:
+            break
+
+    aside = "".join(home_story(post, picture, "front-related") for post, picture in photos[:2])
+    rail = f'<div class="front-rail">{aside}</div>' if aside else ""
+    gallery = "".join(home_story(post, picture, "front-card") for post, picture in photos[2:])
+    illustrated = f'''
+  <section class="section" aria-labelledby="illustrated-title">
+    <header class="section-title"><h2 id="illustrated-title">图文选读</h2></header>
+    <div class="front-gallery">{gallery}</div>
+  </section>''' if gallery else ""
+    featured = {post.path for post, _ in photos}
+    recent = [post for post in posts[1:] if post.path not in featured][:7]
     content = f'''
-  <section class="lead" aria-label="首页精选">
-    <a class="lead-visual {'with-cover' if cover else ''}" href="{html(feature.path)}" aria-label="阅读 {html(feature.title)}">
-      {cover}<div><span>测试开发 · 自动化 · AI</span><strong>测试游记</strong><small>听白的技术博客</small></div>
-    </a>
-    <article class="lead-story">
-      <span class="kicker">最新发布</span>
-      <h1><a href="{html(feature.path)}">{html(feature.title)}</a></h1>
-      <p>{html(feature.description[:165])}</p>
-      <div class="entry-meta">{date_label(feature)}<span class="categories">{category_links(feature)}</span></div>
-      <a class="read-link" href="{html(feature.path)}">阅读全文 <span aria-hidden="true">↗</span></a>
-    </article>
+  <header class="front-heading">
+    <h1>测试开发与 AI 工程实践</h1>
+    <a href="/archives/">浏览归档 <span aria-hidden="true">↗</span></a>
+  </header>
+  <section class="front-grid {'with-rail' if rail else ''}" aria-label="精选文章">
+    {home_story(feature, home_picture(feature), "front-lead")}
+    {rail}
   </section>
-  <section class="section" aria-labelledby="tools-title">
-    <header class="section-title"><h2 id="tools-title">在线工具</h2></header>
-    <div class="course-grid">
-      <a href="{SITE}/tools/test-cases/"><strong>测试用例脑图生成器</strong><span aria-hidden="true">↗</span></a>
-    </div>
+  <section class="front-tool" aria-labelledby="tools-title">
+    <h2 id="tools-title">在线工具</h2>
+    <a href="{SITE}/tools/test-cases/">测试用例脑图生成器 <span aria-hidden="true">↗</span></a>
   </section>
+  {illustrated}
   <section class="section" aria-labelledby="recent-title">
     <header class="section-title"><h2 id="recent-title">近期文章</h2><a href="/archives/">全部文章 <span aria-hidden="true">→</span></a></header>
-    <div class="recent-grid">{recent}</div>
-    {post_rows(posts[4:10])}
+    {post_rows(recent)}
   </section>
   <section class="section" id="courses" aria-labelledby="courses-title">
     <header class="section-title"><h2 id="courses-title">教学专题</h2></header>
