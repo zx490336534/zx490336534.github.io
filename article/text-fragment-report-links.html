@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <title>用 URL 文本片段把测试报告定位到具体一行 · 测试游记</title>
-  <meta name="description" content="用 URL 文本片段定位测试报告中的函数名，处理重复文字和匹配失败的情况。">
+  <meta name="description" content="用 URL 文本片段跳到测试报告里的函数名，处理重复文字和编码，并提供可点击的演示及普通锚点。">
   <meta property="og:title" content="用 URL 文本片段把测试报告定位到具体一行 · 测试游记">
-  <meta property="og:description" content="用 URL 文本片段定位测试报告中的函数名，处理重复文字和匹配失败的情况。">
+  <meta property="og:description" content="用 URL 文本片段跳到测试报告里的函数名，处理重复文字和编码，并提供可点击的演示及普通锚点。">
   <meta property="og:url" content="https://www.zhongxin.website/article/text-fragment-report-links.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/text-fragment-report-links.html">
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
@@ -48,30 +48,43 @@
         <h1 class="post-title">用 URL 文本片段把测试报告定位到具体一行</h1>
         <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2026-11-25">2026-11-25</time>
           <span class="post-category" hidden></span>
-          <span class="read-time">约 1 分钟</span>
+          <span class="read-time">约 2 分钟</span>
           <span class="public-counter" data-public-count="reads" data-article-path="/article/text-fragment-report-links.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
           <a href="#comments" data-jump-comments>评论</a></div>
         <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/engineering/">工程工具</a> <span aria-hidden="true">/</span> <a href="/categories/engineering/productivity/">效率工具</a></nav>
       </div>
     </header>
     <div class="wrap article-layout with-outline">
-      <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E5%85%88%E4%BB%8E%E4%B8%80%E6%AE%B5%E8%83%BD%E5%94%AF%E4%B8%80%E5%8C%B9%E9%85%8D%E7%9A%84%E6%96%87%E5%AD%97%E5%BC%80%E5%A7%8B">先从一段能唯一匹配的文字开始</a></li><li><a href="#%E5%90%8C%E4%B8%80%E4%B8%AA%E5%87%BD%E6%95%B0%E5%90%8D%E5%87%BA%E7%8E%B0%E4%B8%A4%E6%AC%A1%E6%80%8E%E4%B9%88%E5%8A%9E">同一个函数名出现两次怎么办</a></li><li><a href="#%E9%93%BE%E6%8E%A5%E4%BB%8D%E7%84%B6%E8%A6%81%E8%AE%A9%E4%BA%BA%E6%89%8B%E5%8A%A8%E6%89%BE%E5%BE%97%E5%88%B0">链接仍然要让人手动找得到</a></li></ol></details></aside>
+      <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E5%85%88%E4%BB%8E%E4%B8%80%E6%AE%B5%E8%83%BD%E5%94%AF%E4%B8%80%E5%8C%B9%E9%85%8D%E7%9A%84%E6%96%87%E5%AD%97%E5%BC%80%E5%A7%8B">先从一段能唯一匹配的文字开始</a></li><li><a href="#%E5%90%8C%E4%B8%80%E4%B8%AA%E5%87%BD%E6%95%B0%E5%90%8D%E5%87%BA%E7%8E%B0%E4%B8%A4%E6%AC%A1%E6%80%8E%E4%B9%88%E5%8A%9E">同一个函数名出现两次怎么办</a></li><li><a href="#report-demo">在这篇里试一下</a></li><li><a href="#%E9%93%BE%E6%8E%A5%E4%BB%8D%E7%84%B6%E8%A6%81%E8%AE%A9%E4%BA%BA%E6%89%8B%E5%8A%A8%E6%89%BE%E5%BE%97%E5%88%B0">链接仍然要让人手动找得到</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><p>一份测试结果列出了未覆盖的函数。我想从列表点一下，直接打开覆盖率报告里对应的函数名。有些生成出来的 HTML 报告给章节加了锚点，却没有给每个函数一个单独的 <code>id</code>。这时可以用 URL 文本片段，让浏览器去页面里找已知文字。</p>
+        <div class="post-body" id="article-text"><p>测试结果列出一个未覆盖的函数。点开覆盖率报告后，还得用搜索在页面里找函数名。如果报告已经给这一行分配了稳定的 <code>id</code>，直接用普通的章节锚点即可。只有可见文字时，可以用 URL 文本片段补上定位。</p>
 <h2 id="先从一段能唯一匹配的文字开始">先从一段能唯一匹配的文字开始</h2>
-<p>文本片段写在 URL 的片段部分。浏览器支持这项功能并且匹配成功时，会滚动到目标位置并高亮文本。下面的地址用于说明格式，<code>report.html</code> 和其中的文字都是构造示例。 <a href="https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Fragment/Text_fragments">MDN 文本片段说明</a></p>
-<pre aria-label="示例 1" class="text" role="region" tabindex="0"><code>https://example.com/report.html#:~:text=calculateTotal</code></pre>
-<figure>
+<p>用户点击链接后，在支持文本片段的浏览器里，地址末尾的 <code>#:~:text=</code> 会告诉浏览器要查找哪段文字。找到后，页面会滚动过去并高亮。以下地址是格式示例，域名和报告路径都是构造的。<a href="https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Fragment/Text_fragments">MDN 文本片段说明</a></p>
+<pre class="text"><code class="language-text">https://example.com/report.html#:~:text=calculateTotal</code></pre>
+<figure class="article-figure article-figure--supplement">
 <img alt="链接打开并定位目标函数" decoding="async" height="630" loading="lazy" src="/images/blog-media/text-fragment-report-links-diagram.webp" width="1120"/>
-<figcaption aria-hidden="true">合成报告示意。支持的浏览器匹配成功后，会滚动并高亮目标文字。</figcaption>
+<figcaption aria-hidden="true">构造的覆盖率报告示意。匹配成功后，浏览器滚动并高亮目标函数名。</figcaption>
 </figure>
-<p>如果列表里拿得到模块名和函数名，可以先找报告上实际显示的名字。生成链接时，对文字部分做 URL 百分号编码，连接用的分隔符留在文字外面。空格可以编码为 <code>%20</code>，作为文本内容出现的短横线也需要编码为 <code>%2D</code>。</p>
+<p>生成链接时，拿报告上确实显示的文字当输入。先只编码文字部分，再拼浏览器要识别的分隔符。空格转成 <code>%20</code>。词里出现的短横线转成 <code>%2D</code>，语法里用来连接前文和目标文字的短横线照原样写。</p>
 <h2 id="同一个函数名出现两次怎么办">同一个函数名出现两次怎么办</h2>
-<p>报告可能在目录、结果表格和代码详情里都写了 <code>calculateTotal</code>。只传这个名字，浏览器会高亮第一个符合条件的匹配。可以用紧邻目标的前文或后文缩小范围。下面表示目标文字前面需要紧跟着 <code>module B</code>，两段中间允许有空白。</p>
-<pre aria-label="示例 2" class="text" role="region" tabindex="0"><code>https://example.com/report.html#:~:text=module%20B-,calculateTotal</code></pre>
-<p>这里的前文有位置约束。如果 <code>module B</code> 只出现在另一个章节标题里，中间还隔着表头或其他文字，就不能用它来精确匹配这次示例。实际生成链接时，要从渲染后的报告里选相邻文字。</p><figure><img alt="报告里出现两段相同文字，第二段连同邻近的前文被框出" decoding="async" height="800" loading="lazy" src="/images/blog-media/text-fragment-report-links-illustration.webp" width="1200"/><figcaption>AI 生成示意。目标文字重复时，用紧邻的前文缩小匹配范围。</figcaption></figure>
+<p>假如报告把两个模块的函数列表写在同一页，两个模块都可能出现 <code>calculateTotal</code>。单独搜索函数名，浏览器会命中第一个符合条件的地方。可以先给浏览器一小段相邻的前文，缩小范围。</p>
+<pre class="text"><code class="language-text">https://example.com/report.html#:~:text=module%20B-,calculateTotal</code></pre>
+<p>在这个链接里，浏览器要找的是紧邻 <code>module B</code> 之后的函数名，两段之间允许有空白。如果模块名放在另外的标题里，中间还隔着几个字段，就要换一段真正相邻的文字，或者直接改用模块的章节锚点。</p>
+<figure class="article-figure article-figure--supplement"><img alt="报告里出现两段相同文字，第二段连同邻近的前文被框出" decoding="async" height="800" loading="lazy" src="/images/blog-media/text-fragment-report-links-illustration.webp" width="1200"/><figcaption>AI 生成示意。目标文字重复时，紧邻文字的上下文可以把匹配范围缩小。</figcaption></figure>
+<h3 id="report-demo">在这篇里试一下</h3>
+<p>这两行是构造的报告内容。只给函数名，正文里其他地方也可能匹配。加上前文条件，下面的链接就会找第二行里的函数名。</p>
+<p id="report-module-a">
+module A calculateTotal
+</p>
+<p id="report-module-b">
+module B calculateTotal
+</p>
+<ul>
+<li><a href="/article/text-fragment-report-links.html#:~:text=module%20B-,calculateTotal" rel="noopener" target="_blank">跳到 module B 的函数</a></li>
+<li><a href="#report-module-b">使用普通锚点跳到第二行</a></li>
+</ul>
 <h2 id="链接仍然要让人手动找得到">链接仍然要让人手动找得到</h2>
-<p>报告重新生成后，展示文字可能会变。匹配失败或浏览器不支持时，读者仍能打开这份报告，可以用链接旁的模块名和函数名继续查。有稳定章节锚点时，直接用章节锚点。页面只有可见文字时，再用文本片段补上定位。MDN 的示例页面能直接试一下滚动和高亮。 <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#:~:text=linked%20URL">打开公开示例</a></p></div>
+<p>报告重新生成以后，展示文字可能变化。文本片段没有匹配，或者浏览器不支持时，读者仍然能打开报告。链接旁留着模块名和函数名，方便手动搜索。生成链接后，至少点一次正常样本和一次重复函数名，看看落点是否符合预期，再把链接放进测试结果里。</p></div>
         <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
 
         <div class="post-tags" aria-label="文章标签"><a href="/tags/%E6%96%87%E6%9C%AC%E7%89%87%E6%AE%B5/">文本片段</a><a href="/tags/%E6%B5%8B%E8%AF%95%E6%8A%A5%E5%91%8A/">测试报告</a><a href="/tags/%E6%B5%8F%E8%A7%88%E5%99%A8/">浏览器</a></div>

@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <title>用 AI 补上 UI 自动化里的视觉断言 · 测试游记</title>
-  <meta name="description" content="用两张合成页面讲清视觉断言的范围、结构化返回和人工复核条件。">
+  <meta name="description" content="用正常暗色画面和遮挡画面对照，说明视觉断言的截图范围、结构化输出、失败与人工复核。">
   <meta property="og:title" content="用 AI 补上 UI 自动化里的视觉断言 · 测试游记">
-  <meta property="og:description" content="用两张合成页面讲清视觉断言的范围、结构化返回和人工复核条件。">
+  <meta property="og:description" content="用正常暗色画面和遮挡画面对照，说明视觉断言的截图范围、结构化输出、失败与人工复核。">
   <meta property="og:url" content="https://www.zhongxin.website/article/ai-visual-assertions-ui-testing.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/ai-visual-assertions-ui-testing.html">
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
@@ -55,26 +55,55 @@
       </div>
     </header>
     <div class="wrap article-layout with-outline">
-      <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E6%8A%8A%E8%A6%81%E5%88%A4%E6%96%AD%E7%9A%84%E7%8E%B0%E8%B1%A1%E8%AF%B4%E7%AA%84%E4%B8%80%E7%82%B9">把要判断的现象说窄一点</a></li><li><a href="#%E8%AE%A9%E8%84%9A%E6%9C%AC%E8%AF%BB%E5%88%B0%E5%88%A4%E6%96%AD%E8%BF%98%E8%83%BD%E6%9F%A5%E5%AE%83%E7%9A%84%E4%BE%9D%E6%8D%AE">让脚本读到判断，还能查它的依据</a></li></ol></details></aside>
+      <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E6%8A%8A%E8%A6%81%E5%88%A4%E6%96%AD%E7%9A%84%E7%8E%B0%E8%B1%A1%E8%AF%B4%E7%AA%84%E4%B8%80%E7%82%B9">把要判断的现象说窄一点</a></li><li><a href="#%E8%AE%A9%E8%84%9A%E6%9C%AC%E8%AF%BB%E5%88%B0%E5%88%A4%E6%96%AD%E8%BF%98%E8%83%BD%E6%9F%A5%E5%AE%83%E7%9A%84%E4%BE%9D%E6%8D%AE">让脚本读到判断，还能查它的依据</a></li><li><a href="#%E5%85%88%E6%8A%8A%E6%AD%A3%E5%B8%B8%E5%9B%BE%E5%92%8C%E5%BC%82%E5%B8%B8%E5%9B%BE%E4%B8%80%E8%B5%B7%E8%B7%91%E4%B8%80%E9%81%8D">先把正常图和异常图一起跑一遍</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><p>有些页面看起来出错了，UI 自动化还会通过。脚本确认了画布存在，按钮也能点，截图里却出现一块不该出现的黑区。原来的元素断言仍然有用，只是它回答不了画面是否异常。</p>
-<p>我在尝试补这类断言时，把截图和要问的问题一起交给模型，要求它返回结构化结果。这里用合成截图解释怎样提问和处理结果，图中的页面与数据都为演示构造。</p>
+        <div class="post-body" id="article-text"><p>脚本确认画布存在，按钮也能点，截图里却有一块不该出现的黑区。遇到这种问题，我会保留原来的元素和状态断言，再补一项画面检查。模型要看的范围和现象，尽量提前写清楚。</p>
 <h2 id="把要判断的现象说窄一点">把要判断的现象说窄一点</h2>
-<p>直接问“这个页面有没有问题”，每次检查的范围都可能变。模型可能评价配色，也可能把正常的暗色背景当成错误。这个例子里，我只问它一件事，画布内容区是否被一块非预期的连续黑色区域盖住。顶部导航、侧栏和正常的暗色背景都不计入判断。</p>
-<figure>
+<p>直接问“页面有没有问题”，模型可能去评配色，也可能把正常的暗色背景当成异常。在下面的合成示例里，问题缩到一个动作。检查画布内的连续黑区有没有盖住应当可见的内容。顶部导航、侧栏和正常的暗色背景都排除在判断范围外。</p>
+<figure class="article-figure article-figure--supplement">
 <img alt="正常暗色内容与异常遮挡对照" decoding="async" height="630" loading="lazy" src="/images/blog-media/ai-visual-assertions-ui-testing-diagram.webp" width="1120"/>
-<figcaption aria-hidden="true">合成示例只检查内容区，正常暗色背景和导航不计入判断。</figcaption>
+<figcaption aria-hidden="true">构造的页面对照。导航和正常暗色背景不参加判断，只看画布内的遮挡。</figcaption>
 </figure>
-<p>先指定截图范围，脚本也更容易复查。比如固定在页面进入可截图状态之后截取画布区域，报告里保留实际传给模型的那张图。用户从失败记录点进去，能看到模型判断的是哪一块。</p><figure><img alt="青色边框只框住画布，导航栏和侧栏在框外，画布内有黑色遮挡" decoding="async" height="675" loading="lazy" src="/images/blog-media/ai-visual-assertions-ui-testing-illustration.webp" width="1200"/><figcaption>AI 生成示意。视觉断言的范围是框内画布，框外的导航与侧栏不参与判断。</figcaption></figure>
+<p>脚本等画布进入可截图状态，再截取内容区。<strong>报告里保留实际送给模型的那张图。</strong> 回看失败时，读者需要知道模型看到了什么，还要能在图上找到它说的那个位置。</p>
+<figure class="article-figure article-figure--supplement"><img alt="青色边框只框住画布，导航栏和侧栏在框外，画布内有黑色遮挡" decoding="async" height="675" loading="lazy" src="/images/blog-media/ai-visual-assertions-ui-testing-illustration.webp" width="1200"/><figcaption>AI 生成示意。青色框圈出待检查的画布，顶部导航和侧栏留在框外。</figcaption></figure>
 <h2 id="让脚本读到判断还能查它的依据">让脚本读到判断，还能查它的依据</h2>
-<p>返回结构只留三项。状态用 <code>pass</code>、<code>fail</code> 或 <code>uncertain</code>，再给一条可见依据和画面位置。下面是合成图片对应的示例返回，供说明格式。</p>
-<pre aria-label="示例 1" class="json" role="region" tabindex="0"><code>{
+<p>我会让模型只返回三个字段。<code>verdict</code> 是判断，<code>evidence</code> 写图里实际可见的内容，<code>region</code> 说明画面位置。下面是合成图对应的示例，展示输出格式。</p>
+<pre class="json"><code class="language-json">{
   "verdict": "fail",
-  "evidence": "A solid black block covers part of the content",
-  "region": "upper-right area of the canvas"
+  "evidence": "黑色矩形盖住了原本应该可见的图形",
+  "region": "画布右侧"
 }</code></pre>
-<p>脚本先校验 JSON 和状态枚举。模型输出不合法、图片读取失败，或者无法确定黑区是不是设计的一部分，就进入人工复核。测试报告保留截图、原判断和可见依据，方便人对照画面核对。</p>
-<p>我会保留原来的确定性断言。元素存在、文字内容、颜色值和尺寸这类可以直接读出来的条件，继续用脚本检查。等到需要判断截图里的组合现象，再用视觉模型补一项单独结果。是否能把这项结果升级成发布条件，要用标好的正常和异常样本核对误报与漏报。当前材料能说明这种接法，暂时不足以给出准确率。</p></div>
+<p>脚本先解析 JSON，确认状态在 <code>pass</code>、<code>fail</code>、<code>uncertain</code> 里，并检查依据和位置两个字段是字符串。对于 <code>fail</code>，还要能定位到具体画面。示例中的黑块有明确位置，复核者能回到截图上检查。</p>
+<div aria-labelledby="comparison-1" class="table-scroll" role="region" tabindex="0"><table class="article-comparison"><caption id="comparison-1">视觉断言的处理方式</caption>
+<thead>
+<tr>
+<th scope="col">模型或调用的结果</th>
+<th scope="col">脚本怎么记</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th scope="row">返回 <code>pass</code></th>
+<td>记录本项视觉检查通过</td>
+</tr>
+<tr>
+<th scope="row">返回 <code>fail</code>，有依据和位置</th>
+<td>保留截图和判断，把该用例标为视觉失败</td>
+</tr>
+<tr>
+<th scope="row">返回 <code>uncertain</code></th>
+<td>交给人看图</td>
+</tr>
+<tr>
+<th scope="row">超时、读图失败或返回格式不对</th>
+<td>单独记录执行异常，等重跑或复核</td>
+</tr>
+</tbody>
+</table></div>
+<p>如果画面还在加载，就先查截图时机。此时模型可能看到占位区域，格式再规整的回答也不能用于判断最终画面。</p>
+<h2 id="先把正常图和异常图一起跑一遍">先把正常图和异常图一起跑一遍</h2>
+<p>元素是否出现、文字、可读取的颜色值和尺寸，能从页面直接判断的部分继续交给原来的自动化脚本。视觉断言集中在脚本难以表达的画面组合，比如一块遮挡盖住了该显示的组件。</p>
+<p>接入后先拿人工标过的正常暗色图和遮挡图做对照，分别看误报、漏报和无法判断的情况。当前示例能说明检查方式和结果怎么回到报告里。实际项目要不要把这项结果用于发布判定，先看这批真实样本的复核结果。</p></div>
         <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
 
         <div class="post-tags" aria-label="文章标签"><a href="/tags/UI-%E8%87%AA%E5%8A%A8%E5%8C%96/">UI 自动化</a><a href="/tags/%E8%A7%86%E8%A7%89%E6%96%AD%E8%A8%80/">视觉断言</a><a href="/tags/AI-%E6%B5%8B%E8%AF%95/">AI 测试</a></div>
