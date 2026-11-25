@@ -500,10 +500,16 @@ def read_article_videos(posts):
         duration = entry.get("duration")
         if type(duration) is not int or duration < 1:
             raise ValueError(f"无效视频长度：{path}")
+        voice = entry.get("voice")
+        if voice is not None and (voice != "zh-CN-XiaoxiaoNeural"
+                                  or not src.endswith(f"/{stem}-xiaoxiao.mp4")
+                                  or entry.get("captions") != f"/videos/article-captions/{stem}-xiaoxiao.vtt"):
+            raise ValueError(f"无效晓晓音轨或字幕版本：{path}")
         for kind, suffix, folder in (("captions", "vtt", "article-captions"),
                                       ("poster", "webp", "article-posters")):
             value = entry.get(kind)
-            if value is not None and (value != f"/videos/{folder}/{stem}.{suffix}"
+            asset_stem = f"{stem}-xiaoxiao" if kind == "captions" and voice else stem
+            if value is not None and (value != f"/videos/{folder}/{asset_stem}.{suffix}"
                                       or not (ROOT / value.lstrip("/")).is_file()):
                 raise ValueError(f"缺少视频{kind}资源：{path}")
         by_path[path].video = entry
@@ -514,6 +520,7 @@ def article_video(post):
         return ""
     entry = post.video
     seconds = entry["duration"]
+    voice_label = "晓晓普通话" if entry.get("voice") == "zh-CN-XiaoxiaoNeural" else "普通话"
     time = f"{seconds // 60}:{seconds % 60:02}"
     src = html(entry["src"])
     poster = html(entry.get("poster", post.display_cover))
@@ -522,7 +529,7 @@ def article_video(post):
     return f"""<section class="article-video" aria-labelledby="article-video-title">
           <header class="article-video-header">
             <h2 id="article-video-title">本文视频讲解</h2>
-            <p>普通话 · <time datetime="PT{seconds}S">{time}</time></p>
+            <p>{voice_label} · <time datetime="PT{seconds}S">{time}</time></p>
           </header>
           <video controls playsinline preload="none" poster="{poster}" aria-label="本文视频讲解">
             <source src="{src}" type="video/mp4">
