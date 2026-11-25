@@ -420,6 +420,22 @@ def home_story(post, picture, lead=False):
     </article>'''
 
 
+def popular_section(posts):
+    ranked_paths = json.loads((ROOT / "scripts/popular_seed.json").read_text())
+    post_by_path = {post.path: post for post in posts}
+    rows = []
+    for path in dict.fromkeys(ranked_paths):
+        if post := post_by_path.get(path):
+            rows.append(f'<li><a href="{html(post.path)}">{thumbnail(post)}'
+                        f'<span><strong>{html(post.display_title)}</strong></span></a></li>')
+    if not rows:
+        return ""
+    return f'''<section class="section" id="popular" aria-labelledby="popular-title">
+    <header class="section-title"><h2 id="popular-title">热门文章</h2><p class="popular-basis" data-popular-basis>按公众号阅读人数排序</p></header>
+    <ol class="popular-list" data-popular-list>{"".join(rows)}</ol>
+  </section>'''
+
+
 def home(posts, catalog, series):
     feature = posts[0]
     photos = []
@@ -464,6 +480,7 @@ def home(posts, catalog, series):
     {home_story(feature, feature.display_cover, lead=True)}
   </section>
   <nav class="publication-topics" aria-label="主要分类">{paths}</nav>
+  {popular_section(posts)}
   {routes}
   {illustrated}
   <section class="section" aria-labelledby="recent-title">

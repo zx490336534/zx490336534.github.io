@@ -61,17 +61,56 @@ async ({api, slug, website, articles, previous}) => {
     return events.filter(row => row.x.endsWith('_click')).reduce((sum, row) => sum + row.y, 0);
   }
 
+  const known = new Set(articles);
+  const articleEvents = ['home_article_click', 'article_link_click', 'search_result_click'];
+
+  async function addArticleClicks(counts, event, startAt, endAt) {
+    if (endAt < startAt) return;
+    const query = new URLSearchParams({event, eventName: event, propertyName: 'destination', startAt, endAt});
+    const body = await get('/websites/' + website + '/event-data/values?' + query, auth);
+    const rows = body.data ?? body;
+    if (!Array.isArray(rows) || rows.some(row => typeof row.value !== 'string' || !Number.isSafeInteger(row.total) || row.total < 0)) {
+      throw new Error('Invalid article click breakdown');
+    }
+    // This endpoint returns at most 100 destination values per interval.
+    if (rows.length >= 100) {
+      if (startAt === endAt) throw new Error('Article click breakdown is incomplete');
+      const mid = startAt + Math.floor((endAt - startAt) / 2);
+      await addArticleClicks(counts, event, startAt, mid);
+      await addArticleClicks(counts, event, mid + 1, endAt);
+      return;
+    }
+    for (const {value, total} of rows) {
+      if (known.has(value) && total > 0) counts[value] = (counts[value] ?? 0) + total;
+    }
+  }
+
+  async function collectArticleClicks() {
+    const saved = previous?.articleClickCheckpoint ?? {through: firstDay, counts: {}};
+    if (!Number.isSafeInteger(saved.through) || saved.through < firstDay || saved.through < retentionStart.getTime() ||
+        saved.through > end || saved.through % day !== 0 || !saved.counts || Array.isArray(saved.counts) ||
+        typeof saved.counts !== 'object' || Object.values(saved.counts).some(count => !Number.isSafeInteger(count) || count < 0)) {
+      throw new Error('Invalid article click checkpoint');
+    }
+    const articleThrough = Math.max(saved.through, through);
+    const counts = Object.fromEntries(Object.entries(saved.counts).filter(([path]) => known.has(path)));
+    await Promise.all(articleEvents.map(event => addArticleClicks(counts, event, saved.through, articleThrough - 1)));
+    const articleClicks = {...counts};
+    await Promise.all(articleEvents.map(event => addArticleClicks(articleClicks, event, articleThrough, end)));
+    return {articleClickCheckpoint: {through: articleThrough, counts}, articleClicks};
+  }
+
   // Umami's metric range is inclusive at both ends. Advance at a UTC midnight.
-  const [paths, archived, recent] = await Promise.all([
+  const [paths, archived, recent, articleStats] = await Promise.all([
     metrics('path', 1, end - days * day, end),
     clicksBetween(checkpoint.through, through - 1),
     clicksBetween(through, end),
+    collectArticleClicks().catch(error => ({articleClickError: error.message})),
   ]);
-  const known = new Set(articles);
   const reads = {};
   for (const row of paths) {
     if (known.has(row.x)) reads[row.x] = (reads[row.x] ?? 0) + row.y;
   }
   const count = checkpoint.count + archived;
-  return {days, updatedAt: new Date(end).toISOString(), clicks: count + recent, clickCheckpoint: {through, count}, reads};
+  return {days, updatedAt: new Date(end).toISOString(), clicks: count + recent, clickCheckpoint: {through, count}, reads, ...articleStats};
 }
