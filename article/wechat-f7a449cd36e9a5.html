@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <title>用 AI 生成测试用例 · 第 01 篇｜对话驱动用例生成：AI 自动生成测试用例的实践 · 测试游记</title>
+  <title>对话驱动用例生成：AI 自动生成测试用例的实践 · 测试游记</title>
   <meta name="description" content="前言 测试用例设计是软件测试的核心环节，传统方式依赖测试人员手动编写，存在覆盖不全、效率低下、难以维护等问题。本文介绍一套基于 LangChain Agent 的智能测试用例生成系统，实现从需求文档到 XMind 脑图的全流程自动化方案。 核心特色 ：用户通过自然语言对话即可实时控制脑图编辑器，AI 自动理解意图并执行增删改查操作，无需手">
-  <meta property="og:title" content="用 AI 生成测试用例 · 第 01 篇｜对话驱动用例生成：AI 自动生成测试用例的实践 · 测试游记">
+  <meta property="og:title" content="对话驱动用例生成：AI 自动生成测试用例的实践 · 测试游记">
   <meta property="og:description" content="前言 测试用例设计是软件测试的核心环节，传统方式依赖测试人员手动编写，存在覆盖不全、效率低下、难以维护等问题。本文介绍一套基于 LangChain Agent 的智能测试用例生成系统，实现从需求文档到 XMind 脑图的全流程自动化方案。 核心特色 ：用户通过自然语言对话即可实时控制脑图编辑器，AI 自动理解意图并执行增删改查操作，无需手">
   <meta property="og:url" content="https://www.zhongxin.website/article/wechat-f7a449cd36e9a5.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/wechat-f7a449cd36e9a5.html">
@@ -43,12 +43,12 @@
   <article class="article">
     <header class="article-header">
       <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/platforms/">测试平台与工具</a></nav>
-      <h1 class="post-title" data-topic-title="对话驱动用例生成：AI 自动生成测试用例的实践">用 AI 生成测试用例 · 第 01 篇｜对话驱动用例生成：AI 自动生成测试用例的实践</h1>
+      <h1 class="post-title">对话驱动用例生成：AI 自动生成测试用例的实践</h1>
       <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2026-03-03T14:47:04+08:00">2026-03-03</time>
         <span class="post-category" hidden><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span>
         <span class="read-time">约 4 分钟</span>
         <span class="public-counter" data-public-count="reads" data-article-path="/article/wechat-f7a449cd36e9a5.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/ai-test-cases/#chapter-1">用 AI 生成测试用例 · 第 1/3 篇</a></div>
+        <a href="#comments" data-jump-comments>评论</a></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E5%89%8D%E8%A8%80">前言</a></li><li><a href="#%E4%B8%80-%E6%8A%80%E6%9C%AF%E6%A0%88%E9%80%89%E5%9E%8B">一、技术栈选型</a></li><li><a href="#%E4%BA%8C-%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1">二、整体架构设计</a></li><li><a href="#2-1-%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84%E5%9B%BE">2.1 系统架构图</a></li><li><a href="#2-2-%E6%95%B0%E6%8D%AE%E6%B5%81%E5%90%91%E5%9B%BE">2.2 数据流向图</a></li><li><a href="#%E4%B8%89-%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF%E8%A6%81%E7%82%B9">三、核心技术要点</a></li><li><a href="#3-1-%E6%B8%90%E8%BF%9B%E5%BC%8F%E6%8A%AB%E9%9C%B2%E6%9E%B6%E6%9E%84">3.1 渐进式披露架构</a></li><li><a href="#3-2-%E9%AA%A8%E6%9E%B6-%E9%80%90%E6%A8%A1%E5%9D%97%E5%A1%AB%E5%85%85%E7%9A%84%E4%B8%A4%E9%98%B6%E6%AE%B5%E7%AD%96%E7%95%A5">3.2 骨架 + 逐模块填充的两阶段策略</a></li><li><a href="#3-3-%E5%89%8D%E7%AB%AF%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8%E6%9C%BA%E5%88%B6">3.3 前端工具调用机制</a></li><li><a href="#%E5%9B%9B-%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">四、测试用例数据结构</a></li><li><a href="#4-1-XMind-%E8%8A%82%E7%82%B9%E5%B1%82%E7%BA%A7">4.1 XMind 节点层级</a></li><li><a href="#4-2-%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B%E8%8A%82%E7%82%B9%E6%A0%BC%E5%BC%8F">4.2 测试用例节点格式</a></li><li><a href="#%E4%BA%94-%E6%8A%80%E8%83%BD%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B">五、技能工作流程</a></li><li><a href="#6-1-%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B%E7%94%9F%E6%88%90%E6%B5%81%E7%A8%8B">6.1 测试用例生成流程</a></li><li><a href="#6-2-Git-%E4%BB%93%E5%BA%93%E5%85%8B%E9%9A%86%E6%B5%81%E7%A8%8B">6.2 Git 仓库克隆流程</a></li><li><a href="#%E5%85%AD-%E5%A4%9A%E6%BA%90%E9%9C%80%E6%B1%82%E8%8E%B7%E5%8F%96%E8%83%BD%E5%8A%9B">六、多源需求获取能力</a></li><li><a href="#6-1-%E9%9C%80%E6%B1%82%E6%9D%A5%E6%BA%90%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B">6.1 需求来源处理流程</a></li><li><a href="#6-2-%E9%9C%80%E6%B1%82%E8%8E%B7%E5%8F%96%E9%80%BB%E8%BE%91">6.2 需求获取逻辑</a></li><li><a href="#%E4%B8%83-%E7%B3%BB%E7%BB%9F%E7%89%B9%E8%89%B2%E6%80%BB%E7%BB%93">七、系统特色总结</a></li><li><a href="#7-1-%E6%A0%B8%E5%BF%83%E7%89%B9%E6%80%A7%E5%AF%B9%E6%AF%94">7.1 核心特性对比</a></li><li><a href="#7-2-%E5%AF%B9%E8%AF%9D%E6%8E%A7%E5%88%B6%E8%84%91%E5%9B%BE%E7%A4%BA%E4%BE%8B">7.2 对话控制脑图示例</a></li><li><a href="#%E7%BB%93%E8%AF%AD">结语</a></li><li><a href="#%E6%8A%80%E6%9C%AF%E4%BA%AE%E7%82%B9%E5%9B%9E%E9%A1%BE">技术亮点回顾</a></li></ol></details></aside>
@@ -58,7 +58,7 @@
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/d973mh5vFORieb6-eI-y_g">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/AI-%E6%B5%8B%E8%AF%95/">AI 测试</a><a href="/tags/%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B/">测试用例</a></div>
         <div class="legacy-tags" hidden></div>
-        <section class="series-continuation"><h2><a href="/series/ai-test-cases/">查看系列目录 ↗</a></h2><nav class="related" aria-label="同系列文章"><a href="/article/wechat-da23494d893d34.html"><small>同系列下一篇</small>第 02 篇｜AI 测试用例 Agent 的五个阶段：从生成脑图到回读校验</a></nav></section>
+        <nav class="related" aria-label="相邻文章"><a href="/article/wechat-93a1a69a0ff89b.html"><small>较新文章</small>Agent Skills 制作与分发 · 第 04 篇｜通过 MCP 分发 Claude Skills</a><a href="/article/wechat-77e2fc1117899d.html"><small>较早文章</small>Agent Skills 制作与分发 · 第 02 篇｜把团队经验做成可维护的 Skill</a></nav>
         <section class="article-comments" id="comments" aria-labelledby="comments-title"
           data-repo="zx490336534/zx490336534.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzNDQwOTE0MTc="
           data-category="文章评论" data-category-id="DIC_kwDOFIJrGc4DL60Q" data-article-path="/article/wechat-f7a449cd36e9a5.html">

@@ -67,8 +67,8 @@ def load_series(posts, source):
                 raise ValueError(f"系列章节为空 {slug} {part['title']}")
             groups.append((part["title"], group))
             chapters.extend(group)
-        if not chapters:
-            raise ValueError(f"系列文章为空 {slug}")
+        if len(chapters) < 4:
+            raise ValueError(f"系列至少需要 4 篇文章 {slug}")
 
         series = ReadingSeries(
             slug, item["title"], section, item["description"], item["audience"], item["featured"], groups, chapters, item.get("resource")
