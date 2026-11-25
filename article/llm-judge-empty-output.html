@@ -21,6 +21,7 @@
 <meta property="og:image" content="https://www.zhongxin.website/images/article-covers/llm-judge-empty-output.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/llm-judge-empty-output.html">
 <script src="/js/comments.js?v=4" defer></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"为什么一批空输出，能让 AI 裁判看起来更准？","description":"用八条构造数据算两次一致率，说明混入空输出怎样改变对模型裁判的判断。","inLanguage":"zh-CN","url":"https://www.zhongxin.website/article/llm-judge-empty-output.html","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.zhongxin.website/article/llm-judge-empty-output.html"},"author":{"@type":"Person","name":"听白","url":"https://www.zhongxin.website/about/"},"datePublished":"2026-11-25T14:52:11+08:00","image":"https://www.zhongxin.website/images/article-covers/llm-judge-empty-output.webp"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"分类","item":"https://www.zhongxin.website/categories/"},{"@type":"ListItem","position":2,"name":"测试与质量","item":"https://www.zhongxin.website/categories/testing/"},{"@type":"ListItem","position":3,"name":"质量工程","item":"https://www.zhongxin.website/categories/testing/quality/"},{"@type":"ListItem","position":4,"name":"为什么一批空输出，能让 AI 裁判看起来更准？","item":"https://www.zhongxin.website/article/llm-judge-empty-output.html"}]}]}</script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,6 +57,7 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E7%A9%BA%E6%A0%B7%E6%9C%AC%E6%80%8E%E6%A0%B7%E6%94%B9%E5%8F%98%E4%B8%80%E4%B8%AA%E6%AD%A3%E7%A1%AE%E7%9A%84%E6%95%B0%E5%AD%97">多放几条空样本，一致率就会上升</a></li><li><a href="#%E6%B1%87%E6%80%BB%E7%9B%B8%E5%85%B3%E6%80%A7%E9%AB%98-%E4%B9%9F%E5%8F%AF%E8%83%BD%E6%80%BB%E9%80%89%E9%94%99%E5%90%8C%E9%A2%98%E7%BB%93%E6%9E%9C">相关性 0.92，同题却一次都没选对</a></li><li><a href="#%E6%A0%A1%E5%87%86%E6%97%B6-%E8%AE%A9%E6%A8%A1%E5%9E%8B%E5%9B%9E%E7%AD%94%E5%87%86%E5%A4%87%E6%9B%BF%E4%BA%BA%E5%81%9A%E7%9A%84%E5%88%A4%E6%96%AD">校准时就问模型上线那道题</a></li></ol></details></aside>
       <div class="article-main">
+        <aside class="editorial-evidence" aria-labelledby="evidence-title"><h2 id="evidence-title">评测报告里，空输出要不要单列？</h2><dl><dt>结论</dt><dd>把终态无产物、有产物时的质量判断和同题候选排序分开统计。</dd><dt>适用条件</dt><dd>模型裁判被用来辅助发布门禁或候选排序，且样本中同时有明确空输出与有效产物。</dd><dt>可复核的证据</dt><dd>构造例中，四条有产物样本只有两条与人工一致；加入四条双方都判失败的空输出，总体变为 6/8（75%），有产物组仍为 2/4（50%）。另一组构造数据中，汇总相关约 0.92，同题选对却为 0/3。</dd></dl><p><a href="/series/agent-development/#case-reads">继续看 Agent 评测案例 →</a></p></aside>
         <div class="post-body" id="article-text"><p class="article-lead" id="passage-45f14325a128">同一个模型裁判，对有产物的四条样本只和人工一致了两条。如果再混进四条双方都判失败的空输出，总体一致率就会报到 75%。后面的数字算得对，但它很容易被读成「模型能判断产物好坏」。</p>
 <p id="passage-58fc2bf09f14">我会把<strong>有没有产物、产物质量如何、同题两个候选选谁</strong>分开看。下面用两组构造数据说明，有些总体数字看起来很好，离上线要做的决定却还很远。</p>
 <span id="把同一组结果算两遍"></span>
@@ -151,7 +153,7 @@ print(round(correlation(human, judge), 2))  # 0.92
             此浏览器无法内嵌播放，可以打开下方链接。
           </video>
           <p class="article-video-download"><a href="https://github.com/zx490336534/zx490336534.github.io/releases/download/article-videos-20261125/llm-judge-empty-output-xiaoxiao.mp4">打开或下载 MP4 ↗</a></p>
-        </section>
+        </section><p class="watch-link"><a href="/videos/watch/llm-judge-empty-output/">打开独立观看页和文字稿 →</a></p>
 
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Agent-%E8%AF%84%E6%B5%8B/">Agent 评测</a><a href="/tags/LLM-Judge/">LLM Judge</a><a href="/tags/%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE/">测试数据</a></div>
         <div class="legacy-tags" hidden></div>

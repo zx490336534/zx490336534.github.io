@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>为什么一批空输出，能让 AI 裁判看起来更准？｜视频讲解 · 测试游记</title>
+  <meta name="description" content="用构造样本说明空输出为何抬高总体一致率，以及如何改用分组质量与同题排序。">
+  <meta property="og:title" content="为什么一批空输出，能让 AI 裁判看起来更准？｜视频讲解 · 测试游记">
+  <meta property="og:description" content="用构造样本说明空输出为何抬高总体一致率，以及如何改用分组质量与同题排序。">
+  <meta property="og:url" content="https://www.zhongxin.website/videos/watch/llm-judge-empty-output/">
+  <link rel="canonical" href="https://www.zhongxin.website/videos/watch/llm-judge-empty-output/">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css">
+  <script src="/js/blog.js" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"VideoObject","name":"为什么一批空输出，能让 AI 裁判看起来更准？｜视频讲解","description":"用构造样本说明空输出为何抬高总体一致率，以及如何改用分组质量与同题排序。","thumbnailUrl":["https://www.zhongxin.website/videos/article-posters/llm-judge-empty-output.webp"],"uploadDate":"2026-11-25T08:37:34Z","duration":"PT126S","contentUrl":"https://github.com/zx490336534/zx490336534.github.io/releases/download/article-videos-20261125/llm-judge-empty-output-xiaoxiao.mp4","inLanguage":"zh-CN","url":"https://www.zhongxin.website/videos/watch/llm-judge-empty-output/"}]}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记</a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="wrap"><article class="watch-page">
+      <header><h1>为什么一批空输出，能让 AI 裁判看起来更准？：视频讲解</h1></header>
+      <video controls playsinline preload="metadata" width="1280" height="720" poster="/videos/article-posters/llm-judge-empty-output.webp"
+         aria-label="为什么一批空输出，能让 AI 裁判看起来更准？">
+        <source src="https://github.com/zx490336534/zx490336534.github.io/releases/download/article-videos-20261125/llm-judge-empty-output-xiaoxiao.mp4" type="video/mp4">
+        <track kind="captions" srclang="zh-CN" label="简体中文" src="/videos/article-captions/llm-judge-empty-output-xiaoxiao.vtt">
+      </video>
+      <p>用构造样本说明空输出为何抬高总体一致率，以及如何改用分组质量与同题排序。 <a href="/article/llm-judge-empty-output.html">查看图文原文 →</a> · <a href="https://github.com/zx490336534/zx490336534.github.io/releases/download/article-videos-20261125/llm-judge-empty-output-xiaoxiao.mp4">下载视频</a></p>
+      <nav aria-label="视频章节"><h2>视频章节</h2><ol><li><a href="#chapter-1">0:00 总体一致率怎么变成 75%</a></li><li><a href="#chapter-2">0:25 增加空输出的影响</a></li><li><a href="#chapter-3">0:51 高相关但同题全选反</a></li><li><a href="#chapter-4">1:17 按上线任务设计评测</a></li><li><a href="#chapter-5">1:42 分别报告三个分母</a></li></ol></nav>
+      <div class="watch-transcript" aria-labelledby="transcript-title"><h2 id="transcript-title">文字稿</h2>
+        <section id="chapter-1"><h3>0:00 总体一致率怎么变成 75%</h3><p>想象一个模型裁判，对真正交付产物的四条样本，只和人工判对两条。</p><p>另一组四条什么产物都没给，人和模型都判失败。</p><p>合起来是六条一致、八条样本，也就是百分之七十五。</p><p>这个数字算得对，但不能读成模型已经会评产物质量。</p><p>数字里还包括了更容易判断的空输出。</p></section><section id="chapter-2"><h3>0:25 增加空输出的影响</h3><p>只要再加八条人和模型都会判失败的空输出，整体一致数就从六变成十四，总数从八变成十六。</p><p>总体变成百分之八十七点五。</p><p>可是我们关心的有产物那一组，仍然只有四条中两条一致。</p><p>先定清楚空字符串、无效附件和尚未结束各算什么，再报告不同组，才能做合理比较。</p></section><section id="chapter-3"><h3>0:51 高相关但同题全选反</h3><p>文章还设计了另一个反例。</p><p>三组候选，人工和模型都给后面的组更高的分。</p><p>把这六个分数直接平铺，总体相关大约零点九二。</p><p>可如果在同一张图的两个候选之间做选择，人工每组都选 B，模型每组都选 A，三组全部选反。</p><p>高相关并不代表它能做上线时真正需要的选择。</p></section><section id="chapter-4"><h3>1:17 按上线任务设计评测</h3><p>如果上线时要挑一个候选，就让裁判在同一输入、质量接近的候选里选，再与标注比较。</p><p>上线时要拦截不合格结果，就把漏放和误拦分开数。</p><p>单看总一致率，也许看不到哪种错误成本更高。</p><p>保留裁判版本、脱敏输入和判断依据，下次调整才知道哪些情况真的改善。</p></section><section id="chapter-5"><h3>1:42 分别报告三个分母</h3><p>最后报告至少保留三组数：终态无产物、有产物时能否与人工一致，以及同题候选里选对多少组。</p><p>每一组都写分子和分母。</p><p>如果要用自动评分帮忙决定发布，再单列漏报和误报的例子。</p><p>打开报告时先看实际需要做的决定，然后再读总体数字。</p></section>
+      </div>
+    </article></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

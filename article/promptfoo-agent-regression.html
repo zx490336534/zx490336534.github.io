@@ -21,6 +21,7 @@
 <meta property="og:image" content="https://www.zhongxin.website/images/article-covers/promptfoo-agent-regression.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/promptfoo-agent-regression.html">
 <script src="/js/comments.js?v=4" defer></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"用 Promptfoo 把一个 Agent 失败案例变成回归测试","description":"从一条错误的任务状态开始，用 Promptfoo 写断言，分别验证回放样本和当前 Agent。","inLanguage":"zh-CN","url":"https://www.zhongxin.website/article/promptfoo-agent-regression.html","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.zhongxin.website/article/promptfoo-agent-regression.html"},"author":{"@type":"Person","name":"听白","url":"https://www.zhongxin.website/about/"},"datePublished":"2026-11-25T14:52:11+08:00","image":"https://www.zhongxin.website/images/article-covers/promptfoo-agent-regression.webp"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"分类","item":"https://www.zhongxin.website/categories/"},{"@type":"ListItem","position":2,"name":"测试与质量","item":"https://www.zhongxin.website/categories/testing/"},{"@type":"ListItem","position":3,"name":"质量工程","item":"https://www.zhongxin.website/categories/testing/quality/"},{"@type":"ListItem","position":4,"name":"用 Promptfoo 把一个 Agent 失败案例变成回归测试","item":"https://www.zhongxin.website/article/promptfoo-agent-regression.html"}]}]}</script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,6 +57,7 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E5%85%88%E5%86%99%E4%BB%BB%E5%8A%A1%E7%8A%B6%E6%80%81%E7%9A%84%E7%BA%A6%E5%AE%9A">先让断言识别三种错误</a></li><li><a href="#Promptfoo-%E5%AE%9E%E9%99%85%E5%9C%A8%E6%89%A7%E8%A1%8C%E5%93%AA%E4%BA%9B%E4%B8%9C%E8%A5%BF">保留断言，把输入切换成真实请求</a></li><li><a href="#%E5%93%AA%E4%BA%9B%E5%A4%B1%E8%B4%A5%E5%BA%94%E8%AF%A5%E6%8B%A6%E4%BD%8F%E5%8F%91%E5%B8%83">发布报告要能区分业务错误和运行错误</a></li><li><a href="#%E5%8F%82%E8%80%83">参考</a></li></ol></details></aside>
       <div class="article-main">
+        <aside class="editorial-evidence" aria-labelledby="evidence-title"><h2 id="evidence-title">Agent 状态回归该断言什么？</h2><dl><dt>结论</dt><dd>断言排队状态与产物字段的约束，不能只检查回复里有没有「排队」。</dd><dt>适用条件</dt><dd>被测应用有可重复准备的排队状态，且响应结构是明确的业务契约。</dd><dt>可复核的证据</dt><dd>固定的四条样本里，一条通过、三条反例失败、零运行错误；换成本地模拟接口后，同一断言又区分出一条通过与一条失败。前者检验断言，后者还检验调用路径，两者都不是线上模型表现。</dd></dl><p><a href="/series/agent-development/#case-reads">继续看 Agent 评测案例 →</a></p></aside>
         <div class="post-body" id="article-text"><p class="article-lead" id="passage-ec601dc8e934">任务明明还在排队，Agent 却告诉用户「已经生成」。我把这个错误做成四条固定样本。用 Promptfoo 本地跑，<strong>一条正确样本通过，三个反例都失败，执行错误为零。</strong></p>
 <p id="passage-17a7c14cd3b6">这一步先确认断言能不能抓到错。下一步再让同一条断言检查当前服务的真实回复。</p>
 <span id="先让坏样本稳定失败"></span>
@@ -167,7 +169,7 @@ providers:
             此浏览器无法内嵌播放，可以打开下方链接。
           </video>
           <p class="article-video-download"><a href="https://github.com/zx490336534/zx490336534.github.io/releases/download/article-videos-20261125/promptfoo-agent-regression-xiaoxiao.mp4">打开或下载 MP4 ↗</a></p>
-        </section>
+        </section><p class="watch-link"><a href="/videos/watch/promptfoo-agent-regression/">打开独立观看页和文字稿 →</a></p>
 
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Promptfoo/">Promptfoo</a><a href="/tags/Agent-%E8%AF%84%E6%B5%8B/">Agent 评测</a><a href="/tags/%E5%9B%9E%E5%BD%92%E6%B5%8B%E8%AF%95/">回归测试</a></div>
         <div class="legacy-tags" hidden></div>

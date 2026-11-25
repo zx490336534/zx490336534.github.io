@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>用 Promptfoo 把一个 Agent 失败案例变成回归测试｜视频讲解 · 测试游记</title>
+  <meta name="description" content="用 Promptfoo 验证排队状态：固定反例、本地模拟接口和发布回归的区别。">
+  <meta property="og:title" content="用 Promptfoo 把一个 Agent 失败案例变成回归测试｜视频讲解 · 测试游记">
+  <meta property="og:description" content="用 Promptfoo 验证排队状态：固定反例、本地模拟接口和发布回归的区别。">
+  <meta property="og:url" content="https://www.zhongxin.website/videos/watch/promptfoo-agent-regression/">
+  <link rel="canonical" href="https://www.zhongxin.website/videos/watch/promptfoo-agent-regression/">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css">
+  <script src="/js/blog.js" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"VideoObject","name":"用 Promptfoo 把一个 Agent 失败案例变成回归测试｜视频讲解","description":"用 Promptfoo 验证排队状态：固定反例、本地模拟接口和发布回归的区别。","thumbnailUrl":["https://www.zhongxin.website/videos/article-posters/promptfoo-agent-regression.webp"],"uploadDate":"2026-11-25T08:37:53Z","duration":"PT132S","contentUrl":"https://github.com/zx490336534/zx490336534.github.io/releases/download/article-videos-20261125/promptfoo-agent-regression-xiaoxiao.mp4","inLanguage":"zh-CN","url":"https://www.zhongxin.website/videos/watch/promptfoo-agent-regression/"}]}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记</a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="wrap"><article class="watch-page">
+      <header><h1>用 Promptfoo 把一个 Agent 失败案例变成回归测试：视频讲解</h1></header>
+      <video controls playsinline preload="metadata" width="1280" height="720" poster="/videos/article-posters/promptfoo-agent-regression.webp"
+         aria-label="用 Promptfoo 把一个 Agent 失败案例变成回归测试">
+        <source src="https://github.com/zx490336534/zx490336534.github.io/releases/download/article-videos-20261125/promptfoo-agent-regression-xiaoxiao.mp4" type="video/mp4">
+        <track kind="captions" srclang="zh-CN" label="简体中文" src="/videos/article-captions/promptfoo-agent-regression-xiaoxiao.vtt">
+      </video>
+      <p>用 Promptfoo 验证排队状态：固定反例、本地模拟接口和发布回归的区别。 <a href="/article/promptfoo-agent-regression.html">查看图文原文 →</a> · <a href="https://github.com/zx490336534/zx490336534.github.io/releases/download/article-videos-20261125/promptfoo-agent-regression-xiaoxiao.mp4">下载视频</a></p>
+      <nav aria-label="视频章节"><h2>视频章节</h2><ol><li><a href="#chapter-1">0:00 排队状态与产物字段</a></li><li><a href="#chapter-2">0:25 用固定反例检验断言</a></li><li><a href="#chapter-3">0:52 切换到本地模拟接口</a></li><li><a href="#chapter-4">1:19 区分环境错误与产品问题</a></li><li><a href="#chapter-5">1:46 把回归接进发布门禁</a></li></ol></nav>
+      <div class="watch-transcript" aria-labelledby="transcript-title"><h2 id="transcript-title">文字稿</h2>
+        <section id="chapter-1"><h3>0:00 排队状态与产物字段</h3><p>这篇文章从一个简单错误开始，任务还在排队，助手却说已经生成。</p><p>只搜回复里有没有排队两个字，会漏掉一类更隐蔽的问题：状态写着排队，却给了一个不存在的产物编号。</p><p>要把问题变成明确约定，先确认返回结构，再检查状态和值之外不允许出现的字段。</p></section><section id="chapter-2"><h3>0:25 用固定反例检验断言</h3><p>先用四个固定输出测试规则自己。</p><p>正确排队通过；提前说完成失败；仍排队却带产物，也失败；用一句普通中文而不是结构化回复，则在结构检查失败。</p><p>作者用本地回显完成了这一步。</p><p>一条通过、三条失败，而且没有运行错误，说明规则能抓到这些反例，不代表真正的应用已经通过。</p></section><section id="chapter-3"><h3>0:52 切换到本地模拟接口</h3><p>第二步再把执行对象从固定回显切换成接口。</p><p>这样输入不再是你希望返回的答案，而是一条用户消息和可重复准备的任务状态。</p><p>文章用本地模拟接口，给同一句用户消息配两个排队场景，一个正确，一个提前完成，同一条业务断言仍能区分。</p><p>证明的是连接和规则一起能工作，不是模型表现。</p></section><section id="chapter-4"><h3>1:19 区分环境错误与产品问题</h3><p>报告里别只写一句失败。</p><p>没有拿到可评估的回复，例如超时，先查运行条件。</p><p>服务明确返回了内容，但状态、结构或字段不符合约定，才进入产品回归。</p><p>必要时保留脱敏请求、失败断言和测试版本，不要复制凭证或真实用户输入。</p><p>看逐条结果比只看总体通过率更容易找到下一步。</p></section><section id="chapter-5"><h3>1:46 把回归接进发布门禁</h3><p>首次接到持续集成，可以故意让模拟接口只打破一条条件，验证工具确实报错，流水线也能接到失败信号。</p><p>然后再检查缓存和被测版本，避免旧结果误当这次。</p><p>固定坏样本用于检验规则；真实发布门槛则要跑当前应用的回归。</p><p>两者都需要，但不能把同一个通过率当它们的共同结论。</p></section>
+      </div>
+    </article></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

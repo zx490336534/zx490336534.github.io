@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Agent 时代的 UI 自动化，哪些步骤值得用 AI？｜视频讲解 · 测试游记</title>
+  <meta name="description" content="同样返回 200 和保存成功，为什么刷新后只有一个版本还读得到卡片？">
+  <meta property="og:title" content="Agent 时代的 UI 自动化，哪些步骤值得用 AI？｜视频讲解 · 测试游记">
+  <meta property="og:description" content="同样返回 200 和保存成功，为什么刷新后只有一个版本还读得到卡片？">
+  <meta property="og:url" content="https://www.zhongxin.website/videos/watch/agent-ui-testing/">
+  <link rel="canonical" href="https://www.zhongxin.website/videos/watch/agent-ui-testing/">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css">
+  <script src="/js/blog.js" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"VideoObject","name":"Agent 时代的 UI 自动化，哪些步骤值得用 AI？｜视频讲解","description":"同样返回 200 和保存成功，为什么刷新后只有一个版本还读得到卡片？","thumbnailUrl":["https://www.zhongxin.website/videos/article-posters/agent-ui-testing.webp"],"uploadDate":"2026-11-25T08:42:21Z","duration":"PT143S","contentUrl":"https://github.com/zx490336534/zx490336534.github.io/releases/download/article-videos-20261125/agent-ui-testing-xiaoxiao.mp4","inLanguage":"zh-CN","url":"https://www.zhongxin.website/videos/watch/agent-ui-testing/"}]}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记</a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="wrap"><article class="watch-page">
+      <header><h1>Agent 时代的 UI 自动化，哪些步骤值得用 AI？：视频讲解</h1></header>
+      <video controls playsinline preload="metadata" width="1280" height="720" poster="/videos/article-posters/agent-ui-testing.webp"
+         aria-label="Agent 时代的 UI 自动化，哪些步骤值得用 AI？">
+        <source src="https://github.com/zx490336534/zx490336534.github.io/releases/download/article-videos-20261125/agent-ui-testing-xiaoxiao.mp4" type="video/mp4">
+        <track kind="captions" srclang="zh-CN" label="简体中文" src="/videos/article-captions/agent-ui-testing-xiaoxiao.vtt">
+      </video>
+      <p>同样返回 200 和保存成功，为什么刷新后只有一个版本还读得到卡片？ <a href="/article/agent-ui-testing.html">查看图文原文 →</a> · <a href="https://github.com/zx490336534/zx490336534.github.io/releases/download/article-videos-20261125/agent-ui-testing-xiaoxiao.mp4">下载视频</a></p>
+      <nav aria-label="视频章节"><h2>视频章节</h2><ol><li><a href="#chapter-1">0:00 本地保存对照实验</a></li><li><a href="#chapter-2">0:28 核对写入请求并回读</a></li><li><a href="#chapter-3">0:55 缓存、异步与终态</a></li><li><a href="#chapter-4">1:25 何时让视觉模型做定位</a></li><li><a href="#chapter-5">1:54 用反例校验测试本身</a></li></ol></nav>
+      <div class="watch-transcript" aria-labelledby="transcript-title"><h2 id="transcript-title">文字稿</h2>
+        <section id="chapter-1"><h3>0:00 本地保存对照实验</h3><p>作者用同一个小编辑器跑了两个模拟版本。</p><p>两个都返回二百，页面也都显示保存成功。</p><p>唯一差别是，有一个服务实际上没有写入。</p><p>刷新之后，正常版能找回卡片，故障版找不到。</p><p>如果用例只看状态码或成功提示，两边都会通过，测试就没守住用户依赖的行为。</p></section><section id="chapter-2"><h3>0:28 核对写入请求并回读</h3><p>测试先等保存按钮引发的请求。</p><p>只匹配地址可能把同一路径的读取误当成写入，要同时核对方法和本次动作。</p><p>接着再看页面反馈，然后刷新并找对应记录。</p><p>实验用可控数据，真实站点则尽量使用本次返回的标识，避免同名的旧记录假装本次写入成功。</p></section><section id="chapter-3"><h3>0:55 缓存、异步与终态</h3><p>原文的演示不会用浏览器缓存恢复卡片。</p><p>实际应用可能先从本地状态显示刚才的内容，因此刷新成功还需确认读取来源。</p><p>如果保存是异步的，接受请求只说明已经排队，并不等于写完。</p><p>先等任务明确到达终态，再查本次产物。</p><p>报告中保留实际失败点和最后能确认的状态。</p></section><section id="chapter-4"><h3>1:25 何时让视觉模型做定位</h3><p>表单、按钮和导航可以优先交给固定脚本。</p><p>对画布内的拖放，没有好用的页面节点时，可以让视觉模型完成那一步。</p><p>但模型看见卡片似乎去了右边，并不证明服务端保存了对应列和位置。</p><p>把难定位的动作与最终断言分开，失败时才能判断到底是操作没完成，还是产品没有保存。</p></section><section id="chapter-5"><h3>1:54 用反例校验测试本身</h3><p>最后再次跑故意跳过写入的测试版本。</p><p>它依旧会给成功提示，回读却必须失败。</p><p>若这次也通过，检查断言是否只剩下点按钮和看提示。</p><p>用证据分层以后，报告最好写清是请求没发出、任务未结束，还是完成后找不到记录。</p><p>每种失败都应该能指向一个不同的排查入口。</p></section>
+      </div>
+    </article></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

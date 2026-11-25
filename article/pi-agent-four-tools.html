@@ -21,6 +21,7 @@
 <meta property="og:image" content="https://www.zhongxin.website/images/article-covers/pi-agent-four-tools.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/pi-agent-four-tools.html">
 <script src="/js/comments.js?v=4" defer></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"Pi Agent 为什么默认只给四个工具？","description":"沿着一次失败测试看 Pi 默认工具怎样配合，以及扩展和会话分支各自负责什么。","inLanguage":"zh-CN","url":"https://www.zhongxin.website/article/pi-agent-four-tools.html","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.zhongxin.website/article/pi-agent-four-tools.html"},"author":{"@type":"Person","name":"听白","url":"https://www.zhongxin.website/about/"},"datePublished":"2026-11-25T14:52:11+08:00","image":"https://www.zhongxin.website/images/article-covers/pi-agent-four-tools.webp"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"分类","item":"https://www.zhongxin.website/categories/"},{"@type":"ListItem","position":2,"name":"AI 工程","item":"https://www.zhongxin.website/categories/ai/"},{"@type":"ListItem","position":3,"name":"Agent 与工作流","item":"https://www.zhongxin.website/categories/ai/agents/"},{"@type":"ListItem","position":4,"name":"Agent 架构与开发","item":"https://www.zhongxin.website/categories/ai/agents/build/"},{"@type":"ListItem","position":5,"name":"Pi Agent 为什么默认只给四个工具？","item":"https://www.zhongxin.website/article/pi-agent-four-tools.html"}]}]}</script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,6 +57,7 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E5%9B%9B%E4%B8%AA%E5%B7%A5%E5%85%B7%E6%80%8E%E6%A0%B7%E8%B7%91%E5%AE%8C%E4%B8%80%E6%AC%A1%E4%BB%A3%E7%A0%81%E4%BF%AE%E5%A4%8D">把失败单测交给四个工具</a></li><li><a href="#%E6%8A%8A%E4%B8%80%E6%AC%A1%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8%E6%8B%86%E5%BC%80%E7%9C%8B">一次调用从模型走到扩展，再返回给模型</a></li><li><a href="#%E4%BC%9A%E8%AF%9D%E5%88%86%E6%94%AF%E8%A7%A3%E5%86%B3%E7%9A%84%E6%98%AF%E5%AF%B9%E8%AF%9D%E9%80%89%E6%8B%A9">切换会话以后，先看工作区</a></li><li><a href="#%E5%9B%A2%E9%98%9F%E8%A6%81%E8%A1%A5%E7%9A%84%E4%B8%9C%E8%A5%BF-%E5%8F%AF%E4%BB%A5%E4%BB%8E%E4%B8%80%E6%AC%A1%E7%9C%9F%E5%AE%9E%E4%BB%BB%E5%8A%A1%E9%87%8C%E6%89%BE">用一条真实任务决定要加什么</a></li><li><a href="#%E5%8F%82%E8%80%83">参考</a></li></ol></details></aside>
       <div class="article-main">
+
         <div class="post-body" id="article-text"><p class="article-lead" id="passage-a8b63c205af1">Pi 默认给模型 <code>read</code>、<code>edit</code>、<code>write</code> 和 <code>bash</code>。读文件、改文件、写文件、执行命令，这四步已经能跑完一次单测修复。搜索、构建和测试直接用项目现成的命令。</p>
 <p id="passage-616d6745d43f">工具少，运行时留下的问题也更清楚。模型靠哪条证据决定下一步，扩展能在什么时候拦一下，切换会话分支以后磁盘上还有什么。读 Pi 的源码和文档时，我主要在看这三件事。</p>
 <span id="修一个失败测试-四个动作就能串起来"></span>

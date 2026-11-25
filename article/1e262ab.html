@@ -21,6 +21,7 @@
 <meta property="og:image" content="https://www.zhongxin.website/images/article-covers/1e262ab.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/1e262ab.html">
 <script src="/js/comments.js?v=4" defer></script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"Python 测试开发进阶 · 第 26 篇｜DRF 序列化器：字段参数与自定义校验","description":"测试开发进阶(二十六)欢迎关注我的公众号「测试游记」 序列化器 序列化器中定义的类属性字段，往往与模型类字段一一对应 label选项相当于verbose_name; 定义的序列化器字段，默认既可以进行序列化输出，也可以进行反序列化输入","inLanguage":"zh-CN","url":"https://www.zhongxin.website/article/1e262ab.html","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.zhongxin.website/article/1e262ab.html"},"author":{"@type":"Person","name":"听白","url":"https://www.zhongxin.website/about/"},"datePublished":"2019-10-13T20:15:05+08:00","image":"https://www.zhongxin.website/images/article-covers/1e262ab.webp"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"分类","item":"https://www.zhongxin.website/categories/"},{"@type":"ListItem","position":2,"name":"开发技术","item":"https://www.zhongxin.website/categories/development/"},{"@type":"ListItem","position":3,"name":"后端开发","item":"https://www.zhongxin.website/categories/development/backend/"},{"@type":"ListItem","position":4,"name":"Python Web","item":"https://www.zhongxin.website/categories/development/backend/python-web/"},{"@type":"ListItem","position":5,"name":"Python 测试开发进阶 · 第 26 篇｜DRF 序列化器：字段参数与自定义校验","item":"https://www.zhongxin.website/article/1e262ab.html"}]}]}</script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,6 +57,7 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E5%BA%8F%E5%88%97%E5%8C%96%E5%99%A8">序列化器</a></li><li><a href="#%E9%80%9A%E7%94%A8%E5%8F%82%E6%95%B0">通用参数</a></li><li><a href="#%E9%80%89%E9%A1%B9%E5%8F%82%E6%95%B0">选项参数</a></li><li><a href="#%E6%A0%A1%E9%AA%8C">校验</a></li><li><a href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%A1%E9%AA%8C">自定义校验</a></li><li><a href="#%E5%8D%95%E5%AD%97%E6%AE%B5%E6%A0%A1%E9%AA%8C">单字段校验</a></li><li><a href="#%E5%A4%9A%E5%AD%97%E6%AE%B5%E6%A0%A1%E9%AA%8C">多字段校验</a></li><li><a href="#%E6%A0%A1%E9%AA%8C%E5%99%A8%E7%9A%84%E9%A1%BA%E5%BA%8F">校验器的顺序</a></li><li><a href="#%E4%BC%98%E5%8C%96%E8%A7%86%E5%9B%BE%E5%86%85%E4%BB%A3%E7%A0%81">优化视图内代码</a></li><li><a href="#%E4%BF%AE%E6%94%B9post%E8%AF%B7%E6%B1%82">修改post请求</a></li><li><a href="#%E4%BF%AE%E6%94%B9put%E8%AF%B7%E6%B1%82">修改put请求</a></li><li><a href="#%E4%BC%98%E5%8C%96%E5%BA%8F%E5%88%97%E5%8C%96%E5%99%A8">优化序列化器</a></li></ol></details></aside>
       <div class="article-main">
+
         <div class="post-body" id="article-text"><span id="测试开发进阶-二十六"></span><p id="passage-435a065421fd">欢迎关注我的公众号「测试游记」</p>
 <h2 id="序列化器"><a class="headerlink" href="#序列化器" title="序列化器"></a>序列化器</h2><ol>
 <li id="passage-081b4c85e701">序列化器中定义的类属性字段，往往与模型类字段一一对应</li>
