@@ -18,6 +18,7 @@
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
   <script src="/js/public-counts.js" defer></script>
 
+<meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/wechat-d2291acb4818a5.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/wechat-d2291acb4818a5.html">
 <script src="/js/comments.js" defer></script>
 </head>
@@ -52,6 +53,7 @@
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E9%97%AE%E9%A2%98">问题</a></li><li><a href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA">环境搭建</a></li><li><a href="#%E5%B0%8F%E7%BB%93">小结</a></li></ol></details></aside>
       <div class="article-main">
+        <figure class="article-cover"><img src="/images/blog-covers/wechat-d2291acb4818a5.webp" alt="" fetchpriority="high" decoding="async"></figure>
         <div class="post-body"><section><h2 id="问题"><span>问题</span></h2><p>在测试安卓APP中的H5的时候发现部分UI展示异常</p><p>例如该按钮的内容在IOS上正常，但是在安卓上却显示异常</p><figure><img alt="" decoding="async" height="135" loading="lazy" src="/images/blog-media/a107e1ee33ef778ffdc6.webp" width="290"/><figcaption>异常</figcaption></figure><p>但是拷贝当前H5地址到安卓的浏览器上查看却是正常的</p><p>那是因为APP中内置的<code>WebView</code>与浏览器的<code>WebView</code>版本是不一样的</p><p>所以我们需要在对应<code>WebView</code>下进行调试查看</p><p>调试基于WebView的Hybrid App最舒服的工具当然是Chrome自带的开发者工具，其中有我们熟悉的Dom树调试，JS调试，Network监视等等功能。</p><h2 id="环境搭建"><span>环境搭建</span></h2><ol class="list-paddingleft-2"><li><p><span>开启手机上的USB调试功能</span></p></li><li><p><span>打开Chrome浏览器，地址栏输入：Chrome://inspect，回车</span></p></li><li><p><span>Chrome会自动检测手机上打开的App，并列出可调试的WebView页面，如图：</span></p></li></ol><figure><img alt="" decoding="async" height="692" loading="lazy" src="/images/blog-media/25ced654d95c41c3ec74.webp" width="979"/><figcaption>页面</figcaption></figure><p>点击<code>inspect</code>就会弹出一个新的窗口</p><figure><img alt="" decoding="async" height="110" loading="lazy" src="/images/blog-media/15dbc9ed73b58d836e79.webp" width="788"/><figcaption>测试H5</figcaption></figure><blockquote><p><strong>注意</strong>：因为需要下载<code>WebView</code>所以需要翻墙</p></blockquote><figure><img alt="" decoding="async" height="594" loading="lazy" src="/images/blog-media/3740cb9ef1c2072c1949.webp" width="1080"/><figcaption>调试</figcaption></figure><p>这时我们就可以看到文字偏上是因为没有上下居中</p><figure><img alt="" decoding="async" height="118" loading="lazy" src="/images/blog-media/ff93f93ae28091f6577f.webp" width="220"/><figcaption>span修改前</figcaption></figure><p>添加</p><pre><code><span>line-height</span>: <span>normal</span><br/></code></pre><p>后内容就居中对齐了</p><figure><img alt="" decoding="async" height="154" loading="lazy" src="/images/blog-media/f2464096f849bfd49669.webp" width="1080"/><figcaption>修改后</figcaption></figure><h2 id="小结"><span>小结</span></h2><p>使用该方法可以调试小程序中嵌入H5、APP中嵌入H5的各种场景</p></section></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/jbWq3rNWe8B87AektY9MJA">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/H5/">H5</a><a href="/tags/%E8%B0%83%E8%AF%95/">调试</a></div>

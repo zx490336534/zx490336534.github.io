@@ -16,6 +16,7 @@ from urllib.parse import quote, unquote, urlsplit
 import xml.etree.ElementTree as ET
 
 from bs4 import BeautifulSoup
+from bs4.element import NavigableString
 import nh3
 
 from blog_topics import Topic, browser_page, links as taxonomy_links, read_catalog, topic_trail
@@ -68,6 +69,8 @@ class Post:
     author: str = "听白"
     topic: Topic | None = None
     editorial_tags: list = field(default_factory=list)
+    display_cover: str = ""
+    opening_cover: str = ""
 
     @property
     def day(self):
@@ -304,32 +307,69 @@ def excerpt(description, limit):
     return html(text[:limit])
 
 
+def thumbnail(post):
+    if not post.display_cover:
+        return ""
+    return (f'<img class="post-thumbnail" src="{html(post.display_cover)}" alt="" '
+            'width="180" height="90" loading="lazy" decoding="async">')
+
+
 def post_rows(posts, *, show_category=True):
     css = "post-list" if show_category else "post-list without-category"
-    return f'<ul class="{css}">' + "".join(
-        f'<li>{date_label(post)}<div><a class="row-title" href="{html(post.path)}">{html(post.title)}</a>'
-        f'<p>{excerpt(post.description, 110)}</p></div>'
-        + (f'<span class="categories">{category_links(post)}</span>' if show_category else "")
-        + "</li>"
-        for post in posts
-    ) + "</ul>"
+    rows = []
+    for post in posts:
+        cover = thumbnail(post)
+        marker = ' class="has-cover"' if cover else ""
+        category = f'<span class="categories">{category_links(post)}</span>' if show_category else ""
+        rows.append(
+            f'<li{marker}>{date_label(post)}<div>'
+            f'<a class="row-title post-row-link" href="{html(post.path)}">{cover}'
+            f'<span>{html(post.title)}<span class="row-excerpt">{excerpt(post.description, 110)}</span></span></a>'
+            f'</div>{category}</li>'
+        )
+    return f'<ul class="{css}">' + "".join(rows) + "</ul>"
 
 
-def home_picture(post):
-    authored_cover = f"/images/blog-covers/{Path(post.path).stem}.webp"
-    for path in (authored_cover, post.cover):
-        if path.startswith("/images/") and (ROOT / path.lstrip("/")).is_file():
-            return path
-    for img in BeautifulSoup(post.body, "lxml").select("img[src][width][height]"):
-        width, height = str(img["width"]), str(img["height"])
-        if not (width.isdigit() and height.isdigit()):
-            continue
-        path = img["src"]
-        if (int(width) >= 560 and int(height) >= 240 and int(width) >= int(height)
-                and path.startswith("/images/blog-media/") and Path(path).suffix in {".webp", ".jpg", ".png"}
-                and (ROOT / path.lstrip("/")).is_file()):
-            return path
-    return ""
+def starts_article(body, image):
+    if image is None:
+        return False
+    text_before = 0
+    for item in body.descendants:
+        if item is image:
+            return True
+        if isinstance(item, NavigableString):
+            text_before += len(item.strip())
+        if text_before > 175 or getattr(item, "name", "") in {"pre", "table"}:
+            return False
+    return False
+
+
+def set_display_covers(posts, opening_covers):
+    for post in posts:
+        stem = Path(post.path).stem
+        curated = f"/images/blog-covers/{stem}.webp"
+        for image in (curated, post.cover):
+            if image.startswith("/images/") and (ROOT / image.lstrip("/")).is_file():
+                post.display_cover = image
+                break
+
+        expected_opening = opening_covers.get(stem)
+        if expected_opening or not post.display_cover:
+            body = BeautifulSoup(post.body, "lxml")
+            if expected_opening and starts_article(body, body.find("img", src=expected_opening)):
+                post.opening_cover = expected_opening
+
+            if not post.display_cover:
+                for img in body.select("img[src][width][height]"):
+                    width, height = str(img["width"]), str(img["height"])
+                    path = img["src"]
+                    if (width.isdigit() and height.isdigit() and int(width) >= 320 and int(height) >= 160
+                            and path.startswith("/images/blog-media/") and Path(path).suffix in {".webp", ".jpg", ".png"}
+                            and (ROOT / path.lstrip("/")).is_file()):
+                        post.display_cover = path
+                        if starts_article(body, img):
+                            post.opening_cover = path
+                        break
 
 
 RESOURCES = [
@@ -376,7 +416,7 @@ def home(posts, catalog):
     feature = posts[0]
     photos = []
     for post in posts[1:40]:
-        picture = home_picture(post)
+        picture = post.display_cover
         if picture:
             photos.append((post, picture))
         if len(photos) == 8:
@@ -407,7 +447,7 @@ def home(posts, catalog):
     </div>
   </header>
   <section class="publication-feature" aria-label="最新文章">
-    {home_story(feature, home_picture(feature), lead=True)}
+    {home_story(feature, feature.display_cover, lead=True)}
   </section>
   <nav class="publication-topics" aria-label="主要分类">{paths}</nav>
   {illustrated}
@@ -456,7 +496,16 @@ def article(post, older, newer):
           <p role="status"></p>
           <div class="giscus"></div>
         </section>'''
-    cover = f'<meta name="blog-cover" content="{html(post.cover)}"><meta property="og:image" content="{html(SITE + post.cover)}">' if post.cover else ''
+    cover_meta = f'<meta name="blog-cover" content="{html(post.cover)}">' if post.cover else ""
+    if post.display_cover:
+        cover_meta += f'\n<meta property="og:image" content="{html(SITE + post.display_cover)}">'
+    if post.opening_cover:
+        cover_meta += f'\n<link rel="preload" as="image" href="{html(post.opening_cover)}">'
+    cover_image = (
+        f'<figure class="article-cover"><img src="{html(post.display_cover)}" alt="" '
+        'fetchpriority="high" decoding="async"></figure>'
+        if post.display_cover and not post.opening_cover else ""
+    )
     content = f'''
   <article class="article">
     <header class="article-header">
@@ -471,6 +520,7 @@ def article(post, older, newer):
     <div class="article-layout {'with-outline' if outline else ''}">
       {outline}
       <div class="article-main">
+        {cover_image}
         <div class="post-body">{post.body}</div>
         {source}
         <div class="post-tags" aria-label="文章标签">{tags}</div>
@@ -481,7 +531,7 @@ def article(post, older, newer):
     </div>
   </article>'''
     head = (
-        f'{cover}\n<meta name="giscus:backlink" content="{html(SITE + post.path)}">\n'
+        f'{cover_meta}\n<meta name="giscus:backlink" content="{html(SITE + post.path)}">\n'
         '<script src="/js/comments.js" defer></script>'
     )
     return shell(post.title, post.path, content, post.description, head)
@@ -619,7 +669,8 @@ def indexes(posts, catalog):
     category_indexes(posts, catalog)
     tag_indexes(posts)
     search = [{"path": post.path, "title": post.title, "date": post.day,
-               "text": post.search_text, "summary": unescape(excerpt(post.description, 180)), "topics": list(dict.fromkeys(
+               "text": post.search_text, "summary": unescape(excerpt(post.description, 180)),
+               "cover": post.display_cover, "topics": list(dict.fromkeys(
                    [topic.name for topic in post.topic.trail()] + [name for name, _ in post.editorial_tags or post.tags]
                ))} for post in posts]
     write("/search.json", json.dumps(search, ensure_ascii=False, separators=(",", ":")) + "\n")
@@ -669,6 +720,8 @@ def main():
         posts = import_posts(args.import_posts, posts)
     posts.sort(key=lambda post: (post.published, post.path), reverse=True)
     catalog = read_catalog(posts, ROOT / "scripts/topic_catalog.json")
+    openings = json.loads((ROOT / "scripts/cover_openings.json").read_text())
+    set_display_covers(posts, openings)
     write("/", home(posts, catalog))
     for i, post in enumerate(posts):
         older = posts[i + 1] if i + 1 < len(posts) else None

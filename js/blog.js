@@ -94,7 +94,21 @@ async function showResults() {
     meta.append(date, post.topics[0] ? ' · ' + post.topics[0] : '');
     const summary = document.createElement('p');
     summary.textContent = snippet(post, words, rank);
-    link.append(title, meta, summary);
+    const copy = document.createElement('span');
+    copy.append(title, meta, summary);
+    if (post.cover?.startsWith('/images/')) {
+      const picture = document.createElement('img');
+      picture.className = 'post-thumbnail';
+      picture.src = post.cover;
+      picture.alt = '';
+      picture.width = 180;
+      picture.height = 90;
+      picture.loading = 'lazy';
+      picture.decoding = 'async';
+      link.className = 'search-result-cover';
+      link.append(picture);
+    }
+    link.append(copy);
     item.append(link);
     results.append(item);
   }
