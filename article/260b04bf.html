@@ -20,7 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/260b04bf.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/260b04bf.html">
-<script type="module" src="/js/discussions.js"></script>
+<script src="/js/comments.js?v=4" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,105 +56,91 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E6%8C%87%E6%A0%87">性能测试指标</a></li><li><a href="#%E5%93%8D%E5%BA%94%E6%97%B6%E9%97%B4RT%EF%BC%88%E9%87%8D%E8%A6%81%E6%8C%87%E6%A0%87%EF%BC%89">响应时间RT（重要指标）</a></li><li><a href="#TPS-QPS%EF%BC%88%E6%9C%80%E4%B8%BB%E8%A6%81%E6%8C%87%E6%A0%87%EF%BC%89">TPS/QPS（最主要指标）</a></li><li><a href="#%E5%90%9E%E5%90%90%E9%87%8F">吞吐量</a></li><li><a href="#%E5%90%9E%E5%90%90%E7%8E%87">吞吐率</a></li><li><a href="#%E7%82%B9%E5%87%BB%E7%8E%87">点击率</a></li><li><a href="#%E8%B5%84%E6%BA%90%E5%88%A9%E7%94%A8%E7%8E%87">资源利用率</a></li><li><a href="#%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83">性能测试环境</a></li><li><a href="#%E6%80%A7%E8%83%BD%E7%8E%AF%E5%A2%83%E7%A1%AC%E4%BB%B6%E8%B5%84%E6%BA%90%E6%80%8E%E4%B9%88%E7%A1%AE%E5%AE%9A">性能环境硬件资源怎么确定</a></li><li><a href="#%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E6%B5%81%E7%A8%8B">性能测试流程</a></li><li><a href="#%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E5%87%86%E5%A4%87">性能测试准备</a></li><li><a href="#%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E8%84%9A%E6%9C%AC%E5%BC%80%E5%8F%91">性能测试脚本开发</a></li><li><a href="#%E6%80%A7%E8%83%BD%E6%89%A7%E8%A1%8C">性能执行</a></li><li><a href="#%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C%E5%88%86%E6%9E%90%E4%B8%8E%E8%B0%83%E4%BC%98">性能测试结果分析与调优</a></li><li><a href="#%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E6%8A%A5%E5%91%8A%E4%B8%8E%E7%BB%93%E6%9E%9C%E8%B7%9F%E8%B8%AA">性能测试报告与结果跟踪</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><span id="2-性能测试知识面"></span><h2 data-passage-key="2e030547a412" id="性能测试指标"><a class="headerlink" href="#性能测试指标" title="性能测试指标"></a>性能测试指标</h2><h3 data-passage-key="9ae5916d995d" id="响应时间RT（重要指标）"><a class="headerlink" href="#响应时间RT（重要指标）" title="响应时间RT（重要指标）"></a>响应时间RT（重要指标）</h3><blockquote data-passage-key="bcc3b2eb9a60" id="passage-5e038a629187">
-<p data-passage-key="585e27aa2f56" id="passage-9d1236484734">RT是一个非常重要的性能指标</p>
+        <div class="post-body" id="article-text"><span id="2-性能测试知识面"></span><h2 id="性能测试指标"><a class="headerlink" href="#性能测试指标" title="性能测试指标"></a>性能测试指标</h2><h3 id="响应时间RT（重要指标）"><a class="headerlink" href="#响应时间RT（重要指标）" title="响应时间RT（重要指标）"></a>响应时间RT（重要指标）</h3><blockquote id="passage-5e038a629187">
+<p id="passage-9d1236484734">RT是一个非常重要的性能指标</p>
 </blockquote>
-<p data-passage-key="32f047f46a91" id="passage-1ddd24526f27">从发起请求的时间点，经过网络传输时间+服务器处理的时间+通过网络传输返回的时间</p>
-<p data-passage-key="91ac8e24c4b2" id="passage-ddb4b187448b">我们做性能测试时，尽可能的降低网络延迟时间，这样RT时间才会无限的接近我们的服务器处理时间</p>
+<p id="passage-1ddd24526f27">从发起请求的时间点，经过网络传输时间+服务器处理的时间+通过网络传输返回的时间</p>
+<p id="passage-ddb4b187448b">我们做性能测试时，尽可能的降低网络延迟时间，这样RT时间才会无限的接近我们的服务器处理时间</p>
 <ul>
-<li data-passage-key="fc74c91462a0" id="passage-4748e365d0c9">带宽加宽</li>
-<li data-passage-key="b584474e4d26" id="passage-3c64ef9e0b10">局域网</li>
-<li data-passage-key="07efdcacba04" id="passage-9d1d695dfe44">在性能测试中，不要使用无线网络（排除专门的无线网络测试）</li>
+<li id="passage-4748e365d0c9">带宽加宽</li>
+<li id="passage-3c64ef9e0b10">局域网</li>
+<li id="passage-9d1d695dfe44">在性能测试中，不要使用无线网络（排除专门的无线网络测试）</li>
 </ul>
-<p data-passage-key="920822ed709b" id="passage-b07fa4b92133">使用有线网络时要注意</p>
+<p id="passage-b07fa4b92133">使用有线网络时要注意</p>
 <ul>
-<li data-passage-key="e30ccd6bab2d" id="passage-c536452a736e">网络传输的带宽</li>
-<li data-passage-key="eb98a6d62121" id="passage-0216e0cfc6fb">降低网络传输的节点与距离（不能使用跳板机）</li>
-<li data-passage-key="e5d1c253ee44" id="passage-08d775794aa1">独立网络环境<span id="more"></span>
-<h3 data-passage-key="234e34b9a37f" id="TPS-QPS（最主要指标）"><a class="headerlink" href="#TPS-QPS（最主要指标）" title="TPS/QPS（最主要指标）"></a>TPS/QPS（最主要指标）</h3></li>
+<li id="passage-c536452a736e">网络传输的带宽</li>
+<li id="passage-0216e0cfc6fb">降低网络传输的节点与距离（不能使用跳板机）</li>
+<li id="passage-08d775794aa1">独立网络环境<span id="more"></span>
+<h3 id="TPS-QPS（最主要指标）"><a class="headerlink" href="#TPS-QPS（最主要指标）" title="TPS/QPS（最主要指标）"></a>TPS/QPS（最主要指标）</h3></li>
 </ul>
-<h4 data-passage-key="04b1c2bddfdf" id="TPS-Transactions-per-Second"><a class="headerlink" href="#TPS-Transactions-per-Second" title="TPS(Transactions per Second)"></a>TPS(Transactions per Second)</h4><p data-passage-key="9d5aff3406f3" id="passage-0692db3db86b"><strong>服务器</strong>每秒处理事务数，衡量服务器处理能力的最主要指标</p>
-<h4 data-passage-key="14051f8a930f" id="QPS-Queries-per-Second"><a class="headerlink" href="#QPS-Queries-per-Second" title="QPS(Queries per Second)"></a>QPS(Queries per Second)</h4><p data-passage-key="98a4f685c60d" id="passage-054410046973">每秒查询率</p>
-<h4 data-passage-key="9032c3c2b7e6" id="差异"><a class="headerlink" href="#差异" title="差异"></a>差异</h4><p data-passage-key="0049bb257727" id="passage-8d2c62d15fd1">一个TPS可能有多个QPS</p>
-<h4 data-passage-key="82a32a804e6b" id="HPS-Hit-per-Second"><a class="headerlink" href="#HPS-Hit-per-Second" title="HPS(Hit per Second)"></a>HPS(Hit per Second)</h4><p data-passage-key="d21129c9390e" id="passage-ee04c748d546">每秒点击数（用户端）</p>
-<h4 data-passage-key="e073d5c0208a" id="RPS-request-per-Second"><a class="headerlink" href="#RPS-request-per-Second" title="RPS(request per Second)"></a>RPS(request per Second)</h4><p data-passage-key="f09e10af66ca" id="passage-105782e15024">每秒请求数</p>
-<h4 data-passage-key="f9b9b86d8548" id="衡量主体角度"><a class="headerlink" href="#衡量主体角度" title="衡量主体角度"></a>衡量主体角度</h4><p data-passage-key="95df40965544" id="passage-b7a42cbc4dcb">TPS：服务器处理能力。响应时间小、tps可以增大</p>
-<p data-passage-key="f7ef452f26a0" id="passage-177f6a8ba123">QPS：并发用户发起的查询 接口查询多+人多，qps可以增大</p>
-<p data-passage-key="f0f88ed5b056" id="passage-96250b873273">RPS：并发用户发起请求 人多，rps可以增大</p>
-<h3 data-passage-key="99ada8e0560a" id="吞吐量"><a class="headerlink" href="#吞吐量" title="吞吐量"></a>吞吐量</h3><blockquote data-passage-key="573ee9567629" id="passage-efa0e41139be">
-<p data-passage-key="986c1414b4a7" id="passage-7027e6f33ebc">是衡量<strong>网络</strong>处理能力的</p>
+<h4 id="TPS-Transactions-per-Second"><a class="headerlink" href="#TPS-Transactions-per-Second" title="TPS(Transactions per Second)"></a>TPS(Transactions per Second)</h4><p id="passage-0692db3db86b"><strong>服务器</strong>每秒处理事务数，衡量服务器处理能力的最主要指标</p>
+<h4 id="QPS-Queries-per-Second"><a class="headerlink" href="#QPS-Queries-per-Second" title="QPS(Queries per Second)"></a>QPS(Queries per Second)</h4><p id="passage-054410046973">每秒查询率</p>
+<h4 id="差异"><a class="headerlink" href="#差异" title="差异"></a>差异</h4><p id="passage-8d2c62d15fd1">一个TPS可能有多个QPS</p>
+<h4 id="HPS-Hit-per-Second"><a class="headerlink" href="#HPS-Hit-per-Second" title="HPS(Hit per Second)"></a>HPS(Hit per Second)</h4><p id="passage-ee04c748d546">每秒点击数（用户端）</p>
+<h4 id="RPS-request-per-Second"><a class="headerlink" href="#RPS-request-per-Second" title="RPS(request per Second)"></a>RPS(request per Second)</h4><p id="passage-105782e15024">每秒请求数</p>
+<h4 id="衡量主体角度"><a class="headerlink" href="#衡量主体角度" title="衡量主体角度"></a>衡量主体角度</h4><p id="passage-b7a42cbc4dcb">TPS：服务器处理能力。响应时间小、tps可以增大</p>
+<p id="passage-177f6a8ba123">QPS：并发用户发起的查询 接口查询多+人多，qps可以增大</p>
+<p id="passage-96250b873273">RPS：并发用户发起请求 人多，rps可以增大</p>
+<h3 id="吞吐量"><a class="headerlink" href="#吞吐量" title="吞吐量"></a>吞吐量</h3><blockquote id="passage-efa0e41139be">
+<p id="passage-7027e6f33ebc">是衡量<strong>网络</strong>处理能力的</p>
 </blockquote>
-<p data-passage-key="d5839993f7a2" id="passage-7b96f8ea0221">单位时间内处理的请求数量（事务/s）</p>
-<p data-passage-key="5f05aaf9ee25" id="passage-ccaec1e34fd0">在没有网络影响时，吞吐量=TPS</p>
-<h3 data-passage-key="707a7b43c16e" id="吞吐率"><a class="headerlink" href="#吞吐率" title="吞吐率"></a>吞吐率</h3><blockquote data-passage-key="3d09d8565ef3" id="passage-f2ff0aca3bb1">
-<p data-passage-key="6e1db452f292" id="passage-a02867401e95">网络传输速率</p>
+<p id="passage-7b96f8ea0221">单位时间内处理的请求数量（事务/s）</p>
+<p id="passage-ccaec1e34fd0">在没有网络影响时，吞吐量=TPS</p>
+<h3 id="吞吐率"><a class="headerlink" href="#吞吐率" title="吞吐率"></a>吞吐率</h3><blockquote id="passage-f2ff0aca3bb1">
+<p id="passage-a02867401e95">网络传输速率</p>
 </blockquote>
-<p data-passage-key="cff913d424ca" id="passage-cff7472c8c6f">单位时间通过的数据的平均速率（kB/s）</p>
-<h3 data-passage-key="16d28e46601c" id="点击率"><a class="headerlink" href="#点击率" title="点击率"></a>点击率</h3><p data-passage-key="5c7b75cfb907" id="passage-9c1fe8224191">每秒点击数</p>
-<h3 data-passage-key="c89a52f21174" id="资源利用率"><a class="headerlink" href="#资源利用率" title="资源利用率"></a>资源利用率</h3><p data-passage-key="e4a0711c42f8" id="passage-e79f4a9785f9">服务器资源的使用率</p>
+<p id="passage-cff7472c8c6f">单位时间通过的数据的平均速率（kB/s）</p>
+<h3 id="点击率"><a class="headerlink" href="#点击率" title="点击率"></a>点击率</h3><p id="passage-9c1fe8224191">每秒点击数</p>
+<h3 id="资源利用率"><a class="headerlink" href="#资源利用率" title="资源利用率"></a>资源利用率</h3><p id="passage-e79f4a9785f9">服务器资源的使用率</p>
 <ul>
-<li data-passage-key="fe0685e79885" id="passage-e086e5fa745f">cpu利用率</li>
-<li data-passage-key="7d1d543a81b0" id="passage-a7ceda46cbc7">内存利用率</li>
-<li data-passage-key="9f1489840a08" id="passage-cf685757b5fb">磁盘I/O</li>
-<li data-passage-key="771f83a2ddbd" id="passage-85df98e4ac33">网络带宽利用率</li>
-<li data-passage-key="4feec4d68f70" id="passage-2a865f887b04">一般都不要超过80%</li>
+<li id="passage-e086e5fa745f">cpu利用率</li>
+<li id="passage-a7ceda46cbc7">内存利用率</li>
+<li id="passage-cf685757b5fb">磁盘I/O</li>
+<li id="passage-85df98e4ac33">网络带宽利用率</li>
+<li id="passage-2a865f887b04">一般都不要超过80%</li>
 </ul>
-<h2 data-passage-key="87362851379a" id="性能测试环境"><a class="headerlink" href="#性能测试环境" title="性能测试环境"></a>性能测试环境</h2><p data-passage-key="e2cdb4f7a544" id="passage-b431abe95f75">性能测试是要自己独立搭建性能环境，网络环境</p>
+<h2 id="性能测试环境"><a class="headerlink" href="#性能测试环境" title="性能测试环境"></a>性能测试环境</h2><p id="passage-b431abe95f75">性能测试是要自己独立搭建性能环境，网络环境</p>
 <ul>
-<li data-passage-key="0b5b534b675f" id="passage-b1c97db87fbc">绝对不能用生产环境</li>
-<li data-passage-key="a3740a520135" id="passage-5003e8729a4e">不能用功能测试、自动化环境</li>
-<li data-passage-key="ca40934ea1f6" id="passage-0a4db63eaf1b">这个性能环境，包括应用服务器和数据库服务器</li>
+<li id="passage-b1c97db87fbc">绝对不能用生产环境</li>
+<li id="passage-5003e8729a4e">不能用功能测试、自动化环境</li>
+<li id="passage-0a4db63eaf1b">这个性能环境，包括应用服务器和数据库服务器</li>
 </ul>
-<h3 data-passage-key="f72988e4308b" id="性能环境硬件资源怎么确定"><a class="headerlink" href="#性能环境硬件资源怎么确定" title="性能环境硬件资源怎么确定"></a>性能环境硬件资源怎么确定</h3><ol>
-<li data-passage-key="05b36d917d00" id="passage-cdbc85838cfb"><p data-passage-key="cf2a1f6b40c0" id="passage-ab22780e9cc4">数量要和生产环境的数量一致吗？</p>
-<p data-passage-key="ebc293f920cd" id="passage-ddffb58f065d">不用和生产一样那么多服务器的数量，通过逐步增加服务器数量来评估大致的性能瓶颈</p>
-<p data-passage-key="1b010e11ab0e" id="passage-d153a3df3c78">比如生产环境有8台服务器，性能测试从2台开始，增加到3台。可以大致评估增加数量提升的性能指标</p>
+<h3 id="性能环境硬件资源怎么确定"><a class="headerlink" href="#性能环境硬件资源怎么确定" title="性能环境硬件资源怎么确定"></a>性能环境硬件资源怎么确定</h3><ol>
+<li id="passage-cdbc85838cfb"><p id="passage-ab22780e9cc4">数量要和生产环境的数量一致吗？</p>
+<p id="passage-ddffb58f065d">不用和生产一样那么多服务器的数量，通过逐步增加服务器数量来评估大致的性能瓶颈</p>
+<p id="passage-d153a3df3c78">比如生产环境有8台服务器，性能测试从2台开始，增加到3台。可以大致评估增加数量提升的性能指标</p>
 </li>
-<li data-passage-key="c84f304b49c7" id="passage-e051a626c7e4"><p data-passage-key="3ccc3f7e0fa7" id="passage-af357da55240">每一台的硬件配置要和生产环境一致吗？</p>
-<p data-passage-key="7d7b6d2e7c6f" id="passage-c8bc1c6d2c0c">要和生产环境的配置一致</p>
-<p data-passage-key="d32814050c90" id="passage-966833dc1441">如果性能测试环境的硬件配置不如生产环境的硬件配置，性能测试结果得到的性能指标值，只能说 是否存在性能瓶颈，不能作为生产性能指标低的参考</p>
+<li id="passage-e051a626c7e4"><p id="passage-af357da55240">每一台的硬件配置要和生产环境一致吗？</p>
+<p id="passage-c8bc1c6d2c0c">要和生产环境的配置一致</p>
+<p id="passage-966833dc1441">如果性能测试环境的硬件配置不如生产环境的硬件配置，性能测试结果得到的性能指标值，只能说 是否存在性能瓶颈，不能作为生产性能指标低的参考</p>
 </li>
 </ol>
-<h2 data-passage-key="d3db90b8c068" id="性能测试流程"><a class="headerlink" href="#性能测试流程" title="性能测试流程"></a>性能测试流程</h2><p data-passage-key="f6b5f8d4232a" id="passage-ac97e9a92a32">性能测试准备=&gt;搭建性能测试环境-&gt;性能测试脚本开发-&gt;性能测试脚本执行-&gt;结果分析与调优-&gt;测试报告与结果跟踪</p>
-<h3 data-passage-key="011ae1779588" id="性能测试准备"><a class="headerlink" href="#性能测试准备" title="性能测试准备"></a>性能测试准备</h3><ol>
-<li data-passage-key="f7654d6796dc" id="passage-cd5134158019">理解需求、测试计划、测试模型、工作量评估</li>
-<li data-passage-key="0e8321a5e277" id="passage-d688387ae723">了解架构(数据流)</li>
-<li data-passage-key="2f8a78c606d0" id="passage-658caa2c8f1a">要明确需求的性能指标</li>
+<h2 id="性能测试流程"><a class="headerlink" href="#性能测试流程" title="性能测试流程"></a>性能测试流程</h2><p id="passage-ac97e9a92a32">性能测试准备=&gt;搭建性能测试环境-&gt;性能测试脚本开发-&gt;性能测试脚本执行-&gt;结果分析与调优-&gt;测试报告与结果跟踪</p>
+<h3 id="性能测试准备"><a class="headerlink" href="#性能测试准备" title="性能测试准备"></a>性能测试准备</h3><ol>
+<li id="passage-cd5134158019">理解需求、测试计划、测试模型、工作量评估</li>
+<li id="passage-d688387ae723">了解架构(数据流)</li>
+<li id="passage-658caa2c8f1a">要明确需求的性能指标</li>
 </ol>
-<p data-passage-key="4f7a253e6115" id="passage-b1d14790ad47">例如500w访问量的并发</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/></pre></td><td class="code"><pre data-passage-key="24b19341c1af" id="passage-3ec3718f56e1"><span class="line"><span class="comment"># 按照每天8小时有人访问</span></span><br/><span class="line">500w/<span class="number">8</span>/<span class="number">3600</span>=<span class="number">174</span></span><br/><span class="line"><span class="comment"># 按照二八原则</span></span><br/><span class="line">500w*<span class="number">0.8</span>/（<span class="number">24</span>*<span class="number">0.2</span>*<span class="number">3600</span>)=<span class="number">232</span></span><br/><span class="line"><span class="comment"># 一般需要1.2~1.5倍的TPS</span></span><br/><span class="line"><span class="number">232</span>*（<span class="number">1.2</span>~<span class="number">1.5</span>) = <span class="number">278</span>~<span class="number">348</span> </span><br/></pre></td></tr></tbody></table></figure>
-<h3 data-passage-key="5894d8e5fe4f" id="性能测试脚本开发"><a class="headerlink" href="#性能测试脚本开发" title="性能测试脚本开发"></a>性能测试脚本开发</h3><ul>
-<li data-passage-key="62bb30f1a3d9" id="passage-12f5dfed7ef7">选取协议</li>
-<li data-passage-key="8005ed6d3b56" id="passage-59a4036a76f2">制作脚本</li>
-<li data-passage-key="dcec5d6a5f4d" id="passage-57b536fcfe6b">调试脚本</li>
-<li data-passage-key="6c3244bdfd43" id="passage-4e519ac25b29">验证脚本</li>
+<p id="passage-b1d14790ad47">例如500w访问量的并发</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/></pre></td><td class="code"><pre id="passage-3ec3718f56e1"><span class="line"><span class="comment"># 按照每天8小时有人访问</span></span><br/><span class="line">500w/<span class="number">8</span>/<span class="number">3600</span>=<span class="number">174</span></span><br/><span class="line"><span class="comment"># 按照二八原则</span></span><br/><span class="line">500w*<span class="number">0.8</span>/（<span class="number">24</span>*<span class="number">0.2</span>*<span class="number">3600</span>)=<span class="number">232</span></span><br/><span class="line"><span class="comment"># 一般需要1.2~1.5倍的TPS</span></span><br/><span class="line"><span class="number">232</span>*（<span class="number">1.2</span>~<span class="number">1.5</span>) = <span class="number">278</span>~<span class="number">348</span> </span><br/></pre></td></tr></tbody></table></figure>
+<h3 id="性能测试脚本开发"><a class="headerlink" href="#性能测试脚本开发" title="性能测试脚本开发"></a>性能测试脚本开发</h3><ul>
+<li id="passage-12f5dfed7ef7">选取协议</li>
+<li id="passage-59a4036a76f2">制作脚本</li>
+<li id="passage-57b536fcfe6b">调试脚本</li>
+<li id="passage-4e519ac25b29">验证脚本</li>
 </ul>
-<p data-passage-key="da4f03f5a11d" id="passage-33c66db5ee7d">先对接测试环境，开发调试脚本完成，再对接性能环境</p>
-<h3 data-passage-key="9ee5d2959d35" id="性能执行"><a class="headerlink" href="#性能执行" title="性能执行"></a>性能执行</h3><ul>
-<li data-passage-key="11fe187a3747" id="passage-bb1d4fcea6ad">试运行</li>
-<li data-passage-key="f649f305dc99" id="passage-ed022db82918">场景执行</li>
+<p id="passage-33c66db5ee7d">先对接测试环境，开发调试脚本完成，再对接性能环境</p>
+<h3 id="性能执行"><a class="headerlink" href="#性能执行" title="性能执行"></a>性能执行</h3><ul>
+<li id="passage-bb1d4fcea6ad">试运行</li>
+<li id="passage-ed022db82918">场景执行</li>
 </ul>
-<h3 data-passage-key="2d9a831c8fbc" id="性能测试结果分析与调优"><a class="headerlink" href="#性能测试结果分析与调优" title="性能测试结果分析与调优"></a>性能测试结果分析与调优</h3><ul>
-<li data-passage-key="dc89c4105020" id="passage-1005cc4eab78">分析思路：服务器硬件&gt;网络&gt;操作系统软件层的配置&gt;应用的瓶颈</li>
+<h3 id="性能测试结果分析与调优"><a class="headerlink" href="#性能测试结果分析与调优" title="性能测试结果分析与调优"></a>性能测试结果分析与调优</h3><ul>
+<li id="passage-1005cc4eab78">分析思路：服务器硬件&gt;网络&gt;操作系统软件层的配置&gt;应用的瓶颈</li>
 </ul>
-<h3 data-passage-key="5d02e44085e4" id="性能测试报告与结果跟踪"><a class="headerlink" href="#性能测试报告与结果跟踪" title="性能测试报告与结果跟踪"></a>性能测试报告与结果跟踪</h3><ul>
-<li data-passage-key="11963e82cd31" id="passage-c5d339fe7063">性能测试报告</li>
-<li data-passage-key="8b37a6e5827f" id="passage-38316d8887ff">性能测试问题跟踪</li>
+<h3 id="性能测试报告与结果跟踪"><a class="headerlink" href="#性能测试报告与结果跟踪" title="性能测试报告与结果跟踪"></a>性能测试报告与结果跟踪</h3><ul>
+<li id="passage-c5d339fe7063">性能测试报告</li>
+<li id="passage-38316d8887ff">性能测试问题跟踪</li>
 </ul></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
-        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
-          <header class="passage-dialog-header">
-            <h2 id="passage-comment-title">段落评论</h2>
-            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
-          </header>
-          <div class="passage-dialog-content">
-            <blockquote data-passage-excerpt></blockquote>
-            <a data-passage-source>查看原文</a>
-            <p data-passage-status role="status"></p>
-            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
-            <div data-passage-widget></div>
-          </div>
-        </dialog>
 
         <div class="post-tags" aria-label="文章标签"><a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a><a href="/tags/%E5%85%A5%E9%97%A8/">入门</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a></div>
@@ -168,7 +154,7 @@
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
-          <div class="giscus"></div>
+          <div class="giscus" id="article-discussion"></div>
         </section>
       </div>
     </div>

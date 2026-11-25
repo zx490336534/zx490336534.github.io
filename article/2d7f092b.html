@@ -20,7 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/2d7f092b.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/2d7f092b.html">
-<script type="module" src="/js/discussions.js"></script>
+<script src="/js/comments.js?v=4" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,155 +56,141 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E9%A6%96%E9%A1%B5">首页</a></li><li><a href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8">如何使用</a></li><li><a href="#%E9%83%A8%E7%BD%B2">部署</a></li><li><a href="#%E6%B5%81%E7%A8%8B">流程</a></li><li><a href="#Shell">Shell</a></li><li><a href="#shell%E7%9A%84%E5%88%86%E7%B1%BB">shell的分类</a></li><li><a href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4">常用命令</a></li><li><a href="#%E5%8F%98%E9%87%8F">变量</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><span id="测试开发进阶-三十九"></span><h2 data-passage-key="203c08e0d44a" id="首页"><a class="headerlink" href="#首页" title="首页"></a>首页</h2><p data-passage-key="4bdf1e4efbc3" id="passage-c9eb17cf91a1">使用一个简单的get函数返回需要的内容</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/></pre></td><td class="code"><pre data-passage-key="20cd2fc3e25e" id="passage-7f2c8492d72f"><span class="line">statistics = {</span><br/><span class="line">    <span class="string">'projects_count'</span>: projects_count,</span><br/><span class="line">    <span class="string">'interfaces_count'</span>: interfaces_count,</span><br/><span class="line">    <span class="string">'testcases_count'</span>: testcases_count,</span><br/><span class="line">    <span class="string">'testsuits_count'</span>: testsuits_count,</span><br/><span class="line">    <span class="string">'configures_count'</span>: configures_count,</span><br/><span class="line">    <span class="string">'envs_count'</span>: envs_count,</span><br/><span class="line">    <span class="string">'debug_talks_count'</span>: debug_talks_count,</span><br/><span class="line">    <span class="string">'reports_count'</span>: reports_count,</span><br/><span class="line">    <span class="string">'success_rate'</span>: success_rate,</span><br/><span class="line">    <span class="string">'fail_rate'</span>: fail_rate,</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
-<p data-passage-key="e2a42410e9c3" id="passage-b84408491463">他们都是从数据库中计算并统计出来的</p>
-<p data-passage-key="6319d6495871" id="passage-9cf2ca7bb448">需要有权限才能访问</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="1a167e1138f6" id="passage-3dec41f506c7"><span class="line">permission_classes = [permissions.IsAuthenticated]</span><br/></pre></td></tr></tbody></table></figure>
+        <div class="post-body" id="article-text"><span id="测试开发进阶-三十九"></span><h2 id="首页"><a class="headerlink" href="#首页" title="首页"></a>首页</h2><p id="passage-c9eb17cf91a1">使用一个简单的get函数返回需要的内容</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/></pre></td><td class="code"><pre id="passage-7f2c8492d72f"><span class="line">statistics = {</span><br/><span class="line">    <span class="string">'projects_count'</span>: projects_count,</span><br/><span class="line">    <span class="string">'interfaces_count'</span>: interfaces_count,</span><br/><span class="line">    <span class="string">'testcases_count'</span>: testcases_count,</span><br/><span class="line">    <span class="string">'testsuits_count'</span>: testsuits_count,</span><br/><span class="line">    <span class="string">'configures_count'</span>: configures_count,</span><br/><span class="line">    <span class="string">'envs_count'</span>: envs_count,</span><br/><span class="line">    <span class="string">'debug_talks_count'</span>: debug_talks_count,</span><br/><span class="line">    <span class="string">'reports_count'</span>: reports_count,</span><br/><span class="line">    <span class="string">'success_rate'</span>: success_rate,</span><br/><span class="line">    <span class="string">'fail_rate'</span>: fail_rate,</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-b84408491463">他们都是从数据库中计算并统计出来的</p>
+<p id="passage-9cf2ca7bb448">需要有权限才能访问</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-3dec41f506c7"><span class="line">permission_classes = [permissions.IsAuthenticated]</span><br/></pre></td></tr></tbody></table></figure>
 <span id="more"></span>
-<p data-passage-key="74c0da703546" id="passage-74a8909f69db">代码：</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/><span class="line">20</span><br/><span class="line">21</span><br/><span class="line">22</span><br/><span class="line">23</span><br/><span class="line">24</span><br/><span class="line">25</span><br/><span class="line">26</span><br/><span class="line">27</span><br/><span class="line">28</span><br/><span class="line">29</span><br/><span class="line">30</span><br/><span class="line">31</span><br/><span class="line">32</span><br/><span class="line">33</span><br/><span class="line">34</span><br/><span class="line">35</span><br/><span class="line">36</span><br/><span class="line">37</span><br/><span class="line">38</span><br/><span class="line">39</span><br/><span class="line">40</span><br/><span class="line">41</span><br/><span class="line">42</span><br/><span class="line">43</span><br/><span class="line">44</span><br/><span class="line">45</span><br/><span class="line">46</span><br/><span class="line">47</span><br/><span class="line">48</span><br/><span class="line">49</span><br/><span class="line">50</span><br/><span class="line">51</span><br/><span class="line">52</span><br/><span class="line">53</span><br/><span class="line">54</span><br/><span class="line">55</span><br/><span class="line">56</span><br/><span class="line">57</span><br/><span class="line">58</span><br/><span class="line">59</span><br/><span class="line">60</span><br/><span class="line">61</span><br/><span class="line">62</span><br/><span class="line">63</span><br/><span class="line">64</span><br/><span class="line">65</span><br/><span class="line">66</span><br/><span class="line">67</span><br/><span class="line">68</span><br/><span class="line">69</span><br/><span class="line">70</span><br/></pre></td><td class="code"><pre data-passage-key="d102643f8a00" id="passage-4a04abe76484"><span class="line"><span class="keyword">from</span> rest_framework.views <span class="keyword">import</span> APIView</span><br/><span class="line"><span class="keyword">from</span> rest_framework.response <span class="keyword">import</span> Response</span><br/><span class="line"><span class="keyword">from</span> rest_framework <span class="keyword">import</span> permissions</span><br/><span class="line"><span class="keyword">from</span> django.db.models <span class="keyword">import</span> Sum</span><br/><span class="line"></span><br/><span class="line"><span class="keyword">from</span> projects.models <span class="keyword">import</span> Projects</span><br/><span class="line"><span class="keyword">from</span> interfaces.models <span class="keyword">import</span> Interfaces</span><br/><span class="line"><span class="keyword">from</span> testcases.models <span class="keyword">import</span> Testcases</span><br/><span class="line"><span class="keyword">from</span> testsuits.models <span class="keyword">import</span> Testsuits</span><br/><span class="line"><span class="keyword">from</span> configures.models <span class="keyword">import</span> Configures</span><br/><span class="line"><span class="keyword">from</span> envs.models <span class="keyword">import</span> Envs</span><br/><span class="line"><span class="keyword">from</span> debugtalks.models <span class="keyword">import</span> DebugTalks</span><br/><span class="line"><span class="keyword">from</span> reports.models <span class="keyword">import</span> Reports</span><br/><span class="line"></span><br/><span class="line"></span><br/><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SummaryAPIView</span>(<span class="params">APIView</span>):</span></span><br/><span class="line">    <span class="string">"""</span></span><br/><span class="line"><span class="string">    返回统计信息</span></span><br/><span class="line"><span class="string">    """</span></span><br/><span class="line">    permission_classes = [permissions.IsAuthenticated]</span><br/><span class="line"></span><br/><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span>(<span class="params">self, request</span>):</span></span><br/><span class="line">        <span class="string">"""</span></span><br/><span class="line"><span class="string">        获取统计信息</span></span><br/><span class="line"><span class="string">        """</span></span><br/><span class="line">        user = request.user</span><br/><span class="line">        user_info = {</span><br/><span class="line">            <span class="string">'username'</span>: user.username,</span><br/><span class="line">            <span class="string">'role'</span>: <span class="string">'管理员'</span> <span class="keyword">if</span> user.is_superuser <span class="keyword">else</span> <span class="string">'普通用户'</span>,</span><br/><span class="line">            <span class="string">'date_joined'</span>: user.date_joined.strftime(<span class="string">'%Y-%m-%d %H:%M:%S'</span>) <span class="keyword">if</span> user.date_joined <span class="keyword">else</span> <span class="string">''</span>,</span><br/><span class="line">            <span class="string">'last_login'</span>: user.last_login.strftime(<span class="string">'%Y-%m-%d %H:%M:%S'</span>) <span class="keyword">if</span> user.last_login <span class="keyword">else</span> <span class="string">''</span>,</span><br/><span class="line">        }</span><br/><span class="line"></span><br/><span class="line">        projects_count = Projects.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>).count()</span><br/><span class="line">        interfaces_count = Interfaces.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>).count()</span><br/><span class="line">        testcases_count = Testcases.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>).count()</span><br/><span class="line">        testsuits_count = Testsuits.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>).count()</span><br/><span class="line">        configures_count = Configures.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>).count()</span><br/><span class="line">        envs_count = Envs.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>).count()</span><br/><span class="line">        debug_talks_count = DebugTalks.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>).count()</span><br/><span class="line">        reports_count = Reports.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>).count()</span><br/><span class="line"></span><br/><span class="line">        run_testcases_success_count = Reports.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>).aggregate(Sum(<span class="string">'success'</span>))[</span><br/><span class="line">                                          <span class="string">'success__sum'</span>] <span class="keyword">or</span> <span class="number">0</span></span><br/><span class="line">        run_testcases_total_count = Reports.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>).aggregate(Sum(<span class="string">'count'</span>))[<span class="string">'count__sum'</span>] <span class="keyword">or</span> <span class="number">0</span></span><br/><span class="line"></span><br/><span class="line">        <span class="keyword">if</span> run_testcases_total_count:</span><br/><span class="line">            success_rate = <span class="built_in">int</span>((run_testcases_success_count / run_testcases_total_count) * <span class="number">100</span>)</span><br/><span class="line">            fail_rate = <span class="number">100</span> - success_rate</span><br/><span class="line">        <span class="keyword">else</span>:</span><br/><span class="line">            success_rate = <span class="number">0</span></span><br/><span class="line">            fail_rate = <span class="number">0</span></span><br/><span class="line"></span><br/><span class="line">        statistics = {</span><br/><span class="line">            <span class="string">'projects_count'</span>: projects_count,</span><br/><span class="line">            <span class="string">'interfaces_count'</span>: interfaces_count,</span><br/><span class="line">            <span class="string">'testcases_count'</span>: testcases_count,</span><br/><span class="line">            <span class="string">'testsuits_count'</span>: testsuits_count,</span><br/><span class="line">            <span class="string">'configures_count'</span>: configures_count,</span><br/><span class="line">            <span class="string">'envs_count'</span>: envs_count,</span><br/><span class="line">            <span class="string">'debug_talks_count'</span>: debug_talks_count,</span><br/><span class="line">            <span class="string">'reports_count'</span>: reports_count,</span><br/><span class="line">            <span class="string">'success_rate'</span>: success_rate,</span><br/><span class="line">            <span class="string">'fail_rate'</span>: fail_rate,</span><br/><span class="line">        }</span><br/><span class="line"></span><br/><span class="line">        <span class="keyword">return</span> Response(data={</span><br/><span class="line">            <span class="string">'user'</span>: user_info,</span><br/><span class="line">            <span class="string">'statistics'</span>: statistics</span><br/><span class="line">        })</span><br/></pre></td></tr></tbody></table></figure>
-<h2 data-passage-key="26eb7cff0f41" id="如何使用"><a class="headerlink" href="#如何使用" title="如何使用"></a>如何使用</h2><ol>
-<li data-passage-key="b7f194dfe873" id="passage-cb41384875e3">项目管理-<strong>项目新增</strong></li>
-<li data-passage-key="13a6c3746d86" id="passage-41d04dc77c50">维护<strong>内置函数</strong>debugtalk.py</li>
-<li data-passage-key="89bbe3d1ebaf" id="passage-bfc6d8204bd8">环境管理-<strong>环境新增</strong></li>
-<li data-passage-key="43cb949d0c9e" id="passage-fccd5516dd94">接口管理-<strong>接口新增</strong></li>
-<li data-passage-key="7e14459cb6fa" id="passage-9affb0b3b8ec">配置管理-<strong>配置新增</strong></li>
-<li data-passage-key="2455f6fab3ab" id="passage-fd8d5dcb69f7">用例管理-<strong>用例新增</strong></li>
+<p id="passage-74a8909f69db">代码：</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/><span class="line">20</span><br/><span class="line">21</span><br/><span class="line">22</span><br/><span class="line">23</span><br/><span class="line">24</span><br/><span class="line">25</span><br/><span class="line">26</span><br/><span class="line">27</span><br/><span class="line">28</span><br/><span class="line">29</span><br/><span class="line">30</span><br/><span class="line">31</span><br/><span class="line">32</span><br/><span class="line">33</span><br/><span class="line">34</span><br/><span class="line">35</span><br/><span class="line">36</span><br/><span class="line">37</span><br/><span class="line">38</span><br/><span class="line">39</span><br/><span class="line">40</span><br/><span class="line">41</span><br/><span class="line">42</span><br/><span class="line">43</span><br/><span class="line">44</span><br/><span class="line">45</span><br/><span class="line">46</span><br/><span class="line">47</span><br/><span class="line">48</span><br/><span class="line">49</span><br/><span class="line">50</span><br/><span class="line">51</span><br/><span class="line">52</span><br/><span class="line">53</span><br/><span class="line">54</span><br/><span class="line">55</span><br/><span class="line">56</span><br/><span class="line">57</span><br/><span class="line">58</span><br/><span class="line">59</span><br/><span class="line">60</span><br/><span class="line">61</span><br/><span class="line">62</span><br/><span class="line">63</span><br/><span class="line">64</span><br/><span class="line">65</span><br/><span class="line">66</span><br/><span class="line">67</span><br/><span class="line">68</span><br/><span class="line">69</span><br/><span class="line">70</span><br/></pre></td><td class="code"><pre id="passage-4a04abe76484"><span class="line"><span class="keyword">from</span> rest_framework.views <span class="keyword">import</span> APIView</span><br/><span class="line"><span class="keyword">from</span> rest_framework.response <span class="keyword">import</span> Response</span><br/><span class="line"><span class="keyword">from</span> rest_framework <span class="keyword">import</span> permissions</span><br/><span class="line"><span class="keyword">from</span> django.db.models <span class="keyword">import</span> Sum</span><br/><span class="line"></span><br/><span class="line"><span class="keyword">from</span> projects.models <span class="keyword">import</span> Projects</span><br/><span class="line"><span class="keyword">from</span> interfaces.models <span class="keyword">import</span> Interfaces</span><br/><span class="line"><span class="keyword">from</span> testcases.models <span class="keyword">import</span> Testcases</span><br/><span class="line"><span class="keyword">from</span> testsuits.models <span class="keyword">import</span> Testsuits</span><br/><span class="line"><span class="keyword">from</span> configures.models <span class="keyword">import</span> Configures</span><br/><span class="line"><span class="keyword">from</span> envs.models <span class="keyword">import</span> Envs</span><br/><span class="line"><span class="keyword">from</span> debugtalks.models <span class="keyword">import</span> DebugTalks</span><br/><span class="line"><span class="keyword">from</span> reports.models <span class="keyword">import</span> Reports</span><br/><span class="line"></span><br/><span class="line"></span><br/><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SummaryAPIView</span>(<span class="params">APIView</span>):</span></span><br/><span class="line">    <span class="string">"""</span></span><br/><span class="line"><span class="string">    返回统计信息</span></span><br/><span class="line"><span class="string">    """</span></span><br/><span class="line">    permission_classes = [permissions.IsAuthenticated]</span><br/><span class="line"></span><br/><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span>(<span class="params">self, request</span>):</span></span><br/><span class="line">        <span class="string">"""</span></span><br/><span class="line"><span class="string">        获取统计信息</span></span><br/><span class="line"><span class="string">        """</span></span><br/><span class="line">        user = request.user</span><br/><span class="line">        user_info = {</span><br/><span class="line">            <span class="string">'username'</span>: user.username,</span><br/><span class="line">            <span class="string">'role'</span>: <span class="string">'管理员'</span> <span class="keyword">if</span> user.is_superuser <span class="keyword">else</span> <span class="string">'普通用户'</span>,</span><br/><span class="line">            <span class="string">'date_joined'</span>: user.date_joined.strftime(<span class="string">'%Y-%m-%d %H:%M:%S'</span>) <span class="keyword">if</span> user.date_joined <span class="keyword">else</span> <span class="string">''</span>,</span><br/><span class="line">            <span class="string">'last_login'</span>: user.last_login.strftime(<span class="string">'%Y-%m-%d %H:%M:%S'</span>) <span class="keyword">if</span> user.last_login <span class="keyword">else</span> <span class="string">''</span>,</span><br/><span class="line">        }</span><br/><span class="line"></span><br/><span class="line">        projects_count = Projects.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>).count()</span><br/><span class="line">        interfaces_count = Interfaces.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>).count()</span><br/><span class="line">        testcases_count = Testcases.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>).count()</span><br/><span class="line">        testsuits_count = Testsuits.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>).count()</span><br/><span class="line">        configures_count = Configures.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>).count()</span><br/><span class="line">        envs_count = Envs.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>).count()</span><br/><span class="line">        debug_talks_count = DebugTalks.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>).count()</span><br/><span class="line">        reports_count = Reports.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>).count()</span><br/><span class="line"></span><br/><span class="line">        run_testcases_success_count = Reports.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>).aggregate(Sum(<span class="string">'success'</span>))[</span><br/><span class="line">                                          <span class="string">'success__sum'</span>] <span class="keyword">or</span> <span class="number">0</span></span><br/><span class="line">        run_testcases_total_count = Reports.objects.<span class="built_in">filter</span>(is_delete=<span class="literal">False</span>).aggregate(Sum(<span class="string">'count'</span>))[<span class="string">'count__sum'</span>] <span class="keyword">or</span> <span class="number">0</span></span><br/><span class="line"></span><br/><span class="line">        <span class="keyword">if</span> run_testcases_total_count:</span><br/><span class="line">            success_rate = <span class="built_in">int</span>((run_testcases_success_count / run_testcases_total_count) * <span class="number">100</span>)</span><br/><span class="line">            fail_rate = <span class="number">100</span> - success_rate</span><br/><span class="line">        <span class="keyword">else</span>:</span><br/><span class="line">            success_rate = <span class="number">0</span></span><br/><span class="line">            fail_rate = <span class="number">0</span></span><br/><span class="line"></span><br/><span class="line">        statistics = {</span><br/><span class="line">            <span class="string">'projects_count'</span>: projects_count,</span><br/><span class="line">            <span class="string">'interfaces_count'</span>: interfaces_count,</span><br/><span class="line">            <span class="string">'testcases_count'</span>: testcases_count,</span><br/><span class="line">            <span class="string">'testsuits_count'</span>: testsuits_count,</span><br/><span class="line">            <span class="string">'configures_count'</span>: configures_count,</span><br/><span class="line">            <span class="string">'envs_count'</span>: envs_count,</span><br/><span class="line">            <span class="string">'debug_talks_count'</span>: debug_talks_count,</span><br/><span class="line">            <span class="string">'reports_count'</span>: reports_count,</span><br/><span class="line">            <span class="string">'success_rate'</span>: success_rate,</span><br/><span class="line">            <span class="string">'fail_rate'</span>: fail_rate,</span><br/><span class="line">        }</span><br/><span class="line"></span><br/><span class="line">        <span class="keyword">return</span> Response(data={</span><br/><span class="line">            <span class="string">'user'</span>: user_info,</span><br/><span class="line">            <span class="string">'statistics'</span>: statistics</span><br/><span class="line">        })</span><br/></pre></td></tr></tbody></table></figure>
+<h2 id="如何使用"><a class="headerlink" href="#如何使用" title="如何使用"></a>如何使用</h2><ol>
+<li id="passage-cb41384875e3">项目管理-<strong>项目新增</strong></li>
+<li id="passage-41d04dc77c50">维护<strong>内置函数</strong>debugtalk.py</li>
+<li id="passage-bfc6d8204bd8">环境管理-<strong>环境新增</strong></li>
+<li id="passage-fccd5516dd94">接口管理-<strong>接口新增</strong></li>
+<li id="passage-9affb0b3b8ec">配置管理-<strong>配置新增</strong></li>
+<li id="passage-fd8d5dcb69f7">用例管理-<strong>用例新增</strong></li>
 </ol>
-<h2 data-passage-key="3ca7718593c0" id="部署"><a class="headerlink" href="#部署" title="部署"></a>部署</h2><h3 data-passage-key="bdd207e8c6e3" id="流程"><a class="headerlink" href="#流程" title="流程"></a>流程</h3><ol>
-<li data-passage-key="671bc0446b27" id="passage-6190a3414a27">安装操作系统</li>
-<li data-passage-key="e68d9dd45bc9" id="passage-c01727472c89">安装python</li>
-<li data-passage-key="1589a7b9411c" id="passage-2c7ba538d7aa">mysql</li>
-<li data-passage-key="a7edd3bcfe50" id="passage-35e326b5c814">搭建Django环境–各种模块的安装</li>
-<li data-passage-key="3271fe1cc586" id="passage-e999dd3dbce4">nginx</li>
-<li data-passage-key="3ade5e977992" id="passage-12c882b0521c">gunicorn</li>
-<li data-passage-key="1c2f2e1d44fd" id="passage-2901af7a499b">docker</li>
-<li data-passage-key="e7be705d4a85" id="passage-25a83f11dcba">docker-compose</li>
-<li data-passage-key="d59bc3d7c569" id="passage-cdf217d94d36">docker-swarm</li>
+<h2 id="部署"><a class="headerlink" href="#部署" title="部署"></a>部署</h2><h3 id="流程"><a class="headerlink" href="#流程" title="流程"></a>流程</h3><ol>
+<li id="passage-6190a3414a27">安装操作系统</li>
+<li id="passage-c01727472c89">安装python</li>
+<li id="passage-2c7ba538d7aa">mysql</li>
+<li id="passage-35e326b5c814">搭建Django环境–各种模块的安装</li>
+<li id="passage-e999dd3dbce4">nginx</li>
+<li id="passage-12c882b0521c">gunicorn</li>
+<li id="passage-2901af7a499b">docker</li>
+<li id="passage-25a83f11dcba">docker-compose</li>
+<li id="passage-cdf217d94d36">docker-swarm</li>
 </ol>
-<p data-passage-key="8793740c6992" id="passage-059807baf833">由于还没有学习<code>docker</code>暂时不继续，先行学习<code>docker</code></p>
-<h2 data-passage-key="a733285486d5" id="Shell"><a class="headerlink" href="#Shell" title="Shell"></a>Shell</h2><blockquote data-passage-key="1422d975b139" id="passage-b37496df916a">
+<p id="passage-059807baf833">由于还没有学习<code>docker</code>暂时不继续，先行学习<code>docker</code></p>
+<h2 id="Shell"><a class="headerlink" href="#Shell" title="Shell"></a>Shell</h2><blockquote id="passage-b37496df916a">
 <ol>
-<li data-passage-key="702323bc2058" id="passage-26fdf46a162b">命令解释器</li>
-<li data-passage-key="8fd342a3e884" id="passage-583899155cc8">shell就是在操作系统和应用程序之间的一个命令翻译工具</li>
+<li id="passage-26fdf46a162b">命令解释器</li>
+<li id="passage-583899155cc8">shell就是在操作系统和应用程序之间的一个命令翻译工具</li>
 </ol>
 </blockquote>
-<h3 data-passage-key="9aa46697571e" id="shell的分类"><a class="headerlink" href="#shell的分类" title="shell的分类"></a>shell的分类</h3><ul>
-<li data-passage-key="8d5f0c89a019" id="passage-7c91be124d77">Winodws中</li>
+<h3 id="shell的分类"><a class="headerlink" href="#shell的分类" title="shell的分类"></a>shell的分类</h3><ul>
+<li id="passage-7c91be124d77">Winodws中</li>
 </ul>
-<blockquote data-passage-key="3125d6380bd6" id="passage-6d9f698c8c64">
-<p data-passage-key="4f23b3646641" id="passage-e9f2994ba5ea">cmd.exe命令提示字符</p>
+<blockquote id="passage-6d9f698c8c64">
+<p id="passage-e9f2994ba5ea">cmd.exe命令提示字符</p>
 </blockquote>
 <ul>
-<li data-passage-key="03f6932807f8" id="passage-dcb7bd84a89c">linux中</li>
+<li id="passage-dcb7bd84a89c">linux中</li>
 </ul>
-<blockquote data-passage-key="635314db4a05" id="passage-db2de72a7df0">
+<blockquote id="passage-db2de72a7df0">
 <ul>
-<li data-passage-key="9010d9bd55ec" id="passage-7ed2dbbe3cc7"><p data-passage-key="7803521d59b2" id="passage-8cc4ace766aa">sh</p>
+<li id="passage-7ed2dbbe3cc7"><p id="passage-8cc4ace766aa">sh</p>
 </li>
-<li data-passage-key="a1c0c9f7a043" id="passage-2acfa6ee7dbf"><p data-passage-key="23acaad6833e" id="passage-164315dfd716">bash</p>
+<li id="passage-2acfa6ee7dbf"><p id="passage-164315dfd716">bash</p>
 </li>
-<li data-passage-key="fee5dfcdf97c" id="passage-a2f43c280285"><p data-passage-key="37fe29e0c463" id="passage-4053bfc7c2d9">zsh</p>
+<li id="passage-a2f43c280285"><p id="passage-4053bfc7c2d9">zsh</p>
 </li>
 </ul>
 </blockquote>
-<h3 data-passage-key="1cbb8f00f07d" id="常用命令"><a class="headerlink" href="#常用命令" title="常用命令"></a>常用命令</h3><ul>
-<li data-passage-key="580ab2875198" id="passage-06f01c3892e7"><p data-passage-key="606caf0d886d" id="passage-a58236e0d0db">head：默认获取文件前十行</p>
+<h3 id="常用命令"><a class="headerlink" href="#常用命令" title="常用命令"></a>常用命令</h3><ul>
+<li id="passage-06f01c3892e7"><p id="passage-a58236e0d0db">head：默认获取文件前十行</p>
 </li>
-<li data-passage-key="ea8a131fcc03" id="passage-0afe13d2dfca"><p data-passage-key="aaa205e9c7fe" id="passage-6db77840c1dc">tail：默认获取文件后十行</p>
+<li id="passage-0afe13d2dfca"><p id="passage-6db77840c1dc">tail：默认获取文件后十行</p>
 </li>
 </ul>
-<p data-passage-key="845dda841ff0" id="passage-9d1e2c20876b">获取一个区间，第10～13行</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="c6f018c1659d" id="passage-4e57edddfb94"><span class="line"><span class="meta">$</span><span class="bash"> head -n13 xxx | tail -n4</span></span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-9d1e2c20876b">获取一个区间，第10～13行</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-4e57edddfb94"><span class="line"><span class="meta">$</span><span class="bash"> head -n13 xxx | tail -n4</span></span><br/></pre></td></tr></tbody></table></figure>
 <ul>
-<li data-passage-key="e78c26670f11" id="passage-e626d24a3396">cut：取出文本指定列</li>
+<li id="passage-e626d24a3396">cut：取出文本指定列</li>
 </ul>
-<blockquote data-passage-key="8632cdb8edfb" id="passage-e8b8ed5b6109">
-<p data-passage-key="7b1404393f77" id="passage-6f0315dc932b">-d:指定分割符</p>
-<p data-passage-key="c207d6687695" id="passage-ce9420719c96">-f:指定列</p>
+<blockquote id="passage-e8b8ed5b6109">
+<p id="passage-6f0315dc932b">-d:指定分割符</p>
+<p id="passage-ce9420719c96">-f:指定列</p>
 </blockquote>
-<figure class="highlight txt"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/></pre></td><td class="code"><pre data-passage-key="b2c07266013f" id="passage-f0732846b9c7"><span class="line">Name Age Score</span><br/><span class="line">a 25 90</span><br/><span class="line">b 26 91</span><br/><span class="line">c 27 92</span><br/><span class="line">d 28 93</span><br/></pre></td></tr></tbody></table></figure>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="f34fd5596dd1" id="passage-c2a338b3253c"><span class="line"><span class="meta">$</span><span class="bash"> cut -d<span class="string">" "</span> -f1 learn_cut.txt</span> </span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight txt"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/></pre></td><td class="code"><pre id="passage-f0732846b9c7"><span class="line">Name Age Score</span><br/><span class="line">a 25 90</span><br/><span class="line">b 26 91</span><br/><span class="line">c 27 92</span><br/><span class="line">d 28 93</span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-c2a338b3253c"><span class="line"><span class="meta">$</span><span class="bash"> cut -d<span class="string">" "</span> -f1 learn_cut.txt</span> </span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="1" decoding="async" height="504" loading="lazy" src="/images/blog-media/6e4449d86f963adeb2b9.webp" width="834"/></p>
 <ul>
-<li data-passage-key="fd53acf944a7" id="passage-4b60635c01fc">uniq:去除重复项</li>
+<li id="passage-4b60635c01fc">uniq:去除重复项</li>
 </ul>
-<blockquote data-passage-key="5929a0d3daa9" id="passage-677ef07e864a">
-<p data-passage-key="e7a09b95a994" id="passage-b8d8a6b05b13">-d:仅打印有重复的元素</p>
-<p data-passage-key="9fec84ec0525" id="passage-02c0cfb3e3ab">-c:打印元素重复的个数</p>
+<blockquote id="passage-677ef07e864a">
+<p id="passage-b8d8a6b05b13">-d:仅打印有重复的元素</p>
+<p id="passage-02c0cfb3e3ab">-c:打印元素重复的个数</p>
 </blockquote>
 <ul>
-<li data-passage-key="4f6cc8770553" id="passage-2fd2df0fe348">sort:对文本的内容进行排序</li>
+<li id="passage-2fd2df0fe348">sort:对文本的内容进行排序</li>
 </ul>
-<blockquote data-passage-key="8cd12c1a878a" id="passage-82442e084582">
-<p data-passage-key="7d70b507e4ae" id="passage-9bc18c16c0b7">默认以字符串的ASCII码数值从小到大排序</p>
-<p data-passage-key="c7a9cd734e6d" id="passage-cf560fc5e9ee">-n:以数值大小排序</p>
-<p data-passage-key="f1a177c9d03f" id="passage-8532e54efa65">-r:倒序</p>
-<p data-passage-key="01d7bf610fc0" id="passage-47e96a543453">-t:指定分割符，默认为空格</p>
-<p data-passage-key="80dc2f0f5356" id="passage-cf026ac6a91e">-knum:指定以某个字段来排序</p>
+<blockquote id="passage-82442e084582">
+<p id="passage-9bc18c16c0b7">默认以字符串的ASCII码数值从小到大排序</p>
+<p id="passage-cf560fc5e9ee">-n:以数值大小排序</p>
+<p id="passage-8532e54efa65">-r:倒序</p>
+<p id="passage-47e96a543453">-t:指定分割符，默认为空格</p>
+<p id="passage-cf026ac6a91e">-knum:指定以某个字段来排序</p>
 </blockquote>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="5a118d110e8c" id="passage-a45230e23e15"><span class="line"><span class="meta">#</span><span class="bash"> 以:分割的第三列的数值大小排列</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> sort -t<span class="string">":"</span> -k3 -n /etc/passwd</span></span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre id="passage-a45230e23e15"><span class="line"><span class="meta">#</span><span class="bash"> 以:分割的第三列的数值大小排列</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> sort -t<span class="string">":"</span> -k3 -n /etc/passwd</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="2" decoding="async" height="900" loading="lazy" src="/images/blog-media/f0cd52b2f2713ac4bfb0.webp" width="1080"/></p>
 <ul>
-<li data-passage-key="c7787737ff4c" id="passage-1ee190642e42">wc「word count」计算文本数量</li>
+<li id="passage-1ee190642e42">wc「word count」计算文本数量</li>
 </ul>
-<blockquote data-passage-key="a9911739a105" id="passage-71331a44d093">
-<p data-passage-key="3951d3b4bfb7" id="passage-f587152938dd">-l:打印行数</p>
-<p data-passage-key="107f8f990f3c" id="passage-e11f10959544">-w:打印单词数</p>
-<p data-passage-key="c4db9234ec28" id="passage-dca8fc18418c">-c:打印字节数</p>
-<p data-passage-key="5c52c09c4075" id="passage-1a7c4188855a">-L:打印最长行的字节数</p>
+<blockquote id="passage-71331a44d093">
+<p id="passage-f587152938dd">-l:打印行数</p>
+<p id="passage-e11f10959544">-w:打印单词数</p>
+<p id="passage-dca8fc18418c">-c:打印字节数</p>
+<p id="passage-1a7c4188855a">-L:打印最长行的字节数</p>
 </blockquote>
-<h3 data-passage-key="a772fa4ebe36" id="变量"><a class="headerlink" href="#变量" title="变量"></a>变量</h3><ul>
-<li data-passage-key="d6150669f911" id="passage-151090c63ddd">本地变量</li>
-<li data-passage-key="7d795999dafa" id="passage-1264a6fa4df0">全局变量</li>
-<li data-passage-key="8f7234fcba4a" id="passage-9107ed4d19d3">内置变量</li>
+<h3 id="变量"><a class="headerlink" href="#变量" title="变量"></a>变量</h3><ul>
+<li id="passage-151090c63ddd">本地变量</li>
+<li id="passage-1264a6fa4df0">全局变量</li>
+<li id="passage-9107ed4d19d3">内置变量</li>
 </ul>
-<h4 data-passage-key="4fa756795a12" id="定义变量"><a class="headerlink" href="#定义变量" title="定义变量"></a>定义变量</h4><blockquote data-passage-key="22182682b199" id="passage-3438930f2f94">
-<p data-passage-key="e17eb0c6095c" id="passage-11ca98556ad0">等号前后不能有空格</p>
+<h4 id="定义变量"><a class="headerlink" href="#定义变量" title="定义变量"></a>定义变量</h4><blockquote id="passage-3438930f2f94">
+<p id="passage-11ca98556ad0">等号前后不能有空格</p>
 </blockquote>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre data-passage-key="1f85700913e7" id="passage-d744d70b595a"><span class="line"><span class="meta">$</span><span class="bash"> username=<span class="string">"89"</span></span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> username=a b <span class="comment"># 错误</span></span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> username=<span class="string">"a b"</span> <span class="comment">#正确</span></span> </span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre id="passage-d744d70b595a"><span class="line"><span class="meta">$</span><span class="bash"> username=<span class="string">"89"</span></span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> username=a b <span class="comment"># 错误</span></span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> username=<span class="string">"a b"</span> <span class="comment">#正确</span></span> </span><br/></pre></td></tr></tbody></table></figure>
 <ul>
-<li data-passage-key="f07e2f8d0016" id="passage-9345d7c5d2f8">单引号:所见即所得</li>
+<li id="passage-9345d7c5d2f8">单引号:所见即所得</li>
 </ul>
-<p data-passage-key="2d815e0c7652" id="passage-ea35779efcb5">不能插值</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/></pre></td><td class="code"><pre data-passage-key="2af5cb9d3567" id="passage-e13c0463d18b"><span class="line"><span class="meta">$</span><span class="bash"> p=python</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> u=<span class="string">'I love $p'</span></span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> <span class="variable">$u</span></span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> i=<span class="string">"I love <span class="variable">$p</span>"</span></span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> <span class="variable">$i</span></span></span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-ea35779efcb5">不能插值</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/></pre></td><td class="code"><pre id="passage-e13c0463d18b"><span class="line"><span class="meta">$</span><span class="bash"> p=python</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> u=<span class="string">'I love $p'</span></span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> <span class="variable">$u</span></span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> i=<span class="string">"I love <span class="variable">$p</span>"</span></span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> <span class="variable">$i</span></span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="3" decoding="async" height="288" loading="lazy" src="/images/blog-media/7c396023bf13f054be50.webp" width="622"/></p>
-<p data-passage-key="e1242912d78a" id="passage-6d1d4ebbb9ce"><strong>将命令的结果返回给变量</strong></p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="eb83e7c537af" id="passage-46a331f04afa"><span class="line"><span class="meta">$</span><span class="bash"> o=$(ls)</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> p=`ls`</span></span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-6d1d4ebbb9ce"><strong>将命令的结果返回给变量</strong></p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre id="passage-46a331f04afa"><span class="line"><span class="meta">$</span><span class="bash"> o=$(ls)</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> p=`ls`</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="4" decoding="async" height="110" loading="lazy" src="/images/blog-media/167ada1e0b981a31b0dc.webp" width="558"/></p>
 <p><img alt="5" decoding="async" height="118" loading="lazy" src="/images/blog-media/8bcc0736effa3fad9884.webp" width="540"/></p>
-<h4 data-passage-key="eccc2315fb5f" id="（局部）全局变量"><a class="headerlink" href="#（局部）全局变量" title="（局部）全局变量"></a>（局部）全局变量</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="25f07e16aa17" id="passage-be1847ae067c"><span class="line"><span class="meta">$</span><span class="bash"> env</span></span><br/></pre></td></tr></tbody></table></figure>
+<h4 id="（局部）全局变量"><a class="headerlink" href="#（局部）全局变量" title="（局部）全局变量"></a>（局部）全局变量</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-be1847ae067c"><span class="line"><span class="meta">$</span><span class="bash"> env</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="6" decoding="async" height="1162" loading="lazy" src="/images/blog-media/15c1f58d3e50791e84f3.webp" width="1080"/></p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="e0a9a49a4ffa" id="passage-87bc297684c3"><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> <span class="variable">$USER</span></span></span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-87bc297684c3"><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">echo</span> <span class="variable">$USER</span></span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="7" decoding="async" height="92" loading="lazy" src="/images/blog-media/f65ad21bcfaa91f64878.webp" width="596"/></p>
-<h5 data-passage-key="94a1ce44c7d5" id="定义全局变量"><a class="headerlink" href="#定义全局变量" title="定义全局变量"></a>定义全局变量</h5><ol>
-<li data-passage-key="ce60cd982d63" id="passage-8193882af921">export 变量</li>
-<li data-passage-key="c019efe6b53c" id="passage-2f7266c7167b">export 变量=值</li>
+<h5 id="定义全局变量"><a class="headerlink" href="#定义全局变量" title="定义全局变量"></a>定义全局变量</h5><ol>
+<li id="passage-8193882af921">export 变量</li>
+<li id="passage-2f7266c7167b">export 变量=值</li>
 </ol>
-<p data-passage-key="e78f6b2d8bb8" id="passage-e829b9aad4ad">在<code>～/.bashrc</code>中创建才是真正的全局变量</p>
-<h4 data-passage-key="34d5b3fd5ad1" id="内置变量"><a class="headerlink" href="#内置变量" title="内置变量"></a>内置变量</h4><ul>
-<li data-passage-key="53adf1871c7e" id="passage-a7d6bff98787"><code>$0</code>:获取当前执行的shell脚本文件名，包括脚本路径</li>
-<li data-passage-key="81c157d6a6f2" id="passage-d1aee24da45b"><code>$n</code>:当前shell脚本的第n个参数(n&gt;9需要使用<code>${10}</code>)</li>
-<li data-passage-key="500b901751d5" id="passage-1fa11716e697"><code>$#</code>:获取当前shell命令行中参数的总个数</li>
-<li data-passage-key="ca94cdfca0a5" id="passage-5c41420f7c69"><code>$?</code>:获取执行的上一个命令的返回值(0为成功，非0为失败)</li>
+<p id="passage-e829b9aad4ad">在<code>～/.bashrc</code>中创建才是真正的全局变量</p>
+<h4 id="内置变量"><a class="headerlink" href="#内置变量" title="内置变量"></a>内置变量</h4><ul>
+<li id="passage-a7d6bff98787"><code>$0</code>:获取当前执行的shell脚本文件名，包括脚本路径</li>
+<li id="passage-d1aee24da45b"><code>$n</code>:当前shell脚本的第n个参数(n&gt;9需要使用<code>${10}</code>)</li>
+<li id="passage-1fa11716e697"><code>$#</code>:获取当前shell命令行中参数的总个数</li>
+<li id="passage-5c41420f7c69"><code>$?</code>:获取执行的上一个命令的返回值(0为成功，非0为失败)</li>
 </ul>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/></pre></td><td class="code"><pre data-passage-key="11ef92af6401" id="passage-6b87a0d7080e"><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br/><span class="line">echo "参数的总个数:$#"</span><br/><span class="line">echo "脚本名为:$0"</span><br/><span class="line">echo "第二个参数:$2"</span><br/><span class="line">echo "第十个参数:${10}"</span><br/><span class="line">echo "获取所有参数:$*"</span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/></pre></td><td class="code"><pre id="passage-6b87a0d7080e"><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br/><span class="line">echo "参数的总个数:$#"</span><br/><span class="line">echo "脚本名为:$0"</span><br/><span class="line">echo "第二个参数:$2"</span><br/><span class="line">echo "第十个参数:${10}"</span><br/><span class="line">echo "获取所有参数:$*"</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="8" decoding="async" height="384" loading="lazy" src="/images/blog-media/13b149b57c88f5557d5a.webp" width="1032"/></p></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
-        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
-          <header class="passage-dialog-header">
-            <h2 id="passage-comment-title">段落评论</h2>
-            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
-          </header>
-          <div class="passage-dialog-content">
-            <blockquote data-passage-excerpt></blockquote>
-            <a data-passage-source>查看原文</a>
-            <p data-passage-status role="status"></p>
-            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
-            <div data-passage-widget></div>
-          </div>
-        </dialog>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/knty71Wyba8Hz26tu4aG-g">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/%E6%B5%8B%E8%AF%95%E5%B9%B3%E5%8F%B0/">测试平台</a><a href="/tags/Django/">Django</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
@@ -218,7 +204,7 @@
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
-          <div class="giscus"></div>
+          <div class="giscus" id="article-discussion"></div>
         </section>
       </div>
     </div>

@@ -20,7 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/cb028af5.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/cb028af5.html">
-<script type="module" src="/js/discussions.js"></script>
+<script src="/js/comments.js?v=4" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,54 +56,40 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C">准备工作</a></li><li><a href="#%E6%9F%A5%E7%9C%8BChromeDriver%E7%89%88%E6%9C%AC">查看ChromeDriver版本</a></li><li><a href="#%E4%BD%BF%E7%94%A8UC-%E5%BC%80%E5%8F%91%E8%80%85%E8%B0%83%E8%AF%95%E5%B7%A5%E5%85%B7%E5%AE%9A%E4%BD%8D%E9%A1%B5%E9%9D%A2">使用UC 开发者调试工具定位页面</a></li><li><a href="#%E4%BF%AE%E6%94%B9%E8%AE%BE%E7%BD%AE">修改设置</a></li><li><a href="#%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8D%E9%A1%B5%E9%9D%A2">查看当前页面</a></li><li><a href="#%E8%BF%9B%E5%85%A5%E7%BD%91%E9%A1%B5">进入网页</a></li><li><a href="#%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F">微信小程序</a></li><li><a href="#Step1-%E6%89%93%E5%BC%80%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8Fwebview%E5%BC%80%E5%85%B3">Step1:打开微信小程序webview开关</a></li><li><a href="#Step2-UC%E5%BC%80%E5%8F%91%E8%80%85%E5%B7%A5%E5%85%B7%E8%AF%86%E5%88%AB%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%9A%84web%E5%85%83%E7%B4%A0%E4%BF%A1%E6%81%AF">Step2:UC开发者工具识别小程序的web元素信息</a></li><li><a href="#Step3-%E7%A1%AE%E8%AE%A4%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%AF%B9%E5%BA%94%E7%9A%84%E8%BF%9B%E7%A8%8B%E5%90%8D">Step3:确认微信小程序对应的进程名</a></li><li><a href="#Step4-X5%E5%86%85%E6%A0%B8%E5%90%AF%E5%8A%A8%E5%8F%82%E6%95%B0%E9%85%8D%E7%BD%AE">Step4:X5内核启动参数配置</a></li><li><a href="#Step5-%E7%BC%96%E5%86%99%E8%84%9A%E6%9C%AC%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B">Step5:编写脚本实现自动化测试用例</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><span id="Java自动化测试-Hybrid应用自动化-35"></span><h2 data-passage-key="24dfae3c1e7a" id="准备工作"><a class="headerlink" href="#准备工作" title="准备工作"></a>准备工作</h2><ul>
-<li data-passage-key="82f639b90b72" id="passage-d81daab20f17">准备android4.4+版本以上的手机/模拟器</li>
-<li data-passage-key="e8bf4aa7b2de" id="passage-6ba6f01c958b">在app源码中将webview调试模式打开</li>
+        <div class="post-body" id="article-text"><span id="Java自动化测试-Hybrid应用自动化-35"></span><h2 id="准备工作"><a class="headerlink" href="#准备工作" title="准备工作"></a>准备工作</h2><ul>
+<li id="passage-d81daab20f17">准备android4.4+版本以上的手机/模拟器</li>
+<li id="passage-6ba6f01c958b">在app源码中将webview调试模式打开</li>
 </ul>
-<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="785be42066dd" id="passage-fddb91664254"><span class="line">webview.setWebContentsDebuggingEnabled(<span class="keyword">true</span>);</span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-fddb91664254"><span class="line">webview.setWebContentsDebuggingEnabled(<span class="keyword">true</span>);</span><br/></pre></td></tr></tbody></table></figure>
 <span id="more"></span>
 <ul>
-<li data-passage-key="96e7b0e295d0" id="passage-ba1d5f76d43f">安装UC开发者工具</li>
+<li id="passage-ba1d5f76d43f">安装UC开发者工具</li>
 </ul>
-<h2 data-passage-key="f1d4e5bcb1e4" id="查看ChromeDriver版本"><a class="headerlink" href="#查看ChromeDriver版本" title="查看ChromeDriver版本"></a>查看ChromeDriver版本</h2><p data-passage-key="8d658782bb2d" id="passage-a4e6e323211d">进入<code>设置</code>-&gt;<code>应用</code>，点击<code>显示系统进程</code></p>
+<h2 id="查看ChromeDriver版本"><a class="headerlink" href="#查看ChromeDriver版本" title="查看ChromeDriver版本"></a>查看ChromeDriver版本</h2><p id="passage-a4e6e323211d">进入<code>设置</code>-&gt;<code>应用</code>，点击<code>显示系统进程</code></p>
 <p><img alt="显示系统进程" decoding="async" height="1714" loading="lazy" src="/images/blog-media/677e2b8d41ccf0c6ac20.webp" width="1024"/></p>
-<p data-passage-key="7db9ff98ffdd" id="passage-2973febddfef">找到<code>Android System WebView</code>,它的版本也就是<code>75.0.3770.143</code></p>
+<p id="passage-2973febddfef">找到<code>Android System WebView</code>,它的版本也就是<code>75.0.3770.143</code></p>
 <p><img alt="Android System WebView" decoding="async" height="1748" loading="lazy" src="/images/blog-media/13c9813555664e154cc9.webp" width="1080"/></p>
-<blockquote data-passage-key="a42b50424ed8" id="passage-3fa2ebb3a8ad">
-<p data-passage-key="ac73adb49350" id="passage-c0f31c44f6f8">在chromedriver中找到对应的版本</p>
-<p data-passage-key="0669804759d9" id="passage-9a470e74fa13"><a href="https://npm.taobao.org/mirrors/chromedriver/?utm_source=testingpai.com" rel="noopener" target="_blank">https://npm.taobao.org/mirrors/chromedriver/?utm_source=testingpai.com</a></p>
+<blockquote id="passage-3fa2ebb3a8ad">
+<p id="passage-c0f31c44f6f8">在chromedriver中找到对应的版本</p>
+<p id="passage-9a470e74fa13"><a href="https://npm.taobao.org/mirrors/chromedriver/?utm_source=testingpai.com" rel="noopener" target="_blank">https://npm.taobao.org/mirrors/chromedriver/?utm_source=testingpai.com</a></p>
 </blockquote>
-<h2 data-passage-key="955e3344781d" id="使用UC-开发者调试工具定位页面"><a class="headerlink" href="#使用UC-开发者调试工具定位页面" title="使用UC 开发者调试工具定位页面"></a>使用UC 开发者调试工具定位页面</h2><blockquote data-passage-key="09bf8a8a4da5" id="passage-b8e900202457">
-<p data-passage-key="04953d146782" id="passage-d6598ba5d807"><a href="https://dev.ucweb.com/docs/pwa/docs-zh/xy3whu" rel="noopener" target="_blank">https://dev.ucweb.com/docs/pwa/docs-zh/xy3whu</a></p>
+<h2 id="使用UC-开发者调试工具定位页面"><a class="headerlink" href="#使用UC-开发者调试工具定位页面" title="使用UC 开发者调试工具定位页面"></a>使用UC 开发者调试工具定位页面</h2><blockquote id="passage-b8e900202457">
+<p id="passage-d6598ba5d807"><a href="https://dev.ucweb.com/docs/pwa/docs-zh/xy3whu" rel="noopener" target="_blank">https://dev.ucweb.com/docs/pwa/docs-zh/xy3whu</a></p>
 </blockquote>
-<h3 data-passage-key="f797b44cfd54" id="修改设置"><a class="headerlink" href="#修改设置" title="修改设置"></a>修改设置</h3><p><img alt="设置" decoding="async" height="843" loading="lazy" src="/images/blog-media/dfc7b3a9b062cfad23b7.webp" width="1080"/></p>
-<h3 data-passage-key="1ebb233b5e69" id="查看当前页面"><a class="headerlink" href="#查看当前页面" title="查看当前页面"></a>查看当前页面</h3><p><img alt="查看Home" decoding="async" height="703" loading="lazy" src="/images/blog-media/54022357232c6842a7f6.webp" width="1080"/></p>
-<h2 data-passage-key="dd77d3f5ef2c" id="进入网页"><a class="headerlink" href="#进入网页" title="进入网页"></a>进入网页</h2><figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/></pre></td><td class="code"><pre data-passage-key="f2bd837875af" id="passage-4724282c103f"><span class="line"><span class="meta">@Test</span></span><br/><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> </span>{</span><br/><span class="line">    androidDriver.findElement(MobileBy.xpath(<span class="string">"//*[@text='柠檬社区']"</span>)).click();</span><br/><span class="line">    System.out.println(androidDriver.getContextHandles());<span class="comment">//[NATIVE_APP, WEBVIEW_com.lemon.lemonban]</span></span><br/><span class="line">    <span class="comment">//切换到WEBVIEW_com.lemon.lemonban</span></span><br/><span class="line">    androidDriver.context(<span class="string">"WEBVIEW_com.lemon.lemonban"</span>);</span><br/><span class="line">    <span class="comment">//进入web页面点击注册按钮</span></span><br/><span class="line">    androidDriver.findElement(MobileBy.xpath(<span class="string">"//span[contains(text(),'注册')]"</span>)).click();</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
-<h2 data-passage-key="ed8e88caf5f2" id="微信小程序"><a class="headerlink" href="#微信小程序" title="微信小程序"></a>微信小程序</h2><p data-passage-key="397c7d18c8a6" id="passage-ac9d1a0a8658">由于腾讯系QQ/微信是基于腾讯自研的X5内核，不是谷歌原生webview，所以调试会有差异</p>
-<p data-passage-key="4d898089ee4f" id="passage-29e7d86f0117">微信小程序只能够支持手机，模拟器是不行的。</p>
-<h3 data-passage-key="aacc958752b5" id="Step1-打开微信小程序webview开关"><a class="headerlink" href="#Step1-打开微信小程序webview开关" title="Step1:打开微信小程序webview开关"></a>Step1:打开微信小程序webview开关</h3><blockquote data-passage-key="3335d2b58a28" id="passage-b80d377eb813">
-<p data-passage-key="cab4bdf1ac3e" id="passage-20ecc62557c2"><a href="https://debugx5.qq.com/" rel="noopener" target="_blank">https://debugx5.qq.com/</a></p>
-<p data-passage-key="0e2b20e0f6e8" id="passage-11040866911a"><a href="http://debugmm.qq.com/?forcex5=true" rel="noopener" target="_blank">http://debugmm.qq.com/?forcex5=true</a></p>
+<h3 id="修改设置"><a class="headerlink" href="#修改设置" title="修改设置"></a>修改设置</h3><p><img alt="设置" decoding="async" height="843" loading="lazy" src="/images/blog-media/dfc7b3a9b062cfad23b7.webp" width="1080"/></p>
+<h3 id="查看当前页面"><a class="headerlink" href="#查看当前页面" title="查看当前页面"></a>查看当前页面</h3><p><img alt="查看Home" decoding="async" height="703" loading="lazy" src="/images/blog-media/54022357232c6842a7f6.webp" width="1080"/></p>
+<h2 id="进入网页"><a class="headerlink" href="#进入网页" title="进入网页"></a>进入网页</h2><figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/></pre></td><td class="code"><pre id="passage-4724282c103f"><span class="line"><span class="meta">@Test</span></span><br/><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> </span>{</span><br/><span class="line">    androidDriver.findElement(MobileBy.xpath(<span class="string">"//*[@text='柠檬社区']"</span>)).click();</span><br/><span class="line">    System.out.println(androidDriver.getContextHandles());<span class="comment">//[NATIVE_APP, WEBVIEW_com.lemon.lemonban]</span></span><br/><span class="line">    <span class="comment">//切换到WEBVIEW_com.lemon.lemonban</span></span><br/><span class="line">    androidDriver.context(<span class="string">"WEBVIEW_com.lemon.lemonban"</span>);</span><br/><span class="line">    <span class="comment">//进入web页面点击注册按钮</span></span><br/><span class="line">    androidDriver.findElement(MobileBy.xpath(<span class="string">"//span[contains(text(),'注册')]"</span>)).click();</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
+<h2 id="微信小程序"><a class="headerlink" href="#微信小程序" title="微信小程序"></a>微信小程序</h2><p id="passage-ac9d1a0a8658">由于腾讯系QQ/微信是基于腾讯自研的X5内核，不是谷歌原生webview，所以调试会有差异</p>
+<p id="passage-29e7d86f0117">微信小程序只能够支持手机，模拟器是不行的。</p>
+<h3 id="Step1-打开微信小程序webview开关"><a class="headerlink" href="#Step1-打开微信小程序webview开关" title="Step1:打开微信小程序webview开关"></a>Step1:打开微信小程序webview开关</h3><blockquote id="passage-b80d377eb813">
+<p id="passage-20ecc62557c2"><a href="https://debugx5.qq.com/" rel="noopener" target="_blank">https://debugx5.qq.com/</a></p>
+<p id="passage-11040866911a"><a href="http://debugmm.qq.com/?forcex5=true" rel="noopener" target="_blank">http://debugmm.qq.com/?forcex5=true</a></p>
 </blockquote>
-<h3 data-passage-key="11ff37a18c69" id="Step2-UC开发者工具识别小程序的web元素信息"><a class="headerlink" href="#Step2-UC开发者工具识别小程序的web元素信息" title="Step2:UC开发者工具识别小程序的web元素信息"></a>Step2:UC开发者工具识别小程序的web元素信息</h3><h3 data-passage-key="139a1da17d44" id="Step3-确认微信小程序对应的进程名"><a class="headerlink" href="#Step3-确认微信小程序对应的进程名" title="Step3:确认微信小程序对应的进程名"></a>Step3:确认微信小程序对应的进程名</h3><h3 data-passage-key="d525ff8d59b3" id="Step4-X5内核启动参数配置"><a class="headerlink" href="#Step4-X5内核启动参数配置" title="Step4:X5内核启动参数配置"></a>Step4:X5内核启动参数配置</h3><figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/></pre></td><td class="code"><pre data-passage-key="98ec37091165" id="passage-d0432bfb3681"><span class="line"><span class="comment">// 支持X5内核应用自动化配置</span></span><br/><span class="line">desiredCapabilities.setCapability(<span class="string">"recreateChromeDriverSession"</span>, <span class="keyword">true</span>);</span><br/><span class="line"><span class="comment">// ChromeOptions 使用来定制启动选项，因为在appium中切换context识别webview的时候，</span></span><br/><span class="line"><span class="comment">// 把com.tencent.mm:toolsmp的webview识别成com.tencent.mm的webview</span></span><br/><span class="line"><span class="comment">// 为了规避这个问题，加上androidProcess: com.tencent.mm:toolsmp</span></span><br/><span class="line">ChromeOptions options = <span class="keyword">new</span> ChromeOptions();</span><br/><span class="line">options.setExperimentalOption(<span class="string">"androidProcess"</span>,<span class="string">"com.tencent.mm:appbrand0"</span>);</span><br/><span class="line">desiredCapabilities.setCapability(ChromeOptions.CAPABILITY,options);</span><br/><span class="line"><span class="comment">// 初始化会默认将chrome浏览器打开，需要将Browser置为空</span></span><br/><span class="line">desiredCapabilities.setBrowserName(<span class="string">""</span>);	</span><br/></pre></td></tr></tbody></table></figure>
-<h3 data-passage-key="b17eaf3108ab" id="Step5-编写脚本实现自动化测试用例"><a class="headerlink" href="#Step5-编写脚本实现自动化测试用例" title="Step5:编写脚本实现自动化测试用例"></a>Step5:编写脚本实现自动化测试用例</h3><blockquote data-passage-key="53759048d34d" id="passage-d395b4bdd566">
-<p data-passage-key="20ba65c23f39" id="passage-35fb8a38eb77">注意：不清除微信的数据的方法</p>
+<h3 id="Step2-UC开发者工具识别小程序的web元素信息"><a class="headerlink" href="#Step2-UC开发者工具识别小程序的web元素信息" title="Step2:UC开发者工具识别小程序的web元素信息"></a>Step2:UC开发者工具识别小程序的web元素信息</h3><h3 id="Step3-确认微信小程序对应的进程名"><a class="headerlink" href="#Step3-确认微信小程序对应的进程名" title="Step3:确认微信小程序对应的进程名"></a>Step3:确认微信小程序对应的进程名</h3><h3 id="Step4-X5内核启动参数配置"><a class="headerlink" href="#Step4-X5内核启动参数配置" title="Step4:X5内核启动参数配置"></a>Step4:X5内核启动参数配置</h3><figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/></pre></td><td class="code"><pre id="passage-d0432bfb3681"><span class="line"><span class="comment">// 支持X5内核应用自动化配置</span></span><br/><span class="line">desiredCapabilities.setCapability(<span class="string">"recreateChromeDriverSession"</span>, <span class="keyword">true</span>);</span><br/><span class="line"><span class="comment">// ChromeOptions 使用来定制启动选项，因为在appium中切换context识别webview的时候，</span></span><br/><span class="line"><span class="comment">// 把com.tencent.mm:toolsmp的webview识别成com.tencent.mm的webview</span></span><br/><span class="line"><span class="comment">// 为了规避这个问题，加上androidProcess: com.tencent.mm:toolsmp</span></span><br/><span class="line">ChromeOptions options = <span class="keyword">new</span> ChromeOptions();</span><br/><span class="line">options.setExperimentalOption(<span class="string">"androidProcess"</span>,<span class="string">"com.tencent.mm:appbrand0"</span>);</span><br/><span class="line">desiredCapabilities.setCapability(ChromeOptions.CAPABILITY,options);</span><br/><span class="line"><span class="comment">// 初始化会默认将chrome浏览器打开，需要将Browser置为空</span></span><br/><span class="line">desiredCapabilities.setBrowserName(<span class="string">""</span>);	</span><br/></pre></td></tr></tbody></table></figure>
+<h3 id="Step5-编写脚本实现自动化测试用例"><a class="headerlink" href="#Step5-编写脚本实现自动化测试用例" title="Step5:编写脚本实现自动化测试用例"></a>Step5:编写脚本实现自动化测试用例</h3><blockquote id="passage-d395b4bdd566">
+<p id="passage-35fb8a38eb77">注意：不清除微信的数据的方法</p>
 </blockquote>
-<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="f53854999341" id="passage-27acfeaeaf41"><span class="line">capabilities.setCapability(<span class="string">"noReset"</span>, <span class="keyword">true</span>);</span><br/></pre></td></tr></tbody></table></figure></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
-        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
-          <header class="passage-dialog-header">
-            <h2 id="passage-comment-title">段落评论</h2>
-            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
-          </header>
-          <div class="passage-dialog-content">
-            <blockquote data-passage-excerpt></blockquote>
-            <a data-passage-source>查看原文</a>
-            <p data-passage-status role="status"></p>
-            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
-            <div data-passage-widget></div>
-          </div>
-        </dialog>
+<figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-27acfeaeaf41"><span class="line">capabilities.setCapability(<span class="string">"noReset"</span>, <span class="keyword">true</span>);</span><br/></pre></td></tr></tbody></table></figure></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/9rQARZyAhp0Sbh-_jobTZQ">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Java/">Java</a><a href="/tags/Appium/">Appium</a><a href="/tags/Hybrid-%E5%BA%94%E7%94%A8/">Hybrid 应用</a><a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Java/">Java</a><a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a></div>
@@ -117,7 +103,7 @@
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
-          <div class="giscus"></div>
+          <div class="giscus" id="article-discussion"></div>
         </section>
       </div>
     </div>

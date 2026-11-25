@@ -20,7 +20,7 @@
   <meta name="blog-cover" content="/images/blog-covers/kitaru-agent-replay-regression.webp">
 <meta property="og:image" content="https://www.zhongxin.website/images/article-covers/kitaru-agent-replay-regression.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/kitaru-agent-replay-regression.html">
-<script type="module" src="/js/discussions.js"></script>
+<script src="/js/comments.js?v=4" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,11 +56,11 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E5%85%88%E6%98%8E%E7%A1%AE%E5%A4%B1%E8%B4%A5%E5%9C%A8%E5%93%AA%E9%87%8C">先明确失败在哪里</a></li><li><a href="#%E9%87%8D%E6%94%BE%E6%97%B6%E8%AE%A9%E5%A4%96%E9%83%A8%E6%9D%A1%E4%BB%B6%E5%8F%AF%E6%AF%94">重放时让外部条件可比</a></li><li><a href="#%E6%89%BE%E4%B8%80%E7%BB%84%E8%83%BD%E5%8C%BA%E5%88%86%E5%A5%BD%E5%9D%8F%E7%9A%84%E6%A0%B7%E6%9C%AC">找一组能区分好坏的样本</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><p data-passage-key="677bcc5b929b" id="passage-1397ae40ba26">回放报告写着“已转人工”时，我会再看一遍工具调用。假如 Agent 先尝试退款再转人工，最后一条回复就会漏掉前面的动作。Kitaru 可以把这个判断固定到同一组输入里，改完提示词再查一遍。</p>
-<h2 data-passage-key="d494f0438beb" id="先明确失败在哪里">先明确失败在哪里</h2>
-<p data-passage-key="1d6a28710918" id="passage-ade3b7737149">Kitaru 的公开退货示例把行李订单的人工审批门槛设为 200 美元。沿用这个示例规则，构造一条 280 美元的请求。它通过的条件有两个。Agent 没有调用退款工具，并且成功把请求转给了人工。<a href="https://github.com/zenml-io/kitaru/blob/develop/docs/book/tutorials/returns-agent/README.md">Kitaru 退货 Agent 教程</a></p>
-<p data-passage-key="e7de92427dc3" id="passage-5c86e0c1c343">检查时，退款工具调用失败也要算在尝试退款里。否则，业务接口碰巧拦住了调用，测试却会误判 Agent 遵守了审批要求。以下用三组构造的工具事件演示这个检查，字段名也为示例自定。</p>
-<pre class="python" data-passage-key="75ad2d9f0ef7" id="passage-f5f4d61024e1"><code class="language-python">def passes_over_limit(events):
+        <div class="post-body" id="article-text"><p id="passage-1397ae40ba26">回放报告写着“已转人工”时，我会再看一遍工具调用。假如 Agent 先尝试退款再转人工，最后一条回复就会漏掉前面的动作。Kitaru 可以把这个判断固定到同一组输入里，改完提示词再查一遍。</p>
+<h2 id="先明确失败在哪里">先明确失败在哪里</h2>
+<p id="passage-ade3b7737149">Kitaru 的公开退货示例把行李订单的人工审批门槛设为 200 美元。沿用这个示例规则，构造一条 280 美元的请求。它通过的条件有两个。Agent 没有调用退款工具，并且成功把请求转给了人工。<a href="https://github.com/zenml-io/kitaru/blob/develop/docs/book/tutorials/returns-agent/README.md">Kitaru 退货 Agent 教程</a></p>
+<p id="passage-5c86e0c1c343">检查时，退款工具调用失败也要算在尝试退款里。否则，业务接口碰巧拦住了调用，测试却会误判 Agent 遵守了审批要求。以下用三组构造的工具事件演示这个检查，字段名也为示例自定。</p>
+<pre class="python" id="passage-f5f4d61024e1"><code class="language-python">def passes_over_limit(events):
     tried_refund = any(e["tool"] == "refund" for e in events)
     handed_off = any(
         e["tool"] == "escalate" and e["succeeded"]
@@ -74,25 +74,25 @@ escalated = {"tool": "escalate", "succeeded": True}
 assert passes_over_limit([escalated])
 assert not passes_over_limit([refund_failed, escalated])
 assert not passes_over_limit([])</code></pre>
-<p data-passage-key="0861dba91abf" id="passage-0b7b4be02e37">这段只检查超额样本。回归集里还要留一条符合直接退款条件的请求，单独检查它仍能完成退款。否则，把所有人都转人工也可能通过超额样本。</p>
-<h2 data-passage-key="3251b0dc5fa2" id="重放时让外部条件可比">重放时让外部条件可比</h2>
-<p data-passage-key="6ad945861aba" id="passage-827e9ebb5c7d">先重放基线，确认在同一组输入和工具策略下能重现目标问题。再只改一项，例如提示词里的人工审批条件。候选版本沿用这批样本和判定条件，两次都看完整的工具调用记录。</p>
+<p id="passage-0b7b4be02e37">这段只检查超额样本。回归集里还要留一条符合直接退款条件的请求，单独检查它仍能完成退款。否则，把所有人都转人工也可能通过超额样本。</p>
+<h2 id="重放时让外部条件可比">重放时让外部条件可比</h2>
+<p id="passage-827e9ebb5c7d">先重放基线，确认在同一组输入和工具策略下能重现目标问题。再只改一项，例如提示词里的人工审批条件。候选版本沿用这批样本和判定条件，两次都看完整的工具调用记录。</p>
 <figure class="article-figure article-figure--supplement">
 <img alt="基线与候选版本的重放对照" decoding="async" height="630" loading="lazy" src="/images/blog-media/kitaru-agent-replay-regression-diagram.webp" width="1120"/>
-<figcaption aria-hidden="true" data-passage-key="63fe22db3e94" id="passage-f56466ecc5db">固定请求、工具策略和判定条件，再比较基线与候选版本的工具动作。</figcaption>
+<figcaption aria-hidden="true" id="passage-f56466ecc5db">固定请求、工具策略和判定条件，再比较基线与候选版本的工具动作。</figcaption>
 </figure>
-<p data-passage-key="38a3cefb8e3c" id="passage-44160f9497f3">Kitaru 可以让支持历史回放的适配器按工具名和参数查找记录，并用历史结果回答匹配的调用。Agent 会重新运行并作决策。建议显式设置工具策略，省略策略时可能执行真实调用。<a href="https://github.com/zenml-io/kitaru/blob/develop/docs/book/concepts/replay.md#tool-policies">Kitaru 重放文档</a></p>
-<p data-passage-key="f2ffba90d44b" id="passage-16a91bf4f67d">下面这份策略只用基线记录，查询不到匹配调用时停止。使用前要确认当前适配器支持这项配置，且本轮需要重放的工具未被配置为真实调用。</p>
-<pre class="json" data-passage-key="eeb4523daacc" id="passage-f1b0f7b1fc8b"><code class="language-json">{
+<p id="passage-44160f9497f3">Kitaru 可以让支持历史回放的适配器按工具名和参数查找记录，并用历史结果回答匹配的调用。Agent 会重新运行并作决策。建议显式设置工具策略，省略策略时可能执行真实调用。<a href="https://github.com/zenml-io/kitaru/blob/develop/docs/book/concepts/replay.md#tool-policies">Kitaru 重放文档</a></p>
+<p id="passage-16a91bf4f67d">下面这份策略只用基线记录，查询不到匹配调用时停止。使用前要确认当前适配器支持这项配置，且本轮需要重放的工具未被配置为真实调用。</p>
+<pre class="json" id="passage-f1b0f7b1fc8b"><code class="language-json">{
   "default": {
     "type": "history",
     "scope": "baseline",
     "on_miss": "fail"
   }
 }</code></pre>
-<figure class="article-figure article-figure--supplement"><img alt="测试设备连着本地记录，旁边的外部连接处于断开状态" decoding="async" height="675" loading="lazy" src="/images/blog-media/kitaru-agent-replay-regression-illustration.webp" width="1200"/><figcaption data-passage-key="1a3d215dc971" id="passage-1e3b8634a192">AI 生成示意。重放用记录中的工具结果，命不中历史记录时按示例策略停止。</figcaption></figure>
-<h2 data-passage-key="6e96e135c2eb" id="找一组能区分好坏的样本">找一组能区分好坏的样本</h2>
-<div aria-labelledby="comparison-1" class="table-scroll" data-passage-key="6312636985a1" id="passage-96a3a1f1afe3" role="region" tabindex="0"><table class="article-comparison"><caption id="comparison-1">重放结果和处理方式</caption>
+<figure class="article-figure article-figure--supplement"><img alt="测试设备连着本地记录，旁边的外部连接处于断开状态" decoding="async" height="675" loading="lazy" src="/images/blog-media/kitaru-agent-replay-regression-illustration.webp" width="1200"/><figcaption id="passage-1e3b8634a192">AI 生成示意。重放用记录中的工具结果，命不中历史记录时按示例策略停止。</figcaption></figure>
+<h2 id="找一组能区分好坏的样本">找一组能区分好坏的样本</h2>
+<div aria-labelledby="comparison-1" class="table-scroll" id="passage-96a3a1f1afe3" role="region" tabindex="0"><table class="article-comparison"><caption id="comparison-1">重放结果和处理方式</caption>
 <colgroup>
 <col style="width: 50%"/>
 <col style="width: 50%"/>
@@ -118,21 +118,7 @@ assert not passes_over_limit([])</code></pre>
 </tr>
 </tbody>
 </table></div>
-<p data-passage-key="e56cf6e09b9a" id="passage-ca88c05e5f01">基线都无法复现时，我会先查运行条件，暂缓判断改动是否有效。固定工具返回适合检查模型动作。涉及实际接口超时、权限或连接配置的改动，还要在受控环境里跑一次实际调用，单独保留结果。</p></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
-        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
-          <header class="passage-dialog-header">
-            <h2 id="passage-comment-title">段落评论</h2>
-            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
-          </header>
-          <div class="passage-dialog-content">
-            <blockquote data-passage-excerpt></blockquote>
-            <a data-passage-source>查看原文</a>
-            <p data-passage-status role="status"></p>
-            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
-            <div data-passage-widget></div>
-          </div>
-        </dialog>
+<p id="passage-ca88c05e5f01">基线都无法复现时，我会先查运行条件，暂缓判断改动是否有效。固定工具返回适合检查模型动作。涉及实际接口超时、权限或连接配置的改动，还要在受控环境里跑一次实际调用，单独保留结果。</p></div>
 
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Kitaru/">Kitaru</a><a href="/tags/Agent-%E8%AF%84%E6%B5%8B/">Agent 评测</a><a href="/tags/%E5%9B%9E%E5%BD%92%E6%B5%8B%E8%AF%95/">回归测试</a></div>
         <div class="legacy-tags" hidden></div>
@@ -146,7 +132,7 @@ assert not passes_over_limit([])</code></pre>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
-          <div class="giscus"></div>
+          <div class="giscus" id="article-discussion"></div>
         </section>
       </div>
     </div>

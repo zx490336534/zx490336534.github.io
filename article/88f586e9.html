@@ -20,7 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/88f586e9.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/88f586e9.html">
-<script type="module" src="/js/discussions.js"></script>
+<script src="/js/comments.js?v=4" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,392 +56,378 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1">负载均衡</a></li><li><a href="#tomcat">tomcat</a></li><li><a href="#%E7%9B%AE%E5%BD%95">目录</a></li><li><a href="#catalina-bat%E3%80%8CWindows%E3%80%8D%E3%80%81catalina-sh%E3%80%8CLinux%E3%80%8D">catalina.bat「Windows」、catalina.sh「Linux」</a></li><li><a href="#conf-server-xml">conf/server.xml</a></li><li><a href="#%E8%BF%9E%E6%8E%A5%E6%95%B0%E4%B8%8D%E5%A4%9F">连接数不够</a></li><li><a href="#tomcat%E7%9B%91%E6%8E%A7%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA">tomcat监控环境搭建</a></li><li><a href="#%E4%B8%8B%E8%BD%BDjvm-exporter-jar">下载jvm_exporter.jar</a></li><li><a href="#%E9%85%8D%E7%BD%AEtomcat-yml%E5%88%B0tomcat%E7%9A%84bin%E6%96%87%E4%BB%B6%E5%A4%B9%E4%B8%8B">配置tomcat.yml到tomcat的bin文件夹下</a></li><li><a href="#%E9%85%8D%E7%BD%AEcatalina-sh">配置catalina.sh</a></li><li><a href="#%E5%90%AF%E5%8A%A8tomcat">启动tomcat</a></li><li><a href="#%E9%85%8D%E7%BD%AEprometheus">配置prometheus</a></li><li><a href="#%E9%85%8D%E7%BD%AEgrafana">配置grafana</a></li><li><a href="#GC%E5%88%86%E6%9E%90">GC分析</a></li><li><a href="#nginx">nginx</a></li><li><a href="#niginx-tomcat%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1">niginx+tomcat负载均衡</a></li><li><a href="#%E8%BD%AE%E8%AF%A2">轮询</a></li><li><a href="#weight%E6%9D%83%E9%87%8D">weight权重</a></li><li><a href="#ip-hash%E4%BE%9D%E6%8D%AEip%E5%88%86%E9%85%8D">ip_hash依据ip分配</a></li><li><a href="#least-conn%E6%9C%80%E5%B0%8F%E8%BF%9E%E6%8E%A5">least_conn最小连接</a></li><li><a href="#fair%E5%93%8D%E5%BA%94%E6%97%B6%E9%97%B4">fair响应时间</a></li><li><a href="#url-hash%E4%BE%9D%E6%8D%AEurl%E5%88%86%E9%85%8D">url_hash依据url分配</a></li><li><a href="#niginx%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE">niginx常用配置</a></li><li><a href="#%E5%AF%B9niginx%E7%9B%91%E6%8E%A7">对niginx监控</a></li><li><a href="#%E5%A6%82%E4%BD%95%E6%B5%8B%E8%AF%95%E9%9B%86%E7%BE%A4%E7%9A%84%E6%80%A7%E8%83%BD">如何测试集群的性能</a></li><li><a href="#%E6%95%B0%E6%8D%AE%E5%BA%93">数据库</a></li><li><a href="#dbms">dbms</a></li><li><a href="#%E9%80%89%E6%8B%A9%E6%95%B0%E6%8D%AE%E5%BA%93%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F">选择数据库需要注意</a></li><li><a href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E7%BC%93%E5%AD%98">数据库缓存</a></li><li><a href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E6%8B%86%E5%88%86">数据库拆分</a></li><li><a href="#%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E">存储引擎</a></li><li><a href="#%E7%B4%A2%E5%BC%95">索引</a></li><li><a href="#Select">Select</a></li><li><a href="#%E8%AF%AD%E6%B3%95">语法</a></li><li><a href="#select%E7%9A%84%E8%A7%A3%E6%9E%90%E8%BF%87%E7%A8%8B">select的解析过程</a></li><li><a href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96">数据库性能优化</a></li><li><a href="#%E5%AE%9A%E4%BD%8D%E6%85%A2%E6%9F%A5%E8%AF%A2%E6%97%A5%E5%BF%97">定位慢查询日志</a></li><li><a href="#SQL%E4%BC%98%E5%8C%96">SQL优化</a></li><li><a href="#%E4%BC%98%E5%8C%96%E6%96%B9%E6%B3%95">优化方法</a></li><li><a href="#%E5%BA%93%E4%BC%98%E5%8C%96">库优化</a></li><li><a href="#%E8%A1%A8%E4%BC%98%E5%8C%96">表优化</a></li><li><a href="#%E4%B8%BB%E4%BB%8E%E5%90%8C%E6%AD%A5">主从同步</a></li><li><a href="#%E5%88%86%E8%A1%A8%E5%88%86%E5%8C%BA">分表分区</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><span id="30-服务器架构演进"></span><p data-passage-key="ceed5c1b10fc" id="passage-40e14a3c297c">把服务包部署到多台设备</p>
-<p data-passage-key="67aa19d65f61" id="passage-29bcc87c5201">多台机器一起向外提供服务，合并在一起的软件：niginx</p>
-<p data-passage-key="36be3468734d" id="passage-1626761e2363">多台机器合并在一起：集群</p>
-<p data-passage-key="6752a75c190a" id="passage-73e9fe21eaf3">nginx负载均衡，反向代理</p>
-<p data-passage-key="dc74af1cd39c" id="passage-2e50f84d0699">nginx里面记录不同机器的ip，配置不同的分配策略</p>
-<p data-passage-key="d7c4704afcb4" id="passage-2ed80a666381">nginx：web服务器，并不一定是一般理解的前台服务</p>
-<p data-passage-key="25489cf72fcf" id="passage-b437c8263c43">前后分离：front+server</p>
-<h2 data-passage-key="95502954bf5a" id="负载均衡"><a class="headerlink" href="#负载均衡" title="负载均衡"></a>负载均衡</h2><ul>
-<li data-passage-key="3d70f90757cc" id="passage-2c6fedfa7605">最典型的软件是nginx</li>
-<li data-passage-key="d9cff78211c2" id="passage-73cef128cf9c">也可以是硬件F5</li>
-<li data-passage-key="dae930962811" id="passage-cf6c53247b4e">阿里云的SLB，也是一个软件负载均衡</li>
+        <div class="post-body" id="article-text"><span id="30-服务器架构演进"></span><p id="passage-40e14a3c297c">把服务包部署到多台设备</p>
+<p id="passage-29bcc87c5201">多台机器一起向外提供服务，合并在一起的软件：niginx</p>
+<p id="passage-1626761e2363">多台机器合并在一起：集群</p>
+<p id="passage-73e9fe21eaf3">nginx负载均衡，反向代理</p>
+<p id="passage-2e50f84d0699">nginx里面记录不同机器的ip，配置不同的分配策略</p>
+<p id="passage-2ed80a666381">nginx：web服务器，并不一定是一般理解的前台服务</p>
+<p id="passage-b437c8263c43">前后分离：front+server</p>
+<h2 id="负载均衡"><a class="headerlink" href="#负载均衡" title="负载均衡"></a>负载均衡</h2><ul>
+<li id="passage-2c6fedfa7605">最典型的软件是nginx</li>
+<li id="passage-73cef128cf9c">也可以是硬件F5</li>
+<li id="passage-cf6c53247b4e">阿里云的SLB，也是一个软件负载均衡</li>
 </ul>
 <span id="more"></span>
-<h2 data-passage-key="51b912f34ae1" id="tomcat"><a class="headerlink" href="#tomcat" title="tomcat"></a>tomcat</h2><p data-passage-key="66252c6b7601" id="passage-7ae4c19cfddd">需要有jdk</p>
-<h3 data-passage-key="52daa71ebc31" id="目录"><a class="headerlink" href="#目录" title="目录"></a>目录</h3><ul>
-<li data-passage-key="463b50e0fbc8" id="passage-1396bcb2804d">bin：启动、关闭tomcat的文件。startup、shutdown为启动文件，catalina文件为配置文件</li>
-<li data-passage-key="2d8dc8095618" id="passage-27b7ad710c62">conf：配置文件。server.xml为最重要的配置文件</li>
-<li data-passage-key="1b8c6fcc0c00" id="passage-f56d8bd61022">logs：项目运行时，默认日志路径。在没有修改默认日志路径时，运行日志记录在该路径下</li>
-<li data-passage-key="d60282137111" id="passage-e37b3c33bb45">webapps：项目包防止路径。把wat包，放在这个路径下，启动tomcat会自动解压</li>
+<h2 id="tomcat"><a class="headerlink" href="#tomcat" title="tomcat"></a>tomcat</h2><p id="passage-7ae4c19cfddd">需要有jdk</p>
+<h3 id="目录"><a class="headerlink" href="#目录" title="目录"></a>目录</h3><ul>
+<li id="passage-1396bcb2804d">bin：启动、关闭tomcat的文件。startup、shutdown为启动文件，catalina文件为配置文件</li>
+<li id="passage-27b7ad710c62">conf：配置文件。server.xml为最重要的配置文件</li>
+<li id="passage-f56d8bd61022">logs：项目运行时，默认日志路径。在没有修改默认日志路径时，运行日志记录在该路径下</li>
+<li id="passage-e37b3c33bb45">webapps：项目包防止路径。把wat包，放在这个路径下，启动tomcat会自动解压</li>
 </ul>
-<h3 data-passage-key="0d16b6e9b956" id="catalina-bat「Windows」、catalina-sh「Linux」"><a class="headerlink" href="#catalina-bat「Windows」、catalina-sh「Linux」" title="catalina.bat「Windows」、catalina.sh「Linux」"></a>catalina.bat「Windows」、catalina.sh「Linux」</h3><p data-passage-key="f466081a323a" id="passage-74da049e2226">在执行startup文件启动tomcat时，会去执行catalina文件</p>
-<h4 data-passage-key="b9a0c7518dc2" id="catalina文件中，-设置堆栈信息"><a class="headerlink" href="#catalina文件中，-设置堆栈信息" title="catalina文件中， 设置堆栈信息"></a>catalina文件中， 设置堆栈信息</h4><figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="f3737548b1bd" id="passage-d819912b1ace"><span class="line">JAVA_OPTS=<span class="string">"-server -Xms256m -Xmx512m -Xss256k -XX:PermSize=128m"</span></span><br/></pre></td></tr></tbody></table></figure>
-<p data-passage-key="dcda11d8d4b8" id="passage-d68fa1f797f4">-server：第一个参数，指定为服务，多核时使用</p>
-<p data-passage-key="864a13f96ff8" id="passage-f8af6071f7f1">-Xms：启动时，初始堆大小；没有配置时，从最小逐步增加到最大值</p>
-<p data-passage-key="05efa929ee99" id="passage-175d42803d1f">-Xmx：运行时分配的最大堆大小；默认64M</p>
-<p data-passage-key="0eeb58015986" id="passage-c6859a7f274c">-Xmn：新生代堆大小</p>
-<p data-passage-key="5b629b5a46ee" id="passage-0bb79cd59f35">-Xss：每个线程栈大小</p>
-<p data-passage-key="724c41d5c102" id="passage-a0fd8979ae01">-XX:PermSize：初始化非内存大小</p>
-<p data-passage-key="a9659f6f5017" id="passage-6efbee0b7f86">-XX:MaxPermSize：永久代(非堆)最大内存大小</p>
-<p data-passage-key="ca8fc9d5be31" id="passage-569aa62e23cb">-XX:MaxNewSize：新生代最大大小</p>
-<h4 data-passage-key="e62b36113909" id="catalina文件中，-设置GC"><a class="headerlink" href="#catalina文件中，-设置GC" title="catalina文件中， 设置GC"></a>catalina文件中， 设置GC</h4><figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="cb82e1ce2585" id="passage-307fcc626a1f"><span class="line">JAVA_OPTS=<span class="string">"-verbose:gc -XX+PrintGC -XX:PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:filename"</span></span><br/></pre></td></tr></tbody></table></figure>
-<p data-passage-key="df27232e561b" id="passage-e9baa2f3daea">-verbose:gc：显示垃圾回收信息</p>
-<p data-passage-key="f8062bca9f44" id="passage-b512fde4bddc">-XX:+UseParNewGC：设置minor收集的时间</p>
-<p data-passage-key="c9bca82f8fe6" id="passage-d2f339659e99">-XX:+UseConcMarkSweepGC：设置major收集时间</p>
+<h3 id="catalina-bat「Windows」、catalina-sh「Linux」"><a class="headerlink" href="#catalina-bat「Windows」、catalina-sh「Linux」" title="catalina.bat「Windows」、catalina.sh「Linux」"></a>catalina.bat「Windows」、catalina.sh「Linux」</h3><p id="passage-74da049e2226">在执行startup文件启动tomcat时，会去执行catalina文件</p>
+<h4 id="catalina文件中，-设置堆栈信息"><a class="headerlink" href="#catalina文件中，-设置堆栈信息" title="catalina文件中， 设置堆栈信息"></a>catalina文件中， 设置堆栈信息</h4><figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-d819912b1ace"><span class="line">JAVA_OPTS=<span class="string">"-server -Xms256m -Xmx512m -Xss256k -XX:PermSize=128m"</span></span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-d68fa1f797f4">-server：第一个参数，指定为服务，多核时使用</p>
+<p id="passage-f8af6071f7f1">-Xms：启动时，初始堆大小；没有配置时，从最小逐步增加到最大值</p>
+<p id="passage-175d42803d1f">-Xmx：运行时分配的最大堆大小；默认64M</p>
+<p id="passage-c6859a7f274c">-Xmn：新生代堆大小</p>
+<p id="passage-0bb79cd59f35">-Xss：每个线程栈大小</p>
+<p id="passage-a0fd8979ae01">-XX:PermSize：初始化非内存大小</p>
+<p id="passage-6efbee0b7f86">-XX:MaxPermSize：永久代(非堆)最大内存大小</p>
+<p id="passage-569aa62e23cb">-XX:MaxNewSize：新生代最大大小</p>
+<h4 id="catalina文件中，-设置GC"><a class="headerlink" href="#catalina文件中，-设置GC" title="catalina文件中， 设置GC"></a>catalina文件中， 设置GC</h4><figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-307fcc626a1f"><span class="line">JAVA_OPTS=<span class="string">"-verbose:gc -XX+PrintGC -XX:PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:filename"</span></span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-e9baa2f3daea">-verbose:gc：显示垃圾回收信息</p>
+<p id="passage-b512fde4bddc">-XX:+UseParNewGC：设置minor收集的时间</p>
+<p id="passage-d2f339659e99">-XX:+UseConcMarkSweepGC：设置major收集时间</p>
 <ul>
-<li data-passage-key="d64e3ab271e6" id="passage-4aa033b2aad4">设置并行收集器：</li>
+<li id="passage-4aa033b2aad4">设置并行收集器：</li>
 </ul>
-<p data-passage-key="df345e06849a" id="passage-32b358324434">-XX:ParallelGCThreads=n：设置并行收集器收时使用的CPU数，并行收集线程数。</p>
-<p data-passage-key="019dc70f8e40" id="passage-8c8a493557d0">-XX:MaxGCPauseMillis=n：设置并行收集最大暂停时间</p>
-<p data-passage-key="aa03d4bb2a42" id="passage-4f72918ff7ac">-XX:GCTimeRatio=n：设置垃圾回收时间占程序运行时间的百分比</p>
+<p id="passage-32b358324434">-XX:ParallelGCThreads=n：设置并行收集器收时使用的CPU数，并行收集线程数。</p>
+<p id="passage-8c8a493557d0">-XX:MaxGCPauseMillis=n：设置并行收集最大暂停时间</p>
+<p id="passage-4f72918ff7ac">-XX:GCTimeRatio=n：设置垃圾回收时间占程序运行时间的百分比</p>
 <ul>
-<li data-passage-key="3ccd182a1cf5" id="passage-cab1a08e8424">设置并发收集器：</li>
+<li id="passage-cab1a08e8424">设置并发收集器：</li>
 </ul>
-<p data-passage-key="4cf258e186a7" id="passage-f2dc0ab0c367">-XX:+CMSIncrementalMode：设置为增量模式。适用于单CPU情况</p>
-<p data-passage-key="681e6066328f" id="passage-90ab67ea8716">-XX:ParallelGCThreads=n：设置并发收集器年轻代收集方式为并行收集时，使用的CPU数，并行收集线程数</p>
-<p data-passage-key="2f768e9cc0cd" id="passage-6b3d7d6b2d79"><strong>写GC日志，是要消耗IO的，所以在生成环境，一般不配置这个</strong></p>
-<h3 data-passage-key="413d44f41df7" id="conf-server-xml"><a class="headerlink" href="#conf-server-xml" title="conf/server.xml"></a>conf/server.xml</h3><p data-passage-key="604c8fb57989" id="passage-3f11b53edffc">Tomcat中最顶层的是server，代表整个服务器，一个server可以包含至少一个service，每个service可以包含多个connector和一个container。Connector用于处理连接相关的事情，并提供Socket与Request和Response相关的转化；Container用于封装和管理Servlet，以及具体Request请求；多个connector就可以配置多种类型连接，如http、https</p>
-<h4 data-passage-key="9732d5bbb7d4" id="不同的protocol"><a class="headerlink" href="#不同的protocol" title="不同的protocol"></a>不同的protocol</h4><p data-passage-key="42f5740eee49" id="passage-ad3856f82b08">Connector在处理HTTP请求时，会使用不同的protocol，典型的有：</p>
+<p id="passage-f2dc0ab0c367">-XX:+CMSIncrementalMode：设置为增量模式。适用于单CPU情况</p>
+<p id="passage-90ab67ea8716">-XX:ParallelGCThreads=n：设置并发收集器年轻代收集方式为并行收集时，使用的CPU数，并行收集线程数</p>
+<p id="passage-6b3d7d6b2d79"><strong>写GC日志，是要消耗IO的，所以在生成环境，一般不配置这个</strong></p>
+<h3 id="conf-server-xml"><a class="headerlink" href="#conf-server-xml" title="conf/server.xml"></a>conf/server.xml</h3><p id="passage-3f11b53edffc">Tomcat中最顶层的是server，代表整个服务器，一个server可以包含至少一个service，每个service可以包含多个connector和一个container。Connector用于处理连接相关的事情，并提供Socket与Request和Response相关的转化；Container用于封装和管理Servlet，以及具体Request请求；多个connector就可以配置多种类型连接，如http、https</p>
+<h4 id="不同的protocol"><a class="headerlink" href="#不同的protocol" title="不同的protocol"></a>不同的protocol</h4><p id="passage-ad3856f82b08">Connector在处理HTTP请求时，会使用不同的protocol，典型的有：</p>
 <ul>
-<li data-passage-key="f7e0abee36bc" id="passage-cc75868932a6">BIO：BlockingIO阻塞(tomcat7支持，8支持NIO2，8.5\9去掉了BIO)默认值为maxThreads值</li>
-<li data-passage-key="9adcf7e70859" id="passage-e020f540ea5c">NIO：Non-blockingIO非阻塞IO，默认值10000</li>
-<li data-passage-key="f35669f681ee" id="passage-84946f73acd6">APR：ApachePortableRuntime Apache可移植运行库，是高并发的首选模式；默认值8192，需要安装apr、apr_utils、tomcat-native包</li>
+<li id="passage-cc75868932a6">BIO：BlockingIO阻塞(tomcat7支持，8支持NIO2，8.5\9去掉了BIO)默认值为maxThreads值</li>
+<li id="passage-e020f540ea5c">NIO：Non-blockingIO非阻塞IO，默认值10000</li>
+<li id="passage-84946f73acd6">APR：ApachePortableRuntime Apache可移植运行库，是高并发的首选模式；默认值8192，需要安装apr、apr_utils、tomcat-native包</li>
 </ul>
-<p data-passage-key="ce083bdefb74" id="passage-ae35191cbca2">Protocol默认是HTTP/1.1，不同版本，会自动选择上面的模式（APR模式需要有相应的包才会自动选择）</p>
-<h4 data-passage-key="e426b1107aa0" id="Connector重要参数"><a class="headerlink" href="#Connector重要参数" title="Connector重要参数"></a>Connector重要参数</h4><ul>
-<li data-passage-key="ee0ecee60853" id="passage-0bb36df6e393">connectionsTimeout：连接超时时间，单位毫秒</li>
-<li data-passage-key="79cb8ade6772" id="passage-92b3f301e602">acceptCount：能接收的队列长度，队列满了，再有连接就会拒绝，默认100</li>
-<li data-passage-key="6a0a8f7d9325" id="passage-73cb8f88e43b">maxConnections：任意时刻能接受和处理的最大连接数。达到最大值，就会阻塞accept连接。如果设置为-1，则连接数不受限制</li>
-<li data-passage-key="b720411f59bd" id="passage-575c541334c8">maxThreads：请求处理线程的最大数量。默认为200</li>
-<li data-passage-key="584edc61d244" id="passage-3ec10a09a81d">minSpareThreads：tomcat初始化默认时默认创建的线程数，也是以后线程增加时一次增加的最小数量</li>
-<li data-passage-key="a28abe4f71f3" id="passage-86b39e718721">maxSpareThreads：这个参数标识，一旦创建的线程数量超过了这个值，Tomcat就会关闭不活动的线程</li>
+<p id="passage-ae35191cbca2">Protocol默认是HTTP/1.1，不同版本，会自动选择上面的模式（APR模式需要有相应的包才会自动选择）</p>
+<h4 id="Connector重要参数"><a class="headerlink" href="#Connector重要参数" title="Connector重要参数"></a>Connector重要参数</h4><ul>
+<li id="passage-0bb36df6e393">connectionsTimeout：连接超时时间，单位毫秒</li>
+<li id="passage-92b3f301e602">acceptCount：能接收的队列长度，队列满了，再有连接就会拒绝，默认100</li>
+<li id="passage-73cb8f88e43b">maxConnections：任意时刻能接受和处理的最大连接数。达到最大值，就会阻塞accept连接。如果设置为-1，则连接数不受限制</li>
+<li id="passage-575c541334c8">maxThreads：请求处理线程的最大数量。默认为200</li>
+<li id="passage-3ec10a09a81d">minSpareThreads：tomcat初始化默认时默认创建的线程数，也是以后线程增加时一次增加的最小数量</li>
+<li id="passage-86b39e718721">maxSpareThreads：这个参数标识，一旦创建的线程数量超过了这个值，Tomcat就会关闭不活动的线程</li>
 </ul>
-<h3 data-passage-key="0606745a1951" id="连接数不够"><a class="headerlink" href="#连接数不够" title="连接数不够"></a>连接数不够</h3><p data-passage-key="14a10cd71ed5" id="passage-f169a899c785">修改如下内容：</p>
-<figure class="highlight xml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="a2f357cc0ba0" id="passage-23ff0b243ff5"><span class="line"><span class="tag">&lt;<span class="name">Executor</span> <span class="attr">name</span>=<span class="string">"tomcatThreadPool"</span> <span class="attr">namePrefix</span>=<span class="string">"catalina-exec-"</span> <span class="attr">maxThreads</span>=<span class="string">"150"</span> <span class="attr">minSpareThreads</span>=<span class="string">"4"</span>/&gt;</span></span><br/><span class="line"><span class="tag">&lt;<span class="name">Connector</span> <span class="attr">executor</span>=<span class="string">"tomcatThreadPool"</span> <span class="attr">port</span>=<span class="string">"8080"</span> <span class="attr">protocol</span>=<span class="string">"HTTP/1.1"</span> <span class="attr">connectionTimeout</span>=<span class="string">"20000"</span> <span class="attr">redirectPort</span>=<span class="string">"8443"</span> <span class="attr">acceptCount</span>=<span class="string">"1000"</span>/&gt;</span></span><br/></pre></td></tr></tbody></table></figure>
+<h3 id="连接数不够"><a class="headerlink" href="#连接数不够" title="连接数不够"></a>连接数不够</h3><p id="passage-f169a899c785">修改如下内容：</p>
+<figure class="highlight xml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre id="passage-23ff0b243ff5"><span class="line"><span class="tag">&lt;<span class="name">Executor</span> <span class="attr">name</span>=<span class="string">"tomcatThreadPool"</span> <span class="attr">namePrefix</span>=<span class="string">"catalina-exec-"</span> <span class="attr">maxThreads</span>=<span class="string">"150"</span> <span class="attr">minSpareThreads</span>=<span class="string">"4"</span>/&gt;</span></span><br/><span class="line"><span class="tag">&lt;<span class="name">Connector</span> <span class="attr">executor</span>=<span class="string">"tomcatThreadPool"</span> <span class="attr">port</span>=<span class="string">"8080"</span> <span class="attr">protocol</span>=<span class="string">"HTTP/1.1"</span> <span class="attr">connectionTimeout</span>=<span class="string">"20000"</span> <span class="attr">redirectPort</span>=<span class="string">"8443"</span> <span class="attr">acceptCount</span>=<span class="string">"1000"</span>/&gt;</span></span><br/></pre></td></tr></tbody></table></figure>
 <ul>
-<li data-passage-key="d434d91265d9" id="passage-18cbef79a3b1"><p data-passage-key="d37f18cc1efe" id="passage-e5b3b3b9fdd4">name：线程池的标记</p>
+<li id="passage-18cbef79a3b1"><p id="passage-e5b3b3b9fdd4">name：线程池的标记</p>
 </li>
-<li data-passage-key="311a34fc8966" id="passage-7976f3a9d471"><p data-passage-key="5fc95a50d3f9" id="passage-167f34d84dfd">namePrefix：线程名字前缀</p>
+<li id="passage-7976f3a9d471"><p id="passage-167f34d84dfd">namePrefix：线程名字前缀</p>
 </li>
-<li data-passage-key="d667daa59fcd" id="passage-2a5174ac2c35"><p data-passage-key="959485d51a22" id="passage-ab3339c2a7e8">maxThreads：线程池中最大活跃线程数，默认200</p>
+<li id="passage-2a5174ac2c35"><p id="passage-ab3339c2a7e8">maxThreads：线程池中最大活跃线程数，默认200</p>
 </li>
-<li data-passage-key="7534ace89138" id="passage-d69c0ac7f63d"><p data-passage-key="c061aada627e" id="passage-e71283341cfd">minSpareThreads：线程池中保存的最小线程数，也是线程每次增加的最小值，默认25</p>
+<li id="passage-d69c0ac7f63d"><p id="passage-e71283341cfd">minSpareThreads：线程池中保存的最小线程数，也是线程每次增加的最小值，默认25</p>
 </li>
-<li data-passage-key="4ba0aa9c2a36" id="passage-59d1dcae9296"><p data-passage-key="76eed2c382ff" id="passage-3144597f0cb0">connectionTimrout：连接超时时间，单位毫秒</p>
+<li id="passage-59d1dcae9296"><p id="passage-3144597f0cb0">connectionTimrout：连接超时时间，单位毫秒</p>
 </li>
-<li data-passage-key="0105832a90a4" id="passage-36231f2a7107"><p data-passage-key="166c7236eece" id="passage-55ec6c42388f">accepCount：最大可接受的排队数量</p>
+<li id="passage-36231f2a7107"><p id="passage-55ec6c42388f">accepCount：最大可接受的排队数量</p>
 </li>
-<li data-passage-key="9e0d32dd6878" id="passage-6923cd3d2e5d"><p data-passage-key="f9c150c29f24" id="passage-282ccb274754">maxSpareThreads：一旦创建的线程数量超过这个数值，Tomcat就会关闭不活动的线程</p>
+<li id="passage-6923cd3d2e5d"><p id="passage-282ccb274754">maxSpareThreads：一旦创建的线程数量超过这个数值，Tomcat就会关闭不活动的线程</p>
 </li>
 </ul>
-<h2 data-passage-key="55863af21ee0" id="tomcat监控环境搭建"><a class="headerlink" href="#tomcat监控环境搭建" title="tomcat监控环境搭建"></a>tomcat监控环境搭建</h2><blockquote data-passage-key="da1c68c91324" id="passage-724a2efdaf8f">
-<p data-passage-key="663fe4889ee3" id="passage-07862229b112">gragana + prometheus监控tomcat</p>
+<h2 id="tomcat监控环境搭建"><a class="headerlink" href="#tomcat监控环境搭建" title="tomcat监控环境搭建"></a>tomcat监控环境搭建</h2><blockquote id="passage-724a2efdaf8f">
+<p id="passage-07862229b112">gragana + prometheus监控tomcat</p>
 </blockquote>
-<h3 data-passage-key="c260c215255f" id="下载jvm-exporter-jar"><a class="headerlink" href="#下载jvm-exporter-jar" title="下载jvm_exporter.jar"></a>下载jvm_exporter.jar</h3><p data-passage-key="c8d3c98cb5f9" id="passage-ab73651d5105">下载地址：<a href="https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/" rel="noopener" target="_blank">https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/</a></p>
-<p data-passage-key="79c16882b5e7" id="passage-9bc6a3f1504f">将<code>jvm_exporter.jar</code>放到tomcat的bin文件夹下</p>
-<h3 data-passage-key="a866a20f9137" id="配置tomcat-yml到tomcat的bin文件夹下"><a class="headerlink" href="#配置tomcat-yml到tomcat的bin文件夹下" title="配置tomcat.yml到tomcat的bin文件夹下"></a>配置tomcat.yml到tomcat的bin文件夹下</h3><figure class="highlight xml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/><span class="line">20</span><br/><span class="line">21</span><br/><span class="line">22</span><br/><span class="line">23</span><br/><span class="line">24</span><br/><span class="line">25</span><br/><span class="line">26</span><br/><span class="line">27</span><br/><span class="line">28</span><br/><span class="line">29</span><br/><span class="line">30</span><br/><span class="line">31</span><br/><span class="line">32</span><br/><span class="line">33</span><br/></pre></td><td class="code"><pre data-passage-key="3f45af3a5c21" id="passage-ba99b97ec15f"><span class="line">---   </span><br/><span class="line">lowercaseOutputLabelNames: true</span><br/><span class="line">lowercaseOutputName: true</span><br/><span class="line">rules:</span><br/><span class="line">- pattern: 'Catalina&lt;type=GlobalRequestProcessor, name=\"(\w+-\w+)-(\d+)\"&gt;<span class="tag">&lt;&gt;</span>(\w+):'</span><br/><span class="line">  name: tomcat_$3_total</span><br/><span class="line">  labels:</span><br/><span class="line">    port: "$2"</span><br/><span class="line">    protocol: "$1"</span><br/><span class="line">  help: Tomcat global $3</span><br/><span class="line">  type: COUNTER</span><br/><span class="line">- pattern: 'Catalina&lt;j2eeType=Servlet, WebModule=//([-a-zA-Z0-9+&amp;@#/%?=~_|!:.,;]*[-a-zA-Z0-9+&amp;@#/%=~_|]), name=([-a-zA-Z0-9+/$%~_-|!.]*), J2EEApplication=none, J2EEServer=none&gt;<span class="tag">&lt;&gt;</span>(requestCount|maxTime|processingTime|errorCount):'</span><br/><span class="line">  name: tomcat_servlet_$3_total</span><br/><span class="line">  labels:</span><br/><span class="line">    module: "$1"</span><br/><span class="line">    servlet: "$2"</span><br/><span class="line">  help: Tomcat servlet $3 total</span><br/><span class="line">  type: COUNTER</span><br/><span class="line">- pattern: 'Catalina&lt;type=ThreadPool, name="(\w+-\w+)-(\d+)"&gt;<span class="tag">&lt;&gt;</span>(currentThreadCount|currentThreadsBusy|keepAliveCount|pollerThreadCount|connectionCount):'</span><br/><span class="line">  name: tomcat_threadpool_$3</span><br/><span class="line">  labels:</span><br/><span class="line">    port: "$2"</span><br/><span class="line">    protocol: "$1"</span><br/><span class="line">  help: Tomcat threadpool $3</span><br/><span class="line">  type: GAUGE</span><br/><span class="line">- pattern: 'Catalina&lt;type=Manager, host=([-a-zA-Z0-9+&amp;@#/%?=~_|!:.,;]*[-a-zA-Z0-9+&amp;@#/%=~_|]), context=([-a-zA-Z0-9+/$%~_-|!.]*)&gt;<span class="tag">&lt;&gt;</span>(processingTime|sessionCounter|rejectedSessions|expiredSessions):'</span><br/><span class="line">  name: tomcat_session_$3_total</span><br/><span class="line">  labels:</span><br/><span class="line">    context: "$2"</span><br/><span class="line">    host: "$1"</span><br/><span class="line">  help: Tomcat session $3 total</span><br/><span class="line">  type: COUNTER</span><br/><span class="line">- pattern: ".*"</span><br/></pre></td></tr></tbody></table></figure>
-<h3 data-passage-key="412625758510" id="配置catalina-sh"><a class="headerlink" href="#配置catalina-sh" title="配置catalina.sh"></a>配置catalina.sh</h3><figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="d872cb05a60e" id="passage-fa6ad67717f9"><span class="line">JAVA_OPTS=<span class="string">"-javaagent:./jmx_prometheus_javaagent-0.14.0.jar=3088:./tomcat.yml"</span></span><br/></pre></td></tr></tbody></table></figure>
-<h3 data-passage-key="c34c4dc7b715" id="启动tomcat"><a class="headerlink" href="#启动tomcat" title="启动tomcat"></a>启动tomcat</h3><h3 data-passage-key="bbdc6499b0ed" id="配置prometheus"><a class="headerlink" href="#配置prometheus" title="配置prometheus"></a>配置prometheus</h3><p data-passage-key="2d04f702b5bb" id="passage-442f9037ea3a">配置prometheus.yml文件</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre data-passage-key="fa88ad0092b4" id="passage-3c4fda2516c3"><span class="line">- job_name:"tomcat_export"</span><br/><span class="line">  static_configs:</span><br/><span class="line">  - targets:["被监控机器IP:3088"]</span><br/></pre></td></tr></tbody></table></figure>
-<h3 data-passage-key="e771821474ac" id="配置grafana"><a class="headerlink" href="#配置grafana" title="配置grafana"></a>配置grafana</h3><ul>
-<li data-passage-key="950732f2fbe0" id="passage-888538069dd3">添加数据源：URL<code>http://prometheus_ip:9000</code></li>
-<li data-passage-key="bde0210618c2" id="passage-95bd28e112ad">引入模版：8563或3457</li>
-<li data-passage-key="a25d84571ce8" id="passage-bb0af09febe5">名称：自定义</li>
-<li data-passage-key="7459a3f01106" id="passage-9b031cb72afc">job修改为prometheus.yml文件中的job_name</li>
+<h3 id="下载jvm-exporter-jar"><a class="headerlink" href="#下载jvm-exporter-jar" title="下载jvm_exporter.jar"></a>下载jvm_exporter.jar</h3><p id="passage-ab73651d5105">下载地址：<a href="https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/" rel="noopener" target="_blank">https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/</a></p>
+<p id="passage-9bc6a3f1504f">将<code>jvm_exporter.jar</code>放到tomcat的bin文件夹下</p>
+<h3 id="配置tomcat-yml到tomcat的bin文件夹下"><a class="headerlink" href="#配置tomcat-yml到tomcat的bin文件夹下" title="配置tomcat.yml到tomcat的bin文件夹下"></a>配置tomcat.yml到tomcat的bin文件夹下</h3><figure class="highlight xml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/><span class="line">20</span><br/><span class="line">21</span><br/><span class="line">22</span><br/><span class="line">23</span><br/><span class="line">24</span><br/><span class="line">25</span><br/><span class="line">26</span><br/><span class="line">27</span><br/><span class="line">28</span><br/><span class="line">29</span><br/><span class="line">30</span><br/><span class="line">31</span><br/><span class="line">32</span><br/><span class="line">33</span><br/></pre></td><td class="code"><pre id="passage-ba99b97ec15f"><span class="line">---   </span><br/><span class="line">lowercaseOutputLabelNames: true</span><br/><span class="line">lowercaseOutputName: true</span><br/><span class="line">rules:</span><br/><span class="line">- pattern: 'Catalina&lt;type=GlobalRequestProcessor, name=\"(\w+-\w+)-(\d+)\"&gt;<span class="tag">&lt;&gt;</span>(\w+):'</span><br/><span class="line">  name: tomcat_$3_total</span><br/><span class="line">  labels:</span><br/><span class="line">    port: "$2"</span><br/><span class="line">    protocol: "$1"</span><br/><span class="line">  help: Tomcat global $3</span><br/><span class="line">  type: COUNTER</span><br/><span class="line">- pattern: 'Catalina&lt;j2eeType=Servlet, WebModule=//([-a-zA-Z0-9+&amp;@#/%?=~_|!:.,;]*[-a-zA-Z0-9+&amp;@#/%=~_|]), name=([-a-zA-Z0-9+/$%~_-|!.]*), J2EEApplication=none, J2EEServer=none&gt;<span class="tag">&lt;&gt;</span>(requestCount|maxTime|processingTime|errorCount):'</span><br/><span class="line">  name: tomcat_servlet_$3_total</span><br/><span class="line">  labels:</span><br/><span class="line">    module: "$1"</span><br/><span class="line">    servlet: "$2"</span><br/><span class="line">  help: Tomcat servlet $3 total</span><br/><span class="line">  type: COUNTER</span><br/><span class="line">- pattern: 'Catalina&lt;type=ThreadPool, name="(\w+-\w+)-(\d+)"&gt;<span class="tag">&lt;&gt;</span>(currentThreadCount|currentThreadsBusy|keepAliveCount|pollerThreadCount|connectionCount):'</span><br/><span class="line">  name: tomcat_threadpool_$3</span><br/><span class="line">  labels:</span><br/><span class="line">    port: "$2"</span><br/><span class="line">    protocol: "$1"</span><br/><span class="line">  help: Tomcat threadpool $3</span><br/><span class="line">  type: GAUGE</span><br/><span class="line">- pattern: 'Catalina&lt;type=Manager, host=([-a-zA-Z0-9+&amp;@#/%?=~_|!:.,;]*[-a-zA-Z0-9+&amp;@#/%=~_|]), context=([-a-zA-Z0-9+/$%~_-|!.]*)&gt;<span class="tag">&lt;&gt;</span>(processingTime|sessionCounter|rejectedSessions|expiredSessions):'</span><br/><span class="line">  name: tomcat_session_$3_total</span><br/><span class="line">  labels:</span><br/><span class="line">    context: "$2"</span><br/><span class="line">    host: "$1"</span><br/><span class="line">  help: Tomcat session $3 total</span><br/><span class="line">  type: COUNTER</span><br/><span class="line">- pattern: ".*"</span><br/></pre></td></tr></tbody></table></figure>
+<h3 id="配置catalina-sh"><a class="headerlink" href="#配置catalina-sh" title="配置catalina.sh"></a>配置catalina.sh</h3><figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-fa6ad67717f9"><span class="line">JAVA_OPTS=<span class="string">"-javaagent:./jmx_prometheus_javaagent-0.14.0.jar=3088:./tomcat.yml"</span></span><br/></pre></td></tr></tbody></table></figure>
+<h3 id="启动tomcat"><a class="headerlink" href="#启动tomcat" title="启动tomcat"></a>启动tomcat</h3><h3 id="配置prometheus"><a class="headerlink" href="#配置prometheus" title="配置prometheus"></a>配置prometheus</h3><p id="passage-442f9037ea3a">配置prometheus.yml文件</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre id="passage-3c4fda2516c3"><span class="line">- job_name:"tomcat_export"</span><br/><span class="line">  static_configs:</span><br/><span class="line">  - targets:["被监控机器IP:3088"]</span><br/></pre></td></tr></tbody></table></figure>
+<h3 id="配置grafana"><a class="headerlink" href="#配置grafana" title="配置grafana"></a>配置grafana</h3><ul>
+<li id="passage-888538069dd3">添加数据源：URL<code>http://prometheus_ip:9000</code></li>
+<li id="passage-95bd28e112ad">引入模版：8563或3457</li>
+<li id="passage-bb0af09febe5">名称：自定义</li>
+<li id="passage-9b031cb72afc">job修改为prometheus.yml文件中的job_name</li>
 </ul>
-<h2 data-passage-key="d16f33603ce9" id="GC分析"><a class="headerlink" href="#GC分析" title="GC分析"></a>GC分析</h2><blockquote data-passage-key="9468a8009675" id="passage-d01c138770e4">
-<p data-passage-key="ebf6531bcf5c" id="passage-c1f336cf2e0c"><a href="https://gceasy.io/" rel="noopener" target="_blank">https://gceasy.io/</a></p>
+<h2 id="GC分析"><a class="headerlink" href="#GC分析" title="GC分析"></a>GC分析</h2><blockquote id="passage-d01c138770e4">
+<p id="passage-c1f336cf2e0c"><a href="https://gceasy.io/" rel="noopener" target="_blank">https://gceasy.io/</a></p>
 </blockquote>
-<h2 data-passage-key="5be1ecc7935f" id="nginx"><a class="headerlink" href="#nginx" title="nginx"></a>nginx</h2><blockquote data-passage-key="d3bfb83cf6e5" id="passage-f7845c0f4299">
-<p data-passage-key="76fdf58e9686" id="passage-21ade8440678">是一个用C语言编写的高性能HTTP服务器，反向代理web服务器</p>
+<h2 id="nginx"><a class="headerlink" href="#nginx" title="nginx"></a>nginx</h2><blockquote id="passage-f7845c0f4299">
+<p id="passage-21ade8440678">是一个用C语言编写的高性能HTTP服务器，反向代理web服务器</p>
 </blockquote>
 <ul>
-<li data-passage-key="62029d8b209c" id="passage-d706ee8fb6ef">占用内存小</li>
-<li data-passage-key="5c3b496ff488" id="passage-7233c053e906">并发能力强</li>
+<li id="passage-d706ee8fb6ef">占用内存小</li>
+<li id="passage-7233c053e906">并发能力强</li>
 </ul>
 <p><img alt="image-20210628215410866" decoding="async" height="200" loading="lazy" src="/images/blog-media/8e4196266cf034631e9a.webp" width="782"/></p>
-<figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/><span class="line">20</span><br/><span class="line">21</span><br/><span class="line">22</span><br/><span class="line">23</span><br/><span class="line">24</span><br/><span class="line">25</span><br/><span class="line">26</span><br/><span class="line">27</span><br/><span class="line">28</span><br/><span class="line">29</span><br/><span class="line">30</span><br/><span class="line">31</span><br/><span class="line">32</span><br/><span class="line">33</span><br/></pre></td><td class="code"><pre data-passage-key="c4c8e9bea67d" id="passage-a9f908522e8a"><span class="line">worker_processes  1;</span><br/><span class="line"></span><br/><span class="line">events {</span><br/><span class="line">    use epoll;</span><br/><span class="line">    worker_connections  1024;</span><br/><span class="line">}</span><br/><span class="line"></span><br/><span class="line">http {</span><br/><span class="line">    include       mime.types;</span><br/><span class="line">    default_type  application/octet-stream;</span><br/><span class="line">    sendfile        on;</span><br/><span class="line">    keepalive_timeout  65;</span><br/><span class="line">    upstream web_app {</span><br/><span class="line">        server 192.168.114.139:8080 weight=1 max_fails=2 fail_timeout=30;</span><br/><span class="line">	server 192.168.114.139:8880 weight=1 max_fails=2 fail_timeout=30;</span><br/><span class="line">    }</span><br/><span class="line">    server {</span><br/><span class="line">        listen       80;</span><br/><span class="line">        server_name  192.168.114.139;</span><br/><span class="line">        location / {</span><br/><span class="line">	    proxy_next_upstream http_502 http_504 error timeout invalid_header;</span><br/><span class="line">            proxy_set_header Host  $host;</span><br/><span class="line">            proxy_set_header X-Real-IP $remote_addr;</span><br/><span class="line">            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br/><span class="line">            proxy_pass http://web_app;</span><br/><span class="line">            root   html;</span><br/><span class="line">            index  index.html index.htm;</span><br/><span class="line">        }</span><br/><span class="line">        error_page   500 502 503 504  /50x.html;</span><br/><span class="line">        location = /50x.html {</span><br/><span class="line">            root   html;</span><br/><span class="line">        }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
-<h2 data-passage-key="037910dd9c47" id="niginx-tomcat负载均衡"><a class="headerlink" href="#niginx-tomcat负载均衡" title="niginx+tomcat负载均衡"></a>niginx+tomcat负载均衡</h2><h3 data-passage-key="68283a33b65f" id="轮询"><a class="headerlink" href="#轮询" title="轮询"></a>轮询</h3><p data-passage-key="efbfc021038c" id="passage-f26a9dd09ffe">默认策略，如果服务器down掉了，会自动剔除该服务器，此策略适合服务器配置相当，无状态且短平快的服务使用</p>
-<h3 data-passage-key="354eaec3b114" id="weight权重"><a class="headerlink" href="#weight权重" title="weight权重"></a>weight权重</h3><p data-passage-key="4ba0302ebc12" id="passage-c3267d6ef135">权重越高分配到需要处理的请求越多，此策略可以与least_conn和ip_hash结合使用，此策略比较适合服务器的硬件配置差别比较大的情况</p>
-<h3 data-passage-key="7182bc70bd18" id="ip-hash依据ip分配"><a class="headerlink" href="#ip-hash依据ip分配" title="ip_hash依据ip分配"></a>ip_hash依据ip分配</h3><p data-passage-key="83c4db86705c" id="passage-b10e2def8a72">ip_hash不能与backup同时使用，此策略适合有状态服务，比如session，服务器需要剔除，必须手动down掉</p>
-<h3 data-passage-key="19b58d28a28a" id="least-conn最小连接"><a class="headerlink" href="#least-conn最小连接" title="least_conn最小连接"></a>least_conn最小连接</h3><p data-passage-key="fb51e9ad34c1" id="passage-63e028e031c5">此负载均衡策略适合请求处理时间长短不一造成服务器过载的情况</p>
-<h3 data-passage-key="7fa649f2db13" id="fair响应时间"><a class="headerlink" href="#fair响应时间" title="fair响应时间"></a>fair响应时间</h3><p data-passage-key="c76fa4da954a" id="passage-dd2f9f33aec2">负载均衡策略的实现需要安装第三方插件，按照服务器端的响应时间来分配请求，响应时间短的优先分配</p>
-<h3 data-passage-key="d1ce19b497e5" id="url-hash依据url分配"><a class="headerlink" href="#url-hash依据url分配" title="url_hash依据url分配"></a>url_hash依据url分配</h3><p data-passage-key="7e8b3aa53e25" id="passage-5269f032b4bc">按访问url结果来分配请求，使每个url定向到同一个后端服务器，要配合缓存命中来使用</p>
-<h2 data-passage-key="c23b7b402e0c" id="niginx常用配置"><a class="headerlink" href="#niginx常用配置" title="niginx常用配置"></a>niginx常用配置</h2><p><img alt="niginx常用配置" decoding="async" height="350" loading="lazy" src="/images/blog-media/3d02fe7ae42eefaeb410.webp" width="887"/></p>
-<h2 data-passage-key="ce22077af6bd" id="对niginx监控"><a class="headerlink" href="#对niginx监控" title="对niginx监控"></a>对niginx监控</h2><p data-passage-key="777918a93831" id="passage-c14322cc3d81">使用<code>nginx-module-vts</code>与<code>nginx-vts-exporter</code></p>
+<figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/><span class="line">20</span><br/><span class="line">21</span><br/><span class="line">22</span><br/><span class="line">23</span><br/><span class="line">24</span><br/><span class="line">25</span><br/><span class="line">26</span><br/><span class="line">27</span><br/><span class="line">28</span><br/><span class="line">29</span><br/><span class="line">30</span><br/><span class="line">31</span><br/><span class="line">32</span><br/><span class="line">33</span><br/></pre></td><td class="code"><pre id="passage-a9f908522e8a"><span class="line">worker_processes  1;</span><br/><span class="line"></span><br/><span class="line">events {</span><br/><span class="line">    use epoll;</span><br/><span class="line">    worker_connections  1024;</span><br/><span class="line">}</span><br/><span class="line"></span><br/><span class="line">http {</span><br/><span class="line">    include       mime.types;</span><br/><span class="line">    default_type  application/octet-stream;</span><br/><span class="line">    sendfile        on;</span><br/><span class="line">    keepalive_timeout  65;</span><br/><span class="line">    upstream web_app {</span><br/><span class="line">        server 192.168.114.139:8080 weight=1 max_fails=2 fail_timeout=30;</span><br/><span class="line">	server 192.168.114.139:8880 weight=1 max_fails=2 fail_timeout=30;</span><br/><span class="line">    }</span><br/><span class="line">    server {</span><br/><span class="line">        listen       80;</span><br/><span class="line">        server_name  192.168.114.139;</span><br/><span class="line">        location / {</span><br/><span class="line">	    proxy_next_upstream http_502 http_504 error timeout invalid_header;</span><br/><span class="line">            proxy_set_header Host  $host;</span><br/><span class="line">            proxy_set_header X-Real-IP $remote_addr;</span><br/><span class="line">            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br/><span class="line">            proxy_pass http://web_app;</span><br/><span class="line">            root   html;</span><br/><span class="line">            index  index.html index.htm;</span><br/><span class="line">        }</span><br/><span class="line">        error_page   500 502 503 504  /50x.html;</span><br/><span class="line">        location = /50x.html {</span><br/><span class="line">            root   html;</span><br/><span class="line">        }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
+<h2 id="niginx-tomcat负载均衡"><a class="headerlink" href="#niginx-tomcat负载均衡" title="niginx+tomcat负载均衡"></a>niginx+tomcat负载均衡</h2><h3 id="轮询"><a class="headerlink" href="#轮询" title="轮询"></a>轮询</h3><p id="passage-f26a9dd09ffe">默认策略，如果服务器down掉了，会自动剔除该服务器，此策略适合服务器配置相当，无状态且短平快的服务使用</p>
+<h3 id="weight权重"><a class="headerlink" href="#weight权重" title="weight权重"></a>weight权重</h3><p id="passage-c3267d6ef135">权重越高分配到需要处理的请求越多，此策略可以与least_conn和ip_hash结合使用，此策略比较适合服务器的硬件配置差别比较大的情况</p>
+<h3 id="ip-hash依据ip分配"><a class="headerlink" href="#ip-hash依据ip分配" title="ip_hash依据ip分配"></a>ip_hash依据ip分配</h3><p id="passage-b10e2def8a72">ip_hash不能与backup同时使用，此策略适合有状态服务，比如session，服务器需要剔除，必须手动down掉</p>
+<h3 id="least-conn最小连接"><a class="headerlink" href="#least-conn最小连接" title="least_conn最小连接"></a>least_conn最小连接</h3><p id="passage-63e028e031c5">此负载均衡策略适合请求处理时间长短不一造成服务器过载的情况</p>
+<h3 id="fair响应时间"><a class="headerlink" href="#fair响应时间" title="fair响应时间"></a>fair响应时间</h3><p id="passage-dd2f9f33aec2">负载均衡策略的实现需要安装第三方插件，按照服务器端的响应时间来分配请求，响应时间短的优先分配</p>
+<h3 id="url-hash依据url分配"><a class="headerlink" href="#url-hash依据url分配" title="url_hash依据url分配"></a>url_hash依据url分配</h3><p id="passage-5269f032b4bc">按访问url结果来分配请求，使每个url定向到同一个后端服务器，要配合缓存命中来使用</p>
+<h2 id="niginx常用配置"><a class="headerlink" href="#niginx常用配置" title="niginx常用配置"></a>niginx常用配置</h2><p><img alt="niginx常用配置" decoding="async" height="350" loading="lazy" src="/images/blog-media/3d02fe7ae42eefaeb410.webp" width="887"/></p>
+<h2 id="对niginx监控"><a class="headerlink" href="#对niginx监控" title="对niginx监控"></a>对niginx监控</h2><p id="passage-c14322cc3d81">使用<code>nginx-module-vts</code>与<code>nginx-vts-exporter</code></p>
 <ul>
-<li data-passage-key="485a162b5739" id="passage-cf5b1d9fcae0">nginx-module-vts: Nginx virtual host traffic status module，nginx的监控模块，能够提供json、html、prometheus格式的数据产出。</li>
-<li data-passage-key="c7a3ae579154" id="passage-218c42d64bb0">nginx-vts-exporter: Simple server that scrapes Nginx vts stats and exports them via HTTP for Prometheus consumption。主要用于收集nginx的监控数据，并给Prometheus提供监控接口，默认端口号9913。</li>
+<li id="passage-cf5b1d9fcae0">nginx-module-vts: Nginx virtual host traffic status module，nginx的监控模块，能够提供json、html、prometheus格式的数据产出。</li>
+<li id="passage-218c42d64bb0">nginx-vts-exporter: Simple server that scrapes Nginx vts stats and exports them via HTTP for Prometheus consumption。主要用于收集nginx的监控数据，并给Prometheus提供监控接口，默认端口号9913。</li>
 </ul>
-<h2 data-passage-key="f14a082e90d2" id="如何测试集群的性能"><a class="headerlink" href="#如何测试集群的性能" title="如何测试集群的性能"></a>如何测试集群的性能</h2><p data-passage-key="b748a1e57093" id="passage-f1ed013e4161">首先，需要有一个集群，就要安装项目的集群环境搭建的标准，搭建一套集群环境，只是此时，集群规模不需要做那么大，自己搭建一套最小的集群（至少是两个相同服务构成的一个集群）</p>
-<p data-passage-key="65e0ac4c1a60" id="passage-ddd6ff81a893">然后，对该集群进行性能测试，得到最小规模的集群的性能指标</p>
-<p data-passage-key="f82202edcbee" id="passage-ff7344a256b3">然后，再在集群中，添加服务，此时集群有3个服务，然后再对集群进行一次性能测试，此时3个服务构成的集群的性能指标tps增加了多少，并发用户增加了多少，那么理论上，可以计算出增加服务后tps等指标的增加情况</p>
-<h2 data-passage-key="263200d7d529" id="数据库"><a class="headerlink" href="#数据库" title="数据库"></a>数据库</h2><blockquote data-passage-key="c63db0439e50" id="passage-ec8738e87ce7">
-<p data-passage-key="6f4409360cf4" id="passage-29131d94f52f">数据：描述事物的符号记录，符号可以是数字，文字，图片，图像，声音，语言</p>
-<p data-passage-key="2b6b8d0177c3" id="passage-80fa3725e17a">数据库：存放数据的仓库，这个仓库是计算机存储设备，而且数据是按一定的格式存放的</p>
+<h2 id="如何测试集群的性能"><a class="headerlink" href="#如何测试集群的性能" title="如何测试集群的性能"></a>如何测试集群的性能</h2><p id="passage-f1ed013e4161">首先，需要有一个集群，就要安装项目的集群环境搭建的标准，搭建一套集群环境，只是此时，集群规模不需要做那么大，自己搭建一套最小的集群（至少是两个相同服务构成的一个集群）</p>
+<p id="passage-ddd6ff81a893">然后，对该集群进行性能测试，得到最小规模的集群的性能指标</p>
+<p id="passage-ff7344a256b3">然后，再在集群中，添加服务，此时集群有3个服务，然后再对集群进行一次性能测试，此时3个服务构成的集群的性能指标tps增加了多少，并发用户增加了多少，那么理论上，可以计算出增加服务后tps等指标的增加情况</p>
+<h2 id="数据库"><a class="headerlink" href="#数据库" title="数据库"></a>数据库</h2><blockquote id="passage-ec8738e87ce7">
+<p id="passage-29131d94f52f">数据：描述事物的符号记录，符号可以是数字，文字，图片，图像，声音，语言</p>
+<p id="passage-80fa3725e17a">数据库：存放数据的仓库，这个仓库是计算机存储设备，而且数据是按一定的格式存放的</p>
 </blockquote>
-<p data-passage-key="913cdf3fac14" id="passage-cc097efac7a2">在企业项目中，数据库的读操作更频繁</p>
-<h3 data-passage-key="fb3a584cf897" id="dbms"><a class="headerlink" href="#dbms" title="dbms"></a>dbms</h3><h4 data-passage-key="320bc18d11ff" id="关系型数据库"><a class="headerlink" href="#关系型数据库" title="关系型数据库"></a>关系型数据库</h4><p data-passage-key="9380bd0fb313" id="passage-25cafa34d93f">采用关系模型来组织数据库的数据，以行+列方式存储数据</p>
+<p id="passage-cc097efac7a2">在企业项目中，数据库的读操作更频繁</p>
+<h3 id="dbms"><a class="headerlink" href="#dbms" title="dbms"></a>dbms</h3><h4 id="关系型数据库"><a class="headerlink" href="#关系型数据库" title="关系型数据库"></a>关系型数据库</h4><p id="passage-25cafa34d93f">采用关系模型来组织数据库的数据，以行+列方式存储数据</p>
 <ul>
-<li data-passage-key="96143b300e51" id="passage-d1d31c467464">结构化方式存储数据库</li>
-<li data-passage-key="af5b8dc37f94" id="passage-79b0922be7d5">标准的结构化查询语句「SQL」标准的增删改查</li>
-<li data-passage-key="630b1f3c21b5" id="passage-d500837aa30f">事物性，寻找ACID规则「原子性、一致性、隔离性、持久性」</li>
+<li id="passage-d1d31c467464">结构化方式存储数据库</li>
+<li id="passage-79b0922be7d5">标准的结构化查询语句「SQL」标准的增删改查</li>
+<li id="passage-d500837aa30f">事物性，寻找ACID规则「原子性、一致性、隔离性、持久性」</li>
 </ul>
-<p data-passage-key="9550212743b2" id="passage-1c22df31357c">sql有四种</p>
+<p id="passage-1c22df31357c">sql有四种</p>
 <ul>
-<li data-passage-key="f6399671567f" id="passage-4904668ee2fb">DCL数据库控制语言「Data Control Language」用来确认或取消数据库用户和角色权限变更</li>
-<li data-passage-key="8a99fe6e4d16" id="passage-0a5ce706d231">DDL数据库定义语言「Data Definition Language」用来创建或删除数据库以及表</li>
-<li data-passage-key="24e5a3551f48" id="passage-43387af9c305">DML数据库操作语言「Data Mainpulation Language」用来变更表数据记录</li>
-<li data-passage-key="3e1b2c55d736" id="passage-945961c0dfd0">DQL数据库查询语言「Data Query Language」用来查询表中的记录</li>
+<li id="passage-4904668ee2fb">DCL数据库控制语言「Data Control Language」用来确认或取消数据库用户和角色权限变更</li>
+<li id="passage-0a5ce706d231">DDL数据库定义语言「Data Definition Language」用来创建或删除数据库以及表</li>
+<li id="passage-43387af9c305">DML数据库操作语言「Data Mainpulation Language」用来变更表数据记录</li>
+<li id="passage-945961c0dfd0">DQL数据库查询语言「Data Query Language」用来查询表中的记录</li>
 </ul>
-<h4 data-passage-key="9e8e66371ca0" id="非关系型数据库NoSQL「Not-only-SQL」"><a class="headerlink" href="#非关系型数据库NoSQL「Not-only-SQL」" title="非关系型数据库NoSQL「Not only SQL」"></a>非关系型数据库NoSQL「Not only SQL」</h4><h3 data-passage-key="65c8786195a2" id="选择数据库需要注意"><a class="headerlink" href="#选择数据库需要注意" title="选择数据库需要注意"></a>选择数据库需要注意</h3><ul>
-<li data-passage-key="890fc8c65d35" id="passage-154e7697736e">IO性能比较好的</li>
-<li data-passage-key="772984c3f2e0" id="passage-968c20f69ceb">磁盘空间比较大</li>
-<li data-passage-key="ae935c59bfee" id="passage-f30e18f98bfa">稳定性</li>
+<h4 id="非关系型数据库NoSQL「Not-only-SQL」"><a class="headerlink" href="#非关系型数据库NoSQL「Not-only-SQL」" title="非关系型数据库NoSQL「Not only SQL」"></a>非关系型数据库NoSQL「Not only SQL」</h4><h3 id="选择数据库需要注意"><a class="headerlink" href="#选择数据库需要注意" title="选择数据库需要注意"></a>选择数据库需要注意</h3><ul>
+<li id="passage-154e7697736e">IO性能比较好的</li>
+<li id="passage-968c20f69ceb">磁盘空间比较大</li>
+<li id="passage-f30e18f98bfa">稳定性</li>
 </ul>
-<h3 data-passage-key="dd6c58e01376" id="数据库缓存"><a class="headerlink" href="#数据库缓存" title="数据库缓存"></a>数据库缓存</h3><p data-passage-key="1882d66d2814" id="passage-c4a0caaf9fb9">数据库的缓存有两部分</p>
+<h3 id="数据库缓存"><a class="headerlink" href="#数据库缓存" title="数据库缓存"></a>数据库缓存</h3><p id="passage-c4a0caaf9fb9">数据库的缓存有两部分</p>
 <ul>
-<li data-passage-key="86eac74946bb" id="passage-7d800eecaf21">数据库本身的缓存</li>
-<li data-passage-key="684b52b49eff" id="passage-e53c1bf4849e">专门做缓存的数据库</li>
+<li id="passage-7d800eecaf21">数据库本身的缓存</li>
+<li id="passage-e53c1bf4849e">专门做缓存的数据库</li>
 </ul>
-<h3 data-passage-key="1aaf88b5db4d" id="数据库拆分"><a class="headerlink" href="#数据库拆分" title="数据库拆分"></a>数据库拆分</h3><ul>
-<li data-passage-key="bdd9022d1149" id="passage-47028fbc7fcd">直接拆数据库</li>
-<li data-passage-key="2a63baf408bb" id="passage-07c5e545bd9b">分表分区</li>
+<h3 id="数据库拆分"><a class="headerlink" href="#数据库拆分" title="数据库拆分"></a>数据库拆分</h3><ul>
+<li id="passage-47028fbc7fcd">直接拆数据库</li>
+<li id="passage-07c5e545bd9b">分表分区</li>
 </ul>
-<h3 data-passage-key="882b26f7f45b" id="存储引擎"><a class="headerlink" href="#存储引擎" title="存储引擎"></a>存储引擎</h3><p><img alt="存储引擎" decoding="async" height="422" loading="lazy" src="/images/blog-media/9b68e45a7af953b2c2ef.webp" width="913"/></p>
-<p data-passage-key="5a508f30c1a5" id="passage-64ea9d42d708">mysql数据库建表的时候，有一个存储引擎，可以选择，默认为<strong>InnoDB</strong></p>
-<p data-passage-key="d70dbdd9cebe" id="passage-5387955e8581">数据库存储引擎是数据库底层软件组件，数据库管理系统使用数据库引擎进行创建，查询，更新和删除数据操作。</p>
-<p data-passage-key="104a57db40fe" id="passage-d80f735b6dfc">存储引擎就是指表的类型。数据库的存储引擎决定了表在计算机中的存储方式。不同的存储引擎提供不同的存储机制，索引技巧，锁定水平等功能，使用不同的存储引擎还可以获得特定的功能</p>
-<p data-passage-key="f009c03d8c63" id="passage-1339b56f6fde">例如，存在两张表：一个配置表，一个用户表</p>
+<h3 id="存储引擎"><a class="headerlink" href="#存储引擎" title="存储引擎"></a>存储引擎</h3><p><img alt="存储引擎" decoding="async" height="422" loading="lazy" src="/images/blog-media/9b68e45a7af953b2c2ef.webp" width="913"/></p>
+<p id="passage-64ea9d42d708">mysql数据库建表的时候，有一个存储引擎，可以选择，默认为<strong>InnoDB</strong></p>
+<p id="passage-5387955e8581">数据库存储引擎是数据库底层软件组件，数据库管理系统使用数据库引擎进行创建，查询，更新和删除数据操作。</p>
+<p id="passage-d80f735b6dfc">存储引擎就是指表的类型。数据库的存储引擎决定了表在计算机中的存储方式。不同的存储引擎提供不同的存储机制，索引技巧，锁定水平等功能，使用不同的存储引擎还可以获得特定的功能</p>
+<p id="passage-1339b56f6fde">例如，存在两张表：一个配置表，一个用户表</p>
 <ul>
-<li data-passage-key="2c3294386e20" id="passage-f7c5504c7387">配置表，一般在项目启动的时候，读取一次，在项目运行过程中，一般都不会去修改</li>
-<li data-passage-key="98f6192d99b9" id="passage-4616cb15c008">用户信息表：在项目启动时，不会去读取，但是在项目运行过程中，随时都有可能修改</li>
+<li id="passage-f7c5504c7387">配置表，一般在项目启动的时候，读取一次，在项目运行过程中，一般都不会去修改</li>
+<li id="passage-4616cb15c008">用户信息表：在项目启动时，不会去读取，但是在项目运行过程中，随时都有可能修改</li>
 </ul>
-<p data-passage-key="e43dee1c4c94" id="passage-a1efccb27b15">所以，它们的使用场景不一样，创建表时会选择不同的搜索引擎</p>
-<p data-passage-key="5ae88a9cabec" id="passage-05853b550345">配置表一般选用<code>MyISM</code>存储引擎</p>
-<p data-passage-key="b72a18087e8f" id="passage-3e2c4e4a88d0">用户信息表一般选用<code>InnoDB</code></p>
-<p data-passage-key="948249155b59" id="passage-3cb71aec160f">mysql数据库5.5版本及以前</p>
+<p id="passage-a1efccb27b15">所以，它们的使用场景不一样，创建表时会选择不同的搜索引擎</p>
+<p id="passage-05853b550345">配置表一般选用<code>MyISM</code>存储引擎</p>
+<p id="passage-3e2c4e4a88d0">用户信息表一般选用<code>InnoDB</code></p>
+<p id="passage-3cb71aec160f">mysql数据库5.5版本及以前</p>
 <ul>
-<li data-passage-key="fa588269c04f" id="passage-ec0d8fffc3a0">默认存储引擎为<code>MyISM</code></li>
-<li data-passage-key="36176a19971e" id="passage-c985f421787a">追求存储数据的速度，存储数据不准</li>
-<li data-passage-key="609be485cfd8" id="passage-1d76076848a1">锁，表锁，会锁定整张表</li>
-<li data-passage-key="aab90bf77782" id="passage-e8e203f8077b">索引：B树索引</li>
+<li id="passage-ec0d8fffc3a0">默认存储引擎为<code>MyISM</code></li>
+<li id="passage-c985f421787a">追求存储数据的速度，存储数据不准</li>
+<li id="passage-1d76076848a1">锁，表锁，会锁定整张表</li>
+<li id="passage-e8e203f8077b">索引：B树索引</li>
 </ul>
-<p data-passage-key="06db90e61b3a" id="passage-a0237a9da678">mysql数据库5.5版本及以后</p>
+<p id="passage-a0237a9da678">mysql数据库5.5版本及以后</p>
 <ul>
-<li data-passage-key="e8ffacea41b8" id="passage-73af86e36c3e">默认存储引擎为<code>InnoDB</code></li>
-<li data-passage-key="096ab834aea0" id="passage-a644b6af44b6">追求存储数据的准确性，事务一致性</li>
-<li data-passage-key="52497424ccb8" id="passage-cc14d1e58f52">锁，行锁，会锁定当前行</li>
-<li data-passage-key="c76fe8f75a40" id="passage-a6f8cccaaa4f">索引：默认B+树索引</li>
+<li id="passage-73af86e36c3e">默认存储引擎为<code>InnoDB</code></li>
+<li id="passage-a644b6af44b6">追求存储数据的准确性，事务一致性</li>
+<li id="passage-cc14d1e58f52">锁，行锁，会锁定当前行</li>
+<li id="passage-a6f8cccaaa4f">索引：默认B+树索引</li>
 </ul>
-<p data-passage-key="2f6aee6ec093" id="passage-b1ea37bba36a">B+树的优点：</p>
+<p id="passage-b1ea37bba36a">B+树的优点：</p>
 <ul>
-<li data-passage-key="35668be0ce6a" id="passage-8b2cd65ee0b9">树的层次更低，IO次数更少</li>
-<li data-passage-key="707b5c49a67d" id="passage-c91900ffb848">每次查询的结果都是在叶子节点，查询性能稳定</li>
-<li data-passage-key="b814e033d623" id="passage-2b6632a39e51">叶子节点形成链表，范围查询更方便</li>
+<li id="passage-8b2cd65ee0b9">树的层次更低，IO次数更少</li>
+<li id="passage-c91900ffb848">每次查询的结果都是在叶子节点，查询性能稳定</li>
+<li id="passage-2b6632a39e51">叶子节点形成链表，范围查询更方便</li>
 </ul>
-<h3 data-passage-key="9ac22d24d8c3" id="索引"><a class="headerlink" href="#索引" title="索引"></a>索引</h3><blockquote data-passage-key="74602b42cba8" id="passage-255031bb9b01">
-<p data-passage-key="bb61823bfbcc" id="passage-bfb2b50baca7">是一种数据结构，用于帮助我们在大量数据中快速定位我们要查找的数据</p>
+<h3 id="索引"><a class="headerlink" href="#索引" title="索引"></a>索引</h3><blockquote id="passage-255031bb9b01">
+<p id="passage-bfb2b50baca7">是一种数据结构，用于帮助我们在大量数据中快速定位我们要查找的数据</p>
 </blockquote>
-<p data-passage-key="c73be8d9f8f8" id="passage-7f19f16b9750">建索引：使用空间换时间，索引有一定大小，占磁盘、内存空间，以此来换取时间更少。是为了提升查询数据的速度，它会降低修改速度</p>
+<p id="passage-7f19f16b9750">建索引：使用空间换时间，索引有一定大小，占磁盘、内存空间，以此来换取时间更少。是为了提升查询数据的速度，它会降低修改速度</p>
 <ul>
-<li data-passage-key="461e1751c0e1" id="passage-733756f338e7"><p data-passage-key="7f3477736ee8" id="passage-23b8c4b7cd62">主键索引：有且仅有一个</p>
-<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="458ab8637231" id="passage-2318ae153714"><span class="line"><span class="keyword">create</span> index 索引名 <span class="keyword">on</span> 表名(字段);</span><br/><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> 表名 <span class="keyword">ADD</span> INDEX 索引名(字段);</span><br/></pre></td></tr></tbody></table></figure></li>
-<li data-passage-key="a71297545c67" id="passage-1f38019fd405"><p data-passage-key="cd359e965bf4" id="passage-6be5c0dba48b">唯一索引：不可重复，但是可以存储NULL</p>
+<li id="passage-733756f338e7"><p id="passage-23b8c4b7cd62">主键索引：有且仅有一个</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre id="passage-2318ae153714"><span class="line"><span class="keyword">create</span> index 索引名 <span class="keyword">on</span> 表名(字段);</span><br/><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> 表名 <span class="keyword">ADD</span> INDEX 索引名(字段);</span><br/></pre></td></tr></tbody></table></figure></li>
+<li id="passage-1f38019fd405"><p id="passage-6be5c0dba48b">唯一索引：不可重复，但是可以存储NULL</p>
 </li>
 </ul>
-<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="73efa09577eb" id="passage-623b21a992a3"><span class="line"><span class="keyword">create</span> <span class="keyword">unique</span> index 索引名 <span class="keyword">on</span> 表名(字段);</span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-623b21a992a3"><span class="line"><span class="keyword">create</span> <span class="keyword">unique</span> index 索引名 <span class="keyword">on</span> 表名(字段);</span><br/></pre></td></tr></tbody></table></figure>
 <ul>
-<li data-passage-key="24a86d1fc378" id="passage-64d16604c6ff">复合索引：由表的多列按照顺序组合成为索引，使用时，按照组合顺序使用索引，也可以使用组合索引中部分索引字段</li>
+<li id="passage-64d16604c6ff">复合索引：由表的多列按照顺序组合成为索引，使用时，按照组合顺序使用索引，也可以使用组合索引中部分索引字段</li>
 </ul>
-<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="9132a41099ed" id="passage-f26d81e6bc13"><span class="line"><span class="keyword">create</span> index 索引名 <span class="keyword">on</span> 表名(字段<span class="number">1</span>，字段<span class="number">2.</span>...)</span><br/></pre></td></tr></tbody></table></figure>
-<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/></pre></td><td class="code"><pre data-passage-key="e0442d0839d4" id="passage-8c7b4bf9af4d"><span class="line"><span class="keyword">create</span> index index_name <span class="keyword">on</span> name(id，co3，co2);</span><br/><span class="line"></span><br/><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_name <span class="keyword">where</span> id<span class="operator">=</span>?,co3<span class="operator">=</span>? 使用了索引</span><br/><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_name <span class="keyword">where</span> id<span class="operator">=</span>?,co2<span class="operator">=</span>?</span><br/><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_name <span class="keyword">where</span> co3<span class="operator">=</span>?,co2<span class="operator">=</span>?</span><br/><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_name <span class="keyword">where</span> co2<span class="operator">=</span>?,co3<span class="operator">=</span>?</span><br/><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_name <span class="keyword">where</span> id<span class="operator">=</span>?,co3<span class="operator">=</span>?,co2<span class="operator">=</span>? 使用了索引</span><br/><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_name <span class="keyword">where</span> id<span class="operator">=</span>?,co2<span class="operator">=</span>?,co3<span class="operator">=</span>?</span><br/><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_name <span class="keyword">where</span> id<span class="operator">=</span>? 使用了索引</span><br/></pre></td></tr></tbody></table></figure>
-<h4 data-passage-key="8e06bffd2a6a" id="索引的弊端"><a class="headerlink" href="#索引的弊端" title="索引的弊端"></a>索引的弊端</h4><ul>
-<li data-passage-key="190ffc2a5f6f" id="passage-62ea59610789">索引本身很大，通常存放在磁盘或内存</li>
-<li data-passage-key="9ce74ec12eb6" id="passage-1bc02ca5abcb">不是索引情况都可以用索引，数据库很少，列值比频繁变更，列很少使用</li>
-<li data-passage-key="544257eb9314" id="passage-a565cf6493cf">索引会降低增删改的效率，但是一般会提升查的效率</li>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-f26d81e6bc13"><span class="line"><span class="keyword">create</span> index 索引名 <span class="keyword">on</span> 表名(字段<span class="number">1</span>，字段<span class="number">2.</span>...)</span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/></pre></td><td class="code"><pre id="passage-8c7b4bf9af4d"><span class="line"><span class="keyword">create</span> index index_name <span class="keyword">on</span> name(id，co3，co2);</span><br/><span class="line"></span><br/><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_name <span class="keyword">where</span> id<span class="operator">=</span>?,co3<span class="operator">=</span>? 使用了索引</span><br/><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_name <span class="keyword">where</span> id<span class="operator">=</span>?,co2<span class="operator">=</span>?</span><br/><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_name <span class="keyword">where</span> co3<span class="operator">=</span>?,co2<span class="operator">=</span>?</span><br/><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_name <span class="keyword">where</span> co2<span class="operator">=</span>?,co3<span class="operator">=</span>?</span><br/><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_name <span class="keyword">where</span> id<span class="operator">=</span>?,co3<span class="operator">=</span>?,co2<span class="operator">=</span>? 使用了索引</span><br/><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_name <span class="keyword">where</span> id<span class="operator">=</span>?,co2<span class="operator">=</span>?,co3<span class="operator">=</span>?</span><br/><span class="line"><span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> tb_name <span class="keyword">where</span> id<span class="operator">=</span>? 使用了索引</span><br/></pre></td></tr></tbody></table></figure>
+<h4 id="索引的弊端"><a class="headerlink" href="#索引的弊端" title="索引的弊端"></a>索引的弊端</h4><ul>
+<li id="passage-62ea59610789">索引本身很大，通常存放在磁盘或内存</li>
+<li id="passage-1bc02ca5abcb">不是索引情况都可以用索引，数据库很少，列值比频繁变更，列很少使用</li>
+<li id="passage-a565cf6493cf">索引会降低增删改的效率，但是一般会提升查的效率</li>
 </ul>
-<h4 data-passage-key="74bb98b948bb" id="索引的优势"><a class="headerlink" href="#索引的优势" title="索引的优势"></a>索引的优势</h4><ul>
-<li data-passage-key="82e3d8183e4d" id="passage-28b43455269f">降低IO、CPU使用率</li>
-<li data-passage-key="0e28cf32290d" id="passage-cafe6142af10">索引列，可以保证行的唯一性</li>
-<li data-passage-key="9412ee0d23b6" id="passage-bd174567c3a8">可以有效缩短数据检索时间</li>
-<li data-passage-key="17fa9f19287a" id="passage-8fa9538a0c02">加快表与表之间的连接</li>
+<h4 id="索引的优势"><a class="headerlink" href="#索引的优势" title="索引的优势"></a>索引的优势</h4><ul>
+<li id="passage-28b43455269f">降低IO、CPU使用率</li>
+<li id="passage-cafe6142af10">索引列，可以保证行的唯一性</li>
+<li id="passage-bd174567c3a8">可以有效缩短数据检索时间</li>
+<li id="passage-8fa9538a0c02">加快表与表之间的连接</li>
 </ul>
-<h2 data-passage-key="2a78025de6aa" id="Select"><a class="headerlink" href="#Select" title="Select"></a>Select</h2><h3 data-passage-key="35db144cd9cc" id="语法"><a class="headerlink" href="#语法" title="语法"></a>语法</h3><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/></pre></td><td class="code"><pre data-passage-key="c326b8d21707" id="passage-733e1b8c8357"><span class="line">SELECT {*|字段列名} 查询要显示的列名</span><br/><span class="line"><span class="keyword">FROM</span> <span class="operator">&lt;</span>表名<span class="number">1</span><span class="operator">&gt;</span>,<span class="operator">&lt;</span>表名<span class="number">2</span><span class="operator">&gt;</span> <span class="keyword">join</span>, <span class="keyword">on</span> 数据来源表</span><br/><span class="line"><span class="keyword">WHERE</span> <span class="operator">&lt;</span>表达式<span class="operator">&gt;</span> 限制条件</span><br/><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span><span class="operator">&lt;</span>字段<span class="operator">&gt;</span> 查询的结果，按照条件字段分组</span><br/><span class="line"><span class="keyword">HAVING</span> <span class="operator">&lt;</span>expression<span class="operator">&gt;</span> 过滤分组</span><br/><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> <span class="operator">&lt;</span>字段<span class="operator">&gt;</span> 按照字段排序</span><br/><span class="line">LIMIT <span class="operator">&lt;</span><span class="keyword">offset</span><span class="operator">&gt;</span>[<span class="operator">&lt;</span><span class="type">row</span> count<span class="operator">&gt;</span>] 显示数据条数</span><br/></pre></td></tr></tbody></table></figure>
-<p data-passage-key="bf0b32d01581" id="passage-71f5a3fe0afd">sql语句的执行顺序，与编写顺序会不一致</p>
-<p data-passage-key="16320c2273e8" id="passage-f5dcd924b198">sql执行过程：</p>
+<h2 id="Select"><a class="headerlink" href="#Select" title="Select"></a>Select</h2><h3 id="语法"><a class="headerlink" href="#语法" title="语法"></a>语法</h3><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/></pre></td><td class="code"><pre id="passage-733e1b8c8357"><span class="line">SELECT {*|字段列名} 查询要显示的列名</span><br/><span class="line"><span class="keyword">FROM</span> <span class="operator">&lt;</span>表名<span class="number">1</span><span class="operator">&gt;</span>,<span class="operator">&lt;</span>表名<span class="number">2</span><span class="operator">&gt;</span> <span class="keyword">join</span>, <span class="keyword">on</span> 数据来源表</span><br/><span class="line"><span class="keyword">WHERE</span> <span class="operator">&lt;</span>表达式<span class="operator">&gt;</span> 限制条件</span><br/><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span><span class="operator">&lt;</span>字段<span class="operator">&gt;</span> 查询的结果，按照条件字段分组</span><br/><span class="line"><span class="keyword">HAVING</span> <span class="operator">&lt;</span>expression<span class="operator">&gt;</span> 过滤分组</span><br/><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> <span class="operator">&lt;</span>字段<span class="operator">&gt;</span> 按照字段排序</span><br/><span class="line">LIMIT <span class="operator">&lt;</span><span class="keyword">offset</span><span class="operator">&gt;</span>[<span class="operator">&lt;</span><span class="type">row</span> count<span class="operator">&gt;</span>] 显示数据条数</span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-71f5a3fe0afd">sql语句的执行顺序，与编写顺序会不一致</p>
+<p id="passage-f5dcd924b198">sql执行过程：</p>
 <ul>
-<li data-passage-key="8de9a0b3623e" id="passage-8257f1800dd7">输入数据库的ip，端口，账号，密码「连接层」</li>
-<li data-passage-key="0863f2d537ee" id="passage-dbdecbca780d">提供各种接口，CRUD，对脚本进行优化「服务层」</li>
-<li data-passage-key="90b51bd2171f" id="passage-3a2c9236f881">执行你的sql「引擎层」</li>
-<li data-passage-key="5af2ce82c62d" id="passage-a872473da44b">数据交换「存储层」</li>
+<li id="passage-8257f1800dd7">输入数据库的ip，端口，账号，密码「连接层」</li>
+<li id="passage-dbdecbca780d">提供各种接口，CRUD，对脚本进行优化「服务层」</li>
+<li id="passage-3a2c9236f881">执行你的sql「引擎层」</li>
+<li id="passage-a872473da44b">数据交换「存储层」</li>
 </ul>
 <p><img alt="关系型数据库" decoding="async" height="375" loading="lazy" src="/images/blog-media/089713c53ab14624be0c.webp" width="989"/></p>
-<p data-passage-key="170dd3c5eb25" id="passage-fec8a4402b41">数据库管理系统dbms，写数据时，把你的数据，转化为日志文件，对日志文件进行解读，还原你的日志过程</p>
-<h3 data-passage-key="854f909ddc40" id="select的解析过程"><a class="headerlink" href="#select的解析过程" title="select的解析过程"></a>select的解析过程</h3><ul>
-<li data-passage-key="c940e6b7d8b9" id="passage-3f325361184f">from table_name 数据源中捞取数据</li>
-<li data-passage-key="f780e3bb56db" id="passage-74166135c5e6">where 条件 对捞取的数据进行条件过滤</li>
-<li data-passage-key="9a4640bbde19" id="passage-e7f283e09043">group by 分组<ul>
-<li data-passage-key="336ce7c2e4d1" id="passage-ae4c82eeeee5">根据上面的条件字段来分组「建议where条件字段」</li>
-<li data-passage-key="5125255b7a52" id="passage-d62e8e0283c5">不按照上面的条件字段来分组「会产生临时表」</li>
+<p id="passage-fec8a4402b41">数据库管理系统dbms，写数据时，把你的数据，转化为日志文件，对日志文件进行解读，还原你的日志过程</p>
+<h3 id="select的解析过程"><a class="headerlink" href="#select的解析过程" title="select的解析过程"></a>select的解析过程</h3><ul>
+<li id="passage-3f325361184f">from table_name 数据源中捞取数据</li>
+<li id="passage-74166135c5e6">where 条件 对捞取的数据进行条件过滤</li>
+<li id="passage-e7f283e09043">group by 分组<ul>
+<li id="passage-ae4c82eeeee5">根据上面的条件字段来分组「建议where条件字段」</li>
+<li id="passage-d62e8e0283c5">不按照上面的条件字段来分组「会产生临时表」</li>
 </ul>
 </li>
-<li data-passage-key="0d85378e261a" id="passage-37bba2198042">having 分组过滤</li>
-<li data-passage-key="0ed727a147b0" id="passage-f915dbe303a5">select 字段</li>
-<li data-passage-key="150022c52f7f" id="passage-069017830a15">order by 建议使用select 字段来排序</li>
-<li data-passage-key="5011cdabecb6" id="passage-05c5c2d7f884">limit 数据量</li>
+<li id="passage-37bba2198042">having 分组过滤</li>
+<li id="passage-f915dbe303a5">select 字段</li>
+<li id="passage-069017830a15">order by 建议使用select 字段来排序</li>
+<li id="passage-05c5c2d7f884">limit 数据量</li>
 </ul>
-<h2 data-passage-key="3e2afc713693" id="数据库性能优化"><a class="headerlink" href="#数据库性能优化" title="数据库性能优化"></a>数据库性能优化</h2><ul>
-<li data-passage-key="0410fb861fb6" id="passage-576fe5cee447">数据库库层面的优化「os」<ul>
-<li data-passage-key="3a17156d6a60" id="passage-28137419ec39">sysctl</li>
-<li data-passage-key="1bb808dd5348" id="passage-4fd442c7c285">ulimit</li>
-</ul>
-</li>
-<li data-passage-key="00b0da5f5c6f" id="passage-d53d7f4215a3">数据库配置文件<ul>
-<li data-passage-key="3353e8949b96" id="passage-3311365b44a0">/etc/my.cnf</li>
-<li data-passage-key="e996e5e5eca7" id="passage-c7cca32db6c5">SHOW VARIABLES;</li>
+<h2 id="数据库性能优化"><a class="headerlink" href="#数据库性能优化" title="数据库性能优化"></a>数据库性能优化</h2><ul>
+<li id="passage-576fe5cee447">数据库库层面的优化「os」<ul>
+<li id="passage-28137419ec39">sysctl</li>
+<li id="passage-4fd442c7c285">ulimit</li>
 </ul>
 </li>
+<li id="passage-d53d7f4215a3">数据库配置文件<ul>
+<li id="passage-3311365b44a0">/etc/my.cnf</li>
+<li id="passage-c7cca32db6c5">SHOW VARIABLES;</li>
 </ul>
-<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="12507c7f4115" id="passage-7e6121c37a75"><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">'%slow_query_log%'</span> 查看慢查询的开关与日志路径 默认<span class="number">10</span>秒为慢查询</span><br/><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">'long_query_time'</span> 慢查询的阈值默认<span class="number">10</span>秒</span><br/></pre></td></tr></tbody></table></figure>
-<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="21fab9f553aa" id="passage-e40103349293"><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">'max_connections%'</span> 查看系统配置的最大连接数</span><br/><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">'Max_used_connections'</span> 查看当前用户已经建立的连接数</span><br/></pre></td></tr></tbody></table></figure>
-<p data-passage-key="96b069a395dc" id="passage-ffdb36293939">当出现<code>ERROR 1040:Too many connections</code>可以通过修改连接数来解决</p>
-<h3 data-passage-key="71d0b6869063" id="定位慢查询日志"><a class="headerlink" href="#定位慢查询日志" title="定位慢查询日志"></a>定位慢查询日志</h3><ol>
-<li data-passage-key="6ce6ac9b29d8" id="passage-4ef1ea58e8e1">开启慢查询的开关</li>
+</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre id="passage-7e6121c37a75"><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">'%slow_query_log%'</span> 查看慢查询的开关与日志路径 默认<span class="number">10</span>秒为慢查询</span><br/><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">'long_query_time'</span> 慢查询的阈值默认<span class="number">10</span>秒</span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre id="passage-e40103349293"><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">'max_connections%'</span> 查看系统配置的最大连接数</span><br/><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">'Max_used_connections'</span> 查看当前用户已经建立的连接数</span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-ffdb36293939">当出现<code>ERROR 1040:Too many connections</code>可以通过修改连接数来解决</p>
+<h3 id="定位慢查询日志"><a class="headerlink" href="#定位慢查询日志" title="定位慢查询日志"></a>定位慢查询日志</h3><ol>
+<li id="passage-4ef1ea58e8e1">开启慢查询的开关</li>
 </ol>
-<blockquote data-passage-key="9b02704032c8" id="passage-6885eb066ce6">
-<p data-passage-key="3abc863b3847" id="passage-7058256e2e9f">因为，数据中慢查询日志，一般情况下都是关闭的，因为慢查询的开启，就要写日志，会消耗IO。</p>
-<p data-passage-key="ea7bfd2fa3cd" id="passage-1be638ad9f74">所以在生产数据库中，建议千万不要去开启</p>
+<blockquote id="passage-6885eb066ce6">
+<p id="passage-7058256e2e9f">因为，数据中慢查询日志，一般情况下都是关闭的，因为慢查询的开启，就要写日志，会消耗IO。</p>
+<p id="passage-1be638ad9f74">所以在生产数据库中，建议千万不要去开启</p>
 </blockquote>
-<p data-passage-key="e995c9baaf33" id="passage-04927a7b3c20">我们用jmeter做性能测试，设计了一个性能场景，运行，发现在一定量的并发用户时，平均响应时间，已经超过了1秒钟，那么，我们可以说，可能存在了慢查询日志。</p>
-<p data-passage-key="3538c4c23033" id="passage-a8f322b6c8f2">响应时间都没有超过1秒(阈值)，那么肯定没有慢查询日志。</p>
-<h3 data-passage-key="903faf99ad1e" id="SQL优化"><a class="headerlink" href="#SQL优化" title="SQL优化"></a>SQL优化</h3><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="7ac2ee0e7b30" id="passage-18301cef3906"><span class="line">explain <span class="keyword">sql</span>语句</span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-04927a7b3c20">我们用jmeter做性能测试，设计了一个性能场景，运行，发现在一定量的并发用户时，平均响应时间，已经超过了1秒钟，那么，我们可以说，可能存在了慢查询日志。</p>
+<p id="passage-a8f322b6c8f2">响应时间都没有超过1秒(阈值)，那么肯定没有慢查询日志。</p>
+<h3 id="SQL优化"><a class="headerlink" href="#SQL优化" title="SQL优化"></a>SQL优化</h3><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-18301cef3906"><span class="line">explain <span class="keyword">sql</span>语句</span><br/></pre></td></tr></tbody></table></figure>
 <ul>
-<li data-passage-key="adc9f3093b54" id="passage-69078166f1f3"><p data-passage-key="cc47135d024f" id="passage-7668b6d90bf6">id:编号</p>
+<li id="passage-69078166f1f3"><p id="passage-7668b6d90bf6">id:编号</p>
 <ul>
-<li data-passage-key="c1b35ec1ee9e" id="passage-26ab3a2cc2d2">id相同时，从上往下执行</li>
-<li data-passage-key="df2af8116656" id="passage-524509f6418d">id不同时，从大到小</li>
+<li id="passage-26ab3a2cc2d2">id相同时，从上往下执行</li>
+<li id="passage-524509f6418d">id不同时，从大到小</li>
 </ul>
 </li>
-<li data-passage-key="38a820ef4225" id="passage-209ff42ce46d"><p data-passage-key="82f9e75e80d5" id="passage-40960e3502aa">select type:查询语句</p>
+<li id="passage-209ff42ce46d"><p id="passage-40960e3502aa">select type:查询语句</p>
 <ul>
-<li data-passage-key="ff9dbc7ac525" id="passage-fe5f5d87146c">SIMPLE:简单的SELECT，不使用union或子查询</li>
-<li data-passage-key="9f915f7b390c" id="passage-7cd98fe337c7">PRIMARY:查询中包含复杂的子查询，最外层的select被标记为PRIMARY</li>
-<li data-passage-key="22e63f7bb757" id="passage-d503f7879ba8">UNION:union中第二个或后面的select语句</li>
-<li data-passage-key="c9a00cad2ba3" id="passage-d8deb20f71a5">DEPENDENT UNION:union中的第二个或后面的select语句，取决于外面的查询</li>
-<li data-passage-key="494ccece9205" id="passage-274eac4aa537">UNION RESULT:union的结果</li>
-<li data-passage-key="6dde6aaeda3b" id="passage-a7aee4a84457">SUBQUERY:子查询的第一个select</li>
-<li data-passage-key="2887c7a5146b" id="passage-8bec71e6f4bf">DEPENDENT SUBQUERY:子查询中的第一个select，取决于外面的查询</li>
-<li data-passage-key="e92a647dbe09" id="passage-ef3c6100274b">DERIVD:衍生查询，使用临时表(select from子句的子查询)</li>
-<li data-passage-key="bf7c5bed0504" id="passage-1786ea90745c">UNCACHEABLE SUBQUERY:一个子查询的结果不能被缓存，必须重新评估外链接的第一行</li>
+<li id="passage-fe5f5d87146c">SIMPLE:简单的SELECT，不使用union或子查询</li>
+<li id="passage-7cd98fe337c7">PRIMARY:查询中包含复杂的子查询，最外层的select被标记为PRIMARY</li>
+<li id="passage-d503f7879ba8">UNION:union中第二个或后面的select语句</li>
+<li id="passage-d8deb20f71a5">DEPENDENT UNION:union中的第二个或后面的select语句，取决于外面的查询</li>
+<li id="passage-274eac4aa537">UNION RESULT:union的结果</li>
+<li id="passage-a7aee4a84457">SUBQUERY:子查询的第一个select</li>
+<li id="passage-8bec71e6f4bf">DEPENDENT SUBQUERY:子查询中的第一个select，取决于外面的查询</li>
+<li id="passage-ef3c6100274b">DERIVD:衍生查询，使用临时表(select from子句的子查询)</li>
+<li id="passage-1786ea90745c">UNCACHEABLE SUBQUERY:一个子查询的结果不能被缓存，必须重新评估外链接的第一行</li>
 </ul>
 </li>
-<li data-passage-key="3d6d95f2275a" id="passage-b21d7361f71c"><p data-passage-key="9da5326cc1c9" id="passage-b3f038955e05">table:表</p>
+<li id="passage-b21d7361f71c"><p id="passage-b3f038955e05">table:表</p>
 </li>
-<li data-passage-key="8d25bb9978b9" id="passage-677498a010ab"><p data-passage-key="04bba6e7e959" id="passage-22864c4ff8ed">type:类型</p>
+<li id="passage-677498a010ab"><p id="passage-22864c4ff8ed">type:类型</p>
 <ul>
-<li data-passage-key="ea5717ab6562" id="passage-2513ab9ab87e">All:全表扫描Full table scan</li>
-<li data-passage-key="e66227736e1f" id="passage-c3801c15d9fe">index:遍历索引数据 Full index scan</li>
-<li data-passage-key="26d20aa3e7d4" id="passage-812bfe7ef457">range:使用一个索引来检索给定范围的行</li>
-<li data-passage-key="2306a6838ad7" id="passage-aae27658c953">ref:使用了索引列上值进行查询</li>
-<li data-passage-key="4e6cccf6f145" id="passage-072d0c85b3f9">eq_ref:类似ref，只是使用的索引为唯一索引</li>
-<li data-passage-key="a617f807e540" id="passage-2c13324d2192">const,system:MySQL对查询某部分进行优化，并转化为一个常量时，使用这些类型访问。如将主键置于where列表中，MySQL就能将该查询转化为一个常量，system上const类型的特例，当查询的表只有一行的情况下，使用system</li>
-<li data-passage-key="160734e378e0" id="passage-67df7dcd09b9">Null:MySQl在优化过程中分解语句，执行时甚至不用访问表或索引</li>
+<li id="passage-2513ab9ab87e">All:全表扫描Full table scan</li>
+<li id="passage-c3801c15d9fe">index:遍历索引数据 Full index scan</li>
+<li id="passage-812bfe7ef457">range:使用一个索引来检索给定范围的行</li>
+<li id="passage-aae27658c953">ref:使用了索引列上值进行查询</li>
+<li id="passage-072d0c85b3f9">eq_ref:类似ref，只是使用的索引为唯一索引</li>
+<li id="passage-2c13324d2192">const,system:MySQL对查询某部分进行优化，并转化为一个常量时，使用这些类型访问。如将主键置于where列表中，MySQL就能将该查询转化为一个常量，system上const类型的特例，当查询的表只有一行的情况下，使用system</li>
+<li id="passage-67df7dcd09b9">Null:MySQl在优化过程中分解语句，执行时甚至不用访问表或索引</li>
 </ul>
-<blockquote data-passage-key="4bad9cad954c" id="passage-3ca291eedbe7">
-<p data-passage-key="ec906c72c50d" id="passage-f591cab3dba4">性能效率：system &gt; const  &gt; eq_ref  &gt; ref  &gt; range  &gt; index &gt; all 左边效率高于右边</p>
+<blockquote id="passage-3ca291eedbe7">
+<p id="passage-f591cab3dba4">性能效率：system &gt; const  &gt; eq_ref  &gt; ref  &gt; range  &gt; index &gt; all 左边效率高于右边</p>
 </blockquote>
 </li>
-<li data-passage-key="44b4eb1be64e" id="passage-2e600228e7ee"><p data-passage-key="37c4d0d62c3c" id="passage-2d91585b439e">possible_keys:预测用到的索引</p>
+<li id="passage-2e600228e7ee"><p id="passage-2d91585b439e">possible_keys:预测用到的索引</p>
 </li>
-<li data-passage-key="5ecd0d3f2e3e" id="passage-9e7011beebb4"><p data-passage-key="de45ac81bca8" id="passage-38c8284d3748">key:实际用到的索引</p>
+<li id="passage-9e7011beebb4"><p id="passage-38c8284d3748">key:实际用到的索引</p>
 </li>
-<li data-passage-key="1d880b817a9b" id="passage-9f7d161132f4"><p data-passage-key="377d2a6e3b46" id="passage-fe0357aefab8">key_len:实际使用索引的长度</p>
+<li id="passage-9f7d161132f4"><p id="passage-fe0357aefab8">key_len:实际使用索引的长度</p>
 </li>
-<li data-passage-key="f43abd6842b0" id="passage-a5f4808b85c7"><p data-passage-key="c6a75960b18e" id="passage-fcdaa035266e">ref:表之间的匹配条件</p>
+<li id="passage-a5f4808b85c7"><p id="passage-fcdaa035266e">ref:表之间的匹配条件</p>
 </li>
-<li data-passage-key="38b63a52c7da" id="passage-ad693a6d9c94"><p data-passage-key="3185be1d5934" id="passage-55ecbce1b4aa">rows:通过索引查询到的数据量</p>
+<li id="passage-ad693a6d9c94"><p id="passage-55ecbce1b4aa">rows:通过索引查询到的数据量</p>
 </li>
-<li data-passage-key="7d121537dee0" id="passage-1dbdb9630867"><p data-passage-key="66cb007a79e6" id="passage-f73b7f9b7028">filtered:</p>
+<li id="passage-1dbdb9630867"><p id="passage-f73b7f9b7028">filtered:</p>
 </li>
-<li data-passage-key="bd0da21cb241" id="passage-67b2133e933f"><p data-passage-key="d529fe1a8257" id="passage-1aa55c7c3426">Extra:额外的信息</p>
+<li id="passage-67b2133e933f"><p id="passage-1aa55c7c3426">Extra:额外的信息</p>
 <ul>
-<li data-passage-key="56fe6280be62" id="passage-a48d9f9e49ca">Using  where:显示的字段不在索引(select 的字段，有的不再索引中，要从源table表中查询)</li>
-<li data-passage-key="ba4dfe412ab9" id="passage-1088cdebc03f">Using index:使用了索引，不用回表查询，能够起到性能提升</li>
-<li data-passage-key="79c81c7f2022" id="passage-2bc5a6c95d6c">Using temporary:使用了临时表，性能消耗比较大，常见于group by语句</li>
-<li data-passage-key="387adc905a7c" id="passage-f3ea15382dab">Using fileSort:使用文件排序，无法利用索引完成排序操作，性能消耗非常大，常见于order by语句</li>
-<li data-passage-key="acafe21c987e" id="passage-59a4725da38e">Using join buffer:mysql引擎使用了链接缓存</li>
-<li data-passage-key="047d12826dba" id="passage-f41174af1cfe">Impossible where:where子句永远为false</li>
-<li data-passage-key="9b9882d11319" id="passage-f4b35a6a86bd">Select tables optimized away:仅通过使用索引，优化器可能仅从聚合函数结果返回一行</li>
-<li data-passage-key="5af0454140a5" id="passage-d2b19c96c997">NULL:</li>
+<li id="passage-a48d9f9e49ca">Using  where:显示的字段不在索引(select 的字段，有的不再索引中，要从源table表中查询)</li>
+<li id="passage-1088cdebc03f">Using index:使用了索引，不用回表查询，能够起到性能提升</li>
+<li id="passage-2bc5a6c95d6c">Using temporary:使用了临时表，性能消耗比较大，常见于group by语句</li>
+<li id="passage-f3ea15382dab">Using fileSort:使用文件排序，无法利用索引完成排序操作，性能消耗非常大，常见于order by语句</li>
+<li id="passage-59a4725da38e">Using join buffer:mysql引擎使用了链接缓存</li>
+<li id="passage-f41174af1cfe">Impossible where:where子句永远为false</li>
+<li id="passage-f4b35a6a86bd">Select tables optimized away:仅通过使用索引，优化器可能仅从聚合函数结果返回一行</li>
+<li id="passage-d2b19c96c997">NULL:</li>
 </ul>
 </li>
 </ul>
-<p data-passage-key="3e999d8611bd" id="passage-2b75334d9438">using where 使用where条件过滤，但是where条件不在索引，那我们就要考虑用和where后面的字段来建索引</p>
-<h3 data-passage-key="9ce1740be1be" id="优化方法"><a class="headerlink" href="#优化方法" title="优化方法"></a>优化方法</h3><ul>
-<li data-passage-key="99508a2a7e77" id="passage-65024137bdf2">在写on语句时，将数据量小的表放在左边</li>
-<li data-passage-key="d451d182ba02" id="passage-8fbbdb62c816">where后面的条件尽可能用索引字段，复合索引时，最好按复合索引顺序写where条件</li>
-<li data-passage-key="13764fae2b20" id="passage-24a64a6a644c">where后面有in语句，in字段的索引，最好放复合索引的后面，因为in的字段索引可能会失效</li>
-<li data-passage-key="8ee80b655f33" id="passage-f4e4f24640f8">模糊查询时，尽量用常量开头，不要用%开头，用%开头查询索引将失效</li>
-<li data-passage-key="98abe09b6b9f" id="passage-3e499cac8d5d">尽量不要使用or，否则索引失效</li>
-<li data-passage-key="a16f30ad14e4" id="passage-4185e83cee12">尽量不要使用类型转化（显式、隐式），否则索引失效</li>
-<li data-passage-key="76d3860c88fb" id="passage-7cc4ca5a45af">如果主查询数据量大，则使用in</li>
-<li data-passage-key="f01391e57f49" id="passage-6b5b12e09897">如果子查询数据量大，则使用exists</li>
-<li data-passage-key="4337c2e321a9" id="passage-822d8e42c5ba">查询哪些列，就根据哪些列group by，不然会产生一个临时表</li>
+<p id="passage-2b75334d9438">using where 使用where条件过滤，但是where条件不在索引，那我们就要考虑用和where后面的字段来建索引</p>
+<h3 id="优化方法"><a class="headerlink" href="#优化方法" title="优化方法"></a>优化方法</h3><ul>
+<li id="passage-65024137bdf2">在写on语句时，将数据量小的表放在左边</li>
+<li id="passage-8fbbdb62c816">where后面的条件尽可能用索引字段，复合索引时，最好按复合索引顺序写where条件</li>
+<li id="passage-24a64a6a644c">where后面有in语句，in字段的索引，最好放复合索引的后面，因为in的字段索引可能会失效</li>
+<li id="passage-f4e4f24640f8">模糊查询时，尽量用常量开头，不要用%开头，用%开头查询索引将失效</li>
+<li id="passage-3e499cac8d5d">尽量不要使用or，否则索引失效</li>
+<li id="passage-4185e83cee12">尽量不要使用类型转化（显式、隐式），否则索引失效</li>
+<li id="passage-7cc4ca5a45af">如果主查询数据量大，则使用in</li>
+<li id="passage-6b5b12e09897">如果子查询数据量大，则使用exists</li>
+<li id="passage-822d8e42c5ba">查询哪些列，就根据哪些列group by，不然会产生一个临时表</li>
 </ul>
-<h3 data-passage-key="8d507fa01744" id="库优化"><a class="headerlink" href="#库优化" title="库优化"></a>库优化</h3><ul>
-<li data-passage-key="f67307f8c0c5" id="passage-d88100fae701">os配置修改</li>
-<li data-passage-key="9b8a21a74d49" id="passage-54f37b6ad6d8">数据库的配置参数</li>
-<li data-passage-key="9279c9e63661" id="passage-de809b01982d">数据库 &lt;=&gt; 应用程序 &lt;=&gt; 配置文件</li>
+<h3 id="库优化"><a class="headerlink" href="#库优化" title="库优化"></a>库优化</h3><ul>
+<li id="passage-d88100fae701">os配置修改</li>
+<li id="passage-54f37b6ad6d8">数据库的配置参数</li>
+<li id="passage-de809b01982d">数据库 &lt;=&gt; 应用程序 &lt;=&gt; 配置文件</li>
 </ul>
-<h3 data-passage-key="e9f5e1960fa0" id="表优化"><a class="headerlink" href="#表优化" title="表优化"></a>表优化</h3><ul>
-<li data-passage-key="c44dbba10c4a" id="passage-de651d8b8841"><p data-passage-key="b3ac0aa82795" id="passage-67879e7070d2">表存储引擎</p>
+<h3 id="表优化"><a class="headerlink" href="#表优化" title="表优化"></a>表优化</h3><ul>
+<li id="passage-de651d8b8841"><p id="passage-67879e7070d2">表存储引擎</p>
 </li>
-<li data-passage-key="601397256f61" id="passage-1326541c3393"><p data-passage-key="2630c1f79637" id="passage-2d9bddbd25cb">表结构（拆表）</p>
+<li id="passage-1326541c3393"><p id="passage-2d9bddbd25cb">表结构（拆表）</p>
 </li>
-<li data-passage-key="f94475d39490" id="passage-17dfc88fab7a"><p data-passage-key="41e22622c072" id="passage-764aa88bd34a">表建立索引</p>
+<li id="passage-17dfc88fab7a"><p id="passage-764aa88bd34a">表建立索引</p>
 <ul>
-<li data-passage-key="4c9fc0fe6f47" id="passage-369cf0d4ff7d">慢sql：根据分析结果调整索引，开发人员修改自己的sql</li>
+<li id="passage-369cf0d4ff7d">慢sql：根据分析结果调整索引，开发人员修改自己的sql</li>
 </ul>
 </li>
-<li data-passage-key="99aaa4e87d71" id="passage-462e98a0d7cf"><p data-passage-key="bdccaf3af52e" id="passage-1324d10453bc">主从同步</p>
+<li id="passage-462e98a0d7cf"><p id="passage-1324d10453bc">主从同步</p>
 </li>
-<li data-passage-key="2d4dae77c327" id="passage-07c5e545bd9b-2"><p data-passage-key="ab76929b5730" id="passage-7e909842516c">分表分区</p>
+<li id="passage-07c5e545bd9b-2"><p id="passage-7e909842516c">分表分区</p>
 </li>
 </ul>
-<h3 data-passage-key="e83c0f25c479" id="主从同步"><a class="headerlink" href="#主从同步" title="主从同步"></a>主从同步</h3><ul>
-<li data-passage-key="e16f02a4c4c0" id="passage-13861fb9655a">数据同步</li>
-<li data-passage-key="121b9200a205" id="passage-c496a781fbba">读写分离</li>
+<h3 id="主从同步"><a class="headerlink" href="#主从同步" title="主从同步"></a>主从同步</h3><ul>
+<li id="passage-13861fb9655a">数据同步</li>
+<li id="passage-c496a781fbba">读写分离</li>
 </ul>
-<p data-passage-key="55e8658092a7" id="passage-7468b6a6a5d0">在主数据库中做任何操作，在从数据库中，都会重复一次</p>
-<p data-passage-key="3d8ab91b4927" id="passage-df4c0c3cce81">在从数据库中修改，主数据库是不会变化的</p>
-<p data-passage-key="4719500da44c" id="passage-a762d9265df0">所以主数据库进行写操作，从数据库进行读操作</p>
-<p data-passage-key="7fffc488c098" id="passage-497869917fac">可以手动设置同步时间间隔</p>
-<h3 data-passage-key="8c8573a22c6c" id="分表分区"><a class="headerlink" href="#分表分区" title="分表分区"></a>分表分区</h3><h4 data-passage-key="e3b21efd8ee7" id="分表"><a class="headerlink" href="#分表" title="分表"></a>分表</h4><ul>
-<li data-passage-key="958bea02eac3" id="passage-a5ea01050902">拆列：一张表多列，被拆到多张表「垂直分表」</li>
+<p id="passage-7468b6a6a5d0">在主数据库中做任何操作，在从数据库中，都会重复一次</p>
+<p id="passage-df4c0c3cce81">在从数据库中修改，主数据库是不会变化的</p>
+<p id="passage-a762d9265df0">所以主数据库进行写操作，从数据库进行读操作</p>
+<p id="passage-497869917fac">可以手动设置同步时间间隔</p>
+<h3 id="分表分区"><a class="headerlink" href="#分表分区" title="分表分区"></a>分表分区</h3><h4 id="分表"><a class="headerlink" href="#分表" title="分表"></a>分表</h4><ul>
+<li id="passage-a5ea01050902">拆列：一张表多列，被拆到多张表「垂直分表」</li>
 </ul>
-<p data-passage-key="7176138c5ba9" id="passage-bedf198a68cf">表字段变少，行数不变</p>
+<p id="passage-bedf198a68cf">表字段变少，行数不变</p>
 <ul>
-<li data-passage-key="bf85798c6614" id="passage-7aa40ee4fe70">拆行：一张表某些行，被拆到另外行「水平分表」</li>
+<li id="passage-7aa40ee4fe70">拆行：一张表某些行，被拆到另外行「水平分表」</li>
 </ul>
-<p data-passage-key="2a196bd6aa08" id="passage-87bcc668f9d2">表字段不变，行数变少</p>
-<h4 data-passage-key="5d6f637daa74" id="分区"><a class="headerlink" href="#分区" title="分区"></a>分区</h4><p data-passage-key="12831ef9f374" id="passage-3bcda65f5a37">把数据存到不同地方</p></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
-        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
-          <header class="passage-dialog-header">
-            <h2 id="passage-comment-title">段落评论</h2>
-            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
-          </header>
-          <div class="passage-dialog-content">
-            <blockquote data-passage-excerpt></blockquote>
-            <a data-passage-source>查看原文</a>
-            <p data-passage-status role="status"></p>
-            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
-            <div data-passage-widget></div>
-          </div>
-        </dialog><section class="article-video" aria-labelledby="article-video-title">
+<p id="passage-87bcc668f9d2">表字段不变，行数变少</p>
+<h4 id="分区"><a class="headerlink" href="#分区" title="分区"></a>分区</h4><p id="passage-3bcda65f5a37">把数据存到不同地方</p></div><section class="article-video" aria-labelledby="article-video-title">
           <header class="article-video-header">
             <h2 id="article-video-title">本文视频讲解</h2>
             <p>普通话 · <time datetime="PT178S">2:58</time></p>
@@ -466,7 +452,7 @@
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
-          <div class="giscus"></div>
+          <div class="giscus" id="article-discussion"></div>
         </section>
       </div>
     </div>

@@ -20,7 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/d51793d9.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/d51793d9.html">
-<script type="module" src="/js/discussions.js"></script>
+<script src="/js/comments.js?v=4" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,98 +56,84 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E7%94%A8%E5%90%8C%E4%B8%80%E4%B8%AAtoken%E5%81%9A%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%EF%BC%8C%E5%92%8C1000%E4%B8%AAtoken%E9%9A%8F%E6%9C%BA%E5%8F%96%E4%B8%80%E4%B8%AA%E5%81%9A%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%EF%BC%8C%E5%AF%B9%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87%E4%B8%80%E6%A0%B7%E5%90%97%EF%BC%9F">用同一个token做性能测试，和1000个token随机取一个做性能测试，对服务器性能指标一样吗？</a></li><li><a href="#%E7%B3%BB%E7%BB%9F%E6%98%AF%E5%90%A6%E5%85%81%E8%AE%B8%E4%B8%80%E4%B8%AA%E8%B4%A6%E5%8F%B7%E8%A2%AB%E5%90%8C%E6%97%B6%E7%99%BB%E5%BD%95%E5%A4%9A%E6%AC%A1%EF%BC%9F">系统是否允许一个账号被同时登录多次？</a></li><li><a href="#%E6%9C%89%E6%B2%A1%E6%9C%89%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6%EF%BC%88%E6%95%B0%E6%8D%AE%E5%BA%93%E7%BC%93%E5%AD%98%EF%BC%89">有没有缓存机制（数据库缓存）</a></li><li><a href="#%E9%80%A0%E5%A4%9A%E4%B8%AA%E8%B4%A6%E5%8F%B7%E8%BF%9B%E8%A1%8C%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95">造多个账号进行性能测试</a></li><li><a href="#%E7%9B%B4%E6%8E%A5%E4%BD%BF%E7%94%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%AD%E6%95%B0%E6%8D%AE%E8%BF%9B%E8%A1%8C%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95">直接使用数据库中数据进行性能测试</a></li><li><a href="#%E6%95%B0%E6%8D%AE%E8%BF%9E%E6%8E%A5">数据连接</a></li><li><a href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E6%9F%A5%E8%AF%A2">数据库查询</a></li><li><a href="#%E5%BE%AA%E7%8E%AF%E8%AE%BE%E7%BD%AE%E5%B1%9E%E6%80%A7">循环设置属性</a></li><li><a href="#%E6%9F%A5%E7%9C%8B%E5%B1%9E%E6%80%A7%E8%AE%BE%E7%BD%AE%E6%83%85%E5%86%B5">查看属性设置情况</a></li><li><a href="#%E4%BD%BF%E7%94%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%AD%E8%AF%BB%E5%8F%96%E5%88%B0%E7%9A%84%E5%86%85%E5%AE%B9">使用数据库中读取到的内容</a></li><li><a href="#%E5%B0%8F%E7%BB%93">小结</a></li><li><a href="#%E7%9B%91%E6%8E%A7">监控</a></li><li><a href="#ServerAgent-%E7%9B%91%E6%8E%A7%E7%A1%AC%E4%BB%B6">ServerAgent 监控硬件</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><span id="18-读取数据库数据进行性能测试"></span><h2 data-passage-key="84b7966806d5" id="用同一个token做性能测试，和1000个token随机取一个做性能测试，对服务器性能指标一样吗？"><a class="headerlink" href="#用同一个token做性能测试，和1000个token随机取一个做性能测试，对服务器性能指标一样吗？" title="用同一个token做性能测试，和1000个token随机取一个做性能测试，对服务器性能指标一样吗？"></a>用同一个token做性能测试，和1000个token随机取一个做性能测试，对服务器性能指标一样吗？</h2><h3 data-passage-key="cbbf75f36c3e" id="系统是否允许一个账号被同时登录多次？"><a class="headerlink" href="#系统是否允许一个账号被同时登录多次？" title="系统是否允许一个账号被同时登录多次？"></a>系统是否允许一个账号被同时登录多次？</h3><p data-passage-key="220d7440db22" id="passage-37ff291624b8">如果有互踢功能，那是不能使用同一个账号</p>
-<h3 data-passage-key="3e13956c64b8" id="有没有缓存机制（数据库缓存）"><a class="headerlink" href="#有没有缓存机制（数据库缓存）" title="有没有缓存机制（数据库缓存）"></a>有没有缓存机制（数据库缓存）</h3><p data-passage-key="b0e5a6fc3195" id="passage-0d87fdb63af9">如果有，不能使用同一个账号</p>
-<h3 data-passage-key="160a42c493b1" id="造多个账号进行性能测试"><a class="headerlink" href="#造多个账号进行性能测试" title="造多个账号进行性能测试"></a>造多个账号进行性能测试</h3><ol>
-<li data-passage-key="a2dfd537faed" id="passage-812eb41fd1d5">尽可能的在运行过程中，造足够量的账号</li>
-<li data-passage-key="e4b2c8de168a" id="passage-538133a80a47">如果只有固定的一些账号可用时，做这种性能测试时，要记得带上「退出登录」接口</li>
-<li data-passage-key="3eac22ccbfdb" id="passage-3b91afa77517">如果只有固定的一些账号可用时，不关心登录接口的信息，可用不用退出</li>
+        <div class="post-body" id="article-text"><span id="18-读取数据库数据进行性能测试"></span><h2 id="用同一个token做性能测试，和1000个token随机取一个做性能测试，对服务器性能指标一样吗？"><a class="headerlink" href="#用同一个token做性能测试，和1000个token随机取一个做性能测试，对服务器性能指标一样吗？" title="用同一个token做性能测试，和1000个token随机取一个做性能测试，对服务器性能指标一样吗？"></a>用同一个token做性能测试，和1000个token随机取一个做性能测试，对服务器性能指标一样吗？</h2><h3 id="系统是否允许一个账号被同时登录多次？"><a class="headerlink" href="#系统是否允许一个账号被同时登录多次？" title="系统是否允许一个账号被同时登录多次？"></a>系统是否允许一个账号被同时登录多次？</h3><p id="passage-37ff291624b8">如果有互踢功能，那是不能使用同一个账号</p>
+<h3 id="有没有缓存机制（数据库缓存）"><a class="headerlink" href="#有没有缓存机制（数据库缓存）" title="有没有缓存机制（数据库缓存）"></a>有没有缓存机制（数据库缓存）</h3><p id="passage-0d87fdb63af9">如果有，不能使用同一个账号</p>
+<h3 id="造多个账号进行性能测试"><a class="headerlink" href="#造多个账号进行性能测试" title="造多个账号进行性能测试"></a>造多个账号进行性能测试</h3><ol>
+<li id="passage-812eb41fd1d5">尽可能的在运行过程中，造足够量的账号</li>
+<li id="passage-538133a80a47">如果只有固定的一些账号可用时，做这种性能测试时，要记得带上「退出登录」接口</li>
+<li id="passage-3b91afa77517">如果只有固定的一些账号可用时，不关心登录接口的信息，可用不用退出</li>
 </ol>
 <span id="more"></span>
-<h2 data-passage-key="7bd2c369342b" id="直接使用数据库中数据进行性能测试"><a class="headerlink" href="#直接使用数据库中数据进行性能测试" title="直接使用数据库中数据进行性能测试"></a>直接使用数据库中数据进行性能测试</h2><h3 data-passage-key="8baecf5c1dac" id="数据连接"><a class="headerlink" href="#数据连接" title="数据连接"></a>数据连接</h3><p><img alt="数据连接" decoding="async" height="960" loading="lazy" src="/images/blog-media/f51095839e7043d9d9a0.webp" width="1080"/></p>
-<h3 data-passage-key="033ea31bc343" id="数据库查询"><a class="headerlink" href="#数据库查询" title="数据库查询"></a>数据库查询</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="28e26db80ee9" id="passage-143062930420"><span class="line">select user,password from zx limit 10</span><br/></pre></td></tr></tbody></table></figure>
+<h2 id="直接使用数据库中数据进行性能测试"><a class="headerlink" href="#直接使用数据库中数据进行性能测试" title="直接使用数据库中数据进行性能测试"></a>直接使用数据库中数据进行性能测试</h2><h3 id="数据连接"><a class="headerlink" href="#数据连接" title="数据连接"></a>数据连接</h3><p><img alt="数据连接" decoding="async" height="960" loading="lazy" src="/images/blog-media/f51095839e7043d9d9a0.webp" width="1080"/></p>
+<h3 id="数据库查询"><a class="headerlink" href="#数据库查询" title="数据库查询"></a>数据库查询</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-143062930420"><span class="line">select user,password from zx limit 10</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="数据库查询" decoding="async" height="960" loading="lazy" src="/images/blog-media/4d425c7e481ad494b065.webp" width="1080"/></p>
-<h3 data-passage-key="82d9a0ad3d6e" id="循环设置属性"><a class="headerlink" href="#循环设置属性" title="循环设置属性"></a>循环设置属性</h3><h4 data-passage-key="7c1b14514c92" id="添加计数器"><a class="headerlink" href="#添加计数器" title="添加计数器"></a>添加计数器</h4><p><img alt="计数器" decoding="async" height="302" loading="lazy" src="/images/blog-media/3aed4c54008fb49c89e1.webp" width="292"/></p>
-<h4 data-passage-key="4170e247d4c5" id="添加调试取样器设置属性"><a class="headerlink" href="#添加调试取样器设置属性" title="添加调试取样器设置属性"></a>添加调试取样器设置属性</h4><figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="27f8b8313668" id="passage-52d323d8bfc5"><span class="line">${__setProperty(per_user_${d},${__V(user_${d})},)};${__setProperty(per_pwd_${d},${__V(password_${d})},)}</span><br/></pre></td></tr></tbody></table></figure>
+<h3 id="循环设置属性"><a class="headerlink" href="#循环设置属性" title="循环设置属性"></a>循环设置属性</h3><h4 id="添加计数器"><a class="headerlink" href="#添加计数器" title="添加计数器"></a>添加计数器</h4><p><img alt="计数器" decoding="async" height="302" loading="lazy" src="/images/blog-media/3aed4c54008fb49c89e1.webp" width="292"/></p>
+<h4 id="添加调试取样器设置属性"><a class="headerlink" href="#添加调试取样器设置属性" title="添加调试取样器设置属性"></a>添加调试取样器设置属性</h4><figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-52d323d8bfc5"><span class="line">${__setProperty(per_user_${d},${__V(user_${d})},)};${__setProperty(per_pwd_${d},${__V(password_${d})},)}</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="调试取样器" decoding="async" height="195" loading="lazy" src="/images/blog-media/c950412ad69a1efebf1b.webp" width="768"/></p>
-<h3 data-passage-key="56e9ceee3ac1" id="查看属性设置情况"><a class="headerlink" href="#查看属性设置情况" title="查看属性设置情况"></a>查看属性设置情况</h3><p><img alt="截屏2021-05-15 下午8.59.06" decoding="async" height="960" loading="lazy" src="/images/blog-media/62e4c90dc4d273adbe0b.webp" width="1080"/></p>
-<h3 data-passage-key="fb467a5417f3" id="使用数据库中读取到的内容"><a class="headerlink" href="#使用数据库中读取到的内容" title="使用数据库中读取到的内容"></a>使用数据库中读取到的内容</h3><h4 data-passage-key="5486f46851aa" id="设置线程数"><a class="headerlink" href="#设置线程数" title="设置线程数"></a>设置线程数</h4><p><img alt="线程数" decoding="async" height="417" loading="lazy" src="/images/blog-media/91d4778d22a8aad03bd2.webp" width="343"/></p>
-<h4 data-passage-key="632618e2aef4" id="添加计数器-1"><a class="headerlink" href="#添加计数器-1" title="添加计数器"></a>添加计数器</h4><p><img alt="计数器" decoding="async" height="318" loading="lazy" src="/images/blog-media/8860d163bfeeb3e1880c.webp" width="339"/></p>
-<h4 data-passage-key="273ae6b9887f" id="发起http请求"><a class="headerlink" href="#发起http请求" title="发起http请求"></a>发起http请求</h4><p><img alt="发起请求" decoding="async" height="336" loading="lazy" src="/images/blog-media/7508150bce299e535d24.webp" width="699"/></p>
-<h4 data-passage-key="d06bc6efdd8c" id="查看结果"><a class="headerlink" href="#查看结果" title="查看结果"></a>查看结果</h4><p><img alt="查看结果" decoding="async" height="645" loading="lazy" src="/images/blog-media/b0e1f2a4c386bae63909.webp" width="838"/></p>
-<h3 data-passage-key="6bf8bdb1f6ee" id="小结"><a class="headerlink" href="#小结" title="小结"></a>小结</h3><ol>
-<li data-passage-key="1f9027f8ff00" id="passage-c1fcb6852e8c"><p data-passage-key="25b5355f550a" id="passage-4354b6e34fc6">线程1:从本地sqlite数据库中获取数据，设置为属性</p>
+<h3 id="查看属性设置情况"><a class="headerlink" href="#查看属性设置情况" title="查看属性设置情况"></a>查看属性设置情况</h3><p><img alt="截屏2021-05-15 下午8.59.06" decoding="async" height="960" loading="lazy" src="/images/blog-media/62e4c90dc4d273adbe0b.webp" width="1080"/></p>
+<h3 id="使用数据库中读取到的内容"><a class="headerlink" href="#使用数据库中读取到的内容" title="使用数据库中读取到的内容"></a>使用数据库中读取到的内容</h3><h4 id="设置线程数"><a class="headerlink" href="#设置线程数" title="设置线程数"></a>设置线程数</h4><p><img alt="线程数" decoding="async" height="417" loading="lazy" src="/images/blog-media/91d4778d22a8aad03bd2.webp" width="343"/></p>
+<h4 id="添加计数器-1"><a class="headerlink" href="#添加计数器-1" title="添加计数器"></a>添加计数器</h4><p><img alt="计数器" decoding="async" height="318" loading="lazy" src="/images/blog-media/8860d163bfeeb3e1880c.webp" width="339"/></p>
+<h4 id="发起http请求"><a class="headerlink" href="#发起http请求" title="发起http请求"></a>发起http请求</h4><p><img alt="发起请求" decoding="async" height="336" loading="lazy" src="/images/blog-media/7508150bce299e535d24.webp" width="699"/></p>
+<h4 id="查看结果"><a class="headerlink" href="#查看结果" title="查看结果"></a>查看结果</h4><p><img alt="查看结果" decoding="async" height="645" loading="lazy" src="/images/blog-media/b0e1f2a4c386bae63909.webp" width="838"/></p>
+<h3 id="小结"><a class="headerlink" href="#小结" title="小结"></a>小结</h3><ol>
+<li id="passage-c1fcb6852e8c"><p id="passage-4354b6e34fc6">线程1:从本地sqlite数据库中获取数据，设置为属性</p>
 </li>
-<li data-passage-key="a65545554312" id="passage-5c9adf6fdef1"><p data-passage-key="061710de8f50" id="passage-d5780540ab25">线程2:从属性中，直接获取值，进行性能测试</p>
+<li id="passage-5c9adf6fdef1"><p id="passage-d5780540ab25">线程2:从属性中，直接获取值，进行性能测试</p>
 </li>
 </ol>
-<h2 data-passage-key="fdc390061698" id="监控"><a class="headerlink" href="#监控" title="监控"></a>监控</h2><blockquote data-passage-key="2354931d3fb5" id="passage-0129c2cbec71">
-<p data-passage-key="960229347165" id="passage-a63e2b9d4949">监控被测服务器的软件、硬件资源，收集这些资源的使用情况的数据，用于后续的性能分析</p>
+<h2 id="监控"><a class="headerlink" href="#监控" title="监控"></a>监控</h2><blockquote id="passage-0129c2cbec71">
+<p id="passage-a63e2b9d4949">监控被测服务器的软件、硬件资源，收集这些资源的使用情况的数据，用于后续的性能分析</p>
 </blockquote>
-<h3 data-passage-key="ecbc6cf9019e" id="ServerAgent-监控硬件"><a class="headerlink" href="#ServerAgent-监控硬件" title="ServerAgent 监控硬件"></a>ServerAgent 监控硬件</h3><ul>
-<li data-passage-key="320fc881a395" id="passage-bfc4b1f19e10"><p data-passage-key="878854eb4144" id="passage-d2bab9bbc640">可用于监控Linux和Winodws</p>
+<h3 id="ServerAgent-监控硬件"><a class="headerlink" href="#ServerAgent-监控硬件" title="ServerAgent 监控硬件"></a>ServerAgent 监控硬件</h3><ul>
+<li id="passage-bfc4b1f19e10"><p id="passage-d2bab9bbc640">可用于监控Linux和Winodws</p>
 </li>
-<li data-passage-key="3e10ba9fe22b" id="passage-f8ddeabcae40"><p data-passage-key="c0f3e99963dd" id="passage-cb12546b9f97">可以和Jmeter直接集成</p>
+<li id="passage-f8ddeabcae40"><p id="passage-cb12546b9f97">可以和Jmeter直接集成</p>
 </li>
 </ul>
-<h4 data-passage-key="e8f88f51ccb0" id="安装"><a class="headerlink" href="#安装" title="安装"></a>安装</h4><ol>
-<li data-passage-key="4e4da9779e55" id="passage-ec910156d6cb">将<code>ServerAgent-2.2.3.zip</code>上传到被测服务器</li>
-<li data-passage-key="2315f7c90cae" id="passage-6654ba65849c">解压文件</li>
-<li data-passage-key="8870eec707e6" id="passage-b3306dc4f703">进入解压文件后，执行启动命令</li>
+<h4 id="安装"><a class="headerlink" href="#安装" title="安装"></a>安装</h4><ol>
+<li id="passage-ec910156d6cb">将<code>ServerAgent-2.2.3.zip</code>上传到被测服务器</li>
+<li id="passage-6654ba65849c">解压文件</li>
+<li id="passage-b3306dc4f703">进入解压文件后，执行启动命令</li>
 </ol>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/></pre></td><td class="code"><pre data-passage-key="6ae24efbb2f7" id="passage-6295c59fbc1a"><span class="line">[root@vircent7 serverAgent]# chmod 777 startAgent.sh</span><br/><span class="line">[root@vircent7 serverAgent]# ./startAgent.sh</span><br/><span class="line">INFO    2021-03-27 13:27:11.890 [kg.apc.p] (): Binding UDP to 4444</span><br/><span class="line">INFO    2021-03-27 13:27:12.896 [kg.apc.p] (): Binding TCP to 4444</span><br/><span class="line">INFO    2021-03-27 13:27:12.924 [kg.apc.p] (): JP@GC Agent v2.2.3 started</span><br/></pre></td></tr></tbody></table></figure>
-<blockquote data-passage-key="29d4ccad157a" id="passage-bf1e64b41267">
-<p data-passage-key="72c19e9a4c1d" id="passage-7c190fc02a0e">默认的服务器端口为<code>4444</code></p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/></pre></td><td class="code"><pre id="passage-6295c59fbc1a"><span class="line">[root@vircent7 serverAgent]# chmod 777 startAgent.sh</span><br/><span class="line">[root@vircent7 serverAgent]# ./startAgent.sh</span><br/><span class="line">INFO    2021-03-27 13:27:11.890 [kg.apc.p] (): Binding UDP to 4444</span><br/><span class="line">INFO    2021-03-27 13:27:12.896 [kg.apc.p] (): Binding TCP to 4444</span><br/><span class="line">INFO    2021-03-27 13:27:12.924 [kg.apc.p] (): JP@GC Agent v2.2.3 started</span><br/></pre></td></tr></tbody></table></figure>
+<blockquote id="passage-bf1e64b41267">
+<p id="passage-7c190fc02a0e">默认的服务器端口为<code>4444</code></p>
 </blockquote>
-<h4 data-passage-key="29f04aa676a5" id="jmeter与该监控集成"><a class="headerlink" href="#jmeter与该监控集成" title="jmeter与该监控集成"></a>jmeter与该监控集成</h4><p data-passage-key="7a118ac81109" id="passage-a7e0d6932ad6">jmeter监听器&gt;jp@gc - PerfMon Metrics Collector「需要安装第三方插件 jpgc」</p>
+<h4 id="jmeter与该监控集成"><a class="headerlink" href="#jmeter与该监控集成" title="jmeter与该监控集成"></a>jmeter与该监控集成</h4><p id="passage-a7e0d6932ad6">jmeter监听器&gt;jp@gc - PerfMon Metrics Collector「需要安装第三方插件 jpgc」</p>
 <p><img alt="监听器" decoding="async" height="960" loading="lazy" src="/images/blog-media/e82350b1725c2335651e.webp" width="1080"/></p>
-<h4 data-passage-key="4307395ac723" id="实际工作中可能遇到的问题"><a class="headerlink" href="#实际工作中可能遇到的问题" title="实际工作中可能遇到的问题"></a>实际工作中可能遇到的问题</h4><ol>
-<li data-passage-key="e65ed48008af" id="passage-01dbbde16b14">被测服务器数云服务器，云服务器会禁用4444端口</li>
+<h4 id="实际工作中可能遇到的问题"><a class="headerlink" href="#实际工作中可能遇到的问题" title="实际工作中可能遇到的问题"></a>实际工作中可能遇到的问题</h4><ol>
+<li id="passage-01dbbde16b14">被测服务器数云服务器，云服务器会禁用4444端口</li>
 </ol>
-<blockquote data-passage-key="16f863401261" id="passage-03f5517b197d">
-<p data-passage-key="efefa3c8b321" id="passage-082289ff0fe3">关闭UDP端口，开启TCP端口为5279</p>
-<p data-passage-key="5a5e56b0931c" id="passage-67cdd482dfb5">UDP是一种广播模式传递数据，这种方式数据不安全</p>
-<p data-passage-key="c962d91211f3" id="passage-c6c30a11f9c0">TCP需要建立连接才能传输数据，数据相对更安全</p>
+<blockquote id="passage-03f5517b197d">
+<p id="passage-082289ff0fe3">关闭UDP端口，开启TCP端口为5279</p>
+<p id="passage-67cdd482dfb5">UDP是一种广播模式传递数据，这种方式数据不安全</p>
+<p id="passage-c6c30a11f9c0">TCP需要建立连接才能传输数据，数据相对更安全</p>
 </blockquote>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre data-passage-key="b9fbf8564730" id="passage-a3e83252ef41"><span class="line">[root@vircent7 serverAgent]# ./startAgent.sh --udp-port 0 --tcp-port 5279</span><br/><span class="line">INFO    2021-03-27 13:36:21.743 [kg.apc.p] (): Binding TCP to 5279</span><br/><span class="line">INFO    2021-03-27 13:36:21.909 [kg.apc.p] (): JP@GC Agent v2.2.3 started</span><br/></pre></td></tr></tbody></table></figure>
-<p data-passage-key="60f649b234cd" id="passage-41283c90a450">网络要通：不是使用ping命令</p>
-<p data-passage-key="f9cfe7d1453e" id="passage-7696d0605042">ping：只要网络存在这个IP，ping命令可以被禁用，企业中的服务器，很多时候都会禁用ping命令</p>
-<p data-passage-key="c074d2b4dc14" id="passage-302002023818">服务器向外提供是通过端口，如果服务器没有启动，是没有端口可用，能ping通但是无法连接</p>
-<p data-passage-key="4a13785db501" id="passage-c7e58be7a339">防火墙上没有开通端口权限</p>
-<p data-passage-key="a0e0026064f5" id="passage-190bce678d29">一般采用 <code>telnet ip端口</code> </p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre id="passage-a3e83252ef41"><span class="line">[root@vircent7 serverAgent]# ./startAgent.sh --udp-port 0 --tcp-port 5279</span><br/><span class="line">INFO    2021-03-27 13:36:21.743 [kg.apc.p] (): Binding TCP to 5279</span><br/><span class="line">INFO    2021-03-27 13:36:21.909 [kg.apc.p] (): JP@GC Agent v2.2.3 started</span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-41283c90a450">网络要通：不是使用ping命令</p>
+<p id="passage-7696d0605042">ping：只要网络存在这个IP，ping命令可以被禁用，企业中的服务器，很多时候都会禁用ping命令</p>
+<p id="passage-302002023818">服务器向外提供是通过端口，如果服务器没有启动，是没有端口可用，能ping通但是无法连接</p>
+<p id="passage-c7e58be7a339">防火墙上没有开通端口权限</p>
+<p id="passage-190bce678d29">一般采用 <code>telnet ip端口</code> </p>
 <ol>
-<li data-passage-key="23884807c980" id="passage-d6711f53dfdb">如果这个命令不能执行</li>
+<li id="passage-d6711f53dfdb">如果这个命令不能执行</li>
 </ol>
 <ul>
-<li data-passage-key="1d2a2aeb379f" id="passage-f77ddf539b64">telnet不是内部命令｜未找到命令：说明没有开启telnet命令或没有安装</li>
+<li id="passage-f77ddf539b64">telnet不是内部命令｜未找到命令：说明没有开启telnet命令或没有安装</li>
 </ul>
 <ol start="2">
-<li data-passage-key="ed6407c340b6" id="passage-a7e64f04466f">如果这个命令不通</li>
+<li id="passage-a7e64f04466f">如果这个命令不通</li>
 </ol>
 <ul>
-<li data-passage-key="17c442ae819a" id="passage-90dbd5469339"><p data-passage-key="9bb8b35d7511" id="passage-a6d701c60a92">被测服务器没有启动对应的服务</p>
+<li id="passage-90dbd5469339"><p id="passage-a6d701c60a92">被测服务器没有启动对应的服务</p>
 </li>
-<li data-passage-key="47e2b8cb1999" id="passage-9d8561dcedc5"><p data-passage-key="9481e2c18fb1" id="passage-107ba4a6442c">防火墙没有开放该端口 <code>systemctl status firewalld</code></p>
+<li id="passage-9d8561dcedc5"><p id="passage-107ba4a6442c">防火墙没有开放该端口 <code>systemctl status firewalld</code></p>
 </li>
 </ul>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/></pre></td><td class="code"><pre data-passage-key="d4527a5dffa9" id="passage-67610e46b637"><span class="line">[root@vircent7 ~]# systemctl status firewalld</span><br/><span class="line">● firewalld.service - firewalld - dynamic firewall daemon</span><br/><span class="line">   Loaded: loaded (/usr/lib/systemd/system/firewalld.service; disabled; vendor preset: enabled)</span><br/><span class="line">   Active: inactive (dead)</span><br/><span class="line">     Docs: man:firewalld(1)</span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/></pre></td><td class="code"><pre id="passage-67610e46b637"><span class="line">[root@vircent7 ~]# systemctl status firewalld</span><br/><span class="line">● firewalld.service - firewalld - dynamic firewall daemon</span><br/><span class="line">   Loaded: loaded (/usr/lib/systemd/system/firewalld.service; disabled; vendor preset: enabled)</span><br/><span class="line">   Active: inactive (dead)</span><br/><span class="line">     Docs: man:firewalld(1)</span><br/></pre></td></tr></tbody></table></figure>
 <ol start="3">
-<li data-passage-key="f1f3527b85c2" id="passage-f41d324fced7">如果是云服务器，一定要去web管理台 安全策略中开放端口</li>
+<li id="passage-f41d324fced7">如果是云服务器，一定要去web管理台 安全策略中开放端口</li>
 </ol></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
-        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
-          <header class="passage-dialog-header">
-            <h2 id="passage-comment-title">段落评论</h2>
-            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
-          </header>
-          <div class="passage-dialog-content">
-            <blockquote data-passage-excerpt></blockquote>
-            <a data-passage-source>查看原文</a>
-            <p data-passage-status role="status"></p>
-            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
-            <div data-passage-widget></div>
-          </div>
-        </dialog>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/lrgbxICLjUPGlAWEJK-mjg">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a><a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a></div>
@@ -161,7 +147,7 @@
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
-          <div class="giscus"></div>
+          <div class="giscus" id="article-discussion"></div>
         </section>
       </div>
     </div>

@@ -55,7 +55,8 @@
       inputPosition: 'bottom',
       theme: theme(),
       lang: 'zh-CN',
-      loading: location.hash === '#comments' || new URLSearchParams(location.search).has('giscus') ? 'eager' : 'lazy',
+      loading: ['#comments', '#article-discussion'].includes(location.hash) ||
+        new URLSearchParams(location.search).has('giscus') ? 'eager' : 'lazy',
     });
     script.addEventListener('load', () => {
       status.textContent = '';

@@ -20,7 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/5ac52f3c.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/5ac52f3c.html">
-<script type="module" src="/js/discussions.js"></script>
+<script src="/js/comments.js?v=4" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,83 +56,69 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#nmon">nmon</a></li><li><a href="#%E6%9F%A5%E7%9C%8BLinux%E7%9A%84%E5%8F%91%E8%A1%8C%E7%89%88%E6%9C%AC">查看Linux的发行版本</a></li><li><a href="#%E7%A1%AE%E5%AE%9A%E4%B8%8B%E8%BD%BD%E7%9A%84%E6%96%87%E4%BB%B6">确定下载的文件</a></li><li><a href="#%E8%A7%A3%E5%8E%8B">解压</a></li><li><a href="#nmon%E4%B8%89%E7%A7%8D%E8%BF%90%E8%A1%8C%E6%A8%A1%E5%BC%8F">nmon三种运行模式</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><span id="19-nmon"></span><h2 data-passage-key="642ae2f44533" id="nmon"><a class="headerlink" href="#nmon" title="nmon"></a>nmon</h2><blockquote data-passage-key="525db7ad28ca" id="passage-2dbc6ff49bd9">
-<p data-passage-key="3a923727f863" id="passage-fb2857627e57"><a href="http://nmon.sourceforge.net/" rel="noopener" target="_blank">http://nmon.sourceforge.net/</a></p>
-<p data-passage-key="00e28e944481" id="passage-944db4d959e1">C语言编写本身资源消耗非常小</p>
+        <div class="post-body" id="article-text"><span id="19-nmon"></span><h2 id="nmon"><a class="headerlink" href="#nmon" title="nmon"></a>nmon</h2><blockquote id="passage-2dbc6ff49bd9">
+<p id="passage-fb2857627e57"><a href="http://nmon.sourceforge.net/" rel="noopener" target="_blank">http://nmon.sourceforge.net/</a></p>
+<p id="passage-944db4d959e1">C语言编写本身资源消耗非常小</p>
 </blockquote>
-<p data-passage-key="c8e806e9fe68" id="passage-6e3423ae849d">部署到被测试服务器上，可以监控不同的Linux系统（不同的linux发行版本，nmon命令是不同的）</p>
-<h3 data-passage-key="b88ef4f437a9" id="查看Linux的发行版本"><a class="headerlink" href="#查看Linux的发行版本" title="查看Linux的发行版本"></a>查看Linux的发行版本</h3><blockquote data-passage-key="022b8fc40c00" id="passage-a61e42558bf7">
-<p data-passage-key="9e3ca9a9a7f3" id="passage-1384c53b3ce8"><code>cd /etc</code>查看路径下有没有「release」关键字的文件</p>
+<p id="passage-6e3423ae849d">部署到被测试服务器上，可以监控不同的Linux系统（不同的linux发行版本，nmon命令是不同的）</p>
+<h3 id="查看Linux的发行版本"><a class="headerlink" href="#查看Linux的发行版本" title="查看Linux的发行版本"></a>查看Linux的发行版本</h3><blockquote id="passage-a61e42558bf7">
+<p id="passage-1384c53b3ce8"><code>cd /etc</code>查看路径下有没有「release」关键字的文件</p>
 </blockquote>
-<h4 data-passage-key="4b95bf6d6c95" id="查看redhat家族的发行版本"><a class="headerlink" href="#查看redhat家族的发行版本" title="查看redhat家族的发行版本"></a>查看redhat家族的发行版本</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="ad5cb4feaefe" id="passage-f9308520b8d8"><span class="line">[root@vircent7 ~]# cat /etc/redhat-release </span><br/><span class="line">CentOS Linux release 7.8.2003 (Core)</span><br/></pre></td></tr></tbody></table></figure>
+<h4 id="查看redhat家族的发行版本"><a class="headerlink" href="#查看redhat家族的发行版本" title="查看redhat家族的发行版本"></a>查看redhat家族的发行版本</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre id="passage-f9308520b8d8"><span class="line">[root@vircent7 ~]# cat /etc/redhat-release </span><br/><span class="line">CentOS Linux release 7.8.2003 (Core)</span><br/></pre></td></tr></tbody></table></figure>
 <span id="more"></span>
-<h4 data-passage-key="32d60c9bd5c4" id="查看Ubuntu的发行版本"><a class="headerlink" href="#查看Ubuntu的发行版本" title="查看Ubuntu的发行版本"></a>查看Ubuntu的发行版本</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/></pre></td><td class="code"><pre data-passage-key="3223fab3f2f9" id="passage-72d16287461f"><span class="line">root@zx:/# cat /etc/os-release </span><br/><span class="line">NAME="Ubuntu"</span><br/><span class="line">VERSION="20.04.1 LTS (Focal Fossa)"</span><br/><span class="line">ID=ubuntu</span><br/><span class="line">ID_LIKE=debian</span><br/><span class="line">PRETTY_NAME="Ubuntu 20.04.1 LTS"</span><br/><span class="line">VERSION_ID="20.04"</span><br/><span class="line">HOME_URL="https://www.ubuntu.com/"</span><br/><span class="line">SUPPORT_URL="https://help.ubuntu.com/"</span><br/><span class="line">BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"</span><br/><span class="line">PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"</span><br/><span class="line">VERSION_CODENAME=focal</span><br/><span class="line">UBUNTU_CODENAME=focal</span><br/></pre></td></tr></tbody></table></figure>
-<h3 data-passage-key="5960e1182c8d" id="确定下载的文件"><a class="headerlink" href="#确定下载的文件" title="确定下载的文件"></a>确定下载的文件</h3><p data-passage-key="991c1fd6c4f7" id="passage-7ab51a137284">进入<code>http://nmon.sourceforge.net/pmwiki.php?n=Site.Download</code>找到有符合当前Linux版本信息的文件下载</p>
-<h3 data-passage-key="a147ebf3581a" id="解压"><a class="headerlink" href="#解压" title="解压"></a>解压</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/></pre></td><td class="code"><pre data-passage-key="e19717cc8d23" id="passage-733a1126f144"><span class="line">[root@vircent7 nmon16m_helpsystems]# ls</span><br/><span class="line">nmon_power_64_centos6      nmon_power_64_linux   nmon_x86_64_mint19      nmon_x86_64_rhel8</span><br/><span class="line">nmon_power_64_centos7      nmon_power_64_rhel6   nmon_x86_64_oel5        nmon_x86_64_sles10</span><br/><span class="line">nmon_power_64le_centos7    nmon_power_64_rhel7   nmon_x86_64_oel6        nmon_x86_64_sles11</span><br/><span class="line">nmon_power_64le_centos8    nmon_power_64_sles11  nmon_x86_64_oel7        nmon_x86_64_sles12</span><br/><span class="line">nmon_power_64le_linux      nmon_x86_64_centos5   nmon_x86_64_oel8        nmon_x86_64_sles15</span><br/><span class="line">nmon_power_64le_rhel7      nmon_x86_64_centos6   nmon_x86_64_opensuse10  nmon_x86_64_ubuntu14</span><br/><span class="line">nmon_power_64le_rhel7_gpu  nmon_x86_64_centos7   nmon_x86_64_opensuse11  nmon_x86_64_ubuntu16</span><br/><span class="line">nmon_power_64le_rhel8      nmon_x86_64_centos8   nmon_x86_64_opensuse12  nmon_x86_64_ubuntu18</span><br/><span class="line">nmon_power_64le_sles12     nmon_x86_64_debian08  nmon_x86_64_opensuse15  nmon_x86_64_ubuntu19</span><br/><span class="line">nmon_power_64le_ubuntu14   nmon_x86_64_debian09  nmon_x86_64_rhel5</span><br/><span class="line">nmon_power_64le_ubuntu16   nmon_x86_64_debian10  nmon_x86_64_rhel6</span><br/><span class="line">nmon_power_64le_ubuntu18   nmon_x86_64_mint18    nmon_x86_64_rhel7</span><br/></pre></td></tr></tbody></table></figure>
-<h3 data-passage-key="bcb7e4afbf14" id="nmon三种运行模式"><a class="headerlink" href="#nmon三种运行模式" title="nmon三种运行模式"></a>nmon三种运行模式</h3><h4 data-passage-key="8f30d90d9cdf" id="实时屏幕交互"><a class="headerlink" href="#实时屏幕交互" title="实时屏幕交互"></a>实时屏幕交互</h4><p data-passage-key="575435935882" id="passage-e9c1e92ea19f">优点：可以通过屏幕实时看到服务器资源使用情况</p>
-<p data-passage-key="dcf94e40c4b6" id="passage-4050e012b6d7">缺点：只能看到，无法保存数据</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="fba9baa0d041" id="passage-bb96771d8a06"><span class="line">[root@vircent7 nmon16m_helpsystems]# ./nmon_x86_64_centos7</span><br/></pre></td></tr></tbody></table></figure>
+<h4 id="查看Ubuntu的发行版本"><a class="headerlink" href="#查看Ubuntu的发行版本" title="查看Ubuntu的发行版本"></a>查看Ubuntu的发行版本</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/></pre></td><td class="code"><pre id="passage-72d16287461f"><span class="line">root@zx:/# cat /etc/os-release </span><br/><span class="line">NAME="Ubuntu"</span><br/><span class="line">VERSION="20.04.1 LTS (Focal Fossa)"</span><br/><span class="line">ID=ubuntu</span><br/><span class="line">ID_LIKE=debian</span><br/><span class="line">PRETTY_NAME="Ubuntu 20.04.1 LTS"</span><br/><span class="line">VERSION_ID="20.04"</span><br/><span class="line">HOME_URL="https://www.ubuntu.com/"</span><br/><span class="line">SUPPORT_URL="https://help.ubuntu.com/"</span><br/><span class="line">BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"</span><br/><span class="line">PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"</span><br/><span class="line">VERSION_CODENAME=focal</span><br/><span class="line">UBUNTU_CODENAME=focal</span><br/></pre></td></tr></tbody></table></figure>
+<h3 id="确定下载的文件"><a class="headerlink" href="#确定下载的文件" title="确定下载的文件"></a>确定下载的文件</h3><p id="passage-7ab51a137284">进入<code>http://nmon.sourceforge.net/pmwiki.php?n=Site.Download</code>找到有符合当前Linux版本信息的文件下载</p>
+<h3 id="解压"><a class="headerlink" href="#解压" title="解压"></a>解压</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/></pre></td><td class="code"><pre id="passage-733a1126f144"><span class="line">[root@vircent7 nmon16m_helpsystems]# ls</span><br/><span class="line">nmon_power_64_centos6      nmon_power_64_linux   nmon_x86_64_mint19      nmon_x86_64_rhel8</span><br/><span class="line">nmon_power_64_centos7      nmon_power_64_rhel6   nmon_x86_64_oel5        nmon_x86_64_sles10</span><br/><span class="line">nmon_power_64le_centos7    nmon_power_64_rhel7   nmon_x86_64_oel6        nmon_x86_64_sles11</span><br/><span class="line">nmon_power_64le_centos8    nmon_power_64_sles11  nmon_x86_64_oel7        nmon_x86_64_sles12</span><br/><span class="line">nmon_power_64le_linux      nmon_x86_64_centos5   nmon_x86_64_oel8        nmon_x86_64_sles15</span><br/><span class="line">nmon_power_64le_rhel7      nmon_x86_64_centos6   nmon_x86_64_opensuse10  nmon_x86_64_ubuntu14</span><br/><span class="line">nmon_power_64le_rhel7_gpu  nmon_x86_64_centos7   nmon_x86_64_opensuse11  nmon_x86_64_ubuntu16</span><br/><span class="line">nmon_power_64le_rhel8      nmon_x86_64_centos8   nmon_x86_64_opensuse12  nmon_x86_64_ubuntu18</span><br/><span class="line">nmon_power_64le_sles12     nmon_x86_64_debian08  nmon_x86_64_opensuse15  nmon_x86_64_ubuntu19</span><br/><span class="line">nmon_power_64le_ubuntu14   nmon_x86_64_debian09  nmon_x86_64_rhel5</span><br/><span class="line">nmon_power_64le_ubuntu16   nmon_x86_64_debian10  nmon_x86_64_rhel6</span><br/><span class="line">nmon_power_64le_ubuntu18   nmon_x86_64_mint18    nmon_x86_64_rhel7</span><br/></pre></td></tr></tbody></table></figure>
+<h3 id="nmon三种运行模式"><a class="headerlink" href="#nmon三种运行模式" title="nmon三种运行模式"></a>nmon三种运行模式</h3><h4 id="实时屏幕交互"><a class="headerlink" href="#实时屏幕交互" title="实时屏幕交互"></a>实时屏幕交互</h4><p id="passage-e9c1e92ea19f">优点：可以通过屏幕实时看到服务器资源使用情况</p>
+<p id="passage-4050e012b6d7">缺点：只能看到，无法保存数据</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-bb96771d8a06"><span class="line">[root@vircent7 nmon16m_helpsystems]# ./nmon_x86_64_centos7</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="实时屏幕交互" decoding="async" height="708" loading="lazy" src="/images/blog-media/60475899a98857e375d3.webp" width="1080"/></p>
-<p data-passage-key="cb588c3416d9" id="passage-520715be1fb4"><strong>常用命令</strong>：<code>cmdrtn</code></p>
+<p id="passage-520715be1fb4"><strong>常用命令</strong>：<code>cmdrtn</code></p>
 <p><img alt="截屏2021-05-16 上午7.50.17" decoding="async" height="1842" loading="lazy" src="/images/blog-media/772b820b77cf9725e3e8.webp" width="1080"/></p>
 <ul>
-<li data-passage-key="b377a4e72cca" id="passage-13cf91a12eaa">c:cpu信息</li>
+<li id="passage-13cf91a12eaa">c:cpu信息</li>
 </ul>
 <p><img alt="CPU" decoding="async" height="137" loading="lazy" src="/images/blog-media/6a1cb467fea35e06f96f.webp" width="705"/></p>
-<p data-passage-key="faf8824d8159" id="passage-81a6628b1006">CPU下面的数字表示有几核</p>
-<p data-passage-key="2f05310831c9" id="passage-0209ac10820c"><code>User%</code>:用户态cpu的使用率</p>
-<p data-passage-key="466ccd47bf95" id="passage-0361369dd905"><code>Sys%</code>:系统态cpu的使用率</p>
-<p data-passage-key="6b9f7f35e755" id="passage-b936f2003fc2"><code>Wait%</code>:等待的cpu占用率</p>
-<p data-passage-key="b822a9a5ee5f" id="passage-cef7f3b758ce"><code>Idle%</code>:空闲cpu的占用率</p>
+<p id="passage-81a6628b1006">CPU下面的数字表示有几核</p>
+<p id="passage-0209ac10820c"><code>User%</code>:用户态cpu的使用率</p>
+<p id="passage-0361369dd905"><code>Sys%</code>:系统态cpu的使用率</p>
+<p id="passage-b936f2003fc2"><code>Wait%</code>:等待的cpu占用率</p>
+<p id="passage-cef7f3b758ce"><code>Idle%</code>:空闲cpu的占用率</p>
 <ul>
-<li data-passage-key="f895f47b68dc" id="passage-96e97c89136d">m:内存</li>
+<li id="passage-96e97c89136d">m:内存</li>
 </ul>
 <p><img alt="内存" decoding="async" height="206" loading="lazy" src="/images/blog-media/84db1fdad64afe5ee7ed.webp" width="732"/></p>
 <ul>
-<li data-passage-key="359bb2724ee2" id="passage-4e560b256063">d:磁盘读写</li>
+<li id="passage-4e560b256063">d:磁盘读写</li>
 </ul>
 <p><img alt="磁盘读写" decoding="async" height="162" loading="lazy" src="/images/blog-media/99852f71820fb8fac190.webp" width="731"/></p>
 <ul>
-<li data-passage-key="c4ffd39427dc" id="passage-874b4bd3ee6f">r:资源</li>
+<li id="passage-874b4bd3ee6f">r:资源</li>
 </ul>
 <p><img alt="资源" decoding="async" height="398" loading="lazy" src="/images/blog-media/38864f72d57660e781e4.webp" width="768"/></p>
 <ul>
-<li data-passage-key="c9eda700b23e" id="passage-722af74b6aad">t:top命令</li>
+<li id="passage-722af74b6aad">t:top命令</li>
 </ul>
 <p><img alt="top" decoding="async" height="446" loading="lazy" src="/images/blog-media/b3f7d76fd5a26a975daf.webp" width="1012"/></p>
 <ul>
-<li data-passage-key="e41d38fd445c" id="passage-0236c0cbacfd">n:网络</li>
+<li id="passage-0236c0cbacfd">n:网络</li>
 </ul>
 <p><img alt="网络" decoding="async" height="121" loading="lazy" src="/images/blog-media/22723a5db534d668526c.webp" width="725"/></p>
-<h4 data-passage-key="bea55e1fb882" id="数据收集模式"><a class="headerlink" href="#数据收集模式" title="数据收集模式"></a>数据收集模式</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre data-passage-key="48b1b6cf1628" id="passage-1ed7b8a4f925"><span class="line">-f            spreadsheet output format [note: default -s300 -c288]</span><br/><span class="line">                         output file is &lt;hostname&gt;_YYYYMMDD_HHMM.nmon</span><br/><span class="line">-s &lt;seconds&gt;  Time between snap shots - with "-c count" decides duration of the data capture</span><br/><span class="line">-c &lt;number&gt;   The number of snapshots before nmon stops</span><br/></pre></td></tr></tbody></table></figure>
-<p data-passage-key="c17d0dec4a85" id="passage-d90238679f81"><code>-f</code>=<code>-s 300 -c 288</code>每隔300秒收集一次数据，收集288次。收集完成后自动结束。总共会收集300*288=24小时</p>
-<p data-passage-key="f05b17412cdf" id="passage-947b83234157"><code>-s num</code>:间隔多长时间收集一次数据</p>
-<p data-passage-key="f89bb097d32b" id="passage-230e76b7dece"><code>-c num</code>:总共收集的次数</p>
-<p data-passage-key="b9eaa6f1a014" id="passage-6b0aefbe4cc4">运行后会生成<code>vircent7_210327_1457.nmon</code></p>
-<p data-passage-key="b94b58992d56" id="passage-d9b74ac02f28">该文件打开后难以查看结果，需要导出后使用Excel宏解读</p>
-<blockquote data-passage-key="eb35a3c42e6d" id="passage-10e60a5997e8">
-<p data-passage-key="d815ce850b8e" id="passage-3d4635f58f03">解析的<code>nmon analyser v66.xlsm</code>文件，需要使用Office的Excel打开</p>
-<p data-passage-key="9bdd3249afb5" id="passage-f725227f1e10">打开后点击分析按钮，就可以查看到图表展示</p>
-<p data-passage-key="5e51fe6bf69c" id="passage-3658d51ffd47">链接: <a href="https://pan.baidu.com/s/183jY_ktWO3gxouIFb3KYfw" rel="noopener" target="_blank">https://pan.baidu.com/s/183jY_ktWO3gxouIFb3KYfw</a>  密码: ri7h</p>
+<h4 id="数据收集模式"><a class="headerlink" href="#数据收集模式" title="数据收集模式"></a>数据收集模式</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre id="passage-1ed7b8a4f925"><span class="line">-f            spreadsheet output format [note: default -s300 -c288]</span><br/><span class="line">                         output file is &lt;hostname&gt;_YYYYMMDD_HHMM.nmon</span><br/><span class="line">-s &lt;seconds&gt;  Time between snap shots - with "-c count" decides duration of the data capture</span><br/><span class="line">-c &lt;number&gt;   The number of snapshots before nmon stops</span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-d90238679f81"><code>-f</code>=<code>-s 300 -c 288</code>每隔300秒收集一次数据，收集288次。收集完成后自动结束。总共会收集300*288=24小时</p>
+<p id="passage-947b83234157"><code>-s num</code>:间隔多长时间收集一次数据</p>
+<p id="passage-230e76b7dece"><code>-c num</code>:总共收集的次数</p>
+<p id="passage-6b0aefbe4cc4">运行后会生成<code>vircent7_210327_1457.nmon</code></p>
+<p id="passage-d9b74ac02f28">该文件打开后难以查看结果，需要导出后使用Excel宏解读</p>
+<blockquote id="passage-10e60a5997e8">
+<p id="passage-3d4635f58f03">解析的<code>nmon analyser v66.xlsm</code>文件，需要使用Office的Excel打开</p>
+<p id="passage-f725227f1e10">打开后点击分析按钮，就可以查看到图表展示</p>
+<p id="passage-3658d51ffd47">链接: <a href="https://pan.baidu.com/s/183jY_ktWO3gxouIFb3KYfw" rel="noopener" target="_blank">https://pan.baidu.com/s/183jY_ktWO3gxouIFb3KYfw</a>  密码: ri7h</p>
 </blockquote>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre data-passage-key="96237f557b50" id="passage-028f965a20f2"><span class="line">./nmon_x86_64_centos7 -f #收集24小时</span><br/><span class="line">./nmon_x86_64_centos7 -f -s2 -c200 #按照设定的间隔和次数收集</span><br/><span class="line">./nmon_x86_64_centos7 -f -s2 -c200 -m /tmp/mon #指定输出到一个存在的文件夹路径下</span><br/></pre></td></tr></tbody></table></figure>
-<h4 data-passage-key="23d858ed3ee1" id="定时收集模式"><a class="headerlink" href="#定时收集模式" title="定时收集模式"></a>定时收集模式</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/></pre></td><td class="code"><pre data-passage-key="ec267ec8afd1" id="passage-17e7d5d65084"><span class="line">Capacity Planning mode - use cron to run each day</span><br/><span class="line">        -x            Sensible spreadsheet output for one day</span><br/><span class="line">                      Every 15 mins for 1 day ( i.e. -ft -s 900 -c 96)</span><br/><span class="line">        -X            Sensible spreadsheet output for busy hour</span><br/><span class="line">                      Every 30 secs for 1 hour ( i.e. -ft -s 30 -c 120)</span><br/><span class="line">        -z            Like -x but the output saved in /var/perf/tmp assuming root user</span><br/></pre></td></tr></tbody></table></figure>
-<p data-passage-key="1bc4c5c80338" id="passage-50438e51d876">-X:收集一小时</p>
-<p data-passage-key="ec1b8ceeb7dd" id="passage-ce0520ce1f87">-x:收集一天</p></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
-        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
-          <header class="passage-dialog-header">
-            <h2 id="passage-comment-title">段落评论</h2>
-            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
-          </header>
-          <div class="passage-dialog-content">
-            <blockquote data-passage-excerpt></blockquote>
-            <a data-passage-source>查看原文</a>
-            <p data-passage-status role="status"></p>
-            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
-            <div data-passage-widget></div>
-          </div>
-        </dialog>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre id="passage-028f965a20f2"><span class="line">./nmon_x86_64_centos7 -f #收集24小时</span><br/><span class="line">./nmon_x86_64_centos7 -f -s2 -c200 #按照设定的间隔和次数收集</span><br/><span class="line">./nmon_x86_64_centos7 -f -s2 -c200 -m /tmp/mon #指定输出到一个存在的文件夹路径下</span><br/></pre></td></tr></tbody></table></figure>
+<h4 id="定时收集模式"><a class="headerlink" href="#定时收集模式" title="定时收集模式"></a>定时收集模式</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/></pre></td><td class="code"><pre id="passage-17e7d5d65084"><span class="line">Capacity Planning mode - use cron to run each day</span><br/><span class="line">        -x            Sensible spreadsheet output for one day</span><br/><span class="line">                      Every 15 mins for 1 day ( i.e. -ft -s 900 -c 96)</span><br/><span class="line">        -X            Sensible spreadsheet output for busy hour</span><br/><span class="line">                      Every 30 secs for 1 hour ( i.e. -ft -s 30 -c 120)</span><br/><span class="line">        -z            Like -x but the output saved in /var/perf/tmp assuming root user</span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-50438e51d876">-X:收集一小时</p>
+<p id="passage-ce0520ce1f87">-x:收集一天</p></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/rl6RQmuklsM-lr1hYwkrVg">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/nmon/">nmon</a><a href="/tags/%E7%9B%91%E6%8E%A7/">监控</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a></div>
@@ -146,7 +132,7 @@
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
-          <div class="giscus"></div>
+          <div class="giscus" id="article-discussion"></div>
         </section>
       </div>
     </div>

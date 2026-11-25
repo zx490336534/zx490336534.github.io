@@ -20,7 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/500537c1.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/500537c1.html">
-<script type="module" src="/js/discussions.js"></script>
+<script src="/js/comments.js?v=4" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,58 +56,44 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E5%BC%80%E5%8F%91%E8%80%85%E6%9D%83%E9%99%90%E6%8F%90%E4%BA%A4%E4%BB%A3%E7%A0%81%E5%B9%B6%E8%AF%B7%E6%B1%82%E5%90%88%E5%B9%B6">开发者权限提交代码并请求合并</a></li><li><a href="#%E4%B8%A4%E4%B8%AA%E5%90%88%E5%B9%B6%E5%85%88%E5%90%8E%E4%BF%AE%E6%94%B9%E4%BA%86%E6%96%87%E4%BB%B6%E4%B8%8D%E5%90%8C%E4%BD%8D%E7%BD%AE">两个合并先后修改了文件不同位置</a></li><li><a href="#%E4%B8%A4%E4%B8%AA%E5%90%88%E5%B9%B6%E5%85%88%E5%90%8E%E4%BF%AE%E6%94%B9%E4%BA%86%E6%96%87%E4%BB%B6%E5%90%8C%E4%B8%80%E4%B8%AA%E4%BD%8D%E7%BD%AE">两个合并先后修改了文件同一个位置</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><span id="Gitlab合并代码的几种情况"></span><h2 data-passage-key="a304e735af3e" id="开发者权限提交代码并请求合并"><a class="headerlink" href="#开发者权限提交代码并请求合并" title="开发者权限提交代码并请求合并"></a>开发者权限提交代码并请求合并</h2><p data-passage-key="d01f3a57c24a" id="passage-4a4213b2262f">如下图新建一个 <code>Issue</code>点击提交</p>
+        <div class="post-body" id="article-text"><span id="Gitlab合并代码的几种情况"></span><h2 id="开发者权限提交代码并请求合并"><a class="headerlink" href="#开发者权限提交代码并请求合并" title="开发者权限提交代码并请求合并"></a>开发者权限提交代码并请求合并</h2><p id="passage-4a4213b2262f">如下图新建一个 <code>Issue</code>点击提交</p>
 <p><img alt="Issue创建" decoding="async" height="716" loading="lazy" src="/images/blog-media/e3e44befac04c150825d.webp" width="1080"/></p>
 <span id="more"></span>
-<p data-passage-key="ad34f7b847ea" id="passage-cf174d526924">在问题界面点击 <code>Create merge request</code>创建一个合并请求</p>
+<p id="passage-cf174d526924">在问题界面点击 <code>Create merge request</code>创建一个合并请求</p>
 <p><img alt="Issue界面" decoding="async" height="716" loading="lazy" src="/images/blog-media/3fef72d37981cfb0920d.webp" width="1080"/></p>
-<p data-passage-key="21ff3e5048a1" id="passage-2697cf49c3cd">点击之后会跳转至 <code>合并请求</code>页面</p>
+<p id="passage-2697cf49c3cd">点击之后会跳转至 <code>合并请求</code>页面</p>
 <p><img alt="合并请求页面" decoding="async" height="716" loading="lazy" src="/images/blog-media/d6bf13d194f829582d58.webp" width="1080"/></p>
-<p data-passage-key="b9e454b2b4f7" id="passage-82bf3850fcc9">正常的操作应该是把新建的分支 <code>7-_1</code>拉到本地然后修改后推送到远端</p>
+<p id="passage-82bf3850fcc9">正常的操作应该是把新建的分支 <code>7-_1</code>拉到本地然后修改后推送到远端</p>
 <p><img alt="本地合并方式" decoding="async" height="735" loading="lazy" src="/images/blog-media/1406e229bf3c96673d75.webp" width="1080"/></p>
-<p data-passage-key="5fd6dadbeb02" id="passage-d55a89c47df3">为了方便起见，直接使用 <code>在Web IDE中打开</code></p>
+<p id="passage-d55a89c47df3">为了方便起见，直接使用 <code>在Web IDE中打开</code></p>
 <p><img alt="web Ide修改" decoding="async" height="716" loading="lazy" src="/images/blog-media/02c949291f4ee21f782e.webp" width="1080"/></p>
-<p data-passage-key="6547efdfbaec" id="passage-d3280afc66a6"><img alt="提交请求" decoding="async" height="716" loading="lazy" src="/images/blog-media/32b01a1a331b7e090535.webp" width="1080"/>在修改了这个新建的分支之后回到 <code>合并请求</code>页面就可以看到其中的内容发生了改变</p>
+<p id="passage-d3280afc66a6"><img alt="提交请求" decoding="async" height="716" loading="lazy" src="/images/blog-media/32b01a1a331b7e090535.webp" width="1080"/>在修改了这个新建的分支之后回到 <code>合并请求</code>页面就可以看到其中的内容发生了改变</p>
 <p><img alt="分支提交之后的页面" decoding="async" height="493" loading="lazy" src="/images/blog-media/1d4004327ebcb226e2c3.webp" width="1080"/></p>
-<p data-passage-key="4c811cfa5b39" id="passage-c81bdafad77d">之前是询问是否要创建一个新文件，现在直接就是问你这不是已经完成了这个半成品了，点击 <code>Resolve WIP status</code>提示信息就会变成<code>已可自动合并。 请具有仓库写入权限的用户来合并此请求</code></p>
+<p id="passage-c81bdafad77d">之前是询问是否要创建一个新文件，现在直接就是问你这不是已经完成了这个半成品了，点击 <code>Resolve WIP status</code>提示信息就会变成<code>已可自动合并。 请具有仓库写入权限的用户来合并此请求</code></p>
 <p><img alt="开发者看到的页面" decoding="async" height="158" loading="lazy" src="/images/blog-media/cd34bb096fc6c27a7277.webp" width="1080"/></p>
-<p data-passage-key="344b3880f57b" id="passage-f5fff66a1ca9">下面登录管理员账户查看,可以看到<code>合并</code>按钮已经变成绿色了</p>
+<p id="passage-f5fff66a1ca9">下面登录管理员账户查看,可以看到<code>合并</code>按钮已经变成绿色了</p>
 <p><img alt="管理员看的的页面" decoding="async" height="213" loading="lazy" src="/images/blog-media/17ce3fa410c57e81ecdc.webp" width="1080"/></p>
-<h2 data-passage-key="13ea1589dfa3" id="两个合并先后修改了文件不同位置"><a class="headerlink" href="#两个合并先后修改了文件不同位置" title="两个合并先后修改了文件不同位置"></a>两个合并先后修改了文件不同位置</h2><p data-passage-key="11b1e7f151df" id="passage-02867464fafd">这个情况比较简单，正常的合并操作也不会出现冲突，所以不赘述了。</p>
-<h2 data-passage-key="e2ed8b0312cd" id="两个合并先后修改了文件同一个位置"><a class="headerlink" href="#两个合并先后修改了文件同一个位置" title="两个合并先后修改了文件同一个位置"></a>两个合并先后修改了文件同一个位置</h2><p data-passage-key="79cc445d7e28" id="passage-076cf432234c">我们创建两个问题单：<code>两个合并先后修改了文件同一个位置_1</code>  和<code>两个合并先后修改了文件同一个位置_2</code>并为他们分别拉取分支，创建合并请求</p>
-<p data-passage-key="9a12dda136d8" id="passage-4c2cecd37bbf"><img alt="创建两个合并请求" decoding="async" height="944" loading="lazy" src="/images/blog-media/22b6e0ee97d8a6450007.webp" width="1080"/>首先在第一个里面修改里面的一个文件并完成提交</p>
+<h2 id="两个合并先后修改了文件不同位置"><a class="headerlink" href="#两个合并先后修改了文件不同位置" title="两个合并先后修改了文件不同位置"></a>两个合并先后修改了文件不同位置</h2><p id="passage-02867464fafd">这个情况比较简单，正常的合并操作也不会出现冲突，所以不赘述了。</p>
+<h2 id="两个合并先后修改了文件同一个位置"><a class="headerlink" href="#两个合并先后修改了文件同一个位置" title="两个合并先后修改了文件同一个位置"></a>两个合并先后修改了文件同一个位置</h2><p id="passage-076cf432234c">我们创建两个问题单：<code>两个合并先后修改了文件同一个位置_1</code>  和<code>两个合并先后修改了文件同一个位置_2</code>并为他们分别拉取分支，创建合并请求</p>
+<p id="passage-4c2cecd37bbf"><img alt="创建两个合并请求" decoding="async" height="944" loading="lazy" src="/images/blog-media/22b6e0ee97d8a6450007.webp" width="1080"/>首先在第一个里面修改里面的一个文件并完成提交</p>
 <p><img alt="修改1号请求" decoding="async" height="434" loading="lazy" src="/images/blog-media/1f0f1630d87cc94aaca9.webp" width="596"/></p>
 <p><img alt="提交一号请求" decoding="async" height="480" loading="lazy" src="/images/blog-media/7c7c12d502ebbf9d4dbf.webp" width="1080"/></p>
-<p data-passage-key="fa4e347d1b83" id="passage-8c4c3f466743">同理，在第二个页面也修改第五行</p>
-<p data-passage-key="119bb78a5e43" id="passage-0ca17ea1c55e"><img alt="修改2号请求" decoding="async" height="386" loading="lazy" src="/images/blog-media/ebaca27343d0beee35a6.webp" width="1080"/>然后管理员进行合并的同意</p>
-<p data-passage-key="295886b96dcf" id="passage-08becb781d40">先同意提交1</p>
+<p id="passage-8c4c3f466743">同理，在第二个页面也修改第五行</p>
+<p id="passage-0ca17ea1c55e"><img alt="修改2号请求" decoding="async" height="386" loading="lazy" src="/images/blog-media/ebaca27343d0beee35a6.webp" width="1080"/>然后管理员进行合并的同意</p>
+<p id="passage-08becb781d40">先同意提交1</p>
 <p><img alt="管理员同意一号请求" decoding="async" height="583" loading="lazy" src="/images/blog-media/5bc7b95a56c70dc325b2.webp" width="1080"/></p>
-<p data-passage-key="f91ec812c348" id="passage-2969bf7a722d">然后查看提交2</p>
+<p id="passage-2969bf7a722d">然后查看提交2</p>
 <p><img alt="管理员查看2号请求" decoding="async" height="451" loading="lazy" src="/images/blog-media/081d911d76e83c7e202f.webp" width="1080"/></p>
-<p data-passage-key="a3c45e89c0fe" id="passage-6abfe4949816">我们就可以看到出现冲突了，可以本地合并</p>
+<p id="passage-6abfe4949816">我们就可以看到出现冲突了，可以本地合并</p>
 <p><img alt="本地合并方式" decoding="async" height="685" loading="lazy" src="/images/blog-media/7897dd4a596da5e42d90.webp" width="1080"/></p>
-<p data-passage-key="1354e484d830" id="passage-ca63a76ac411">也可以直接在页面进行<code>解决冲突</code></p>
+<p id="passage-ca63a76ac411">也可以直接在页面进行<code>解决冲突</code></p>
 <p><img alt="页面选择进行解决合并" decoding="async" height="360" loading="lazy" src="/images/blog-media/e6c5f656ef56727066b2.webp" width="480"/></p>
-<p data-passage-key="7bf311633186" id="passage-6b701b40d4fd">同意哪个改哪个，如果都不同意就自己改</p>
+<p id="passage-6b701b40d4fd">同意哪个改哪个，如果都不同意就自己改</p>
 <p><img alt="自行解决" decoding="async" height="426" loading="lazy" src="/images/blog-media/420a46106c0cdba7a159.webp" width="1080"/></p>
-<p data-passage-key="0fbb45cccb21" id="passage-6ccf6a3f331c">去除多余的 〈〈〈符号就好了</p>
+<p id="passage-6ccf6a3f331c">去除多余的 〈〈〈符号就好了</p>
 <p><img alt="合并方法" decoding="async" height="398" loading="lazy" src="/images/blog-media/3d2698417b6b1c81dc3c.webp" width="1080"/></p>
 <p><img alt="正常提交" decoding="async" height="206" loading="lazy" src="/images/blog-media/f051da835624ca6f4c0b.webp" width="1080"/></p>
-<p data-passage-key="9bcb7f0c76a4" id="passage-1180a641a66f">之后就可以正常合并了</p></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
-        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
-          <header class="passage-dialog-header">
-            <h2 id="passage-comment-title">段落评论</h2>
-            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
-          </header>
-          <div class="passage-dialog-content">
-            <blockquote data-passage-excerpt></blockquote>
-            <a data-passage-source>查看原文</a>
-            <p data-passage-status role="status"></p>
-            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
-            <div data-passage-widget></div>
-          </div>
-        </dialog>
+<p id="passage-1180a641a66f">之后就可以正常合并了</p></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/p7RpO1zrVNFQMgTAYUT-oA">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Git/">Git</a><a href="/tags/GitLab/">GitLab</a><a href="/tags/%E5%90%88%E5%B9%B6%E8%AF%B7%E6%B1%82/">合并请求</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/Git/">Git</a></div>
@@ -121,7 +107,7 @@
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
-          <div class="giscus"></div>
+          <div class="giscus" id="article-discussion"></div>
         </section>
       </div>
     </div>

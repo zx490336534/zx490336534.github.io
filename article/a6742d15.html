@@ -20,7 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/a6742d15.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/a6742d15.html">
-<script type="module" src="/js/discussions.js"></script>
+<script src="/js/comments.js?v=4" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,69 +56,55 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#Python%E9%9A%94%E7%A6%BB%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA">Python隔离环境搭建</a></li><li><a href="#Allure%E6%8A%A5%E5%91%8A">Allure报告</a></li><li><a href="#%E5%B0%8F%E7%BB%93">小结</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><span id="Jenkins-六"></span><h2 data-passage-key="b1938a515c32" id="Python隔离环境搭建"><a class="headerlink" href="#Python隔离环境搭建" title="Python隔离环境搭建"></a>Python隔离环境搭建</h2><ol>
-<li data-passage-key="a6a459c7e85f" id="passage-d3b30b521700">安装Pyenv Pipeline插件</li>
-<li data-passage-key="122ac9d1debf" id="passage-fb8d290e89c5">在Jenkins机器上安装python，pip，virtualenv</li>
+        <div class="post-body" id="article-text"><span id="Jenkins-六"></span><h2 id="Python隔离环境搭建"><a class="headerlink" href="#Python隔离环境搭建" title="Python隔离环境搭建"></a>Python隔离环境搭建</h2><ol>
+<li id="passage-d3b30b521700">安装Pyenv Pipeline插件</li>
+<li id="passage-fb8d290e89c5">在Jenkins机器上安装python，pip，virtualenv</li>
 </ol>
-<p data-passage-key="9d8a160ae925" id="passage-e9a56a5220be">⚠️由于使用虚拟环境搭建，所以没有第三方的库，如果需要使用请使用pip来进行安装</p>
+<p id="passage-e9a56a5220be">⚠️由于使用虚拟环境搭建，所以没有第三方的库，如果需要使用请使用pip来进行安装</p>
 <span id="more"></span>
-<blockquote data-passage-key="5d9c0cdd4806" id="passage-6dd13495cc22">
-<p data-passage-key="003bb5686b56" id="passage-8f57295448b4">导出现在环境的第三方库</p>
-<p data-passage-key="0a0d59ad6006" id="passage-9dd20342f331">pip freeze &gt; 「xxxx.txt」</p>
-<p data-passage-key="9206c4165eaa" id="passage-fbe732a0a7ad">批量安装第三方库：</p>
-<p data-passage-key="449f6cc64c08" id="passage-4b736708083d">pip install -r 「xxxx.txt」</p>
+<blockquote id="passage-6dd13495cc22">
+<p id="passage-8f57295448b4">导出现在环境的第三方库</p>
+<p id="passage-9dd20342f331">pip freeze &gt; 「xxxx.txt」</p>
+<p id="passage-fbe732a0a7ad">批量安装第三方库：</p>
+<p id="passage-4b736708083d">pip install -r 「xxxx.txt」</p>
 </blockquote>
 <p><img alt="第三方库" decoding="async" height="568" loading="lazy" src="/images/blog-media/df49219153d431c34565.webp" width="1080"/></p>
 <p><img alt="插件安装" decoding="async" height="688" loading="lazy" src="/images/blog-media/b3c71cc6412226dcbc88.webp" width="1080"/></p>
-<p data-passage-key="c56b70969ec0" id="passage-3bea156bc922">在流水线中使用Pyenv Pipeline插件提供的<code>withPythonEnv</code>方法</p>
-<p data-passage-key="096746dae98a" id="passage-d9beac443226">小括号内为可执行python路径。流水线会在当前工作空间下创建一个virtualenv环境</p>
-<p data-passage-key="0273da9a3762" id="passage-d9759c0b64df">大括号内的内容就执行在新建的virtualenv环境下</p>
+<p id="passage-3bea156bc922">在流水线中使用Pyenv Pipeline插件提供的<code>withPythonEnv</code>方法</p>
+<p id="passage-d9beac443226">小括号内为可执行python路径。流水线会在当前工作空间下创建一个virtualenv环境</p>
+<p id="passage-d9759c0b64df">大括号内的内容就执行在新建的virtualenv环境下</p>
 <p><img alt="python3路径" decoding="async" height="784" loading="lazy" src="/images/blog-media/2cd3c1102a4ca1e1070c.webp" width="1080"/></p>
-<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre data-passage-key="f6434a399116" id="passage-725025b31fba"><span class="line">withPythonEnv(<span class="string">'/usr/lib/python3'</span>){</span><br/><span class="line">   sh <span class="string">'python --version'</span> <span class="comment">//查看python版本</span></span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
-<h2 data-passage-key="aa2b9565971f" id="Allure报告"><a class="headerlink" href="#Allure报告" title="Allure报告"></a>Allure报告</h2><ol>
-<li data-passage-key="2852766b1273" id="passage-40b5b232c4a6">安装Allure Jenkins插件</li>
-<li data-passage-key="732fca72289d" id="passage-f297838a4fb7">配置Allure自动安装</li>
-<li data-passage-key="fa52bb7bed4b" id="passage-48e75819b1e9">编写pytest脚本</li>
-<li data-passage-key="f91aee185f00" id="passage-a160393a1e3f">执行</li>
-<li data-passage-key="31ee7960b6d4" id="passage-7e49db7ddc9e">查看结果</li>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre id="passage-725025b31fba"><span class="line">withPythonEnv(<span class="string">'/usr/lib/python3'</span>){</span><br/><span class="line">   sh <span class="string">'python --version'</span> <span class="comment">//查看python版本</span></span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
+<h2 id="Allure报告"><a class="headerlink" href="#Allure报告" title="Allure报告"></a>Allure报告</h2><ol>
+<li id="passage-40b5b232c4a6">安装Allure Jenkins插件</li>
+<li id="passage-f297838a4fb7">配置Allure自动安装</li>
+<li id="passage-48e75819b1e9">编写pytest脚本</li>
+<li id="passage-a160393a1e3f">执行</li>
+<li id="passage-7e49db7ddc9e">查看结果</li>
 </ol>
 <p><img alt="安装插件" decoding="async" height="688" loading="lazy" src="/images/blog-media/7527e9148ab3bb2e3db5.webp" width="1080"/></p>
 <p><img alt="image-20190713142000087" decoding="async" height="688" loading="lazy" src="/images/blog-media/f3bcc422a6788f4c8562.webp" width="1080"/></p>
-<p data-passage-key="ae5bde25043a" id="passage-c59ac3012569">使用片段生成器辅助步骤的生成</p>
+<p id="passage-c59ac3012569">使用片段生成器辅助步骤的生成</p>
 <p><img alt="自动生成" decoding="async" height="688" loading="lazy" src="/images/blog-media/1bb80290c781d7770429.webp" width="1080"/></p>
-<p data-passage-key="acdde3cf841e" id="passage-6b6d3e0a5623">下面是流水线部分</p>
-<p data-passage-key="c9f28422d1dd" id="passage-d4cff83154c7">由于只编写了简单的测试脚本，所以只需要安装<code>pytest</code>和<code>allure-pytest</code>两个第三方库就可以了</p>
-<p data-passage-key="2fd0032aeece" id="passage-6cc136250374">最后使用post-always来进行allure报告的展示</p>
-<p data-passage-key="97fdf680a7f7" id="passage-f890bf999081">报告的链接图标会展示在该任务中</p>
-<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/><span class="line">20</span><br/></pre></td><td class="code"><pre data-passage-key="34aa24de796f" id="passage-f4507e251b66"><span class="line">pipeline{</span><br/><span class="line">   agent any</span><br/><span class="line">   stages{</span><br/><span class="line">      stage(<span class="string">'Example'</span>){</span><br/><span class="line">         steps{</span><br/><span class="line">            withPythonEnv(<span class="string">'/usr/bin/python'</span>){</span><br/><span class="line">               sh <span class="string">'python -m pip install pytest '</span></span><br/><span class="line">               sh <span class="string">'python -m pip install allure-pytest'</span></span><br/><span class="line">               sh <span class="string">'python -m pytest -v test_allure.py --alluredir=allure-results'</span></span><br/><span class="line">            }</span><br/><span class="line">            exit <span class="number">0</span></span><br/><span class="line">         }</span><br/><span class="line">      }</span><br/><span class="line">   }</span><br/><span class="line">   post{</span><br/><span class="line">      always{</span><br/><span class="line">         allure <span class="attr">includeProperties:</span> <span class="literal">false</span>, <span class="attr">jdk:</span> <span class="string">''</span>, <span class="attr">results:</span> [[<span class="attr">path:</span> <span class="string">'allure-results'</span>]]</span><br/><span class="line">      }</span><br/><span class="line">   }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
-<p data-passage-key="0e2ff6feb4a2" id="passage-6fa375f550d7">pytest脚本：</p>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/></pre></td><td class="code"><pre data-passage-key="ea150fdbd870" id="passage-b48023c3261a"><span class="line"><span class="keyword">import</span> pytest</span><br/><span class="line"></span><br/><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_success</span>():</span></span><br/><span class="line">    <span class="string">"""this test succeeds"""</span></span><br/><span class="line">    <span class="keyword">assert</span> <span class="literal">True</span></span><br/><span class="line"></span><br/><span class="line"></span><br/><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_failure</span>():</span></span><br/><span class="line">    <span class="string">"""this test fails"""</span></span><br/><span class="line">    <span class="keyword">assert</span> <span class="literal">False</span></span><br/><span class="line"></span><br/><span class="line"></span><br/><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_skip</span>():</span></span><br/><span class="line">    <span class="string">"""this test is skipped"""</span></span><br/><span class="line">    pytest.skip(<span class="string">'for a reason!'</span>)</span><br/><span class="line"></span><br/><span class="line"></span><br/><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_broken</span>():</span></span><br/><span class="line">    <span class="keyword">raise</span> Exception(<span class="string">'oops'</span>)</span><br/></pre></td></tr></tbody></table></figure>
-<p data-passage-key="32487b1ad6a5" id="passage-0d9ba8707a14">虚拟环境中正在安装第三方库</p>
+<p id="passage-6b6d3e0a5623">下面是流水线部分</p>
+<p id="passage-d4cff83154c7">由于只编写了简单的测试脚本，所以只需要安装<code>pytest</code>和<code>allure-pytest</code>两个第三方库就可以了</p>
+<p id="passage-6cc136250374">最后使用post-always来进行allure报告的展示</p>
+<p id="passage-f890bf999081">报告的链接图标会展示在该任务中</p>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/><span class="line">20</span><br/></pre></td><td class="code"><pre id="passage-f4507e251b66"><span class="line">pipeline{</span><br/><span class="line">   agent any</span><br/><span class="line">   stages{</span><br/><span class="line">      stage(<span class="string">'Example'</span>){</span><br/><span class="line">         steps{</span><br/><span class="line">            withPythonEnv(<span class="string">'/usr/bin/python'</span>){</span><br/><span class="line">               sh <span class="string">'python -m pip install pytest '</span></span><br/><span class="line">               sh <span class="string">'python -m pip install allure-pytest'</span></span><br/><span class="line">               sh <span class="string">'python -m pytest -v test_allure.py --alluredir=allure-results'</span></span><br/><span class="line">            }</span><br/><span class="line">            exit <span class="number">0</span></span><br/><span class="line">         }</span><br/><span class="line">      }</span><br/><span class="line">   }</span><br/><span class="line">   post{</span><br/><span class="line">      always{</span><br/><span class="line">         allure <span class="attr">includeProperties:</span> <span class="literal">false</span>, <span class="attr">jdk:</span> <span class="string">''</span>, <span class="attr">results:</span> [[<span class="attr">path:</span> <span class="string">'allure-results'</span>]]</span><br/><span class="line">      }</span><br/><span class="line">   }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-6fa375f550d7">pytest脚本：</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/></pre></td><td class="code"><pre id="passage-b48023c3261a"><span class="line"><span class="keyword">import</span> pytest</span><br/><span class="line"></span><br/><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_success</span>():</span></span><br/><span class="line">    <span class="string">"""this test succeeds"""</span></span><br/><span class="line">    <span class="keyword">assert</span> <span class="literal">True</span></span><br/><span class="line"></span><br/><span class="line"></span><br/><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_failure</span>():</span></span><br/><span class="line">    <span class="string">"""this test fails"""</span></span><br/><span class="line">    <span class="keyword">assert</span> <span class="literal">False</span></span><br/><span class="line"></span><br/><span class="line"></span><br/><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_skip</span>():</span></span><br/><span class="line">    <span class="string">"""this test is skipped"""</span></span><br/><span class="line">    pytest.skip(<span class="string">'for a reason!'</span>)</span><br/><span class="line"></span><br/><span class="line"></span><br/><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_broken</span>():</span></span><br/><span class="line">    <span class="keyword">raise</span> Exception(<span class="string">'oops'</span>)</span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-0d9ba8707a14">虚拟环境中正在安装第三方库</p>
 <p><img alt="环境部分" decoding="async" height="688" loading="lazy" src="/images/blog-media/7f0251d5f601648aa22f.webp" width="1080"/></p>
-<p data-passage-key="7986f5ec561c" id="passage-c44b8a27c12c">使用pytest进行测试，并输出报告至allure-results</p>
+<p id="passage-c44b8a27c12c">使用pytest进行测试，并输出报告至allure-results</p>
 <p><img alt="测试部分" decoding="async" height="688" loading="lazy" src="/images/blog-media/988db004ee3ec27e1c1e.webp" width="1080"/></p>
-<p data-passage-key="3675a8803bc9" id="passage-05af24152c13">报告的链接图标⬇️⬇️⬇️</p>
+<p id="passage-05af24152c13">报告的链接图标⬇️⬇️⬇️</p>
 <p><img alt="测试结果" decoding="async" height="688" loading="lazy" src="/images/blog-media/4e9f984486f391179cc1.webp" width="1080"/></p>
-<p data-passage-key="448ffbae9367" id="passage-196abe55d33d">具体的报告⬇️</p>
+<p id="passage-196abe55d33d">具体的报告⬇️</p>
 <p><img alt="Allure报告" decoding="async" height="688" loading="lazy" src="/images/blog-media/64e90af1f9be67a37391.webp" width="1080"/></p>
-<h2 data-passage-key="6bf8bdb1f6ee" id="小结"><a class="headerlink" href="#小结" title="小结"></a>小结</h2><p data-passage-key="d48fd92e9706" id="passage-aaa3d352487b">综上，</p>
-<p data-passage-key="83e9d073271c" id="passage-2d761428bffc">在执行的设备上搭建了python，pip，virtualenv环境</p>
-<p data-passage-key="95a31d8376cf" id="passage-0086ce23f831">在Jenkins上配置了自动安装Allure</p>
-<p data-passage-key="3521f79ba9c2" id="passage-e7d6e235cb99">完成了<strong>环境隔离</strong>，<strong>测试执行</strong>，<strong>报告展示</strong></p></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
-        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
-          <header class="passage-dialog-header">
-            <h2 id="passage-comment-title">段落评论</h2>
-            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
-          </header>
-          <div class="passage-dialog-content">
-            <blockquote data-passage-excerpt></blockquote>
-            <a data-passage-source>查看原文</a>
-            <p data-passage-status role="status"></p>
-            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
-            <div data-passage-widget></div>
-          </div>
-        </dialog>
+<h2 id="小结"><a class="headerlink" href="#小结" title="小结"></a>小结</h2><p id="passage-aaa3d352487b">综上，</p>
+<p id="passage-2d761428bffc">在执行的设备上搭建了python，pip，virtualenv环境</p>
+<p id="passage-0086ce23f831">在Jenkins上配置了自动安装Allure</p>
+<p id="passage-e7d6e235cb99">完成了<strong>环境隔离</strong>，<strong>测试执行</strong>，<strong>报告展示</strong></p></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/VoRt_hkJ0I7l1Xw8gRR23w">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Jenkins/">Jenkins</a><a href="/tags/CI/">CI</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/Jenkins/">Jenkins</a></div>
@@ -132,7 +118,7 @@
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
-          <div class="giscus"></div>
+          <div class="giscus" id="article-discussion"></div>
         </section>
       </div>
     </div>

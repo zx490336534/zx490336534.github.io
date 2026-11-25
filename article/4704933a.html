@@ -20,7 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/4704933a.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/4704933a.html">
-<script type="module" src="/js/discussions.js"></script>
+<script src="/js/comments.js?v=4" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,82 +56,68 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#Git%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86-%E5%9B%9B">Git基础知识(四)</a></li><li><a href="#%E6%A0%87%E7%AD%BE">标签</a></li><li><a href="#%E5%88%9B%E5%BB%BA%E6%A0%87%E7%AD%BE">创建标签</a></li><li><a href="#%E7%BB%99%E8%BF%87%E5%8E%BB%E7%9A%84%E6%9F%90%E4%B8%AA%E6%8F%90%E4%BA%A4%E6%89%93%E6%A0%87%E7%AD%BE">给过去的某个提交打标签</a></li><li><a href="#%E6%8E%A8%E9%80%81%E6%A0%87%E7%AD%BE">推送标签</a></li><li><a href="#%E5%88%A0%E9%99%A4%E6%A0%87%E7%AD%BE">删除标签</a></li><li><a href="#%E6%A3%80%E5%87%BA%E6%A0%87%E7%AD%BE">检出标签</a></li><li><a href="#Git%E5%88%AB%E5%90%8D">Git别名</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><h1 data-passage-key="35b5d51f4379" id="Git基础知识-四"><a class="headerlink" href="#Git基础知识-四" title="Git基础知识(四)"></a>Git基础知识(四)</h1><h2 data-passage-key="1d0fd5f9336d" id="标签"><a class="headerlink" href="#标签" title="标签"></a>标签</h2><p data-passage-key="1e053ea9e659" id="passage-e0b26ffcd321">经常可以看到一些软件的版本是<code>V1.0</code>,<code>V2.0</code>这样的，Git也支持给历史的某个提交打上这样一个东西，也就是标签。</p>
-<h3 data-passage-key="5a2bb621df77" id="创建标签"><a class="headerlink" href="#创建标签" title="创建标签"></a>创建标签</h3><p data-passage-key="a870b4d7c927" id="passage-3b1c3f677cda">标签可以分为两种：</p>
+        <div class="post-body" id="article-text"><h1 id="Git基础知识-四"><a class="headerlink" href="#Git基础知识-四" title="Git基础知识(四)"></a>Git基础知识(四)</h1><h2 id="标签"><a class="headerlink" href="#标签" title="标签"></a>标签</h2><p id="passage-e0b26ffcd321">经常可以看到一些软件的版本是<code>V1.0</code>,<code>V2.0</code>这样的，Git也支持给历史的某个提交打上这样一个东西，也就是标签。</p>
+<h3 id="创建标签"><a class="headerlink" href="#创建标签" title="创建标签"></a>创建标签</h3><p id="passage-3b1c3f677cda">标签可以分为两种：</p>
 <ul>
-<li data-passage-key="06c6739b01bc" id="passage-d915733d0bb3">轻量标签</li>
-<li data-passage-key="3b91e5ce6eac" id="passage-097729d7f75c">附注标签<span id="more"></span>
-<h4 data-passage-key="c4bb9c7aa00b" id="轻量标签"><a class="headerlink" href="#轻量标签" title="轻量标签"></a>轻量标签</h4></li>
+<li id="passage-d915733d0bb3">轻量标签</li>
+<li id="passage-097729d7f75c">附注标签<span id="more"></span>
+<h4 id="轻量标签"><a class="headerlink" href="#轻量标签" title="轻量标签"></a>轻量标签</h4></li>
 </ul>
-<p data-passage-key="6555eaa89d74" id="passage-51b65a13b853">它是一个点，指向了某一次的提交。我们可以通过这个标签，获取到那一次提交时候的状态。</p>
-<p data-passage-key="4fec468b5d0d" id="passage-b36ba65a4498">我们来创建一个轻量标签：</p>
-<p data-passage-key="abf56c6cab67" id="passage-a54f504a0dff">只需要使用<code>git tag &lt;name&gt;</code>就可以创建一个标签了</p>
+<p id="passage-51b65a13b853">它是一个点，指向了某一次的提交。我们可以通过这个标签，获取到那一次提交时候的状态。</p>
+<p id="passage-b36ba65a4498">我们来创建一个轻量标签：</p>
+<p id="passage-a54f504a0dff">只需要使用<code>git tag &lt;name&gt;</code>就可以创建一个标签了</p>
 <p><img alt="创建轻量标签" decoding="async" height="172" loading="lazy" src="/images/blog-media/1338abaf4a197126f06b.webp" width="1080"/></p>
-<h4 data-passage-key="ab8587e04395" id="附注标签"><a class="headerlink" href="#附注标签" title="附注标签"></a>附注标签</h4><p data-passage-key="41a3f660e03a" id="passage-1ad92b0e4bed">包含了打标签者的姓名，邮件，日期，标签信息。</p>
-<p data-passage-key="e79d87ed5c1e" id="passage-8f05d3eb9dcf">建议使用附注标签</p>
-<p data-passage-key="ac6bdb0912b1" id="passage-dbb45fbaab11">创建附注标签的方式：</p>
-<p data-passage-key="b7340feb0e7d" id="passage-c74cf04dd540"><code>git tag -a &lt;name&gt; -m '&lt;tag info&gt;'</code></p>
+<h4 id="附注标签"><a class="headerlink" href="#附注标签" title="附注标签"></a>附注标签</h4><p id="passage-1ad92b0e4bed">包含了打标签者的姓名，邮件，日期，标签信息。</p>
+<p id="passage-8f05d3eb9dcf">建议使用附注标签</p>
+<p id="passage-dbb45fbaab11">创建附注标签的方式：</p>
+<p id="passage-c74cf04dd540"><code>git tag -a &lt;name&gt; -m '&lt;tag info&gt;'</code></p>
 <p><img alt="创建附注标签" decoding="async" height="123" loading="lazy" src="/images/blog-media/af3486afa7e4f5fe688d.webp" width="1080"/></p>
-<p data-passage-key="102832f080cc" id="passage-4c24f444b85b">我们可以通过<code>git show &lt;name&gt;</code>来看到标签的具体信息，也就是刚才写在<code>-m</code>后面部分的内容</p>
+<p id="passage-4c24f444b85b">我们可以通过<code>git show &lt;name&gt;</code>来看到标签的具体信息，也就是刚才写在<code>-m</code>后面部分的内容</p>
 <p><img alt="展示标签的具体信息" decoding="async" height="399" loading="lazy" src="/images/blog-media/084a03f947dc70df5d96.webp" width="1080"/></p>
-<h3 data-passage-key="358d2d27f01f" id="给过去的某个提交打标签"><a class="headerlink" href="#给过去的某个提交打标签" title="给过去的某个提交打标签"></a>给过去的某个提交打标签</h3><p data-passage-key="fffc09f2b5e7" id="passage-423276acc60f">过去的很多提交中，可能其中某次提交发生了重大的变更，需要记录一下。我们来为他创建一个标签。</p>
-<p data-passage-key="d422edd2fe7b" id="passage-d09f1013da18">首先查看一下过去的提交历史</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="60b41d56a8c4" id="passage-8c8bb477ac9d"><span class="line">git log --pretty=oneline</span><br/></pre></td></tr></tbody></table></figure>
+<h3 id="给过去的某个提交打标签"><a class="headerlink" href="#给过去的某个提交打标签" title="给过去的某个提交打标签"></a>给过去的某个提交打标签</h3><p id="passage-423276acc60f">过去的很多提交中，可能其中某次提交发生了重大的变更，需要记录一下。我们来为他创建一个标签。</p>
+<p id="passage-d09f1013da18">首先查看一下过去的提交历史</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-8c8bb477ac9d"><span class="line">git log --pretty=oneline</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="查看历史" decoding="async" height="110" loading="lazy" src="/images/blog-media/446406765e7a25bd089b.webp" width="1080"/></p>
-<p data-passage-key="6b23799b4fcd" id="passage-107c8c1dcbb3">比如要对<code>9acd7c5f1267c8003d550b49483282168a0ce1a7</code>这个提交创建一个标签：</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="40188736a4a0" id="passage-d80666651bd3"><span class="line">git tag -a v1.2 9acd7c5f1267c8003d550b49483282168a0ce1a7</span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-107c8c1dcbb3">比如要对<code>9acd7c5f1267c8003d550b49483282168a0ce1a7</code>这个提交创建一个标签：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-d80666651bd3"><span class="line">git tag -a v1.2 9acd7c5f1267c8003d550b49483282168a0ce1a7</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="image-20190402225027079" decoding="async" height="517" loading="lazy" src="/images/blog-media/208415e05b3dbc1cd3d7.webp" width="1080"/></p>
-<h3 data-passage-key="d7cce6e254cd" id="推送标签"><a class="headerlink" href="#推送标签" title="推送标签"></a>推送标签</h3><p data-passage-key="6275ba1f884e" id="passage-a0285ac732fe">我们在本地仓库的全部操作，不进行推送的话，远端都无法接受的变更。</p>
-<p data-passage-key="6d9e1899b160" id="passage-88318f4f8970">所以我们如果要让其他人也能看到这个标签信息的话，就需要进行推送</p>
-<p data-passage-key="57880cc3ef90" id="passage-8217e3580945"><code>git push origin &lt;tagname&gt;</code></p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="a2c9bdeddd7e" id="passage-fcab2c9318e7"><span class="line">git push origin v1.0</span><br/></pre></td></tr></tbody></table></figure>
+<h3 id="推送标签"><a class="headerlink" href="#推送标签" title="推送标签"></a>推送标签</h3><p id="passage-a0285ac732fe">我们在本地仓库的全部操作，不进行推送的话，远端都无法接受的变更。</p>
+<p id="passage-88318f4f8970">所以我们如果要让其他人也能看到这个标签信息的话，就需要进行推送</p>
+<p id="passage-8217e3580945"><code>git push origin &lt;tagname&gt;</code></p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-fcab2c9318e7"><span class="line">git push origin v1.0</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="推送" decoding="async" height="186" loading="lazy" src="/images/blog-media/2f866ccf2796a1790481.webp" width="1080"/></p>
-<p data-passage-key="f0b0e423b4e2" id="passage-77ce2f7b700c"><code>origin</code>对应的远端分支是github，所以去github上看一下</p>
+<p id="passage-77ce2f7b700c"><code>origin</code>对应的远端分支是github，所以去github上看一下</p>
 <p><img alt="github端" decoding="async" height="608" loading="lazy" src="/images/blog-media/053c8b60c94f00b7805b.webp" width="1080"/></p>
 <p><img alt="Tags信息" decoding="async" height="316" loading="lazy" src="/images/blog-media/eb7e8e9d88799bdeb4c9.webp" width="1080"/></p>
-<p data-passage-key="0cebe32e668b" id="passage-84c3e4756421">提交上去了，不过时间看上去有点怪怪的。</p>
-<p data-passage-key="9a4dffbef70e" id="passage-fb5808529d97">通过<code>git log</code>看一下V1.0提交的信息，可以发现确实是2天前，所以远端的时间取得是本地提交的时间，而不是推送的时间。</p>
+<p id="passage-84c3e4756421">提交上去了，不过时间看上去有点怪怪的。</p>
+<p id="passage-fb5808529d97">通过<code>git log</code>看一下V1.0提交的信息，可以发现确实是2天前，所以远端的时间取得是本地提交的时间，而不是推送的时间。</p>
 <p><img alt="V1.0信息" decoding="async" height="110" loading="lazy" src="/images/blog-media/4b140057d5a09c8e022c.webp" width="1080"/></p>
-<p data-passage-key="72c5082eabf9" id="passage-a338686f17e2">当然也可以把全部的标签一次性都推送上去</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="2657014495bf" id="passage-a8374cad39b7"><span class="line">git push origin --tags</span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-a338686f17e2">当然也可以把全部的标签一次性都推送上去</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-a8374cad39b7"><span class="line">git push origin --tags</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="全部推送" decoding="async" height="386" loading="lazy" src="/images/blog-media/16ff176252a524d91587.webp" width="1080"/></p>
 <p><img alt="推送结果" decoding="async" height="491" loading="lazy" src="/images/blog-media/be4363ee89e6394c3696.webp" width="1080"/></p>
-<p data-passage-key="eda13e04930e" id="passage-5104be05e870">这样就完成了标签的推送了</p>
-<h3 data-passage-key="2be218c1ebac" id="删除标签"><a class="headerlink" href="#删除标签" title="删除标签"></a>删除标签</h3><p data-passage-key="ad9cba1ad3ce" id="passage-7d2f1863db79">有新增就有删除，所以当我们不要这个标签的时候，我们就可以把它删了</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="345c25e981c1" id="passage-1487eb27da81"><span class="line">git tag -d &lt;tagname&gt;</span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-5104be05e870">这样就完成了标签的推送了</p>
+<h3 id="删除标签"><a class="headerlink" href="#删除标签" title="删除标签"></a>删除标签</h3><p id="passage-7d2f1863db79">有新增就有删除，所以当我们不要这个标签的时候，我们就可以把它删了</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-1487eb27da81"><span class="line">git tag -d &lt;tagname&gt;</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="删除标签" decoding="async" height="119" loading="lazy" src="/images/blog-media/385e62449f9a42ee4ecf.webp" width="1080"/></p>
-<p data-passage-key="f90ba698dd28" id="passage-9c6f55ad94a8">同理，它也只是本地的操作，要把这个变更同步到远端，还是需要进行<code>push操作</code></p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="267347c9dc7d" id="passage-8ec02b4a0cee"><span class="line">git push &lt;remote&gt; :refs/tags/&lt;tagname&gt;</span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-9c6f55ad94a8">同理，它也只是本地的操作，要把这个变更同步到远端，还是需要进行<code>push操作</code></p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-8ec02b4a0cee"><span class="line">git push &lt;remote&gt; :refs/tags/&lt;tagname&gt;</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="删除远端分支" decoding="async" height="124" loading="lazy" src="/images/blog-media/7d3f1d167f83a1eff191.webp" width="1080"/></p>
 <p><img alt="删除结果" decoding="async" height="412" loading="lazy" src="/images/blog-media/aa33957c065caeed3fca.webp" width="1080"/></p>
-<h3 data-passage-key="486ffa5d8058" id="检出标签"><a class="headerlink" href="#检出标签" title="检出标签"></a>检出标签</h3><p data-passage-key="d67f76fc8b35" id="passage-53a560fb10a8">创建标签的意义，很大程度就是这个标签所在的内容会被用到。既然要被使用，就需要进行检出.</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="368c48dba014" id="passage-04b03e6c944b"><span class="line">git checkout &lt;tagname&gt;</span><br/></pre></td></tr></tbody></table></figure>
-<p data-passage-key="fc31653152c3" id="passage-8782eb64c222">虽然我们如愿的检出了标签的内容，但是这个时候是处于一个游离的状态，我们当前的修改提交都会丢失掉。如果需要保留，请注意创建一个分支后提交保留。</p>
+<h3 id="检出标签"><a class="headerlink" href="#检出标签" title="检出标签"></a>检出标签</h3><p id="passage-53a560fb10a8">创建标签的意义，很大程度就是这个标签所在的内容会被用到。既然要被使用，就需要进行检出.</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-04b03e6c944b"><span class="line">git checkout &lt;tagname&gt;</span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-8782eb64c222">虽然我们如愿的检出了标签的内容，但是这个时候是处于一个游离的状态，我们当前的修改提交都会丢失掉。如果需要保留，请注意创建一个分支后提交保留。</p>
 <p><img alt="检出" decoding="async" height="414" loading="lazy" src="/images/blog-media/618259033d1b62e8861b.webp" width="1080"/></p>
-<h2 data-passage-key="027c90effae2" id="Git别名"><a class="headerlink" href="#Git别名" title="Git别名"></a>Git别名</h2><p data-passage-key="e8a8fc1e66e4" id="passage-fa5c66540db0">和Linux操作中类似，Git也支持将命令定义为一个别名</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre data-passage-key="77c9420a95c3" id="passage-34bc1750412f"><span class="line">git config --global alias.co checkout</span><br/><span class="line">git config --global alias.br branch</span><br/><span class="line">git config --global alias.ci commit</span><br/><span class="line">git config --global alias.st status</span><br/></pre></td></tr></tbody></table></figure>
-<p data-passage-key="0337591a1652" id="passage-d3c6361010b8">以<code>commit</code>为例，现在把它重命名为<code>ci</code> 那一次提交请求为</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="2a8c4c157988" id="passage-00ad0e9ecbe8"><span class="line">git ci -m 'add 2.py</span><br/></pre></td></tr></tbody></table></figure>
+<h2 id="Git别名"><a class="headerlink" href="#Git别名" title="Git别名"></a>Git别名</h2><p id="passage-fa5c66540db0">和Linux操作中类似，Git也支持将命令定义为一个别名</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre id="passage-34bc1750412f"><span class="line">git config --global alias.co checkout</span><br/><span class="line">git config --global alias.br branch</span><br/><span class="line">git config --global alias.ci commit</span><br/><span class="line">git config --global alias.st status</span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-d3c6361010b8">以<code>commit</code>为例，现在把它重命名为<code>ci</code> 那一次提交请求为</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-00ad0e9ecbe8"><span class="line">git ci -m 'add 2.py</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="别名提交" decoding="async" height="248" loading="lazy" src="/images/blog-media/678d1439576301f768ce.webp" width="1080"/></p>
-<p data-passage-key="30a29a0b81e1" id="passage-8883a4217339">当然一整条语句也可以进行别名的替换，如果使用频率非常高的话，可以考虑创建一个别名</p>
-<p data-passage-key="3d8b3ee597a9" id="passage-6fed9191abf2">例如我们想要查看最后一条提交信息</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre data-passage-key="4ff9a7c78d9d" id="passage-344325fda09b"><span class="line">git log -1 HEAD</span><br/><span class="line">git config --global alias.last 'log -1 HEAD'</span><br/><span class="line">git last</span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-8883a4217339">当然一整条语句也可以进行别名的替换，如果使用频率非常高的话，可以考虑创建一个别名</p>
+<p id="passage-6fed9191abf2">例如我们想要查看最后一条提交信息</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre id="passage-344325fda09b"><span class="line">git log -1 HEAD</span><br/><span class="line">git config --global alias.last 'log -1 HEAD'</span><br/><span class="line">git last</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="最后一条信息" decoding="async" height="362" loading="lazy" src="/images/blog-media/3ef72c005908546bca31.webp" width="1080"/></p>
-<p data-passage-key="e81fde94c48e" id="passage-8115567e9c7d"><img alt="来和我一起学Git吧" decoding="async" height="1920" loading="lazy" src="/images/blog-media/d3be35f2f784ede267c7.webp" width="1080"/><br/>欢迎关注我的公众号：zx94_11<br/><img alt="公众号" decoding="async" height="1280" loading="lazy" src="/images/blog-media/efa3bf22f60079f73c34.webp" width="1280"/></p></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
-        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
-          <header class="passage-dialog-header">
-            <h2 id="passage-comment-title">段落评论</h2>
-            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
-          </header>
-          <div class="passage-dialog-content">
-            <blockquote data-passage-excerpt></blockquote>
-            <a data-passage-source>查看原文</a>
-            <p data-passage-status role="status"></p>
-            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
-            <div data-passage-widget></div>
-          </div>
-        </dialog>
+<p id="passage-8115567e9c7d"><img alt="来和我一起学Git吧" decoding="async" height="1920" loading="lazy" src="/images/blog-media/d3be35f2f784ede267c7.webp" width="1080"/><br/>欢迎关注我的公众号：zx94_11<br/><img alt="公众号" decoding="async" height="1280" loading="lazy" src="/images/blog-media/efa3bf22f60079f73c34.webp" width="1280"/></p></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/6snq4Gyqk5TgxyMsI6Ml-w">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Git/">Git</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/Git/">Git</a></div>
@@ -145,7 +131,7 @@
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
-          <div class="giscus"></div>
+          <div class="giscus" id="article-discussion"></div>
         </section>
       </div>
     </div>

@@ -20,7 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/article-covers/promptfoo-agent-regression.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/promptfoo-agent-regression.html">
-<script type="module" src="/js/discussions.js"></script>
+<script src="/js/comments.js?v=4" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,12 +56,12 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E5%85%88%E5%86%99%E4%BB%BB%E5%8A%A1%E7%8A%B6%E6%80%81%E7%9A%84%E7%BA%A6%E5%AE%9A">先让断言识别三种错误</a></li><li><a href="#Promptfoo-%E5%AE%9E%E9%99%85%E5%9C%A8%E6%89%A7%E8%A1%8C%E5%93%AA%E4%BA%9B%E4%B8%9C%E8%A5%BF">保留断言，把输入切换成真实请求</a></li><li><a href="#%E5%93%AA%E4%BA%9B%E5%A4%B1%E8%B4%A5%E5%BA%94%E8%AF%A5%E6%8B%A6%E4%BD%8F%E5%8F%91%E5%B8%83">发布报告要能区分业务错误和运行错误</a></li><li><a href="#%E5%8F%82%E8%80%83">参考</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><p class="article-lead" data-passage-key="d42c3363179a" id="passage-ec601dc8e934">任务明明还在排队，Agent 却告诉用户「已经生成」。我把这个错误做成四条固定样本。用 Promptfoo 本地跑，<strong>一条正确样本通过，三个反例都失败，执行错误为零。</strong></p>
-<p data-passage-key="a3d150b93e7b" id="passage-17a7c14cd3b6">这一步先确认断言能不能抓到错。下一步再让同一条断言检查当前服务的真实回复。</p>
+        <div class="post-body" id="article-text"><p class="article-lead" id="passage-ec601dc8e934">任务明明还在排队，Agent 却告诉用户「已经生成」。我把这个错误做成四条固定样本。用 Promptfoo 本地跑，<strong>一条正确样本通过，三个反例都失败，执行错误为零。</strong></p>
+<p id="passage-17a7c14cd3b6">这一步先确认断言能不能抓到错。下一步再让同一条断言检查当前服务的真实回复。</p>
 <span id="先让坏样本稳定失败"></span>
-<h2 data-passage-key="4e5e9afdb4c2" id="先写任务状态的约定">先让断言识别三种错误</h2>
-<p data-passage-key="9368bf059b61" id="passage-4472d2b4f31f">给例子定一条可检查的约定。排队时，返回合法 JSON，<code>status</code> 为 <code>pending</code>，且不带 <code>assetId</code>。只在回复里搜 <code>pending</code>，会漏掉「状态正确却捏造了产物」这一类错误。</p>
-<div aria-labelledby="article-table-1" class="table-scroll article-evidence" data-passage-key="0927325661a9" id="passage-bd407dfdaada" role="region" tabindex="0"><table><caption id="article-table-1">四条固定样本及预期判定</caption>
+<h2 id="先写任务状态的约定">先让断言识别三种错误</h2>
+<p id="passage-4472d2b4f31f">给例子定一条可检查的约定。排队时，返回合法 JSON，<code>status</code> 为 <code>pending</code>，且不带 <code>assetId</code>。只在回复里搜 <code>pending</code>，会漏掉「状态正确却捏造了产物」这一类错误。</p>
+<div aria-labelledby="article-table-1" class="table-scroll article-evidence" id="passage-bd407dfdaada" role="region" tabindex="0"><table><caption id="article-table-1">四条固定样本及预期判定</caption>
 <thead>
 <tr>
 <th scope="col">保存下来的输出</th>
@@ -87,9 +87,9 @@
 </tr>
 </tbody>
 </table></div>
-<p data-passage-key="89cf29c87203" id="passage-3836ddfd2cc8">用 <code>echo</code> 把固定输出送给断言。配置保存为 <code>promptfooconfig.yaml</code>，在同目录执行下面的命令。坏样本是故意放进去的，这次实测退出码为 <code>100</code>。发布门禁应单独跑当前应用的回归配置。</p>
+<p id="passage-3836ddfd2cc8">用 <code>echo</code> 把固定输出送给断言。配置保存为 <code>promptfooconfig.yaml</code>，在同目录执行下面的命令。坏样本是故意放进去的，这次实测退出码为 <code>100</code>。发布门禁应单独跑当前应用的回归配置。</p>
 <details class="article-example"><summary>Promptfoo 固定样本 YAML</summary>
-<pre class="article-code" data-passage-key="1c148adde867" id="passage-a3b6af429dd3"><code class="language-yaml">prompts:
+<pre class="article-code" id="passage-a3b6af429dd3"><code class="language-yaml">prompts:
   - '{{fixture}}'
 providers:
   - echo
@@ -119,14 +119,14 @@ tests:
       fixture: '稍等一下'
 </code></pre>
 </details>
-<pre class="article-code" data-passage-key="a1d92eb74433" id="passage-95374584dafb"><code class="language-bash">npx --yes promptfoo@0.126.0 eval --no-cache --output results.json
+<pre class="article-code" id="passage-95374584dafb"><code class="language-bash">npx --yes promptfoo@0.126.0 eval --no-cache --output results.json
 </code></pre>
-<figure class="article-figure article-figure--edited"><a href="/images/article-figures/promptfoo-agent-regression.webp" title="查看原图"><img alt="正确样本通过和错误样本失败的对照流程" decoding="async" height="480" loading="lazy" src="/images/article-figures/promptfoo-agent-regression.webp" width="1200"/></a><figcaption data-passage-key="1ad50f23868a" id="passage-77468ebebb27">两条示例使用同一个状态断言。</figcaption></figure>
+<figure class="article-figure article-figure--edited"><a href="/images/article-figures/promptfoo-agent-regression.webp" title="查看原图"><img alt="正确样本通过和错误样本失败的对照流程" decoding="async" height="480" loading="lazy" src="/images/article-figures/promptfoo-agent-regression.webp" width="1200"/></a><figcaption id="passage-77468ebebb27">两条示例使用同一个状态断言。</figcaption></figure>
 <span id="回放和实时执行回答两个问题"></span>
-<h2 data-passage-key="addc96dc1299" id="Promptfoo-实际在执行哪些东西">保留断言，把输入切换成真实请求</h2>
-<p data-passage-key="a847e60f6f97" id="passage-58c6d52e1d4d">Promptfoo 的用例提供变量，Prompt 将它们拼成输入，Provider 执行被测对象，Assertion 检查输出。用 <code>echo</code> 时，执行对象只会回显保存下来的输出。换成 HTTP Provider，变量就应该变成一条实际业务请求和一个可重复准备的任务状态。</p>
+<h2 id="Promptfoo-实际在执行哪些东西">保留断言，把输入切换成真实请求</h2>
+<p id="passage-58c6d52e1d4d">Promptfoo 的用例提供变量，Prompt 将它们拼成输入，Provider 执行被测对象，Assertion 检查输出。用 <code>echo</code> 时，执行对象只会回显保存下来的输出。换成 HTTP Provider，变量就应该变成一条实际业务请求和一个可重复准备的任务状态。</p>
 <details class="article-example"><summary>Promptfoo HTTP Provider 配置片段</summary>
-<pre class="article-code" data-passage-key="a0c545dc3e9b" id="passage-2e8d95f08f27"><code class="language-yaml">prompts:
+<pre class="article-code" id="passage-2e8d95f08f27"><code class="language-yaml">prompts:
   - '{{message}}'
 providers:
   - id: http
@@ -141,37 +141,23 @@ providers:
       transformResponse: 'JSON.stringify(json)'
 </code></pre>
 </details>
-<p data-passage-key="27728ad9fbf5" id="passage-2dc6d1887f6e">我用本地模拟接口验证了这个切换。两条请求的用户消息相同，场景分别设为 <code>queued-ok</code> 和 <code>queued-bug</code>。后端收到两次请求，分别返回 <code>pending</code> 和 <code>completed</code>。同一份断言判出一条通过、一条失败，执行错误为零。这能确认请求确实到了服务，模型的表现需要在运行真实 Agent 时再评。</p>
-<figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/promptfoo-agent-regression-scene.webp" title="查看原图"><img alt="固定输出和通过实时请求取得的输出进入同一个断言检查。" decoding="async" height="854" loading="lazy" src="/images/article-figures/promptfoo-agent-regression-scene.webp" width="1280"/></a><figcaption data-passage-key="f3d724f4cb0d" id="passage-d1442483ad9d">教学示意。固定样本与实时回复使用同一份业务断言。</figcaption></figure>
-<p data-passage-key="77cf1d99dfc1" id="passage-5ce415d471b9">测已有应用时，让 Provider 调应用平时使用的入口。服务端继续管理自己的提示词和工具。只有问题明确是「哪版 Prompt 表现更好」，才把多个 Prompt 作为实验变量，免得服务端更新后，这边还在评估一份旧副本。</p>
-<p data-passage-key="65331cec1d3f" id="passage-0d5b9f806677">没有过滤时，两条用例、两份 Prompt、两个 Provider，每组跑三次，一共 24 个评测单元。每个单元背后可能调用多个模型，评分也可能产生新请求。先跑一组，确认被测服务和模型命中，再展开全部组合。</p>
-<figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/promptfoo-agent-regression-detail.webp" title="查看原图"><img alt="两条用例乘两份 Prompt、两个 Provider、每组运行三次，得到 24 个评测单元。" decoding="async" height="690" loading="lazy" src="/images/article-figures/promptfoo-agent-regression-detail.webp" width="900"/></a><figcaption data-passage-key="e152c6c0a79f" id="passage-320b9fb26e9b">图中 24 个是评测单元。实际网络请求另行计数。</figcaption></figure>
-<h2 data-passage-key="cfa36f9adf89" id="哪些失败应该拦住发布">发布报告要能区分业务错误和运行错误</h2>
-<p data-passage-key="17931a523ddd" id="passage-16b560d394c2">状态、金额和必填字段有明确规则，可以直接判。文案是否容易理解，可以另做评价，先拿人工确认的正反样本校准。两种结果分别记录，业务状态写错时，文案得分再高也不能放行。</p>
-<p data-passage-key="f909b2ec171f" id="passage-807598d95450">固定样本的结果也能拿来查断言本身。带 <code>assetId</code> 的样本仍是合法 JSON，要看第二条业务断言有没有变红。直接返回中文短句时，结构断言就会失败。区分这两个输出，下一次加字段时才知道该改结构还是业务规则。</p>
-<p data-passage-key="205928a2fc6f" id="passage-8091e7c144ea">结果报超时或鉴权失败，先查运行条件。服务正常响应却给出错误状态，才进入产品回归。打开 <code>results.json</code> 的逐条结果，比只看通过率更容易判断该查哪一边。</p>
-<p data-passage-key="6956305d7080" id="passage-804c54dd70f3">首次接入 CI，我会让模拟服务只破坏一个已知条件，确认断言变红、CI 也能拿到失败退出码。验证部署时再检查缓存选项和被测版本，避免把旧结果当成这次服务的表现。</p>
-<h2 data-passage-key="c6f305e9b180" id="参考">参考</h2>
+<p id="passage-2dc6d1887f6e">我用本地模拟接口验证了这个切换。两条请求的用户消息相同，场景分别设为 <code>queued-ok</code> 和 <code>queued-bug</code>。后端收到两次请求，分别返回 <code>pending</code> 和 <code>completed</code>。同一份断言判出一条通过、一条失败，执行错误为零。这能确认请求确实到了服务，模型的表现需要在运行真实 Agent 时再评。</p>
+<figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/promptfoo-agent-regression-scene.webp" title="查看原图"><img alt="固定输出和通过实时请求取得的输出进入同一个断言检查。" decoding="async" height="854" loading="lazy" src="/images/article-figures/promptfoo-agent-regression-scene.webp" width="1280"/></a><figcaption id="passage-d1442483ad9d">教学示意。固定样本与实时回复使用同一份业务断言。</figcaption></figure>
+<p id="passage-5ce415d471b9">测已有应用时，让 Provider 调应用平时使用的入口。服务端继续管理自己的提示词和工具。只有问题明确是「哪版 Prompt 表现更好」，才把多个 Prompt 作为实验变量，免得服务端更新后，这边还在评估一份旧副本。</p>
+<p id="passage-0d5b9f806677">没有过滤时，两条用例、两份 Prompt、两个 Provider，每组跑三次，一共 24 个评测单元。每个单元背后可能调用多个模型，评分也可能产生新请求。先跑一组，确认被测服务和模型命中，再展开全部组合。</p>
+<figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/promptfoo-agent-regression-detail.webp" title="查看原图"><img alt="两条用例乘两份 Prompt、两个 Provider、每组运行三次，得到 24 个评测单元。" decoding="async" height="690" loading="lazy" src="/images/article-figures/promptfoo-agent-regression-detail.webp" width="900"/></a><figcaption id="passage-320b9fb26e9b">图中 24 个是评测单元。实际网络请求另行计数。</figcaption></figure>
+<h2 id="哪些失败应该拦住发布">发布报告要能区分业务错误和运行错误</h2>
+<p id="passage-16b560d394c2">状态、金额和必填字段有明确规则，可以直接判。文案是否容易理解，可以另做评价，先拿人工确认的正反样本校准。两种结果分别记录，业务状态写错时，文案得分再高也不能放行。</p>
+<p id="passage-807598d95450">固定样本的结果也能拿来查断言本身。带 <code>assetId</code> 的样本仍是合法 JSON，要看第二条业务断言有没有变红。直接返回中文短句时，结构断言就会失败。区分这两个输出，下一次加字段时才知道该改结构还是业务规则。</p>
+<p id="passage-8091e7c144ea">结果报超时或鉴权失败，先查运行条件。服务正常响应却给出错误状态，才进入产品回归。打开 <code>results.json</code> 的逐条结果，比只看通过率更容易判断该查哪一边。</p>
+<p id="passage-804c54dd70f3">首次接入 CI，我会让模拟服务只破坏一个已知条件，确认断言变红、CI 也能拿到失败退出码。验证部署时再检查缓存选项和被测版本，避免把旧结果当成这次服务的表现。</p>
+<h2 id="参考">参考</h2>
 <ul>
-<li data-passage-key="a089adc7cbad" id="passage-5773c9373b16"><a href="https://www.promptfoo.dev/docs/configuration/test-cases/">Promptfoo 测试用例配置</a></li>
-<li data-passage-key="6779ada45189" id="passage-263944a69434"><a href="https://www.promptfoo.dev/docs/configuration/expected-outputs/">Promptfoo 断言</a></li>
-<li data-passage-key="576e26fb1b91" id="passage-4edcb6b9f2c5"><a href="https://www.promptfoo.dev/docs/providers/http/">Promptfoo HTTP Provider</a></li>
-<li data-passage-key="ea9de5482eb7" id="passage-1e6f879e9303"><a href="https://github.com/promptfoo/promptfoo/blob/main/src/providers/echo.ts">Promptfoo Echo Provider 源码</a></li>
+<li id="passage-5773c9373b16"><a href="https://www.promptfoo.dev/docs/configuration/test-cases/">Promptfoo 测试用例配置</a></li>
+<li id="passage-263944a69434"><a href="https://www.promptfoo.dev/docs/configuration/expected-outputs/">Promptfoo 断言</a></li>
+<li id="passage-4edcb6b9f2c5"><a href="https://www.promptfoo.dev/docs/providers/http/">Promptfoo HTTP Provider</a></li>
+<li id="passage-1e6f879e9303"><a href="https://github.com/promptfoo/promptfoo/blob/main/src/providers/echo.ts">Promptfoo Echo Provider 源码</a></li>
 </ul></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
-        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
-          <header class="passage-dialog-header">
-            <h2 id="passage-comment-title">段落评论</h2>
-            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
-          </header>
-          <div class="passage-dialog-content">
-            <blockquote data-passage-excerpt></blockquote>
-            <a data-passage-source>查看原文</a>
-            <p data-passage-status role="status"></p>
-            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
-            <div data-passage-widget></div>
-          </div>
-        </dialog>
 
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Promptfoo/">Promptfoo</a><a href="/tags/Agent-%E8%AF%84%E6%B5%8B/">Agent 评测</a><a href="/tags/%E5%9B%9E%E5%BD%92%E6%B5%8B%E8%AF%95/">回归测试</a></div>
         <div class="legacy-tags" hidden></div>
@@ -185,7 +171,7 @@ providers:
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
-          <div class="giscus"></div>
+          <div class="giscus" id="article-discussion"></div>
         </section>
       </div>
     </div>

@@ -20,7 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/8d21c5d5.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/8d21c5d5.html">
-<script type="module" src="/js/discussions.js"></script>
+<script src="/js/comments.js?v=4" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,123 +56,109 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#Git%E7%9A%84%E7%89%B9%E7%82%B9">Git的特点</a></li><li><a href="#%E7%9B%B4%E6%8E%A5%E8%AE%B0%E5%BD%95%E5%BF%AB%E7%85%A7%EF%BC%8C%E8%80%8C%E9%9D%9E%E5%B7%AE%E5%BC%82%E6%AF%94%E8%BE%83">直接记录快照，而非差异比较</a></li><li><a href="#%E8%BF%91%E4%B9%8E%E6%89%80%E6%9C%89%E6%93%8D%E4%BD%9C%E9%83%BD%E6%98%AF%E6%9C%AC%E5%9C%B0%E6%89%A7%E8%A1%8C">近乎所有操作都是本地执行</a></li><li><a href="#Git%E4%BF%9D%E8%AF%81%E5%AE%8C%E6%95%B4%E6%80%A7">Git保证完整性</a></li><li><a href="#Git%E4%B8%80%E8%88%AC%E5%8F%AA%E6%B7%BB%E5%8A%A0%E6%95%B0%E6%8D%AE">Git一般只添加数据</a></li><li><a href="#Git%E7%9A%84%E4%B8%89%E7%A7%8D%E7%8A%B6%E6%80%81">Git的三种状态</a></li><li><a href="#%E5%9F%BA%E6%9C%AC%E7%9A%84Git%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B">基本的Git工作流程</a></li><li><a href="#%E8%B5%B7%E6%AD%A5">起步</a></li><li><a href="#%E9%85%8D%E7%BD%AE%E7%94%A8%E6%88%B7%E4%BF%A1%E6%81%AF">配置用户信息</a></li><li><a href="#%E6%A3%80%E6%9F%A5%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF">检查配置信息</a></li><li><a href="#%E8%8E%B7%E5%8F%96%E5%B8%AE%E5%8A%A9">获取帮助</a></li><li><a href="#Git%E5%9F%BA%E7%A1%80">Git基础</a></li><li><a href="#%E5%9C%A8%E7%8E%B0%E6%9C%89%E7%9B%AE%E5%BD%95%E4%B8%AD%E5%88%9D%E5%A7%8B%E5%8C%96%E4%BB%93%E5%BA%93">在现有目录中初始化仓库</a></li><li><a href="#%E5%85%8B%E9%9A%86%E7%8E%B0%E6%9C%89%E4%BB%93%E5%BA%93">克隆现有仓库</a></li><li><a href="#%E8%AE%B0%E5%BD%95%E6%AF%8F%E6%AC%A1%E6%9B%B4%E6%96%B0%E5%88%B0%E4%BB%93%E5%BA%93">记录每次更新到仓库</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><span id="Git基础知识（一）"></span><h2 data-passage-key="dfe9b1c32ccb" id="Git的特点"><a class="headerlink" href="#Git的特点" title="Git的特点"></a>Git的特点</h2><h3 data-passage-key="6d6821ccfc18" id="直接记录快照，而非差异比较"><a class="headerlink" href="#直接记录快照，而非差异比较" title="直接记录快照，而非差异比较"></a>直接记录快照，而非差异比较</h3><blockquote data-passage-key="7c84955058d8" id="passage-ff374ce9c4f6">
-<p data-passage-key="66e6622cc67a" id="passage-361e8f99021e">概念上来区分，其它大部分系统以文件变更列表的方式存储信息. 这类系统（CVS、Subversion、Perforce、Bazaar等）将它们保存的信息看作是一组基本文件和每个文件随时间<strong>逐步累积</strong>的差异。</p>
-<p data-passage-key="f05e55911320" id="passage-11dec685661f">Git 更像是把数据看作是对小型文件系统的一组快照。每次你提交更新，或在 Git 中保存项目状态时，它主要对当时的全部文件制作一个快照并保存这个快照的索引。为了高效，如果文件没有修改，Git 不再重新存储该文件，而是只保留一个链接指向之前存储的文件。Git 对待数据更像是一个快照流。</p>
+        <div class="post-body" id="article-text"><span id="Git基础知识（一）"></span><h2 id="Git的特点"><a class="headerlink" href="#Git的特点" title="Git的特点"></a>Git的特点</h2><h3 id="直接记录快照，而非差异比较"><a class="headerlink" href="#直接记录快照，而非差异比较" title="直接记录快照，而非差异比较"></a>直接记录快照，而非差异比较</h3><blockquote id="passage-ff374ce9c4f6">
+<p id="passage-361e8f99021e">概念上来区分，其它大部分系统以文件变更列表的方式存储信息. 这类系统（CVS、Subversion、Perforce、Bazaar等）将它们保存的信息看作是一组基本文件和每个文件随时间<strong>逐步累积</strong>的差异。</p>
+<p id="passage-11dec685661f">Git 更像是把数据看作是对小型文件系统的一组快照。每次你提交更新，或在 Git 中保存项目状态时，它主要对当时的全部文件制作一个快照并保存这个快照的索引。为了高效，如果文件没有修改，Git 不再重新存储该文件，而是只保留一个链接指向之前存储的文件。Git 对待数据更像是一个快照流。</p>
 </blockquote>
 <span id="more"></span>
-<h3 data-passage-key="d917debbc163" id="近乎所有操作都是本地执行"><a class="headerlink" href="#近乎所有操作都是本地执行" title="近乎所有操作都是本地执行"></a>近乎所有操作都是本地执行</h3><blockquote data-passage-key="c179ce4b82d7" id="passage-d546c6118cfc">
-<p data-passage-key="099516845807" id="passage-5e1631fd1d7d">在 Git 中的绝大多数操作都只需要访问本地文件和资源，一般不需要来自网络上其它计算机的信息。</p>
-<p data-passage-key="b648c7c49387" id="passage-5f5755c8b764">使用其它系统，做到如此是不可能或很费力的。 比如，用 Perforce，你没有连接服务器时几乎不能做什么事；用 Subversion和CVS，你能修改 文件，但不能向数据库提交修改（因为你的本地数据库离线了）。</p>
+<h3 id="近乎所有操作都是本地执行"><a class="headerlink" href="#近乎所有操作都是本地执行" title="近乎所有操作都是本地执行"></a>近乎所有操作都是本地执行</h3><blockquote id="passage-d546c6118cfc">
+<p id="passage-5e1631fd1d7d">在 Git 中的绝大多数操作都只需要访问本地文件和资源，一般不需要来自网络上其它计算机的信息。</p>
+<p id="passage-5f5755c8b764">使用其它系统，做到如此是不可能或很费力的。 比如，用 Perforce，你没有连接服务器时几乎不能做什么事；用 Subversion和CVS，你能修改 文件，但不能向数据库提交修改（因为你的本地数据库离线了）。</p>
 </blockquote>
-<h3 data-passage-key="cd119354bd95" id="Git保证完整性"><a class="headerlink" href="#Git保证完整性" title="Git保证完整性"></a>Git保证完整性</h3><blockquote data-passage-key="05eef0117d6a" id="passage-a04a3b5a81e5">
-<p data-passage-key="e738b83549bc" id="passage-f3d1c6a401e4">Git 中所有数据在存储前都计算校验和，然后以校验和来引用。若你在传送过程中丢失信息或损坏 文件，Git 就能发现。</p>
-<p data-passage-key="a461cf06ff55" id="passage-fbf676335eb4">Git 用以计算校验和的机制叫做 SHA-1 散列（hash，哈希）。</p>
+<h3 id="Git保证完整性"><a class="headerlink" href="#Git保证完整性" title="Git保证完整性"></a>Git保证完整性</h3><blockquote id="passage-a04a3b5a81e5">
+<p id="passage-f3d1c6a401e4">Git 中所有数据在存储前都计算校验和，然后以校验和来引用。若你在传送过程中丢失信息或损坏 文件，Git 就能发现。</p>
+<p id="passage-fbf676335eb4">Git 用以计算校验和的机制叫做 SHA-1 散列（hash，哈希）。</p>
 </blockquote>
-<p data-passage-key="4257a0d12d85" id="passage-32efc6f63840">这是一个由 40 个十六进制字符（0-9 和 a-f）组 成字符串，基于 Git 中文件的内容或目录结构计算出来。 SHA-1 哈希看起来是这样：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="58ca81aed2b6" id="passage-defdd9d40a3b"><span class="line">24b9da6552252987aa493b52f8696cd6d3b00373</span><br/></pre></td></tr></tbody></table></figure>
-<h3 data-passage-key="21c6b7cd39e6" id="Git一般只添加数据"><a class="headerlink" href="#Git一般只添加数据" title="Git一般只添加数据"></a>Git一般只添加数据</h3><blockquote data-passage-key="06bec9326ab3" id="passage-1effc8390c0f">
-<p data-passage-key="2f14e00b4e08" id="passage-34ee1c696102">你执行的 Git 操作，几乎只往 Git 数据库中增加数据。 很难让 Git 执行任何不可逆操作，或者让它以任何方式清 除数据。</p>
+<p id="passage-32efc6f63840">这是一个由 40 个十六进制字符（0-9 和 a-f）组 成字符串，基于 Git 中文件的内容或目录结构计算出来。 SHA-1 哈希看起来是这样：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-defdd9d40a3b"><span class="line">24b9da6552252987aa493b52f8696cd6d3b00373</span><br/></pre></td></tr></tbody></table></figure>
+<h3 id="Git一般只添加数据"><a class="headerlink" href="#Git一般只添加数据" title="Git一般只添加数据"></a>Git一般只添加数据</h3><blockquote id="passage-1effc8390c0f">
+<p id="passage-34ee1c696102">你执行的 Git 操作，几乎只往 Git 数据库中增加数据。 很难让 Git 执行任何不可逆操作，或者让它以任何方式清 除数据。</p>
 </blockquote>
-<h3 data-passage-key="b8b88ba48ddc" id="Git的三种状态"><a class="headerlink" href="#Git的三种状态" title="Git的三种状态"></a>Git的三种状态</h3><ul>
-<li data-passage-key="daccd62d4dca" id="passage-0e171958cbad"><code>已提交(committed)</code>:数据已经安全的保存在本地数据库中</li>
-<li data-passage-key="825bfb23c309" id="passage-c59a83c1fb50"><code>已修改(modified)</code>:修改了文件，但还没保存到数据库中</li>
-<li data-passage-key="6d5101aa54a9" id="passage-44635c90df84"><code>已暂存(staged)</code>:对已修改的文件的当前版本做了标记，使它包含在下次提交的快照中</li>
+<h3 id="Git的三种状态"><a class="headerlink" href="#Git的三种状态" title="Git的三种状态"></a>Git的三种状态</h3><ul>
+<li id="passage-0e171958cbad"><code>已提交(committed)</code>:数据已经安全的保存在本地数据库中</li>
+<li id="passage-c59a83c1fb50"><code>已修改(modified)</code>:修改了文件，但还没保存到数据库中</li>
+<li id="passage-44635c90df84"><code>已暂存(staged)</code>:对已修改的文件的当前版本做了标记，使它包含在下次提交的快照中</li>
 </ul>
-<p data-passage-key="7bd1bc9951b8" id="passage-7327d7853804">Git项目的三个工作区域：<code>Git仓库</code>,<code>工作目录</code>,<code>暂存区域</code></p>
+<p id="passage-7327d7853804">Git项目的三个工作区域：<code>Git仓库</code>,<code>工作目录</code>,<code>暂存区域</code></p>
 <ul>
-<li data-passage-key="567df5cffeef" id="passage-cda34959fa42"><strong>Git 仓库</strong>目录是 Git 用来保存项目的元数据和对象数据库的地方。 这是 Git 中最重要的部分，从其它计算机克隆仓库时，拷贝的就是这里的数据。</li>
-<li data-passage-key="609b10404338" id="passage-c4f4e23a293e"><strong>工作目录</strong>是对项目的某个版本独立提取出来的内容。 这些从 Git 仓库的压缩数据库中提取出来的文件，放在磁盘上供你使用或修改。</li>
-<li data-passage-key="fb7a69da8bda" id="passage-76fb2788a2fd"><strong>暂存区域</strong>是一个文件，保存了下次将提交的文件列表信息，一般在 Git 仓库目录中。 有时候也被称作索引，不过一般说法还是叫暂存区域。</li>
+<li id="passage-cda34959fa42"><strong>Git 仓库</strong>目录是 Git 用来保存项目的元数据和对象数据库的地方。 这是 Git 中最重要的部分，从其它计算机克隆仓库时，拷贝的就是这里的数据。</li>
+<li id="passage-c4f4e23a293e"><strong>工作目录</strong>是对项目的某个版本独立提取出来的内容。 这些从 Git 仓库的压缩数据库中提取出来的文件，放在磁盘上供你使用或修改。</li>
+<li id="passage-76fb2788a2fd"><strong>暂存区域</strong>是一个文件，保存了下次将提交的文件列表信息，一般在 Git 仓库目录中。 有时候也被称作索引，不过一般说法还是叫暂存区域。</li>
 </ul>
-<h3 data-passage-key="80b43c20e1a9" id="基本的Git工作流程"><a class="headerlink" href="#基本的Git工作流程" title="基本的Git工作流程"></a>基本的Git工作流程</h3><ol>
-<li data-passage-key="95c1260a9e38" id="passage-b985428ca920"><p data-passage-key="2ee96f8de290" id="passage-ea1262e46b52">在工作目录中修改文件。</p>
+<h3 id="基本的Git工作流程"><a class="headerlink" href="#基本的Git工作流程" title="基本的Git工作流程"></a>基本的Git工作流程</h3><ol>
+<li id="passage-b985428ca920"><p id="passage-ea1262e46b52">在工作目录中修改文件。</p>
 </li>
-<li data-passage-key="fbf17b16b655" id="passage-2d009c4b920f"><p data-passage-key="397dac707bbd" id="passage-2be57e2e5fc4">暂存文件，将文件的快照放入暂存区域。</p>
+<li id="passage-2d009c4b920f"><p id="passage-2be57e2e5fc4">暂存文件，将文件的快照放入暂存区域。</p>
 </li>
-<li data-passage-key="e6a1f1e0e63e" id="passage-9818bd499312"><p data-passage-key="fd19a327d261" id="passage-f35bd60634ae">提交更新，找到暂存区域的文件，将快照永久性存储到 Git 仓库目录。</p>
+<li id="passage-9818bd499312"><p id="passage-f35bd60634ae">提交更新，找到暂存区域的文件，将快照永久性存储到 Git 仓库目录。</p>
 </li>
 </ol>
 <p><img alt="三个工作区域" decoding="async" height="622" loading="lazy" src="/images/blog-media/06c2cc456a87c06e4b80.webp" width="1080"/></p>
-<h2 data-passage-key="a3c347daa2ee" id="起步"><a class="headerlink" href="#起步" title="起步"></a>起步</h2><p data-passage-key="8499c7cb8aeb" id="passage-227f9571a057">使用<code>git config</code>工具来帮助控制Git外观和行为。</p>
-<h3 data-passage-key="8e56335348cc" id="配置用户信息"><a class="headerlink" href="#配置用户信息" title="配置用户信息"></a>配置用户信息</h3><p data-passage-key="77b0a7ac5bb0" id="passage-804d14318441">当安装完 Git 应该做的第一件事就是设置你的<code>用户名称</code>与<code>邮件地址</code>。每一个 Git 的提交都会使用这些信息，并且它会写入到你的每一次提交中，<strong>不可更改</strong>：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="14b2bb310022" id="passage-73fd7881032f"><span class="line">git config --global user.name 你的姓名</span><br/><span class="line">git config --global user.email 你的邮箱</span><br/></pre></td></tr></tbody></table></figure>
-<p data-passage-key="cef6785402f5" id="passage-4016a0066f7f">例如：</p>
-<blockquote data-passage-key="78dcf7d7a09b" id="passage-b59a7cd5d463">
-<p data-passage-key="e9709e9b8b61" id="passage-ea59d4fee0bb">$ git config –global user.name “John Doe” </p>
-<p data-passage-key="83a671fce1f0" id="passage-0abf10262a5c">$ git config –global user.email <a href="mailto:johndoe@example.com">johndoe@example.com</a></p>
+<h2 id="起步"><a class="headerlink" href="#起步" title="起步"></a>起步</h2><p id="passage-227f9571a057">使用<code>git config</code>工具来帮助控制Git外观和行为。</p>
+<h3 id="配置用户信息"><a class="headerlink" href="#配置用户信息" title="配置用户信息"></a>配置用户信息</h3><p id="passage-804d14318441">当安装完 Git 应该做的第一件事就是设置你的<code>用户名称</code>与<code>邮件地址</code>。每一个 Git 的提交都会使用这些信息，并且它会写入到你的每一次提交中，<strong>不可更改</strong>：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre id="passage-73fd7881032f"><span class="line">git config --global user.name 你的姓名</span><br/><span class="line">git config --global user.email 你的邮箱</span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-4016a0066f7f">例如：</p>
+<blockquote id="passage-b59a7cd5d463">
+<p id="passage-ea59d4fee0bb">$ git config –global user.name “John Doe” </p>
+<p id="passage-0abf10262a5c">$ git config –global user.email <a href="mailto:johndoe@example.com">johndoe@example.com</a></p>
 </blockquote>
-<h3 data-passage-key="7b9188c0b68a" id="检查配置信息"><a class="headerlink" href="#检查配置信息" title="检查配置信息"></a>检查配置信息</h3><p data-passage-key="9bdc125e566c" id="passage-dc42725e1d2e"><code>git config --list</code>:列出所有Git当前能找到的配置</p>
+<h3 id="检查配置信息"><a class="headerlink" href="#检查配置信息" title="检查配置信息"></a>检查配置信息</h3><p id="passage-dc42725e1d2e"><code>git config --list</code>:列出所有Git当前能找到的配置</p>
 <p><img alt="列出所有Git配置" decoding="async" height="422" loading="lazy" src="/images/blog-media/a61b76cc5419bc971988.webp" width="1080"/></p>
-<p data-passage-key="c6290aad3393" id="passage-28ea4c3cd84e"><code>git config &lt;key&gt;</code>:通过指定的方式查看某一项</p>
+<p id="passage-28ea4c3cd84e"><code>git config &lt;key&gt;</code>:通过指定的方式查看某一项</p>
 <p><img alt="指定查看用户名" decoding="async" height="79" loading="lazy" src="/images/blog-media/43ff2b87746566fd8ab6.webp" width="1080"/></p>
-<h3 data-passage-key="93997c622a9d" id="获取帮助"><a class="headerlink" href="#获取帮助" title="获取帮助"></a>获取帮助</h3><p data-passage-key="f5664d1a9e0a" id="passage-11e2cd0a5896">合理使用git自带的帮助文档，可以解决大部分的问题</p>
-<p data-passage-key="6501d5e36579" id="passage-2f900788746a">例如<code>git help config</code></p>
-<p data-passage-key="ef15096e76bf" id="passage-c9ed8b73d346">还有其他方式找到Git命令的使用手册。</p>
-<blockquote data-passage-key="d2489bfe6b3e" id="passage-6098f6562029">
-<p data-passage-key="0eaa2b9eb1d1" id="passage-b43292db2753">git help <verb></verb></p>
-<p data-passage-key="c5249f94991d" id="passage-287898ae3455">git <verb> - -help</verb></p>
-<p data-passage-key="f978536e6a12" id="passage-997c1b55d67f">man git-<berb></berb></p>
+<h3 id="获取帮助"><a class="headerlink" href="#获取帮助" title="获取帮助"></a>获取帮助</h3><p id="passage-11e2cd0a5896">合理使用git自带的帮助文档，可以解决大部分的问题</p>
+<p id="passage-2f900788746a">例如<code>git help config</code></p>
+<p id="passage-c9ed8b73d346">还有其他方式找到Git命令的使用手册。</p>
+<blockquote id="passage-6098f6562029">
+<p id="passage-b43292db2753">git help <verb></verb></p>
+<p id="passage-287898ae3455">git <verb> - -help</verb></p>
+<p id="passage-997c1b55d67f">man git-<berb></berb></p>
 </blockquote>
-<h2 data-passage-key="474f16aad66f" id="Git基础"><a class="headerlink" href="#Git基础" title="Git基础"></a>Git基础</h2><p data-passage-key="d0a0e08ad14f" id="passage-7e20ef65fdaa">有两种方式开始Git的学习：<code>在现有项目或目录下用Git进行管理</code>,<code>从服务器克隆一个现有的Git仓库</code></p>
-<h3 data-passage-key="ddd95ce34854" id="在现有目录中初始化仓库"><a class="headerlink" href="#在现有目录中初始化仓库" title="在现有目录中初始化仓库"></a>在现有目录中初始化仓库</h3><p data-passage-key="2eb3978c13c9" id="passage-e6812035132a">使用<code>git init</code>就可以初始化一个空的Git仓库</p>
+<h2 id="Git基础"><a class="headerlink" href="#Git基础" title="Git基础"></a>Git基础</h2><p id="passage-7e20ef65fdaa">有两种方式开始Git的学习：<code>在现有项目或目录下用Git进行管理</code>,<code>从服务器克隆一个现有的Git仓库</code></p>
+<h3 id="在现有目录中初始化仓库"><a class="headerlink" href="#在现有目录中初始化仓库" title="在现有目录中初始化仓库"></a>在现有目录中初始化仓库</h3><p id="passage-e6812035132a">使用<code>git init</code>就可以初始化一个空的Git仓库</p>
 <p><img alt="初始化仓库" decoding="async" height="273" loading="lazy" src="/images/blog-media/0db6829e9718e95530ba.webp" width="1080"/></p>
-<p data-passage-key="b345b38b6fc5" id="passage-f495c1666b79">其中**.git**文件夹中包含了初始化Git仓库中所有的必须文件，这些文件是Git仓库的骨干。</p>
-<h2 data-passage-key="b6a283da488e" id="克隆现有仓库"><a class="headerlink" href="#克隆现有仓库" title="克隆现有仓库"></a>克隆现有仓库</h2><p data-passage-key="2b3020d4a996" id="passage-adda86dbe7eb">以我在GitHub上的一个项目为例：<a href="https://github.com/zx490336534/spider-review%E3%80%82" rel="noopener" target="_blank">https://github.com/zx490336534/spider-review。</a></p>
-<p data-passage-key="84c17c841adc" id="passage-7be4b17b1683">输入url地址打开页面后点击<code>Clone or download</code>把弹出框中的地址复制出来：<a href="https://github.com/zx490336534/spider-review.git" rel="noopener" target="_blank">https://github.com/zx490336534/spider-review.git</a></p>
+<p id="passage-f495c1666b79">其中**.git**文件夹中包含了初始化Git仓库中所有的必须文件，这些文件是Git仓库的骨干。</p>
+<h2 id="克隆现有仓库"><a class="headerlink" href="#克隆现有仓库" title="克隆现有仓库"></a>克隆现有仓库</h2><p id="passage-adda86dbe7eb">以我在GitHub上的一个项目为例：<a href="https://github.com/zx490336534/spider-review%E3%80%82" rel="noopener" target="_blank">https://github.com/zx490336534/spider-review。</a></p>
+<p id="passage-7be4b17b1683">输入url地址打开页面后点击<code>Clone or download</code>把弹出框中的地址复制出来：<a href="https://github.com/zx490336534/spider-review.git" rel="noopener" target="_blank">https://github.com/zx490336534/spider-review.git</a></p>
 <p><img alt="克隆" decoding="async" height="716" loading="lazy" src="/images/blog-media/3be495a32908ebc444db.webp" width="1080"/></p>
-<p data-passage-key="f692cfb0afdc" id="passage-c0f453bd78ff">在本地找一个文件夹</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="2064aed013a7" id="passage-b3c857e887ef"><span class="line">git clone https://github.com/zx490336534/spider-review.git</span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-c0f453bd78ff">在本地找一个文件夹</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-b3c857e887ef"><span class="line">git clone https://github.com/zx490336534/spider-review.git</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="克隆到本地" decoding="async" height="249" loading="lazy" src="/images/blog-media/595d802e295527a009b5.webp" width="1080"/></p>
-<p data-passage-key="d4b64efa6d50" id="passage-4306f347bd2a">这样克隆会自动在当前目录下新建一个项目同名的文件夹，也可以自定义一个名称</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="3a4ce604c616" id="passage-cdf365d70470"><span class="line">git clone https://github.com/zx490336534/spider-review.git 666</span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-4306f347bd2a">这样克隆会自动在当前目录下新建一个项目同名的文件夹，也可以自定义一个名称</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-cdf365d70470"><span class="line">git clone https://github.com/zx490336534/spider-review.git 666</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="克隆文件至自定义的地方" decoding="async" height="230" loading="lazy" src="/images/blog-media/08a43e8a07ed703267ab.webp" width="1080"/></p>
-<h3 data-passage-key="14420267ff01" id="记录每次更新到仓库"><a class="headerlink" href="#记录每次更新到仓库" title="记录每次更新到仓库"></a>记录每次更新到仓库</h3><p><img alt="文件的状态变化周期" decoding="async" height="507" loading="lazy" src="/images/blog-media/57844f48da46c707b77d.webp" width="1080"/></p>
-<p data-passage-key="6f028d1e105d" id="passage-e86e44ce97a6">这一小节的目标的学会这一个文件的状态变化周期图</p>
-<p data-passage-key="3bed3fb194b3" id="passage-a112266a2039">从最上方的箭头开始</p>
-<p data-passage-key="3f322e5cddf1" id="passage-0340b4f36dff"><code>Add the file</code>:从<strong>Untracked</strong>指向<strong>Staged</strong>，也就是从<strong>未跟踪</strong>到<strong>暂存区</strong>，需要学会<strong>git status</strong>和<strong>git add</strong>两个指令</p>
-<p data-passage-key="cc897a59f2f2" id="passage-a98e2b20765c">首次新建的文件都是untracked状态（未跟踪），此时需要<code>git add</code>到暂存区，Git便会在暂存区中生成一个该文件的索引。</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre data-passage-key="1073fbefb052" id="passage-f04b0899595f"><span class="line">touch README.md </span><br/><span class="line">git add README.md </span><br/><span class="line">git status</span><br/></pre></td></tr></tbody></table></figure>
+<h3 id="记录每次更新到仓库"><a class="headerlink" href="#记录每次更新到仓库" title="记录每次更新到仓库"></a>记录每次更新到仓库</h3><p><img alt="文件的状态变化周期" decoding="async" height="507" loading="lazy" src="/images/blog-media/57844f48da46c707b77d.webp" width="1080"/></p>
+<p id="passage-e86e44ce97a6">这一小节的目标的学会这一个文件的状态变化周期图</p>
+<p id="passage-a112266a2039">从最上方的箭头开始</p>
+<p id="passage-0340b4f36dff"><code>Add the file</code>:从<strong>Untracked</strong>指向<strong>Staged</strong>，也就是从<strong>未跟踪</strong>到<strong>暂存区</strong>，需要学会<strong>git status</strong>和<strong>git add</strong>两个指令</p>
+<p id="passage-a98e2b20765c">首次新建的文件都是untracked状态（未跟踪），此时需要<code>git add</code>到暂存区，Git便会在暂存区中生成一个该文件的索引。</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre id="passage-f04b0899595f"><span class="line">touch README.md </span><br/><span class="line">git add README.md </span><br/><span class="line">git status</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="img" decoding="async" height="491" loading="lazy" src="/images/blog-media/61221d3ed74539837bf1.webp" width="1080"/></p>
-<p data-passage-key="0911f439dcb7" id="passage-053dab9977b7"><code>touch README.md</code>:创建一个名为README.md的文件，对应<strong>Untracked</strong>对象的创建</p>
-<p data-passage-key="d26b912002b0" id="passage-0d320ad37530"><code>git add README.md</code>:把新建的README.md文件提交到暂存区，对应<code>Add the file</code></p>
-<p data-passage-key="5727e51d9632" id="passage-bb7592e77324"><code>git status</code>:查看文件处于什么状态</p>
-<p data-passage-key="7e60e0779738" id="passage-293c60cd2c1e">从上面操作可以看出，如果我新建了一个文件，但是没有使用<strong>git add</strong>，那么它就还是<strong>Untracked</strong>，可以结合<strong>git status</strong>进行试验</p>
+<p id="passage-053dab9977b7"><code>touch README.md</code>:创建一个名为README.md的文件，对应<strong>Untracked</strong>对象的创建</p>
+<p id="passage-0d320ad37530"><code>git add README.md</code>:把新建的README.md文件提交到暂存区，对应<code>Add the file</code></p>
+<p id="passage-bb7592e77324"><code>git status</code>:查看文件处于什么状态</p>
+<p id="passage-293c60cd2c1e">从上面操作可以看出，如果我新建了一个文件，但是没有使用<strong>git add</strong>，那么它就还是<strong>Untracked</strong>，可以结合<strong>git status</strong>进行试验</p>
 <p><img alt="Untracked" decoding="async" height="680" loading="lazy" src="/images/blog-media/8a143886f5b9a41399d9.webp" width="998"/></p>
-<p data-passage-key="1e75fbaf55cb" id="passage-21e7f1ab2630">开始下面一个箭头<code>Edit the file</code>，但是我们需要一个<strong>Unmodified</strong>状态的文件，在学习了<strong>Add the file</strong>流程之后我们拿到了一个<strong>Staged</strong>状态的文件<em>README.md</em>，从图中可以看出，从<strong>Staged</strong>变为<strong>Unmodified</strong>需要经过<code>Commit</code>流程。</p>
-<p data-passage-key="724e232ef8b3" id="passage-b988449329d6">那我们暂时先学习<code>Commit</code>流程：</p>
+<p id="passage-21e7f1ab2630">开始下面一个箭头<code>Edit the file</code>，但是我们需要一个<strong>Unmodified</strong>状态的文件，在学习了<strong>Add the file</strong>流程之后我们拿到了一个<strong>Staged</strong>状态的文件<em>README.md</em>，从图中可以看出，从<strong>Staged</strong>变为<strong>Unmodified</strong>需要经过<code>Commit</code>流程。</p>
+<p id="passage-b988449329d6">那我们暂时先学习<code>Commit</code>流程：</p>
 <p><img alt="提交" decoding="async" height="360" loading="lazy" src="/images/blog-media/1ac89b5d845a6ccd4c4b.webp" width="1080"/></p>
-<p data-passage-key="92968bd4e7f5" id="passage-1eebd545970c">使用的语句为<code>git commit -m '描述信息'</code></p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="ad601341fa86" id="passage-00de4fa974ff"><span class="line">git commit -m '从Staged状态变为Unmodified状态'</span><br/></pre></td></tr></tbody></table></figure>
-<p data-passage-key="37672a021b17" id="passage-9cfc49344165">再使用<strong>git status</strong>可以看到已经没有之前绿色的语句了(<em>新文件：   README.md</em>)</p>
-<p data-passage-key="af78b35c2128" id="passage-dd383788543e">下面返回正题，学习<code>Edit the file</code>，使用编辑器修改一下README.md文件</p>
+<p id="passage-1eebd545970c">使用的语句为<code>git commit -m '描述信息'</code></p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-00de4fa974ff"><span class="line">git commit -m '从Staged状态变为Unmodified状态'</span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-9cfc49344165">再使用<strong>git status</strong>可以看到已经没有之前绿色的语句了(<em>新文件：   README.md</em>)</p>
+<p id="passage-dd383788543e">下面返回正题，学习<code>Edit the file</code>，使用编辑器修改一下README.md文件</p>
 <p><img alt="修改文件" decoding="async" height="331" loading="lazy" src="/images/blog-media/e0403fd171fe7501839a.webp" width="1080"/></p>
-<p data-passage-key="a00f095f711d" id="passage-293026bfa042">修改之后使用<strong>git status</strong>查看文件当前的状态</p>
+<p id="passage-293026bfa042">修改之后使用<strong>git status</strong>查看文件当前的状态</p>
 <p><img alt="修改文件" decoding="async" height="591" loading="lazy" src="/images/blog-media/7e8ae13fe343f6ce42fd.webp" width="1080"/></p>
-<p data-passage-key="8faa221ca39c" id="passage-eaf111adb89b">这样就完成了<code>Edit the file</code>流程了，通过阅读提示信息可以知道，我们要用<code>git add &lt;文件&gt;</code>更新要提交的内容。从<strong>Add the file</strong>流程可以看出，<strong>git add</strong>的作用就是把东西放入<strong>Staged</strong>(暂存区)，所以使用这句指令就完成了<code>Stage the file</code>流程了</p>
+<p id="passage-eaf111adb89b">这样就完成了<code>Edit the file</code>流程了，通过阅读提示信息可以知道，我们要用<code>git add &lt;文件&gt;</code>更新要提交的内容。从<strong>Add the file</strong>流程可以看出，<strong>git add</strong>的作用就是把东西放入<strong>Staged</strong>(暂存区)，所以使用这句指令就完成了<code>Stage the file</code>流程了</p>
 <p><img alt="Stage the file流程" decoding="async" height="606" loading="lazy" src="/images/blog-media/090145c620ca1d57bbd3.webp" width="1080"/></p>
-<p data-passage-key="2de26182b6bd" id="passage-49467884b91d">最后最后还有一个<code>Remove the file</code>流程,我们使用上面学过的<code>Commit</code>流程把<em>README.md</em>文件的状态变成<strong>Unmodified</strong></p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="50d55a305294" id="passage-2af04cb27abe"><span class="line">git commit -m '修改README.md'</span><br/></pre></td></tr></tbody></table></figure>
-<p data-passage-key="3501dcb6bad1" id="passage-883f03ae411e">使用<strong>git rm READE.md</strong>就能删除处于<strong>Unmodified</strong>的文件了，可以看到提示信息是绿色的，所以还需要一步<strong>commit</strong>操作</p>
+<p id="passage-49467884b91d">最后最后还有一个<code>Remove the file</code>流程,我们使用上面学过的<code>Commit</code>流程把<em>README.md</em>文件的状态变成<strong>Unmodified</strong></p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-2af04cb27abe"><span class="line">git commit -m '修改README.md'</span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-883f03ae411e">使用<strong>git rm READE.md</strong>就能删除处于<strong>Unmodified</strong>的文件了，可以看到提示信息是绿色的，所以还需要一步<strong>commit</strong>操作</p>
 <p><img alt="删除" decoding="async" height="471" loading="lazy" src="/images/blog-media/c6d2711f5e931ec23488.webp" width="1080"/></p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="ffa1aa5279eb" id="passage-79fb2537bf26"><span class="line">git commit -m '删除README.md'</span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-79fb2537bf26"><span class="line">git commit -m '删除README.md'</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="删除后查看状态" decoding="async" height="296" loading="lazy" src="/images/blog-media/0865c62b622a93ae3e30.webp" width="1080"/></p>
-<p data-passage-key="ffaa9f41e319" id="passage-2941c8c1d30d">我们可以用<strong>git log</strong>查看提交历史，从图中可以看出，我们全部<strong>commit</strong>操作都被记录了。</p>
+<p id="passage-2941c8c1d30d">我们可以用<strong>git log</strong>查看提交历史，从图中可以看出，我们全部<strong>commit</strong>操作都被记录了。</p>
 <p><img alt="提交历史" decoding="async" height="649" loading="lazy" src="/images/blog-media/5dc9afc19ac03d51645f.webp" width="1080"/></p></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
-        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
-          <header class="passage-dialog-header">
-            <h2 id="passage-comment-title">段落评论</h2>
-            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
-          </header>
-          <div class="passage-dialog-content">
-            <blockquote data-passage-excerpt></blockquote>
-            <a data-passage-source>查看原文</a>
-            <p data-passage-status role="status"></p>
-            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
-            <div data-passage-widget></div>
-          </div>
-        </dialog>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/C2nNUUvqYaz17sjOvSPPhQ">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Git/">Git</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/Git/">Git</a></div>
@@ -186,7 +172,7 @@
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
-          <div class="giscus"></div>
+          <div class="giscus" id="article-discussion"></div>
         </section>
       </div>
     </div>

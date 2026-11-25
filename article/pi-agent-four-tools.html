@@ -20,7 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/article-covers/pi-agent-four-tools.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/pi-agent-four-tools.html">
-<script type="module" src="/js/discussions.js"></script>
+<script src="/js/comments.js?v=4" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,52 +56,38 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E5%9B%9B%E4%B8%AA%E5%B7%A5%E5%85%B7%E6%80%8E%E6%A0%B7%E8%B7%91%E5%AE%8C%E4%B8%80%E6%AC%A1%E4%BB%A3%E7%A0%81%E4%BF%AE%E5%A4%8D">把失败单测交给四个工具</a></li><li><a href="#%E6%8A%8A%E4%B8%80%E6%AC%A1%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8%E6%8B%86%E5%BC%80%E7%9C%8B">一次调用从模型走到扩展，再返回给模型</a></li><li><a href="#%E4%BC%9A%E8%AF%9D%E5%88%86%E6%94%AF%E8%A7%A3%E5%86%B3%E7%9A%84%E6%98%AF%E5%AF%B9%E8%AF%9D%E9%80%89%E6%8B%A9">切换会话以后，先看工作区</a></li><li><a href="#%E5%9B%A2%E9%98%9F%E8%A6%81%E8%A1%A5%E7%9A%84%E4%B8%9C%E8%A5%BF-%E5%8F%AF%E4%BB%A5%E4%BB%8E%E4%B8%80%E6%AC%A1%E7%9C%9F%E5%AE%9E%E4%BB%BB%E5%8A%A1%E9%87%8C%E6%89%BE">用一条真实任务决定要加什么</a></li><li><a href="#%E5%8F%82%E8%80%83">参考</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><p class="article-lead" data-passage-key="ae75e102cfc3" id="passage-a8b63c205af1">Pi 默认给模型 <code>read</code>、<code>edit</code>、<code>write</code> 和 <code>bash</code>。读文件、改文件、写文件、执行命令，这四步已经能跑完一次单测修复。搜索、构建和测试直接用项目现成的命令。</p>
-<p data-passage-key="8e41ae0a6c3a" id="passage-616d6745d43f">工具少，运行时留下的问题也更清楚。模型靠哪条证据决定下一步，扩展能在什么时候拦一下，切换会话分支以后磁盘上还有什么。读 Pi 的源码和文档时，我主要在看这三件事。</p>
+        <div class="post-body" id="article-text"><p class="article-lead" id="passage-a8b63c205af1">Pi 默认给模型 <code>read</code>、<code>edit</code>、<code>write</code> 和 <code>bash</code>。读文件、改文件、写文件、执行命令，这四步已经能跑完一次单测修复。搜索、构建和测试直接用项目现成的命令。</p>
+<p id="passage-616d6745d43f">工具少，运行时留下的问题也更清楚。模型靠哪条证据决定下一步，扩展能在什么时候拦一下，切换会话分支以后磁盘上还有什么。读 Pi 的源码和文档时，我主要在看这三件事。</p>
 <span id="修一个失败测试-四个动作就能串起来"></span>
-<h2 data-passage-key="36884f816d67" id="四个工具怎样跑完一次代码修复">把失败单测交给四个工具</h2>
-<p data-passage-key="94f2150fa4eb" id="passage-d7646ba2ca25">拿失败单测做例子。模型用 <code>bash</code> 看到报错，通过 <code>read</code> 打开实现和用例，用 <code>edit</code> 修正错误分支，再运行原来的测试。如果缺一个新用例文件，用 <code>write</code> 保存。</p>
-<figure class="article-figure article-figure--edited"><a href="/images/article-figures/pi-agent-four-tools.webp" title="查看原图"><img alt="Pi 用命令执行、读文件、编辑和再次执行完成一次修复" decoding="async" height="480" loading="lazy" src="/images/article-figures/pi-agent-four-tools.webp" width="1200"/></a><figcaption data-passage-key="b19e5d94f5a1" id="passage-d891082f0ba9">修完代码后，回到最初失败的那条测试。</figcaption></figure>
-<p data-passage-key="113970d59ad5" id="passage-4a4df91bc2ef">四项是默认启用的工具。Pi 也提供 <code>grep</code>、<code>find</code>、<code>ls</code>，并允许按任务替换工具列表。只想理解一个模块时，可以把这一轮限制为读和搜索。</p>
-<pre class="article-code" data-passage-key="511175f760be" id="passage-7ceefd438906"><code class="language-bash">pi --tools read,grep,find,ls
+<h2 id="四个工具怎样跑完一次代码修复">把失败单测交给四个工具</h2>
+<p id="passage-d7646ba2ca25">拿失败单测做例子。模型用 <code>bash</code> 看到报错，通过 <code>read</code> 打开实现和用例，用 <code>edit</code> 修正错误分支，再运行原来的测试。如果缺一个新用例文件，用 <code>write</code> 保存。</p>
+<figure class="article-figure article-figure--edited"><a href="/images/article-figures/pi-agent-four-tools.webp" title="查看原图"><img alt="Pi 用命令执行、读文件、编辑和再次执行完成一次修复" decoding="async" height="480" loading="lazy" src="/images/article-figures/pi-agent-four-tools.webp" width="1200"/></a><figcaption id="passage-d891082f0ba9">修完代码后，回到最初失败的那条测试。</figcaption></figure>
+<p id="passage-4a4df91bc2ef">四项是默认启用的工具。Pi 也提供 <code>grep</code>、<code>find</code>、<code>ls</code>，并允许按任务替换工具列表。只想理解一个模块时，可以把这一轮限制为读和搜索。</p>
+<pre class="article-code" id="passage-7ceefd438906"><code class="language-bash">pi --tools read,grep,find,ls
 </code></pre>
-<p data-passage-key="c17be8af2666" id="passage-79a482e55e12">当前文档还列了 <code>pi mcp</code> 和扩展工具。接入这些能力以后，模型实际看见的工具会受到项目配置影响。讨论「Pi 有几个工具」时，我会先确认在说默认集合还是已经配置好的环境。</p>
-<p data-passage-key="fa0106d06e4d" id="passage-650640f4ef03">我会把只读探索和实际修改分成两次运行。先确认能读到入口文件、构建命令和验收要求，再开放需要的写入工具。做到能解释改哪些文件和如何验证，就可以结束第一轮。</p>
-<p data-passage-key="4fbfebeaa972" id="passage-eddd789c3c20">开放 <code>bash</code> 时，命令能碰到哪些目录和网络资源取决于 Pi 进程的权限。工具列表可以收窄模型的动作，文件和网络隔离还要在运行环境里做。</p>
+<p id="passage-79a482e55e12">当前文档还列了 <code>pi mcp</code> 和扩展工具。接入这些能力以后，模型实际看见的工具会受到项目配置影响。讨论「Pi 有几个工具」时，我会先确认在说默认集合还是已经配置好的环境。</p>
+<p id="passage-650640f4ef03">我会把只读探索和实际修改分成两次运行。先确认能读到入口文件、构建命令和验收要求，再开放需要的写入工具。做到能解释改哪些文件和如何验证，就可以结束第一轮。</p>
+<p id="passage-eddd789c3c20">开放 <code>bash</code> 时，命令能碰到哪些目录和网络资源取决于 Pi 进程的权限。工具列表可以收窄模型的动作，文件和网络隔离还要在运行环境里做。</p>
 <span id="要扩展时-先看缺的是哪一种能力"></span>
-<h2 data-passage-key="daba160d274c" id="把一次工具调用拆开看">一次调用从模型走到扩展，再返回给模型</h2>
-<p data-passage-key="cfbd5b920860" id="passage-b2b03a5fb265">模型在回复里请求工具。Pi 调用它，把结果追加到上下文，再让模型继续。单测的错误文本进入下一轮以后，模型可以读文件、改代码，或者停下报告。运行时的循环很短，项目想要求哪些验收步骤，要在项目规则或外部 CI 里写清楚。</p>
-<p data-passage-key="13b34057e846" id="passage-d5a2fcf40726">扩展的 <code>tool_call</code> 发生在执行前，可以拒绝或调整输入。<code>tool_result</code> 在执行后，可以整理送回模型的结果。团队要保留验收依据时，可以把实际命令、退出状态和报告位置完整保存，再给模型一份短摘要。只跑了一个测试文件，报告的范围也只写到这一层。</p>
-<p data-passage-key="92ec5e9af485" id="passage-d2257c4768a9">同一条助手消息有多个工具调用时，默认并行模式下，前置检查逐个执行，实际任务可以并发。工具 B 要读工具 A 刚写的配置，就把两步拆开执行。B 的前置检查不一定能看到 A 的执行结果。</p>
-<figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/pi-agent-four-tools-detail.webp" title="查看原图"><img alt="两个工具调用先按顺序检查，默认并行模式下可以重叠执行，再分别返回结果。" decoding="async" height="727" loading="lazy" src="/images/article-figures/pi-agent-four-tools-detail.webp" width="900"/></a><figcaption data-passage-key="93b554d568d3" id="passage-4e5582b12226">默认并行模式下，前置检查和工具执行有不同的顺序。</figcaption></figure>
-<h2 data-passage-key="5da083e181a0" id="会话分支解决的是对话选择">切换会话以后，先看工作区</h2>
-<p data-passage-key="184bde4e1229" id="passage-9773837acd8d"><code>/tree</code> 可以回到较早的消息继续，原来的尝试仍留在另一条分支。下一次请求使用当前分支上的对话。之前改过的代码还在磁盘上，切换消息位置并不会替你回滚文件。</p>
-<p data-passage-key="5bc14cab3539" id="passage-53f4ebf7b9f1">想同时试两个实现，可以给两条路线各用一个 Git worktree。只在同一个目录里试时，切换之前先看 <code>git status</code>，把需要保留的改动留成可恢复的检查点。</p>
-<p data-passage-key="a43138b15f74" id="passage-c8e9e6b08486">聊天太长时，Pi 会用摘要接替早期上下文，原始会话记录仍可查看。长期兼容条件、禁止修改的目录和验收标准适合放进项目说明。摘要之后再读一次，就不用指望模型记住某条很早的消息。</p>
-<figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/pi-agent-four-tools-scene.webp" title="查看原图"><img alt="对话可以在两条分支间切换，磁盘上的工作文件仍独立保留。" decoding="async" height="854" loading="lazy" src="/images/article-figures/pi-agent-four-tools-scene.webp" width="1280"/></a><figcaption data-passage-key="f6551307db25" id="passage-8d70365dea69">教学示意。会话能切换分支，改过的工作文件要单独处理。</figcaption></figure>
-<h2 data-passage-key="1db25de89e12" id="团队要补的东西-可以从一次真实任务里找">用一条真实任务决定要加什么</h2>
-<p data-passage-key="576ad8b134d0" id="passage-04da7f5aa34e">仓库说明适合写构建和验收步骤，Skill 适合约定处理某类任务的方法，扩展适合在工具执行前后加检查。主分支发布需要的签核和权限，放在独立流程里执行。</p>
-<p data-passage-key="fb1f40f58629" id="passage-83241a48cf03">我会先用一个有失败用例的修复试跑。看它是否读到项目说明，第一次失败后用了哪条证据，以及最终报告能不能回到具体运行。缺上下文就补项目入口。要是只跑了局部测试却报整体验收，就先补验收范围和证据规则。</p>
-<h2 data-passage-key="c6f305e9b180" id="参考">参考</h2>
+<h2 id="把一次工具调用拆开看">一次调用从模型走到扩展，再返回给模型</h2>
+<p id="passage-b2b03a5fb265">模型在回复里请求工具。Pi 调用它，把结果追加到上下文，再让模型继续。单测的错误文本进入下一轮以后，模型可以读文件、改代码，或者停下报告。运行时的循环很短，项目想要求哪些验收步骤，要在项目规则或外部 CI 里写清楚。</p>
+<p id="passage-d5a2fcf40726">扩展的 <code>tool_call</code> 发生在执行前，可以拒绝或调整输入。<code>tool_result</code> 在执行后，可以整理送回模型的结果。团队要保留验收依据时，可以把实际命令、退出状态和报告位置完整保存，再给模型一份短摘要。只跑了一个测试文件，报告的范围也只写到这一层。</p>
+<p id="passage-d2257c4768a9">同一条助手消息有多个工具调用时，默认并行模式下，前置检查逐个执行，实际任务可以并发。工具 B 要读工具 A 刚写的配置，就把两步拆开执行。B 的前置检查不一定能看到 A 的执行结果。</p>
+<figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/pi-agent-four-tools-detail.webp" title="查看原图"><img alt="两个工具调用先按顺序检查，默认并行模式下可以重叠执行，再分别返回结果。" decoding="async" height="727" loading="lazy" src="/images/article-figures/pi-agent-four-tools-detail.webp" width="900"/></a><figcaption id="passage-4e5582b12226">默认并行模式下，前置检查和工具执行有不同的顺序。</figcaption></figure>
+<h2 id="会话分支解决的是对话选择">切换会话以后，先看工作区</h2>
+<p id="passage-9773837acd8d"><code>/tree</code> 可以回到较早的消息继续，原来的尝试仍留在另一条分支。下一次请求使用当前分支上的对话。之前改过的代码还在磁盘上，切换消息位置并不会替你回滚文件。</p>
+<p id="passage-53f4ebf7b9f1">想同时试两个实现，可以给两条路线各用一个 Git worktree。只在同一个目录里试时，切换之前先看 <code>git status</code>，把需要保留的改动留成可恢复的检查点。</p>
+<p id="passage-c8e9e6b08486">聊天太长时，Pi 会用摘要接替早期上下文，原始会话记录仍可查看。长期兼容条件、禁止修改的目录和验收标准适合放进项目说明。摘要之后再读一次，就不用指望模型记住某条很早的消息。</p>
+<figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/pi-agent-four-tools-scene.webp" title="查看原图"><img alt="对话可以在两条分支间切换，磁盘上的工作文件仍独立保留。" decoding="async" height="854" loading="lazy" src="/images/article-figures/pi-agent-four-tools-scene.webp" width="1280"/></a><figcaption id="passage-8d70365dea69">教学示意。会话能切换分支，改过的工作文件要单独处理。</figcaption></figure>
+<h2 id="团队要补的东西-可以从一次真实任务里找">用一条真实任务决定要加什么</h2>
+<p id="passage-04da7f5aa34e">仓库说明适合写构建和验收步骤，Skill 适合约定处理某类任务的方法，扩展适合在工具执行前后加检查。主分支发布需要的签核和权限，放在独立流程里执行。</p>
+<p id="passage-83241a48cf03">我会先用一个有失败用例的修复试跑。看它是否读到项目说明，第一次失败后用了哪条证据，以及最终报告能不能回到具体运行。缺上下文就补项目入口。要是只跑了局部测试却报整体验收，就先补验收范围和证据规则。</p>
+<h2 id="参考">参考</h2>
 <ul>
-<li data-passage-key="2d7408596a70" id="passage-0d83e7312973"><a href="https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/cli.md#tools">Pi CLI 工具配置</a></li>
-<li data-passage-key="8b7c531faa0d" id="passage-945d79d79078"><a href="https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/extensions.md">Pi 扩展与工具调用</a></li>
-<li data-passage-key="149d7db57c4d" id="passage-12e08f63002e"><a href="https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/sessions.md">Pi 会话、分支与上下文</a></li>
+<li id="passage-0d83e7312973"><a href="https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/cli.md#tools">Pi CLI 工具配置</a></li>
+<li id="passage-945d79d79078"><a href="https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/extensions.md">Pi 扩展与工具调用</a></li>
+<li id="passage-12e08f63002e"><a href="https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/sessions.md">Pi 会话、分支与上下文</a></li>
 </ul></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
-        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
-          <header class="passage-dialog-header">
-            <h2 id="passage-comment-title">段落评论</h2>
-            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
-          </header>
-          <div class="passage-dialog-content">
-            <blockquote data-passage-excerpt></blockquote>
-            <a data-passage-source>查看原文</a>
-            <p data-passage-status role="status"></p>
-            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
-            <div data-passage-widget></div>
-          </div>
-        </dialog>
 
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Pi/">Pi</a><a href="/tags/Coding-Agent/">Coding Agent</a><a href="/tags/Harness/">Harness</a></div>
         <div class="legacy-tags" hidden></div>
@@ -115,7 +101,7 @@
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
-          <div class="giscus"></div>
+          <div class="giscus" id="article-discussion"></div>
         </section>
       </div>
     </div>

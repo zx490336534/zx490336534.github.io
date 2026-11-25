@@ -20,7 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/4d941da4.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/4d941da4.html">
-<script type="module" src="/js/discussions.js"></script>
+<script src="/js/comments.js?v=4" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,64 +56,50 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#Git%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86-%E5%85%AD">Git基础知识(六)</a></li><li><a href="#%E5%88%86%E6%94%AF%E7%9A%84%E6%96%B0%E5%BB%BA%E4%B8%8E%E5%90%88%E5%B9%B6">分支的新建与合并</a></li><li><a href="#%E6%A8%A1%E6%8B%9F%E4%BF%AE%E5%A4%8DBug%E7%9A%84%E5%9C%BA%E6%99%AF">模拟修复Bug的场景</a></li><li><a href="#%E5%90%88%E5%B9%B6%E5%86%B2%E7%AA%81">合并冲突</a></li><li><a href="#%E5%88%86%E6%94%AF%E7%AE%A1%E7%90%86">分支管理</a></li><li><a href="#%E6%9F%A5%E7%9C%8B%E5%85%A8%E9%83%A8%E5%88%86%E6%94%AF">查看全部分支</a></li><li><a href="#%E8%BF%87%E6%BB%A4%E5%B7%B2%E7%BB%8F-%E8%BF%98%E6%B2%A1%E5%90%88%E5%B9%B6%E7%9A%84%E5%88%86%E6%94%AF">过滤已经/还没合并的分支</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><h1 data-passage-key="c9a4fecdcc8e" id="Git基础知识-六"><a class="headerlink" href="#Git基础知识-六" title="Git基础知识(六)"></a>Git基础知识(六)</h1><h2 data-passage-key="725ad0e775da" id="分支的新建与合并"><a class="headerlink" href="#分支的新建与合并" title="分支的新建与合并"></a>分支的新建与合并</h2><h3 data-passage-key="c0b97c3a4fcb" id="模拟修复Bug的场景"><a class="headerlink" href="#模拟修复Bug的场景" title="模拟修复Bug的场景"></a>模拟修复Bug的场景</h3><ol>
-<li data-passage-key="0ef1dab60eb0" id="passage-ecfaf2fff5cf">正常在工作分支「dev」上进行特性开发</li>
-<li data-passage-key="1fc25089b02a" id="passage-9c9dd66c96d9">测试告知主线版本「master」出现了一个bug「编号666」需要修复</li>
-<li data-passage-key="5fb2999522ab" id="passage-9cc7946e73b5">在出了版本的分支上新建一个新的分支「666」</li>
-<li data-passage-key="3a8f02b23798" id="passage-14ae963a1a1c">修复问题，提交修改，并推送至远端</li>
-<li data-passage-key="ee3a7fcb5af8" id="passage-0413a9777646">让管理员把「666」分支合入到主线</li>
-<li data-passage-key="f09e6b2fb874" id="passage-8cf93fa0e824">切换回特性开发分支继续开发<span id="more"></span>
-<h4 data-passage-key="65e22e8f66d1" id="新建分支"><a class="headerlink" href="#新建分支" title="新建分支"></a>新建分支</h4></li>
+        <div class="post-body" id="article-text"><h1 id="Git基础知识-六"><a class="headerlink" href="#Git基础知识-六" title="Git基础知识(六)"></a>Git基础知识(六)</h1><h2 id="分支的新建与合并"><a class="headerlink" href="#分支的新建与合并" title="分支的新建与合并"></a>分支的新建与合并</h2><h3 id="模拟修复Bug的场景"><a class="headerlink" href="#模拟修复Bug的场景" title="模拟修复Bug的场景"></a>模拟修复Bug的场景</h3><ol>
+<li id="passage-ecfaf2fff5cf">正常在工作分支「dev」上进行特性开发</li>
+<li id="passage-9c9dd66c96d9">测试告知主线版本「master」出现了一个bug「编号666」需要修复</li>
+<li id="passage-9cc7946e73b5">在出了版本的分支上新建一个新的分支「666」</li>
+<li id="passage-14ae963a1a1c">修复问题，提交修改，并推送至远端</li>
+<li id="passage-0413a9777646">让管理员把「666」分支合入到主线</li>
+<li id="passage-8cf93fa0e824">切换回特性开发分支继续开发<span id="more"></span>
+<h4 id="新建分支"><a class="headerlink" href="#新建分支" title="新建分支"></a>新建分支</h4></li>
 </ol>
-<p data-passage-key="17510d6e2691" id="passage-20ac5285bd6f">因为是主线上的bug，所以先切回到主线上去，不过本地的主线可能有点旧了，所以把本地的master分支删掉，然后和远端同步一下之后再从远端把master分支检出</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre data-passage-key="f1c0661652e1" id="passage-9b7635eda04c"><span class="line"><span class="meta">$</span><span class="bash"> git branch -d master</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git fetch origin</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git checkout master</span> </span><br/></pre></td></tr></tbody></table></figure>
-<p data-passage-key="571ec22b622c" id="passage-d7989d7acf6b"><img alt="更新master分支" decoding="async" height="393" loading="lazy" src="/images/blog-media/f32e5ee55686ebc64a9f.webp" width="1080"/>现在master分支是库上最新的了，我们可以放心的从当前提交拉出一个新的bug修复分支了</p>
-<p data-passage-key="63b803008e6f" id="passage-399c7aca305c">作为一个有即将可能成为优秀程序员的人，当然要学会偷懒了，使用<code>checkout -b</code>一起完成新建和切换分支的操作</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre data-passage-key="88c090dd0b77" id="passage-bd00943c2d6b"><span class="line"><span class="meta">$</span><span class="bash"> git checkout -b 666</span></span><br/><span class="line">相当于</span><br/><span class="line"><span class="meta">$</span><span class="bash"> git branch 666</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git checkout 666</span></span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-20ac5285bd6f">因为是主线上的bug，所以先切回到主线上去，不过本地的主线可能有点旧了，所以把本地的master分支删掉，然后和远端同步一下之后再从远端把master分支检出</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre id="passage-9b7635eda04c"><span class="line"><span class="meta">$</span><span class="bash"> git branch -d master</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git fetch origin</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git checkout master</span> </span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-d7989d7acf6b"><img alt="更新master分支" decoding="async" height="393" loading="lazy" src="/images/blog-media/f32e5ee55686ebc64a9f.webp" width="1080"/>现在master分支是库上最新的了，我们可以放心的从当前提交拉出一个新的bug修复分支了</p>
+<p id="passage-399c7aca305c">作为一个有即将可能成为优秀程序员的人，当然要学会偷懒了，使用<code>checkout -b</code>一起完成新建和切换分支的操作</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre id="passage-bd00943c2d6b"><span class="line"><span class="meta">$</span><span class="bash"> git checkout -b 666</span></span><br/><span class="line">相当于</span><br/><span class="line"><span class="meta">$</span><span class="bash"> git branch 666</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git checkout 666</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="新建加切换" decoding="async" height="111" loading="lazy" src="/images/blog-media/aad6733a0a653e4163a3.webp" width="1080"/></p>
-<p data-passage-key="97507e0d285d" id="passage-63ded5b60238">然后「666」分支上进行修改，提交，推送到远端</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre data-passage-key="971b25cb6489" id="passage-5551daa60c82"><span class="line"><span class="meta">$</span><span class="bash"> vim 1.py</span> </span><br/><span class="line"><span class="meta">$</span><span class="bash"> git add .</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git commit -m <span class="string">'fix 「666」'</span></span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git push --set-upstream origin 666</span></span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-63ded5b60238">然后「666」分支上进行修改，提交，推送到远端</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre id="passage-5551daa60c82"><span class="line"><span class="meta">$</span><span class="bash"> vim 1.py</span> </span><br/><span class="line"><span class="meta">$</span><span class="bash"> git add .</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git commit -m <span class="string">'fix 「666」'</span></span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git push --set-upstream origin 666</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="完成修改后提交" decoding="async" height="870" loading="lazy" src="/images/blog-media/4a7fe4c352ca201c7436.webp" width="1080"/></p>
-<p data-passage-key="a7e174ac06d8" id="passage-2d3df8cb2ea3">好了，现在使用<code>git checkout</code>切回到原来工作的分支去就行了。</p>
-<p data-passage-key="b73e9e37d975" id="passage-fc9ae7b10acd">不过假设你是管理员，那么你就需要多干一点事情了，把这个提交给合并到主线去才能算完成工作。</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre data-passage-key="4dc1c77f76fe" id="passage-63528bf6c895"><span class="line"><span class="meta">$</span><span class="bash"> git checkout master</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git merge 666</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git branch -d 666</span></span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-2d3df8cb2ea3">好了，现在使用<code>git checkout</code>切回到原来工作的分支去就行了。</p>
+<p id="passage-fc9ae7b10acd">不过假设你是管理员，那么你就需要多干一点事情了，把这个提交给合并到主线去才能算完成工作。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre id="passage-63528bf6c895"><span class="line"><span class="meta">$</span><span class="bash"> git checkout master</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git merge 666</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git branch -d 666</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="合并并删除无用分支" decoding="async" height="375" loading="lazy" src="/images/blog-media/57e51e733b232d0d0cfb.webp" width="1080"/></p>
-<h3 data-passage-key="9f14a6c7b566" id="合并冲突"><a class="headerlink" href="#合并冲突" title="合并冲突"></a>合并冲突</h3><p data-passage-key="7f662731b7bc" id="passage-56153cc037c4">假设有两个人一起在开发，那么就可能会出现，修改了同一行内容的情况。这样合并的时候就会报出冲突。</p>
-<h4 data-passage-key="2f0bf1577a92" id="环境搭建"><a class="headerlink" href="#环境搭建" title="环境搭建"></a>环境搭建</h4><p data-passage-key="4f93d3ee2bc1" id="passage-73403ee8b79a">首先要构造一个这样的环境</p>
-<p data-passage-key="631907ca7679" id="passage-95e9ff8f84cf">在当前的提交「A」上拉出两个分支「B」「C」，并修改同一个文件，然后先后合入到原来的提交「A」上。</p>
+<h3 id="合并冲突"><a class="headerlink" href="#合并冲突" title="合并冲突"></a>合并冲突</h3><p id="passage-56153cc037c4">假设有两个人一起在开发，那么就可能会出现，修改了同一行内容的情况。这样合并的时候就会报出冲突。</p>
+<h4 id="环境搭建"><a class="headerlink" href="#环境搭建" title="环境搭建"></a>环境搭建</h4><p id="passage-73403ee8b79a">首先要构造一个这样的环境</p>
+<p id="passage-95e9ff8f84cf">在当前的提交「A」上拉出两个分支「B」「C」，并修改同一个文件，然后先后合入到原来的提交「A」上。</p>
 <p><img alt="检出B并修改" decoding="async" height="356" loading="lazy" src="/images/blog-media/543fc50ee499af85d0b0.webp" width="1080"/></p>
 <p><img alt="检出C并修改" decoding="async" height="517" loading="lazy" src="/images/blog-media/75c1df4cd397e65f5cdb.webp" width="1080"/></p>
-<p data-passage-key="da5da6c9b85f" id="passage-627e398bf6cc">先合并B然后合并C</p>
+<p id="passage-627e398bf6cc">先合并B然后合并C</p>
 <p><img alt="image-20190404210904817" decoding="async" height="416" loading="lazy" src="/images/blog-media/58558f05c9258b217932.webp" width="1080"/></p>
-<p data-passage-key="5b01f161381f" id="passage-53d7fedc1011">查看冲突：</p>
+<p id="passage-53d7fedc1011">查看冲突：</p>
 <p><img alt="查看冲突" decoding="async" height="318" loading="lazy" src="/images/blog-media/82aadcd728901fba91f0.webp" width="1054"/></p>
-<p data-passage-key="65322b025e98" id="passage-86c5d5a974a4">只有<code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>和<code>=======</code>和 <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>都去除掉了才能正常提交</p>
-<p data-passage-key="1490d8ddef26" id="passage-1d9c0adc3e80">其中<code>=======</code>上面是「HEAD」的部分</p>
-<p data-passage-key="b21e012c8899" id="passage-2a655d78bbf4">下面是「C_」分支部分</p>
+<p id="passage-86c5d5a974a4">只有<code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code>和<code>=======</code>和 <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>都去除掉了才能正常提交</p>
+<p id="passage-1d9c0adc3e80">其中<code>=======</code>上面是「HEAD」的部分</p>
+<p id="passage-2a655d78bbf4">下面是「C_」分支部分</p>
 <p><img alt="image-20190404211057676" decoding="async" height="144" loading="lazy" src="/images/blog-media/b769b0ce52e4b572cbbb.webp" width="670"/></p>
-<p data-passage-key="2b99b781fbc3" id="passage-8080b6c53c87">提交之前也还是需要进行提交，这样本地的位置「HEAD」就指向本地的master了</p>
+<p id="passage-8080b6c53c87">提交之前也还是需要进行提交，这样本地的位置「HEAD」就指向本地的master了</p>
 <p><img alt="解决冲突后提交" decoding="async" height="1263" loading="lazy" src="/images/blog-media/0b58f9204df16d7a2f19.webp" width="1080"/></p>
-<h2 data-passage-key="39c46b183adb" id="分支管理"><a class="headerlink" href="#分支管理" title="分支管理"></a>分支管理</h2><h3 data-passage-key="8473d635ea34" id="查看全部分支"><a class="headerlink" href="#查看全部分支" title="查看全部分支"></a>查看全部分支</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="32a4e53cca41" id="passage-ad3b8d006b7f"><span class="line"><span class="meta">$</span><span class="bash"> git branch</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git branch -v</span></span><br/></pre></td></tr></tbody></table></figure>
+<h2 id="分支管理"><a class="headerlink" href="#分支管理" title="分支管理"></a>分支管理</h2><h3 id="查看全部分支"><a class="headerlink" href="#查看全部分支" title="查看全部分支"></a>查看全部分支</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre id="passage-ad3b8d006b7f"><span class="line"><span class="meta">$</span><span class="bash"> git branch</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git branch -v</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="image-20190404211426258" decoding="async" height="270" loading="lazy" src="/images/blog-media/d58c38f61542f85b0611.webp" width="1080"/></p>
 <p><img alt="image-20190404211504986" decoding="async" height="261" loading="lazy" src="/images/blog-media/2ed5ccfe765dbe0c4d07.webp" width="1080"/></p>
-<h3 data-passage-key="b8e96a43f8ac" id="过滤已经-还没合并的分支"><a class="headerlink" href="#过滤已经-还没合并的分支" title="过滤已经/还没合并的分支"></a>过滤已经/还没合并的分支</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre data-passage-key="f38fe8deffe4" id="passage-9f881ed79c83"><span class="line"><span class="meta">$</span><span class="bash"> git branch --no-merged <span class="comment"># 查看还未合并的分支</span></span></span><br/><span class="line"></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git branch --merged <span class="comment"># 查看已经合并的分支</span></span></span><br/></pre></td></tr></tbody></table></figure>
+<h3 id="过滤已经-还没合并的分支"><a class="headerlink" href="#过滤已经-还没合并的分支" title="过滤已经/还没合并的分支"></a>过滤已经/还没合并的分支</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre id="passage-9f881ed79c83"><span class="line"><span class="meta">$</span><span class="bash"> git branch --no-merged <span class="comment"># 查看还未合并的分支</span></span></span><br/><span class="line"></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git branch --merged <span class="comment"># 查看已经合并的分支</span></span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="查看已合并的分支" decoding="async" height="270" loading="lazy" src="/images/blog-media/f89f04135cb3f0ae7674.webp" width="1080"/></p>
-<p data-passage-key="6e39b3df3715" id="passage-c26aeed5598b">新建了一个分支「<code>D_</code>」并完成了一次提交，切换回「master」的时候使用<code>查看还未合并的分支</code>命令可以看到分支「<code>D_</code>」</p>
+<p id="passage-c26aeed5598b">新建了一个分支「<code>D_</code>」并完成了一次提交，切换回「master」的时候使用<code>查看还未合并的分支</code>命令可以看到分支「<code>D_</code>」</p>
 <p><img alt="查看未合并的分支" decoding="async" height="493" loading="lazy" src="/images/blog-media/50385697cc9b35b6ec65.webp" width="1080"/></p></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
-        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
-          <header class="passage-dialog-header">
-            <h2 id="passage-comment-title">段落评论</h2>
-            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
-          </header>
-          <div class="passage-dialog-content">
-            <blockquote data-passage-excerpt></blockquote>
-            <a data-passage-source>查看原文</a>
-            <p data-passage-status role="status"></p>
-            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
-            <div data-passage-widget></div>
-          </div>
-        </dialog>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/Z_y1u_4deI3LTJkDutR5oQ">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Git/">Git</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/Git/">Git</a></div>
@@ -127,7 +113,7 @@
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
-          <div class="giscus"></div>
+          <div class="giscus" id="article-discussion"></div>
         </section>
       </div>
     </div>

@@ -20,7 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/12326327.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/12326327.html">
-<script type="module" src="/js/discussions.js"></script>
+<script src="/js/comments.js?v=4" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,88 +56,74 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#Git%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86-%E4%B9%9D">Git基础知识(九)</a></li><li><a href="#%E5%8D%8F%E8%AE%AE">协议</a></li><li><a href="#%E6%9C%AC%E5%9C%B0%E5%8D%8F%E8%AE%AE">本地协议</a></li><li><a href="#HTTP%E5%8D%8F%E8%AE%AE">HTTP协议</a></li><li><a href="#SSH%E5%8D%8F%E8%AE%AE">SSH协议</a></li><li><a href="#Git%E5%8D%8F%E8%AE%AE">Git协议</a></li><li><a href="#%E6%90%AD%E5%BB%BAGit%E4%BB%93%E5%BA%93">搭建Git仓库</a></li><li><a href="#%E5%AF%BC%E5%87%BA%E8%A3%B8%E4%BB%93%E5%BA%93">导出裸仓库</a></li><li><a href="#%E6%8A%8A%E4%BB%93%E5%BA%93%E6%94%BE%E5%88%B0%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A">把仓库放到服务器上</a></li><li><a href="#%E5%85%8B%E9%9A%86%E5%86%85%E5%AE%B9">克隆内容</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><h1 data-passage-key="6479833239c7" id="Git基础知识-九"><a class="headerlink" href="#Git基础知识-九" title="Git基础知识(九)"></a>Git基础知识(九)</h1><p data-passage-key="b1cad0f793ae" id="passage-9f74ca4ca514">一个远程仓库通常只是一个<code>裸仓库</code>： 一个没有当前<code>工作目录</code>的仓库。</p>
-<p data-passage-key="b7afd14ce081" id="passage-488d0a569e51">简单的说，裸仓库就是你工程目录内的 <code>.git</code> 子目录内容，不包含其他资料。</p>
-<h2 data-passage-key="ab2f31f30acf" id="协议"><a class="headerlink" href="#协议" title="协议"></a>协议</h2><ul>
-<li data-passage-key="c58c6982909a" id="passage-73db2277970c">本地协议</li>
-<li data-passage-key="c2e5ada2a7ec" id="passage-7fd8d00d61f9">HTTP协议</li>
-<li data-passage-key="062066e325c8" id="passage-935ac6f36e7e">SSH协议</li>
-<li data-passage-key="966ba5f303b7" id="passage-c4696929b32e">Git协议<span id="more"></span>
-<h3 data-passage-key="1ef7b511377e" id="本地协议"><a class="headerlink" href="#本地协议" title="本地协议"></a>本地协议</h3></li>
+        <div class="post-body" id="article-text"><h1 id="Git基础知识-九"><a class="headerlink" href="#Git基础知识-九" title="Git基础知识(九)"></a>Git基础知识(九)</h1><p id="passage-9f74ca4ca514">一个远程仓库通常只是一个<code>裸仓库</code>： 一个没有当前<code>工作目录</code>的仓库。</p>
+<p id="passage-488d0a569e51">简单的说，裸仓库就是你工程目录内的 <code>.git</code> 子目录内容，不包含其他资料。</p>
+<h2 id="协议"><a class="headerlink" href="#协议" title="协议"></a>协议</h2><ul>
+<li id="passage-73db2277970c">本地协议</li>
+<li id="passage-7fd8d00d61f9">HTTP协议</li>
+<li id="passage-935ac6f36e7e">SSH协议</li>
+<li id="passage-c4696929b32e">Git协议<span id="more"></span>
+<h3 id="本地协议"><a class="headerlink" href="#本地协议" title="本地协议"></a>本地协议</h3></li>
 </ul>
-<p data-passage-key="1a08dc803c53" id="passage-c36c4bfe95c5">使用本地的一个文件夹当作仓库的时候，将它使用<strong>文件共享</strong>给其他人。</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="41c6f7e3b0b2" id="passage-a65745b8eead"><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> /opt/git/project.git <span class="comment"># 本机</span></span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> file:///opt/git/project.git <span class="comment">#共享文件</span></span></span><br/></pre></td></tr></tbody></table></figure>
-<p data-passage-key="50a630babe5f" id="passage-4d5d69d4251d">增加一个本地版本到Git项目</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="866a1c1632c8" id="passage-5d889182b301"><span class="line"><span class="meta">$</span><span class="bash"> git remote add local_proj /opt/git/project.git</span></span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-c36c4bfe95c5">使用本地的一个文件夹当作仓库的时候，将它使用<strong>文件共享</strong>给其他人。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre id="passage-a65745b8eead"><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> /opt/git/project.git <span class="comment"># 本机</span></span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> file:///opt/git/project.git <span class="comment">#共享文件</span></span></span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-4d5d69d4251d">增加一个本地版本到Git项目</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-5d889182b301"><span class="line"><span class="meta">$</span><span class="bash"> git remote add local_proj /opt/git/project.git</span></span><br/></pre></td></tr></tbody></table></figure>
 <ul>
-<li data-passage-key="bb6ff4c56d15" id="passage-e157b3b8c660">优点</li>
+<li id="passage-e157b3b8c660">优点</li>
 </ul>
-<p data-passage-key="d1c5c378f713" id="passage-054d0df2782c">简单，直接使用了现有的文件权限和网络访问权限。</p>
+<p id="passage-054d0df2782c">简单，直接使用了现有的文件权限和网络访问权限。</p>
 <ul>
-<li data-passage-key="93369b8dcd29" id="passage-5a228180796c">缺点</li>
+<li id="passage-5a228180796c">缺点</li>
 </ul>
-<p data-passage-key="1af6493a0452" id="passage-73b7ad5eb94d">不方便从多个位置访问。</p>
-<p data-passage-key="11b853d6bf68" id="passage-4ccf6662c051">并不保护仓库避免意外的损坏，每一个用户都有“远程”目录的完整 shell 权限，没有方法可以 阻止他们修改或删除 Git 内部文件和损坏仓库。</p>
-<h3 data-passage-key="5eac64b49ae0" id="HTTP协议"><a class="headerlink" href="#HTTP协议" title="HTTP协议"></a>HTTP协议</h3><ul>
-<li data-passage-key="05669b69dd23" id="passage-539458893cca"><p data-passage-key="c9f4dae1e834" id="passage-4151bc98c98c"><code>Git 1.6.6</code>之前的HTTP协议是<code>只读模式</code>的，又称为「哑」HTTP协议。</p>
+<p id="passage-73b7ad5eb94d">不方便从多个位置访问。</p>
+<p id="passage-4ccf6662c051">并不保护仓库避免意外的损坏，每一个用户都有“远程”目录的完整 shell 权限，没有方法可以 阻止他们修改或删除 Git 内部文件和损坏仓库。</p>
+<h3 id="HTTP协议"><a class="headerlink" href="#HTTP协议" title="HTTP协议"></a>HTTP协议</h3><ul>
+<li id="passage-539458893cca"><p id="passage-4151bc98c98c"><code>Git 1.6.6</code>之前的HTTP协议是<code>只读模式</code>的，又称为「哑」HTTP协议。</p>
 </li>
-<li data-passage-key="d61678cd4f1a" id="passage-0c2606e62a39"><p data-passage-key="22c9e6458f4c" id="passage-ed545a6ad8d0"><code>Git 1.6.6</code>之后的HTTP协议，又称「智能」HTTP协议。</p>
-</li>
-</ul>
-<p data-passage-key="1cee3dc8a0da" id="passage-a9325f008484">可以使用 HTTP 协议的用户名／密码的基础 授权，免去设置 SSH 公钥。</p>
-<p data-passage-key="4a128accd0b8" id="passage-20964add3845">相比 SSH 协议，可以使用用户名／密码授权是一个很大的优势，这样用户就不必须在使用 Git 之前先在本地生成 SSH 密钥对再把公钥上传到服务器。</p>
-<h3 data-passage-key="298123cc387c" id="SSH协议"><a class="headerlink" href="#SSH协议" title="SSH协议"></a>SSH协议</h3><p data-passage-key="23ffb30ecab0" id="passage-5515aade0058">SSH 协议也是一个验证授权的网络协议；</p>
-<p data-passage-key="18582080fd9a" id="passage-3b5477f749f3">克隆的方法：</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre data-passage-key="f3a9d066d226" id="passage-632275c4c159"><span class="line"><span class="meta">#</span><span class="bash"> 1</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> ssh://user@server/project.git</span></span><br/><span class="line"><span class="meta">#</span><span class="bash"> 2</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> user@server:project.git</span></span><br/></pre></td></tr></tbody></table></figure>
-<p data-passage-key="f8061ca3bf3f" id="passage-cb9d7106fa00">优点：</p>
-<ul>
-<li data-passage-key="ca3ed48daba0" id="passage-0e479032a463"><p data-passage-key="946adb2a51f6" id="passage-a7cbc4d88777">通过 SSH 访问是安全的「 所有传输数据都要经过授权和加密。」</p>
-</li>
-<li data-passage-key="b9e346407772" id="passage-9fcbc7a3c4be"><p data-passage-key="b543cd0a51c9" id="passage-b54fe27e4a7f">SSH 协议很<code>高效</code>，在传输前也会尽量压缩数据。</p>
+<li id="passage-0c2606e62a39"><p id="passage-ed545a6ad8d0"><code>Git 1.6.6</code>之后的HTTP协议，又称「智能」HTTP协议。</p>
 </li>
 </ul>
-<p data-passage-key="a3620417c3ac" id="passage-475ae88b48d0">缺点：</p>
+<p id="passage-a9325f008484">可以使用 HTTP 协议的用户名／密码的基础 授权，免去设置 SSH 公钥。</p>
+<p id="passage-20964add3845">相比 SSH 协议，可以使用用户名／密码授权是一个很大的优势，这样用户就不必须在使用 Git 之前先在本地生成 SSH 密钥对再把公钥上传到服务器。</p>
+<h3 id="SSH协议"><a class="headerlink" href="#SSH协议" title="SSH协议"></a>SSH协议</h3><p id="passage-5515aade0058">SSH 协议也是一个验证授权的网络协议；</p>
+<p id="passage-3b5477f749f3">克隆的方法：</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre id="passage-632275c4c159"><span class="line"><span class="meta">#</span><span class="bash"> 1</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> ssh://user@server/project.git</span></span><br/><span class="line"><span class="meta">#</span><span class="bash"> 2</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> user@server:project.git</span></span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-cb9d7106fa00">优点：</p>
 <ul>
-<li data-passage-key="2464ba3316f0" id="passage-dae5560ca1a0">不能匿名访问（即使是只读数据）</li>
+<li id="passage-0e479032a463"><p id="passage-a7cbc4d88777">通过 SSH 访问是安全的「 所有传输数据都要经过授权和加密。」</p>
+</li>
+<li id="passage-9fcbc7a3c4be"><p id="passage-b54fe27e4a7f">SSH 协议很<code>高效</code>，在传输前也会尽量压缩数据。</p>
+</li>
 </ul>
-<h3 data-passage-key="8a619c782acf" id="Git协议"><a class="headerlink" href="#Git协议" title="Git协议"></a>Git协议</h3><p data-passage-key="5389f290153a" id="passage-630349a2049e">包含在 Git 里的一个特殊的守护进程。</p>
-<p data-passage-key="6d3537b599a5" id="passage-f425a7d5a9b4">它监听在一个特定的端口「9418」。</p>
-<p data-passage-key="67d5a9ca8897" id="passage-3d1af190e871">要让版本库支持 Git 协议，需要先创建一个 <code>git-daemon-export-ok</code> 文 件 ：它是 Git 协议守护进程为这个版本库提供服务的必要条件 「但是除此之外没有任何安全措施」。 要么谁都可以克隆这个版本库，要么谁也不能。 由于没有授权机制，一旦开放推送操作，意味着网络上知道这个项目 URL 的人都可以向项目推送数据。</p>
-<p data-passage-key="f019d7c4433b" id="passage-5941b05a00d1">优点：<code>最快</code></p>
-<p data-passage-key="6f0965b2864a" id="passage-ac769f62d853">缺点：缺乏<code>授权机制</code></p>
-<h2 data-passage-key="f350eddaa2f9" id="搭建Git仓库"><a class="headerlink" href="#搭建Git仓库" title="搭建Git仓库"></a>搭建Git仓库</h2><h3 data-passage-key="9d925c21477a" id="导出裸仓库"><a class="headerlink" href="#导出裸仓库" title="导出裸仓库"></a>导出裸仓库</h3><p data-passage-key="6ec770d0713e" id="passage-5772e9e29374">我们需要导出一个「不包含当前工作目录的仓库」</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="9df815b45af4" id="passage-9dde65e00c2c"><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> --bare Git_study Git_study.git</span></span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-475ae88b48d0">缺点：</p>
+<ul>
+<li id="passage-dae5560ca1a0">不能匿名访问（即使是只读数据）</li>
+</ul>
+<h3 id="Git协议"><a class="headerlink" href="#Git协议" title="Git协议"></a>Git协议</h3><p id="passage-630349a2049e">包含在 Git 里的一个特殊的守护进程。</p>
+<p id="passage-f425a7d5a9b4">它监听在一个特定的端口「9418」。</p>
+<p id="passage-3d1af190e871">要让版本库支持 Git 协议，需要先创建一个 <code>git-daemon-export-ok</code> 文 件 ：它是 Git 协议守护进程为这个版本库提供服务的必要条件 「但是除此之外没有任何安全措施」。 要么谁都可以克隆这个版本库，要么谁也不能。 由于没有授权机制，一旦开放推送操作，意味着网络上知道这个项目 URL 的人都可以向项目推送数据。</p>
+<p id="passage-5941b05a00d1">优点：<code>最快</code></p>
+<p id="passage-ac769f62d853">缺点：缺乏<code>授权机制</code></p>
+<h2 id="搭建Git仓库"><a class="headerlink" href="#搭建Git仓库" title="搭建Git仓库"></a>搭建Git仓库</h2><h3 id="导出裸仓库"><a class="headerlink" href="#导出裸仓库" title="导出裸仓库"></a>导出裸仓库</h3><p id="passage-5772e9e29374">我们需要导出一个「不包含当前工作目录的仓库」</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-9dde65e00c2c"><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> --bare Git_study Git_study.git</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="导出裸仓库" decoding="async" height="297" loading="lazy" src="/images/blog-media/d01677794f4bb345a569.webp" width="1080"/></p>
-<h3 data-passage-key="aaf85fcc8d31" id="把仓库放到服务器上"><a class="headerlink" href="#把仓库放到服务器上" title="把仓库放到服务器上"></a>把仓库放到服务器上</h3><p data-passage-key="cd2a23ee90cb" id="passage-b0e06a55b555">假设使用我的阿里云设备来当服务器</p>
-<p data-passage-key="a7f71261a0e0" id="passage-3b99f5d7afa8">我在/home/zx路径下新建一个文件夹git_study</p>
-<p data-passage-key="6edf1cfbb38b" id="passage-322ca3fe6a93">存放路径：<code>/home/zx/git_study</code></p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="497602dec4eb" id="passage-47225cf60b40"><span class="line"><span class="meta">$</span><span class="bash"> scp -r Git_study.git zx@123.56.13.233://home/zx/git_study</span></span><br/></pre></td></tr></tbody></table></figure>
+<h3 id="把仓库放到服务器上"><a class="headerlink" href="#把仓库放到服务器上" title="把仓库放到服务器上"></a>把仓库放到服务器上</h3><p id="passage-b0e06a55b555">假设使用我的阿里云设备来当服务器</p>
+<p id="passage-3b99f5d7afa8">我在/home/zx路径下新建一个文件夹git_study</p>
+<p id="passage-322ca3fe6a93">存放路径：<code>/home/zx/git_study</code></p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-47225cf60b40"><span class="line"><span class="meta">$</span><span class="bash"> scp -r Git_study.git zx@123.56.13.233://home/zx/git_study</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="上传至服务器" decoding="async" height="595" loading="lazy" src="/images/blog-media/86b433b96683cbb372fa.webp" width="1080"/></p>
-<p data-passage-key="e4bd9914eede" id="passage-55e42cc580e6">下面看一下阿里云上的内容</p>
+<p id="passage-55e42cc580e6">下面看一下阿里云上的内容</p>
 <p><img alt="服务器侧" decoding="async" height="270" loading="lazy" src="/images/blog-media/1d2decc3a4b0ade39f8d.webp" width="412"/></p>
-<h3 data-passage-key="8c96fe3a562e" id="克隆内容"><a class="headerlink" href="#克隆内容" title="克隆内容"></a>克隆内容</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="621e79658ea7" id="passage-d1d24d1b6379"><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> zx@123.56.13.233:/home/zx/git_study/Git_study.git</span></span><br/></pre></td></tr></tbody></table></figure>
+<h3 id="克隆内容"><a class="headerlink" href="#克隆内容" title="克隆内容"></a>克隆内容</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-d1d24d1b6379"><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> zx@123.56.13.233:/home/zx/git_study/Git_study.git</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="普通克隆" decoding="async" height="218" loading="lazy" src="/images/blog-media/f098a63bb9242054c68e.webp" width="1080"/></p>
-<p data-passage-key="668e98a924fc" id="passage-913e0b5556ca">也可以将这个仓库进行修改，使其拥有<code>推送权限</code>。</p>
-<p data-passage-key="04177424479e" id="passage-5cbe8c0cd16e">运行 <code>git init</code> 命令，并加上 <code>--shared</code> 选项，那么 Git 会自动修改该仓库目录的组权限 为可写。</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre data-passage-key="8296088b141c" id="passage-79cae0f76a6d"><span class="line"><span class="meta">$</span><span class="bash"> ssh zx@123.56.13.233</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> /home/zx/git_study/Git_study.git</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git init --bare --shared</span></span><br/><span class="line"><span class="meta">#</span><span class="bash"> Reinitialized existing shared Git repository <span class="keyword">in</span> /home/zx/git_study/Git_study.git/</span></span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-913e0b5556ca">也可以将这个仓库进行修改，使其拥有<code>推送权限</code>。</p>
+<p id="passage-5cbe8c0cd16e">运行 <code>git init</code> 命令，并加上 <code>--shared</code> 选项，那么 Git 会自动修改该仓库目录的组权限 为可写。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre id="passage-79cae0f76a6d"><span class="line"><span class="meta">$</span><span class="bash"> ssh zx@123.56.13.233</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> /home/zx/git_study/Git_study.git</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git init --bare --shared</span></span><br/><span class="line"><span class="meta">#</span><span class="bash"> Reinitialized existing shared Git repository <span class="keyword">in</span> /home/zx/git_study/Git_study.git/</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="增加权限" decoding="async" height="874" loading="lazy" src="/images/blog-media/7f5c865d64d118be396e.webp" width="1080"/></p>
-<p data-passage-key="efe364f1e2f2" id="passage-749506daa5ef">由于我大部分时间都是使用的HTTP来进行Git操作，所以SSH相关内容就不画蛇添足了。</p>
-<p data-passage-key="22abea571203" id="passage-8f4e74a8cfd9">有很多优秀的代码托管平台可以选择：<a href="https://git.wiki.kernel.org/index.php/GitHosting" rel="noopener" target="_blank">https://git.wiki.kernel.org/index.php/GitHosting</a></p>
+<p id="passage-749506daa5ef">由于我大部分时间都是使用的HTTP来进行Git操作，所以SSH相关内容就不画蛇添足了。</p>
+<p id="passage-8f4e74a8cfd9">有很多优秀的代码托管平台可以选择：<a href="https://git.wiki.kernel.org/index.php/GitHosting" rel="noopener" target="_blank">https://git.wiki.kernel.org/index.php/GitHosting</a></p>
 <p><img alt="代码托管" decoding="async" height="573" loading="lazy" src="/images/blog-media/6dbe6bf410998aa4d436.webp" width="1080"/></p></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
-        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
-          <header class="passage-dialog-header">
-            <h2 id="passage-comment-title">段落评论</h2>
-            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
-          </header>
-          <div class="passage-dialog-content">
-            <blockquote data-passage-excerpt></blockquote>
-            <a data-passage-source>查看原文</a>
-            <p data-passage-status role="status"></p>
-            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
-            <div data-passage-widget></div>
-          </div>
-        </dialog>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/y8lstzOPvCqJF-iNR5stmw">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Git/">Git</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/Git/">Git</a></div>
@@ -151,7 +137,7 @@
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
-          <div class="giscus"></div>
+          <div class="giscus" id="article-discussion"></div>
         </section>
       </div>
     </div>

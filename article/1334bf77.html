@@ -20,7 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/1334bf77.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/1334bf77.html">
-<script type="module" src="/js/discussions.js"></script>
+<script src="/js/comments.js?v=4" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,69 +56,55 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#PC%E7%AB%AF%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%EF%BC%88%E4%B8%80%EF%BC%89">PC端自动化测试（一）</a></li><li><a href="#%E5%AE%89%E8%A3%85">安装</a></li><li><a href="#%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%8F%AF%E8%AE%BF%E9%97%AE%E6%8A%80%E6%9C%AF">应用程序的可访问技术</a></li><li><a href="#%E6%94%AF%E6%8C%81%E6%8E%A7%E4%BB%B6%E7%9A%84%E8%AE%BF%E9%97%AE%E6%8A%80%E6%9C%AF">支持控件的访问技术</a></li><li><a href="#%E8%BF%9B%E7%A8%8B%E6%95%B0%E9%87%8F">进程数量</a></li><li><a href="#GUI%E5%AF%B9%E8%B1%A1%E6%A3%80%E6%9F%A5%E5%B7%A5%E5%85%B7">GUI对象检查工具</a></li><li><a href="#Inspect-exe">Inspect.exe</a></li><li><a href="#spy-exe">spy++.exe</a></li><li><a href="#ViewWizard">ViewWizard</a></li><li><a href="#%E6%89%93%E5%BC%80%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F">打开应用程序</a></li><li><a href="#%E8%BF%9E%E6%8E%A5%E5%B7%B2%E7%BB%8F%E6%89%93%E5%BC%80%E7%9A%84%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F">连接已经打开的应用程序</a></li><li><a href="#%E9%80%89%E6%8B%A9%E6%8C%87%E5%AE%9A%E7%9A%84%E7%AA%97%E5%8F%A3">选择指定的窗口</a></li><li><a href="#%E6%93%8D%E4%BD%9C%E7%AA%97%E5%8F%A3">操作窗口</a></li><li><a href="#%E9%80%89%E6%8B%A9%E6%8E%A7%E4%BB%B6">选择控件</a></li><li><a href="#%E6%8E%A7%E4%BB%B6%E7%9A%84%E5%88%86%E7%B1%BB">控件的分类</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><h1 data-passage-key="7cd2de4d3a43" id="PC端自动化测试（一）"><a class="headerlink" href="#PC端自动化测试（一）" title="PC端自动化测试（一）"></a>PC端自动化测试（一）</h1><blockquote data-passage-key="22cd97970fee" id="passage-fec250c41c9a">
-<p data-passage-key="e4505680c143" id="passage-1ebab57c234f">pywinauto:同时支持控件操作和图像操作，支持Win32 API和MS UI Automation API</p>
-<p data-passage-key="71b47c9c2b9e" id="passage-ff302326bde7">A set of Python modules to automate the Microsoft Windows GUI</p>
+        <div class="post-body" id="article-text"><h1 id="PC端自动化测试（一）"><a class="headerlink" href="#PC端自动化测试（一）" title="PC端自动化测试（一）"></a>PC端自动化测试（一）</h1><blockquote id="passage-fec250c41c9a">
+<p id="passage-1ebab57c234f">pywinauto:同时支持控件操作和图像操作，支持Win32 API和MS UI Automation API</p>
+<p id="passage-ff302326bde7">A set of Python modules to automate the Microsoft Windows GUI</p>
 </blockquote>
-<h2 data-passage-key="e8f88f51ccb0" id="安装"><a class="headerlink" href="#安装" title="安装"></a>安装</h2><ul>
-<li data-passage-key="bf00e4eb054f" id="passage-3d66a2f09e02">python3环境（python3.5以上）</li>
-<li data-passage-key="fa431b12bf61" id="passage-22302f9bff7f">pip环境</li>
+<h2 id="安装"><a class="headerlink" href="#安装" title="安装"></a>安装</h2><ul>
+<li id="passage-3d66a2f09e02">python3环境（python3.5以上）</li>
+<li id="passage-22302f9bff7f">pip环境</li>
 </ul>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="f5d5c4b258f4" id="passage-402c06fc2cb7"><span class="line"><span class="meta">$</span><span class="bash"> pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pywinauto</span></span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-402c06fc2cb7"><span class="line"><span class="meta">$</span><span class="bash"> pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pywinauto</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="pip安装" decoding="async" height="602" loading="lazy" src="/images/blog-media/96c9d464e9b7cb46fb2f.webp" width="1080"/></p>
-<h2 data-passage-key="76556f24f395" id="应用程序的可访问技术"><a class="headerlink" href="#应用程序的可访问技术" title="应用程序的可访问技术"></a>应用程序的可访问技术</h2><h3 data-passage-key="c9ac7d350721" id="支持控件的访问技术"><a class="headerlink" href="#支持控件的访问技术" title="支持控件的访问技术"></a>支持控件的访问技术</h3><h4 data-passage-key="278ff45f8430" id="Win32-API（backend-“win32”）-默认的backend"><a class="headerlink" href="#Win32-API（backend-“win32”）-默认的backend" title="Win32 API（backend=“win32”） 默认的backend"></a>Win32 API（backend=“win32”） 默认的backend</h4><p data-passage-key="6cd1a8be2209" id="passage-53cfac9f79fa">MFC，VB6，VCL简单的WinForms控件和大多数旧的应用程序</p>
-<h4 data-passage-key="b8f64d8fe199" id="MS-UI-Automation-API（backend-“uia”）"><a class="headerlink" href="#MS-UI-Automation-API（backend-“uia”）" title="MS UI Automation API（backend=“uia”）"></a>MS UI Automation API（backend=“uia”）</h4><p data-passage-key="7f3acf7122a2" id="passage-784a393b043a">WinForms，WPF，Store apps，Qt5，浏览器</p>
-<h3 data-passage-key="b8b209202f79" id="进程数量"><a class="headerlink" href="#进程数量" title="进程数量"></a>进程数量</h3><h4 data-passage-key="2b5c36ab6fe6" id="单进程"><a class="headerlink" href="#单进程" title="单进程"></a>单进程</h4><p data-passage-key="927a082dc62e" id="passage-897f055d5500"><code>Application</code>作用范围是一个进程</p>
-<h4 data-passage-key="6fb3e7601893" id="跨进程"><a class="headerlink" href="#跨进程" title="跨进程"></a>跨进程</h4><p data-passage-key="28c44ba8f671" id="passage-18590e43f6e5"><code>Desktop</code>作用范围可以跨进程</p>
-<h2 data-passage-key="b946a9e3b3f9" id="GUI对象检查工具"><a class="headerlink" href="#GUI对象检查工具" title="GUI对象检查工具"></a>GUI对象检查工具</h2><h3 data-passage-key="6592fabd689b" id="Inspect-exe"><a class="headerlink" href="#Inspect-exe" title="Inspect.exe"></a>Inspect.exe</h3><h3 data-passage-key="a130dfaff21e" id="spy-exe"><a class="headerlink" href="#spy-exe" title="spy++.exe"></a>spy++.exe</h3><h3 data-passage-key="83091c9c1491" id="ViewWizard"><a class="headerlink" href="#ViewWizard" title="ViewWizard"></a>ViewWizard</h3><h2 data-passage-key="1e8966181984" id="打开应用程序"><a class="headerlink" href="#打开应用程序" title="打开应用程序"></a>打开应用程序</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/></pre></td><td class="code"><pre data-passage-key="8864d16e0fce" id="passage-5e4e33a08887"><span class="line"><span class="keyword">from</span> pywinauto.application <span class="keyword">import</span> Application</span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 打开指定的应用程序</span></span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 1. 打开windows自带的应用</span></span><br/><span class="line">app = Application(backend=<span class="string">'uia'</span>).start(<span class="string">"notepad.exe"</span>)</span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 2. 打开任意一个应用程序</span></span><br/><span class="line">app = Application(backend=<span class="string">'uia'</span>).start(<span class="string">"exe路径"</span>)</span><br/></pre></td></tr></tbody></table></figure>
-<h2 data-passage-key="d23c4ac10106" id="连接已经打开的应用程序"><a class="headerlink" href="#连接已经打开的应用程序" title="连接已经打开的应用程序"></a>连接已经打开的应用程序</h2><ul>
-<li data-passage-key="7cb7e2493a10" id="passage-8a3a4d912c6d">通过进程号</li>
-<li data-passage-key="ac87e5ca910e" id="passage-4fbdafa59cd4">通过窗口句柄</li>
+<h2 id="应用程序的可访问技术"><a class="headerlink" href="#应用程序的可访问技术" title="应用程序的可访问技术"></a>应用程序的可访问技术</h2><h3 id="支持控件的访问技术"><a class="headerlink" href="#支持控件的访问技术" title="支持控件的访问技术"></a>支持控件的访问技术</h3><h4 id="Win32-API（backend-“win32”）-默认的backend"><a class="headerlink" href="#Win32-API（backend-“win32”）-默认的backend" title="Win32 API（backend=“win32”） 默认的backend"></a>Win32 API（backend=“win32”） 默认的backend</h4><p id="passage-53cfac9f79fa">MFC，VB6，VCL简单的WinForms控件和大多数旧的应用程序</p>
+<h4 id="MS-UI-Automation-API（backend-“uia”）"><a class="headerlink" href="#MS-UI-Automation-API（backend-“uia”）" title="MS UI Automation API（backend=“uia”）"></a>MS UI Automation API（backend=“uia”）</h4><p id="passage-784a393b043a">WinForms，WPF，Store apps，Qt5，浏览器</p>
+<h3 id="进程数量"><a class="headerlink" href="#进程数量" title="进程数量"></a>进程数量</h3><h4 id="单进程"><a class="headerlink" href="#单进程" title="单进程"></a>单进程</h4><p id="passage-897f055d5500"><code>Application</code>作用范围是一个进程</p>
+<h4 id="跨进程"><a class="headerlink" href="#跨进程" title="跨进程"></a>跨进程</h4><p id="passage-18590e43f6e5"><code>Desktop</code>作用范围可以跨进程</p>
+<h2 id="GUI对象检查工具"><a class="headerlink" href="#GUI对象检查工具" title="GUI对象检查工具"></a>GUI对象检查工具</h2><h3 id="Inspect-exe"><a class="headerlink" href="#Inspect-exe" title="Inspect.exe"></a>Inspect.exe</h3><h3 id="spy-exe"><a class="headerlink" href="#spy-exe" title="spy++.exe"></a>spy++.exe</h3><h3 id="ViewWizard"><a class="headerlink" href="#ViewWizard" title="ViewWizard"></a>ViewWizard</h3><h2 id="打开应用程序"><a class="headerlink" href="#打开应用程序" title="打开应用程序"></a>打开应用程序</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/></pre></td><td class="code"><pre id="passage-5e4e33a08887"><span class="line"><span class="keyword">from</span> pywinauto.application <span class="keyword">import</span> Application</span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 打开指定的应用程序</span></span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 1. 打开windows自带的应用</span></span><br/><span class="line">app = Application(backend=<span class="string">'uia'</span>).start(<span class="string">"notepad.exe"</span>)</span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 2. 打开任意一个应用程序</span></span><br/><span class="line">app = Application(backend=<span class="string">'uia'</span>).start(<span class="string">"exe路径"</span>)</span><br/></pre></td></tr></tbody></table></figure>
+<h2 id="连接已经打开的应用程序"><a class="headerlink" href="#连接已经打开的应用程序" title="连接已经打开的应用程序"></a>连接已经打开的应用程序</h2><ul>
+<li id="passage-8a3a4d912c6d">通过进程号</li>
+<li id="passage-4fbdafa59cd4">通过窗口句柄</li>
 </ul>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="06e1a2cdee58" id="passage-ce0d0469b306"><span class="line">app = Application(<span class="string">'uia'</span>).connect(process=<span class="number">4444</span>)</span><br/><span class="line">app = Application(<span class="string">'uia'</span>).connect(handle=<span class="number">1904040</span>)</span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre id="passage-ce0d0469b306"><span class="line">app = Application(<span class="string">'uia'</span>).connect(process=<span class="number">4444</span>)</span><br/><span class="line">app = Application(<span class="string">'uia'</span>).connect(handle=<span class="number">1904040</span>)</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="ViewWizard" decoding="async" height="812" loading="lazy" src="/images/blog-media/7c8ed483522860186404.webp" width="544"/></p>
-<h2 data-passage-key="df57bd59d13c" id="选择指定的窗口"><a class="headerlink" href="#选择指定的窗口" title="选择指定的窗口"></a>选择指定的窗口</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/></pre></td><td class="code"><pre data-passage-key="2056689ac53c" id="passage-66026e6ff57e"><span class="line"><span class="comment"># 方式一：app[类名/标题] :推荐使用该方式</span></span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 1.通过窗口类型来选择</span></span><br/><span class="line">dlg = app[<span class="string">"TNavicatMainForm"</span>]</span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 2.通过窗口标题来选择</span></span><br/><span class="line">dlg = app[<span class="string">"Navicat for MySQL"</span>]</span><br/><span class="line"></span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 方式二：app.类名</span></span><br/><span class="line">dlg =app.TNavicatMainForm</span><br/><span class="line"></span><br/><span class="line">dlg.print_control_identifiers()</span><br/></pre></td></tr></tbody></table></figure>
-<h2 data-passage-key="2b01f68dcbfc" id="操作窗口"><a class="headerlink" href="#操作窗口" title="操作窗口"></a>操作窗口</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/></pre></td><td class="code"><pre data-passage-key="c7f38685fa4a" id="passage-8d920464d704"><span class="line"><span class="comment"># 窗口最大化</span></span><br/><span class="line">dlg.maximize()</span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 窗口最小化</span></span><br/><span class="line">dlg.minimize()</span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 窗口恢复正常大小</span></span><br/><span class="line">dlg.restore()</span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 查找窗口显示状态，最大化为1，正常为0</span></span><br/><span class="line">status = dlg.get_show_state()</span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 获取当前窗口的坐标位置</span></span><br/><span class="line">rect = dlg.rectangle()</span><br/><span class="line">print(rect)<span class="comment"># （L548,T194,R1768,B1043）</span></span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 关闭窗口</span></span><br/><span class="line">dlg.close()</span><br/></pre></td></tr></tbody></table></figure>
-<h2 data-passage-key="f4de83d433b5" id="选择控件"><a class="headerlink" href="#选择控件" title="选择控件"></a>选择控件</h2><blockquote data-passage-key="217d24389bd7" id="passage-4c32a7bc4f63">
-<p data-passage-key="a745e32f8050" id="passage-2e0d2c4c3e80">控件：窗口上的内容</p>
+<h2 id="选择指定的窗口"><a class="headerlink" href="#选择指定的窗口" title="选择指定的窗口"></a>选择指定的窗口</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/></pre></td><td class="code"><pre id="passage-66026e6ff57e"><span class="line"><span class="comment"># 方式一：app[类名/标题] :推荐使用该方式</span></span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 1.通过窗口类型来选择</span></span><br/><span class="line">dlg = app[<span class="string">"TNavicatMainForm"</span>]</span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 2.通过窗口标题来选择</span></span><br/><span class="line">dlg = app[<span class="string">"Navicat for MySQL"</span>]</span><br/><span class="line"></span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 方式二：app.类名</span></span><br/><span class="line">dlg =app.TNavicatMainForm</span><br/><span class="line"></span><br/><span class="line">dlg.print_control_identifiers()</span><br/></pre></td></tr></tbody></table></figure>
+<h2 id="操作窗口"><a class="headerlink" href="#操作窗口" title="操作窗口"></a>操作窗口</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/></pre></td><td class="code"><pre id="passage-8d920464d704"><span class="line"><span class="comment"># 窗口最大化</span></span><br/><span class="line">dlg.maximize()</span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 窗口最小化</span></span><br/><span class="line">dlg.minimize()</span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 窗口恢复正常大小</span></span><br/><span class="line">dlg.restore()</span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 查找窗口显示状态，最大化为1，正常为0</span></span><br/><span class="line">status = dlg.get_show_state()</span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 获取当前窗口的坐标位置</span></span><br/><span class="line">rect = dlg.rectangle()</span><br/><span class="line">print(rect)<span class="comment"># （L548,T194,R1768,B1043）</span></span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 关闭窗口</span></span><br/><span class="line">dlg.close()</span><br/></pre></td></tr></tbody></table></figure>
+<h2 id="选择控件"><a class="headerlink" href="#选择控件" title="选择控件"></a>选择控件</h2><blockquote id="passage-4c32a7bc4f63">
+<p id="passage-2e0d2c4c3e80">控件：窗口上的内容</p>
 </blockquote>
-<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/></pre></td><td class="code"><pre data-passage-key="c6f855f24030" id="passage-c321d7120704"><span class="line"><span class="comment"># 选择控件</span></span><br/><span class="line"></span><br/><span class="line"><span class="comment"># menu = dlg.Menu</span></span><br/><span class="line">menu = dlg[<span class="string">"Menu"</span>]</span><br/><span class="line">print(menu.print_control_identifiers()) <span class="comment"># 查看Menu上的控件</span></span><br/><span class="line"></span><br/><span class="line"></span><br/><span class="line">file = menu.child_window(title=<span class="string">"文件"</span>, control_type=<span class="string">"MenuItem"</span>)</span><br/><span class="line">file.print_control_identifiers()</span><br/></pre></td></tr></tbody></table></figure>
-<h2 data-passage-key="1710eb35e1ee" id="控件的分类"><a class="headerlink" href="#控件的分类" title="控件的分类"></a>控件的分类</h2><ul>
-<li data-passage-key="49575c534059" id="passage-53bf351a1aa5">状态栏 StatusBar</li>
-<li data-passage-key="31373a76b92b" id="passage-2c6587d2344c">按钮 Button</li>
-<li data-passage-key="11316d433d8a" id="passage-453e7542b17e">单选框 RadioButton</li>
-<li data-passage-key="78dd07967d6b" id="passage-67d22bc380f6">组合框 ComboBox</li>
-<li data-passage-key="108e62ca789a" id="passage-63249577d022">编辑栏 Edit</li>
-<li data-passage-key="1fd42cc2a401" id="passage-e0a7248cfa42">列表框 ListBox</li>
-<li data-passage-key="ef1738dc946f" id="passage-3db344024165">弹出菜单 PopupMenu</li>
-<li data-passage-key="aaeba452379c" id="passage-1d4d841a4de9">工具栏 Toolbar</li>
-<li data-passage-key="67c4294ac937" id="passage-5c6f3f260baf">树状视图 Tree View</li>
-<li data-passage-key="b0405b430dd5" id="passage-b2bccd1178c2">菜单项 MenuItem</li>
-<li data-passage-key="59a9847108c3" id="passage-acc3b020197e">静态内容 Static</li>
-<li data-passage-key="6f6654492580" id="passage-fa752b741f6f">复选框 CheckBox</li>
-<li data-passage-key="64a3d74d1ecf" id="passage-9c611e2c36e9">组框 GroupBox</li>
-<li data-passage-key="2948150af96c" id="passage-2799f2137f4d">对话框 Dialog</li>
-<li data-passage-key="4770db835a35" id="passage-be23217efd4d">头部内容 Header</li>
-<li data-passage-key="a46ded33a923" id="passage-370689d0e31d">列表显示控件 ListView</li>
-<li data-passage-key="7f20e0467142" id="passage-f3c500eb3acd">选项卡控件 TabControl</li>
-<li data-passage-key="e801163cd242" id="passage-d4d36b0da4f8">工具提示 ToolTips</li>
-<li data-passage-key="99b46b982aa2" id="passage-ffcd5f8c155b">菜单 Menu</li>
-<li data-passage-key="d01aae2f65df" id="passage-7dd93032e1e9">窗格 Pane</li>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/></pre></td><td class="code"><pre id="passage-c321d7120704"><span class="line"><span class="comment"># 选择控件</span></span><br/><span class="line"></span><br/><span class="line"><span class="comment"># menu = dlg.Menu</span></span><br/><span class="line">menu = dlg[<span class="string">"Menu"</span>]</span><br/><span class="line">print(menu.print_control_identifiers()) <span class="comment"># 查看Menu上的控件</span></span><br/><span class="line"></span><br/><span class="line"></span><br/><span class="line">file = menu.child_window(title=<span class="string">"文件"</span>, control_type=<span class="string">"MenuItem"</span>)</span><br/><span class="line">file.print_control_identifiers()</span><br/></pre></td></tr></tbody></table></figure>
+<h2 id="控件的分类"><a class="headerlink" href="#控件的分类" title="控件的分类"></a>控件的分类</h2><ul>
+<li id="passage-53bf351a1aa5">状态栏 StatusBar</li>
+<li id="passage-2c6587d2344c">按钮 Button</li>
+<li id="passage-453e7542b17e">单选框 RadioButton</li>
+<li id="passage-67d22bc380f6">组合框 ComboBox</li>
+<li id="passage-63249577d022">编辑栏 Edit</li>
+<li id="passage-e0a7248cfa42">列表框 ListBox</li>
+<li id="passage-3db344024165">弹出菜单 PopupMenu</li>
+<li id="passage-1d4d841a4de9">工具栏 Toolbar</li>
+<li id="passage-5c6f3f260baf">树状视图 Tree View</li>
+<li id="passage-b2bccd1178c2">菜单项 MenuItem</li>
+<li id="passage-acc3b020197e">静态内容 Static</li>
+<li id="passage-fa752b741f6f">复选框 CheckBox</li>
+<li id="passage-9c611e2c36e9">组框 GroupBox</li>
+<li id="passage-2799f2137f4d">对话框 Dialog</li>
+<li id="passage-be23217efd4d">头部内容 Header</li>
+<li id="passage-370689d0e31d">列表显示控件 ListView</li>
+<li id="passage-f3c500eb3acd">选项卡控件 TabControl</li>
+<li id="passage-d4d36b0da4f8">工具提示 ToolTips</li>
+<li id="passage-ffcd5f8c155b">菜单 Menu</li>
+<li id="passage-7dd93032e1e9">窗格 Pane</li>
 </ul></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
-        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
-          <header class="passage-dialog-header">
-            <h2 id="passage-comment-title">段落评论</h2>
-            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
-          </header>
-          <div class="passage-dialog-content">
-            <blockquote data-passage-excerpt></blockquote>
-            <a data-passage-source>查看原文</a>
-            <p data-passage-status role="status"></p>
-            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
-            <div data-passage-widget></div>
-          </div>
-        </dialog>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/UiTLRvQL2GsoXGEOTG7nug">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/%E6%A1%8C%E9%9D%A2%E8%87%AA%E5%8A%A8%E5%8C%96/">桌面自动化</a><a href="/tags/PC-%E7%AB%AF/">PC 端</a><a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/PC%E7%AB%AF%E8%87%AA%E5%8A%A8%E5%8C%96/">PC端自动化</a></div>
@@ -132,7 +118,7 @@
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
-          <div class="giscus"></div>
+          <div class="giscus" id="article-discussion"></div>
         </section>
       </div>
     </div>

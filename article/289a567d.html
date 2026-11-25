@@ -20,7 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/289a567d.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/289a567d.html">
-<script type="module" src="/js/discussions.js"></script>
+<script src="/js/comments.js?v=4" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,84 +56,70 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#Git%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86-%E4%BA%94">Git基础知识(五)</a></li><li><a href="#%E5%88%86%E6%94%AF">分支</a></li><li><a href="#Git%E4%BF%9D%E5%AD%98%E6%95%B0%E6%8D%AE%E7%9A%84%E6%96%B9%E5%BC%8F">Git保存数据的方式</a></li><li><a href="#%E6%9F%A5%E7%9C%8BGit%E7%9A%84%E5%AF%B9%E8%B1%A1">查看Git的对象</a></li><li><a href="#%E5%88%9B%E5%BB%BA%E5%88%86%E6%94%AF">创建分支</a></li><li><a href="#%E5%88%87%E6%8D%A2%E5%88%86%E6%94%AF">切换分支</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><h1 data-passage-key="d0a1321f4ca6" id="Git基础知识-五"><a class="headerlink" href="#Git基础知识-五" title="Git基础知识(五)"></a>Git基础知识(五)</h1><h2 data-passage-key="a251448a845f" id="分支"><a class="headerlink" href="#分支" title="分支"></a>分支</h2><p data-passage-key="b40b828025b2" id="passage-5efbf3f0489d">都说Git的分支是它的<code>必杀技特性</code>，由于没有接触过太多的版本管理工具，就使用过的SVN来说，两者真的差别巨大。SVN创建一个分支，需要将内容复制一遍！这个时间真的是非常的漫长，而Git只需要几秒钟。所以Git<strong>鼓励</strong>在工作流中频繁的使用分支和合并。</p>
-<h3 data-passage-key="1be6683df142" id="Git保存数据的方式"><a class="headerlink" href="#Git保存数据的方式" title="Git保存数据的方式"></a>Git保存数据的方式</h3><p data-passage-key="d620c94eda6d" id="passage-f71c183bf26a">Git保存的不是文件的<code>变化</code>或者<code>差异</code>，而是不同时刻的<code>文件快照</code>。</p>
-<p data-passage-key="6cf7c43d9f43" id="passage-80f3c0ac6e13">Git每次进行提交操作的时候，会保存一个<code>提交对象</code>：这个提交对象包含了一个指向暂存内容快照的指针，并且这个对象还包含了作者的<code>姓名</code>，<code>邮箱</code>，<code>提交信息</code>，<code>指向它的父对象的指针</code>。</p>
+        <div class="post-body" id="article-text"><h1 id="Git基础知识-五"><a class="headerlink" href="#Git基础知识-五" title="Git基础知识(五)"></a>Git基础知识(五)</h1><h2 id="分支"><a class="headerlink" href="#分支" title="分支"></a>分支</h2><p id="passage-5efbf3f0489d">都说Git的分支是它的<code>必杀技特性</code>，由于没有接触过太多的版本管理工具，就使用过的SVN来说，两者真的差别巨大。SVN创建一个分支，需要将内容复制一遍！这个时间真的是非常的漫长，而Git只需要几秒钟。所以Git<strong>鼓励</strong>在工作流中频繁的使用分支和合并。</p>
+<h3 id="Git保存数据的方式"><a class="headerlink" href="#Git保存数据的方式" title="Git保存数据的方式"></a>Git保存数据的方式</h3><p id="passage-f71c183bf26a">Git保存的不是文件的<code>变化</code>或者<code>差异</code>，而是不同时刻的<code>文件快照</code>。</p>
+<p id="passage-80f3c0ac6e13">Git每次进行提交操作的时候，会保存一个<code>提交对象</code>：这个提交对象包含了一个指向暂存内容快照的指针，并且这个对象还包含了作者的<code>姓名</code>，<code>邮箱</code>，<code>提交信息</code>，<code>指向它的父对象的指针</code>。</p>
 <ul>
-<li data-passage-key="83581b96378e" id="passage-01f0e15993a7">首次提交产生的提交对象<code>没有</code>父对象</li>
-<li data-passage-key="e45190d7b284" id="passage-2be88a6d97a0">普通提交操作产生的提交对象<code>有一个</code>父对象</li>
-<li data-passage-key="2764d8f4a23c" id="passage-d018796e94c5">多个分支合并产生的提交对象<code>有多个</code>父对象<span id="more"></span>
+<li id="passage-01f0e15993a7">首次提交产生的提交对象<code>没有</code>父对象</li>
+<li id="passage-2be88a6d97a0">普通提交操作产生的提交对象<code>有一个</code>父对象</li>
+<li id="passage-d018796e94c5">多个分支合并产生的提交对象<code>有多个</code>父对象<span id="more"></span>
 举一个例子：</li>
 </ul>
-<p data-passage-key="ec37b9dd3817" id="passage-305478f4eb0c">在一个空的文件夹中创建Git仓库，新建三个文件并完成提交。</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="8532e8184ecb" id="passage-8b51dc81bbf9"><span class="line">git add README test.rb LICENSE </span><br/><span class="line">git commit -m 'The initial commit of my project'</span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-305478f4eb0c">在一个空的文件夹中创建Git仓库，新建三个文件并完成提交。</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre id="passage-8b51dc81bbf9"><span class="line">git add README test.rb LICENSE </span><br/><span class="line">git commit -m 'The initial commit of my project'</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="例子" decoding="async" height="267" loading="lazy" src="/images/blog-media/cbffdd9a1b3532243a18.webp" width="1080"/></p>
-<p data-passage-key="d00f4481ef54" id="passage-0e9d6da59342">首先先来查看一下当前的状态</p>
-<p data-passage-key="1030d7ed43f6" id="passage-a9fc94609cc5">然后进入<code>cd .git/objects/</code>进到git<code>存放对象</code>的地方</p>
+<p id="passage-0e9d6da59342">首先先来查看一下当前的状态</p>
+<p id="passage-a9fc94609cc5">然后进入<code>cd .git/objects/</code>进到git<code>存放对象</code>的地方</p>
 <p><img alt="查看当前状态" decoding="async" height="346" loading="lazy" src="/images/blog-media/10fb74654f56c9b60c1e.webp" width="1080"/></p>
-<p data-passage-key="755470a87e1a" id="passage-157891dcfb1d">使用<code>ls -al</code>可以看到这些个东西都是文件夹「d开头」</p>
-<p data-passage-key="bcd8630301cf" id="passage-0d8e3924f756"><img alt="查看具体文件信息" decoding="async" height="418" loading="lazy" src="/images/blog-media/91308d2c20d9b4014ee8.webp" width="1080"/>感兴趣可以了解更多Linux文件属性的知识：</p>
+<p id="passage-157891dcfb1d">使用<code>ls -al</code>可以看到这些个东西都是文件夹「d开头」</p>
+<p id="passage-0d8e3924f756"><img alt="查看具体文件信息" decoding="async" height="418" loading="lazy" src="/images/blog-media/91308d2c20d9b4014ee8.webp" width="1080"/>感兴趣可以了解更多Linux文件属性的知识：</p>
 <p><img alt="Linux文件" decoding="async" height="463" loading="lazy" src="/images/blog-media/e4ccd0b4de08bca5d69e.webp" width="706"/></p>
-<p data-passage-key="3bcf2709014f" id="passage-549305655fa5">刚才通过<code>git log</code>看到的哈希值为：<code>e011573e4a35dda973b7cdadd8ef5954cfa8314f</code>，所以进入<code>e0</code>这个文件夹，发现</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre data-passage-key="41275a2dfd3d" id="passage-693d480599e6"><span class="line">e0文件夹</span><br/><span class="line">内容：11573e4a35dda973b7cdadd8ef5954cfa8314f</span><br/><span class="line">组合：e011573e4a35dda973b7cdadd8ef5954cfa8314f</span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-549305655fa5">刚才通过<code>git log</code>看到的哈希值为：<code>e011573e4a35dda973b7cdadd8ef5954cfa8314f</code>，所以进入<code>e0</code>这个文件夹，发现</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre id="passage-693d480599e6"><span class="line">e0文件夹</span><br/><span class="line">内容：11573e4a35dda973b7cdadd8ef5954cfa8314f</span><br/><span class="line">组合：e011573e4a35dda973b7cdadd8ef5954cfa8314f</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="进入e0" decoding="async" height="180" loading="lazy" src="/images/blog-media/9cc8034f33f661ec3547.webp" width="966"/></p>
-<p data-passage-key="1e6a8b93bf99" id="passage-39f3e396083d">所以这个对象就是提交对象。</p>
-<h3 data-passage-key="9b9d75b509c7" id="查看Git的对象"><a class="headerlink" href="#查看Git的对象" title="查看Git的对象"></a>查看Git的对象</h3><p data-passage-key="5d7cbc350b83" id="passage-7aa238ba1f73">由于这个提交也就是当前位置，所以可以直接使用拿到这一段内容</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre data-passage-key="c99acf7dc57f" id="passage-433275670e3b"><span class="line"><span class="meta">$</span><span class="bash"> cat .git/HEAD</span></span><br/><span class="line">ref: refs/heads/master</span><br/><span class="line"><span class="meta">$</span><span class="bash"> cat .git/refs/heads/master</span></span><br/><span class="line">e011573e4a35dda973b7cdadd8ef5954cfa8314f</span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-39f3e396083d">所以这个对象就是提交对象。</p>
+<h3 id="查看Git的对象"><a class="headerlink" href="#查看Git的对象" title="查看Git的对象"></a>查看Git的对象</h3><p id="passage-7aa238ba1f73">由于这个提交也就是当前位置，所以可以直接使用拿到这一段内容</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre id="passage-433275670e3b"><span class="line"><span class="meta">$</span><span class="bash"> cat .git/HEAD</span></span><br/><span class="line">ref: refs/heads/master</span><br/><span class="line"><span class="meta">$</span><span class="bash"> cat .git/refs/heads/master</span></span><br/><span class="line">e011573e4a35dda973b7cdadd8ef5954cfa8314f</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="image-20190404195709051" decoding="async" height="183" loading="lazy" src="/images/blog-media/b152063871924341f842.webp" width="1080"/></p>
-<p data-passage-key="1eb9c1bbcab0" id="passage-7b6a6b239f0f">这些文件的内容其实是压缩的数据外加一个标注类型和长度的头. </p>
-<p data-passage-key="42ac0fff8978" id="passage-8924993925d5">类型可以是</p>
+<p id="passage-7b6a6b239f0f">这些文件的内容其实是压缩的数据外加一个标注类型和长度的头. </p>
+<p id="passage-8924993925d5">类型可以是</p>
 <ul>
-<li data-passage-key="a02a317406d3" id="passage-dcf81ef26d3b">块(blob)</li>
-<li data-passage-key="756c5c5da70a" id="passage-a38b7ab89f68">树(tree)</li>
-<li data-passage-key="422d38ef4db8" id="passage-4bcc13e1f0a9">提交(commit)</li>
-<li data-passage-key="2bce3e1b023c" id="passage-b40cae03fd0c">标签(tag)</li>
+<li id="passage-dcf81ef26d3b">块(blob)</li>
+<li id="passage-a38b7ab89f68">树(tree)</li>
+<li id="passage-4bcc13e1f0a9">提交(commit)</li>
+<li id="passage-b40cae03fd0c">标签(tag)</li>
 </ul>
-<p data-passage-key="8d2ed6d30593" id="passage-b389d49f0e7a">使用<code>git cat-file -t &lt;SHA值&gt;</code>可以看到它的类型</p>
+<p id="passage-b389d49f0e7a">使用<code>git cat-file -t &lt;SHA值&gt;</code>可以看到它的类型</p>
 <p><img alt="查看类型" decoding="async" height="54" loading="lazy" src="/images/blog-media/d31cd9f56f6984598844.webp" width="1080"/></p>
 <p><img alt="tree" decoding="async" height="154" loading="lazy" src="/images/blog-media/3fadb637692306085960.webp" width="1080"/></p>
 <p><img alt="blob" decoding="async" height="78" loading="lazy" src="/images/blog-media/dc8f89143198029b8b6d.webp" width="1080"/></p>
-<p data-passage-key="f232eda112e8" id="passage-d5dc6816c5de">使用<code>git cat-file commit &lt;SHA值&gt;</code>可以看到提交信息</p>
+<p id="passage-d5dc6816c5de">使用<code>git cat-file commit &lt;SHA值&gt;</code>可以看到提交信息</p>
 <p><img alt="提交信息" decoding="async" height="180" loading="lazy" src="/images/blog-media/7ce88264483883ad32ec.webp" width="1080"/></p>
-<p data-passage-key="9c47a874b69b" id="passage-873c2437db79">使用<code>git ls-tree &lt;SHA值&gt;</code>可以看到树的信息，我们在这棵树里面看到了我们刚新建的三个文件</p>
+<p id="passage-873c2437db79">使用<code>git ls-tree &lt;SHA值&gt;</code>可以看到树的信息，我们在这棵树里面看到了我们刚新建的三个文件</p>
 <p><img alt="树的信息" decoding="async" height="136" loading="lazy" src="/images/blog-media/4ecf22bdfa607f551c6f.webp" width="1080"/></p>
-<p data-passage-key="687f8038542d" id="passage-fd3692690a63">使用<code>git cat-file blob &lt;SHA值&gt;</code>可以看到文件的内容，不过可惜我这次的提交是空文件。</p>
-<p data-passage-key="1ff0ecbce280" id="passage-085018a6d3d3">我对文件进行修改之后再进行了一次提交，然后再查看blob的时候可以看到和我新增的修改一样</p>
+<p id="passage-fd3692690a63">使用<code>git cat-file blob &lt;SHA值&gt;</code>可以看到文件的内容，不过可惜我这次的提交是空文件。</p>
+<p id="passage-085018a6d3d3">我对文件进行修改之后再进行了一次提交，然后再查看blob的时候可以看到和我新增的修改一样</p>
 <p><img alt="文件内容" decoding="async" height="81" loading="lazy" src="/images/blog-media/fc40da5822b5b60650bc.webp" width="1080"/></p>
 <p><img alt="首次提交对象及其树结构" decoding="async" height="622" loading="lazy" src="/images/blog-media/1c8bb9707067e3cbf3d0.webp" width="1080"/></p>
-<p data-passage-key="d63132c4bcc5" id="passage-b141dbb9bc04">在修改之后，指针就会指向新的提交</p>
+<p id="passage-b141dbb9bc04">在修改之后，指针就会指向新的提交</p>
 <p><img alt="提交后指向" decoding="async" height="406" loading="lazy" src="/images/blog-media/b86eb10435b78f14b529.webp" width="1080"/></p>
-<h3 data-passage-key="c6fe4bf1b981" id="创建分支"><a class="headerlink" href="#创建分支" title="创建分支"></a>创建分支</h3><p data-passage-key="d3e4b056e456" id="passage-47fb865e4a6d">我们要创建一个分支，就相当于要创建一个可以<code>移动的新指针</code>。</p>
-<p data-passage-key="53abe04aec2f" id="passage-544f7ebc7bc4">使用的是<code>git branch &lt;name&gt;</code></p>
+<h3 id="创建分支"><a class="headerlink" href="#创建分支" title="创建分支"></a>创建分支</h3><p id="passage-47fb865e4a6d">我们要创建一个分支，就相当于要创建一个可以<code>移动的新指针</code>。</p>
+<p id="passage-544f7ebc7bc4">使用的是<code>git branch &lt;name&gt;</code></p>
 <p><img alt="创建分支" decoding="async" height="433" loading="lazy" src="/images/blog-media/59bcdc1233152da802c6.webp" width="1080"/></p>
-<p data-passage-key="b6c632075f02" id="passage-22584e68128f">虽然我们创建了一个分支，但其实我们还是在master上，我们当前的位置其实是由<code>HEAD</code>这个特殊的指针决定的。</p>
-<h3 data-passage-key="27eae3e46e72" id="切换分支"><a class="headerlink" href="#切换分支" title="切换分支"></a>切换分支</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="69615794ff9e" id="passage-25d63cfd858f"><span class="line"><span class="meta">$</span><span class="bash"> git checkout testing</span></span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-22584e68128f">虽然我们创建了一个分支，但其实我们还是在master上，我们当前的位置其实是由<code>HEAD</code>这个特殊的指针决定的。</p>
+<h3 id="切换分支"><a class="headerlink" href="#切换分支" title="切换分支"></a>切换分支</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-25d63cfd858f"><span class="line"><span class="meta">$</span><span class="bash"> git checkout testing</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="切换分支" decoding="async" height="455" loading="lazy" src="/images/blog-media/43f0585b102a37a9addc.webp" width="1080"/></p>
-<p data-passage-key="10d70e37718e" id="passage-0c19ac884428">我们可以在这个分支上进行后续的提交</p>
+<p id="passage-0c19ac884428">我们可以在这个分支上进行后续的提交</p>
 <p><img alt="分支上新增一个提交" decoding="async" height="863" loading="lazy" src="/images/blog-media/f9f3bd9b2756e4ff8198.webp" width="1080"/></p>
-<p data-passage-key="9b2e323ef677" id="passage-6a0b5a3874d3">假设我们回到master分支上进行一个提交</p>
+<p id="passage-6a0b5a3874d3">假设我们回到master分支上进行一个提交</p>
 <p><img alt="新建文件" decoding="async" height="404" loading="lazy" src="/images/blog-media/be10af006e266fdc0380.webp" width="1080"/></p>
-<p data-passage-key="2fd0960f0d9f" id="passage-039357f6135f">我们就可以发现两个分支往不同的方向走去了</p>
-<p data-passage-key="812f25eb1ca9" id="passage-924d9669fcdd">使用<code>git log --oneline --decorate --graph --all</code> ，它会输出你的提交历史、各个分支的指向以及项目的分支分叉情况。</p>
-<p data-passage-key="c64db9e22b88" id="passage-b398abb65acf">也可以用<code>git log --graph --all</code>查看分支图的详细信息</p>
+<p id="passage-039357f6135f">我们就可以发现两个分支往不同的方向走去了</p>
+<p id="passage-924d9669fcdd">使用<code>git log --oneline --decorate --graph --all</code> ，它会输出你的提交历史、各个分支的指向以及项目的分支分叉情况。</p>
+<p id="passage-b398abb65acf">也可以用<code>git log --graph --all</code>查看分支图的详细信息</p>
 <p><img alt="分支图详细信息" decoding="async" height="805" loading="lazy" src="/images/blog-media/18a84215d7485eb19685.webp" width="1080"/></p>
-<p data-passage-key="5490a3e63b15" id="passage-bfc3a113f154">不加上<code>--all</code>的话只会显示当前所在分支的内容</p>
+<p id="passage-bfc3a113f154">不加上<code>--all</code>的话只会显示当前所在分支的内容</p>
 <p><img alt="当前分支的内容" decoding="async" height="640" loading="lazy" src="/images/blog-media/3962746e4b3693e7597a.webp" width="1080"/></p>
-<p data-passage-key="b740c4ab0e17" id="passage-c7b48ebf5f04">以上就学会了Git基础的数据存放方式，分支的创建，当前状态的查看。</p></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
-        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
-          <header class="passage-dialog-header">
-            <h2 id="passage-comment-title">段落评论</h2>
-            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
-          </header>
-          <div class="passage-dialog-content">
-            <blockquote data-passage-excerpt></blockquote>
-            <a data-passage-source>查看原文</a>
-            <p data-passage-status role="status"></p>
-            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
-            <div data-passage-widget></div>
-          </div>
-        </dialog>
+<p id="passage-c7b48ebf5f04">以上就学会了Git基础的数据存放方式，分支的创建，当前状态的查看。</p></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/qi-h3tF9J0_BpMEJoxydHw">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Git/">Git</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/Git/">Git</a></div>
@@ -147,7 +133,7 @@
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
-          <div class="giscus"></div>
+          <div class="giscus" id="article-discussion"></div>
         </section>
       </div>
     </div>

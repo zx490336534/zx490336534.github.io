@@ -20,7 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/article-covers/agent-ui-testing.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/agent-ui-testing.html">
-<script type="module" src="/js/discussions.js"></script>
+<script src="/js/comments.js?v=4" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,13 +56,13 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E4%B8%80%E4%B8%AA%E9%94%99%E8%AF%AF%E5%AE%9E%E7%8E%B0-%E4%B9%9F%E8%83%BD%E8%AE%A9-%E4%BF%9D%E5%AD%98%E6%88%90%E5%8A%9F-%E9%80%9A%E8%BF%87">保存返回 200，刷新后卡片却消失了</a></li><li><a href="#AI-%E6%94%BE%E5%9C%A8%E5%93%AA%E4%B8%80%E6%AD%A5-%E5%86%B3%E5%AE%9A%E5%A4%B1%E8%B4%A5%E6%97%B6%E8%83%BD%E7%9C%8B%E5%88%B0%E4%BB%80%E4%B9%88">普通控件用脚本，视觉模型补定位</a></li><li><a href="#%E4%BF%AE%E8%84%9A%E6%9C%AC%E4%B9%8B%E5%89%8D-%E5%85%88%E4%BF%9D%E4%BD%8F%E5%AE%83%E6%8A%93%E8%BF%87%E7%9A%84%E9%94%99%E8%AF%AF">测试修完，还要能抓住原来的错</a></li><li><a href="#%E5%8F%82%E8%80%83">参考</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><p class="article-lead" data-passage-key="156449da193a" id="passage-5ecbeb2da44a">我用 Playwright 跑了同一个小编辑器的两个版本。两个版本点保存都返回 HTTP 200，页面也都提示「保存成功」。刷新以后，只有一个版本能找回卡片。</p>
-<p data-passage-key="e9e082d4ca6b" id="passage-fdc085616dba">这个实验也决定了我怎么分配工作。<strong>模型可以帮忙定位和操作，是否保存成功要由回读结果判定。</strong> 两类检查分开，查失败时才知道是没点对地方，还是产品没把数据存下来。</p>
+        <div class="post-body" id="article-text"><p class="article-lead" id="passage-5ecbeb2da44a">我用 Playwright 跑了同一个小编辑器的两个版本。两个版本点保存都返回 HTTP 200，页面也都提示「保存成功」。刷新以后，只有一个版本能找回卡片。</p>
+<p id="passage-fdc085616dba">这个实验也决定了我怎么分配工作。<strong>模型可以帮忙定位和操作，是否保存成功要由回读结果判定。</strong> 两类检查分开，查失败时才知道是没点对地方，还是产品没把数据存下来。</p>
 <span id="同一条用例要通过两个判断"></span>
-<h2 data-passage-key="a3704325c13d" id="一个错误实现-也能让-保存成功-通过">保存返回 200，刷新后卡片却消失了</h2>
-<p data-passage-key="53acd193818d" id="passage-85a8bca62343">故障版本接到保存请求以后直接返回成功，跳过了写入。两个版本共用同一份前端，测试也走一样的路径。每轮新建浏览器上下文，卡片名称由测试控制。</p>
-<figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/agent-ui-testing-scene.webp" title="查看原图"><img alt="两个编辑器都显示保存成功，刷新后只有一边还能看到卡片。" decoding="async" height="854" loading="lazy" src="/images/article-figures/agent-ui-testing-scene.webp" width="1280"/></a><figcaption data-passage-key="0a872e36c1f2" id="passage-f7337a7778fa">示意图放大了唯一差别。右边收到成功提示，刷新后卡片消失。</figcaption></figure>
-<div aria-labelledby="article-table-1" class="table-scroll article-evidence" data-passage-key="3626298d2181" id="passage-656ba12e4d25" role="region" tabindex="0"><table><caption id="article-table-1">保存后两种服务端行为的实测结果</caption>
+<h2 id="一个错误实现-也能让-保存成功-通过">保存返回 200，刷新后卡片却消失了</h2>
+<p id="passage-85a8bca62343">故障版本接到保存请求以后直接返回成功，跳过了写入。两个版本共用同一份前端，测试也走一样的路径。每轮新建浏览器上下文，卡片名称由测试控制。</p>
+<figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/agent-ui-testing-scene.webp" title="查看原图"><img alt="两个编辑器都显示保存成功，刷新后只有一边还能看到卡片。" decoding="async" height="854" loading="lazy" src="/images/article-figures/agent-ui-testing-scene.webp" width="1280"/></a><figcaption id="passage-f7337a7778fa">示意图放大了唯一差别。右边收到成功提示，刷新后卡片消失。</figcaption></figure>
+<div aria-labelledby="article-table-1" class="table-scroll article-evidence" id="passage-656ba12e4d25" role="region" tabindex="0"><table><caption id="article-table-1">保存后两种服务端行为的实测结果</caption>
 <thead>
 <tr>
 <th scope="col">服务端行为</th>
@@ -86,9 +86,9 @@
 </tr>
 </tbody>
 </table></div>
-<p data-passage-key="f9324c2c5156" id="passage-5e78240cc479">脚本先等这次保存的 POST，再查提示，最后刷新并在已保存列表中查卡片。等响应时同时匹配 URL 和方法，因为列表读取的 GET 也用同一个地址。下面的 <code>base</code> 是本地演示服务地址，<code>mode</code> 选择正常或故障路由。</p>
+<p id="passage-5e78240cc479">脚本先等这次保存的 POST，再查提示，最后刷新并在已保存列表中查卡片。等响应时同时匹配 URL 和方法，因为列表读取的 GET 也用同一个地址。下面的 <code>base</code> 是本地演示服务地址，<code>mode</code> 选择正常或故障路由。</p>
 <details class="article-example"><summary>Playwright 保存回读脚本</summary>
-<pre class="article-code" data-passage-key="130bdad00343" id="passage-ea6c67deff18"><code class="language-python">page.get_by_label('卡片名称').fill('回归卡片')
+<pre class="article-code" id="passage-ea6c67deff18"><code class="language-python">page.get_by_label('卡片名称').fill('回归卡片')
 with page.expect_response(
     lambda r: r.url == f'{base}/api/{mode}' and r.request.method == 'POST'
 ) as save:
@@ -100,13 +100,13 @@ cards = page.get_by_role('list', name='已保存卡片')
 expect(cards.get_by_text('回归卡片', exact=True)).to_be_visible()
 </code></pre>
 </details>
-<p data-passage-key="d4d8ed37602d" id="passage-41a9a334deff">演示页刷新时会重新向服务端取数据，关闭了缓存，也没有用浏览器本地存储恢复卡片。真实应用如果会先读缓存，可以换一个浏览器上下文重新登录，或直接查服务端详情。列表里可能有同名记录时，按本次保存的 ID 查。</p>
-<figure class="article-figure article-figure--edited"><a href="/images/article-figures/agent-ui-testing.webp" title="查看原图"><img alt="从放置卡片到刷新回读的三个检查点" decoding="async" height="480" loading="lazy" src="/images/article-figures/agent-ui-testing.webp" width="1200"/></a><figcaption data-passage-key="519b59ec9cf2" id="passage-e0a20bac95db">先查这次请求，再从服务端回读保存的卡片。</figcaption></figure>
+<p id="passage-41a9a334deff">演示页刷新时会重新向服务端取数据，关闭了缓存，也没有用浏览器本地存储恢复卡片。真实应用如果会先读缓存，可以换一个浏览器上下文重新登录，或直接查服务端详情。列表里可能有同名记录时，按本次保存的 ID 查。</p>
+<figure class="article-figure article-figure--edited"><a href="/images/article-figures/agent-ui-testing.webp" title="查看原图"><img alt="从放置卡片到刷新回读的三个检查点" decoding="async" height="480" loading="lazy" src="/images/article-figures/agent-ui-testing.webp" width="1200"/></a><figcaption id="passage-e0a20bac95db">先查这次请求，再从服务端回读保存的卡片。</figcaption></figure>
 <span id="视觉操作可以单独交给模型"></span>
-<h2 data-passage-key="1445969948cd" id="AI-放在哪一步-决定失败时能看到什么">普通控件用脚本，视觉模型补定位</h2>
-<p data-passage-key="4a30a80569f8" id="passage-878db450f422">表单、按钮和导航有稳定的角色或名称，可以让 Agent 在编写阶段生成 Playwright 测试，CI 按脚本执行。比如保存按钮改了文案，先从 trace 确认按钮是否仍可用，再改 <code>get_by_role</code> 的定位条件。</p>
-<p data-passage-key="66ad25e000ee" id="passage-b5a2375955b2">Canvas 或 WebGL 界面往往只暴露一个画布元素。卡片本身没有 DOM 节点，写死坐标又容易受缩放影响。可以让视觉模型完成「把卡片拖到右边一列」，随后由脚本读取列标识、卡片 ID 和保存状态。Midscene 的 <code>aiAct</code> 也可以规划多步操作。路径比较稳定时，我会保留脚本编排，只交出确实难定位的那一步。</p>
-<div aria-labelledby="article-table-2" class="table-scroll article-evidence" data-passage-key="6f63d2372d00" id="passage-da10f6775ca6" role="region" tabindex="0"><table><caption id="article-table-2">三种自动化方式和排查入口</caption>
+<h2 id="AI-放在哪一步-决定失败时能看到什么">普通控件用脚本，视觉模型补定位</h2>
+<p id="passage-878db450f422">表单、按钮和导航有稳定的角色或名称，可以让 Agent 在编写阶段生成 Playwright 测试，CI 按脚本执行。比如保存按钮改了文案，先从 trace 确认按钮是否仍可用，再改 <code>get_by_role</code> 的定位条件。</p>
+<p id="passage-b5a2375955b2">Canvas 或 WebGL 界面往往只暴露一个画布元素。卡片本身没有 DOM 节点，写死坐标又容易受缩放影响。可以让视觉模型完成「把卡片拖到右边一列」，随后由脚本读取列标识、卡片 ID 和保存状态。Midscene 的 <code>aiAct</code> 也可以规划多步操作。路径比较稳定时，我会保留脚本编排，只交出确实难定位的那一步。</p>
+<div aria-labelledby="article-table-2" class="table-scroll article-evidence" id="passage-da10f6775ca6" role="region" tabindex="0"><table><caption id="article-table-2">三种自动化方式和排查入口</caption>
 <thead>
 <tr>
 <th scope="col">用法</th>
@@ -132,33 +132,19 @@ expect(cards.get_by_text('回归卡片', exact=True)).to_be_visible()
 </tr>
 </tbody>
 </table></div>
-<figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/agent-ui-testing-detail.webp" title="查看原图"><img alt="普通控件用确定性脚本，难定位的视觉动作交给模型，业务结果用状态和回读作断言。" decoding="async" height="609" loading="lazy" src="/images/article-figures/agent-ui-testing-detail.webp" width="900"/></a><figcaption data-passage-key="bc7a4d53ca7c" id="passage-f1bba34a32e7">视觉动作和最终结果各留一份证据，失败时分别排查。</figcaption></figure>
+<figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/agent-ui-testing-detail.webp" title="查看原图"><img alt="普通控件用确定性脚本，难定位的视觉动作交给模型，业务结果用状态和回读作断言。" decoding="async" height="609" loading="lazy" src="/images/article-figures/agent-ui-testing-detail.webp" width="900"/></a><figcaption id="passage-f1bba34a32e7">视觉动作和最终结果各留一份证据，失败时分别排查。</figcaption></figure>
 <span id="修测试的时候留住失败条件"></span>
-<h2 data-passage-key="a300cf607a49" id="修脚本之前-先保住它抓过的错误">测试修完，还要能抓住原来的错</h2>
-<p data-passage-key="d2b9b83191f1" id="passage-f39d3e7ef83e">按钮改名可以改定位器。刷新后卡片没了，就去查保存请求、任务状态和读取接口。如果把回读断言改成检查成功提示，上面那个故障版本就会通过。</p>
-<p data-passage-key="1663ce4bffa5" id="passage-06c6d0d0c913">异步保存收到 202 通常只说明请求已受理。先等本次任务到明确终态，再按它返回的 ID 回读产物。失败报告留三个值就有用得多，本次操作的 ID、最后查到的任务状态，以及失败的那一步。</p>
-<p data-passage-key="3b0ad1339258" id="passage-c4e4ea3d183b">回读失败时，按失败点留证据。POST 没发出来，先查页面操作。已经提交但任务没到终态，留住任务编号和最后一次查询结果。任务成功后读不到对应记录，再查写入和读取的对象是否一致。</p>
-<p data-passage-key="b89c0f4024e4" id="passage-96966899c6c7">挂发布门禁前，我会再跑一次故意跳过写入的版本。它能亮出成功提示，测试仍会在回读处失败，这条回归才守住了用户真正依赖的行为。</p>
-<h2 data-passage-key="c6f305e9b180" id="参考">参考</h2>
+<h2 id="修脚本之前-先保住它抓过的错误">测试修完，还要能抓住原来的错</h2>
+<p id="passage-f39d3e7ef83e">按钮改名可以改定位器。刷新后卡片没了，就去查保存请求、任务状态和读取接口。如果把回读断言改成检查成功提示，上面那个故障版本就会通过。</p>
+<p id="passage-06c6d0d0c913">异步保存收到 202 通常只说明请求已受理。先等本次任务到明确终态，再按它返回的 ID 回读产物。失败报告留三个值就有用得多，本次操作的 ID、最后查到的任务状态，以及失败的那一步。</p>
+<p id="passage-c4e4ea3d183b">回读失败时，按失败点留证据。POST 没发出来，先查页面操作。已经提交但任务没到终态，留住任务编号和最后一次查询结果。任务成功后读不到对应记录，再查写入和读取的对象是否一致。</p>
+<p id="passage-96966899c6c7">挂发布门禁前，我会再跑一次故意跳过写入的版本。它能亮出成功提示，测试仍会在回读处失败，这条回归才守住了用户真正依赖的行为。</p>
+<h2 id="参考">参考</h2>
 <ul>
-<li data-passage-key="da1f19f4038f" id="passage-44e5d8c09087"><a href="https://playwright.dev/docs/locators">Playwright 定位器</a></li>
-<li data-passage-key="3be66a3c0b39" id="passage-b8f94aebf5b0"><a href="https://playwright.dev/python/docs/api/class-page#page-expect-response">Playwright Python 响应等待</a></li>
-<li data-passage-key="0e37cf34212e" id="passage-c30ad7475f53"><a href="https://github.com/web-infra-dev/midscene">Midscene 的 Playwright 集成示例</a></li>
+<li id="passage-44e5d8c09087"><a href="https://playwright.dev/docs/locators">Playwright 定位器</a></li>
+<li id="passage-b8f94aebf5b0"><a href="https://playwright.dev/python/docs/api/class-page#page-expect-response">Playwright Python 响应等待</a></li>
+<li id="passage-c30ad7475f53"><a href="https://github.com/web-infra-dev/midscene">Midscene 的 Playwright 集成示例</a></li>
 </ul></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
-        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
-          <header class="passage-dialog-header">
-            <h2 id="passage-comment-title">段落评论</h2>
-            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
-          </header>
-          <div class="passage-dialog-content">
-            <blockquote data-passage-excerpt></blockquote>
-            <a data-passage-source>查看原文</a>
-            <p data-passage-status role="status"></p>
-            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
-            <div data-passage-widget></div>
-          </div>
-        </dialog>
 
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Playwright/">Playwright</a><a href="/tags/UI-%E8%87%AA%E5%8A%A8%E5%8C%96/">UI 自动化</a><a href="/tags/Midscene/">Midscene</a></div>
         <div class="legacy-tags" hidden></div>
@@ -172,7 +158,7 @@ expect(cards.get_by_text('回归卡片', exact=True)).to_be_visible()
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
-          <div class="giscus"></div>
+          <div class="giscus" id="article-discussion"></div>
         </section>
       </div>
     </div>

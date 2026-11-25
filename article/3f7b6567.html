@@ -20,7 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/3f7b6567.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/3f7b6567.html">
-<script type="module" src="/js/discussions.js"></script>
+<script src="/js/comments.js?v=4" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,60 +56,46 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F">环境变量</a></li><li><a href="#Jenkins%E5%86%85%E7%BD%AE%E5%8F%98%E9%87%8F">Jenkins内置变量</a></li><li><a href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F">自定义环境变量</a></li><li><a href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F">自定义全局变量</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><span id="Jenkins-五"></span><h2 data-passage-key="ae27b474ea4d" id="环境变量"><a class="headerlink" href="#环境变量" title="环境变量"></a>环境变量</h2><p data-passage-key="8d98b1ec8022" id="passage-70b15c11b4c3">环境变量可以分为：</p>
+        <div class="post-body" id="article-text"><span id="Jenkins-五"></span><h2 id="环境变量"><a class="headerlink" href="#环境变量" title="环境变量"></a>环境变量</h2><p id="passage-70b15c11b4c3">环境变量可以分为：</p>
 <ul>
-<li data-passage-key="a5937b55c2f5" id="passage-bc810cfe476d">Jenkins内置变量</li>
-<li data-passage-key="3d4642744346" id="passage-275f0de46414">自定义变量</li>
+<li id="passage-bc810cfe476d">Jenkins内置变量</li>
+<li id="passage-275f0de46414">自定义变量</li>
 </ul>
-<h3 data-passage-key="838e9a9b2cc6" id="Jenkins内置变量"><a class="headerlink" href="#Jenkins内置变量" title="Jenkins内置变量"></a>Jenkins内置变量</h3><blockquote data-passage-key="c60dd47634f8" id="passage-1e552595bdd6">
-<p data-passage-key="5d7d3fad21d3" id="passage-1fbb93a77ba8">Jenkins通过一个名为<code>env</code>的全局变量，将Jenkins内置环境变量暴露出来</p>
+<h3 id="Jenkins内置变量"><a class="headerlink" href="#Jenkins内置变量" title="Jenkins内置变量"></a>Jenkins内置变量</h3><blockquote id="passage-1e552595bdd6">
+<p id="passage-1fbb93a77ba8">Jenkins通过一个名为<code>env</code>的全局变量，将Jenkins内置环境变量暴露出来</p>
 </blockquote>
 <ul>
-<li data-passage-key="4171c2f53f7a" id="passage-9ced3cec5cd5"><code>${env.BUILD_NUMBER}$</code></li>
-<li data-passage-key="97da0697717a" id="passage-34313a226cd6"><code>$env.BUILD_NUMBER$</code></li>
-<li data-passage-key="ef412cbdf239" id="passage-002248cc7ae9"><code>$BUILD_NUMBER$</code>，不推荐使用</li>
+<li id="passage-9ced3cec5cd5"><code>${env.BUILD_NUMBER}$</code></li>
+<li id="passage-34313a226cd6"><code>$env.BUILD_NUMBER$</code></li>
+<li id="passage-002248cc7ae9"><code>$BUILD_NUMBER$</code>，不推荐使用</li>
 </ul>
-<p data-passage-key="8b9fab7da6d9" id="passage-63a62463a66e">查看全局变量：http://「Jenkins服务器地址」:「端口」/pipeline-syntax/globals</p>
-<p data-passage-key="52eb906cc9f4" id="passage-f12ad4e3c712">例如：<a href="http://127.0.0.1:8080/pipeline-syntax/globals" rel="noopener" target="_blank">http://127.0.0.1:8080/pipeline-syntax/globals</a></p>
+<p id="passage-63a62463a66e">查看全局变量：http://「Jenkins服务器地址」:「端口」/pipeline-syntax/globals</p>
+<p id="passage-f12ad4e3c712">例如：<a href="http://127.0.0.1:8080/pipeline-syntax/globals" rel="noopener" target="_blank">http://127.0.0.1:8080/pipeline-syntax/globals</a></p>
 <span id="more"></span>
 <p><img alt="全局变量" decoding="async" height="688" loading="lazy" src="/images/blog-media/074b1f1359350f78f1a8.webp" width="1080"/></p>
-<p data-passage-key="27af373eaeea" id="passage-ab75a5eb4b8f">几个常用的变量</p>
+<p id="passage-ab75a5eb4b8f">几个常用的变量</p>
 <ul>
-<li data-passage-key="eba2ac267708" id="passage-fe54e92e36d5"><strong>BUILD_NUMBER</strong>：构建号</li>
-<li data-passage-key="94d6293452c7" id="passage-019116cab197"><strong>BUILD_URL</strong>：构建页面URL</li>
+<li id="passage-fe54e92e36d5"><strong>BUILD_NUMBER</strong>：构建号</li>
+<li id="passage-019116cab197"><strong>BUILD_URL</strong>：构建页面URL</li>
 </ul>
-<blockquote data-passage-key="e09d4d946b71" id="passage-8992582220c4">
-<p data-passage-key="2f052da28aef" id="passage-24aee5a2a568">使用sh ‘printenv’可以打印env变量的属性值</p>
+<blockquote id="passage-8992582220c4">
+<p id="passage-24aee5a2a568">使用sh ‘printenv’可以打印env变量的属性值</p>
 </blockquote>
-<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/></pre></td><td class="code"><pre data-passage-key="490178133216" id="passage-a1108b5f17cf"><span class="line">pipeline{</span><br/><span class="line">   agent any</span><br/><span class="line">   stages{</span><br/><span class="line">      stage(<span class="string">'Example'</span>){</span><br/><span class="line">         steps{</span><br/><span class="line">            script{</span><br/><span class="line">               sh <span class="string">'printenv'</span></span><br/><span class="line">            }</span><br/><span class="line">         }</span><br/><span class="line">      }</span><br/><span class="line">   }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/></pre></td><td class="code"><pre id="passage-a1108b5f17cf"><span class="line">pipeline{</span><br/><span class="line">   agent any</span><br/><span class="line">   stages{</span><br/><span class="line">      stage(<span class="string">'Example'</span>){</span><br/><span class="line">         steps{</span><br/><span class="line">            script{</span><br/><span class="line">               sh <span class="string">'printenv'</span></span><br/><span class="line">            }</span><br/><span class="line">         }</span><br/><span class="line">      }</span><br/><span class="line">   }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="printenv" decoding="async" height="688" loading="lazy" src="/images/blog-media/cb59f99db956287744e9.webp" width="1080"/></p>
-<h3 data-passage-key="5f3a8b528bca" id="自定义环境变量"><a class="headerlink" href="#自定义环境变量" title="自定义环境变量"></a>自定义环境变量</h3><p data-passage-key="c7aa3e850c79" id="passage-f13d67bdbe88">定义两个环境变量<code>CC = 'clang'</code>,<code>DEBUG_FLAGS = '-g'</code></p>
-<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/></pre></td><td class="code"><pre data-passage-key="f6fa930c2ae4" id="passage-f531648b8735"><span class="line">pipeline{</span><br/><span class="line">   agent any</span><br/><span class="line">   environment {</span><br/><span class="line">      CC = <span class="string">'clang'</span></span><br/><span class="line">   }</span><br/><span class="line">   stages{</span><br/><span class="line">      stage(<span class="string">'Example'</span>){</span><br/><span class="line">         environment {</span><br/><span class="line">            DEBUG_FLAGS = <span class="string">'-g'</span></span><br/><span class="line">         }</span><br/><span class="line">         steps{</span><br/><span class="line">            script{</span><br/><span class="line">               sh <span class="string">"${CC} ${DEBUG_FLAGS}"</span></span><br/><span class="line">               sh <span class="string">"printenv"</span></span><br/><span class="line">            }</span><br/><span class="line">         }</span><br/><span class="line">      }</span><br/><span class="line">   }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
+<h3 id="自定义环境变量"><a class="headerlink" href="#自定义环境变量" title="自定义环境变量"></a>自定义环境变量</h3><p id="passage-f13d67bdbe88">定义两个环境变量<code>CC = 'clang'</code>,<code>DEBUG_FLAGS = '-g'</code></p>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/></pre></td><td class="code"><pre id="passage-f531648b8735"><span class="line">pipeline{</span><br/><span class="line">   agent any</span><br/><span class="line">   environment {</span><br/><span class="line">      CC = <span class="string">'clang'</span></span><br/><span class="line">   }</span><br/><span class="line">   stages{</span><br/><span class="line">      stage(<span class="string">'Example'</span>){</span><br/><span class="line">         environment {</span><br/><span class="line">            DEBUG_FLAGS = <span class="string">'-g'</span></span><br/><span class="line">         }</span><br/><span class="line">         steps{</span><br/><span class="line">            script{</span><br/><span class="line">               sh <span class="string">"${CC} ${DEBUG_FLAGS}"</span></span><br/><span class="line">               sh <span class="string">"printenv"</span></span><br/><span class="line">            }</span><br/><span class="line">         }</span><br/><span class="line">      }</span><br/><span class="line">   }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="自定义环境变量" decoding="async" height="688" loading="lazy" src="/images/blog-media/12f67be9db3d807f2386.webp" width="1080"/></p>
-<p data-passage-key="04fafe718fb1" id="passage-de63cb041509">⚠️<code>environment</code>在pipeline中定义，<strong>作用域</strong>为整个pipeline，在stage中定义，<strong>作用域</strong>只在该阶段</p>
-<p data-passage-key="574e6775c29b" id="passage-a20efc08eada">为了避免命名冲突，建议在自定义变量前增加特别的前缀，例如<code>「公司名」_BUILD_NUMBER</code></p>
-<h3 data-passage-key="6f8761e4700b" id="自定义全局变量"><a class="headerlink" href="#自定义全局变量" title="自定义全局变量"></a>自定义全局变量</h3><p data-passage-key="9b18e6c9fa34" id="passage-a3a9fb27b6ec">进入Mange Jenkins -&gt; Configute System（系统设置）-&gt; Global properties（全局属性）</p>
-<p data-passage-key="06cc76be45be" id="passage-ac3af0a82f6e">☑️勾选Enbironment variables（环境变量）复选框</p>
+<p id="passage-de63cb041509">⚠️<code>environment</code>在pipeline中定义，<strong>作用域</strong>为整个pipeline，在stage中定义，<strong>作用域</strong>只在该阶段</p>
+<p id="passage-a20efc08eada">为了避免命名冲突，建议在自定义变量前增加特别的前缀，例如<code>「公司名」_BUILD_NUMBER</code></p>
+<h3 id="自定义全局变量"><a class="headerlink" href="#自定义全局变量" title="自定义全局变量"></a>自定义全局变量</h3><p id="passage-a3a9fb27b6ec">进入Mange Jenkins -&gt; Configute System（系统设置）-&gt; Global properties（全局属性）</p>
+<p id="passage-ac3af0a82f6e">☑️勾选Enbironment variables（环境变量）复选框</p>
 <p><img alt="系统设置" decoding="async" height="688" loading="lazy" src="/images/blog-media/3575647d19d99aeba9aa.webp" width="1080"/></p>
 <p><img alt="设置自定义全局变量" decoding="async" height="688" loading="lazy" src="/images/blog-media/b447a956a2da798a92ed.webp" width="1080"/></p>
-<h4 data-passage-key="6aa8f49cc992" id="测试"><a class="headerlink" href="#测试" title="测试"></a>测试</h4><p data-passage-key="a7a5e32d8da0" id="passage-9003fb13d687">通过一个简单的echo来查看自定义环境变量是否生效</p>
-<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/></pre></td><td class="code"><pre data-passage-key="8442bb2bc27f" id="passage-54d4c912d964"><span class="line">pipeline{</span><br/><span class="line">   agent any</span><br/><span class="line">   stages{</span><br/><span class="line">      stage(<span class="string">'Example'</span>){</span><br/><span class="line">         steps{</span><br/><span class="line">            script{</span><br/><span class="line">               echo <span class="string">"${env.g_name}"</span></span><br/><span class="line">            }</span><br/><span class="line">         }</span><br/><span class="line">      }</span><br/><span class="line">   }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
-<p data-passage-key="343092c4644d" id="passage-607c24c13462">从图中可以看到，输出的内容为刚定义的内容</p>
+<h4 id="测试"><a class="headerlink" href="#测试" title="测试"></a>测试</h4><p id="passage-9003fb13d687">通过一个简单的echo来查看自定义环境变量是否生效</p>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/></pre></td><td class="code"><pre id="passage-54d4c912d964"><span class="line">pipeline{</span><br/><span class="line">   agent any</span><br/><span class="line">   stages{</span><br/><span class="line">      stage(<span class="string">'Example'</span>){</span><br/><span class="line">         steps{</span><br/><span class="line">            script{</span><br/><span class="line">               echo <span class="string">"${env.g_name}"</span></span><br/><span class="line">            }</span><br/><span class="line">         }</span><br/><span class="line">      }</span><br/><span class="line">   }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-607c24c13462">从图中可以看到，输出的内容为刚定义的内容</p>
 <p><img alt="测试结果" decoding="async" height="688" loading="lazy" src="/images/blog-media/e096a26d7ebe7c6cb23d.webp" width="1080"/></p></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
-        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
-          <header class="passage-dialog-header">
-            <h2 id="passage-comment-title">段落评论</h2>
-            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
-          </header>
-          <div class="passage-dialog-content">
-            <blockquote data-passage-excerpt></blockquote>
-            <a data-passage-source>查看原文</a>
-            <p data-passage-status role="status"></p>
-            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
-            <div data-passage-widget></div>
-          </div>
-        </dialog>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/dtXlRxb6aE5EuovdI2F4vw">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Jenkins/">Jenkins</a><a href="/tags/CI/">CI</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/Jenkins/">Jenkins</a></div>
@@ -123,7 +109,7 @@
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
-          <div class="giscus"></div>
+          <div class="giscus" id="article-discussion"></div>
         </section>
       </div>
     </div>

@@ -20,7 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/b1e20de1.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/b1e20de1.html">
-<script type="module" src="/js/discussions.js"></script>
+<script src="/js/comments.js?v=4" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,98 +56,84 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#JDBC%E6%B3%A8%E6%84%8F%E7%82%B9">JDBC注意点</a></li><li><a href="#SQL%E8%AF%AD%E5%8F%A5">SQL语句</a></li><li><a href="#%E4%BD%BF%E7%94%A8">使用</a></li><li><a href="#%E4%BD%BF%E7%94%A8JDBC%E6%89%B9%E9%87%8F%E9%80%A0%E6%95%B0%E6%8D%AE">使用JDBC批量造数据</a></li><li><a href="#%E4%BD%BF%E7%94%A8SQLite%E5%AD%98%E5%82%A8%E6%95%B0%E6%8D%AE">使用 SQLite 存储数据</a></li><li><a href="#%E5%B0%8F%E7%BB%93">小结</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><span id="12-使用JDBC读取与写入数据"></span><h2 data-passage-key="3e5dbb4aeda6" id="JDBC注意点"><a class="headerlink" href="#JDBC注意点" title="JDBC注意点"></a>JDBC注意点</h2><h3 data-passage-key="68212e97180a" id="SQL语句"><a class="headerlink" href="#SQL语句" title="SQL语句"></a>SQL语句</h3><p data-passage-key="73376eb3786e" id="passage-b267c4af79d5">建议不要带<code>;</code></p>
-<p data-passage-key="c6818b266276" id="passage-767ab32734be">一个jdbc request中不要写多个sql，默认只能支持一条sql</p>
+        <div class="post-body" id="article-text"><span id="12-使用JDBC读取与写入数据"></span><h2 id="JDBC注意点"><a class="headerlink" href="#JDBC注意点" title="JDBC注意点"></a>JDBC注意点</h2><h3 id="SQL语句"><a class="headerlink" href="#SQL语句" title="SQL语句"></a>SQL语句</h3><p id="passage-b267c4af79d5">建议不要带<code>;</code></p>
+<p id="passage-767ab32734be">一个jdbc request中不要写多个sql，默认只能支持一条sql</p>
 <span id="more"></span>
-<h3 data-passage-key="cdfd0b34e491" id="使用"><a class="headerlink" href="#使用" title="使用"></a>使用</h3><h4 data-passage-key="226e4c23ee65" id="Variable-names"><a class="headerlink" href="#Variable-names" title="Variable names"></a>Variable names</h4><ul>
-<li data-passage-key="1e7abbee3749" id="passage-95c53f429026"><p data-passage-key="a3195c2cb428" id="passage-2526e7b35516">定义变量，接收对应「列」的值</p>
+<h3 id="使用"><a class="headerlink" href="#使用" title="使用"></a>使用</h3><h4 id="Variable-names"><a class="headerlink" href="#Variable-names" title="Variable names"></a>Variable names</h4><ul>
+<li id="passage-95c53f429026"><p id="passage-2526e7b35516">定义变量，接收对应「列」的值</p>
 </li>
-<li data-passage-key="ff6d941130fa" id="passage-c1edc17c7213"><p data-passage-key="cf3b3344275c" id="passage-825f03296442">如果有不需要接收的列，则使用「空格+逗号」进行间隔</p>
+<li id="passage-c1edc17c7213"><p id="passage-825f03296442">如果有不需要接收的列，则使用「空格+逗号」进行间隔</p>
 </li>
-<li data-passage-key="7c3dba68bd3a" id="passage-46d2da2585aa"><p data-passage-key="97109e948822" id="passage-2a83fef33e8f">结果的值，使用「变量名称+_顺序数字」调用</p>
+<li id="passage-46d2da2585aa"><p id="passage-2a83fef33e8f">结果的值，使用「变量名称+_顺序数字」调用</p>
 </li>
 </ul>
-<p data-passage-key="46ca6bcb539c" id="passage-1a935822b40c"><strong>实例</strong></p>
-<p data-passage-key="98d4554dade0" id="passage-1ba11ba32c1d">定义一个<code>, mb</code>提取结果中的手机号码</p>
+<p id="passage-1a935822b40c"><strong>实例</strong></p>
+<p id="passage-1ba11ba32c1d">定义一个<code>, mb</code>提取结果中的手机号码</p>
 <p><img alt="取值" decoding="async" height="535" loading="lazy" src="/images/blog-media/28be5adf067cfe1223a2.webp" width="1080"/></p>
-<p data-passage-key="da39e6831e23" id="passage-f343a165c1ea">查看全部的运行结果</p>
+<p id="passage-f343a165c1ea">查看全部的运行结果</p>
 <p><img alt="结果查看" decoding="async" height="535" loading="lazy" src="/images/blog-media/cb4bdddaf3c6209d92d6.webp" width="1080"/></p>
-<p data-passage-key="a729354329a3" id="passage-c0288ea8d97b">使用「调试取样器」查看提取到的内容</p>
+<p id="passage-c0288ea8d97b">使用「调试取样器」查看提取到的内容</p>
 <p><img alt="调试" decoding="async" height="535" loading="lazy" src="/images/blog-media/62ddeaf5eb82a138bc10.webp" width="1080"/></p>
-<p data-passage-key="9661699e0c99" id="passage-5199e3c552c3">使用「ForEach控制器」输出全部结果</p>
+<p id="passage-5199e3c552c3">使用「ForEach控制器」输出全部结果</p>
 <p><img alt="ForEach控制器" decoding="async" height="563" loading="lazy" src="/images/blog-media/c00606365bb7f82d477c.webp" width="1080"/></p>
 <ul>
-<li data-passage-key="5c4c2db5aeb3" id="passage-2f62e30a639b">输入变量前缀：<code>mb</code></li>
-<li data-passage-key="bc313c361bb6" id="passage-659beee0d168">开始循环 0</li>
-<li data-passage-key="0824b4df0435" id="passage-9bc7cb20986a">结束循环 10</li>
-<li data-passage-key="3fc9ad731ae9" id="passage-4e539af014ac">输出变量名称:<code>mbil</code></li>
+<li id="passage-2f62e30a639b">输入变量前缀：<code>mb</code></li>
+<li id="passage-659beee0d168">开始循环 0</li>
+<li id="passage-9bc7cb20986a">结束循环 10</li>
+<li id="passage-4e539af014ac">输出变量名称:<code>mbil</code></li>
 </ul>
-<p data-passage-key="2df0f7d5d314" id="passage-0ebb78679268">添加一个「调试取样器」并修改它的名称为<code>${mbil}</code></p>
+<p id="passage-0ebb78679268">添加一个「调试取样器」并修改它的名称为<code>${mbil}</code></p>
 <p><img alt="调试取样器" decoding="async" height="578" loading="lazy" src="/images/blog-media/cd0b80106fb9b104c1d6.webp" width="1080"/></p>
-<p data-passage-key="4143f04b6902" id="passage-61c9396fb67b">运行后查看结果</p>
+<p id="passage-61c9396fb67b">运行后查看结果</p>
 <p><img alt="查看结果" decoding="async" height="578" loading="lazy" src="/images/blog-media/76c82eebd48789976687.webp" width="1080"/></p>
-<p data-passage-key="e04a46c3a829" id="passage-710bd33469d0">使用「循环控制器」获取</p>
+<p id="passage-710bd33469d0">使用「循环控制器」获取</p>
 <ul>
-<li data-passage-key="2e0cbae6e82d" id="passage-1ad9b146a27c">循环次数填写<code>${mb_#}</code></li>
+<li id="passage-1ad9b146a27c">循环次数填写<code>${mb_#}</code></li>
 </ul>
 <p><img alt="截屏2021-04-23 下午8.47.01" decoding="async" height="349" loading="lazy" src="/images/blog-media/91930579d2ccaa49fb71.webp" width="1080"/></p>
-<p data-passage-key="bf42313efa18" id="passage-cc30b3587b86">「计数器」中</p>
+<p id="passage-cc30b3587b86">「计数器」中</p>
 <ul>
-<li data-passage-key="91951390fb18" id="passage-abef6eec8540">开始值为1</li>
-<li data-passage-key="cb36f7a5d16c" id="passage-9783d1542cf0">递增为1</li>
-<li data-passage-key="d6e99123918c" id="passage-7559e46502e0">最大值为<code>${mb_#}</code></li>
-<li data-passage-key="e03ee7801367" id="passage-c7ba5fce1225">引用名称为<code>d</code></li>
+<li id="passage-abef6eec8540">开始值为1</li>
+<li id="passage-9783d1542cf0">递增为1</li>
+<li id="passage-7559e46502e0">最大值为<code>${mb_#}</code></li>
+<li id="passage-c7ba5fce1225">引用名称为<code>d</code></li>
 </ul>
 <p><img alt="截屏2021-04-23 下午8.47.10" decoding="async" height="349" loading="lazy" src="/images/blog-media/e0e39f3925b94c141592.webp" width="1080"/></p>
-<p data-passage-key="731ff28c5b0f" id="passage-ef4cd8b50b4c">将「调试取样器」名称修改为<code>${__V(mb_${d},)}</code></p>
+<p id="passage-ef4cd8b50b4c">将「调试取样器」名称修改为<code>${__V(mb_${d},)}</code></p>
 <p><img alt="截屏2021-04-23 下午8.47.17" decoding="async" height="349" loading="lazy" src="/images/blog-media/8753cdb13d99f82b3e00.webp" width="1080"/></p>
-<p data-passage-key="99810282d132" id="passage-47036f1e4bc3">运行之后可以在结果中查看，每个值都打印出来了</p>
+<p id="passage-47036f1e4bc3">运行之后可以在结果中查看，每个值都打印出来了</p>
 <p><img alt="截屏2021-04-23 下午8.47.26" decoding="async" height="508" loading="lazy" src="/images/blog-media/55938351ea95a02ee0a8.webp" width="1080"/></p>
-<h4 data-passage-key="a0edeef4bb9e" id="Result-variable-name"><a class="headerlink" href="#Result-variable-name" title="Result variable name"></a>Result variable name</h4><blockquote data-passage-key="b4a4619d1d90" id="passage-a087b1618c86">
-<p data-passage-key="683a5b1fe997" id="passage-0f782c83029b">接收全部结果，并以列表展示</p>
+<h4 id="Result-variable-name"><a class="headerlink" href="#Result-variable-name" title="Result variable name"></a>Result variable name</h4><blockquote id="passage-a087b1618c86">
+<p id="passage-0f782c83029b">接收全部结果，并以列表展示</p>
 </blockquote>
-<p data-passage-key="80713a18b274" id="passage-b4a9a0817f87">添加一个名为「allvar」的变量接收</p>
+<p id="passage-b4a9a0817f87">添加一个名为「allvar」的变量接收</p>
 <p><img alt="定义" decoding="async" height="705" loading="lazy" src="/images/blog-media/1602f0cc6a7a823d236d.webp" width="1080"/></p>
-<p data-passage-key="016f1ace752e" id="passage-877fbbb85ac7">查看结果</p>
-<figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="fcaff3d45296" id="passage-26745b21eae6"><span class="line">allvar=[{mobile=13527104953, id=25, gqid=126361, identity=1e7a82646a503f41, token=rjNWTXOSU8g68V62fcqgEMm4ivcNhvV/W7C/k2G8kc+qYRbmw53LuAfcwFRAuT8pxRU/jxaEwo/fQbjJJq9BrA==}, {mobile=13528223194, id=29, gqid=126182, identity=640d783c00a09e98, token=YeCOmrviJNaF6nhhSI4Lqq3sBrTRxAT4m0vZbrLALFDOiIl02I+7z//l7vPA/s5XxRU/jxaEwo/fQbjJJq9BrA==}, {mobile=13560693138, id=40, gqid=124571, identity=7f897d7fd70df90a, token=bu3nXFfaVsqCIZ2eKOQDu8Ah/UfTTez3iPyWRSH3hgFY5AQFvR7kcg9gGdxq/0kTxRU/jxaEwo/fQbjJJq9BrA==}, {mobile=13560696226, id=51, gqid=126474, identity=8a989d323fde98f1, token=pEOeKYMBmmPWnT+CkxUKCj249HbCPHFkgH6FoOjrDcWQtElKwuYUjVwvP1SaDvznxRU/jxaEwo/fQbjJJq9BrA==}, {mobile=13527104943, id=78, gqid=4000000, identity=0da609ddca720332, token=cwjgPJCiSp/zom1v/xG39CkpdxgjTKvts+NVk+sVMzMfEtHIhoe56Ch2gNFKjesdxRU/jxaEwo/fQbjJJq9BrA==}, {mobile=13527104143, id=79, gqid=4000001, identity=195006160bc11f4f, token=JTQBPw32Sq88b5MjfrsA/eErfhax5EHrvVdzumTtRV+yXd0odVFMF8N93QEbnLTYxRU/jxaEwo/fQbjJJq9BrA==}]</span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-877fbbb85ac7">查看结果</p>
+<figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-26745b21eae6"><span class="line">allvar=[{mobile=13527104953, id=25, gqid=126361, identity=1e7a82646a503f41, token=rjNWTXOSU8g68V62fcqgEMm4ivcNhvV/W7C/k2G8kc+qYRbmw53LuAfcwFRAuT8pxRU/jxaEwo/fQbjJJq9BrA==}, {mobile=13528223194, id=29, gqid=126182, identity=640d783c00a09e98, token=YeCOmrviJNaF6nhhSI4Lqq3sBrTRxAT4m0vZbrLALFDOiIl02I+7z//l7vPA/s5XxRU/jxaEwo/fQbjJJq9BrA==}, {mobile=13560693138, id=40, gqid=124571, identity=7f897d7fd70df90a, token=bu3nXFfaVsqCIZ2eKOQDu8Ah/UfTTez3iPyWRSH3hgFY5AQFvR7kcg9gGdxq/0kTxRU/jxaEwo/fQbjJJq9BrA==}, {mobile=13560696226, id=51, gqid=126474, identity=8a989d323fde98f1, token=pEOeKYMBmmPWnT+CkxUKCj249HbCPHFkgH6FoOjrDcWQtElKwuYUjVwvP1SaDvznxRU/jxaEwo/fQbjJJq9BrA==}, {mobile=13527104943, id=78, gqid=4000000, identity=0da609ddca720332, token=cwjgPJCiSp/zom1v/xG39CkpdxgjTKvts+NVk+sVMzMfEtHIhoe56Ch2gNFKjesdxRU/jxaEwo/fQbjJJq9BrA==}, {mobile=13527104143, id=79, gqid=4000001, identity=195006160bc11f4f, token=JTQBPw32Sq88b5MjfrsA/eErfhax5EHrvVdzumTtRV+yXd0odVFMF8N93QEbnLTYxRU/jxaEwo/fQbjJJq9BrA==}]</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="结果" decoding="async" height="705" loading="lazy" src="/images/blog-media/265d1b4c2e4e41c16d19.webp" width="1080"/></p>
-<h2 data-passage-key="4c0c9e4682a4" id="使用JDBC批量造数据"><a class="headerlink" href="#使用JDBC批量造数据" title="使用JDBC批量造数据"></a>使用JDBC批量造数据</h2><blockquote data-passage-key="4a3e5b2bdeb2" id="passage-e0721bec2784">
-<p data-passage-key="6f712cd723dd" id="passage-d21b3133cb82">思路：循环执行insert语句</p>
+<h2 id="使用JDBC批量造数据"><a class="headerlink" href="#使用JDBC批量造数据" title="使用JDBC批量造数据"></a>使用JDBC批量造数据</h2><blockquote id="passage-e0721bec2784">
+<p id="passage-d21b3133cb82">思路：循环执行insert语句</p>
 </blockquote>
-<h3 data-passage-key="1fd946544014" id="使用SQLite存储数据"><a class="headerlink" href="#使用SQLite存储数据" title="使用SQLite存储数据"></a>使用<code>SQLite</code>存储数据</h3><p data-passage-key="fa1d1b122284" id="passage-419bf71be953">先连接数据库</p>
+<h3 id="使用SQLite存储数据"><a class="headerlink" href="#使用SQLite存储数据" title="使用SQLite存储数据"></a>使用<code>SQLite</code>存储数据</h3><p id="passage-419bf71be953">先连接数据库</p>
 <p><img alt="连接数据库" decoding="async" height="703" loading="lazy" src="/images/blog-media/bbef743044cab4d3e626.webp" width="1080"/></p>
-<p data-passage-key="09e237b733b0" id="passage-62c497e5cecc">创建一张表</p>
+<p id="passage-62c497e5cecc">创建一张表</p>
 <p><img alt="创建表" decoding="async" height="703" loading="lazy" src="/images/blog-media/35363b0ce2b70e9ae9be.webp" width="1080"/></p>
-<p data-passage-key="d0addbe8b9b3" id="passage-9e62862cf6ef">调用注册接口</p>
+<p id="passage-9e62862cf6ef">调用注册接口</p>
 <p><img alt="注册接口" decoding="async" height="703" loading="lazy" src="/images/blog-media/e9d4ac3ba1a932a123fe.webp" width="1080"/></p>
-<p data-passage-key="3f97aeb2b040" id="passage-7ba2a748bcfa">将注册结果插入到数据库中</p>
+<p id="passage-7ba2a748bcfa">将注册结果插入到数据库中</p>
 <p><img alt="插入表" decoding="async" height="703" loading="lazy" src="/images/blog-media/09c5052b3bb833a8578b.webp" width="1080"/></p>
-<p data-passage-key="4b379ce896ba" id="passage-877fbbb85ac7-2">查看结果</p>
+<p id="passage-877fbbb85ac7-2">查看结果</p>
 <p><img alt="查看结果" decoding="async" height="960" loading="lazy" src="/images/blog-media/4a4d08475d8cb0c71fde.webp" width="1080"/></p>
-<p data-passage-key="427223d72a68" id="passage-fa0edee5aee0">修改「线程组」的次数为1000次运行后查看数据库</p>
+<p id="passage-fa0edee5aee0">修改「线程组」的次数为1000次运行后查看数据库</p>
 <p><img alt="查看结果" decoding="async" height="960" loading="lazy" src="/images/blog-media/623edb7a66a864e6183a.webp" width="1080"/></p>
-<p data-passage-key="a9e053b15896" id="passage-5c9da0b8830b">新建「JDBC Request」</p>
+<p id="passage-5c9da0b8830b">新建「JDBC Request」</p>
 <p><img alt="JDBC Request" decoding="async" height="703" loading="lazy" src="/images/blog-media/caa50791af1c40ff54c5.webp" width="1080"/></p>
-<p data-passage-key="c0f3ee6d01b9" id="passage-3bba9352b708">新建一个「保存响应到文件」</p>
-<p data-passage-key="ab69d108e67c" id="passage-1eff2bd3ef3e">去除勾选「Dont add number to prefix」和「Dont add content type suffix」</p>
+<p id="passage-3bba9352b708">新建一个「保存响应到文件」</p>
+<p id="passage-1eff2bd3ef3e">去除勾选「Dont add number to prefix」和「Dont add content type suffix」</p>
 <p><img alt="保存响应到文件" decoding="async" height="703" loading="lazy" src="/images/blog-media/f1be7f5d5fe7839d39f9.webp" width="1080"/></p>
 <p><img alt="查看结果" decoding="async" height="961" loading="lazy" src="/images/blog-media/6ac368387eae78bc2f4a.webp" width="928"/></p>
-<h2 data-passage-key="6bf8bdb1f6ee" id="小结"><a class="headerlink" href="#小结" title="小结"></a>小结</h2><p data-passage-key="85daca6d6d6e" id="passage-8820ae5e913e">使用数据库的优势：可以指定读取n行，每次操作消耗小</p>
-<p data-passage-key="2a7a460058d9" id="passage-57807fde0d56">使用csv文件每次需要打开整个文件后进行读取</p></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
-        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
-          <header class="passage-dialog-header">
-            <h2 id="passage-comment-title">段落评论</h2>
-            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
-          </header>
-          <div class="passage-dialog-content">
-            <blockquote data-passage-excerpt></blockquote>
-            <a data-passage-source>查看原文</a>
-            <p data-passage-status role="status"></p>
-            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
-            <div data-passage-widget></div>
-          </div>
-        </dialog><section class="article-video" aria-labelledby="article-video-title">
+<h2 id="小结"><a class="headerlink" href="#小结" title="小结"></a>小结</h2><p id="passage-8820ae5e913e">使用数据库的优势：可以指定读取n行，每次操作消耗小</p>
+<p id="passage-57807fde0d56">使用csv文件每次需要打开整个文件后进行读取</p></div><section class="article-video" aria-labelledby="article-video-title">
           <header class="article-video-header">
             <h2 id="article-video-title">本文视频讲解</h2>
             <p>普通话 · <time datetime="PT168S">2:48</time></p>
@@ -172,7 +158,7 @@
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
-          <div class="giscus"></div>
+          <div class="giscus" id="article-discussion"></div>
         </section>
       </div>
     </div>

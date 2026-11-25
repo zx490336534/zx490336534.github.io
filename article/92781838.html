@@ -20,7 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/92781838.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/92781838.html">
-<script type="module" src="/js/discussions.js"></script>
+<script src="/js/comments.js?v=4" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,218 +56,204 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#CPU">CPU</a></li><li><a href="#%E4%B8%AD%E5%A4%AE%E5%A4%84%E7%90%86%E5%99%A8">中央处理器</a></li><li><a href="#CPU%E7%9A%84%E5%9B%9B%E4%B8%AA%E7%BB%84%E6%88%90%E9%83%A8%E5%88%86">CPU的四个组成部分</a></li><li><a href="#%E5%86%85%E5%AD%98">内存</a></li><li><a href="#CPU%E7%9A%84%E6%95%B0%E6%8D%AE%E6%9D%A5%E6%BA%90">CPU的数据来源</a></li><li><a href="#%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F">执行顺序</a></li><li><a href="#%E6%9F%A5%E7%9C%8BCPU%E4%BF%A1%E6%81%AF">查看CPU信息</a></li><li><a href="#%E7%9B%91%E6%8E%A7cpu">监控cpu</a></li><li><a href="#load-average%E5%80%BC-%E5%92%8CCPU%E4%BD%BF%E7%94%A8%E7%8E%87%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB">load average值 和CPU使用率之间的关系</a></li><li><a href="#CPU%E4%B8%8A%E4%B8%8B%E6%96%87">CPU上下文</a></li><li><a href="#CPU%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90">CPU性能分析</a></li><li><a href="#load-%E9%AB%98-amp-amp-CPU%E9%AB%98">load 高&amp;&amp; CPU高</a></li><li><a href="#CPU%E5%AE%9E%E6%88%98">CPU实战</a></li><li><a href="#stress-ng">stress-ng</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><span id="26-CPU知识"></span><h2 data-passage-key="db9a4c7d4c19" id="CPU"><a class="headerlink" href="#CPU" title="CPU"></a>CPU</h2><h3 data-passage-key="302a857e3be8" id="中央处理器"><a class="headerlink" href="#中央处理器" title="中央处理器"></a>中央处理器</h3><blockquote data-passage-key="fb8ee057b3ed" id="passage-063144b0185b">
-<p data-passage-key="f733b9694f4e" id="passage-98d5c5abe3d1">一段程序要被执行，先编译成机器语言</p>
-<p data-passage-key="7f5e2efde0db" id="passage-58e3527b69b3">进入内存</p>
-<p data-passage-key="5944fc4bc43f" id="passage-2f2df84de484">cpu控制器再从内存中获取指令、数据，放到寄存器中，</p>
-<p data-passage-key="8ab9b04f1b55" id="passage-d6ee9bb49da4">时钟控制cpu的运算器睡眠时候开始计算，计算时长多长</p>
-<p data-passage-key="6fbe612c15a1" id="passage-1ed9431ea78e">运算器开始计算，运算过程中，如果还需要数据，控制器再从寄存器中拿数据，拿不到就从内存中拿，如果一个时间片段计算不完，就干其他事，之后再执行，执行完了输出数据给寄存器，再传给内存</p>
+        <div class="post-body" id="article-text"><span id="26-CPU知识"></span><h2 id="CPU"><a class="headerlink" href="#CPU" title="CPU"></a>CPU</h2><h3 id="中央处理器"><a class="headerlink" href="#中央处理器" title="中央处理器"></a>中央处理器</h3><blockquote id="passage-063144b0185b">
+<p id="passage-98d5c5abe3d1">一段程序要被执行，先编译成机器语言</p>
+<p id="passage-58e3527b69b3">进入内存</p>
+<p id="passage-2f2df84de484">cpu控制器再从内存中获取指令、数据，放到寄存器中，</p>
+<p id="passage-d6ee9bb49da4">时钟控制cpu的运算器睡眠时候开始计算，计算时长多长</p>
+<p id="passage-1ed9431ea78e">运算器开始计算，运算过程中，如果还需要数据，控制器再从寄存器中拿数据，拿不到就从内存中拿，如果一个时间片段计算不完，就干其他事，之后再执行，执行完了输出数据给寄存器，再传给内存</p>
 </blockquote>
-<p data-passage-key="f2017f7c210b" id="passage-11b74ac65792">影响CPU性能的物理因素：主频、架构、核</p>
-<h4 data-passage-key="8b784b628805" id="架构"><a class="headerlink" href="#架构" title="架构"></a>架构</h4><ul>
-<li data-passage-key="01ba7136d9bf" id="passage-b2ca9c5ba1fc">Inter(x86)</li>
-<li data-passage-key="903346e39d9f" id="passage-8c8e8868d6be">AMD(x86)</li>
-<li data-passage-key="d058dad5e244" id="passage-ef4642b311a5">IBM(PowerPC)</li>
-<li data-passage-key="71edca1a1c63" id="passage-8a6c976f2e77">ARM</li>
+<p id="passage-11b74ac65792">影响CPU性能的物理因素：主频、架构、核</p>
+<h4 id="架构"><a class="headerlink" href="#架构" title="架构"></a>架构</h4><ul>
+<li id="passage-b2ca9c5ba1fc">Inter(x86)</li>
+<li id="passage-8c8e8868d6be">AMD(x86)</li>
+<li id="passage-ef4642b311a5">IBM(PowerPC)</li>
+<li id="passage-8a6c976f2e77">ARM</li>
 </ul>
-<h4 data-passage-key="4e55de4ad425" id="主频"><a class="headerlink" href="#主频" title="主频"></a>主频</h4><p data-passage-key="928c0602a448" id="passage-0a5872e4c4a1">GHz</p>
-<h4 data-passage-key="e87faf89dca0" id="核心数"><a class="headerlink" href="#核心数" title="核心数"></a>核心数</h4><p data-passage-key="93c2eb63449d" id="passage-c6ce920b54e3">单核、双核、n核</p>
+<h4 id="主频"><a class="headerlink" href="#主频" title="主频"></a>主频</h4><p id="passage-0a5872e4c4a1">GHz</p>
+<h4 id="核心数"><a class="headerlink" href="#核心数" title="核心数"></a>核心数</h4><p id="passage-c6ce920b54e3">单核、双核、n核</p>
 <span id="more"></span>
-<h3 data-passage-key="c5f89f2dfdda" id="CPU的四个组成部分"><a class="headerlink" href="#CPU的四个组成部分" title="CPU的四个组成部分"></a>CPU的四个组成部分</h3><p><img alt="cpu组成" decoding="async" height="350" loading="lazy" src="/images/blog-media/d93b50a54addfd5359ad.webp" width="305"/></p>
-<h4 data-passage-key="e4f6f1d98e42" id="运算器"><a class="headerlink" href="#运算器" title="运算器"></a>运算器</h4><p data-passage-key="d80b1ed109dd" id="passage-39188254c932">运算</p>
-<h4 data-passage-key="215c10e7f91b" id="控制器"><a class="headerlink" href="#控制器" title="控制器"></a>控制器</h4><p data-passage-key="dadef6bbc6e6" id="passage-c6b919dc31c8">把内存的指令、数据读入寄存器，控制计算机</p>
-<h4 data-passage-key="46bbb6e997d2" id="寄存器"><a class="headerlink" href="#寄存器" title="寄存器"></a>寄存器</h4><p data-passage-key="8d1976fc900f" id="passage-775d239346c3">暂存指针、数据、地址</p>
-<p data-passage-key="0302b68b461f" id="passage-71509c5babbb">CPU的几级缓存，就是寄存器</p>
-<h4 data-passage-key="0f58fd2a2e0f" id="时钟"><a class="headerlink" href="#时钟" title="时钟"></a>时钟</h4><p data-passage-key="af3097c1ed7c" id="passage-adbfd4c45153">计时</p>
-<p data-passage-key="fb37596bd326" id="passage-52d62e3e74ec">在CPU中进行计算时，都会分配一个时间片段</p>
+<h3 id="CPU的四个组成部分"><a class="headerlink" href="#CPU的四个组成部分" title="CPU的四个组成部分"></a>CPU的四个组成部分</h3><p><img alt="cpu组成" decoding="async" height="350" loading="lazy" src="/images/blog-media/d93b50a54addfd5359ad.webp" width="305"/></p>
+<h4 id="运算器"><a class="headerlink" href="#运算器" title="运算器"></a>运算器</h4><p id="passage-39188254c932">运算</p>
+<h4 id="控制器"><a class="headerlink" href="#控制器" title="控制器"></a>控制器</h4><p id="passage-c6b919dc31c8">把内存的指令、数据读入寄存器，控制计算机</p>
+<h4 id="寄存器"><a class="headerlink" href="#寄存器" title="寄存器"></a>寄存器</h4><p id="passage-775d239346c3">暂存指针、数据、地址</p>
+<p id="passage-71509c5babbb">CPU的几级缓存，就是寄存器</p>
+<h4 id="时钟"><a class="headerlink" href="#时钟" title="时钟"></a>时钟</h4><p id="passage-adbfd4c45153">计时</p>
+<p id="passage-52d62e3e74ec">在CPU中进行计算时，都会分配一个时间片段</p>
 <ul>
-<li data-passage-key="a66b0df4e4b6" id="passage-a9cc34f8e6fd">如果某个计算，在分配的时间片段中完成，自动中断</li>
-<li data-passage-key="f70479c36b29" id="passage-19865a1b722f">如果某个计算，在分配的时间片段中没有完成，强制中断</li>
+<li id="passage-a9cc34f8e6fd">如果某个计算，在分配的时间片段中完成，自动中断</li>
+<li id="passage-19865a1b722f">如果某个计算，在分配的时间片段中没有完成，强制中断</li>
 </ul>
-<p data-passage-key="755ede011a19" id="passage-22a41167481a">如果某个任务需要的计算时间比较长，那么cpu的分片就会出现不连续的时间分片</p>
-<h3 data-passage-key="7d8f8c37ec78" id="内存"><a class="headerlink" href="#内存" title="内存"></a>内存</h3><p data-passage-key="000aa1598b57" id="passage-080b8e400ae2">与CPU沟通的桥梁</p>
-<p data-passage-key="423ca61f9806" id="passage-b21ed8134362">存cpu的运算数据</p>
-<p data-passage-key="e098651cbb10" id="passage-456c1d26a28a">硬盘、外存数据</p>
-<h3 data-passage-key="b7213adaafbf" id="CPU的数据来源"><a class="headerlink" href="#CPU的数据来源" title="CPU的数据来源"></a>CPU的数据来源</h3><p><img alt="数据" decoding="async" height="451" loading="lazy" src="/images/blog-media/555829354835b2182a3b.webp" width="704"/></p>
-<h4 data-passage-key="a17dadc690c9" id="有内存数据"><a class="headerlink" href="#有内存数据" title="有内存数据"></a>有内存数据</h4><ul>
-<li data-passage-key="01af3cb4e3d2" id="passage-47b77e0ed621">内存中的数据</li>
-<li data-passage-key="d85996dab191" id="passage-fc58b8116cd4">外设数据</li>
+<p id="passage-22a41167481a">如果某个任务需要的计算时间比较长，那么cpu的分片就会出现不连续的时间分片</p>
+<h3 id="内存"><a class="headerlink" href="#内存" title="内存"></a>内存</h3><p id="passage-080b8e400ae2">与CPU沟通的桥梁</p>
+<p id="passage-b21ed8134362">存cpu的运算数据</p>
+<p id="passage-456c1d26a28a">硬盘、外存数据</p>
+<h3 id="CPU的数据来源"><a class="headerlink" href="#CPU的数据来源" title="CPU的数据来源"></a>CPU的数据来源</h3><p><img alt="数据" decoding="async" height="451" loading="lazy" src="/images/blog-media/555829354835b2182a3b.webp" width="704"/></p>
+<h4 id="有内存数据"><a class="headerlink" href="#有内存数据" title="有内存数据"></a>有内存数据</h4><ul>
+<li id="passage-47b77e0ed621">内存中的数据</li>
+<li id="passage-fc58b8116cd4">外设数据</li>
 </ul>
-<h4 data-passage-key="2d9ed3ccf3e4" id="磁盘数据"><a class="headerlink" href="#磁盘数据" title="磁盘数据"></a>磁盘数据</h4><h3 data-passage-key="9746d22c4d48" id="执行顺序"><a class="headerlink" href="#执行顺序" title="执行顺序"></a>执行顺序</h3><p data-passage-key="f1aba686796a" id="passage-9625ea98bb91">CPU中的控制单元，控制指令执行的顺序，并不是按照先后顺序执行，而是按照优先级顺序</p>
-<p data-passage-key="aeff454b56d3" id="passage-f7bedcde7b8e">运算单元，进行计算时：</p>
+<h4 id="磁盘数据"><a class="headerlink" href="#磁盘数据" title="磁盘数据"></a>磁盘数据</h4><h3 id="执行顺序"><a class="headerlink" href="#执行顺序" title="执行顺序"></a>执行顺序</h3><p id="passage-9625ea98bb91">CPU中的控制单元，控制指令执行的顺序，并不是按照先后顺序执行，而是按照优先级顺序</p>
+<p id="passage-f7bedcde7b8e">运算单元，进行计算时：</p>
 <ul>
-<li data-passage-key="ca4d6e452b12" id="passage-b9afa2f58175">如果源数据充足</li>
-<li data-passage-key="ef2e4a28050e" id="passage-7036605bdc5c">如果源数据不够，则会发生等待「iowait」</li>
+<li id="passage-b9afa2f58175">如果源数据充足</li>
+<li id="passage-7036605bdc5c">如果源数据不够，则会发生等待「iowait」</li>
 </ul>
-<h3 data-passage-key="a135476e8542" id="查看CPU信息"><a class="headerlink" href="#查看CPU信息" title="查看CPU信息"></a>查看CPU信息</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="2895317ddf0c" id="passage-5325a6989946"><span class="line">lscpu</span><br/></pre></td></tr></tbody></table></figure>
+<h3 id="查看CPU信息"><a class="headerlink" href="#查看CPU信息" title="查看CPU信息"></a>查看CPU信息</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-5325a6989946"><span class="line">lscpu</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="lscpu" decoding="async" height="721" loading="lazy" src="/images/blog-media/da8dfd057b7d118a0e22.webp" width="1080"/></p>
 <p><img alt="字段含义" decoding="async" height="297" loading="lazy" src="/images/blog-media/47d00e5842c33302f22f.webp" width="628"/></p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre data-passage-key="d006d3e9eba3" id="passage-11a24325428a"><span class="line">cat /proc/cpuinfo 内存中记录的cpu信息</span><br/><span class="line">cat /proc/cpuinfo | grep "physical id"|sort |uniq |wc -l 查看物理cpu数量</span><br/><span class="line">cat /proc/cpuinfo | grep "cpu cores"|uniq 查看CPU的core数「核数」</span><br/><span class="line">cat /proc/cpuinfo | grep "processor"|wc -l 查看逻辑CPU数量</span><br/></pre></td></tr></tbody></table></figure>
-<h2 data-passage-key="4b8e4c0fa7e8" id="监控cpu"><a class="headerlink" href="#监控cpu" title="监控cpu"></a>监控cpu</h2><h3 data-passage-key="a325882e153b" id="load-average值-和CPU使用率之间的关系"><a class="headerlink" href="#load-average值-和CPU使用率之间的关系" title="load average值 和CPU使用率之间的关系"></a>load average值 和CPU使用率之间的关系</h3><p data-passage-key="8a9554a431b4" id="passage-a198f95c11cf">现在的linux服务器中 load average 不等于 CPU使用率</p>
-<p data-passage-key="7ac1a6538cec" id="passage-c7f8c9ddeed3">load average是系统的整体负载体现，它包括 CPU负载+Disk负载+网络负载+外设负载</p>
-<p data-passage-key="6877d6b4b5e4" id="passage-84a53e64db77">load average = cpuload + ioload</p>
-<p data-passage-key="d7a2fadf16f1" id="passage-04d82f86a044">CPU的使用：用户进程使用时间us、系统内核运行时间sy、空闲时间idle、管理被抢占时间st</p>
-<p data-passage-key="4bdb2fe2821e" id="passage-90247f3bca4e">繁忙：us + sy + st + ni + hi + si = CPU使用率的时间（除以总时间）</p>
-<p data-passage-key="46f926173ce4" id="passage-72442b398338">空闲：idle + wa</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre id="passage-11a24325428a"><span class="line">cat /proc/cpuinfo 内存中记录的cpu信息</span><br/><span class="line">cat /proc/cpuinfo | grep "physical id"|sort |uniq |wc -l 查看物理cpu数量</span><br/><span class="line">cat /proc/cpuinfo | grep "cpu cores"|uniq 查看CPU的core数「核数」</span><br/><span class="line">cat /proc/cpuinfo | grep "processor"|wc -l 查看逻辑CPU数量</span><br/></pre></td></tr></tbody></table></figure>
+<h2 id="监控cpu"><a class="headerlink" href="#监控cpu" title="监控cpu"></a>监控cpu</h2><h3 id="load-average值-和CPU使用率之间的关系"><a class="headerlink" href="#load-average值-和CPU使用率之间的关系" title="load average值 和CPU使用率之间的关系"></a>load average值 和CPU使用率之间的关系</h3><p id="passage-a198f95c11cf">现在的linux服务器中 load average 不等于 CPU使用率</p>
+<p id="passage-c7f8c9ddeed3">load average是系统的整体负载体现，它包括 CPU负载+Disk负载+网络负载+外设负载</p>
+<p id="passage-84a53e64db77">load average = cpuload + ioload</p>
+<p id="passage-04d82f86a044">CPU的使用：用户进程使用时间us、系统内核运行时间sy、空闲时间idle、管理被抢占时间st</p>
+<p id="passage-90247f3bca4e">繁忙：us + sy + st + ni + hi + si = CPU使用率的时间（除以总时间）</p>
+<p id="passage-72442b398338">空闲：idle + wa</p>
 <ul>
-<li data-passage-key="343962d2e6bb" id="passage-7728358bd1c0">sy：上下文切换「自愿、非自愿」</li>
+<li id="passage-7728358bd1c0">sy：上下文切换「自愿、非自愿」</li>
 </ul>
-<blockquote data-passage-key="e0c32ebf95ac" id="passage-4a3df00911c2">
-<p data-passage-key="9741fd0166f3" id="passage-2fedb7b08538">自愿上下文切换：内存瓶颈</p>
-<p data-passage-key="935cf14c9385" id="passage-cf4286501487">非自愿上下文切换：cpu瓶颈（抢占资源）</p>
+<blockquote id="passage-4a3df00911c2">
+<p id="passage-2fedb7b08538">自愿上下文切换：内存瓶颈</p>
+<p id="passage-cf4286501487">非自愿上下文切换：cpu瓶颈（抢占资源）</p>
 </blockquote>
 <ul>
-<li data-passage-key="b9743778824e" id="passage-d3ed5b314306">us\ni：用户运行计算 CPU密集计算、FGC、死循环</li>
-<li data-passage-key="8bebca193e59" id="passage-1a9342cf54cc">si：软中断 CPU竞争</li>
-<li data-passage-key="b2466c5d1fef" id="passage-b7188d6e046d">wa：等待资源 I/O问题（磁盘、网络）</li>
-<li data-passage-key="998b8ef6f8b2" id="passage-027e006ceb18">st：抢占资源（宿主机抢占资源）</li>
+<li id="passage-d3ed5b314306">us\ni：用户运行计算 CPU密集计算、FGC、死循环</li>
+<li id="passage-1a9342cf54cc">si：软中断 CPU竞争</li>
+<li id="passage-b7188d6e046d">wa：等待资源 I/O问题（磁盘、网络）</li>
+<li id="passage-027e006ceb18">st：抢占资源（宿主机抢占资源）</li>
 </ul>
-<h3 data-passage-key="c89db9fa9ca3" id="CPU上下文"><a class="headerlink" href="#CPU上下文" title="CPU上下文"></a>CPU上下文</h3><p data-passage-key="914be83e6117" id="passage-b6897f76f88f">上下文：CPU寄存器和程序计数器</p>
-<p data-passage-key="8309b46fb94d" id="passage-188cd18f69d1">程序计数器：存储CPU正在执行的指令位置和下一条指令的位置</p>
-<p data-passage-key="a90d0192a18f" id="passage-3c81193b0a4b">上下文切换：先把当前的任务CPU上下文（CPU寄存器和程序计数器）保存起来，然后加载新任务的上下文到CPU的寄存器和程序计数器中，CPU再跳转到计数器上执行新任务</p>
-<p data-passage-key="54a02e1d4a80" id="passage-75faf5f05dae">上下文切换可以分为：</p>
+<h3 id="CPU上下文"><a class="headerlink" href="#CPU上下文" title="CPU上下文"></a>CPU上下文</h3><p id="passage-b6897f76f88f">上下文：CPU寄存器和程序计数器</p>
+<p id="passage-188cd18f69d1">程序计数器：存储CPU正在执行的指令位置和下一条指令的位置</p>
+<p id="passage-3c81193b0a4b">上下文切换：先把当前的任务CPU上下文（CPU寄存器和程序计数器）保存起来，然后加载新任务的上下文到CPU的寄存器和程序计数器中，CPU再跳转到计数器上执行新任务</p>
+<p id="passage-75faf5f05dae">上下文切换可以分为：</p>
 <ul>
-<li data-passage-key="601b588a0999" id="passage-ab8c45b614fc">进程上下文切换</li>
-<li data-passage-key="05fd80b4b052" id="passage-153c5860cb5e">线程上下文切换</li>
-<li data-passage-key="bac695ffbd5a" id="passage-59fd31701489">中断上下文切换</li>
+<li id="passage-ab8c45b614fc">进程上下文切换</li>
+<li id="passage-153c5860cb5e">线程上下文切换</li>
+<li id="passage-59fd31701489">中断上下文切换</li>
 </ul>
-<blockquote data-passage-key="10d8b371f980" id="passage-b752096aff2e">
-<p data-passage-key="9a98a408d8f3" id="passage-2add58cad896">进程：资源的基本单位</p>
-<p data-passage-key="a0aa4e63ae05" id="passage-86eed666380b">线程：调度的基本单位</p>
+<blockquote id="passage-b752096aff2e">
+<p id="passage-2add58cad896">进程：资源的基本单位</p>
+<p id="passage-86eed666380b">线程：调度的基本单位</p>
 </blockquote>
-<p data-passage-key="172489576c20" id="passage-2b2fff81b563">进程上下文切换：特权等级，跨等级时，需要「系统调用」</p>
+<p id="passage-2b2fff81b563">进程上下文切换：特权等级，跨等级时，需要「系统调用」</p>
 <ol>
-<li data-passage-key="01341721a0da" id="passage-990889270a84">同进程上下文切换：进程用户态-系统调用-进程内核-系统调用-进程用户态</li>
-<li data-passage-key="06a99c9955fb" id="passage-2bbdae1a622e">不同进程上下文切换：进程切换时要保存进程用户态资源（虚拟内存，栈等）</li>
+<li id="passage-990889270a84">同进程上下文切换：进程用户态-系统调用-进程内核-系统调用-进程用户态</li>
+<li id="passage-2bbdae1a622e">不同进程上下文切换：进程切换时要保存进程用户态资源（虚拟内存，栈等）</li>
 </ol>
-<p data-passage-key="3c16d7c5b870" id="passage-021726ad64f8">线程上下文切换</p>
-<p data-passage-key="fab4ca0e213e" id="passage-b1dc03e96a04">线程，共享进程的资源，但是线程也有自己所有的数据，如栈、寄存器</p>
+<p id="passage-021726ad64f8">线程上下文切换</p>
+<p id="passage-b1dc03e96a04">线程，共享进程的资源，但是线程也有自己所有的数据，如栈、寄存器</p>
 <ol>
-<li data-passage-key="9871d0afe4ab" id="passage-8ce136abd42f"><p data-passage-key="9525b6198ef2" id="passage-fa1baa048b9a">同进程中线程上下文切换：进程资源共享，切换线程私有资源</p>
+<li id="passage-8ce136abd42f"><p id="passage-fa1baa048b9a">同进程中线程上下文切换：进程资源共享，切换线程私有资源</p>
 </li>
-<li data-passage-key="1a6336abd031" id="passage-aff8bb53a053"><p data-passage-key="6f9f149bbd03" id="passage-418823b378e8">不通进程中线程上下文切换=切换进程</p>
-</li>
-</ol>
-<h2 data-passage-key="3dd2c69ccd57" id="CPU性能分析"><a class="headerlink" href="#CPU性能分析" title="CPU性能分析"></a>CPU性能分析</h2><h3 data-passage-key="7946dbb88f0f" id="load-高-amp-amp-CPU高"><a class="headerlink" href="#load-高-amp-amp-CPU高" title="load 高&amp;&amp; CPU高"></a>load 高&amp;&amp; CPU高</h3><p><img alt="top" decoding="async" height="200" loading="lazy" src="/images/blog-media/78c3af1043d30c326f6c.webp" width="804"/></p>
-<h4 data-passage-key="0ab07439c08e" id="情况1"><a class="headerlink" href="#情况1" title="情况1"></a>情况1</h4><p data-passage-key="65016f291a0d" id="passage-72279a41a532">sy系统态高：排查CPU上下文切换</p>
-<ol>
-<li data-passage-key="367da001fadc" id="passage-83754a2d99d1">如果「非资源上下文切换」多，说明CPU不够用，进程时间片到，被迫切换</li>
-<li data-passage-key="f62689a3f5c8" id="passage-ee3c7e6da5dd">如果「自愿上下文切换」多，说明计算用的资源不够用，可能存在I/O、内存瓶颈</li>
-</ol>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/></pre></td><td class="code"><pre data-passage-key="c3eefe9b9d11" id="passage-deeb795068ba"><span class="line">root@zx:~# vmstat 1</span><br/><span class="line">procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----</span><br/><span class="line"> r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st</span><br/><span class="line"> 0  0      0 142112 170316 3332688    0    0     0     5    1    2  1  1 99  0  0</span><br/><span class="line"> 0  0      0 141844 170316 3332728    0    0     0     0  877 1585  1  1 98  0  0</span><br/></pre></td></tr></tbody></table></figure>
-<p data-passage-key="77478ca92b5c" id="passage-6746b17a5606">如果<code>cs</code>比较高，说明可能存在上下文切换问题</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/></pre></td><td class="code"><pre data-passage-key="701c9a055450" id="passage-2a935609619e"><span class="line">root@zx:~# pidstat -u -w 1 </span><br/><span class="line">Linux 5.4.0-54-generic (zx)     06/03/2021      _x86_64_        (2 CPU)</span><br/><span class="line"></span><br/><span class="line">08:45:08 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command</span><br/><span class="line">08:45:09 PM     0      6095    0.99    0.00    0.00    0.00    0.99     1  dockerd</span><br/><span class="line">08:45:09 PM     0     10684    0.99    0.00    0.00    0.00    0.99     1  containerd-shim</span><br/><span class="line">08:45:09 PM     0     10776    0.99    0.99    0.00    0.00    1.98     1  gunicorn</span><br/><span class="line">08:45:09 PM     0    479183    0.00    1.98    0.00    0.00    1.98     1  AliYunDun</span><br/><span class="line">08:45:09 PM     0    503082    0.00    0.99    0.00    0.00    0.99     0  kworker/0:1-events</span><br/><span class="line"></span><br/><span class="line">08:45:08 PM   UID       PID   cswch/s nvcswch/s  Command</span><br/><span class="line">08:45:09 PM     0        11     40.59      0.00  rcu_sched</span><br/><span class="line">08:45:09 PM     0     10708      1.98      0.99  supervisord</span><br/><span class="line">08:45:09 PM     0     10775      0.99      0.00  gunicorn</span><br/><span class="line">08:45:09 PM     0    479183     10.89      0.00  AliYunDun</span><br/><span class="line">08:45:09 PM     0    496341      3.96      0.00  kworker/1:1-events</span><br/><span class="line">08:45:09 PM     0    502548     12.87      0.00  kworker/u4:2-events_power_efficient</span><br/><span class="line">08:45:09 PM     0    503082      6.93      0.00  kworker/0:1-events</span><br/><span class="line">08:45:09 PM     0    503173      0.99      0.00  pidstat</span><br/></pre></td></tr></tbody></table></figure>
-<p data-passage-key="5dd1010e23dc" id="passage-0f7afde116b2"><code>cswch/s</code> :自愿上下文</p>
-<p data-passage-key="4608d9efb2a4" id="passage-aa7fa7b7ce9d"><code> nvcswch/s</code>:非资源上下文</p>
-<h4 data-passage-key="971eddcda684" id="情况2"><a class="headerlink" href="#情况2" title="情况2"></a>情况2</h4><p data-passage-key="3e31ef57d9cb" id="passage-6d3488c791e3">si软中断高：CPU抢资源，资源不够用 I/O问题</p>
-<ol>
-<li data-passage-key="e910abb13d56" id="passage-895701d085ce"><p data-passage-key="c137c19a94e1" id="passage-95e5dd4dc599">sys高 + si 高 = 内存或者网络I/O问题</p>
-<p data-passage-key="815556a15e42" id="passage-71e472562f0e">解决办法：排查内存 和 I/O</p>
-</li>
-<li data-passage-key="0f5a848805b0" id="passage-d5ca77251821"><p data-passage-key="6cc6d85b72a4" id="passage-b5ce65e4a5c6">sys高 + si 不高 = CPU瓶颈</p>
-<p data-passage-key="009fe788a5f3" id="passage-27d2a6142c88">加CPU</p>
+<li id="passage-aff8bb53a053"><p id="passage-418823b378e8">不通进程中线程上下文切换=切换进程</p>
 </li>
 </ol>
-<h4 data-passage-key="cbaa63f8e88e" id="情况3"><a class="headerlink" href="#情况3" title="情况3"></a>情况3</h4><p data-passage-key="e4c9fb3e7913" id="passage-5d1764fa5a60">us用户态高：用户程序计算</p>
-<blockquote data-passage-key="4aa9f4e6508a" id="passage-0db6f63e18df">
-<p data-passage-key="6c9335e8baca" id="passage-da851870fb85">GC 资源回收</p>
+<h2 id="CPU性能分析"><a class="headerlink" href="#CPU性能分析" title="CPU性能分析"></a>CPU性能分析</h2><h3 id="load-高-amp-amp-CPU高"><a class="headerlink" href="#load-高-amp-amp-CPU高" title="load 高&amp;&amp; CPU高"></a>load 高&amp;&amp; CPU高</h3><p><img alt="top" decoding="async" height="200" loading="lazy" src="/images/blog-media/78c3af1043d30c326f6c.webp" width="804"/></p>
+<h4 id="情况1"><a class="headerlink" href="#情况1" title="情况1"></a>情况1</h4><p id="passage-72279a41a532">sy系统态高：排查CPU上下文切换</p>
+<ol>
+<li id="passage-83754a2d99d1">如果「非资源上下文切换」多，说明CPU不够用，进程时间片到，被迫切换</li>
+<li id="passage-ee3c7e6da5dd">如果「自愿上下文切换」多，说明计算用的资源不够用，可能存在I/O、内存瓶颈</li>
+</ol>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/></pre></td><td class="code"><pre id="passage-deeb795068ba"><span class="line">root@zx:~# vmstat 1</span><br/><span class="line">procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----</span><br/><span class="line"> r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st</span><br/><span class="line"> 0  0      0 142112 170316 3332688    0    0     0     5    1    2  1  1 99  0  0</span><br/><span class="line"> 0  0      0 141844 170316 3332728    0    0     0     0  877 1585  1  1 98  0  0</span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-6746b17a5606">如果<code>cs</code>比较高，说明可能存在上下文切换问题</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/></pre></td><td class="code"><pre id="passage-2a935609619e"><span class="line">root@zx:~# pidstat -u -w 1 </span><br/><span class="line">Linux 5.4.0-54-generic (zx)     06/03/2021      _x86_64_        (2 CPU)</span><br/><span class="line"></span><br/><span class="line">08:45:08 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command</span><br/><span class="line">08:45:09 PM     0      6095    0.99    0.00    0.00    0.00    0.99     1  dockerd</span><br/><span class="line">08:45:09 PM     0     10684    0.99    0.00    0.00    0.00    0.99     1  containerd-shim</span><br/><span class="line">08:45:09 PM     0     10776    0.99    0.99    0.00    0.00    1.98     1  gunicorn</span><br/><span class="line">08:45:09 PM     0    479183    0.00    1.98    0.00    0.00    1.98     1  AliYunDun</span><br/><span class="line">08:45:09 PM     0    503082    0.00    0.99    0.00    0.00    0.99     0  kworker/0:1-events</span><br/><span class="line"></span><br/><span class="line">08:45:08 PM   UID       PID   cswch/s nvcswch/s  Command</span><br/><span class="line">08:45:09 PM     0        11     40.59      0.00  rcu_sched</span><br/><span class="line">08:45:09 PM     0     10708      1.98      0.99  supervisord</span><br/><span class="line">08:45:09 PM     0     10775      0.99      0.00  gunicorn</span><br/><span class="line">08:45:09 PM     0    479183     10.89      0.00  AliYunDun</span><br/><span class="line">08:45:09 PM     0    496341      3.96      0.00  kworker/1:1-events</span><br/><span class="line">08:45:09 PM     0    502548     12.87      0.00  kworker/u4:2-events_power_efficient</span><br/><span class="line">08:45:09 PM     0    503082      6.93      0.00  kworker/0:1-events</span><br/><span class="line">08:45:09 PM     0    503173      0.99      0.00  pidstat</span><br/></pre></td></tr></tbody></table></figure>
+<p id="passage-0f7afde116b2"><code>cswch/s</code> :自愿上下文</p>
+<p id="passage-aa7fa7b7ce9d"><code> nvcswch/s</code>:非资源上下文</p>
+<h4 id="情况2"><a class="headerlink" href="#情况2" title="情况2"></a>情况2</h4><p id="passage-6d3488c791e3">si软中断高：CPU抢资源，资源不够用 I/O问题</p>
+<ol>
+<li id="passage-895701d085ce"><p id="passage-95e5dd4dc599">sys高 + si 高 = 内存或者网络I/O问题</p>
+<p id="passage-71e472562f0e">解决办法：排查内存 和 I/O</p>
+</li>
+<li id="passage-d5ca77251821"><p id="passage-b5ce65e4a5c6">sys高 + si 不高 = CPU瓶颈</p>
+<p id="passage-27d2a6142c88">加CPU</p>
+</li>
+</ol>
+<h4 id="情况3"><a class="headerlink" href="#情况3" title="情况3"></a>情况3</h4><p id="passage-5d1764fa5a60">us用户态高：用户程序计算</p>
+<blockquote id="passage-0db6f63e18df">
+<p id="passage-da851870fb85">GC 资源回收</p>
 </blockquote>
-<p data-passage-key="24c52fdf4864" id="passage-4280854ce03c">密集型计算、内存FGC、资源等待（线程池）</p>
-<h2 data-passage-key="5d79b1449192" id="CPU实战"><a class="headerlink" href="#CPU实战" title="CPU实战"></a>CPU实战</h2><h3 data-passage-key="fc02cb9b386a" id="stress-ng"><a class="headerlink" href="#stress-ng" title="stress-ng"></a>stress-ng</h3><blockquote data-passage-key="c52e314c6250" id="passage-3ad1e767a1ad">
-<p data-passage-key="fcee9e75079b" id="passage-1200bd063993">服务器cpu性能压测工具，模拟系统压力</p>
+<p id="passage-4280854ce03c">密集型计算、内存FGC、资源等待（线程池）</p>
+<h2 id="CPU实战"><a class="headerlink" href="#CPU实战" title="CPU实战"></a>CPU实战</h2><h3 id="stress-ng"><a class="headerlink" href="#stress-ng" title="stress-ng"></a>stress-ng</h3><blockquote id="passage-3ad1e767a1ad">
+<p id="passage-1200bd063993">服务器cpu性能压测工具，模拟系统压力</p>
 </blockquote>
-<h4 data-passage-key="e8f88f51ccb0" id="安装"><a class="headerlink" href="#安装" title="安装"></a>安装</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="2d72dbabc1bb" id="passage-0c1c533bac3f"><span class="line"><span class="meta">$</span><span class="bash"> yum install -y epel-release.noarch &amp;&amp; yum -y update</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> yum install -y stress-ng</span></span><br/></pre></td></tr></tbody></table></figure>
-<h4 data-passage-key="b2421dc3aad2" id="实操一：进程上下文"><a class="headerlink" href="#实操一：进程上下文" title="实操一：进程上下文"></a>实操一：进程上下文</h4><p data-passage-key="e9147e341cfd" id="passage-8bfe94a575b4">进程上下文切换「进程密集型」</p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre data-passage-key="73bc358ee692" id="passage-1f978f0c46aa"><span class="line"><span class="meta">#</span><span class="bash"> 启动N*10个进程，在只有N核的系统上，会产生大量的进程切换，模拟进程间竞争CPU的场景</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> (( proc_cnt = <span class="string">'nproc'</span>*10 )); stress-ng --cpu <span class="variable">$proc_cnt</span> --pthread 1 --timeout 150</span></span><br/><span class="line">stress-ng: info:  [504418] dispatching hogs: 2 cpu, 1 pthread</span><br/></pre></td></tr></tbody></table></figure>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="d263af5206af" id="passage-1e73ddb8de4c"><span class="line"><span class="meta">$</span><span class="bash"> top</span></span><br/></pre></td></tr></tbody></table></figure>
+<h4 id="安装"><a class="headerlink" href="#安装" title="安装"></a>安装</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre id="passage-0c1c533bac3f"><span class="line"><span class="meta">$</span><span class="bash"> yum install -y epel-release.noarch &amp;&amp; yum -y update</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> yum install -y stress-ng</span></span><br/></pre></td></tr></tbody></table></figure>
+<h4 id="实操一：进程上下文"><a class="headerlink" href="#实操一：进程上下文" title="实操一：进程上下文"></a>实操一：进程上下文</h4><p id="passage-8bfe94a575b4">进程上下文切换「进程密集型」</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre id="passage-1f978f0c46aa"><span class="line"><span class="meta">#</span><span class="bash"> 启动N*10个进程，在只有N核的系统上，会产生大量的进程切换，模拟进程间竞争CPU的场景</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> (( proc_cnt = <span class="string">'nproc'</span>*10 )); stress-ng --cpu <span class="variable">$proc_cnt</span> --pthread 1 --timeout 150</span></span><br/><span class="line">stress-ng: info:  [504418] dispatching hogs: 2 cpu, 1 pthread</span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-1e73ddb8de4c"><span class="line"><span class="meta">$</span><span class="bash"> top</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="启动后" decoding="async" height="600" loading="lazy" src="/images/blog-media/ee5db3872f71ed04f8ff.webp" width="800"/></p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="85787b5e8273" id="passage-a4bcc23c24d5"><span class="line"><span class="meta">$</span><span class="bash"> vmstat 1</span></span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-a4bcc23c24d5"><span class="line"><span class="meta">$</span><span class="bash"> vmstat 1</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="vmstat 1" decoding="async" height="440" loading="lazy" src="/images/blog-media/6f62e8b941ae72818c83.webp" width="800"/></p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="fcde84459338" id="passage-6bdcc1cd1cb2"><span class="line"><span class="meta">$</span><span class="bash"> pidstat -u -w 1</span> </span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-6bdcc1cd1cb2"><span class="line"><span class="meta">$</span><span class="bash"> pidstat -u -w 1</span> </span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="pidstat -u -w 1" decoding="async" height="733" loading="lazy" src="/images/blog-media/ea4c4a1dd859b7584c52.webp" width="800"/></p>
 <ol>
-<li data-passage-key="3d99003df757" id="passage-40fcda82b6fb">top：load值一直在增加 系统负载在升高</li>
-<li data-passage-key="6b3423463b5e" id="passage-05e524d6b4e3">top：CPU的 <code>us</code> +<code>sy</code> 约等于 100% <code>us</code>较高 <code>sy</code>较低</li>
-<li data-passage-key="f660d1f376a2" id="passage-d862a5519c1a">vmstat：procs的 r就绪队列长度，正在运行和等待的CPU进程数很大</li>
-<li data-passage-key="7d3b47a50306" id="passage-b53f21a6f41c">vmstat ：system的in「每秒中断次数」和cs「上下文切换次数」都很大</li>
-<li data-passage-key="4a85767f524b" id="passage-0fd5674ae565">vmstat：free、buff、cache变化不大</li>
-<li data-passage-key="e1122f2e3a28" id="passage-615fd46ab15e">pidstat：nvcswch/s 非自愿上下文切换在逐步升高</li>
+<li id="passage-40fcda82b6fb">top：load值一直在增加 系统负载在升高</li>
+<li id="passage-05e524d6b4e3">top：CPU的 <code>us</code> +<code>sy</code> 约等于 100% <code>us</code>较高 <code>sy</code>较低</li>
+<li id="passage-d862a5519c1a">vmstat：procs的 r就绪队列长度，正在运行和等待的CPU进程数很大</li>
+<li id="passage-b53f21a6f41c">vmstat ：system的in「每秒中断次数」和cs「上下文切换次数」都很大</li>
+<li id="passage-0fd5674ae565">vmstat：free、buff、cache变化不大</li>
+<li id="passage-615fd46ab15e">pidstat：nvcswch/s 非自愿上下文切换在逐步升高</li>
 </ol>
-<p data-passage-key="a71b7a43e7ff" id="passage-7e21e19bd8ec">解决办法：项目所在的服务器，</p>
+<p id="passage-7e21e19bd8ec">解决办法：项目所在的服务器，</p>
 <ul>
-<li data-passage-key="8aad16c2dd98" id="passage-b28cec69f339">减少运行中的进程</li>
-<li data-passage-key="9e6cbd3d908c" id="passage-bd1a59271102">增加cpu的数量</li>
+<li id="passage-b28cec69f339">减少运行中的进程</li>
+<li id="passage-bd1a59271102">增加cpu的数量</li>
 </ul>
-<h4 data-passage-key="3fc583850e65" id="实操二：线程上下文"><a class="headerlink" href="#实操二：线程上下文" title="实操二：线程上下文"></a>实操二：线程上下文</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="158003eb31a7" id="passage-6922d970306a"><span class="line"><span class="meta">#</span><span class="bash"> 在N核系统上，生成N个进程，每个进程1024个线程，模拟线程间竞争CPU的场景</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> stress-ng --cpu `nproc` --pthread 1024 --timeout 60</span> </span><br/></pre></td></tr></tbody></table></figure>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="51ec54f457e4" id="passage-1e73ddb8de4c-2"><span class="line"><span class="meta">$</span><span class="bash"> top</span></span><br/></pre></td></tr></tbody></table></figure>
+<h4 id="实操二：线程上下文"><a class="headerlink" href="#实操二：线程上下文" title="实操二：线程上下文"></a>实操二：线程上下文</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre id="passage-6922d970306a"><span class="line"><span class="meta">#</span><span class="bash"> 在N核系统上，生成N个进程，每个进程1024个线程，模拟线程间竞争CPU的场景</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> stress-ng --cpu `nproc` --pthread 1024 --timeout 60</span> </span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-1e73ddb8de4c-2"><span class="line"><span class="meta">$</span><span class="bash"> top</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="top" decoding="async" height="600" loading="lazy" src="/images/blog-media/6fbf02d85d218e6e7993.webp" width="800"/></p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="6ebc635a76b8" id="passage-a4bcc23c24d5-2"><span class="line"><span class="meta">$</span><span class="bash"> vmstat 1</span></span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-a4bcc23c24d5-2"><span class="line"><span class="meta">$</span><span class="bash"> vmstat 1</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="vmstat 1" decoding="async" height="600" loading="lazy" src="/images/blog-media/05db8cf8087a25b74c16.webp" width="800"/></p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="f6e7dc7bcc4a" id="passage-6bdcc1cd1cb2-2"><span class="line"><span class="meta">$</span><span class="bash"> pidstat -u -w 1</span> </span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-6bdcc1cd1cb2-2"><span class="line"><span class="meta">$</span><span class="bash"> pidstat -u -w 1</span> </span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="pidstat -u -w 1 " decoding="async" height="659" loading="lazy" src="/images/blog-media/010ce1a9d810e95dba78.webp" width="1080"/></p>
 <ol>
-<li data-passage-key="5f1f26a7c8c9" id="passage-fb354e4a209d">top：load值一直在增加，而且增长的非常大</li>
-<li data-passage-key="1d97ece2df1d" id="passage-e8dc9968c486">top：CPU的us + sy 约等于100% us较低、sy较高</li>
-<li data-passage-key="d6de5f76a907" id="passage-39043378eb29">vmstat：procs的r就绪队列长度，正在运行和等待的CPU进程数很大</li>
-<li data-passage-key="f98e59609dc0" id="passage-7de29d649920">vmsta：system的in「每秒中断数」和cs「上下文切换数」都很大</li>
-<li data-passage-key="696dedd59a6e" id="passage-4b1c6d411adc">vmstat：free变小、buff基本不变、cache变大</li>
+<li id="passage-fb354e4a209d">top：load值一直在增加，而且增长的非常大</li>
+<li id="passage-e8dc9968c486">top：CPU的us + sy 约等于100% us较低、sy较高</li>
+<li id="passage-39043378eb29">vmstat：procs的r就绪队列长度，正在运行和等待的CPU进程数很大</li>
+<li id="passage-7de29d649920">vmsta：system的in「每秒中断数」和cs「上下文切换数」都很大</li>
+<li id="passage-4b1c6d411adc">vmstat：free变小、buff基本不变、cache变大</li>
 </ol>
 <ul>
-<li data-passage-key="a51ae8719f8d" id="passage-71ca96b5ba39">free：内存空闲空间，内存消耗增大</li>
-<li data-passage-key="6f8813dbdea7" id="passage-0d0c36e8ee7f">buffer：buffer数磁盘虚拟出来的，用于内存从磁盘读取数据时使用</li>
-<li data-passage-key="e0502c7688e1" id="passage-22c5a5f923e2">cache：cache是内存虚拟出来，用于cpu与内存速度匹配</li>
+<li id="passage-71ca96b5ba39">free：内存空闲空间，内存消耗增大</li>
+<li id="passage-0d0c36e8ee7f">buffer：buffer数磁盘虚拟出来的，用于内存从磁盘读取数据时使用</li>
+<li id="passage-22c5a5f923e2">cache：cache是内存虚拟出来，用于cpu与内存速度匹配</li>
 </ul>
 <ol start="6">
-<li data-passage-key="3842024699f7" id="passage-947354f3b913">pidstat：cswch/s 自愿上下文切换升高</li>
+<li id="passage-947354f3b913">pidstat：cswch/s 自愿上下文切换升高</li>
 </ol>
-<p data-passage-key="e423e5a1116c" id="passage-f72b94ee08cd">当一个程序开启了大量的线程，就会使用大量的内存资源，就会出现大量的cpu竞争。</p>
-<p data-passage-key="ffd7996ea2a1" id="passage-ad1e8b54ba5a">从内存中获取数据会有大量的IO数据交换。</p>
-<p data-passage-key="0cc289d9dab1" id="passage-cd1718e1176e">解决办法</p>
+<p id="passage-f72b94ee08cd">当一个程序开启了大量的线程，就会使用大量的内存资源，就会出现大量的cpu竞争。</p>
+<p id="passage-ad1e8b54ba5a">从内存中获取数据会有大量的IO数据交换。</p>
+<p id="passage-cd1718e1176e">解决办法</p>
 <ul>
-<li data-passage-key="b81826d89403" id="passage-02a37548f754">减少项目启动的线程数</li>
-<li data-passage-key="2e993afe9b14" id="passage-0e8fca9d23e1">更换内存速度更高的内存条</li>
-<li data-passage-key="1d852535eeb0" id="passage-f7c70e0ccb55">更换使用CPU的缓存更大的CPU（效果不一定好）</li>
-<li data-passage-key="ddb66bd75a61" id="passage-5839963ad623">改系统的交互分区</li>
+<li id="passage-02a37548f754">减少项目启动的线程数</li>
+<li id="passage-0e8fca9d23e1">更换内存速度更高的内存条</li>
+<li id="passage-f7c70e0ccb55">更换使用CPU的缓存更大的CPU（效果不一定好）</li>
+<li id="passage-5839963ad623">改系统的交互分区</li>
 </ul>
-<h4 data-passage-key="532edf937871" id="实战三：IO密集型"><a class="headerlink" href="#实战三：IO密集型" title="实战三：IO密集型"></a>实战三：IO密集型</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre data-passage-key="dbf80d68ef4b" id="passage-bf4d72253e54"><span class="line"><span class="meta">#</span><span class="bash"> 开启1个worker不停的读写临时文件，同时启动 6个workers不停的调用sync系统调用提交缓存</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> stress-ng -i 6 --hdd 1 --timeout 150</span></span><br/></pre></td></tr></tbody></table></figure>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="d62d1e4c038e" id="passage-1e73ddb8de4c-3"><span class="line"><span class="meta">$</span><span class="bash"> top</span></span><br/></pre></td></tr></tbody></table></figure>
+<h4 id="实战三：IO密集型"><a class="headerlink" href="#实战三：IO密集型" title="实战三：IO密集型"></a>实战三：IO密集型</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre id="passage-bf4d72253e54"><span class="line"><span class="meta">#</span><span class="bash"> 开启1个worker不停的读写临时文件，同时启动 6个workers不停的调用sync系统调用提交缓存</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> stress-ng -i 6 --hdd 1 --timeout 150</span></span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-1e73ddb8de4c-3"><span class="line"><span class="meta">$</span><span class="bash"> top</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="top" decoding="async" height="600" loading="lazy" src="/images/blog-media/04dc16b1dbc5479fed07.webp" width="800"/></p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="99ebe8f1d383" id="passage-a4bcc23c24d5-3"><span class="line"><span class="meta">$</span><span class="bash"> vmstat 1</span></span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-a4bcc23c24d5-3"><span class="line"><span class="meta">$</span><span class="bash"> vmstat 1</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="vmstat 1" decoding="async" height="600" loading="lazy" src="/images/blog-media/018ba32c33ec778790c6.webp" width="800"/></p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="b3fdfbbad5b2" id="passage-80d49d39af9f"><span class="line"><span class="meta">$</span><span class="bash"> mpstat -P ALL 3</span></span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-80d49d39af9f"><span class="line"><span class="meta">$</span><span class="bash"> mpstat -P ALL 3</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="mpstat -P ALL 3" decoding="async" height="600" loading="lazy" src="/images/blog-media/20231e9c1f11babc39d3.webp" width="948"/></p>
-<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre data-passage-key="a46a79e8c403" id="passage-c837ec97192c"><span class="line"><span class="meta">$</span><span class="bash"> pidstat -w 1</span></span><br/></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-c837ec97192c"><span class="line"><span class="meta">$</span><span class="bash"> pidstat -w 1</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="image-20210605101558463" decoding="async" height="600" loading="lazy" src="/images/blog-media/617a6e6703e9e651b6b0.webp" width="948"/></p>
 <ol>
-<li data-passage-key="a2d87ee0ed4d" id="passage-13a75ce2e57f">top：load值升高，CPU的wa值很大，freeMem变小，buff/cache值增大</li>
-<li data-passage-key="1465376f1e65" id="passage-6855bfc8ce19">vmstat ：memory的free变小，buff基本不变，cache变大，io的bo值非常大「磁盘读写」，CPU的in、cs也都很大</li>
-<li data-passage-key="327194317d0e" id="passage-29c0f6682df4">mpstat：%iowait变得很大，有大量的磁盘IO</li>
-<li data-passage-key="022a0d0e0eef" id="passage-6bbdd82cdb91">pidstat：cswch/s 自愿上下文切换 变得非常大</li>
+<li id="passage-13a75ce2e57f">top：load值升高，CPU的wa值很大，freeMem变小，buff/cache值增大</li>
+<li id="passage-6855bfc8ce19">vmstat ：memory的free变小，buff基本不变，cache变大，io的bo值非常大「磁盘读写」，CPU的in、cs也都很大</li>
+<li id="passage-29c0f6682df4">mpstat：%iowait变得很大，有大量的磁盘IO</li>
+<li id="passage-6bbdd82cdb91">pidstat：cswch/s 自愿上下文切换 变得非常大</li>
 </ol>
-<p data-passage-key="2ac57471a948" id="passage-cd1718e1176e-2">解决办法</p>
-<p data-passage-key="e2f57401bcc9" id="passage-e4f5706c4e68">磁盘性能导致</p>
+<p id="passage-cd1718e1176e-2">解决办法</p>
+<p id="passage-e4f5706c4e68">磁盘性能导致</p>
 <ul>
-<li data-passage-key="d92f351192c3" id="passage-73a75e9f608a">更换读写速度更快的磁盘</li>
-<li data-passage-key="26f8acfb27a4" id="passage-fb0d6f6dfbc1">加大内存</li>
+<li id="passage-73a75e9f608a">更换读写速度更快的磁盘</li>
+<li id="passage-fb0d6f6dfbc1">加大内存</li>
 </ul>
-<p data-passage-key="6b3c06a47d15" id="passage-976c25bc29a4">网络IO导致</p>
+<p id="passage-976c25bc29a4">网络IO导致</p>
 <ul>
-<li data-passage-key="0c83fb8f3069" id="passage-2979244a9d4b">调整网络参数或更换速度更快的网卡</li>
+<li id="passage-2979244a9d4b">调整网络参数或更换速度更快的网卡</li>
 </ul></div>
-        <button type="button" class="quote-action" data-quote-action aria-controls="passage-comments" aria-haspopup="dialog" aria-keyshortcuts="Alt+Enter" hidden>评论这段</button>
-        <dialog class="passage-dialog" id="passage-comments" aria-labelledby="passage-comment-title">
-          <header class="passage-dialog-header">
-            <h2 id="passage-comment-title">段落评论</h2>
-            <form method="dialog"><button type="submit" autofocus>关闭</button></form>
-          </header>
-          <div class="passage-dialog-content">
-            <blockquote data-passage-excerpt></blockquote>
-            <a data-passage-source>查看原文</a>
-            <p data-passage-status role="status"></p>
-            <button type="button" class="comment-retry" data-passage-retry hidden>重新加载评论</button>
-            <div data-passage-widget></div>
-          </div>
-        </dialog>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/ZD4Zu_Ab2YvL6K_7siWilw">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/CPU/">CPU</a><a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a></div>
@@ -281,7 +267,7 @@
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
-          <div class="giscus"></div>
+          <div class="giscus" id="article-discussion"></div>
         </section>
       </div>
     </div>
