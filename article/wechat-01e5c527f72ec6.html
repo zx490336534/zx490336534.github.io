@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <title>HttpRunner快速入门 · 测试游记</title>
+  <title>HTTP 接口测试基础 · 第 05 篇｜用 HttpRunner 编写第一个接口自动化用例 · 测试游记</title>
   <meta name="description" content="快速了解httprunner的基础使用">
-  <meta property="og:title" content="HttpRunner快速入门 · 测试游记">
+  <meta property="og:title" content="HTTP 接口测试基础 · 第 05 篇｜用 HttpRunner 编写第一个接口自动化用例 · 测试游记">
   <meta property="og:description" content="快速了解httprunner的基础使用">
   <meta property="og:url" content="https://www.zhongxin.website/article/wechat-01e5c527f72ec6.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/wechat-01e5c527f72ec6.html">
@@ -43,12 +43,12 @@
   <article class="article">
     <header class="article-header">
       <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/automation/">自动化测试</a> <span aria-hidden="true">/</span> <a href="/categories/testing/automation/api/">接口自动化</a></nav>
-      <h1 class="post-title">HttpRunner快速入门</h1>
+      <h1 class="post-title" data-topic-title="用 HttpRunner 编写第一个接口自动化用例">HTTP 接口测试基础 · 第 05 篇｜用 HttpRunner 编写第一个接口自动化用例</h1>
       <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2020-07-03T23:15:29+08:00">2020-07-03</time>
         <span class="post-category" hidden><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span>
         <span class="read-time">约 6 分钟</span>
         <span class="public-counter" data-public-count="reads" data-article-path="/article/wechat-01e5c527f72ec6.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a></div>
+        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/http-api-testing/#chapter-5">HTTP 接口测试基础 · 第 5/5 篇</a></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E5%AE%89%E8%A3%85">安装</a></li><li><a href="#%E6%90%AD%E5%BB%BA%E9%A1%B9%E7%9B%AE">搭建项目</a></li><li><a href="#%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84">项目结构</a></li><li><a href="#%E5%8D%95%E4%B8%AA%E6%8E%A5%E5%8F%A3%E5%AE%9E%E4%BE%8B">单个接口实例</a></li><li><a href="#%E4%BD%BF%E7%94%A8%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F">使用环境变量</a></li><li><a href="#%E5%AE%9A%E4%B9%89%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F">定义全局变量</a></li><li><a href="#%E5%AE%9A%E4%B9%89%E6%96%B9%E6%B3%95">定义方法</a></li><li><a href="#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95">使用方法</a></li><li><a href="#%E8%B0%83%E7%94%A8python%E5%87%BD%E6%95%B0">调用python函数</a></li><li><a href="#base_url">base_url</a></li><li><a href="#validate">validate</a></li><li><a href="#testcases">testcases</a></li><li><a href="#testsuites">testsuites</a></li><li><a href="#%E4%BD%BF%E7%94%A8%E7%9B%B4%E6%8E%A5%E5%86%99%E5%85%A5">使用直接写入</a></li><li><a href="#%E4%BD%BF%E7%94%A8csv">使用csv</a></li><li><a href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%89%A7%E8%A1%8C">命令行执行</a></li></ol></details></aside>
@@ -58,7 +58,7 @@
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/oisePp4XM1PFYUZxBRvjsw">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/HttpRunner/">HttpRunner</a><a href="/tags/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95/">接口测试</a><a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a></div>
         <div class="legacy-tags" hidden></div>
-        <nav class="related" aria-label="相邻文章"><a href="/article/c47b13b2.html"><small>较新文章</small>9.Flask:中间件与全局变量</a><a href="/article/8f02b7de.html"><small>较早文章</small>8.Flask:表单验证</a></nav>
+        <section class="series-continuation"><h2><a href="/series/http-api-testing/">查看系列目录 ↗</a></h2><nav class="related" aria-label="同系列文章"><a href="/article/wechat-a26c4a10a2c674.html"><small>同系列上一篇</small>第 04 篇｜用 Pydantic 校验接口数据</a></nav></section>
         <section class="article-comments" id="comments" aria-labelledby="comments-title"
           data-repo="zx490336534/zx490336534.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzNDQwOTE0MTc="
           data-category="文章评论" data-category-id="DIC_kwDOFIJrGc4DL60Q" data-article-path="/article/wechat-01e5c527f72ec6.html">

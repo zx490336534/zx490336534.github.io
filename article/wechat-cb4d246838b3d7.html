@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <title>AI自动化测试平台AITS分析 · 测试游记</title>
+  <title>测试平台建设案例 · 第 03 篇｜AI 测试平台 AITS：知识库、用例协作与自动化 · 测试游记</title>
   <meta name="description" content="背景 最近看到柠檬班的《软件测测试A大模型系统课》里面有个自动化测试平台AITS，根据视频和课程相关内容大致猜测一下实现思路 https://qhstaticva-cos.kujiale.com/media/yun/help/video/UID_ea7ea409_c541_4b70_1765418976134.mp4 https://ww">
-  <meta property="og:title" content="AI自动化测试平台AITS分析 · 测试游记">
+  <meta property="og:title" content="测试平台建设案例 · 第 03 篇｜AI 测试平台 AITS：知识库、用例协作与自动化 · 测试游记">
   <meta property="og:description" content="背景 最近看到柠檬班的《软件测测试A大模型系统课》里面有个自动化测试平台AITS，根据视频和课程相关内容大致猜测一下实现思路 https://qhstaticva-cos.kujiale.com/media/yun/help/video/UID_ea7ea409_c541_4b70_1765418976134.mp4 https://ww">
   <meta property="og:url" content="https://www.zhongxin.website/article/wechat-cb4d246838b3d7.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/wechat-cb4d246838b3d7.html">
@@ -43,12 +43,12 @@
   <article class="article">
     <header class="article-header">
       <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/platforms/">测试平台与工具</a></nav>
-      <h1 class="post-title">AI自动化测试平台AITS分析</h1>
+      <h1 class="post-title" data-topic-title="AI 测试平台 AITS：知识库、用例协作与自动化">测试平台建设案例 · 第 03 篇｜AI 测试平台 AITS：知识库、用例协作与自动化</h1>
       <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2025-12-11T10:34:34+08:00">2025-12-11</time>
         <span class="post-category" hidden><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span>
         <span class="read-time">约 2 分钟</span>
         <span class="public-counter" data-public-count="reads" data-article-path="/article/wechat-cb4d246838b3d7.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a></div>
+        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/test-platform-evolution/#chapter-3">测试平台建设案例 · 第 3/3 篇</a></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E8%83%8C%E6%99%AF">背景</a></li><li><a href="#%E6%A0%B8%E5%BF%83%E6%94%AF%E6%92%91-%E5%90%91%E9%87%8F%E7%9F%A5%E8%AF%86%E5%BA%93">核心支撑：向量知识库</a></li><li><a href="#%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B%E7%94%9F%E6%88%90%E4%B8%8E%E4%BA%BA%E5%B7%A5%E5%8D%8F%E5%90%8C">测试用例生成与人工协同</a></li><li><a href="#UI%E8%87%AA%E5%8A%A8%E5%8C%96">UI自动化</a></li><li><a href="#%E6%8E%A5%E5%8F%A3%E8%87%AA%E5%8A%A8%E5%8C%96">接口自动化</a></li><li><a href="#%E6%80%BB%E7%BB%93%E4%B8%8E%E5%B1%95%E6%9C%9B">总结与展望</a></li></ol></details></aside>
@@ -58,7 +58,7 @@
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/j0PSD7LVPBlob7vPV0-wwA">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/AI-%E6%B5%8B%E8%AF%95/">AI 测试</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%B9%B3%E5%8F%B0/">测试平台</a><a href="/tags/UI-%E8%87%AA%E5%8A%A8%E5%8C%96/">UI 自动化</a></div>
         <div class="legacy-tags" hidden></div>
-        <nav class="related" aria-label="相邻文章"><a href="/article/wechat-33e9d98b06d956.html"><small>较新文章</small>Next.js + LangGraph纯js代码构建Agent</a><a href="/article/wechat-bb128e42936bb4.html"><small>较早文章</small>智能MCP系统架构与实现</a></nav>
+        <section class="series-continuation"><h2><a href="/series/test-platform-evolution/">查看系列目录 ↗</a></h2><nav class="related" aria-label="同系列文章"><a href="/article/wechat-aa502c8ddb12db.html"><small>同系列上一篇</small>第 02 篇｜搭建 Python 测试任务平台：项目、执行记录与数据展示</a></nav></section>
         <section class="article-comments" id="comments" aria-labelledby="comments-title"
           data-repo="zx490336534/zx490336534.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzNDQwOTE0MTc="
           data-category="文章评论" data-category-id="DIC_kwDOFIJrGc4DL60Q" data-article-path="/article/wechat-cb4d246838b3d7.html">

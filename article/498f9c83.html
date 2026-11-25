@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <title>Java自动化测试(webdriver常用API 24) · 测试游记</title>
+  <title>Java 自动化测试 · 第 25 篇｜WebDriver 常用 API：点击、输入和读取属性 · 测试游记</title>
   <meta name="description" content="Java自动化测试(webdriver常用API 24)元素基本APIclick触发当前元素的点击事件 123driver.get(&quot;https://www.ketangpai.com/&quot;);WebElement element = driver.findElement(By.xpath(&quot;//a[text()=&#x27;教师培训&#x27;]&quot;));element.clic">
-  <meta property="og:title" content="Java自动化测试(webdriver常用API 24) · 测试游记">
+  <meta property="og:title" content="Java 自动化测试 · 第 25 篇｜WebDriver 常用 API：点击、输入和读取属性 · 测试游记">
   <meta property="og:description" content="Java自动化测试(webdriver常用API 24)元素基本APIclick触发当前元素的点击事件 123driver.get(&quot;https://www.ketangpai.com/&quot;);WebElement element = driver.findElement(By.xpath(&quot;//a[text()=&#x27;教师培训&#x27;]&quot;));element.clic">
   <meta property="og:url" content="https://www.zhongxin.website/article/498f9c83.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/498f9c83.html">
@@ -43,12 +43,12 @@
   <article class="article">
     <header class="article-header">
       <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/automation/">自动化测试</a> <span aria-hidden="true">/</span> <a href="/categories/testing/automation/browser/">Web 与桌面自动化</a></nav>
-      <h1 class="post-title">Java自动化测试(webdriver常用API 24)</h1>
+      <h1 class="post-title" data-topic-title="WebDriver 常用 API：点击、输入和读取属性">Java 自动化测试 · 第 25 篇｜WebDriver 常用 API：点击、输入和读取属性</h1>
       <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2020-09-01T07:06:13+08:00">2020-09-01</time>
         <span class="post-category" hidden><a href="/categories/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">Java自动化测试</a></span>
         <span class="read-time">约 2 分钟</span>
         <span class="public-counter" data-public-count="reads" data-article-path="/article/498f9c83.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a></div>
+        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/java-test-automation/#chapter-25">Java 自动化测试 · 第 25/36 篇</a></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E5%85%83%E7%B4%A0%E5%9F%BA%E6%9C%ACAPI">元素基本API</a></li><li><a href="#click">click</a></li><li><a href="#clear">clear</a></li><li><a href="#sendKeys">sendKeys</a></li><li><a href="#getTagName">getTagName</a></li><li><a href="#getAttribute">getAttribute</a></li><li><a href="#getText">getText</a></li><li><a href="#isDisplayed">isDisplayed</a></li><li><a href="#isEnabled">isEnabled</a></li><li><a href="#isSelected">isSelected</a></li><li><a href="#webdriver%E5%B8%B8%E7%94%A8api">webdriver常用api</a></li><li><a href="#get-String-url">get(String url)</a></li><li><a href="#getCurrentUrl">getCurrentUrl</a></li><li><a href="#getTitle">getTitle</a></li><li><a href="#getPageSource">getPageSource</a></li><li><a href="#quit">quit</a></li><li><a href="#close">close</a></li><li><a href="#navigate%E5%AF%B9%E8%B1%A1">navigate对象</a></li><li><a href="#to">to</a></li><li><a href="#refresh">refresh</a></li><li><a href="#back">back</a></li><li><a href="#forward">forward</a></li><li><a href="#windows%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C">windows基本操作</a></li><li><a href="#maximize">maximize</a></li><li><a href="#getPostition">getPostition</a></li><li><a href="#getSize">getSize</a></li><li><a href="#setPosition">setPosition</a></li><li><a href="#setSize">setSize</a></li><li><a href="#%E7%AD%89%E5%BE%85">等待</a></li><li><a href="#%E7%A1%AC%E6%80%A7%E7%AD%89%E5%BE%85">硬性等待</a></li><li><a href="#%E9%9A%90%E5%BC%8F%E7%AD%89%E5%BE%85">隐式等待</a></li><li><a href="#%E6%98%BE%E7%A4%BA%E7%AD%89%E5%BE%85">显示等待</a></li></ol></details></aside>
@@ -118,7 +118,7 @@
 
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Java/">Java</a><a href="/tags/Selenium/">Selenium</a><a href="/tags/WebDriver/">WebDriver</a><a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Java/">Java</a><a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a></div>
-        <nav class="related" aria-label="相邻文章"><a href="/article/ce587615.html"><small>较新文章</small>Java自动化测试(特殊元素处理 25)</a><a href="/article/9e41a6be.html"><small>较早文章</small>Java自动化测试 (元素定位 23)</a></nav>
+        <section class="series-continuation"><h2><a href="/series/java-test-automation/">查看系列目录 ↗</a></h2><nav class="related" aria-label="同系列文章"><a href="/article/9e41a6be.html"><small>同系列上一篇</small>第 24 篇｜Selenium 元素定位：ID、CSS 选择器与 XPath</a><a href="/article/ce587615.html"><small>同系列下一篇</small>第 26 篇｜用 Selenium 操作下拉框与 iframe</a></nav></section>
         <section class="article-comments" id="comments" aria-labelledby="comments-title"
           data-repo="zx490336534/zx490336534.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzNDQwOTE0MTc="
           data-category="文章评论" data-category-id="DIC_kwDOFIJrGc4DL60Q" data-article-path="/article/498f9c83.html">

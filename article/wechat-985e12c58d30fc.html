@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <title>Root Framework中的变量与常量 · 测试游记</title>
+  <title>Robot Framework 接口自动化 · 第 01 篇｜在 RIDE 中创建测试套件并使用变量 · 测试游记</title>
   <meta name="description" content="Root Framework的安装与变量常量的介绍">
-  <meta property="og:title" content="Root Framework中的变量与常量 · 测试游记">
+  <meta property="og:title" content="Robot Framework 接口自动化 · 第 01 篇｜在 RIDE 中创建测试套件并使用变量 · 测试游记">
   <meta property="og:description" content="Root Framework的安装与变量常量的介绍">
   <meta property="og:url" content="https://www.zhongxin.website/article/wechat-985e12c58d30fc.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/wechat-985e12c58d30fc.html">
@@ -43,12 +43,12 @@
   <article class="article">
     <header class="article-header">
       <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/platforms/">测试平台与工具</a></nav>
-      <h1 class="post-title">Root Framework中的变量与常量</h1>
+      <h1 class="post-title" data-topic-title="在 RIDE 中创建测试套件并使用变量">Robot Framework 接口自动化 · 第 01 篇｜在 RIDE 中创建测试套件并使用变量</h1>
       <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2020-04-22T22:15:43+08:00">2020-04-22</time>
         <span class="post-category" hidden><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span>
         <span class="read-time">约 1 分钟</span>
         <span class="public-counter" data-public-count="reads" data-article-path="/article/wechat-985e12c58d30fc.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a></div>
+        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/robot-framework-api/#chapter-1">Robot Framework 接口自动化 · 第 1/6 篇</a></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E5%AE%89%E8%A3%85">安装</a></li><li><a href="#%E6%89%93%E5%BC%80RIDE">打开RIDE</a></li><li><a href="#%E5%BC%80%E5%A7%8B%E6%B5%8B%E8%AF%95">开始测试</a></li><li><a href="#%E6%B5%8B%E8%AF%95%E9%A1%B9%E7%9B%AE">测试项目</a></li><li><a href="#%E6%B5%8B%E8%AF%95%E5%A5%97%E4%BB%B6">测试套件</a></li><li><a href="#%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B">测试用例</a></li><li><a href="#%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6">资源文件</a></li><li><a href="#%E5%86%85%E9%83%A8%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6">内部资源文件</a></li><li><a href="#%E5%A4%96%E9%83%A8%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6">外部资源文件</a></li><li><a href="#%E9%A1%B9%E7%9B%AE%E6%A0%91%E7%8A%B6%E5%9B%BE">项目树状图</a></li><li><a href="#%E5%8F%98%E9%87%8F">变量</a></li><li><a href="#%E5%8F%98%E9%87%8F%E6%A0%87%E8%AF%86%E7%AC%A6">变量标识符</a></li><li><a href="#%E5%88%86%E7%B1%BB">分类</a></li><li><a href="#%E4%BD%9C%E7%94%A8%E5%9F%9F">作用域</a></li><li><a href="#%E6%A0%87%E9%87%8F%E5%8F%98%E9%87%8F%E7%9A%84%E5%AE%9A%E4%B9%89%E5%92%8C%E4%BD%BF%E7%94%A8">标量变量的定义和使用</a></li><li><a href="#%E5%88%97%E8%A1%A8%E5%8F%98%E9%87%8F%E7%9A%84%E5%AE%9A%E4%B9%89%E5%92%8C%E4%BD%BF%E7%94%A8">列表变量的定义和使用</a></li><li><a href="#%E5%AD%97%E5%85%B8%E5%8F%98%E9%87%8F%E7%9A%84%E5%AE%9A%E4%B9%89%E5%92%8C%E4%BD%BF%E7%94%A8">字典变量的定义和使用</a></li><li><a href="#%E5%B8%B8%E9%87%8F">常量</a></li></ol></details></aside>
@@ -58,7 +58,7 @@
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/FuzmLjYJUv4U3z0h6yBa7w">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Robot-Framework/">Robot Framework</a><a href="/tags/%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6/">测试框架</a></div>
         <div class="legacy-tags" hidden></div>
-        <nav class="related" aria-label="相邻文章"><a href="/article/wechat-66f122956e4a17.html"><small>较新文章</small>Root Framework的关键字</a><a href="/article/edff8f63.html"><small>较早文章</small>Excel合并小工具编写</a></nav>
+        <section class="series-continuation"><h2><a href="/series/robot-framework-api/">查看系列目录 ↗</a></h2><nav class="related" aria-label="同系列文章"><a href="/article/wechat-66f122956e4a17.html"><small>同系列下一篇</small>第 02 篇｜编写可带参数和默认值的自定义关键字</a></nav></section>
         <section class="article-comments" id="comments" aria-labelledby="comments-title"
           data-repo="zx490336534/zx490336534.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzNDQwOTE0MTc="
           data-category="文章评论" data-category-id="DIC_kwDOFIJrGc4DL60Q" data-article-path="/article/wechat-985e12c58d30fc.html">

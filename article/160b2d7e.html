@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <title>接口测试 · 测试游记</title>
+  <title>HTTP 接口测试基础 · 第 01 篇｜接口测试的对象、协议与验证思路 · 测试游记</title>
   <meta name="description" content="接口测试接口概念接口是什么传输数据的通道主要包括：内部接口：同一个系统中模块与模块间的接口，前端后端接口；外部接口：跨系统平台与平台间的对接。 接口测试是什么是测试系统组件间接口的一种测试。 常见接口类型/协议 HTTP类型/协议:在数据处理上效率比较高 Webservice类型/协议:通过soap协议来获取数据，处理比http协议复杂的数据类型。本质上也是">
-  <meta property="og:title" content="接口测试 · 测试游记">
+  <meta property="og:title" content="HTTP 接口测试基础 · 第 01 篇｜接口测试的对象、协议与验证思路 · 测试游记">
   <meta property="og:description" content="接口测试接口概念接口是什么传输数据的通道主要包括：内部接口：同一个系统中模块与模块间的接口，前端后端接口；外部接口：跨系统平台与平台间的对接。 接口测试是什么是测试系统组件间接口的一种测试。 常见接口类型/协议 HTTP类型/协议:在数据处理上效率比较高 Webservice类型/协议:通过soap协议来获取数据，处理比http协议复杂的数据类型。本质上也是">
   <meta property="og:url" content="https://www.zhongxin.website/article/160b2d7e.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/160b2d7e.html">
@@ -43,12 +43,12 @@
   <article class="article">
     <header class="article-header">
       <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/automation/">自动化测试</a> <span aria-hidden="true">/</span> <a href="/categories/testing/automation/api/">接口自动化</a></nav>
-      <h1 class="post-title">接口测试</h1>
+      <h1 class="post-title" data-topic-title="接口测试的对象、协议与验证思路">HTTP 接口测试基础 · 第 01 篇｜接口测试的对象、协议与验证思路</h1>
       <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2020-03-22T08:43:00+08:00">2020-03-22</time>
         <span class="post-category" hidden><a href="/categories/%E6%9D%82%E9%A1%B9/">杂项</a></span>
         <span class="read-time">约 2 分钟</span>
         <span class="public-counter" data-public-count="reads" data-article-path="/article/160b2d7e.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a></div>
+        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/http-api-testing/#chapter-1">HTTP 接口测试基础 · 第 1/5 篇</a></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E6%8E%A5%E5%8F%A3%E6%A6%82%E5%BF%B5">接口概念</a></li><li><a href="#%E6%8E%A5%E5%8F%A3%E6%98%AF%E4%BB%80%E4%B9%88">接口是什么</a></li><li><a href="#%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95%E6%98%AF%E4%BB%80%E4%B9%88">接口测试是什么</a></li><li><a href="#%E5%B8%B8%E8%A7%81%E6%8E%A5%E5%8F%A3%E7%B1%BB%E5%9E%8B-%E5%8D%8F%E8%AE%AE">常见接口类型/协议</a></li><li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%81%9A%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95">为什么要做接口测试</a></li><li><a href="#%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95%E5%8E%9F%E7%90%86">接口测试原理</a></li><li><a href="#%E5%B8%B8%E8%A7%81http%E7%8A%B6%E6%80%81%E7%A0%81">常见http状态码</a></li><li><a href="#%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95%E6%B5%81%E7%A8%8B">接口测试流程</a></li><li><a href="#%E8%8E%B7%E5%8F%96%E6%8E%A5%E5%8F%A3%E9%9C%80%E6%B1%82">获取接口需求</a></li><li><a href="#%E7%BC%96%E5%86%99%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B">编写接口测试用例</a></li><li><a href="#%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7">接口测试工具</a></li><li><a href="#jemeter">jemeter</a></li><li><a href="#postman">postman</a></li><li><a href="#soapui">soapui</a></li><li><a href="#%E8%BE%85%E5%8A%A9%E5%B7%A5%E5%85%B7">辅助工具</a></li></ol></details></aside>
@@ -107,7 +107,7 @@
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/m6swachaZ_gBWw-w5L1ZXA">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95/">接口测试</a><a href="/tags/HTTP/">HTTP</a><a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
-        <nav class="related" aria-label="相邻文章"><a href="/article/1334bf77.html"><small>较新文章</small>PC端自动化测试(一)</a><a href="/article/a0016df5.html"><small>较早文章</small>JSON必知必会</a></nav>
+        <section class="series-continuation"><h2><a href="/series/http-api-testing/">查看系列目录 ↗</a></h2><nav class="related" aria-label="同系列文章"><a href="/article/a0016df5.html"><small>同系列下一篇</small>第 02 篇｜读懂 JSON 语法和常见数据类型</a></nav></section>
         <section class="article-comments" id="comments" aria-labelledby="comments-title"
           data-repo="zx490336534/zx490336534.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzNDQwOTE0MTc="
           data-category="文章评论" data-category-id="DIC_kwDOFIJrGc4DL60Q" data-article-path="/article/160b2d7e.html">

@@ -12,10 +12,20 @@ if TYPE_CHECKING:
     from build_blog import Post
 
 
+CATALOG_SECTIONS = {
+    "testing": "测试与质量",
+    "ai": "AI 工程",
+    "development": "开发与项目",
+    "engineering": "工程工具",
+    "notes": "学习记录",
+}
+
+
 @dataclass
 class ReadingSeries:
     slug: str
     title: str
+    section: str
     description: str
     audience: str
     featured: bool
@@ -38,6 +48,9 @@ def load_series(posts, source):
         if not re.fullmatch(r"[a-z0-9-]+", slug) or slug in slugs:
             raise ValueError(f"无效或重复的系列标识 {slug}")
         slugs.add(slug)
+        section = item["section"]
+        if section not in CATALOG_SECTIONS:
+            raise ValueError(f"无效的系列主题 {slug} {section}")
 
         groups = []
         chapters = []
@@ -58,7 +71,7 @@ def load_series(posts, source):
             raise ValueError(f"系列文章为空 {slug}")
 
         series = ReadingSeries(
-            slug, item["title"], item["description"], item["audience"], item["featured"], groups, chapters, item.get("resource")
+            slug, item["title"], section, item["description"], item["audience"], item["featured"], groups, chapters, item.get("resource")
         )
         collection.append(series)
         for number, post in enumerate(chapters, 1):
@@ -66,13 +79,13 @@ def load_series(posts, source):
     return collection, positions
 
 
-def cards(collection, thumbnail, *, heading="h3"):
+def cards(collection, thumbnail):
     cards = []
     for series in collection:
         first = series.chapters[0]
         cards.append(
             f'<article class="series-card"><a class="series-card-link" href="{series.url}">'
-            f'{thumbnail(first)}<div class="series-card-copy"><{heading}>{escape(series.title)}</{heading}>'
+            f'{thumbnail(first)}<div class="series-card-copy"><h3>{escape(series.title)}</h3>'
             f'<p>{escape(series.description)}</p>'
             f'<span class="series-card-meta">{len(series.chapters)} 篇 · 从「{escape(first.title)}」开始</span>'
             '</div></a></article>'
@@ -82,10 +95,23 @@ def cards(collection, thumbnail, *, heading="h3"):
 
 def catalog_page(collection, thumbnail):
     chapters = sum(len(series.chapters) for series in collection)
+    shortcuts = []
+    sections = []
+    for section, label in CATALOG_SECTIONS.items():
+        members = [series for series in collection if series.section == section]
+        if not members:
+            continue
+        anchor = f"topic-{section}"
+        shortcuts.append(f'<a href="#{anchor}">{escape(label)}</a>')
+        sections.append(
+            f'<section class="series-stage" id="{anchor}" aria-labelledby="{anchor}-heading">'
+            f'<h2 id="{anchor}-heading">{escape(label)}</h2>{cards(members, thumbnail)}</section>'
+        )
     return f'''<section class="listing series-library">
   <header class="page-heading"><div><h1>系列阅读</h1><p>{len(collection)} 个系列 · {chapters} 篇文章</p></div>
     <a href="/categories/">按分类浏览 ↗</a></header>
-  {cards(collection, thumbnail, heading="h2")}
+  <nav class="series-stage-links" aria-label="系列主题">{"".join(shortcuts)}</nav>
+  {"".join(sections)}
 </section>'''
 
 

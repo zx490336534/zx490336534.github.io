@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <title>4.寻光集后台管理系统-用户管理(用户表) · 测试游记</title>
+  <title>寻光集后台管理系统 · 第 04 篇｜创建用户应用并定义用户表 · 测试游记</title>
   <meta name="description" content="用户管理(用户表)">
-  <meta property="og:title" content="4.寻光集后台管理系统-用户管理(用户表) · 测试游记">
+  <meta property="og:title" content="寻光集后台管理系统 · 第 04 篇｜创建用户应用并定义用户表 · 测试游记">
   <meta property="og:description" content="用户管理(用户表)">
   <meta property="og:url" content="https://www.zhongxin.website/article/wechat-cac09fa8b6284d.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/wechat-cac09fa8b6284d.html">
@@ -43,12 +43,12 @@
   <article class="article">
     <header class="article-header">
       <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/projects/">项目实战</a></nav>
-      <h1 class="post-title">4.寻光集后台管理系统-用户管理(用户表)</h1>
+      <h1 class="post-title" data-topic-title="创建用户应用并定义用户表">寻光集后台管理系统 · 第 04 篇｜创建用户应用并定义用户表</h1>
       <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2022-08-18T15:08:07+08:00">2022-08-18</time>
         <span class="post-category" hidden><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span>
         <span class="read-time">约 4 分钟</span>
         <span class="public-counter" data-public-count="reads" data-article-path="/article/wechat-cac09fa8b6284d.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a></div>
+        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/xunguang-admin/#chapter-4">寻光集后台管理系统 · 第 4/15 篇</a></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E8%83%8C%E6%99%AF">背景</a></li><li><a href="#%E7%94%A8%E6%88%B7%E5%BA%94%E7%94%A8">用户应用</a></li><li><a href="#%E5%88%9B%E5%BB%BA%E5%BA%94%E7%94%A8">创建应用</a></li><li><a href="#%E8%AE%BE%E7%BD%AE%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F">设置环境变量</a></li><li><a href="#%E5%AE%89%E8%A3%85%E5%BA%94%E7%94%A8">安装应用</a></li><li><a href="#%E7%94%A8%E6%88%B7%E6%A8%A1%E5%9D%97">用户模块</a></li><li><a href="#%E7%94%A8%E6%88%B7%E8%A1%A8">用户表</a></li><li><a href="#%E6%8C%87%E5%AE%9A%E6%9C%AC%E9%A1%B9%E7%9B%AE%E7%94%A8%E6%88%B7%E6%A8%A1%E5%9E%8B%E7%B1%BB">指定本项目用户模型类</a></li><li><a href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%81%E7%A7%BB">数据库迁移</a></li><li><a href="#%E8%BF%81%E7%A7%BB%E8%BF%87%E7%A8%8B%E6%96%87%E4%BB%B6">迁移过程文件</a></li><li><a href="#%E6%9F%A5%E7%9C%8B%E7%94%9F%E6%88%90%E7%9A%84%E8%A1%A8">查看生成的表</a></li></ol></details></aside>
@@ -58,7 +58,7 @@
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/sAy3x-L1ZpJ78Uw8Fbe09g">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/%E5%AF%BB%E5%85%89%E9%9B%86/">寻光集</a><a href="/tags/%E5%90%8E%E5%8F%B0%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/">后台管理系统</a><a href="/tags/%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/">用户管理</a></div>
         <div class="legacy-tags" hidden></div>
-        <nav class="related" aria-label="相邻文章"><a href="/article/wechat-f0567a4c693eab.html"><small>较新文章</small>5.寻光集后台管理系统-用户管理(序列化器)</a><a href="/article/wechat-64860df972dac7.html"><small>较早文章</small>3.寻光集后台管理系统-依赖环境准备</a></nav>
+        <section class="series-continuation"><h2><a href="/series/xunguang-admin/">查看系列目录 ↗</a></h2><nav class="related" aria-label="同系列文章"><a href="/article/wechat-64860df972dac7.html"><small>同系列上一篇</small>第 03 篇｜安装 Django REST Framework 和后台开发依赖</a><a href="/article/wechat-f0567a4c693eab.html"><small>同系列下一篇</small>第 05 篇｜用序列化器校验注册数据</a></nav></section>
         <section class="article-comments" id="comments" aria-labelledby="comments-title"
           data-repo="zx490336534/zx490336534.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzNDQwOTE0MTc="
           data-category="文章评论" data-category-id="DIC_kwDOFIJrGc4DL60Q" data-article-path="/article/wechat-cac09fa8b6284d.html">

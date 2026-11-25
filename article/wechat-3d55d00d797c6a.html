@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <title>《流畅的Python》第十八章学习笔记 · 测试游记</title>
+  <title>《流畅的 Python》笔记 · 第 18 篇｜用线程和协程比较并发 I/O · 测试游记</title>
   <meta name="description" content="协程是可以暂停和恢复的函数">
-  <meta property="og:title" content="《流畅的Python》第十八章学习笔记 · 测试游记">
+  <meta property="og:title" content="《流畅的 Python》笔记 · 第 18 篇｜用线程和协程比较并发 I/O · 测试游记">
   <meta property="og:description" content="协程是可以暂停和恢复的函数">
   <meta property="og:url" content="https://www.zhongxin.website/article/wechat-3d55d00d797c6a.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/wechat-3d55d00d797c6a.html">
@@ -43,12 +43,12 @@
   <article class="article">
     <header class="article-header">
       <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/python/">Python 编程</a></nav>
-      <h1 class="post-title">《流畅的Python》第十八章学习笔记</h1>
+      <h1 class="post-title" data-topic-title="用线程和协程比较并发 I/O">《流畅的 Python》笔记 · 第 18 篇｜用线程和协程比较并发 I/O</h1>
       <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2021-03-04T22:35:44+08:00">2021-03-04</time>
         <span class="post-category" hidden><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span>
         <span class="read-time">约 2 分钟</span>
         <span class="public-counter" data-public-count="reads" data-article-path="/article/wechat-3d55d00d797c6a.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a></div>
+        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/fluent-python-notes/#chapter-18">《流畅的 Python》笔记 · 第 18/18 篇</a></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E4%BD%BF%E7%94%A8%E7%BA%BF%E7%A8%8B%E5%AE%9E%E7%8E%B0%E6%96%87%E6%9C%AC%E5%BC%8F%E6%97%8B%E8%BD%AC%E6%8C%87%E9%92%88">使用线程实现文本式旋转指针</a></li><li><a href="#%E4%BD%BF%E7%94%A8%E5%8D%8F%E7%A8%8B%E5%AE%9E%E7%8E%B0%E6%96%87%E6%9C%AC%E6%97%8B%E8%BD%AC%E6%8C%87%E9%92%88">使用协程实现文本旋转指针</a></li><li><a href="#%E5%9B%9E%E8%B0%83%E5%9C%B0%E7%8B%B1">回调地狱</a></li><li><a href="#%E4%BD%BF%E7%94%A8%E5%8D%8F%E7%A8%8B">使用协程</a></li></ol></details></aside>
@@ -58,7 +58,7 @@
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/73Pad0J6CShzTJYxWhW2dw">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%81%E7%95%85%E7%9A%84-Python/">流畅的 Python</a></div>
         <div class="legacy-tags" hidden></div>
-        <nav class="related" aria-label="相邻文章"><a href="/article/wechat-3c59806901e099.html"><small>较新文章</small>阅读《精通Python爬虫框架Scrapy》</a><a href="/article/wechat-3ba898d5b50563.html"><small>较早文章</small>《流畅的Python》第十七章学习笔记</a></nav>
+        <section class="series-continuation"><h2><a href="/series/fluent-python-notes/">查看系列目录 ↗</a></h2><nav class="related" aria-label="同系列文章"><a href="/article/wechat-3ba898d5b50563.html"><small>同系列上一篇</small>第 17 篇｜用 concurrent.futures 管理线程池与进程池</a></nav></section>
         <section class="article-comments" id="comments" aria-labelledby="comments-title"
           data-repo="zx490336534/zx490336534.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzNDQwOTE0MTc="
           data-category="文章评论" data-category-id="DIC_kwDOFIJrGc4DL60Q" data-article-path="/article/wechat-3d55d00d797c6a.html">

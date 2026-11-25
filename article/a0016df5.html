@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <title>JSON必知必会 · 测试游记</title>
+  <title>HTTP 接口测试基础 · 第 02 篇｜读懂 JSON 语法和常见数据类型 · 测试游记</title>
   <meta name="description" content="JSON必知必会阅读了一下JSON必知必会，由于日常使用JSON比较多，所以文中内容大部分都已经接触过了，大概通读耗时1h左右PDF地址：链接:https://pan.baidu.com/s/1iZQLR1zGJbH9Eoq3t_GYFQ 密码:x4lv 基础 JSON基于JavaScript对象字面量 JSON的全称是Javascript Object N">
-  <meta property="og:title" content="JSON必知必会 · 测试游记">
+  <meta property="og:title" content="HTTP 接口测试基础 · 第 02 篇｜读懂 JSON 语法和常见数据类型 · 测试游记">
   <meta property="og:description" content="JSON必知必会阅读了一下JSON必知必会，由于日常使用JSON比较多，所以文中内容大部分都已经接触过了，大概通读耗时1h左右PDF地址：链接:https://pan.baidu.com/s/1iZQLR1zGJbH9Eoq3t_GYFQ 密码:x4lv 基础 JSON基于JavaScript对象字面量 JSON的全称是Javascript Object N">
   <meta property="og:url" content="https://www.zhongxin.website/article/a0016df5.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/a0016df5.html">
@@ -43,12 +43,12 @@
   <article class="article">
     <header class="article-header">
       <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/">后端开发</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/data/">数据与接口</a></nav>
-      <h1 class="post-title">JSON必知必会</h1>
+      <h1 class="post-title" data-topic-title="读懂 JSON 语法和常见数据类型">HTTP 接口测试基础 · 第 02 篇｜读懂 JSON 语法和常见数据类型</h1>
       <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2020-02-12T08:43:00+08:00">2020-02-12</time>
         <span class="post-category" hidden><a href="/categories/%E6%9D%82%E9%A1%B9/">杂项</a></span>
         <span class="read-time">约 5 分钟</span>
         <span class="public-counter" data-public-count="reads" data-article-path="/article/a0016df5.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a></div>
+        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/http-api-testing/#chapter-2">HTTP 接口测试基础 · 第 2/5 篇</a></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E5%9F%BA%E7%A1%80">基础</a></li><li><a href="#%E8%AF%AD%E6%B3%95">语法</a></li><li><a href="#%E8%AF%AD%E6%B3%95%E9%AA%8C%E8%AF%81">语法验证</a></li><li><a href="#JSON%E7%9A%84%E5%AA%92%E4%BD%93%E7%B1%BB%E5%9E%8B">JSON的媒体类型</a></li><li><a href="#%E4%B8%93%E4%B8%9A%E6%9C%AF%E8%AF%AD">专业术语</a></li><li><a href="#JSON%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B">JSON的数据类型</a></li><li><a href="#%E5%8E%9F%E5%A7%8B%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B">原始数据类型</a></li><li><a href="#%E5%A4%8D%E5%90%88%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B">复合数据类型</a></li><li><a href="#JSON%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B">JSON中的数据类型</a></li><li><a href="#%E8%BD%AC%E4%B9%89">转义</a></li><li><a href="#%E5%B8%83%E5%B0%94%E5%80%BC">布尔值</a></li><li><a href="#null">null</a></li><li><a href="#%E6%95%B0%E7%BB%84">数组</a></li><li><a href="#JSON-Schema">JSON Schema</a></li><li><a href="#%E8%AF%AD%E6%B3%95-1">语法</a></li><li><a href="#%E9%80%9A%E8%BF%87Python%E8%BF%9B%E8%A1%8CJSON%E6%A8%A1%E5%BC%8F%E6%A0%A1%E9%AA%8C">通过Python进行JSON模式校验</a></li><li><a href="#JSON%E4%B8%AD%E7%9A%84%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98">JSON中的安全问题</a></li><li><a href="#%E8%B7%A8%E7%AB%99%E8%AF%B7%E6%B1%82%E4%BC%AA%E9%80%A0">跨站请求伪造</a></li><li><a href="#%E6%B3%A8%E5%85%A5%E6%94%BB%E5%87%BB">注入攻击</a></li></ol></details></aside>
@@ -133,7 +133,7 @@
 
         <div class="post-tags" aria-label="文章标签"><a href="/tags/JSON/">JSON</a><a href="/tags/%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F/">数据格式</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
-        <nav class="related" aria-label="相邻文章"><a href="/article/160b2d7e.html"><small>较新文章</small>接口测试</a><a href="/article/5b8e00c1.html"><small>较早文章</small>Python 测试开发进阶 · 第 48 篇｜App 功耗与流畅度测试：Battery Historian、帧率和卡顿</a></nav>
+        <section class="series-continuation"><h2><a href="/series/http-api-testing/">查看系列目录 ↗</a></h2><nav class="related" aria-label="同系列文章"><a href="/article/160b2d7e.html"><small>同系列上一篇</small>第 01 篇｜接口测试的对象、协议与验证思路</a><a href="/article/wechat-262d212ae30737.html"><small>同系列下一篇</small>第 03 篇｜用 HTTPie 在命令行调试接口</a></nav></section>
         <section class="article-comments" id="comments" aria-labelledby="comments-title"
           data-repo="zx490336534/zx490336534.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzNDQwOTE0MTc="
           data-category="文章评论" data-category-id="DIC_kwDOFIJrGc4DL60Q" data-article-path="/article/a0016df5.html">

@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <title>LangChain 实战：用 SubAgent 解决多 Skills 冲突 · 测试游记</title>
+  <title>Agent 开发与评测 · 第 06 篇｜用 LangChain SubAgent 隔离多 Skills 冲突 · 测试游记</title>
   <meta name="description" content="什么是 SubAgent SubAgent 是 LangChain Multi-Agent 架构中的一种模式： 主 Agent 将子 Agent 作为工具协调调用 。所有路由经过主 Agent，由它决定何时及如何调用每个子 Agent。 核心特征： • 集中控制 ：主 Agent 统一接收请求，判断是否委派 • 作为工具调用 ：子 Age">
-  <meta property="og:title" content="LangChain 实战：用 SubAgent 解决多 Skills 冲突 · 测试游记">
+  <meta property="og:title" content="Agent 开发与评测 · 第 06 篇｜用 LangChain SubAgent 隔离多 Skills 冲突 · 测试游记">
   <meta property="og:description" content="什么是 SubAgent SubAgent 是 LangChain Multi-Agent 架构中的一种模式： 主 Agent 将子 Agent 作为工具协调调用 。所有路由经过主 Agent，由它决定何时及如何调用每个子 Agent。 核心特征： • 集中控制 ：主 Agent 统一接收请求，判断是否委派 • 作为工具调用 ：子 Age">
   <meta property="og:url" content="https://www.zhongxin.website/article/wechat-4a191dcec80262.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/wechat-4a191dcec80262.html">
@@ -43,12 +43,12 @@
   <article class="article">
     <header class="article-header">
       <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/ai/">AI 工程</a> <span aria-hidden="true">/</span> <a href="/categories/ai/agents/">Agent 与工作流</a> <span aria-hidden="true">/</span> <a href="/categories/ai/agents/workflows/">工作流与多 Agent</a></nav>
-      <h1 class="post-title">LangChain 实战：用 SubAgent 解决多 Skills 冲突</h1>
+      <h1 class="post-title" data-topic-title="用 LangChain SubAgent 隔离多 Skills 冲突">Agent 开发与评测 · 第 06 篇｜用 LangChain SubAgent 隔离多 Skills 冲突</h1>
       <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2026-04-16T09:43:10+08:00">2026-04-16</time>
         <span class="post-category" hidden><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span>
         <span class="read-time">约 5 分钟</span>
         <span class="public-counter" data-public-count="reads" data-article-path="/article/wechat-4a191dcec80262.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a></div>
+        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/agent-development/#chapter-6">Agent 开发与评测 · 第 6/7 篇</a></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E4%BB%80%E4%B9%88%E6%98%AF-SubAgent">什么是 SubAgent</a></li><li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E7%94%A8-Agent-Skills-%E8%80%8C%E7%94%A8-SubAgent">为什么不用 Agent + Skills，而用 SubAgent</a></li><li><a href="#%E6%A0%B8%E5%BF%83%E9%97%AE%E9%A2%98-%E5%A4%9A-Skills-%E6%B7%B7%E4%B9%B1">核心问题：多 Skills 混乱</a></li><li><a href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88-SubAgent-%E9%9A%94%E7%A6%BB">解决方案：SubAgent 隔离</a></li><li><a href="#%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86">实现原理</a></li><li><a href="#%E6%95%B4%E4%BD%93%E8%B0%83%E7%94%A8%E6%B5%81%E7%A8%8B">整体调用流程</a></li><li><a href="#%E6%A0%B8%E5%BF%83-subagentTools-js">核心：subagentTools.js</a></li><li><a href="#%E5%AD%90-Agent-%E6%B3%A8%E5%86%8C%E8%A1%A8">子 Agent 注册表</a></li><li><a href="#call_agent-%E5%B7%A5%E5%85%B7-Single-Dispatch-%E6%A8%A1%E5%BC%8F">call_agent 工具（Single Dispatch 模式）</a></li><li><a href="#%E4%B8%8A%E4%B8%8B%E6%96%87%E4%BC%A0%E9%80%92">上下文传递</a></li><li><a href="#include-exclude-%E8%BF%87%E6%BB%A4">include/exclude 过滤</a></li><li><a href="#%E4%B8%BB-Agent-%E5%A6%82%E4%BD%95%E9%9B%86%E6%88%90">主 Agent 如何集成</a></li><li><a href="#%E5%8F%AF%E8%A7%82%E6%B5%8B%E6%80%A7%E4%B8%8E%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86">可观测性与错误处理</a></li><li><a href="#Langfuse-%E8%BF%BD%E8%B8%AA">Langfuse 追踪</a></li><li><a href="#%E9%94%99%E8%AF%AF%E9%9A%94%E7%A6%BB">错误隔离</a></li><li><a href="#%E5%A6%82%E4%BD%95%E6%96%B0%E5%A2%9E%E5%AD%90-Agent">如何新增子 Agent</a></li><li><a href="#%E5%88%9B%E5%BB%BA-Agent-%E6%96%87%E4%BB%B6">创建 Agent 文件</a></li><li><a href="#%E6%B3%A8%E5%86%8C%E5%88%B0%E4%B8%A4%E4%B8%AA%E5%9C%B0%E6%96%B9">注册到两个地方</a></li><li><a href="#%E5%88%9B%E5%BB%BA%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%BB-Agent">创建自定义主 Agent</a></li><li><a href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99">参考资料</a></li></ol></details></aside>
@@ -58,7 +58,7 @@
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/08phy_NrbeFFVh1pfN7SbQ">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/LangChain/">LangChain</a><a href="/tags/SubAgent/">SubAgent</a><a href="/tags/Skills/">Skills</a></div>
         <div class="legacy-tags" hidden></div>
-        <nav class="related" aria-label="相邻文章"><a href="/article/wechat-1e07613cac3463.html"><small>较新文章</small>当 Agent 穿上了 Workflow 的外衣</a><a href="/article/wechat-82b02d4337507c.html"><small>较早文章</small>Agent-BS、CS架构选择</a></nav>
+        <section class="series-continuation"><h2><a href="/series/agent-development/">查看系列目录 ↗</a></h2><nav class="related" aria-label="同系列文章"><a href="/article/wechat-1e07613cac3463.html"><small>同系列上一篇</small>第 05 篇｜Agent 何时走工作流：策略、工具歧义与编排边界</a><a href="/article/wechat-2499cfc9d36cbb.html"><small>同系列下一篇</small>第 07 篇｜给 Agent 做评测：数据、执行与报告</a></nav></section>
         <section class="article-comments" id="comments" aria-labelledby="comments-title"
           data-repo="zx490336534/zx490336534.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzNDQwOTE0MTc="
           data-category="文章评论" data-category-id="DIC_kwDOFIJrGc4DL60Q" data-article-path="/article/wechat-4a191dcec80262.html">

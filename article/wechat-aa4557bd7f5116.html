@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <title>《流畅的Python》第十二章学习笔记 · 测试游记</title>
+  <title>《流畅的 Python》笔记 · 第 12 篇｜多重继承与方法解析顺序 · 测试游记</title>
   <meta name="description" content="继承的优缺点">
-  <meta property="og:title" content="《流畅的Python》第十二章学习笔记 · 测试游记">
+  <meta property="og:title" content="《流畅的 Python》笔记 · 第 12 篇｜多重继承与方法解析顺序 · 测试游记">
   <meta property="og:description" content="继承的优缺点">
   <meta property="og:url" content="https://www.zhongxin.website/article/wechat-aa4557bd7f5116.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/wechat-aa4557bd7f5116.html">
@@ -43,12 +43,12 @@
   <article class="article">
     <header class="article-header">
       <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/python/">Python 编程</a></nav>
-      <h1 class="post-title">《流畅的Python》第十二章学习笔记</h1>
+      <h1 class="post-title" data-topic-title="多重继承与方法解析顺序">《流畅的 Python》笔记 · 第 12 篇｜多重继承与方法解析顺序</h1>
       <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2021-02-20T15:03:51+08:00">2021-02-20</time>
         <span class="post-category" hidden><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span>
         <span class="read-time">约 3 分钟</span>
         <span class="public-counter" data-public-count="reads" data-article-path="/article/wechat-aa4557bd7f5116.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a></div>
+        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/fluent-python-notes/#chapter-12">《流畅的 Python》笔记 · 第 12/18 篇</a></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E5%AD%90%E7%B1%BB%E5%8C%96%E5%86%85%E7%BD%AE%E7%B1%BB%E5%9E%8B">子类化内置类型</a></li><li><a href="#%E4%BE%8B%E5%AD%901-%E5%86%85%E7%BD%AE%E7%B1%BB%E5%9E%8Bdict%E7%9A%84-init__-%E5%92%8C-_update_-%E6%96%B9%E6%B3%95%E4%BC%9A%E5%BF%BD%E7%95%A5%E6%88%91%E4%BB%AC%E8%A6%86%E7%9B%96%E7%9A%84-__setitem-%E6%96%B9%E6%B3%95">例子1:内置类型dict的` init__`和` _update_ `方法会忽略我们覆盖的`__setitem `方法</a></li><li><a href="#%E4%BE%8B%E5%AD%902-dict-update%E6%96%B9%E6%B3%95%E4%BC%9A%E5%BF%BD%E7%95%A5-AnswerDict-getitem-%E6%96%B9%E6%B3%95">例子2:dict.update方法会忽略`AnswerDict. getitem `方法</a></li><li><a href="#%E5%B0%8F%E7%BB%93">小结</a></li><li><a href="#%E5%A4%9A%E9%87%8D%E7%BB%A7%E6%89%BF%E5%92%8C%E6%96%B9%E6%B3%95%E8%A7%A3%E6%9E%90%E9%A1%BA%E5%BA%8F">多重继承和方法解析顺序</a></li><li><a href="#%E5%A4%84%E7%90%86%E5%A4%9A%E9%87%8D%E7%BB%A7%E6%89%BF%E7%9A%84%E5%BB%BA%E8%AE%AE">处理多重继承的建议</a></li><li><a href="#%E6%8A%8A%E6%8E%A5%E5%8F%A3%E7%BB%A7%E6%89%BF%E5%92%8C%E5%AE%9E%E7%8E%B0%E7%BB%A7%E6%89%BF%E5%8C%BA%E5%88%86%E5%BC%80">把接口继承和实现继承区分开</a></li><li><a href="#%E4%BD%BF%E7%94%A8%E6%8A%BD%E8%B1%A1%E5%9F%BA%E7%B1%BB%E6%98%BE%E5%BC%8F%E8%A1%A8%E7%A4%BA%E6%8E%A5%E5%8F%A3">使用抽象基类显式表示接口</a></li><li><a href="#%E9%80%9A%E8%BF%87%E6%B7%B7%E5%85%A5%E9%87%8D%E7%94%A8%E4%BB%A3%E7%A0%81">通过混入重用代码</a></li><li><a href="#%E5%9C%A8%E5%90%8D%E7%A7%B0%E4%B8%AD%E6%98%8E%E7%A1%AE%E6%8C%87%E6%98%8E%E6%B7%B7%E5%85%A5">在名称中明确指明混入</a></li><li><a href="#%E6%8A%BD%E8%B1%A1%E5%9F%BA%E7%B1%BB%E5%8F%AF%E4%BB%A5%E4%BD%9C%E4%B8%BA%E6%B7%B7%E5%85%A5-%E5%8F%8D%E8%BF%87%E6%9D%A5%E5%88%99%E4%B8%8D%E6%88%90%E7%AB%8B">抽象基类可以作为混入，反过来则不成立</a></li><li><a href="#%E4%B8%8D%E8%A6%81%E5%AD%90%E7%B1%BB%E5%8C%96%E5%A4%9A%E4%B8%AA%E5%85%B7%E4%BD%93%E7%B1%BB">不要子类化多个具体类</a></li><li><a href="#%E4%B8%BA%E7%94%A8%E6%88%B7%E6%8F%90%E4%BE%9B%E8%81%9A%E5%90%88%E7%B1%BB">为用户提供聚合类</a></li><li><a href="#%E4%BC%98%E5%85%88%E4%BD%BF%E7%94%A8%E5%AF%B9%E8%B1%A1%E7%BB%84%E5%90%88-%E8%80%8C%E4%B8%8D%E6%98%AF%E7%B1%BB%E7%BB%A7%E6%89%BF">优先使用对象组合，而不是类继承</a></li></ol></details></aside>
@@ -58,7 +58,7 @@
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/D53tgl1iyp8F67_JKjtAIg">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%81%E7%95%85%E7%9A%84-Python/">流畅的 Python</a></div>
         <div class="legacy-tags" hidden></div>
-        <nav class="related" aria-label="相邻文章"><a href="/article/wechat-b60d807fd0df46.html"><small>较新文章</small>《流畅的Python》第十三章学习笔记</a><a href="/article/wechat-a3f20f2ac05894.html"><small>较早文章</small>《流畅的Python》第十一章学习笔记</a></nav>
+        <section class="series-continuation"><h2><a href="/series/fluent-python-notes/">查看系列目录 ↗</a></h2><nav class="related" aria-label="同系列文章"><a href="/article/wechat-a3f20f2ac05894.html"><small>同系列上一篇</small>第 11 篇｜鸭子类型、抽象基类与虚拟子类</a><a href="/article/wechat-b60d807fd0df46.html"><small>同系列下一篇</small>第 13 篇｜Python 运算符重载与比较协议</a></nav></section>
         <section class="article-comments" id="comments" aria-labelledby="comments-title"
           data-repo="zx490336534/zx490336534.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzNDQwOTE0MTc="
           data-category="文章评论" data-category-id="DIC_kwDOFIJrGc4DL60Q" data-article-path="/article/wechat-aa4557bd7f5116.html">

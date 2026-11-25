@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <title>LangChain进行格式化输出 · 测试游记</title>
+  <title>Agent 开发与评测 · 第 02 篇｜用 LangChain 解析结构化输出 · 测试游记</title>
   <meta name="description" content="LangChain进行格式化输出">
-  <meta property="og:title" content="LangChain进行格式化输出 · 测试游记">
+  <meta property="og:title" content="Agent 开发与评测 · 第 02 篇｜用 LangChain 解析结构化输出 · 测试游记">
   <meta property="og:description" content="LangChain进行格式化输出">
   <meta property="og:url" content="https://www.zhongxin.website/article/wechat-cb23738a6398e5.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/wechat-cb23738a6398e5.html">
@@ -43,12 +43,12 @@
   <article class="article">
     <header class="article-header">
       <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/ai/">AI 工程</a> <span aria-hidden="true">/</span> <a href="/categories/ai/agents/">Agent 与工作流</a> <span aria-hidden="true">/</span> <a href="/categories/ai/agents/build/">Agent 架构与开发</a></nav>
-      <h1 class="post-title">LangChain进行格式化输出</h1>
+      <h1 class="post-title" data-topic-title="用 LangChain 解析结构化输出">Agent 开发与评测 · 第 02 篇｜用 LangChain 解析结构化输出</h1>
       <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2025-04-22T18:39:59+08:00">2025-04-22</time>
         <span class="post-category" hidden><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span>
         <span class="read-time">约 3 分钟</span>
         <span class="public-counter" data-public-count="reads" data-article-path="/article/wechat-cb23738a6398e5.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a></div>
+        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/agent-development/#chapter-2">Agent 开发与评测 · 第 2/7 篇</a></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E8%83%8C%E6%99%AF">背景</a></li><li><a href="#%E4%B8%80-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E6%A0%BC%E5%BC%8F%E5%8C%96%E8%BE%93%E5%87%BA">一、为什么需要格式化输出？</a></li><li><a href="#%E4%BA%8C-LangChain%E4%B8%AD%E7%9A%84%E8%BE%93%E5%87%BA%E8%A7%A3%E6%9E%90%E5%99%A8-Output-Parser">二、LangChain中的输出解析器（Output Parser）</a></li><li><a href="#%E4%B8%89-%E4%BB%A3%E7%A0%81%E5%AE%9E%E6%88%98-%E8%AE%A9LLM%E8%BF%94%E5%9B%9EJSON%E6%A0%BC%E5%BC%8F%E7%9A%84%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B">三、代码实战——让LLM返回JSON格式的测试用例</a></li><li><a href="#1-%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96">1、安装依赖</a></li><li><a href="#2-%E4%BD%BF%E7%94%A8LangSmith%E8%A7%82%E5%AF%9F%E7%BB%93%E6%9E%9C">2、使用LangSmith观察结果</a></li><li><a href="#3-%E7%BC%96%E5%86%99%E6%83%B3%E8%A6%81%E8%BE%93%E5%87%BA%E7%9A%84json%E6%A0%BC%E5%BC%8F">3、编写想要输出的json格式</a></li><li><a href="#4-%E6%8B%BC%E6%8E%A5%E6%8F%90%E7%A4%BA%E8%AF%8D">4、拼接提示词</a></li><li><a href="#5-%E8%B0%83%E7%94%A8%E5%A4%A7%E6%A8%A1%E5%9E%8B">5、调用大模型</a></li><li><a href="#%E5%9B%9B-%E6%9F%A5%E7%9C%8B%E7%BB%93%E6%9E%9C">四、查看结果</a></li><li><a href="#1-%E6%9F%A5%E7%9C%8B%E8%BF%90%E8%A1%8C%E7%BB%93%E6%9E%9C">1、查看运行结果</a></li><li><a href="#2-%E6%9F%A5%E7%9C%8BLangSmith%E7%BB%93%E6%9E%9C">2、查看LangSmith结果</a></li><li><a href="#%E4%BA%94-%E5%B0%8F%E7%BB%93">五、小结</a></li></ol></details></aside>
@@ -58,7 +58,7 @@
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/0qLS-l7SQleEjqWzu47HiA">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/LangChain/">LangChain</a><a href="/tags/%E7%BB%93%E6%9E%84%E5%8C%96%E8%BE%93%E5%87%BA/">结构化输出</a></div>
         <div class="legacy-tags" hidden></div>
-        <nav class="related" aria-label="相邻文章"><a href="/article/wechat-9bd0c980eeb7a6.html"><small>较新文章</small>「fastapi_mcp」实战指南：零配置快速集成 FastAPI 工具到大模型生态</a><a href="/article/wechat-a74e66513669c2.html"><small>较早文章</small>Streamlit+LangChain让你零门槛搭建大模型聊天及文档检索应用</a></nav>
+        <section class="series-continuation"><h2><a href="/series/agent-development/">查看系列目录 ↗</a></h2><nav class="related" aria-label="同系列文章"><a href="/article/wechat-f74655a616dac8.html"><small>同系列上一篇</small>第 01 篇｜用天气助手理解 Agent 的规划与工具调用</a><a href="/article/wechat-82b02d4337507c.html"><small>同系列下一篇</small>第 03 篇｜Agent 架构选择：B/S 与 C/S 的取舍</a></nav></section>
         <section class="article-comments" id="comments" aria-labelledby="comments-title"
           data-repo="zx490336534/zx490336534.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzNDQwOTE0MTc="
           data-category="文章评论" data-category-id="DIC_kwDOFIJrGc4DL60Q" data-article-path="/article/wechat-cb23738a6398e5.html">

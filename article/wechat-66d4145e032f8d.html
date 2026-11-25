@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <title>使用skill-creator创建和优化Skills · 测试游记</title>
+  <title>Agent Skills 制作与分发 · 第 03 篇｜用 skill-creator 创建、测试并优化 Skill · 测试游记</title>
   <meta name="description" content="Info 官方资源 • GitHub： https://github.com/anthropics/skills/tree/main/skills/skill-creator skill-creator 是 Claude Code 的官方 Skill，用于创建、优化和评估 Skills。它通过科学的方法帮助改进 Skill 的触发准确率和">
-  <meta property="og:title" content="使用skill-creator创建和优化Skills · 测试游记">
+  <meta property="og:title" content="Agent Skills 制作与分发 · 第 03 篇｜用 skill-creator 创建、测试并优化 Skill · 测试游记">
   <meta property="og:description" content="Info 官方资源 • GitHub： https://github.com/anthropics/skills/tree/main/skills/skill-creator skill-creator 是 Claude Code 的官方 Skill，用于创建、优化和评估 Skills。它通过科学的方法帮助改进 Skill 的触发准确率和">
   <meta property="og:url" content="https://www.zhongxin.website/article/wechat-66d4145e032f8d.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/wechat-66d4145e032f8d.html">
@@ -43,12 +43,12 @@
   <article class="article">
     <header class="article-header">
       <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/ai/">AI 工程</a> <span aria-hidden="true">/</span> <a href="/categories/ai/mcp/">MCP 与 Skills</a> <span aria-hidden="true">/</span> <a href="/categories/ai/mcp/skills/">Skills 与提示词</a></nav>
-      <h1 class="post-title">使用skill-creator创建和优化Skills</h1>
+      <h1 class="post-title" data-topic-title="用 skill-creator 创建、测试并优化 Skill">Agent Skills 制作与分发 · 第 03 篇｜用 skill-creator 创建、测试并优化 Skill</h1>
       <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2026-03-17T18:20:25+08:00">2026-03-17</time>
         <span class="post-category" hidden><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span>
         <span class="read-time">约 5 分钟</span>
         <span class="public-counter" data-public-count="reads" data-article-path="/article/wechat-66d4145e032f8d.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a></div>
+        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/agent-skills/#chapter-3">Agent Skills 制作与分发 · 第 3/4 篇</a></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E6%A0%B8%E5%BF%83%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B">核心工作流程</a></li><li><a href="#%E5%88%9B%E5%BB%BA-Skill">创建 Skill</a></li><li><a href="#1-%E6%8D%95%E8%8E%B7%E6%84%8F%E5%9B%BE">1. 捕获意图</a></li><li><a href="#2-%E7%BC%96%E5%86%99-SKILL-md">2. 编写 SKILL.md</a></li><li><a href="#3-%E7%BC%96%E5%86%99%E5%8E%9F%E5%88%99">3. 编写原则</a></li><li><a href="#%E6%B5%8B%E8%AF%95%E4%B8%8E%E8%AF%84%E4%BC%B0">测试与评估</a></li><li><a href="#%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B%E6%A0%BC%E5%BC%8F">测试用例格式</a></li><li><a href="#%E8%BF%90%E8%A1%8C%E6%B5%8B%E8%AF%95%E6%B5%81%E7%A8%8B">运行测试流程</a></li><li><a href="#%E6%8F%8F%E8%BF%B0%E4%BC%98%E5%8C%96-%E8%A7%A6%E5%8F%91%E4%BC%98%E5%8C%96">描述优化（触发优化）</a></li><li><a href="#1-%E7%94%9F%E6%88%90%E8%A7%A6%E5%8F%91%E8%AF%84%E4%BC%B0%E9%9B%86">1. 生成触发评估集</a></li><li><a href="#2-%E8%BF%90%E8%A1%8C%E4%BC%98%E5%8C%96%E5%BE%AA%E7%8E%AF">2. 运行优化循环</a></li><li><a href="#%E5%AE%9E%E6%88%98%E6%A1%88%E4%BE%8B-%E4%BC%98%E5%8C%96-dev-design-Skill">实战案例：优化 dev-design Skill</a></li><li><a href="#%E8%AF%84%E4%BC%B0%E9%9B%86%E7%A4%BA%E4%BE%8B">评估集示例</a></li><li><a href="#%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5">最佳实践</a></li><li><a href="#%E7%90%86%E8%A7%A3-Skill-%E8%A7%A6%E5%8F%91%E6%9C%BA%E5%88%B6">理解 Skill 触发机制</a></li><li><a href="#%E7%9B%B8%E5%85%B3%E8%B5%84%E6%BA%90">相关资源</a></li></ol></details></aside>
@@ -58,7 +58,7 @@
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/bZL-0ckRQiDnIMXS4YWa8w">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Skills/">Skills</a><a href="/tags/skill-creator/">skill-creator</a></div>
         <div class="legacy-tags" hidden></div>
-        <nav class="related" aria-label="相邻文章"><a href="/article/wechat-d28ba46f39fd83.html"><small>较新文章</small>为AI Agent设计的上网方式-WebMCP介绍与实际使用案例</a><a href="/article/wechat-93a1a69a0ff89b.html"><small>较早文章</small>让你的Claude Skills随时可用：将Skills暴露为MCP</a></nav>
+        <section class="series-continuation"><h2><a href="/series/agent-skills/">查看系列目录 ↗</a></h2><nav class="related" aria-label="同系列文章"><a href="/article/wechat-77e2fc1117899d.html"><small>同系列上一篇</small>第 02 篇｜把团队经验做成可维护的 Skill</a><a href="/article/wechat-93a1a69a0ff89b.html"><small>同系列下一篇</small>第 04 篇｜通过 MCP 分发 Claude Skills</a></nav></section>
         <section class="article-comments" id="comments" aria-labelledby="comments-title"
           data-repo="zx490336534/zx490336534.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzNDQwOTE0MTc="
           data-category="文章评论" data-category-id="DIC_kwDOFIJrGc4DL60Q" data-article-path="/article/wechat-66d4145e032f8d.html">

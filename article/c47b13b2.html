@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <title>9.Flask:中间件与全局变量 · 测试游记</title>
+  <title>Flask Web 开发 · 第 09 篇｜用请求钩子和全局对象管理上下文 · 测试游记</title>
   <meta name="description" content="Flask(中间件与全局变量 九)中间件 middlewarerequest当Flask应用处理请求时，它会根据从WSGI服务器收到的环境创建一个Request对象. 因为工作者（取决于服务器的线程，进程或者协程）一次只能处理一个请求，所以在该请求期间请求数据可被认为是该工作者的全部数据。 Flask对此的术语为本地请求">
-  <meta property="og:title" content="9.Flask:中间件与全局变量 · 测试游记">
+  <meta property="og:title" content="Flask Web 开发 · 第 09 篇｜用请求钩子和全局对象管理上下文 · 测试游记">
   <meta property="og:description" content="Flask(中间件与全局变量 九)中间件 middlewarerequest当Flask应用处理请求时，它会根据从WSGI服务器收到的环境创建一个Request对象. 因为工作者（取决于服务器的线程，进程或者协程）一次只能处理一个请求，所以在该请求期间请求数据可被认为是该工作者的全部数据。 Flask对此的术语为本地请求">
   <meta property="og:url" content="https://www.zhongxin.website/article/c47b13b2.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/c47b13b2.html">
@@ -43,12 +43,12 @@
   <article class="article">
     <header class="article-header">
       <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/">后端开发</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/python-web/">Python Web</a></nav>
-      <h1 class="post-title">9.Flask:中间件与全局变量</h1>
+      <h1 class="post-title" data-topic-title="用请求钩子和全局对象管理上下文">Flask Web 开发 · 第 09 篇｜用请求钩子和全局对象管理上下文</h1>
       <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2020-07-04T14:01:00+08:00">2020-07-04</time>
         <span class="post-category" hidden><a href="/categories/Flask%E5%9F%BA%E7%A1%80/">Flask基础</a></span>
         <span class="read-time">约 3 分钟</span>
         <span class="public-counter" data-public-count="reads" data-article-path="/article/c47b13b2.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a></div>
+        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/flask-web/#chapter-9">Flask Web 开发 · 第 9/11 篇</a></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#Flask-%E4%B8%AD%E9%97%B4%E4%BB%B6%E4%B8%8E%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F-%E4%B9%9D">Flask(中间件与全局变量 九)</a></li><li><a href="#%E4%B8%AD%E9%97%B4%E4%BB%B6-middleware">中间件 middleware</a></li><li><a href="#request">request</a></li><li><a href="#%E8%AF%B7%E6%B1%82%E9%92%A9%E5%AD%90-before-request">请求钩子 before_request</a></li><li><a href="#after-request">after_request</a></li><li><a href="#teardown-request">teardown_request</a></li><li><a href="#before-first-request">before_first_request</a></li><li><a href="#%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F">全局变量</a></li><li><a href="#g%EF%BC%9A%E5%90%8C%E4%B8%80%E4%B8%AA%E8%AF%B7%E6%B1%82%E4%B8%AD-%E5%85%B1%E4%BA%AB%E6%95%B0%E6%8D%AE">g：同一个请求中 共享数据</a></li><li><a href="#session">session</a></li></ol></details></aside>
@@ -94,7 +94,7 @@
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/_sfpxzs3vpzgrfXRUW44Uw">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Flask/">Flask</a><a href="/tags/Python/">Python</a><a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/">中间件</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/Flask/">Flask</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
-        <nav class="related" aria-label="相邻文章"><a href="/article/66824e23.html"><small>较新文章</small>Java自动化测试(字符串与集合的常用API 6)</a><a href="/article/wechat-01e5c527f72ec6.html"><small>较早文章</small>HttpRunner快速入门</a></nav>
+        <section class="series-continuation"><h2><a href="/series/flask-web/">查看系列目录 ↗</a></h2><nav class="related" aria-label="同系列文章"><a href="/article/8f02b7de.html"><small>同系列上一篇</small>第 08 篇｜用 WTForms 校验表单</a><a href="/article/9ce49263.html"><small>同系列下一篇</small>第 10 篇｜用 SQLite 和 SQLAlchemy 定义数据模型</a></nav></section>
         <section class="article-comments" id="comments" aria-labelledby="comments-title"
           data-repo="zx490336534/zx490336534.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzNDQwOTE0MTc="
           data-category="文章评论" data-category-id="DIC_kwDOFIJrGc4DL60Q" data-article-path="/article/c47b13b2.html">

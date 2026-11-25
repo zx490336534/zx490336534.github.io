@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <title>Java自动化测试(回写与断言 17) · 测试游记</title>
+  <title>Java 自动化测试 · 第 17 篇｜回写 Excel 测试结果并断言接口响应 · 测试游记</title>
   <meta name="description" content="Java自动化测试(回写与断言 17)回写将测试结果写回到Excel中 定义回写数据对象">
-  <meta property="og:title" content="Java自动化测试(回写与断言 17) · 测试游记">
+  <meta property="og:title" content="Java 自动化测试 · 第 17 篇｜回写 Excel 测试结果并断言接口响应 · 测试游记">
   <meta property="og:description" content="Java自动化测试(回写与断言 17)回写将测试结果写回到Excel中 定义回写数据对象">
   <meta property="og:url" content="https://www.zhongxin.website/article/34770ee9.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/34770ee9.html">
@@ -43,12 +43,12 @@
   <article class="article">
     <header class="article-header">
       <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/automation/">自动化测试</a> <span aria-hidden="true">/</span> <a href="/categories/testing/automation/api/">接口自动化</a></nav>
-      <h1 class="post-title">Java自动化测试(回写与断言 17)</h1>
+      <h1 class="post-title" data-topic-title="回写 Excel 测试结果并断言接口响应">Java 自动化测试 · 第 17 篇｜回写 Excel 测试结果并断言接口响应</h1>
       <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2020-08-09T07:33:27+08:00">2020-08-09</time>
         <span class="post-category" hidden><a href="/categories/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">Java自动化测试</a></span>
         <span class="read-time">约 3 分钟</span>
         <span class="public-counter" data-public-count="reads" data-article-path="/article/34770ee9.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a></div>
+        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/java-test-automation/#chapter-17">Java 自动化测试 · 第 17/36 篇</a></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E5%9B%9E%E5%86%99">回写</a></li><li><a href="#%E5%AE%9A%E4%B9%89%E5%9B%9E%E5%86%99%E6%95%B0%E6%8D%AE%E5%AF%B9%E8%B1%A1">定义回写数据对象</a></li><li><a href="#%E6%89%B9%E9%87%8F%E5%9B%9E%E5%86%99%E6%93%8D%E4%BD%9C%E4%BB%A3%E7%A0%81">批量回写操作代码</a></li><li><a href="#case%E4%B8%AD%E6%96%B0%E5%A2%9E%E5%86%99%E5%85%A5%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C">case中新增写入测试结果</a></li><li><a href="#%E5%85%A8%E9%83%A8%E6%B5%8B%E8%AF%95%E5%AE%8C%E6%88%90%E5%90%8E%E6%89%B9%E9%87%8F%E5%86%99%E5%85%A5%E7%BB%93%E6%9E%9C">全部测试完成后批量写入结果</a></li><li><a href="#%E6%8F%90%E5%8F%96%E7%88%B6%E7%B1%BB">提取父类</a></li><li><a href="#%E6%8F%90%E5%8F%96responseBody%E5%8F%82%E6%95%B0%E5%88%B0UserData%E4%B8%AD%E7%9A%84%E5%B0%81%E8%A3%85">提取responseBody参数到UserData中的封装</a></li><li><a href="#%E6%8F%90%E5%8F%96%E8%BF%94%E5%9B%9E%E9%89%B4%E6%9D%83%E5%A4%B4">提取返回鉴权头</a></li><li><a href="#%E6%96%AD%E8%A8%80">断言</a></li></ol></details></aside>
@@ -73,7 +73,7 @@
 
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Java/">Java</a><a href="/tags/%E6%96%AD%E8%A8%80/">断言</a><a href="/tags/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95/">接口测试</a><a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Java/">Java</a><a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a></div>
-        <nav class="related" aria-label="相邻文章"><a href="/article/bfb7ec4.html"><small>较新文章</small>Java自动化测试(数据库断言 18)</a><a href="/article/dfff3da2.html"><small>较早文章</small>Java自动化测试(接口鉴权 16)</a></nav>
+        <section class="series-continuation"><h2><a href="/series/java-test-automation/">查看系列目录 ↗</a></h2><nav class="related" aria-label="同系列文章"><a href="/article/dfff3da2.html"><small>同系列上一篇</small>第 16 篇｜在接口测试中管理 Cookie、Session 与 Token</a><a href="/article/bfb7ec4.html"><small>同系列下一篇</small>第 18 篇｜用 JDBC 和 DBUtils 做数据库断言</a></nav></section>
         <section class="article-comments" id="comments" aria-labelledby="comments-title"
           data-repo="zx490336534/zx490336534.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzNDQwOTE0MTc="
           data-category="文章评论" data-category-id="DIC_kwDOFIJrGc4DL60Q" data-article-path="/article/34770ee9.html">

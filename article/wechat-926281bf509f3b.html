@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <title>React中几种编写弹窗的方式 · 测试游记</title>
+  <title>React 组件与项目维护 · 第 02 篇｜React 弹窗的几种实现方式 · 测试游记</title>
   <meta name="description" content="React中几种编写弹窗的方式">
-  <meta property="og:title" content="React中几种编写弹窗的方式 · 测试游记">
+  <meta property="og:title" content="React 组件与项目维护 · 第 02 篇｜React 弹窗的几种实现方式 · 测试游记">
   <meta property="og:description" content="React中几种编写弹窗的方式">
   <meta property="og:url" content="https://www.zhongxin.website/article/wechat-926281bf509f3b.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/wechat-926281bf509f3b.html">
@@ -43,12 +43,12 @@
   <article class="article">
     <header class="article-header">
       <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/frontend/">前端与应用</a> <span aria-hidden="true">/</span> <a href="/categories/development/frontend/react/">React</a></nav>
-      <h1 class="post-title">React中几种编写弹窗的方式</h1>
+      <h1 class="post-title" data-topic-title="React 弹窗的几种实现方式">React 组件与项目维护 · 第 02 篇｜React 弹窗的几种实现方式</h1>
       <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2023-06-13T14:11:01+08:00">2023-06-13</time>
         <span class="post-category" hidden><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span>
         <span class="read-time">约 2 分钟</span>
         <span class="public-counter" data-public-count="reads" data-article-path="/article/wechat-926281bf509f3b.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a></div>
+        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/react-practice/#chapter-2">React 组件与项目维护 · 第 2/5 篇</a></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E6%96%B9%E5%BC%8F%E4%B8%80-%E6%8C%89%E9%92%AE%E4%B8%8E%E5%BC%B9%E7%AA%97%E5%B0%81%E8%A3%85%E6%88%90%E4%B8%80%E4%B8%AA%E7%BB%84%E4%BB%B6">方式一:按钮与弹窗封装成一个组件</a></li><li><a href="#%E5%AE%9E%E9%99%85%E4%BE%8B%E5%AD%90">实际例子</a></li><li><a href="#%E6%96%B9%E5%BC%8F%E4%BA%8C-%E5%87%BD%E6%95%B0%E5%BC%8F%E5%BC%B9%E5%87%BA%E5%BC%B9%E7%AA%97">方式二:函数式弹出弹窗</a></li><li><a href="#MyModal%E5%BC%B9%E7%AA%97">MyModal弹窗</a></li><li><a href="#AntdSample%E4%BD%BF%E7%94%A8">AntdSample使用</a></li><li><a href="#index-js">index.js</a></li><li><a href="#%E5%B0%8F%E7%BB%93">小结</a></li></ol></details></aside>
@@ -58,7 +58,7 @@
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/Vx-MsGvKGdRAXCFrrTStzQ">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/React/">React</a><a href="/tags/%E5%BC%B9%E7%AA%97/">弹窗</a></div>
         <div class="legacy-tags" hidden></div>
-        <nav class="related" aria-label="相邻文章"><a href="/article/wechat-938082d20f2d71.html"><small>较新文章</small>React动态添加标签组件</a><a href="/article/wechat-ee812c18848a4e.html"><small>较早文章</small>Sonic新生态Sonic IDE体验</a></nav>
+        <section class="series-continuation"><h2><a href="/series/react-practice/">查看系列目录 ↗</a></h2><nav class="related" aria-label="同系列文章"><a href="/article/wechat-938082d20f2d71.html"><small>同系列上一篇</small>第 01 篇｜编写可动态增删标签的 React 组件</a><a href="/article/wechat-41def6f6c9549b.html"><small>同系列下一篇</small>第 03 篇｜用 React Hooks 实现表格搜索</a></nav></section>
         <section class="article-comments" id="comments" aria-labelledby="comments-title"
           data-repo="zx490336534/zx490336534.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzNDQwOTE0MTc="
           data-category="文章评论" data-category-id="DIC_kwDOFIJrGc4DL60Q" data-article-path="/article/wechat-926281bf509f3b.html">

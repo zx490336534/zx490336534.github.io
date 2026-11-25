@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <title>流浪地球影评爬取 · 测试游记</title>
+  <title>Python 网页采集练习 · 第 03 篇｜分析影评数据并生成词云 · 测试游记</title>
   <meta name="description" content="流浪地球影评爬取">
-  <meta property="og:title" content="流浪地球影评爬取 · 测试游记">
+  <meta property="og:title" content="Python 网页采集练习 · 第 03 篇｜分析影评数据并生成词云 · 测试游记">
   <meta property="og:description" content="流浪地球影评爬取">
   <meta property="og:url" content="https://www.zhongxin.website/article/wechat-2f87333a4bad01.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/wechat-2f87333a4bad01.html">
@@ -43,12 +43,12 @@
   <article class="article">
     <header class="article-header">
       <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/crawling/">爬虫与数据采集</a></nav>
-      <h1 class="post-title">流浪地球影评爬取</h1>
+      <h1 class="post-title" data-topic-title="分析影评数据并生成词云">Python 网页采集练习 · 第 03 篇｜分析影评数据并生成词云</h1>
       <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2019-02-08T00:34:29+08:00">2019-02-08</time>
         <span class="post-category" hidden><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span>
         <span class="read-time">约 5 分钟</span>
         <span class="public-counter" data-public-count="reads" data-article-path="/article/wechat-2f87333a4bad01.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a></div>
+        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/python-web-scraping/#chapter-3">Python 网页采集练习 · 第 3/7 篇</a></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E6%8A%93%E5%8C%85">抓包</a></li><li><a href="#%E6%95%B0%E6%8D%AE%E8%A7%A3%E6%9E%90">数据解析</a></li><li><a href="#%E8%B7%B3%E5%87%BAWhile%E5%BE%AA%E7%8E%AF%E7%9A%84%E6%9D%A1%E4%BB%B6">跳出While循环的条件</a></li><li><a href="#%E8%8E%B7%E5%8F%96%E6%95%B0%E6%8D%AE%E9%83%A8%E5%88%86%E4%BB%A3%E7%A0%81">获取数据部分代码</a></li><li><a href="#%E5%88%B6%E4%BD%9C%E8%AF%8D%E4%BA%91">制作词云</a></li><li><a href="#%E6%95%B0%E6%8D%AE%E8%8E%B7%E5%8F%96%E9%83%A8%E5%88%86%E4%BB%A3%E7%A0%81">数据获取部分代码</a></li><li><a href="#%E8%AF%8D%E4%BA%91%E9%83%A8%E5%88%86%E4%BB%A3%E7%A0%81">词云部分代码</a></li></ol></details></aside>
@@ -58,7 +58,7 @@
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/jDNUnGeCeqiq2T6ebW7Uxg">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Python/">Python</a><a href="/tags/%E7%88%AC%E8%99%AB/">爬虫</a></div>
         <div class="legacy-tags" hidden></div>
-        <nav class="related" aria-label="相邻文章"><a href="/article/wechat-7a6cf619c74f3a.html"><small>较新文章</small>Django的Hello World（一）</a><a href="/article/wechat-232b7942508df0.html"><small>较早文章</small>漫画小程序</a></nav>
+        <section class="series-continuation"><h2><a href="/series/python-web-scraping/">查看系列目录 ↗</a></h2><nav class="related" aria-label="同系列文章"><a href="/article/wechat-9221048d88b8d6.html"><small>同系列上一篇</small>第 02 篇｜解析豆瓣图书列表和详情数据</a><a href="/article/wechat-3c59806901e099.html"><small>同系列下一篇</small>第 04 篇｜读书笔记：Scrapy 项目、XPath 和选择器</a></nav></section>
         <section class="article-comments" id="comments" aria-labelledby="comments-title"
           data-repo="zx490336534/zx490336534.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzNDQwOTE0MTc="
           data-category="文章评论" data-category-id="DIC_kwDOFIJrGc4DL60Q" data-article-path="/article/wechat-2f87333a4bad01.html">

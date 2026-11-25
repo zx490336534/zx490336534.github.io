@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <title>Jenkins(二) · 测试游记</title>
+  <title>Jenkins 流水线 · 第 02 篇｜从 Git 仓库加载 Jenkinsfile · 测试游记</title>
   <meta name="description" content="Jenkins(二)从版本库拉取pipeline直接在界面上进行流水线代码的编写无法做到pipeline的版本化。 比较合理的做法是让Jenkins从版本管理仓库拉取pipeline并执行。 安装Git插件如果按照上一篇的安装选择进行安装，默认安装了Git插件 没有安装在可选插件中查找并安装">
-  <meta property="og:title" content="Jenkins(二) · 测试游记">
+  <meta property="og:title" content="Jenkins 流水线 · 第 02 篇｜从 Git 仓库加载 Jenkinsfile · 测试游记">
   <meta property="og:description" content="Jenkins(二)从版本库拉取pipeline直接在界面上进行流水线代码的编写无法做到pipeline的版本化。 比较合理的做法是让Jenkins从版本管理仓库拉取pipeline并执行。 安装Git插件如果按照上一篇的安装选择进行安装，默认安装了Git插件 没有安装在可选插件中查找并安装">
   <meta property="og:url" content="https://www.zhongxin.website/article/bd60fd3e.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/bd60fd3e.html">
@@ -43,12 +43,12 @@
   <article class="article">
     <header class="article-header">
       <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/engineering/">工程工具</a> <span aria-hidden="true">/</span> <a href="/categories/engineering/ci/">持续集成</a></nav>
-      <h1 class="post-title">Jenkins(二)</h1>
+      <h1 class="post-title" data-topic-title="从 Git 仓库加载 Jenkinsfile">Jenkins 流水线 · 第 02 篇｜从 Git 仓库加载 Jenkinsfile</h1>
       <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2019-07-10T21:31:00+08:00">2019-07-10</time>
         <span class="post-category" hidden><a href="/categories/Jenkins/">Jenkins</a></span>
         <span class="read-time">约 1 分钟</span>
         <span class="public-counter" data-public-count="reads" data-article-path="/article/bd60fd3e.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a></div>
+        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/jenkins-pipeline/#chapter-2">Jenkins 流水线 · 第 2/8 篇</a></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E4%BB%8E%E7%89%88%E6%9C%AC%E5%BA%93%E6%8B%89%E5%8F%96pipeline">从版本库拉取pipeline</a></li><li><a href="#%E5%AE%89%E8%A3%85Git%E6%8F%92%E4%BB%B6">安装Git插件</a></li><li><a href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AAJenkinsfile%E6%96%87%E4%BB%B6%E5%B9%B6%E4%B8%8A%E4%BC%A0%E8%87%B3Git%E6%9C%8D%E5%8A%A1%E5%99%A8">创建一个Jenkinsfile文件并上传至Git服务器</a></li><li><a href="#%E4%BB%8ESCM%E4%B8%8B%E8%BD%BDpipeline">从SCM下载pipeline</a></li><li><a href="#%E8%BF%9B%E8%A1%8C%E6%9E%84%E5%BB%BA">进行构建</a></li></ol></details></aside>
@@ -76,7 +76,7 @@
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/lfXV7hwcRCjcg_1edrT1yA">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Jenkins/">Jenkins</a><a href="/tags/CI/">CI</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/Jenkins/">Jenkins</a></div>
-        <nav class="related" aria-label="相邻文章"><a href="/article/c393dd15.html"><small>较新文章</small>Jenkins(三)</a><a href="/article/1251665c.html"><small>较早文章</small>Jenkins(一)</a></nav>
+        <section class="series-continuation"><h2><a href="/series/jenkins-pipeline/">查看系列目录 ↗</a></h2><nav class="related" aria-label="同系列文章"><a href="/article/1251665c.html"><small>同系列上一篇</small>第 01 篇｜安装 Jenkins 并运行第一个 Pipeline</a><a href="/article/c393dd15.html"><small>同系列下一篇</small>第 03 篇｜理解 Pipeline 阶段、步骤与 post</a></nav></section>
         <section class="article-comments" id="comments" aria-labelledby="comments-title"
           data-repo="zx490336534/zx490336534.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzNDQwOTE0MTc="
           data-category="文章评论" data-category-id="DIC_kwDOFIJrGc4DL60Q" data-article-path="/article/bd60fd3e.html">

@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <title>Jenkins(四) · 测试游记</title>
+  <title>Jenkins 流水线 · 第 04 篇｜在 Jenkinsfile 中操作文件、命令和构建产物 · 测试游记</title>
   <meta name="description" content="Jenkins(四)文件目录相关操作 deleteDir：删除当前目录 dir：切换到目录 默认流水线工作在工作空间目录下，dir步骤可以让我们切换到其他目录 123dir(&#x27;/tmp&#x27;){ deleteDir()} fileExists：判断文件是否存在，结果返回布尔值 isUnix：判断是非为UNIX系统，如果是则返回true pwd：返回当前所在目录">
-  <meta property="og:title" content="Jenkins(四) · 测试游记">
+  <meta property="og:title" content="Jenkins 流水线 · 第 04 篇｜在 Jenkinsfile 中操作文件、命令和构建产物 · 测试游记">
   <meta property="og:description" content="Jenkins(四)文件目录相关操作 deleteDir：删除当前目录 dir：切换到目录 默认流水线工作在工作空间目录下，dir步骤可以让我们切换到其他目录 123dir(&#x27;/tmp&#x27;){ deleteDir()} fileExists：判断文件是否存在，结果返回布尔值 isUnix：判断是非为UNIX系统，如果是则返回true pwd：返回当前所在目录">
   <meta property="og:url" content="https://www.zhongxin.website/article/39d0321a.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/39d0321a.html">
@@ -43,12 +43,12 @@
   <article class="article">
     <header class="article-header">
       <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/engineering/">工程工具</a> <span aria-hidden="true">/</span> <a href="/categories/engineering/ci/">持续集成</a></nav>
-      <h1 class="post-title">Jenkins(四)</h1>
+      <h1 class="post-title" data-topic-title="在 Jenkinsfile 中操作文件、命令和构建产物">Jenkins 流水线 · 第 04 篇｜在 Jenkinsfile 中操作文件、命令和构建产物</h1>
       <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2019-07-12T21:23:00+08:00">2019-07-12</time>
         <span class="post-category" hidden><a href="/categories/Jenkins/">Jenkins</a></span>
         <span class="read-time">约 3 分钟</span>
         <span class="public-counter" data-public-count="reads" data-article-path="/article/39d0321a.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a></div>
+        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/jenkins-pipeline/#chapter-4">Jenkins 流水线 · 第 4/8 篇</a></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E6%96%87%E4%BB%B6%E7%9B%AE%E5%BD%95%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C">文件目录相关操作</a></li><li><a href="#%E5%88%B6%E5%93%81%E7%9B%B8%E5%85%B3%E6%AD%A5%E9%AA%A4">制品相关步骤</a></li><li><a href="#%E5%91%BD%E4%BB%A4%E7%9B%B8%E5%85%B3">命令相关</a></li><li><a href="#%E5%85%B6%E4%BB%96%E6%AD%A5%E9%AA%A4">其他步骤</a></li><li><a href="#%E7%BC%96%E5%86%99Jenkinsfile">编写Jenkinsfile</a></li></ol></details></aside>
@@ -271,7 +271,7 @@
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/K-4G81fySEk5q8M-cmxdgg">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Jenkins/">Jenkins</a><a href="/tags/CI/">CI</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/Jenkins/">Jenkins</a></div>
-        <nav class="related" aria-label="相邻文章"><a href="/article/3f7b6567.html"><small>较新文章</small>Jenkins(五)</a><a href="/article/c393dd15.html"><small>较早文章</small>Jenkins(三)</a></nav>
+        <section class="series-continuation"><h2><a href="/series/jenkins-pipeline/">查看系列目录 ↗</a></h2><nav class="related" aria-label="同系列文章"><a href="/article/c393dd15.html"><small>同系列上一篇</small>第 03 篇｜理解 Pipeline 阶段、步骤与 post</a><a href="/article/3f7b6567.html"><small>同系列下一篇</small>第 05 篇｜在 Jenkins 流水线中使用环境变量</a></nav></section>
         <section class="article-comments" id="comments" aria-labelledby="comments-title"
           data-repo="zx490336534/zx490336534.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzNDQwOTE0MTc="
           data-category="文章评论" data-category-id="DIC_kwDOFIJrGc4DL60Q" data-article-path="/article/39d0321a.html">
