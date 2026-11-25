@@ -4,15 +4,18 @@
   const counters = [...document.querySelectorAll('[data-public-count]')];
   const popularList = document.querySelector('[data-popular-list]');
   if (!counters.length && !popularList) return;
-  const showsLifetimeClicks = counters.some(counter => counter.dataset.publicCount === 'clicks');
+  const footerStats = document.querySelector('.footer-stats');
 
   const digits = new Intl.NumberFormat('zh-CN');
   const dates = new Intl.DateTimeFormat('zh-CN', {dateStyle: 'short', timeStyle: 'short', timeZone: 'Asia/Shanghai'});
   const wechatRows = popularList ? [...popularList.children] : [];
   let displayedAt = 0;
+  let displayedRanking;
 
   function renderPopular(articles) {
     if (!popularList || !Array.isArray(articles) || !articles.length || popularList.contains(document.activeElement)) return;
+    const ranking = JSON.stringify(articles);
+    if (ranking === displayedRanking) return;
     const rows = [];
     const seen = new Set();
     for (const article of articles) {
@@ -50,6 +53,7 @@
       rows.push(row);
     }
     if (!rows.length) return;
+    displayedRanking = ranking;
     const hasWechatRows = rows.length < wechatRows.length;
     const fallback = wechatRows.filter(row => !seen.has(row.querySelector('a').getAttribute('href')));
     popularList.replaceChildren(...[...rows, ...fallback].slice(0, wechatRows.length));
@@ -59,24 +63,29 @@
   }
 
   function render(data) {
+    if (data?.version !== 2) return;
     const updated = Date.parse(data.updatedAt);
-    if (data.days !== 30 || !Number.isFinite(updated) || updated <= displayedAt ||
+    if (!Number.isFinite(updated) || updated < displayedAt ||
         !Number.isSafeInteger(data.clicks) || data.clicks < 0 ||
-        (showsLifetimeClicks && !data.clickCheckpoint) ||
+        !Number.isSafeInteger(data.views) || data.views < 0 ||
         !data.reads || typeof data.reads !== 'object' || Array.isArray(data.reads)) return;
-    displayedAt = updated;
-    for (const counter of counters) {
-      const count = counter.dataset.publicCount === 'clicks' ? data.clicks : (data.reads[counter.dataset.articlePath] ?? 0);
-      if (!Number.isSafeInteger(count) || count < 0) continue;
-      counter.querySelector('strong').textContent = digits.format(count);
-      counter.title = '统计更新于 ' + dates.format(updated);
-      counter.hidden = false;
+    if (updated > displayedAt) {
+      displayedAt = updated;
+      for (const counter of counters) {
+        const metric = counter.dataset.publicCount;
+        const count = metric === 'reads' ? (data.reads[counter.dataset.articlePath] ?? 0) : data[metric];
+        if (!Number.isSafeInteger(count) || count < 0) continue;
+        counter.querySelector('strong').textContent = digits.format(count);
+        counter.title = '统计更新于 ' + dates.format(updated);
+        counter.hidden = false;
+      }
+      if (footerStats) footerStats.hidden = false;
     }
     renderPopular(data.popularArticles);
   }
 
   function load(url) {
-    fetch(url, {credentials: 'omit', referrerPolicy: 'no-referrer', signal: globalThis.AbortSignal?.timeout?.(4500)})
+    return fetch(url, {credentials: 'omit', referrerPolicy: 'no-referrer', signal: globalThis.AbortSignal?.timeout?.(4500)})
       .then(response => {
         if (!response.ok) throw new Error('No public counter data');
         return response.json();
@@ -85,6 +94,26 @@
       .catch(() => {});
   }
 
+  const statsUrl = new URL('https://raw.githubusercontent.com/zx490336534/zx490336534.github.io/refs/heads/codex/blog-public-counters/stats.json');
+  const refreshInterval = 60_000;
+  let timer;
+  let pending = false;
+
+  function refresh() {
+    if (document.hidden || pending) return;
+    pending = true;
+    statsUrl.searchParams.set('minute', Math.floor(Date.now() / refreshInterval));
+    load(statsUrl).finally(() => { pending = false; });
+  }
+
+  function updateSchedule() {
+    clearInterval(timer);
+    if (document.hidden) return;
+    refresh();
+    timer = setInterval(refresh, refreshInterval);
+  }
+
   load('/public-stats.json');
-  load('https://raw.githubusercontent.com/zx490336534/zx490336534.github.io/refs/heads/codex/blog-public-counters/stats.json');
+  document.addEventListener('visibilitychange', updateSchedule);
+  updateSchedule();
 })();

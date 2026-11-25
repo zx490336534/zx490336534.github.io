@@ -2,7 +2,7 @@ name: Update public blog counts
 
 on:
   schedule:
-    - cron: '23 * * * *'
+    - cron: '3-58/5 * * * *'
   workflow_dispatch:
   push:
     branches: [master]
@@ -49,6 +49,11 @@ jobs:
       - name: Publish counter snapshot
         shell: bash
         run: |
+          if cmp -s <(jq -S 'del(.updatedAt)' "$RUNNER_TEMP/previous-stats.json") \
+                    <(jq -S 'del(.updatedAt)' "$RUNNER_TEMP/stats.json"); then
+            echo 'Public counters are unchanged.'
+            exit 0
+          fi
           parents=()
           if test -s "$RUNNER_TEMP/stats-parent"; then
             parents=(-p "$(cat "$RUNNER_TEMP/stats-parent")")

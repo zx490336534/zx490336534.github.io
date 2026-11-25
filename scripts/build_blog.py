@@ -239,8 +239,13 @@ def shell(title, path, content, description=DESCRIPTION, extra_head=""):
     canonical = html(SITE + path)
     summary = excerpt(description, 180)
     counts = (
-        f'\n  <script src="/js/public-counts.js?v={3 if path == "/" else 2}" defer></script>'
+        '\n  <script src="/js/public-counts.js?v=4" defer></script>'
         if path == "/" or is_article else ""
+    )
+    footer_stats = (
+        '\n    <div class="footer-stats" hidden>' + public_counter("views", "全站累计访问") + " "
+        + public_counter("clicks", "全站累计点击") + '</div>'
+        if path == "/" else ""
     )
     main_class = "" if is_article else ' class="wrap"'
     return f'''<!doctype html>
@@ -285,7 +290,7 @@ def shell(title, path, content, description=DESCRIPTION, extra_head=""):
     <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
     <nav aria-label="页脚导航">
       <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
-    </nav>
+    </nav>{footer_stats}
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">
     <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
@@ -589,7 +594,7 @@ def article(post, older, newer, series_position=None):
         <div class="entry-meta"><span class="post-author">{html(post.author)}</span><time itemprop="datePublished" datetime="{html(post.published)}">{html(post.day)}</time>
           <span class="post-category" hidden>{original_categories}</span>
           <span class="read-time">{reading_time(post)}</span>
-          {public_counter("reads", "近 30 天阅读", post.path)}
+          {public_counter("reads", "累计阅读", post.path)}
           <a href="#comments" data-jump-comments>评论</a>{position_link(series_position)}</div>
         <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> {trail}</nav>
       </div>

@@ -13,7 +13,6 @@ async ({api, slug, website, articles, previous}) => {
   const share = await get('/share/' + encodeURIComponent(slug));
   if (share.websiteId !== website || !share.token) throw new Error('Unexpected read-only Umami resource');
   const auth = {'x-umami-share-context': '1', 'x-umami-share-token': share.token};
-  const days = 30;
   const day = 86400000;
   const end = Date.now();
   const firstDay = Date.UTC(2026, 10, 25);
@@ -36,19 +35,26 @@ async ({api, slug, website, articles, previous}) => {
   // Keep yesterday's and today's clicks open so recent reporting delays can settle.
   const through = Math.max(checkpoint.through, Math.floor(end / day) * day - day);
   const metricsPath = '/websites/' + website + '/metrics?';
+  const metricsLimit = 1000;
 
   async function metrics(type, eventType, startAt, endAt) {
+    if (endAt < startAt) return [];
     const query = new URLSearchParams({
       startAt: String(startAt),
       endAt: String(endAt),
       type,
       eventType: String(eventType),
-      limit: '1000',
+      limit: String(metricsLimit),
     });
     const body = await get(metricsPath + query, auth);
     const rows = body.data ?? body;
     if (!Array.isArray(rows)) throw new Error('Unexpected metrics response');
-    if (rows.length >= 1000) throw new Error('Metrics report was truncated');
+    if (rows.length >= metricsLimit) {
+      if (startAt === endAt) throw new Error('Metrics report was truncated');
+      const mid = startAt + Math.floor((endAt - startAt) / 2);
+      const left = await metrics(type, eventType, startAt, mid);
+      return left.concat(await metrics(type, eventType, mid + 1, endAt));
+    }
     if (rows.some(row => typeof row.x !== 'string' || !Number.isSafeInteger(row.y) || row.y < 0)) {
       throw new Error('Invalid metric row');
     }
@@ -63,6 +69,32 @@ async ({api, slug, website, articles, previous}) => {
 
   const known = new Set(articles);
   const articleEvents = ['home_article_click', 'article_link_click', 'search_result_click'];
+
+  async function addPageviews(reads, startAt, endAt) {
+    const rows = await metrics('path', 1, startAt, endAt);
+    let views = 0;
+    for (const {x: path, y: count} of rows) {
+      views += count;
+      if (known.has(path) && count > 0) reads[path] = (reads[path] ?? 0) + count;
+    }
+    return views;
+  }
+
+  async function collectPageviews() {
+    const saved = previous?.pageviewCheckpoint ?? {through: firstDay, views: 0, reads: {}};
+    if (!Number.isSafeInteger(saved.through) || saved.through < firstDay || saved.through < retentionStart.getTime() ||
+        saved.through > end || saved.through % day !== 0 || !Number.isSafeInteger(saved.views) || saved.views < 0 ||
+        !saved.reads || Array.isArray(saved.reads) || typeof saved.reads !== 'object' ||
+        Object.values(saved.reads).some(count => !Number.isSafeInteger(count) || count < 0)) {
+      throw new Error('Invalid cumulative pageview checkpoint');
+    }
+    const pageviewThrough = Math.max(saved.through, through);
+    const archivedReads = {...saved.reads};
+    const archivedViews = saved.views + await addPageviews(archivedReads, saved.through, pageviewThrough - 1);
+    const reads = {...archivedReads};
+    const views = archivedViews + await addPageviews(reads, pageviewThrough, end);
+    return {views, reads, pageviewCheckpoint: {through: pageviewThrough, views: archivedViews, reads: archivedReads}};
+  }
 
   async function addArticleClicks(counts, event, startAt, endAt) {
     if (endAt < startAt) return;
@@ -101,16 +133,12 @@ async ({api, slug, website, articles, previous}) => {
   }
 
   // Umami's metric range is inclusive at both ends. Advance at a UTC midnight.
-  const [paths, archived, recent, articleStats] = await Promise.all([
-    metrics('path', 1, end - days * day, end),
+  const [pageviews, archived, recent, articleStats] = await Promise.all([
+    collectPageviews(),
     clicksBetween(checkpoint.through, through - 1),
     clicksBetween(through, end),
     collectArticleClicks().catch(error => ({articleClickError: error.message})),
   ]);
-  const reads = {};
-  for (const row of paths) {
-    if (known.has(row.x)) reads[row.x] = (reads[row.x] ?? 0) + row.y;
-  }
   const count = checkpoint.count + archived;
-  return {days, updatedAt: new Date(end).toISOString(), clicks: count + recent, clickCheckpoint: {through, count}, reads, ...articleStats};
+  return {version: 2, updatedAt: new Date(end).toISOString(), clicks: count + recent, clickCheckpoint: {through, count}, ...pageviews, ...articleStats};
 }
