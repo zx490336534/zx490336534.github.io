@@ -65,6 +65,7 @@ function checkAnswer(qId, correct, el){
 }
 </script>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -122,6 +123,7 @@ public class KnowledgeBase {
 
 <h3>1.2 数据模型字段说明</h3>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="1.2 数据模型字段说明（表格）">
 <table>
   <tr><th>字段</th><th>类型</th><th>说明</th></tr>
   <tr><td><code>name</code></td><td>String</td><td>知识库或文件夹的名称</td></tr>
@@ -131,6 +133,7 @@ public class KnowledgeBase {
   <tr><td><code>type</code></td><td>String</td><td><code>"dataset"</code>（知识库）或 <code>"folder"</code>（文件夹）</td></tr>
   <tr><td><code>parentId</code></td><td>String</td><td>父目录 ID，空字符串表示根目录</td></tr>
 </table>
+</div>
 
 <h3>1.3 设计要点</h3>
 <ul>
@@ -316,6 +319,7 @@ long total = mongoTemplate.count(new Query(criteria), Chats.class);</code></pre>
 
 <h3>4.3 常用查询模式总结</h3>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="4.3 常用查询模式总结（表格）">
 <table>
   <tr><th>模式</th><th>代码</th><th>说明</th></tr>
   <tr><td>精确匹配</td><td><code>Criteria.where("field").is(value)</code></td><td>字段等于指定值</td></tr>
@@ -325,6 +329,7 @@ long total = mongoTemplate.count(new Query(criteria), Chats.class);</code></pre>
   <tr><td>分页</td><td><code>.skip(offset).limit(size)</code></td><td>跳过 + 限制</td></tr>
   <tr><td>计数</td><td><code>mongoTemplate.count(query, Class)</code></td><td>统计匹配文档数</td></tr>
 </table>
+</div>
 
 <h3>4.4 Chats 文档模型（MongoDB 集合）</h3>
 

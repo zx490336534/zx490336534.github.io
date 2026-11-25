@@ -259,6 +259,7 @@
   }
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -366,7 +367,8 @@
     <p style="margin:0">作为测试工程师转开发，你现在<strong>不需要自己定义泛型类/泛型方法</strong>。只要做到：看到 <code>Response&lt;T&gt;</code>、<code>List&lt;Document&gt;</code>、<code>Map&lt;String, Object&gt;</code> 这种写法，知道"<strong>尖括号里是它装的内容的类型</strong>"就够了。这是<strong>读懂 Spring AI 方法签名</strong>的最低门槛。</p>
   </div>
 
-  <table class="belong">
+  <div class="course-table-scroll" tabindex="0" role="region" aria-label="3. 泛型 &lt;T&gt;：类型占位符（表格）">
+<table class="belong">
     <thead>
       <tr><th>签名片段</th><th>怎么读</th></tr>
     </thead>
@@ -377,6 +379,7 @@
       <tr><td><code>ChatClient.Builder&lt;T&gt;</code></td><td>"Builder，T 是它的占位类型，用的时候再定"</td></tr>
     </tbody>
   </table>
+</div>
 
   <!-- 4. lambda + 链式 -->
   <h2>4. lambda 与链式调用：读懂 Spring AI 的标志性写法</h2>
@@ -430,7 +433,8 @@ chatClient.prompt(p -&gt; p.user(<span class="str">"你好"</span>).call());
 
 <span class="typ">List</span>&lt;<span class="typ">String</span>&gt; tools = chatClient.getDefaultTools();  <span class="com">// 泛型 List&lt;String&gt;</span></pre>
 
-  <table class="belong">
+  <div class="course-table-scroll" tabindex="0" role="region" aria-label="5. 综合实战：拆解一段真实 Spring AI 签名（表格）">
+<table class="belong">
     <thead>
       <tr><th>符号</th><th>类别</th><th>含义</th></tr>
     </thead>
@@ -462,6 +466,7 @@ chatClient.prompt(p -&gt; p.user(<span class="str">"你好"</span>).call());
       </tr>
     </tbody>
   </table>
+</div>
 
   <div class="card success">
     <div class="card-label">看到了吗？没有新东西了</div>

@@ -56,6 +56,7 @@
   .file-tree{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1.25rem 1.5rem;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:1.8}
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -100,6 +101,7 @@
 
 <p>Next.js 有两套路由系统，这是因为框架在不断演进：</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="🔄 App Router vs Pages Router（表格）">
 <table>
 <tr><th>对比</th><th>Pages Router（旧）</th><th>App Router（新）</th></tr>
 <tr><td>引入版本</td><td>Next.js 9（2019）</td><td>Next.js 13（2022）</td></tr>
@@ -109,6 +111,7 @@
 <tr><td>数据获取</td><td><code>getServerSideProps</code></td><td>直接在组件中 <code>async/await</code></td></tr>
 <tr><td>流式渲染</td><td>不支持</td><td>支持 <code>loading.js</code></td></tr>
 </table>
+</div>
 
 <div class="callout info">
 <strong>我们的项目用的是哪个？</strong>kuai-service-front 使用的是 <strong>App Router</strong>（Next.js 16），这是 Next.js 推荐的新方案。
@@ -195,6 +198,7 @@ export default function Loading() {
 <p>它的工作原理是利用了 React 的 <code>Suspense</code>。当 <code>page.js</code> 中有异步操作（比如请求 API）时，Next.js 会自动显示同级的 <code>loading.js</code>。</p>
 
 <h3>其他特殊文件</h3>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="其他特殊文件（表格）">
 <table>
 <tr><th>文件名</th><th>作用</th></tr>
 <tr><td><code>error.js</code></td><td>错误边界，捕获子组件的错误</td></tr>
@@ -202,6 +206,7 @@ export default function Loading() {
 <tr><td><code>template.js</code></td><td>类似 layout，但每次导航都重新渲染</td></tr>
 <tr><td><code>route.js</code></td><td>API 路由端点（替代 page.js）</td></tr>
 </table>
+</div>
 
 <hr class="divider">
 
@@ -250,6 +255,7 @@ function Counter() {
   );
 }</code></pre>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="Client Components（客户端组件）（表格）">
 <table>
 <tr><th>对比</th><th>Server Component</th><th>Client Component</th></tr>
 <tr><td>渲染位置</td><td>服务器</td><td>浏览器</td></tr>
@@ -259,6 +265,7 @@ function Counter() {
 <tr><td>事件处理（onClick）</td><td>❌ 不能用</td><td>✅ 可以用</td></tr>
 <tr><td>发送给浏览器的 JS</td><td>更少（性能好）</td><td>更多</td></tr>
 </table>
+</div>
 
 <div class="callout warning">
 <strong>最佳实践：</strong>尽量用 Server Component，只在需要交互（点击、输入、动画）时才用 Client Component。把 Client Component 放在组件树的"叶子节点"，而不是整个页面。

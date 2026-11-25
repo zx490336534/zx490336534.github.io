@@ -37,6 +37,7 @@
 .nav-links{max-width:900px;margin:2.5rem auto 0;padding:1.5rem 2rem;border-top:1px solid #e7e5e4;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem}.nav-links a{color:#b45309;text-decoration:none;font-weight:500}.nav-links a:hover{text-decoration:underline}
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -92,11 +93,13 @@ Agent → <span class="string">get_skill_content("dev-design")</span> → 返回
 
 <div class="card info">
   <div class="card-label">为什么要这样做？</div>
-  <table>
+  <div class="course-table-scroll" tabindex="0" role="region" aria-label="2.1 三步交互流程（表格）">
+<table>
     <tr><th>方式</th><th>Token 消耗</th><th>效果</th></tr>
     <tr><td>全部塞进系统提示</td><td>很高（浪费）</td><td>Agent 可能忽略大部分内容</td></tr>
     <tr><td>渐进式披露</td><td>很低（按需）</td><td>Agent 只在需要时加载，更精准</td></tr>
   </table>
+</div>
 </div>
 
 <!-- ==================== SKILL.md 格式 ==================== -->
@@ -139,11 +142,13 @@ Agent → <span class="string">get_skill_content("dev-design")</span> → 返回
 
 <div class="card warning">
   <div class="card-label">必须遵守的规则</div>
-  <table>
+  <div class="course-table-scroll" tabindex="0" role="region" aria-label="3.2 Frontmatter 字段说明（表格）">
+<table>
     <tr><th>字段</th><th>必填</th><th>说明</th></tr>
     <tr><td><code>name</code></td><td>是</td><td>技能名称，使用 <strong>kebab-case</strong>（如 <code>git-clone</code>）</td></tr>
     <tr><td><code>description</code></td><td>是</td><td>简短描述（1-2句），会出现在系统提示中</td></tr>
   </table>
+</div>
 </div>
 
 <div class="card info">
@@ -253,11 +258,13 @@ src/agents/skills/
 
 <div class="card info">
   <div class="card-label">两种加载方式</div>
-  <table>
+  <div class="course-table-scroll" tabindex="0" role="region" aria-label="5.1 加载方式对比（表格）">
+<table>
     <tr><th>方式</th><th>代码</th><th>说明</th></tr>
     <tr><td>指定技能</td><td><code>getSkillTools({ skills: ['git-clone', 'dev-design'] })</code></td><td>只加载指定的技能</td></tr>
     <tr><td>自动扫描</td><td><code>getSkillTools()</code></td><td>自动扫描 skills/ 目录下所有技能</td></tr>
   </table>
+</div>
 </div>
 
 <!-- ==================== getSkillTools 使用 ==================== -->

@@ -216,6 +216,7 @@
   li { margin-bottom: 0.3rem; }
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -288,6 +289,7 @@ interface IFrameMessage&lt;T&gt; {
 
 <h3>消息方向</h3>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="消息方向（表格）">
 <table>
   <tr><th>方向</th><th>枚举名</th><th>含义</th></tr>
   <tr><td rowspan="5"><strong>子 → 父</strong><br><code>INPUT_MESSAGE_TYPE</code></td><td><code>VIEWER2D_LOADING_SUCCESS</code></td><td>2D Viewer 加载完成</td></tr>
@@ -301,6 +303,7 @@ interface IFrameMessage&lt;T&gt; {
   <tr><td><code>TRIGGER_BATCH_CAPTURE</code></td><td>触发 3D 批量截图</td></tr>
   <tr><td><code>SCREEN_MODE_CHANGE</code></td><td>通知 Viewer 全屏/退出全屏</td></tr>
 </table>
+</div>
 
 <h3>IframeMessenger 核心实现</h3>
 
@@ -382,6 +385,7 @@ interface IFrameMessage&lt;T&gt; {
 
 <h3>注册的前端 MCP 工具</h3>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="注册的前端 MCP 工具（表格）">
 <table>
   <tr><th>工具名</th><th>功能</th></tr>
   <tr><td><code>capture_3d_screenshot</code></td><td>截取 3D 截图，返回图片 URL 列表</td></tr>
@@ -389,6 +393,7 @@ interface IFrameMessage&lt;T&gt; {
   <tr><td><code>search_decoration_model</code></td><td>搜索装饰模型</td></tr>
   <tr><td><code>replace_decoration_model</code></td><td>替换装饰模型</td></tr>
 </table>
+</div>
 
 <h3>capture_3d_screenshot 完整链路</h3>
 
@@ -458,12 +463,14 @@ interface IFrameMessage&lt;T&gt; {
 }
 </pre>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="6. 全局 iframe 消息处理（表格）">
 <table>
   <tr><th>消息类型</th><th>处理逻辑</th></tr>
   <tr><td><code>TOAST_MESSAGE</code></td><td>iframe 可以请求宿主显示 toast 通知（success/error/warn）</td></tr>
   <tr><td><code>COMMENTS_INFO_CHANGE</code></td><td>iframe 中用户选中了某个构件或家具，同步到宿主的评论系统</td></tr>
   <tr><td><code>BATCH_CAPTURE_STATUS_CHANGE</code></td><td>维护 <code>captureableMap</code>，标记哪个 designId-levelId 已就绪可截图</td></tr>
 </table>
+</div>
 
 <!-- ==================== Quiz ==================== -->
 <h2>7. 自检 Quiz</h2>

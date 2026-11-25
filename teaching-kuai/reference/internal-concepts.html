@@ -41,6 +41,7 @@
   .ask-agent::before{content:'💡 '}
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -57,12 +58,14 @@
 
 <!-- ============ 1. 三仓库职责 ============ -->
 <h2><span class="icon">🏢</span> 1. 三仓库职责与数据流</h2>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="🏢 1. 三仓库职责与数据流（表格）">
 <table>
   <tr><th>仓库</th><th>技术栈</th><th>职责</th><th>存储</th></tr>
   <tr><td><span class="tag svc">后端</span> <code>kuai-service</code></td><td>Java 8 + Spring Boot + MyBatis-Plus + TDDL</td><td>Prompt 管理、LLM 评估、微信机器人、知识库 API、分享应用</td><td>MySQL(TDDL) + MongoDB</td></tr>
   <tr><td><span class="tag fe">前端</span> <code>kuai-service-front</code></td><td>Next.js 16 + React 18 + LangChain + Ant Design 6</td><td>对话 UI、LangChain Agent、MCP 工具前端执行、Prompt 编辑、技能系统、Claude Code</td><td>MongoDB（会话）</td></tr>
   <tr><td><span class="tag py">Python</span> <code>kuai-service-py</code></td><td>Python 3.12 + FastAPI + mcp[cli] 1.12 + langchain/langgraph</td><td>多协议 MCP Server 网关，统一 HTTP 接口管理多个 MCP 服务器</td><td>MySQL(aiomysql) + chromadb 向量库</td></tr>
 </table>
+</div>
 
 <div class="card-label" style="margin-top:1rem">数据流（对话一次调用）</div>
 <div class="flow">前端发起对话
@@ -85,6 +88,7 @@
 <!-- ============ 3. MCP 多协议 ============ -->
 <h2><span class="icon">🔌</span> 3. MCP 多协议网关（Python 服务）</h2>
 <p><code>kuai-service-py</code> 基于 <code>mcp[cli]==1.12.0</code> 统一管理多个 MCP Server，对外暴露一致 HTTP 接口：</p>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="🔌 3. MCP 多协议网关（Python 服务）（表格）">
 <table>
   <tr><th>传输方式</th><th>说明</th></tr>
   <tr><td><code>SSE</code></td><td>Server-Sent Events，<code>sse-starlette</code> 实现，长连接流式。</td></tr>
@@ -92,6 +96,7 @@
   <tr><td><code>StreamableHTTP</code></td><td>HTTP 流式，可穿透网关/代理。</td></tr>
 </ul>
 </table>
+</div>
 <p>服务器生命周期为状态机：启动 → 健康检查 → 运行 →（异常）重启。详见 <a href="../lessons/py/0010-kuai-py-overview.html">0010 概览</a>、<a href="../lessons/py/0011-kuai-py-mcp-service.html">0011 MCP 服务架构</a>、<a href="../lessons/py/0025-kuai-py-transport-protocols.html">0025 传输协议</a>、<a href="../lessons/py/0026-kuai-py-server-lifecycle.html">0026 生命周期</a>。</p>
 <p>协议基础概念见 <a href="mcp-protocol.html">MCP 协议基础</a>。</p>
 
@@ -131,6 +136,7 @@
 
 <!-- ============ 8. 工程基建 ============ -->
 <h2><span class="icon">🛠️</span> 8. 工程基建速查</h2>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="🛠️ 8. 工程基建速查（表格）">
 <table>
   <tr><th>项</th><th>说明</th></tr>
   <tr><td>需求号</td><td><strong>HUXING-xxx</strong>（Kaptain，kaptain.example.com）</td></tr>
@@ -141,6 +147,7 @@
   <tr><td>容器</td><td>后端 Jetty / 8080</td></tr>
   <tr><td>SSO</td><td>authnet-sso-client（公司单点登录）</td></tr>
 </table>
+</div>
 
 <!-- ============ 9. 本地路径 ============ -->
 <h2><span class="icon">📦</span> 9. 三仓库本地路径</h2>

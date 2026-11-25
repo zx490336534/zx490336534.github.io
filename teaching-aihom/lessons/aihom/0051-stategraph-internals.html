@@ -215,6 +215,7 @@
   li { margin-bottom: 0.3rem; }
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -240,12 +241,14 @@
 <h3>节点（Node）</h3>
 <p>每个节点代表一个计算单元。在项目中，节点分为三类：</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="节点（Node）（表格）">
 <table>
   <tr><th>节点类型</th><th>实现方式</th><th>示例</th></tr>
   <tr><td>Agent 节点</td><td><code>AgentNodeFactory</code> 创建，封装 ChatClient 调用</td><td>Supervisor、Floorplan_to_Design</td></tr>
   <tr><td>Tool 节点</td><td>工具回调，执行具体业务逻辑</td><td>FloorplanToStructureTool</td></tr>
   <tr><td>条件节点</td><td>函数式接口，根据状态决定下一步去向</td><td><code>CustomSupervisorEdgeAction</code></td></tr>
 </table>
+</div>
 
 <p>在数据库中，节点配置存储在 <code>GraphNodes</code> 表，每个节点记录了类型、关联的 Agent/Tool ID 和参数。</p>
 
@@ -386,6 +389,7 @@ state = initialState
 <h3>工作原理</h3>
 <p>每次节点执行完后，执行引擎会调用 <code>Checkpointer.put()</code> 保存一份当前状态的快照。快照包含：</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="工作原理（表格）">
 <table>
   <tr><th>字段</th><th>说明</th></tr>
   <tr><td><code>thread_id</code></td><td>会话 ID，标识一次完整的图执行</td></tr>
@@ -394,6 +398,7 @@ state = initialState
   <tr><td><code>node</code></td><td>产生这个检查点的节点名称</td></tr>
   <tr><td><code>metadata</code></td><td>附加信息（时间戳、版本号等）</td></tr>
 </table>
+</div>
 
 <h3>存储后端</h3>
 <p>项目支持两种检查点存储：</p>

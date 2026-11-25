@@ -259,6 +259,7 @@
   }
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -302,7 +303,8 @@
   <h2>Spring AI Alibaba 的 Agent 框架</h2>
   <p>回忆 <a href="./0015-spring-ai-vs-alibaba-dashscope.html">015 课</a>：AIHom 真正的核心是 <strong>Spring AI Alibaba 1.1.2.0.5-qh</strong>（群核定制版），它扩展了底层的 Spring AI。Agent 框架就在这一层。它能干三件事：</p>
 
-  <table class="belong">
+  <div class="course-table-scroll" tabindex="0" role="region" aria-label="Spring AI Alibaba 的 Agent 框架（表格）">
+<table class="belong">
     <thead>
       <tr><th>能力</th><th>谁提供</th><th>大白话</th></tr>
     </thead>
@@ -324,6 +326,7 @@
       </tr>
     </tbody>
   </table>
+</div>
 
   <div class="card warning">
     <div class="card-label">这里点到为止，别深挖源码</div>
@@ -354,7 +357,8 @@
   <h2>为什么非要用 Graph，不能堆 if-else 吗？</h2>
   <p>能，但很快就崩溃。AIHom 这种业务流程的特点是：<strong>多步骤、有分支、还要人机交互</strong>（比如画完图要用户确认才继续）。如果全写成 if-else 嵌套，几层下来就没人看得懂了。</p>
 
-  <table class="belong">
+  <div class="course-table-scroll" tabindex="0" role="region" aria-label="为什么非要用 Graph，不能堆 if-else 吗？（表格）">
+<table class="belong">
     <thead>
       <tr><th>场景</th><th>堆 if-else</th><th>用 Graph 编排</th></tr>
     </thead>
@@ -381,6 +385,7 @@
       </tr>
     </tbody>
   </table>
+</div>
 
   <div class="card info">
     <div class="card-label">这就是 StateGraphFactory 在干的事</div>
@@ -451,7 +456,8 @@
     .<span class="kw">addEdge</span>(<span class="str">"reply"</span>,  <span class="str">"finish"</span>)
     .<span class="kw">addEdge</span>(<span class="str">"finish"</span>, <span class="typ">END</span>);</pre>
 
-  <table class="belong">
+  <div class="course-table-scroll" tabindex="0" role="region" aria-label="一张极简 Graph 长什么样（表格）">
+<table class="belong">
     <thead>
       <tr><th>图里的元素</th><th>伪代码里对应</th><th>归谁管</th></tr>
     </thead>
@@ -483,6 +489,7 @@
       </tr>
     </tbody>
   </table>
+</div>
 
   <div class="card success">
     <div class="card-label">读图三步法（拿去拆 AIHom 任何一段编排）</div>

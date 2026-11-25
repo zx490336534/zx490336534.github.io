@@ -61,6 +61,7 @@ function checkAnswer(qId, correct, el){
 }
 </script>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -101,6 +102,7 @@ User user = userMapper.selectById(1L);</code></pre>
 <p><strong>MyBatis</strong> 是一个半自动的 ORM 框架 —— 你需要自己写 SQL 语句，MyBatis 帮你执行并映射结果。</p>
 <p><strong>MyBatis-Plus</strong> 是 MyBatis 的增强版 —— 简单的 CRUD 操作不需要写 SQL，框架自动生成。</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="⚖️ MyBatis vs MyBatis-Plus（表格）">
 <table>
   <tr><th>对比项</th><th>MyBatis</th><th>MyBatis-Plus</th></tr>
   <tr><td>CRUD 操作</td><td>每个都要写 SQL</td><td>单表 CRUD 零 SQL</td></tr>
@@ -109,6 +111,7 @@ User user = userMapper.selectById(1L);</code></pre>
   <tr><td>代码生成</td><td>无</td><td>内置代码生成器</td></tr>
   <tr><td>学习成本</td><td>需要会写 SQL</td><td>会调方法就行</td></tr>
 </table>
+</div>
 
 <div class="ask-agent">
   <strong>简单说：</strong>MyBatis-Plus = MyBatis + 自动 CRUD + 分页 + 条件构造器 + 代码生成器。它不会替代 MyBatis，而是在 MyBatis 基础上做加法。
@@ -179,6 +182,7 @@ userMapper.updateById(user);
 // 生成的 SQL: DELETE FROM user WHERE id = 1</code></pre>
 
 <h3>4.5 常用方法速查</h3>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="4.5 常用方法速查（表格）">
 <table>
   <tr><th>方法</th><th>作用</th><th>示例</th></tr>
   <tr><td><code>selectById(id)</code></td><td>按 ID 查一条</td><td><code>selectById(1L)</code></td></tr>
@@ -189,6 +193,7 @@ userMapper.updateById(user);
   <tr><td><code>deleteById(id)</code></td><td>按 ID 删除</td><td><code>deleteById(1L)</code></td></tr>
   <tr><td><code>deleteBatchIds(ids)</code></td><td>批量删除</td><td><code>deleteBatchIds(Arrays.asList(1,2,3))</code></td></tr>
 </table>
+</div>
 
 <!-- ============ 5. @Select 自定义 SQL ============ -->
 <h2><span class="icon">✍️</span> @Select 自定义 SQL</h2>

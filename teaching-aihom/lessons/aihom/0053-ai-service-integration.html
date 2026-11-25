@@ -216,6 +216,7 @@
   li { margin-bottom: 0.3rem; }
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -228,11 +229,13 @@
 
 <p>在 <code>auto-layout-service</code> 中，AI 不是装饰，而是<strong>核心驱动力</strong>。根据 AGENTS.md 的架构说明，系统使用了两个 AI 提供商：</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="1. 为什么需要 AI 服务集成（表格）">
 <table>
   <tr><th>提供商</th><th>Manager 类</th><th>用途</th><th>SDK</th></tr>
   <tr><td>OpenAI</td><td><code>OpenaiManager</code></td><td>Chat Completions、Embeddings、图像分析</td><td><code>com.openai</code> SDK</td></tr>
   <tr><td>AI Native Service</td><td><code>AiNativeManager</code></td><td>图像生成（户型图着色等）</td><td><code>ai-native-service-client</code></td></tr>
 </table>
+</div>
 
 <div class="card info">
   <div class="card-label">核心数据流</div>
@@ -355,6 +358,7 @@ LlmClient llmClient(LlmProperties props) {
 
 <p>不同任务对模型的要求截然不同。盲目使用最贵的模型既浪费钱又增加延迟。</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="4. 模型选择策略（表格）">
 <table>
   <tr><th>任务类型</th><th>推荐模型</th><th>理由</th></tr>
   <tr><td>户型图结构分析</td><td>GPT-4o</td><td>多模态能力强，空间理解准确</td></tr>
@@ -363,6 +367,7 @@ LlmClient llmClient(LlmProperties props) {
   <tr><td>复杂推理/代码生成</td><td>o3 / Gemini Pro</td><td>推理深度足够</td></tr>
   <tr><td>图像生成</td><td>AI Native 服务</td><td>内部服务，无外部 API 费用</td></tr>
 </table>
+</div>
 
 <div class="card success">
   <div class="card-label">选择原则</div>
@@ -424,6 +429,7 @@ private String systemPrompt;
 
 <h3>6.2 Token 计算基础</h3>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="6.2 Token 计算基础（表格）">
 <table>
   <tr><th>模型</th><th>输入价格 (每 1M tokens)</th><th>输出价格 (每 1M tokens)</th></tr>
   <tr><td>GPT-4o</td><td>$2.50</td><td>$10.00</td></tr>
@@ -431,6 +437,7 @@ private String systemPrompt;
   <tr><td>Gemini 2.5 Flash</td><td>$0.15</td><td>$0.60</td></tr>
   <tr><td>text-embedding-3-small</td><td>$0.02</td><td>—</td></tr>
 </table>
+</div>
 
 <h3>6.3 统计实现方式</h3>
 

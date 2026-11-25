@@ -57,6 +57,7 @@
 .nav-links{max-width:900px;margin:2.5rem auto 0;padding:1.5rem 2rem;border-top:1px solid #e7e5e4;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem}.nav-links a{color:#b45309;text-decoration:none;font-weight:500}.nav-links a:hover{text-decoration:underline}
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -100,12 +101,14 @@
 └─────────────┘</div>
 
 <h3>1.3 传输方式</h3>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="1.3 传输方式（表格）">
 <table>
   <tr><th>传输方式</th><th>配置 key</th><th>说明</th></tr>
   <tr><td>HTTP (StreamableHTTP)</td><td><code>transport: 'http'</code></td><td>最常用，通过 URL 连接远程 MCP 服务</td></tr>
   <tr><td>Stdio</td><td><code>transport: 'stdio'</code></td><td>本地进程通信，适合 CLI 工具</td></tr>
   <tr><td>SSE</td><td><code>transport: 'sse'</code></td><td>Server-Sent Events，流式传输</td></tr>
 </table>
+</div>
 
 <h3>1.4 MCP 服务器配置示例</h3>
 <pre><code>// Agent 中配置 MCP 服务器
@@ -211,6 +214,7 @@ const loadingPromises = new Map();
 
 const gitTools = await getGitCloneTools();
 // 提供 git_clone 工具，Agent 可自动克隆仓库</code></pre>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="4.1 GitClone 工具（表格）">
 <table>
   <tr><th>特性</th><th>说明</th></tr>
   <tr><td>认证方式</td><td>HTTPS 认证（默认 username: qacenter）</td></tr>
@@ -218,6 +222,7 @@ const gitTools = await getGitCloneTools();
   <tr><td>超时时间</td><td>5 分钟（300000ms）</td></tr>
   <tr><td>权限处理</td><td>克隆后自动 <code>chmod -R 777</code></td></tr>
 </table>
+</div>
 
 <h3>4.2 ClaudeCode 工具</h3>
 <p><code>claudecodeTools.js</code> — 基于 Claude Agent SDK 的深度代码分析工具。</p>
@@ -225,6 +230,7 @@ const gitTools = await getGitCloneTools();
 
 const claudecodeTools = await getClaudecodeTools();
 // 提供 ask_claudecode 工具</code></pre>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="4.2 ClaudeCode 工具（表格）">
 <table>
   <tr><th>特性</th><th>说明</th></tr>
   <tr><td>默认模型</td><td>deepseek-v4-pro</td></tr>
@@ -233,6 +239,7 @@ const claudecodeTools = await getClaudecodeTools();
   <tr><td>参数</td><td><code>prompt</code>(必填)、<code>workDir</code>、<code>taskType</code>、<code>model</code>、<code>timeout</code></td></tr>
   <tr><td>技能集成</td><td>自动加载 <code>~/.claude/skills/</code> 目录下的技能文件</td></tr>
 </table>
+</div>
 
 <h3>4.3 XMind 工具</h3>
 <p><code>xmindTools.js</code> — 服务端 XMind 脑图编辑工具集，提供完整的脑图 CRUD 操作。</p>
@@ -241,6 +248,7 @@ const claudecodeTools = await getClaudecodeTools();
 const xmindTools = await getXmindTools();
 // 提供多个工具：get_current_data, load_xmind_data, add_nodes,
 // update_node, delete_node, move_node, find_node_by_path, clear_data</code></pre>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="4.3 XMind 工具（表格）">
 <table>
   <tr><th>工具名</th><th>功能</th></tr>
   <tr><td><code>get_current_data</code></td><td>获取当前脑图数据</td></tr>
@@ -252,6 +260,7 @@ const xmindTools = await getXmindTools();
   <tr><td><code>find_node_by_path</code></td><td>按路径查找节点</td></tr>
   <tr><td><code>clear_data</code></td><td>清空脑图数据</td></tr>
 </table>
+</div>
 
 <h3>4.4 DrawIO 工具</h3>
 <p><code>drawioTools.js</code> — DrawIO 图表编辑工具，支持加载、编辑、导出和验证图表。</p>
@@ -265,6 +274,7 @@ const drawioTools = await getDrawioTools();
 </div>
 
 <h3>4.5 其他工具一览</h3>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="4.5 其他工具一览（表格）">
 <table>
   <tr><th>工具</th><th>导入函数</th><th>说明</th></tr>
   <tr><td>脚本执行</td><td><code>getScriptRunnerTools()</code></td><td>执行服务端脚本</td></tr>
@@ -285,6 +295,7 @@ const drawioTools = await getDrawioTools();
   <tr><td>子 Agent</td><td><code>getSubagentTools()</code></td><td>子 Agent 调度</td></tr>
   <tr><td>技能加载</td><td><code>getSkillTools()</code></td><td>LangChain Skills 加载</td></tr>
 </table>
+</div>
 
 <h3>4.6 在 Agent 中组合使用</h3>
 <pre><code>// 推荐：使用 Promise.all 并行加载所有工具

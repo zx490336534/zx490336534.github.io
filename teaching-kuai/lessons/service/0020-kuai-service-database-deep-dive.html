@@ -65,6 +65,7 @@ function checkAnswer(qId, correct, el){
 }
 </script>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -99,6 +100,7 @@ function checkAnswer(qId, correct, el){
   <span class="flow-step ext">kuai-service 数据层</span>
 </div>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="🏛️ 1. 双数据库架构总览（表格）">
 <table>
   <tr><th>数据库</th><th>存储内容</th><th>访问方式</th><th>典型表/集合</th></tr>
   <tr>
@@ -114,6 +116,7 @@ function checkAnswer(qId, correct, el){
     <td><code>apps</code>、<code>chats</code>、<code>chatitems</code>、<code>teams</code>、<code>users</code></td>
   </tr>
 </table>
+</div>
 
 <div class="card info">
   <div class="card-label">设计思路</div>
@@ -279,6 +282,7 @@ EvaluationStats selectEvaluationStats(@Param("appId") String appId,
 
 <h3>3.1 主要集合一览</h3>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="3.1 主要集合一览（表格）">
 <table>
   <tr><th>集合名</th><th>对应 Repository</th><th>用途</th></tr>
   <tr><td><code>apps</code></td><td><code>AppsSetRepository</code></td><td>应用信息（名称、团队、配置）</td></tr>
@@ -293,6 +297,7 @@ EvaluationStats selectEvaluationStats(@Param("appId") String appId,
   <tr><td><code>datasets</code></td><td><code>DataSetRepository</code></td><td>知识库数据集</td></tr>
   <tr><td><code>collections</code></td><td><code>CollectionRepository</code></td><td>知识库集合</td></tr>
 </table>
+</div>
 
 <h3>3.2 Repository 接口示例</h3>
 
@@ -424,6 +429,7 @@ List&lt;WorkaiWechatRobot&gt; findActive();</code></pre>
 
 <h3>4.4 MySQL 与 MongoDB 的字段映射对比</h3>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="4.4 MySQL 与 MongoDB 的字段映射对比（表格）">
 <table>
   <tr><th>特性</th><th>MySQL（MyBatis-Plus）</th><th>MongoDB（Spring Data）</th></tr>
   <tr><td>实体注解</td><td><code>@Table(name="...")</code></td><td><code>@Document(collection="...")</code></td></tr>
@@ -434,6 +440,7 @@ List&lt;WorkaiWechatRobot&gt; findActive();</code></pre>
   <tr><td>分页</td><td><code>LIMIT offset, size</code></td><td><code>.skip().limit()</code></td></tr>
   <tr><td>排序</td><td><code>ORDER BY field DESC</code></td><td><code>new Sort(Direction.DESC, "field")</code></td></tr>
 </table>
+</div>
 
 <div class="ask-agent">问问 Agent：在同一个项目中混用 MySQL 和 MongoDB 会带来哪些挑战？如何保证两边数据的一致性？</div>
 

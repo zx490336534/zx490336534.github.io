@@ -51,6 +51,7 @@
 .nav-links{max-width:900px;margin:2.5rem auto 0;padding:1.5rem 2rem;border-top:1px solid #e7e5e4;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem}.nav-links a{color:#b45309;text-decoration:none;font-weight:500}.nav-links a:hover{text-decoration:underline}
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -218,6 +219,7 @@ await conversationStore.ensureIndexes();
 // - { updatedAt: -1 } — 按更新时间排序</code></pre>
 
 <h3>2.3 数据结构</h3>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="2.3 数据结构（表格）">
 <table>
   <tr><th>字段</th><th>类型</th><th>说明</th></tr>
   <tr><td><code>id</code></td><td>string</td><td>会话 ID（<code>conv-</code> + ObjectId）</td></tr>
@@ -227,6 +229,7 @@ await conversationStore.ensureIndexes();
   <tr><td><code>createdAt</code></td><td>Date</td><td>创建时间</td></tr>
   <tr><td><code>updatedAt</code></td><td>Date</td><td>最后更新时间</td></tr>
 </table>
+</div>
 
 <!-- ============================== -->
 <h2><span class="icon">🌊</span> 3. chatStreamHandler 流处理</h2>
@@ -277,6 +280,7 @@ function broadcastAsyncIterable(source, count) {
 
 <h3>3.3 事件处理</h3>
 <p>chatStreamHandler 处理以下 LangGraph 事件类型：</p>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="3.3 事件处理（表格）">
 <table>
   <tr><th>事件</th><th>处理方式</th></tr>
   <tr><td><code>on_chat_model_stream</code></td><td>AI 生成的文本流，实时推送到前端</td></tr>
@@ -285,6 +289,7 @@ function broadcastAsyncIterable(source, count) {
   <tr><td><code>on_tool_error</code></td><td>工具执行失败，记录错误信息</td></tr>
   <tr><td><code>on_chain_start/end</code></td><td>Agent 链执行进度</td></tr>
 </table>
+</div>
 
 <h3>3.4 任务管理</h3>
 <pre><code>import { abortTask, getRunningTask, getRunningTasks } from '@/lib/agents/chatStreamHandler';

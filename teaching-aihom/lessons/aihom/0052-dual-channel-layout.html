@@ -237,6 +237,7 @@
   .channel-card.config h3 { color: var(--success); }
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -415,6 +416,7 @@ LayoutResult result = geminiManager.generate(prompt);
 
 <h3>评分维度</h3>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="评分维度（表格）">
 <table>
   <tr><th>维度</th><th>说明</th><th>权重</th></tr>
   <tr><td>约束满足度</td><td>布局是否满足户型硬约束（墙、门、窗）</td><td>高</td></tr>
@@ -422,6 +424,7 @@ LayoutResult result = geminiManager.generate(prompt);
   <tr><td>动线合理性</td><td>行走路径是否通畅、符合生活习惯</td><td>中</td></tr>
   <tr><td>风格一致性</td><td>与用户选择的风格是否匹配</td><td>低</td></tr>
 </table>
+</div>
 
 <h3>合并流程</h3>
 
@@ -459,6 +462,7 @@ LayoutResult result = geminiManager.generate(prompt);
 <!-- ==================== Section 7 ==================== -->
 <h2>7. 关键代码位置速查</h2>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="7. 关键代码位置速查（表格）">
 <table>
   <tr><th>类 / 文件</th><th>职责</th></tr>
   <tr><td><code>OpenaiManager</code></td><td>OpenAI API 调用（Embedding + Chat Completion）</td></tr>
@@ -468,6 +472,7 @@ LayoutResult result = geminiManager.generate(prompt);
   <tr><td><code>AutoDesignInfoManager</code></td><td>布局任务 CRUD 操作</td></tr>
   <tr><td><code>AutoLayoutContext</code></td><td>ThreadLocal 上下文，传递请求级数据</td></tr>
 </table>
+</div>
 
 <div class="ask-agent">
   想深入了解某个类的实现细节？直接问我，比如 "OpenaiManager 的 getEmbedding 方法完整实现" 或 "BaseAsyncProcessor 的 doProcess 流程"。

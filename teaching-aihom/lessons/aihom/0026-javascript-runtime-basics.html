@@ -9,6 +9,7 @@
   *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.8 -apple-system,BlinkMacSystemFont,"Noto Sans SC","Segoe UI",sans-serif}.container{max-width:780px;margin:0 auto;padding:3rem 2rem}h1{font-size:2rem;margin:.2rem 0 .5rem}.subtitle{color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:1.4rem;margin-bottom:2rem}h2{font-size:1.35rem;margin:2rem 0 .8rem}p{margin:.5rem 0 1rem}code{font-family:Menlo,Consolas,monospace;background:var(--code);padding:.15em .35em;border-radius:4px}pre{background:#1c1917;color:#e7e5e4;padding:1rem 1.2rem;border-radius:8px;overflow:auto}.kw{color:#f59e0b}.s{color:#86efac}.c{color:#a8a29e}.card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--info);border-radius:8px;padding:1rem 1.2rem;margin:1rem 0}.label{font-size:.75rem;color:var(--info);font-weight:700;text-transform:uppercase;letter-spacing:.05em}table{width:100%;border-collapse:collapse;margin:1rem 0}th,td{border-bottom:1px solid var(--border);padding:.55rem;text-align:left;vertical-align:top}th{color:var(--muted);font-size:.82rem}.quiz{background:var(--soft);border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.2rem;margin:1.5rem 0}.quiz-options{list-style:none;margin:0;padding:0}.quiz-options li{padding:.45rem .65rem;margin:.35rem 0;border:1px solid transparent;border-radius:6px;cursor:pointer}.quiz-options li:hover{border-color:#fbbf24}.correct{background:#dcfce7!important;border-color:var(--ok)!important}.wrong{background:#fee2e2!important;border-color:var(--bad)!important}.quiz-feedback{display:none;margin-top:.6rem;padding:.6rem;border-radius:6px}.nav{margin-top:2.5rem;border:1px solid var(--border);border-radius:8px;background:#fff;padding:1rem}.nav a{display:inline-block;margin:.25rem;color:#444;text-decoration:none;border:1px solid var(--border);border-radius:6px;padding:.35rem .65rem}.nav a.primary{background:var(--accent);border-color:var(--accent);color:#fff}.nav a.map{background:#eff6ff;border-color:#bfdbfe;color:var(--info)}
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body><div class="container">
 <h1>026 前端基础 06：JavaScript 异步运行模型</h1>
@@ -17,12 +18,14 @@
 <div class="card"><div class="label">为什么先学它</div><p>React、SDK、WebSocket、postMessage 都跑在浏览器里的 JavaScript 运行时上。你读前端代码时最常见的困惑，不是语法本身，而是“这个回调什么时候执行”。</p></div>
 
 <h2>1. JS 代码的三种常见形态</h2>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="1. JS 代码的三种常见形态（表格）">
 <table>
   <tr><th>形态</th><th>读法</th><th>AIHom 场景</th></tr>
   <tr><td>对象</td><td>一包相关数据</td><td><code>message</code>、<code>toolCall</code>、viewer 配置</td></tr>
   <tr><td>函数</td><td>一段可重复执行的动作</td><td><code>sendMessage()</code>、<code>handleMessage()</code></td></tr>
   <tr><td>回调</td><td>先登记，等事件发生再执行</td><td>WebSocket 消息、按钮点击、postMessage</td></tr>
 </table>
+</div>
 
 <pre><span class="kw">const</span> message = { key: <span class="s">'SendMessage'</span>, data: { text: <span class="s">'设计客厅'</span> } };
 

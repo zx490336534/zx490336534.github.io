@@ -67,6 +67,7 @@ function checkAnswer(qId, correct, el){
 }
 </script>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -91,6 +92,7 @@ function checkAnswer(qId, correct, el){
 
 <p>kuai-service 的 API 遵循 RESTful 风格，使用统一的 <code>Result&lt;T&gt;</code> 包装响应。路径前缀按功能域划分：</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="🔗 RESTful API 设计模式（表格）">
 <table>
   <tr><th>路径前缀</th><th>功能域</th><th>认证方式</th></tr>
   <tr><td><code>/api/prompts</code></td><td>提示词管理（读取）</td><td>无需登录</td></tr>
@@ -99,6 +101,7 @@ function checkAnswer(qId, correct, el){
   <tr><td><code>/gpt/wechat</code></td><td>微信机器人回调</td><td>企微签名验证</td></tr>
   <tr><td><code>/api/shared-app</code></td><td>分享应用</td><td>混合</td></tr>
 </table>
+</div>
 
 <h3>统一响应格式</h3>
 <pre><code>// 成功响应
@@ -127,6 +130,7 @@ function checkAnswer(qId, correct, el){
 }</code></pre>
 
 <h3>HTTP 方法使用规范</h3>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="HTTP 方法使用规范（表格）">
 <table>
   <tr><th>操作</th><th>方法</th><th>示例路径</th><th>说明</th></tr>
   <tr><td>查询列表</td><td><span class="method-badge get">GET</span></td><td><code>/api/prompts?category=xxx&amp;keyword=xxx</code></td><td>查询参数筛选</td></tr>
@@ -138,6 +142,7 @@ function checkAnswer(qId, correct, el){
   <tr><td>批量操作</td><td><span class="method-badge post">POST</span></td><td><code>/kuai/evaluation-app/llmEvaluate/batch</code></td><td>RequestBody 列表</td></tr>
   <tr><td>导出</td><td><span class="method-badge post">POST</span></td><td><code>/kuai/evaluation-app/.../exportCsv</code></td><td>返回 CSV 文件流</td></tr>
 </table>
+</div>
 
 <h3>API 设计特点</h3>
 <div class="card">
@@ -320,7 +325,8 @@ AggregationResults&lt;Chat&gt; results = mongoTemplate.aggregate(agg, "chat", Ch
 
 <div class="card">
   <div class="card-title">其他 MySQL 表</div>
-  <table>
+  <div class="course-table-scroll" tabindex="0" role="region" aria-label="MySQL 表（通过 TDDL 连接）（表格）">
+<table>
     <tr><th>表名</th><th>用途</th><th>对应 Entity</th></tr>
     <tr><td><code>llm_eval_lock</code></td><td>LLM 评估分布式锁，防止重复评估</td><td><code>LlmEvalLock</code></td></tr>
     <tr><td><code>deepeval_task</code></td><td>DeepEval 批量任务</td><td><code>DeepEvalTask</code></td></tr>
@@ -334,11 +340,13 @@ AggregationResults&lt;Chat&gt; results = mongoTemplate.aggregate(agg, "chat", Ch
     <tr><td><code>prompt_evaluation</code></td><td>提示词评估记录</td><td><code>PromptEvaluation</code></td></tr>
   </table>
 </div>
+</div>
 
 <h3>MongoDB 集合</h3>
 <div class="card">
   <div class="card-title">主要 MongoDB 集合</div>
-  <table>
+  <div class="course-table-scroll" tabindex="0" role="region" aria-label="MongoDB 集合（表格）">
+<table>
     <tr><th>集合名</th><th>用途</th><th>访问方式</th></tr>
     <tr><td><code>chat</code></td><td>对话会话记录</td><td><code>ChatRepository</code> / <code>MongoTemplate</code></td></tr>
     <tr><td><code>chat_item</code></td><td>对话条目（问答对）</td><td><code>ChatItemRepository</code></td></tr>
@@ -346,6 +354,7 @@ AggregationResults&lt;Chat&gt; results = mongoTemplate.aggregate(agg, "chat", Ch
     <tr><td><code>open_apis_set</code></td><td>OpenAPI 配置</td><td><code>OpenApisSetRepository</code></td></tr>
     <tr><td><code>mentor_forward_session</code></td><td>导师转发会话</td><td><code>MentorForwardSessionRepository</code></td></tr>
   </table>
+</div>
 </div>
 
 <div class="warn">

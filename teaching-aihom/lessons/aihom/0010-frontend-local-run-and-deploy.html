@@ -9,6 +9,7 @@
   *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.78 -apple-system,BlinkMacSystemFont,"Noto Sans SC","Segoe UI",sans-serif}.container{max-width:820px;margin:0 auto;padding:3rem 2rem}h1{font-size:2rem;margin:.2rem 0 .5rem}.subtitle{color:var(--muted);padding-bottom:1.5rem;border-bottom:1px solid var(--border);margin-bottom:2rem}h2{font-size:1.35rem;margin:2.2rem 0 .9rem}h3{font-size:1.08rem;color:var(--accent);margin:1.4rem 0 .6rem}p{margin:.35rem 0 1rem}code{background:var(--code);border-radius:4px;padding:.12em .35em;font-family:Menlo,Consolas,monospace;font-size:.9em}pre{background:#111827;color:#e5e7eb;border-radius:8px;padding:1rem 1.2rem;overflow:auto;font:14px/1.65 Menlo,Consolas,monospace}.card{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--info);border-radius:8px;padding:1rem 1.15rem;margin:1rem 0}.card.warn{border-left-color:var(--warn)}table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:1rem 0}th,td{padding:.65rem .75rem;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}th{font-size:.82rem;color:var(--muted);background:#f1f5f9}tr:last-child td{border-bottom:0}.quiz{background:#ecfeff;border:1px solid #67e8f9;border-radius:8px;padding:1rem 1.15rem;margin:1.4rem 0}.quiz-options{list-style:none;margin:.5rem 0 0;padding:0}.quiz-options li{padding:.45rem .65rem;border-radius:6px;border:1px solid transparent;cursor:pointer}.quiz-options li:hover{border-color:#67e8f9}.correct{background:#dcfce7}.wrong{background:#fee2e2}.quiz-feedback{display:none;margin-top:.6rem;padding:.6rem;border-radius:6px}.ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;color:#1e40af;padding:1rem;margin:1.4rem 0}.ask-agent:before{content:"提示：";font-weight:700}
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -16,12 +17,14 @@
 <p class="subtitle">目标：知道 ai-home、viewer-2d、render-3d 该怎么本地启动、构建，以及为什么它们不是同一个部署边界。</p>
 
 <h2>1. 三个前端仓库的角色不同</h2>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="1. 三个前端仓库的角色不同（表格）">
 <table>
   <tr><th>仓库</th><th>本地运行命令</th><th>你在验证什么</th></tr>
   <tr><td><code>ai-home</code></td><td><code>yarn dev</code> → <code>kjl dev</code><br><code>yarn beta</code> → <code>kjl dev -T https://prod-test-seoul.example.com</code></td><td>主页面、AI 对话、SDK、前端 Tool、嵌入 viewer 的链路。</td></tr>
   <tr><td><code>viewer-2d</code></td><td><code>yarn dev</code> → <code>kjl pub:dev</code></td><td>2D 户型画布、PixiJS、Entity/Drawable、和父页面通信。</td></tr>
   <tr><td><code>render-3d</code></td><td><code>yarn dev</code> → <code>kjl pub:dev</code></td><td>3D 场景、截图、离线渲染、iframe 通信。</td></tr>
 </table>
+</div>
 
 <div class="card">
   <p><code>ai-home</code> 更像主应用；<code>viewer-2d</code> 和 <code>render-3d</code> 更像被主应用嵌入的能力容器。联调时不要只问“前端跑了吗”，要问“跑的是主应用，还是被嵌入的 viewer”。</p>
@@ -33,12 +36,14 @@
 "beta": "kjl dev -T https://prod-test-seoul.example.com"
 "build": "kjl build"</pre>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="2. ai-home：主前端怎么跑（表格）">
 <table>
   <tr><th>命令</th><th>用途</th><th>小白判断</th></tr>
   <tr><td><code>yarn dev</code></td><td>启动本地 dev-server。</td><td>你主要看页面能不能加载、bundle 有没有报错。</td></tr>
   <tr><td><code>yarn beta</code></td><td>本地前端资源对接 beta 目标站点。</td><td>适合验证“本地代码 + 线上/测试环境后端”的组合。</td></tr>
   <tr><td><code>yarn build</code></td><td>生产构建。</td><td>合并前至少确认构建不炸，尤其是类型/资源路径问题。</td></tr>
 </table>
+</div>
 
 <h2>3. viewer-2d / render-3d：pub 应用怎么跑</h2>
 <p>两个 viewer 仓库的脚本很像：</p>

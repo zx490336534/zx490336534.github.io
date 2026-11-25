@@ -44,6 +44,7 @@
   .nav a.primary{color:#fff;border-color:#b45309;background:#b45309}.nav a.map{color:#2563eb;border-color:#bfdbfe;background:#eff6ff}
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -70,11 +71,13 @@
 
 <p>两个仓库都是真实的三模块结构：</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="1. 先看根 pom，不先钻代码（表格）">
 <table>
   <tr><th>仓库</th><th>父 artifactId</th><th>modules</th><th>启动模块</th></tr>
   <tr><td><code>ai-native-service</code></td><td><code>ai-native-service-parent</code></td><td><code>ai-native-service-common</code><br><code>ai-native-service-client</code><br><code>ai-native-service-web</code></td><td><code>ai-native-service-web</code></td></tr>
   <tr><td><code>auto-layout-service</code></td><td><code>auto-layout-service-parent</code></td><td><code>auto-layout-service-common</code><br><code>auto-layout-service-client</code><br><code>auto-layout-service-web</code></td><td><code>auto-layout-service-web</code></td></tr>
 </table>
+</div>
 
 <h2>2. common、client、web 分别管什么</h2>
 
@@ -88,12 +91,14 @@
   <span class="flow-step">web：真正业务服务</span>
 </div>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="2. common、client、web 分别管什么（表格）">
 <table>
   <tr><th>模块</th><th>主要内容</th><th>AIHom 读代码时怎么用</th></tr>
   <tr><td><code>common</code></td><td>请求 / 响应 VO、DTO、枚举、校验注解等共享对象</td><td>看到接口入参或返回值，先到这里找字段含义</td></tr>
   <tr><td><code>client</code></td><td>给其他服务使用的调用封装，例如 <code>AiNativeClient</code></td><td>跨服务调用时，先看 client 暴露了哪些方法</td></tr>
   <tr><td><code>web</code></td><td>Controller、Service、Factory、Manager、Mapper、配置和启动类</td><td>新增功能大多数改这里；排查问题也从这里追调用链</td></tr>
 </table>
+</div>
 
 <div class="card success">
   <div class="card-label">真实例子</div>
@@ -134,6 +139,7 @@
 
 <p><code>ai-native-service</code> 父工程声明 <code>java.version=21</code>，但 <code>ai-native-service-common</code> 和 <code>ai-native-service-client</code> 都用 <code>maven-compiler-plugin</code> 的 <code>&lt;release&gt;8&lt;/release&gt;</code>。这不是矛盾，而是边界设计。</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="4. Java 8 / 21 混合模块怎么读（表格）">
 <table>
   <tr><th>位置</th><th>Java 版本信号</th><th>意思</th></tr>
   <tr><td><code>ai-native-service/pom.xml</code></td><td><code>java.version=21</code></td><td>web 服务主工程可以使用 Java 21 / Spring Boot 3 生态</td></tr>
@@ -141,6 +147,7 @@
   <tr><td><code>ai-native-service-client/pom.xml</code></td><td><code>release 8</code></td><td>客户端包要给 Java 8 服务依赖，比如 auto-layout-service</td></tr>
   <tr><td><code>auto-layout-service/pom.xml</code></td><td><code>java.version=1.8</code></td><td>自动布局服务整体还是 Java 8 风格</td></tr>
 </table>
+</div>
 
 <p>所以读代码时要形成一个直觉：<strong>common / client 是契约边界，通常更保守；web 是业务运行边界，版本可能更新。</strong></p>
 
@@ -156,6 +163,7 @@
 
 <h2>6. 代码证据</h2>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="6. 代码证据（表格）">
 <table>
   <tr><th>你要确认什么</th><th>真实文件</th></tr>
   <tr><td>两个服务都有 common/client/web 三模块</td><td><code>ai-native-service/pom.xml</code><br><code>auto-layout-service/pom.xml</code></td></tr>
@@ -164,6 +172,7 @@
   <tr><td><code>auto-layout-service</code> Java 8，web 依赖 <code>ai-native-service-client</code></td><td><code>auto-layout-service/pom.xml</code><br><code>auto-layout-service/auto-layout-service-web/pom.xml</code></td></tr>
   <tr><td>跨服务 client 真实调用</td><td><code>AiNativeClient</code><br><code>AiNativeManager</code></td></tr>
 </table>
+</div>
 
 <h2>7. 自检 Quiz</h2>
 

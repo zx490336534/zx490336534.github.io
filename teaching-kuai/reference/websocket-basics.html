@@ -61,6 +61,7 @@ function checkAnswer(qId, correct, el){
 }
 </script>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -84,14 +85,17 @@ function checkAnswer(qId, correct, el){
 <p>在没有 WebSocket 之前，要实现"服务器主动推送消息给浏览器"，只能用一些"曲线救国"的方式：</p>
 
 <h3>传统方案的痛点</h3>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="传统方案的痛点（表格）">
 <table>
   <tr><th>方案</th><th>原理</th><th>问题</th></tr>
   <tr><td><strong>轮询（Polling）</strong></td><td>浏览器每隔几秒就问一次服务器"有新消息吗？"</td><td>大量无意义请求，浪费资源</td></tr>
   <tr><td><strong>长轮询</strong></td><td>浏览器发请求，服务器一直挂着不回复，直到有新消息</td><td>延迟高，实现复杂</td></tr>
   <tr><td><strong>SSE</strong></td><td>服务器单向推送</td><td>只能服务器 → 客户端，不能反向</td></tr>
 </table>
+</div>
 
 <h3>WebSocket 的优势</h3>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="WebSocket 的优势（表格）">
 <table>
   <tr><th>对比项</th><th>HTTP</th><th>WebSocket</th></tr>
   <tr><td>连接方式</td><td>每次请求都要建立新连接</td><td>一次连接，持久复用</td></tr>
@@ -100,6 +104,7 @@ function checkAnswer(qId, correct, el){
   <tr><td>开销</td><td>每次带完整 HTTP 头（几百字节）</td><td>消息头只有 2~14 字节</td></tr>
   <tr><td>典型场景</td><td>普通网页请求、API 调用</td><td>聊天室、实时通知、协作编辑</td></tr>
 </table>
+</div>
 
 <!-- ============ 3. 什么是 STOMP ============ -->
 <h2><span class="icon">📨</span> 什么是 STOMP？</h2>
@@ -209,11 +214,13 @@ stompClient.connect({}, function(frame) {
 </div>
 
 <h3>/topic 还是 /user/queue？</h3>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="/topic 还是 /user/queue？（表格）">
 <table>
   <tr><th>前缀</th><th>模式</th><th>场景</th><th>例子</th></tr>
   <tr><td><code>/topic</code></td><td>广播（1 对多）</td><td>所有人都能收到</td><td>聊天室消息、系统公告</td></tr>
   <tr><td><code>/user/queue</code></td><td>点对点（1 对 1）</td><td>只有目标用户收到</td><td>私聊、个人通知、审批提醒</td></tr>
 </table>
+</div>
 
 <div class="ask-agent">
   <strong>试试问 Agent：</strong>"WebSocket 和 SSE 有什么区别？各自适合什么场景？" 或者 "如何在 WebSocket 中实现用户认证？"

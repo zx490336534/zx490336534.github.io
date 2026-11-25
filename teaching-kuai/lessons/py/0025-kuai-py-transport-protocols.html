@@ -59,6 +59,7 @@
   .nav-links a:hover{text-decoration:underline}
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -87,6 +88,7 @@
 <p><span class="tag arch">架构设计</span> Kuai MCP 服务支持 4 种传输协议，每种对应不同的通信场景。所有协议都继承自 <code>BaseTransport</code> 基类。</p>
 
 <h3>四种传输协议</h3>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="四种传输协议（表格）">
 <table>
   <tr>
     <th>协议</th>
@@ -124,6 +126,7 @@
     <td><span class="file-ref">agent_transport.py</span></td>
   </tr>
 </table>
+</div>
 
 <h3>传输协议工厂</h3>
 <p><span class="file-ref">transport_factory.py</span> 是创建传输实例的统一入口，根据配置自动选择正确的协议：</p>
@@ -390,6 +393,7 @@ class StreamableHttpTransport(BaseTransport):
         return True</code></pre>
 
 <h3>StreamableHTTP vs SSE 的区别</h3>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="StreamableHTTP vs SSE 的区别（表格）">
 <table>
   <tr>
     <th>特性</th>
@@ -422,6 +426,7 @@ class StreamableHttpTransport(BaseTransport):
     <td>⭐ 推荐使用</td>
   </tr>
 </table>
+</div>
 
 <h3>高级功能：动态更新 Headers</h3>
 <pre><code class="language-python"># StreamableHTTP 支持运行时更新 HTTP 头（如刷新 Token）

@@ -214,6 +214,7 @@
   li { margin-bottom: 0.3rem; }
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -266,6 +267,7 @@
 
 <p><code>RootStateManager</code>（位于 <code>src/app/state.ts</code>）是整个 viewer-2d 的状态中枢，它组合了多个子状态管理器，各司其职。</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="2. RootStateManager 子状态组合（表格）">
 <table>
   <tr><th>子状态</th><th>管理器</th><th>职责</th></tr>
   <tr><td><code>scene2D</code></td><td>Scene2D state</td><td>Scene2D 自身状态，管理场景实例与渲染状态</td></tr>
@@ -274,6 +276,7 @@
   <tr><td><code>outside</code></td><td>OutsideStateManager</td><td>外部通讯，与父页面或外部容器双向通信</td></tr>
   <tr><td><code>leftPanel</code></td><td>LeftPanelStateManager</td><td>左侧面板状态，管理菜单、悬浮信息等</td></tr>
 </table>
+</div>
 
 <p>React 组件通过 <code>connect()</code> 函数（来自 <code>src/StateManager/index.ts</code>）连接到根状态。连接层导出三个核心 API：</p>
 
@@ -325,6 +328,7 @@
 
 <p>Scene2D 的"系统"是横切关注点的实现，每个系统负责一类通用能力。在 <code>DfScene2d.tsx</code> 的 <code>onInit</code> 中统一注册。</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="4. Scene2D 系统注册（表格）">
 <table>
   <tr><th>系统</th><th>源码位置</th><th>职责</th></tr>
   <tr><td>布局系统</td><td><code>src/modules/layout/</code></td><td>管理房间和家具的自动/手动布局</td></tr>
@@ -333,6 +337,7 @@
   <tr><td>选中控制</td><td><code>src/modules/SelectedControls/</code></td><td>管理实体的选中态和交互反馈</td></tr>
   <tr><td>撤销重做</td><td>（undo/redo 模块）</td><td>操作历史记录与回退</td></tr>
 </table>
+</div>
 
 <p>系统的注册顺序很重要：依赖关系决定了注册的先后。例如变换系统依赖选中控制的状态，推理系统依赖布局系统的上下文。</p>
 

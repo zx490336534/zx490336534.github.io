@@ -230,6 +230,7 @@
   li { margin-bottom: 0.3rem; }
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -244,12 +245,14 @@
 
 <h3><span class="step-num">1</span>选择基类</h3>
 <p>根据任务类型选择继承的基类：</p>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="1选择基类（表格）">
 <table>
   <tr><th>场景</th><th>继承</th><th>说明</th></tr>
   <tr><td>需要 DB 持久化任务状态</td><td><code>BaseDbTaskAsyncProcessor</code></td><td>任务记录写 MySQL</td></tr>
   <tr><td>需要 Redis 管理任务状态</td><td><code>BaseRedisTaskAsyncProcessor</code></td><td>任务记录写 Redis，高并发友好</td></tr>
   <tr><td>简单同步任务</td><td><code>BaseProcessor</code></td><td>不需要异步，直接执行</td></tr>
 </table>
+</div>
 
 <h3><span class="step-num">2</span>创建 Processor 类</h3>
 <pre>
@@ -330,11 +333,13 @@
 <h2>3. 如何接入新的 AI 服务</h2>
 
 <p>项目当前集成了两类 AI 服务：</p>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="3. 如何接入新的 AI 服务（表格）">
 <table>
   <tr><th>AI 服务</th><th>Manager</th><th>SDK</th><th>能力</th></tr>
   <tr><td>OpenAI</td><td><code>OpenaiManager</code></td><td><code>com.openai</code></td><td>Chat、Embedding、Vision</td></tr>
   <tr><td>AI Native</td><td><code>AiNativeManager</code></td><td><code>ai-native-service-client</code></td><td>图像生成</td></tr>
 </table>
+</div>
 
 <p>接入新 AI 服务的步骤：</p>
 

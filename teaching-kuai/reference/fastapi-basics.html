@@ -48,6 +48,7 @@
   .back-link:hover{text-decoration:underline}
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -84,6 +85,7 @@
 
 <p>FastAPI 基于 <strong>Starlette</strong>（异步 Web 框架）和 <strong>Pydantic</strong>（数据验证库），支持 Python 的 <code>async/await</code> 异步编程，性能非常出色。</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="高性能：速度接近 Go 和 Node.js（表格）">
 <table>
   <tr><th>框架</th><th>性能（请求/秒）</th><th>语言</th></tr>
   <tr><td>FastAPI</td><td>非常高</td><td>Python</td></tr>
@@ -92,6 +94,7 @@
   <tr><td>Express</td><td>高</td><td>Node.js</td></tr>
   <tr><td>Go (net/http)</td><td>非常高</td><td>Go</td></tr>
 </table>
+</div>
 
 <div class="success-box">
   <h3>✅ 关键优势：自动生成 API 文档</h3>
@@ -189,6 +192,7 @@ def create_user(user: UserCreate):
 </div>
 
 <p>Pydantic 常用的验证器：</p>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="⚠️ Pydantic 的魔法（表格）">
 <table>
   <tr><th>验证器</th><th>含义</th><th>示例</th></tr>
   <tr><td><code>min_length</code></td><td>最小长度</td><td><code>Field(min_length=3)</code></td></tr>
@@ -197,6 +201,7 @@ def create_user(user: UserCreate):
   <tr><td><code>lt / le</code></td><td>小于 / 小于等于</td><td><code>Field(lt=150)</code></td></tr>
   <tr><td><code>pattern</code></td><td>正则匹配</td><td><code>Field(pattern="^\\d+$")</code></td></tr>
 </table>
+</div>
 
 <!-- ==================== 第五章 ==================== -->
 <h2><span class="icon">🔗</span> 五、依赖注入</h2>
@@ -246,12 +251,14 @@ def another_protected(api_key: str = Depends(verify_api_key)):
 
 <p>启动 FastAPI 应用后，你会得到两个文档页面：</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="📄 六、自动 OpenAPI 文档（表格）">
 <table>
   <tr><th>地址</th><th>文档类型</th><th>特点</th></tr>
   <tr><td><code>/docs</code></td><td>Swagger UI</td><td>交互式，可以直接在页面上测试 API</td></tr>
   <tr><td><code>/redoc</code></td><td>ReDoc</td><td>阅读式，更美观，适合给前端/产品看</td></tr>
   <tr><td><code>/openapi.json</code></td><td>OpenAPI JSON</td><td>机器可读的标准格式</td></tr>
 </table>
+</div>
 
 <pre><code># 启动服务后访问：
 # http://localhost:8000/docs      → Swagger UI 交互式文档

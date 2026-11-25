@@ -213,6 +213,7 @@
   .next-lesson a:hover { text-decoration: underline; }
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -248,6 +249,7 @@
 <h3>2.1 入口：RenderButton</h3>
 <p><code>RenderButton</code> 看起来是一个按钮组件，实际上它是<strong>渲染参数的总装配层</strong>。点击时，它会收集以下参数：</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="2.1 入口：RenderButton（表格）">
 <table>
   <tr><th>参数</th><th>来源</th><th>说明</th></tr>
   <tr><td><code>currentObsId</code></td><td>实时模板</td><td>当前场景使用的实时模板 ID</td></tr>
@@ -258,6 +260,7 @@
   <tr><td><code>cameraView</code></td><td>场景相机</td><td>相机位置、角度等属性</td></tr>
   <tr><td><code>hdPermission</code></td><td>权限接口</td><td>是否允许高清渲染</td></tr>
 </table>
+</div>
 
 <h3>2.2 模板配置缓存机制</h3>
 <p><code>fetchAndCacheObsConfig(obsId)</code> 负责拉取并缓存模板配置：</p>
@@ -328,6 +331,7 @@
                               <span class="string">结果回写 + 红点通知</span>
 </pre>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="4. SnapshotTaskStatus 状态机（表格）">
 <table>
   <tr><th>状态</th><th>含义</th><th>前端行为</th></tr>
   <tr><td><code>PENDING</code></td><td>任务已提交，排队中</td><td>继续轮询，展示等待态</td></tr>
@@ -335,6 +339,7 @@
   <tr><td><code>SUCCESS</code></td><td>渲染完成</td><td>停止轮询，回写结果，设置 <code>hasNewRender = true</code></td></tr>
   <tr><td><code>FAILED</code></td><td>渲染失败</td><td>停止轮询，上报错误，提示用户重试</td></tr>
 </table>
+</div>
 
 <h3>4.1 轮询策略</h3>
 <div class="card info">
@@ -371,6 +376,7 @@
 
 <h3>6.2 典型错误场景</h3>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="6.2 典型错误场景（表格）">
 <table>
   <tr><th>场景</th><th>处理方式</th><th>用户感知</th></tr>
   <tr><td>模板配置拉取失败</td><td>回退到 <code>DEFAULT_TEMPLATE_CONFIG</code></td><td>渲染风格变成默认值，无报错</td></tr>
@@ -379,6 +385,7 @@
   <tr><td>轮询接口返回 FAILED</td><td>停止轮询，上报错误</td><td>提示渲染失败，可重试</td></tr>
   <tr><td>父页面同步显示规则失败</td><td>使用本地缓存的规则</td><td>可能与父页面不一致</td></tr>
 </table>
+</div>
 
 <h3>6.3 重试机制</h3>
 <p>渲染失败后，用户可以手动点击重试。系统会<strong>重新走一遍完整的参数装配流程</strong>，确保拿到最新的模板配置、显示规则和相机状态，而不是简单地用旧参数重新提交。</p>
@@ -393,6 +400,7 @@
 
 <p><code>OfflineRenderStateManager</code> 维护的关键状态字段：</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="7. 核心状态一览（表格）">
 <table>
   <tr><th>字段</th><th>类型</th><th>用途</th></tr>
   <tr><td><code>snapshotList</code></td><td>Array</td><td>历史渲染快照列表</td></tr>
@@ -407,6 +415,7 @@
   <tr><td><code>currentObsId</code></td><td>string</td><td>当前实时模板 ID</td></tr>
   <tr><td><code>obsConfigCache</code></td><td>Map</td><td>模板配置缓存</td></tr>
 </table>
+</div>
 
 <!-- ==================== Quiz ==================== -->
 <h2>8. 自检 Quiz</h2>

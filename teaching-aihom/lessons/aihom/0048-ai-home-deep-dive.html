@@ -216,6 +216,7 @@
   li { margin-bottom: 0.3rem; }
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -253,12 +254,14 @@
 }
 </pre>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="1. App.tsx 入口与 URL 参数路由（表格）">
 <table>
   <tr><th>URL 参数</th><th>组件</th><th>职责</th></tr>
   <tr><td><code>?page=mainPage</code></td><td><code>MainPage</code></td><td>编辑器主界面 — 2D 画布 + 3D 视图 + AI 对话</td></tr>
   <tr><td><code>?page=feedback</code></td><td><code>ProductFeedbackPage</code></td><td>反馈页</td></tr>
   <tr><td>无参数 / 其他</td><td><code>HomePage</code></td><td>项目列表首页</td></tr>
 </table>
+</div>
 
 <div class="card info">
   <div class="card-label">为什么不用 React Router？</div>
@@ -413,12 +416,14 @@
 
 <p>AI 对话是 ai-home 的核心功能。整个通信链路由三层组成：</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="4. AI 对话通信链路（表格）">
 <table>
   <tr><th>层级</th><th>类</th><th>职责</th></tr>
   <tr><td>SDK 层</td><td><code>AgentConversationSDK</code></td><td>WebSocket 连接管理、消息收发、MCP 工具分发</td></tr>
   <tr><td>服务层</td><td><code>AgentSDKService</code></td><td>SDK 初始化、连接状态管理、单例封装</td></tr>
   <tr><td>管理层</td><td><code>ConversationManager</code></td><td>对话状态、消息列表、流式消息、错误处理</td></tr>
 </table>
+</div>
 
 <h3>完整通信流程</h3>
 
@@ -463,6 +468,7 @@
 
 <p>打开对话时，<code>ConversationManager</code> 注册了一系列回调：</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="回调驱动的响应式更新（表格）">
 <table>
   <tr><th>回调</th><th>触发时机</th><th>处理逻辑</th></tr>
   <tr><td><code>onMessagesChange</code></td><td>消息增删</td><td>更新 messages 数组，替换临时消息</td></tr>
@@ -472,6 +478,7 @@
   <tr><td><code>onTitleChange</code></td><td>对话标题更新</td><td>更新 title，尝试重命名项目</td></tr>
   <tr><td><code>onMessageDone</code></td><td>消息处理完成</td><td>记录 credits 消耗</td></tr>
 </table>
+</div>
 
 <div class="card info">
   <div class="card-label">乐观更新模式</div>

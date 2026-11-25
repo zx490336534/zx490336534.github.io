@@ -57,6 +57,7 @@
   .card a:hover{text-decoration:underline}
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -142,6 +143,7 @@ export function defineAgent(definition) {
 
 <h3>defineAgent 配置项详解</h3>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="defineAgent 配置项详解（表格）">
 <table>
   <tr><th>字段</th><th>类型</th><th>默认值</th><th>说明</th></tr>
   <tr><td><code>id</code></td><td>string</td><td>从文件名推断</td><td>Agent 唯一标识，如 <code>chart-agent</code></td></tr>
@@ -158,6 +160,7 @@ export function defineAgent(definition) {
   <tr><td><code>initialForm</code></td><td>object</td><td>null</td><td>对话前收集信息的表单配置</td></tr>
   <tr><td><code>modelOptions</code></td><td>array</td><td>[]</td><td>可切换的模型选项</td></tr>
 </table>
+</div>
 
 <h3>extractMetadata — 元数据提取</h3>
 <p><code>define.js</code> 还导出了 <code>extractMetadata()</code> 函数，用于从 Agent 定义中提取轻量级元数据（不含 <code>createAgent</code> 函数），供 <code>/api/agents</code> 返回给前端：</p>
@@ -414,6 +417,7 @@ export function getRunningTasks() {
 }</code></pre>
 
 <h3>流式事件类型</h3>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="流式事件类型（表格）">
 <table>
   <tr><th>事件</th><th>说明</th></tr>
   <tr><td><code>on_chat_model_start</code></td><td>LLM 开始生成</td></tr>
@@ -423,6 +427,7 @@ export function getRunningTasks() {
   <tr><td><code>on_tool_end</code></td><td>工具执行完成</td></tr>
   <tr><td><code>on_tool_error</code></td><td>工具执行出错</td></tr>
 </table>
+</div>
 
 <h3>Tool Progress Handler</h3>
 <p>工具进度处理器（<code>toolProgressHandler.js</code>）将工具调用事件转换为前端可展示的进度信息，包括工具名称、输入参数、执行状态等。</p>

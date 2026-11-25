@@ -9,6 +9,7 @@
   *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.78 -apple-system,BlinkMacSystemFont,"Noto Sans SC","Segoe UI",sans-serif}.container{max-width:860px;margin:0 auto;padding:3rem 2rem}h1{font-size:2rem;margin:.2rem 0 .5rem}.subtitle{color:var(--muted);padding-bottom:1.5rem;border-bottom:1px solid var(--border);margin-bottom:2rem}h2{font-size:1.35rem;margin:2.2rem 0 .9rem}p{margin:.35rem 0 1rem}code{background:var(--code);border-radius:4px;padding:.12em .35em;font-family:Menlo,Consolas,monospace;font-size:.9em}pre{background:#1c1917;color:#e7e5e4;border-radius:8px;padding:1rem 1.2rem;overflow:auto;font:14px/1.65 Menlo,Consolas,monospace}.card{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--info);border-radius:8px;padding:1rem 1.15rem;margin:1rem 0}.card.warn{border-left-color:var(--warn)}table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:1rem 0}th,td{padding:.65rem .75rem;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}th{font-size:.82rem;color:var(--muted);background:#f5f5f4}tr:last-child td{border-bottom:0}.flow{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:1rem 0}.step{border:1px solid var(--border);background:#fff;border-radius:6px;padding:.4rem .7rem}.arrow{color:var(--muted)}.ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;color:#1e40af;padding:1rem;margin:1.4rem 0}.ask-agent:before{content:"提示：";font-weight:700}.quiz{background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.15rem;margin:1.4rem 0}.quiz-options{list-style:none;margin:.5rem 0 0;padding:0}.quiz-options li{padding:.45rem .65rem;border-radius:6px;border:1px solid transparent;cursor:pointer}.quiz-options li:hover{border-color:#fbbf24}.correct{background:#dcfce7}.wrong{background:#fee2e2}.quiz-feedback{display:none;margin-top:.6rem;padding:.6rem;border-radius:6px}
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -16,6 +17,7 @@
 <p class="subtitle">目标：理解从 Kaptain 需求到功能分支、MR、release 日期分支、上线和回滚的最小工作流。</p>
 
 <h2>1. 先理解四个对象</h2>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="1. 先理解四个对象（表格）">
 <table>
   <tr><th>对象</th><th>作用</th><th>你要记住什么</th></tr>
   <tr><td>Kaptain 事项</td><td>需求、任务或缺陷的来源。</td><td>分支名、commit、MR 标题最好带事项 key，例如 <code>COOAI-xxx</code>，方便追溯。只有数字 id 时，先查出 key 和标题。</td></tr>
@@ -23,6 +25,7 @@
   <tr><td>发布分支</td><td>一次上线窗口的集成分支，常见格式是 <code>release/YYYYMMDD</code>。</td><td>Confluence 中有自动创建 <code>release/YYYYmmdd</code> 的 Git 插件示例。</td></tr>
   <tr><td>MR / Pipeline</td><td>代码评审和自动检查入口。</td><td>不要绕过 MR 直接推关键分支；上线前看 pipeline 和评审状态。</td></tr>
 </table>
+</div>
 
 <div class="flow">
   <span class="step">Kaptain 事项</span><span class="arrow">→</span>
@@ -61,12 +64,14 @@ git checkout -b release/20260617 origin/release/20260617
 # 必须本地处理时，先确认团队允许 cherry-pick 或 merge
 git cherry-pick &lt;commit-hash&gt;</pre>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="3. 合入 release 日期分支（表格）">
 <table>
   <tr><th>方式</th><th>适合场景</th><th>风险</th></tr>
   <tr><td>MR 合入 release</td><td>常规上线、需要评审和 pipeline。</td><td>需要处理冲突和评审等待。</td></tr>
   <tr><td>cherry-pick 到 release</td><td>只挑某几个 commit 上线，或从复杂分支里剥离改动。</td><td>容易漏 commit；必须记录来源。</td></tr>
   <tr><td>revert</td><td>上线后快速回退某个 MR。</td><td>GitLab 自动 revert 可能因后续提交冲突失败。</td></tr>
 </table>
+</div>
 
 <h2>4. 回滚和补救的基本判断</h2>
 <p>Confluence 的 Release 分支回滚规范给了三个层级：</p>

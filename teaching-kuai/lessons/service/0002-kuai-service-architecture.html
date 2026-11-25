@@ -68,6 +68,7 @@ function checkAnswer(qId, correct, el){
 }
 </script>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -111,12 +112,14 @@ function checkAnswer(qId, correct, el){
   <span class="flow-step ext">外部 API (FastGPT/企微)</span>
 </div>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="🏗️ 三层架构总览（表格）">
 <table>
   <tr><th>层级</th><th>职责</th><th>所在包</th></tr>
   <tr><td><strong>Controller</strong></td><td>接收 HTTP 请求，参数校验，调用 Service，返回统一 Result</td><td><code>com.qunhe.kuai.controller</code></td></tr>
   <tr><td><strong>Service</strong></td><td>核心业务逻辑，事务管理，异步任务编排</td><td><code>com.qunhe.kuai.Service</code></td></tr>
   <tr><td><strong>Mapper</strong></td><td>数据访问，SQL/查询定义</td><td><code>com.qunhe.kuai.mapper</code> + <code>mapper.fastGpt</code></td></tr>
 </table>
+</div>
 
 <!-- ============ 2. 调用链 1: Prompt 管理 ============ -->
 <h2><span class="icon">📝</span> 调用链 1：Prompt 管理</h2>
@@ -137,6 +140,7 @@ function checkAnswer(qId, correct, el){
 </div>
 
 <p>其他 Prompt 相关接口遵循相同模式：</p>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="📝 调用链 1：Prompt 管理（表格）">
 <table>
   <tr><th>HTTP 方法</th><th>路径</th><th>Controller 方法</th><th>说明</th></tr>
   <tr><td><code>GET</code></td><td><code>/api/prompts</code></td><td><code>getPromptList()</code></td><td>列表查询（支持分类/关键词/状态筛选）</td></tr>
@@ -145,6 +149,7 @@ function checkAnswer(qId, correct, el){
   <tr><td><code>DELETE</code></td><td><code>/api/sso/prompts/{id}</code></td><td><code>deletePrompt()</code></td><td>删除（需 SSO 登录）</td></tr>
   <tr><td><code>PUT</code></td><td><code>/api/sso/prompts/{id}/publish</code></td><td><code>publishPrompt()</code></td><td>发布</td></tr>
 </table>
+</div>
 
 <!-- ============ 3. 调用链 2: LLM 评估 ============ -->
 <h2><span class="icon">🤖</span> 调用链 2：LLM 批量评估</h2>
@@ -211,6 +216,7 @@ function checkAnswer(qId, correct, el){
 <!-- ============ 5. 关键类速查 ============ -->
 <h2><span class="icon">📋</span> 关键类速查表</h2>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="📋 关键类速查表（表格）">
 <table>
   <tr><th>类名</th><th>层级</th><th>职责</th></tr>
   <tr><td><code>CommonServiceApplication</code></td><td>启动</td><td>Spring Boot 入口，@MapperScan + @EnableAsync 等</td></tr>
@@ -226,6 +232,7 @@ function checkAnswer(qId, correct, el){
   <tr><td><code>ChatRepository</code></td><td>Mapper</td><td>MongoDB 会话数据访问</td></tr>
   <tr><td><code>BatchTaskProgressTracker</code></td><td>Util</td><td>批量任务进度追踪，合并更新减少 DB 写入</td></tr>
 </table>
+</div>
 
 <!-- ============ 6. 数据流 ============ -->
 <h2><span class="icon">🔄</span> 数据流模式</h2>

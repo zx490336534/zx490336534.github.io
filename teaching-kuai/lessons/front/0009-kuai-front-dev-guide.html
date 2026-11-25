@@ -60,6 +60,7 @@
 .nav-links{max-width:900px;margin:2.5rem auto 0;padding:1.5rem 2rem;border-top:1px solid #e7e5e4;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem}.nav-links a{color:#b45309;text-decoration:none;font-weight:500}.nav-links a:hover{text-decoration:underline}
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -160,6 +161,7 @@ curl http://localhost:3000/api/agents | grep "my-new-agent"
 # http://localhost:3000/agents?agent=my-new-agent</code></pre>
 
 <h3>defineAgent 配置速查</h3>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="defineAgent 配置速查（表格）">
 <table>
   <tr><th>配置项</th><th>类型</th><th>说明</th></tr>
   <tr><td><code>id</code></td><td>string</td><td>Agent ID（可选，默认从文件名推断）</td></tr>
@@ -173,6 +175,7 @@ curl http://localhost:3000/api/agents | grep "my-new-agent"
   <tr><td><code>examples</code></td><td>Array</td><td>示例问题列表</td></tr>
   <tr><td><code>createAgent</code></td><td>Function</td><td>创建 LangGraph Agent 的函数（必填）</td></tr>
 </table>
+</div>
 
 <!-- ============================== -->
 <h2><span class="icon">📄</span> 2. 如何新增页面</h2>
@@ -207,12 +210,14 @@ export default function MyFeaturePage() {
 }</code></pre>
 
 <h3>2.3 组件组织规范</h3>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="2.3 组件组织规范（表格）">
 <table>
   <tr><th>类型</th><th>目录</th><th>说明</th></tr>
   <tr><td>功能组件</td><td><code>src/components/features/[功能名]/</code></td><td>业务相关的组件</td></tr>
   <tr><td>通用组件</td><td><code>src/components/common/</code></td><td>可复用的基础组件</td></tr>
   <tr><td>布局组件</td><td><code>src/components/layout/</code></td><td>Header、Footer、Sider 等</td></tr>
 </table>
+</div>
 
 <!-- ============================== -->
 <h2><span class="icon">🔧</span> 3. 如何新增 MCP 工具</h2>
@@ -405,6 +410,7 @@ async rewrites() {
 </ul>
 
 <h3>5.4 现有 API Routes 一览</h3>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="5.4 现有 API Routes 一览（表格）">
 <table>
   <tr><th>路径</th><th>说明</th></tr>
   <tr><td><code>/api/agents/*</code></td><td>Agent 元数据和对话 API</td></tr>
@@ -416,6 +422,7 @@ async rewrites() {
   <tr><td><code>/api/metrics/*</code></td><td>指标监控</td></tr>
   <tr><td><code>/api/ai/*</code></td><td>AI 相关 API</td></tr>
 </table>
+</div>
 
 <!-- ============================== -->
 <h2><span class="icon">📋</span> 6. 开发流程总结</h2>
@@ -449,6 +456,7 @@ async rewrites() {
 <!-- ============================== -->
 <h2><span class="icon">🐛</span> 7. 常见问题速查</h2>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="🐛 7. 常见问题速查（表格）">
 <table>
   <tr><th>问题</th><th>原因</th><th>解决方案</th></tr>
   <tr><td>Agent 不显示</td><td>未在 scanner.js 注册</td><td>添加 import 和 AGENT_MODULES 条目</td></tr>
@@ -458,6 +466,7 @@ async rewrites() {
   <tr><td>Redux 状态刷新丢失</td><td>数据仅在内存中</td><td>使用 localStorage 或 redux-persist</td></tr>
   <tr><td>ClaudeCode 连接失败</td><td>CLI/SDK 不可用或配置错误</td><td>检查模型、API Key、workDir 配置</td></tr>
 </table>
+</div>
 
 <!-- ============================== -->
 <div class="quiz-section">

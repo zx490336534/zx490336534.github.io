@@ -36,6 +36,7 @@
   ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.3rem}
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -68,6 +69,7 @@
 <h2>2. 本地启动最少要看这几项</h2>
 <p>两个后端仓库的 README 都给了本地启动参数。第一次启动时，先确认这些值一致：</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="2. 本地启动最少要看这几项（表格）">
 <table>
   <tr><th>配置项</th><th>作用</th><th>真实线索</th></tr>
   <tr><td><code>-Dspring.profiles.active=dev</code><br><code>SPRING_PROFILES_ACTIVE=dev</code></td><td>让 Spring 加载 <code>application-dev.yml</code> 这一组 profile 配置。</td><td>两个仓库的 <code>_appconfig/cicd.yml</code> 都按 dev/stable/prod_test/sit/prod 设置这个参数。</td></tr>
@@ -75,6 +77,7 @@
   <tr><td><code>-Dstage=dev</code><br><code>APP_STAGE=dev</code></td><td>给公司中间件和业务代码识别当前应用阶段。</td><td>auto-layout-service 的 Redis namespace 写了 <code>als:${APP_STAGE}:</code>。</td></tr>
   <tr><td><code>-Dqunhe.service.version=dev_{花名}</code></td><td>本地联调时标记服务版本，方便 SOA/网关路由到自己的服务。</td><td>两个仓库 README 都给了这个占位写法。</td></tr>
 </table>
+</div>
 
 <h2>3. 两个仓库的配置入口不同</h2>
 <h3>3.1 ai-native-service</h3>
@@ -119,12 +122,14 @@
 </div>
 
 <h2>5. Nacos、Pilot、toad 各管什么</h2>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="5. Nacos、Pilot、toad 各管什么（表格）">
 <table>
   <tr><th>名字</th><th>你该怎么理解</th><th>AIHom 里的证据</th></tr>
   <tr><td>Pilot</td><td>公司应用运行框架，README 指向 Pilot 文档，并要求改 <code>_appconfig/cicd.yml</code> 设置启动参数。</td><td>两个后端根 <code>pom.xml</code> 使用 <code>pilot-boot-dependencies</code>。</td></tr>
   <tr><td>toad</td><td>区分环境的远程配置中心，README 明确说 Pilot 推荐把环境差异配置托管到 toad。</td><td>两个服务都有 <code>qunhe.toad.app-id</code>。</td></tr>
   <tr><td>Nacos</td><td>ai-native-service 的 Agent 配置入口，主要影响 Agent、model、prompt、tool 这类 AI 编排配置。</td><td><code>AgentNodeFactory</code> 引入 <code>NacosAgentInjector</code>，<code>ChatModelFactory</code> 使用 Nacos model/prompt 相关类。</td></tr>
 </table>
+</div>
 
 <h2>6. 30 秒排查模板</h2>
 <pre>

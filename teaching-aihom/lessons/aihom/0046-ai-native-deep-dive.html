@@ -42,6 +42,7 @@
   ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.3rem}
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -103,6 +104,7 @@
 <h3>2.1 SendMessageHandlerImpl.handleMessage()</h3>
 <p>这是消息处理的<strong>入口方法</strong>，做了 6 件关键的事：</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="2.1 SendMessageHandlerImpl.handleMessage()（表格）">
 <table>
   <tr><th>步骤</th><th>代码</th><th>作用</th></tr>
   <tr><td>① 解析消息</td><td><code>JSONUtils.copyOf(data, ClientSendMessageDto.class)</code></td><td>从前端消息提取 graphId、graphVersion、content 等</td></tr>
@@ -112,6 +114,7 @@
   <tr><td>⑤ 保存消息</td><td><code>conversationService.createConversation / addMessage</code></td><td>新会话创建 + 保存用户消息到 DB</td></tr>
   <tr><td>⑥ 执行处理</td><td><code>messageProcessService.handleMessage(messageContext)</code></td><td>进入核心处理逻辑</td></tr>
 </table>
+</div>
 
 <div class="callout">
   <strong>注意：</strong>如果最后一条历史消息是未完成的 tool call，<code>processResponseMessage()</code> 会自动补充一条 timeout 的 tool response，避免下次对话卡死。
@@ -166,6 +169,7 @@ lock.tryLock(wait=2s, lease=3s, TimeUnit.SECONDS);
 
 <h3>2.5 Supervisor 路由</h3>
 <p><code>CustomSupervisorAgent</code> 根据用户意图路由到子 Agent：</p>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="2.5 Supervisor 路由（表格）">
 <table>
   <tr><th>子 Agent</th><th>职责</th></tr>
   <tr><td>Floorplan_to_Design</td><td>户型图 → 设计方案</td></tr>
@@ -175,6 +179,7 @@ lock.tryLock(wait=2s, lease=3s, TimeUnit.SECONDS);
   <tr><td>comment_AI</td><td>评论 AI</td></tr>
   <tr><td>Text_to_Layout</td><td>文字 → 布局</td></tr>
 </table>
+</div>
 
 <h3>2.6 MCP 工具桥接</h3>
 <p>后端需要前端资源时（如 3D 渲染），通过 WebSocket 发 Tool Call：</p>

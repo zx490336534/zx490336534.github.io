@@ -184,6 +184,12 @@ async function showResults() {
     results.append(item);
   }
 }
+search.addEventListener('keydown', event => {
+  if (event.key !== 'Escape' || event.isComposing || !search.value) return;
+  // Chromium clears a populated search field before sending a dialog close request.
+  event.preventDefault();
+  dialog.close();
+});
 search.addEventListener('input', event => { if (!event.isComposing) showResults(); });
 search.addEventListener('compositionend', showResults);
 

@@ -65,6 +65,7 @@ function checkAnswer(qId, correct, el){
 }
 </script>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -272,12 +273,14 @@ promptMapper.update(prompt);</code></pre>
 <h3>5.1 Prompt 评估流程</h3>
 <p><code>PromptEvaluationController</code> 提供了评估的完整 API：</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="5.1 Prompt 评估流程（表格）">
 <table>
   <tr><th>接口</th><th>方法</th><th>说明</th></tr>
   <tr><td><code>POST /sso/prompts/{promptId}/evaluations</code></td><td>创建评估</td><td>记录一次评估结果</td></tr>
   <tr><td><code>GET /prompts/{promptId}/evaluations</code></td><td>查询评估列表</td><td>支持按 version 筛选</td></tr>
   <tr><td><code>GET /evaluations/{id}</code></td><td>查询评估详情</td><td>获取单条评估记录</td></tr>
 </table>
+</div>
 
 <p>评估记录包含：测试场景、输入数据、输出数据、评估指标（JSON）、评分、反馈。这些数据可以用于：</p>
 <ul>
@@ -289,12 +292,14 @@ promptMapper.update(prompt);</code></pre>
 <h3>5.2 用户评论系统</h3>
 <p><code>PromptUserCommentController</code> 提供评论功能：</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="5.2 用户评论系统（表格）">
 <table>
   <tr><th>接口</th><th>方法</th><th>说明</th></tr>
   <tr><td><code>POST /sso/prompts/{promptId}/comments</code></td><td>发表评论</td><td>需要 SSO 登录</td></tr>
   <tr><td><code>GET /prompts/{promptId}/comments</code></td><td>查询评论列表</td><td>返回全部评论</td></tr>
   <tr><td><code>DELETE /comments/{commentId}</code></td><td>删除评论</td><td>仅评论人可删除</td></tr>
 </table>
+</div>
 
 <h3>5.3 SSO 认证机制</h3>
 <p>所有写操作（创建、发布、回滚、评论）都通过 <code>SsoSessionUtil.getUserInfo(httpRequest)</code> 获取当前登录用户：</p>
@@ -308,12 +313,14 @@ String currentUser = userInfo.getLdapId();</code></pre>
 <!-- ===== 6. API 全景 ===== -->
 <h2><span class="icon">🌐</span> 6. API 接口全景</h2>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="🌐 6. API 接口全景（表格）">
 <table>
   <tr><th>Controller</th><th>前缀</th><th>功能</th></tr>
   <tr><td><code>PromptVersionController</code></td><td><code>/api</code></td><td>版本的创建、列表、发布、回滚</td></tr>
   <tr><td><code>PromptEvaluationController</code></td><td><code>/api</code></td><td>评估记录的创建、查询</td></tr>
   <tr><td><code>PromptUserCommentController</code></td><td><code>/api</code></td><td>评论的创建、查询、删除</td></tr>
 </table>
+</div>
 
 <p>注意路径中的 <code>/sso/</code> 前缀表示需要 SSO 登录认证的接口，而没有 <code>/sso/</code> 的是公开查询接口。</p>
 

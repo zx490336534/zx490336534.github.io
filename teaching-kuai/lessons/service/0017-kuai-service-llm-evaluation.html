@@ -70,6 +70,7 @@ function checkAnswer(qId, correct, el){
 }
 </script>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -198,11 +199,13 @@ CompletableFuture.runAsync(
 <h3>3.1 双层线程池架构</h3>
 <p>系统使用两层线程池来控制并发：</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="3.1 双层线程池架构（表格）">
 <table>
   <tr><th>线程池</th><th>Bean 名称</th><th>用途</th></tr>
   <tr><td><strong>任务执行器</strong></td><td><code>llmTaskExecutor</code> / <code>deepEvalTaskExecutor</code></td><td>执行整个批量任务（只运行 1 个任务）</td></tr>
   <tr><td><strong>工作执行器</strong></td><td><code>llmEvalWorkerExecutor</code> / <code>deepEvalWorkerExecutor</code></td><td>执行单条 QA 评估（并发多个）</td></tr>
 </table>
+</div>
 
 <p>这种设计的好处：外层线程池控制任务级别并发（避免同时跑太多批量任务），内层线程池控制单条评估的并发（避免打爆 LLM API）。</p>
 
@@ -266,11 +269,13 @@ if (shouldStopTask(taskId)) {
 <h3>5.2 同步 vs 异步模式</h3>
 <p>DeepEval 支持两种调用模式，通过 <code>kuai.deepeval.async-enabled</code> 配置切换：</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="5.2 同步 vs 异步模式（表格）">
 <table>
   <tr><th>模式</th><th>调用方式</th><th>适用场景</th></tr>
   <tr><td><strong>同步模式</strong></td><td>直接 POST 到 <code>/evaluation/evaluate/direct</code></td><td>单条评估、快速响应</td></tr>
   <tr><td><strong>异步模式</strong></td><td>先提交到 <code>/evaluation/evaluate/async</code>，再轮询任务状态</td><td>批量评估、耗时较长</td></tr>
 </table>
+</div>
 
 <h3>5.3 异步轮询机制</h3>
 <p>异步模式下，Java 端通过轮询检查 Python 服务的任务状态：</p>
@@ -345,6 +350,7 @@ if (shouldStopTask(taskId)) {
 
 <h3>7.1 API 接口一览</h3>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="7.1 API 接口一览（表格）">
 <table>
   <tr><th>接口</th><th>说明</th></tr>
   <tr><td><code>GET /llmEvaluate/tasks</code></td><td>获取任务列表（分页）</td></tr>
@@ -355,6 +361,7 @@ if (shouldStopTask(taskId)) {
   <tr><td><code>POST /llmEvaluate/task/{taskId}/cancel</code></td><td>取消正在运行的任务</td></tr>
   <tr><td><code>POST /llmEvaluate/task/{taskId}/delete</code></td><td>删除任务及其评估记录</td></tr>
 </table>
+</div>
 
 <h3>7.2 CSV 导出</h3>
 <p>CSV 导出功能会生成包含以下字段的文件：</p>

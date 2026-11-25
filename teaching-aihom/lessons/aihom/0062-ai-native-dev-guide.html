@@ -40,6 +40,7 @@
   ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.3rem}
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -174,6 +175,7 @@
 </ol>
 
 <h2>5. 数据库表结构</h2>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="5. 数据库表结构（表格）">
 <table>
   <tr><th>表名</th><th>用途</th><th>关键字段</th></tr>
   <tr><td><code>conversation</code></td><td>会话</td><td>uuid, userId, graphId, title</td></tr>
@@ -182,6 +184,7 @@
   <tr><td><code>graph_nodes</code></td><td>图节点配置</td><td>graphId, nodeId, nodeType, config</td></tr>
   <tr><td><code>model_usage_info</code></td><td>模型用量</td><td>userId, model, tokens, cost</td></tr>
 </table>
+</div>
 
 <h2>6. 本地运行和调试</h2>
 <pre>
@@ -202,6 +205,7 @@ tail -f logs/ai-native-service.log
 </pre>
 
 <h2>7. 常见排查路径</h2>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="7. 常见排查路径（表格）">
 <table>
   <tr><th>问题</th><th>看哪里</th></tr>
   <tr><td>消息没响应</td><td><code>SendMessageHandlerImpl.handleMessage()</code> 的 catch 块日志</td></tr>
@@ -211,6 +215,7 @@ tail -f logs/ai-native-service.log
   <tr><td>流式消息中断</td><td><code>MessageProcessService</code> 的 doOnError 日志</td></tr>
   <tr><td>积分不足</td><td><code>InsufficientCreditsException</code> 日志 + 积分服务状态</td></tr>
 </table>
+</div>
 
 <h2>8. 自检 Quiz</h2>
 

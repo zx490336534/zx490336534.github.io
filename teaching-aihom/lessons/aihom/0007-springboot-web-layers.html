@@ -44,6 +44,7 @@
   .nav a.primary{color:#fff;border-color:#b45309;background:#b45309}.nav a.map{color:#2563eb;border-color:#bfdbfe;background:#eff6ff}
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -67,6 +68,7 @@
   <span class="flow-step">Result / VO</span>
 </div>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="1. 最小闭环不是死板三层（表格）">
 <table>
   <tr><th>角色</th><th>你可以这样理解</th><th>常见注解</th></tr>
   <tr><td>Controller</td><td>接 HTTP 请求，做登录 / 权限 / 参数入口，返回 <code>Result&lt;...&gt;</code></td><td><code>@RestController</code><br><code>@GetMapping</code><br><code>@PostMapping</code></td></tr>
@@ -75,6 +77,7 @@
   <tr><td>Manager</td><td>封装外部系统、复杂领域动作或第三方 SDK 调用</td><td><code>@Component</code><br><code>@Service</code></td></tr>
   <tr><td>Client / Mapper</td><td>Client 调别的服务；Mapper 读写数据库</td><td><code>@FeignClient</code><br><code>BaseMapper</code></td></tr>
 </table>
+</div>
 
 <div class="card info">
   <div class="card-label">全栈视角</div>
@@ -151,6 +154,7 @@ AutoLayoutFactory
 
 <h2>4. DTO / VO / Result / 异常怎么看</h2>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="4. DTO / VO / Result / 异常怎么看（表格）">
 <table>
   <tr><th>名字</th><th>在 AIHom 后端里的含义</th><th>例子</th></tr>
   <tr><td><code>ReqVo</code></td><td>HTTP 入参对象，通常跟接口请求体或 query 参数绑定</td><td><code>AutoLayoutWithImageReqVo</code><br><code>GetConversationReqVo</code></td></tr>
@@ -160,6 +164,7 @@ AutoLayoutFactory
   <tr><td><code>Result</code></td><td>统一接口返回壳，成功或失败都走标准结构</td><td><code>Result.ok()</code><br><code>Result&lt;LayoutTaskStatusVo&gt;</code></td></tr>
   <tr><td><code>BizzException</code></td><td>业务异常，常用于校验失败、外部调用失败、数据异常</td><td><code>throw new BizzException(...)</code></td></tr>
 </table>
+</div>
 
 <div class="card warning">
   <div class="card-label">排查建议</div>
@@ -193,6 +198,7 @@ AutoLayoutFactory
 
 <h2>7. 代码证据</h2>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="7. 代码证据（表格）">
 <table>
   <tr><th>你要确认什么</th><th>真实文件</th></tr>
   <tr><td>ai-native-service 的薄 Controller 和 ProcessorFactory 入口</td><td><code>ConversationController</code><br><code>ProcessorFactory</code></td></tr>
@@ -202,6 +208,7 @@ AutoLayoutFactory
   <tr><td>auto-layout-service 的 Factory / Manager / Mapper</td><td><code>AutoLayoutFactory</code><br><code>AiNativeManager</code><br><code>TaskMapper</code></td></tr>
   <tr><td>异常和统一返回</td><td><code>MoreExceptionHandler</code><br><code>CommonErrorCode</code><br><code>ErrorCode</code></td></tr>
 </table>
+</div>
 
 <h2>8. 自检 Quiz</h2>
 

@@ -216,6 +216,7 @@
   li { margin-bottom: 0.3rem; }
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -271,11 +272,13 @@
 </div>
 
 <h3>缓存结构</h3>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="缓存结构（表格）">
 <table>
   <tr><th>字段</th><th>类型</th><th>说明</th></tr>
   <tr><td>lightStyleMap</td><td>Map</td><td>灯光样式 ID → 灯光参数的映射表</td></tr>
   <tr><td>backgroundConfigData</td><td>Object</td><td>HDRI 背景 ID、环境光参数、地面配置等</td></tr>
 </table>
+</div>
 
 <!-- ==================== Section 3 ==================== -->
 <h2>3. 灯光样式映射</h2>
@@ -301,11 +304,13 @@
 
 <p>背景配置通过 <code>hdriBackgroundId</code> 和 <code>backgroundConfig</code> 两个字段管理：</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="4. 背景配置（表格）">
 <table>
   <tr><th>字段</th><th>作用</th></tr>
   <tr><td><code>hdriBackgroundId</code></td><td>标识当前使用的 HDRI 环境贴图</td></tr>
   <tr><td><code>backgroundConfig</code></td><td>完整的背景参数（环境光强度、地面反射、天空配置等）</td></tr>
 </table>
+</div>
 
 <p>背景配置同样来自 <code>obsConfigCache</code>，与灯光样式绑定在同一个模板下。切换模板时，灯光和背景会同时更新。</p>
 

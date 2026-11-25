@@ -3,12 +3,14 @@
 <style>
   :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--muted:#78716c;--accent:#b45309;--soft:#fef3c7;--border:#e7e5e4;--code:#f5f5f4;--info:#2563eb;--ok:#16a34a;--bad:#ef4444}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.8 -apple-system,BlinkMacSystemFont,"Noto Sans SC","Segoe UI",sans-serif}.container{max-width:780px;margin:0 auto;padding:3rem 2rem}h1{font-size:2rem;margin:.2rem 0 .5rem}.subtitle{color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:1.4rem;margin-bottom:2rem}h2{font-size:1.35rem;margin:2rem 0 .8rem}code{font-family:Menlo,Consolas,monospace;background:var(--code);padding:.15em .35em;border-radius:4px}pre{background:#1c1917;color:#e7e5e4;padding:1rem 1.2rem;border-radius:8px;overflow:auto}.card{background:#fff;border:1px solid var(--border);border-left:3px solid var(--info);border-radius:8px;padding:1rem 1.2rem;margin:1rem 0}.label{font-size:.75rem;color:var(--info);font-weight:700;text-transform:uppercase}table{width:100%;border-collapse:collapse;margin:1rem 0}th,td{border-bottom:1px solid var(--border);padding:.55rem;text-align:left;vertical-align:top}th{color:var(--muted)}.quiz{background:var(--soft);border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.2rem;margin:1.5rem 0}.quiz-options{list-style:none;margin:0;padding:0}.quiz-options li{padding:.45rem .65rem;margin:.35rem 0;border:1px solid transparent;border-radius:6px;cursor:pointer}.correct{background:#dcfce7!important;border-color:var(--ok)!important}.wrong{background:#fee2e2!important;border-color:var(--bad)!important}.quiz-feedback{display:none;margin-top:.6rem;padding:.6rem;border-radius:6px}.nav{margin-top:2.5rem;border:1px solid var(--border);border-radius:8px;background:#fff;padding:1rem}.nav a{display:inline-block;margin:.25rem;color:#444;text-decoration:none;border:1px solid var(--border);border-radius:6px;padding:.35rem .65rem}.nav a.primary{background:var(--accent);border-color:var(--accent);color:#fff}.nav a.map{background:#eff6ff;border-color:#bfdbfe;color:var(--info)}
 </style>  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head><body><div class="container">
 <h1>031 前端基础 11：工程化、调试与测试</h1>
 <p class="subtitle">目标：知道 package.json、构建器、source map、DevTools、前端测试在开发链路里各自负责什么。</p>
 
 <h2>1. package.json 是前端工程入口</h2>
 <p>读一个前端仓库，先看 <code>package.json</code>：脚本、依赖、React/TypeScript 版本、构建工具都在这里。</p>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="1. package.json 是前端工程入口（表格）">
 <table>
   <tr><th>字段</th><th>读法</th></tr>
   <tr><td><code>scripts</code></td><td>怎么启动、构建、测试</td></tr>
@@ -16,6 +18,7 @@
   <tr><td><code>devDependencies</code></td><td>开发和构建需要什么</td></tr>
   <tr><td><code>resolutions</code></td><td>强制依赖版本，排查依赖冲突时要看</td></tr>
 </table>
+</div>
 
 <h2>2. 构建器：把 TSX/CSS/资源变成浏览器能跑的文件</h2>
 <p>ai-home 使用 Rspack 相关构建链路。构建器负责处理 TypeScript、JSX、CSS、图片、代码拆分和开发服务器。</p>
@@ -25,6 +28,7 @@
   -> DevTools 通过 source map 映射回源码</pre>
 
 <h2>3. 前端调试四件套</h2>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="3. 前端调试四件套（表格）">
 <table>
   <tr><th>工具</th><th>用来查什么</th></tr>
   <tr><td>Console</td><td>运行时错误、日志、对象结构</td></tr>
@@ -32,14 +36,17 @@
   <tr><td>Elements</td><td>DOM、CSS、布局、z-index</td></tr>
   <tr><td>Sources</td><td>断点、调用栈、source map</td></tr>
 </table>
+</div>
 
 <h2>4. 测试：前端也要分层</h2>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="4. 测试：前端也要分层（表格）">
 <table>
   <tr><th>层级</th><th>适合测什么</th></tr>
   <tr><td>单元测试</td><td>纯函数、状态转换、工具方法</td></tr>
   <tr><td>组件测试</td><td>输入、按钮、局部 UI 状态</td></tr>
   <tr><td>E2E</td><td>真实浏览器里的完整流程，viewer-2d 已有 Playwright 方向</td></tr>
 </table>
+</div>
 
 <div class="card"><div class="label">全栈排查顺序</div><p>先复现，再看 Console/Network；有请求就拿 traceId 去后端查；没有请求就回到 React 事件、状态和按钮可用条件。这样不会在前后端之间来回乱跳。</p></div>
 

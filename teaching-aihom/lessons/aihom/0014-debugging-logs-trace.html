@@ -36,6 +36,7 @@
   ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.3rem}
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -46,12 +47,14 @@
 <h2>1. 排查时只抓三样东西</h2>
 <p>AIHom 链路长，前端、WebSocket、后端、Agent、tool 都可能出问题。不要一上来全看。先抓三样：</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="1. 排查时只抓三样东西（表格）">
 <table>
   <tr><th>东西</th><th>在哪里找</th><th>能回答什么</th></tr>
   <tr><td><code>request id</code></td><td>WebSocket 业务消息 <code>RawSocketMessage.id</code></td><td>前端这次 SendMessage 和后端响应是不是同一轮。</td></tr>
   <tr><td><code>traceId</code></td><td>请求头、后端日志、<code>SpanContextHolder.getTraceId()</code></td><td>这次请求在多个服务之间怎么串起来。</td></tr>
   <tr><td><code>conversationUuid</code></td><td>SendMessage data、后端 <code>MessageContext</code></td><td>这次对话的历史、锁、流式输出归属哪条会话。</td></tr>
 </table>
+</div>
 
 <div class="card info">
   <div class="card-label">核心习惯</div>
@@ -133,12 +136,14 @@
 <h2>6. QHLogger 和 traceId 怎么配合看</h2>
 <p>两个后端都使用 <code>QHLogger</code>，并在配置里打开 <code>qunhe.hunter.enable-mdc: true</code>。普通 HTTP 接口会在各自的 <code>BaseController.initContext()</code> 里写入 <code>SpanContextHolder.getTraceId()</code>。</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="6. QHLogger 和 traceId 怎么配合看（表格）">
 <table>
   <tr><th>服务</th><th>日志/trace 线索</th><th>用法</th></tr>
   <tr><td>ai-native-service</td><td><code>WsMessageListener</code>、<code>SendMessageHandlerImpl</code>、<code>MessageProcessService</code></td><td>用 <code>request id</code>、<code>conversationUuid</code>、<code>agent</code> 过滤。</td></tr>
   <tr><td>auto-layout-service</td><td><code>BaseProcessor.doAfter()</code>、<code>BaseAsyncV2Processor.onSuccess()</code></td><td>用 <code>traceId</code> 找接口入参、耗时、任务状态。</td></tr>
   <tr><td>ai-home</td><td><code>Tracer.error</code>、业务埋点、浏览器 Console</td><td>确认 SDK 是否连接、消息是否调用 <code>send()</code>。</td></tr>
 </table>
+</div>
 
 <h2>7. 如果调用到了 auto-layout-service</h2>
 <p>自动布局服务里很多接口是 Processor 模式。排查路径是：</p>

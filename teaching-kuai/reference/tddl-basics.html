@@ -61,6 +61,7 @@ function checkAnswer(qId, correct, el){
 }
 </script>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -92,6 +93,7 @@ function checkAnswer(qId, correct, el){
 <p>当你的系统只有一个数据库、数据量不大时，普通 JDBC（或 MyBatis 直连）完全够用。</p>
 <p>但当业务增长到一定程度，你会遇到这些问题：</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="💡 为什么不用普通 JDBC？（表格）">
 <table>
   <tr><th>场景</th><th>普通 JDBC 的问题</th><th>TDDL 的解决方案</th></tr>
   <tr><td>读多写少</td><td>所有请求打到一个库，主库压力大</td><td>自动读写分离，读走从库</td></tr>
@@ -99,6 +101,7 @@ function checkAnswer(qId, correct, el){
   <tr><td>多个数据源</td><td>代码里写死连接地址，切换麻烦</td><td>统一配置，动态路由</td></tr>
   <tr><td>数据库故障</td><td>应用直接报错，无法自动恢复</td><td>健康检查 + 自动故障转移</td></tr>
 </table>
+</div>
 
 <div class="card">
   <p class="card-title">🏢 酷家乐为什么用 TDDL？</p>

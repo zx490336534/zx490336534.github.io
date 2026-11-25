@@ -216,6 +216,7 @@
   li { margin-bottom: 0.3rem; }
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -234,12 +235,14 @@
 </div>
 
 <h3>三模块结构</h3>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="三模块结构（表格）">
 <table>
   <tr><th>模块</th><th>职责</th></tr>
   <tr><td><code>auto-layout-service-common</code></td><td>共享 DTO、VO、枚举</td></tr>
   <tr><td><code>auto-layout-service-client</code></td><td>Feign 客户端，供外部服务调用</td></tr>
   <tr><td><code>auto-layout-service-web</code></td><td><strong>核心业务</strong> — Processor、Manager、Service 全在这里</td></tr>
 </table>
+</div>
 
 <!-- ==================== Section 2 ==================== -->
 <h2>2. Processor 继承体系</h2>
@@ -304,6 +307,7 @@
 
 <h3>AutoLayoutWithImageProcessor.doProcessInner() 三步走</h3>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="AutoLayoutWithImageProcessor.doProcessInner() 三步走（表格）">
 <table>
   <tr><th>步骤</th><th>方法</th><th>做了什么</th></tr>
   <tr>
@@ -322,6 +326,7 @@
     <td>根据 AI 识别结果，匹配家具、计算布局坐标，生成最终方案</td>
   </tr>
 </table>
+</div>
 
 <div class="card success">
   <div class="card-label">设计亮点</div>
@@ -333,6 +338,7 @@
 
 <p>系统设计了两条并行的布局通道，通过不同的策略生成布局方案：</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="4. 双通道并行布局（表格）">
 <table>
   <tr><th>通道</th><th>策略</th><th>适用场景</th></tr>
   <tr>
@@ -346,6 +352,7 @@
     <td>新户型、无历史数据的情况</td>
   </tr>
 </table>
+</div>
 
 <div class="card info">
   <div class="card-label">为什么双通道</div>
@@ -381,6 +388,7 @@ String taskId = ctx.getTaskId();
 
 <p>Manager 层是 Processor 与外部服务之间的<strong>缓冲层</strong>。Processor 只管编排流程，具体的外部调用全交给 Manager。</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="6. Manager 层封装（表格）">
 <table>
   <tr><th>Manager</th><th>职责</th></tr>
   <tr><td><code>OpenaiManager</code></td><td>OpenAI API — chat completions、embeddings、图像分析（com.openai SDK）</td></tr>
@@ -389,6 +397,7 @@ String taskId = ctx.getTaskId();
   <tr><td><code>KamManager</code></td><td>KAM 户型服务 — 户型数据查询</td></tr>
   <tr><td><code>LOD200Manager</code> / <code>LOD300Manager</code></td><td>不同精度级别的户型处理服务</td></tr>
 </table>
+</div>
 
 <div class="card success">
   <div class="card-label">设计原则</div>

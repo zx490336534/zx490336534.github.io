@@ -36,6 +36,7 @@
   ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.3rem}
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -73,6 +74,7 @@
 
 <h2>2. 数据流：用户发送 "帮我设计一个客厅"</h2>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="2. 数据流：用户发送 &quot;帮我设计一个客厅&quot;（表格）">
 <table>
   <tr><th>步骤</th><th>仓库</th><th>动作</th><th>协议</th></tr>
   <tr><td>①</td><td>ai-home</td><td>用户输入消息，SDK 发送</td><td>WebSocket</td></tr>
@@ -86,29 +88,36 @@
   <tr><td>⑨</td><td>ai-home</td><td>渲染结果回传给 ai-native-service</td><td>WebSocket</td></tr>
   <tr><td>⑩</td><td>ai-native-service</td><td>组装最终回复，流式返回给前端</td><td>WebSocket</td></tr>
 </table>
+</div>
 
 <h2>3. 接口契约</h2>
 
 <h3>3.1 ai-home ↔ ai-native-service</h3>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="3.1 ai-home ↔ ai-native-service（表格）">
 <table>
   <tr><th>协议</th><th>用途</th><th>关键接口</th></tr>
   <tr><td>WebSocket/STOMP 帧 + RawSocketMessage</td><td>实时对话</td><td>SendMessage, CancelMessage, AddMessages</td></tr>
   <tr><td>HTTP REST</td><td>非实时操作</td><td>/conversation, /image, /credit</td></tr>
 </table>
+</div>
 
 <h3>3.2 ai-home ↔ viewer-2d / render-3d</h3>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="3.2 ai-home ↔ viewer-2d / render-3d（表格）">
 <table>
   <tr><th>协议</th><th>用途</th><th>关键消息</th></tr>
   <tr><td>iframe postMessage</td><td>数据同步</td><td>roomInfo, previewImage, showRule</td></tr>
   <tr><td>iframe postMessage</td><td>MCP 工具调用</td><td>capture3DScreenshot, generateVideo</td></tr>
 </table>
+</div>
 
 <h3>3.3 ai-native-service → auto-layout-service</h3>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="3.3 ai-native-service → auto-layout-service（表格）">
 <table>
   <tr><th>协议</th><th>用途</th><th>关键接口</th></tr>
   <tr><td>HTTP REST</td><td>自动布局</td><td>/auto-layout, /match-furniture</td></tr>
   <tr><td>HTTP REST</td><td>户型识别</td><td>/floorplan-to-structure</td></tr>
 </table>
+</div>
 
 <h2>4. 版本兼容性注意事项</h2>
 

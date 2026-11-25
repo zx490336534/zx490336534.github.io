@@ -37,6 +37,7 @@
 .nav-links{max-width:900px;margin:2.5rem auto 0;padding:1.5rem 2rem;border-top:1px solid #e7e5e4;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem}.nav-links a{color:#b45309;text-decoration:none;font-weight:500}.nav-links a:hover{text-decoration:underline}
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -58,12 +59,14 @@
 
 <p>kuai-service-front 项目当前使用以下工具保障代码质量：</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="1. 测试概览（表格）">
 <table>
   <tr><th>工具</th><th>用途</th><th>命令</th><th>当前状态</th></tr>
   <tr><td><strong>ESLint</strong></td><td>代码静态检查</td><td><code>pnpm lint</code></td><td>已配置 ✅</td></tr>
   <tr><td><strong>Vitest</strong></td><td>单元测试</td><td><code>pnpm test</code></td><td>框架可用，待完善</td></tr>
   <tr><td><strong>Playwright</strong></td><td>E2E 端到端测试</td><td><code>pnpm test:e2e</code></td><td>框架可用，待完善</td></tr>
 </table>
+</div>
 
 <div class="card warning">
   <div class="card-label">项目现状</div>
@@ -100,6 +103,7 @@ module.exports = {
 </pre>
 
 <h3>2.2 关键规则解读</h3>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="2.2 关键规则解读（表格）">
 <table>
   <tr><th>规则</th><th>级别</th><th>含义</th></tr>
   <tr><td><code>no-var</code></td><td>error</td><td>禁止使用 <code>var</code>，防止变量提升带来的 bug</td></tr>
@@ -110,6 +114,7 @@ module.exports = {
   <tr><td><code>max-params</code></td><td>error</td><td>函数最多 10 个参数（超过说明函数太复杂）</td></tr>
   <tr><td><code>no-console</code></td><td>off</td><td>允许 console.log（项目调试需要）</td></tr>
 </table>
+</div>
 
 <h3>2.3 忽略文件</h3>
 <p><code>.eslintignore</code> 配置了忽略目录：</p>
@@ -139,6 +144,7 @@ pnpm lint
 <p><a href="https://vitest.dev/" target="_blank">Vitest</a> 是一个基于 Vite 的极速测试框架，兼容 Jest API。适合测试纯函数、工具类、Hooks 等。</p>
 
 <h3>3.1 为什么选择 Vitest</h3>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="3.1 为什么选择 Vitest（表格）">
 <table>
   <tr><th>特性</th><th>Vitest</th><th>Jest</th></tr>
   <tr><td>速度</td><td>极快（基于 Vite）</td><td>较快</td></tr>
@@ -147,6 +153,7 @@ pnpm lint
   <tr><td>API 兼容</td><td>兼容 Jest</td><td>标准</td></tr>
   <tr><td>与 Next.js 16</td><td>推荐（Turbopack 兼容）</td><td>需要额外适配</td></tr>
 </table>
+</div>
 
 <h3>3.2 测试文件规范</h3>
 <p>测试文件命名约定：</p>
@@ -178,6 +185,7 @@ describe(<span class="string">'maskSecret'</span>, () => {
 </pre>
 
 <h3>3.3 适合单元测试的模块</h3>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="3.3 适合单元测试的模块（表格）">
 <table>
   <tr><th>模块</th><th>测试重点</th></tr>
   <tr><td><code>claudecodeTools.js</code></td><td><code>normalizeModelChoice</code>、<code>normalizeTimeout</code>、<code>maskSecret</code>、<code>shouldFallbackToDefaultModel</code></td></tr>
@@ -186,6 +194,7 @@ describe(<span class="string">'maskSecret'</span>, () => {
   <tr><td><code>streamUtils.js</code></td><td>流处理辅助函数</td></tr>
   <tr><td><code>modelConfig.js</code></td><td>模型配置导出</td></tr>
 </table>
+</div>
 
 <div class="card info">
   <div class="card-label">注意</div>
@@ -236,6 +245,7 @@ test(<span class="string">'应该能发送消息并收到回复'</span>, <span c
 </pre>
 
 <h3>4.3 适合 E2E 测试的场景</h3>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="4.3 适合 E2E 测试的场景（表格）">
 <table>
   <tr><th>场景</th><th>测试内容</th></tr>
   <tr><td>Agent 列表</td><td>页面加载、Agent 卡片渲染、点击跳转</td></tr>
@@ -244,6 +254,7 @@ test(<span class="string">'应该能发送消息并收到回复'</span>, <span c
   <tr><td>分享页面</td><td>访客模式访问、内容渲染</td></tr>
   <tr><td>导航</td><td>侧边栏展开收起、路由跳转</td></tr>
 </table>
+</div>
 
 <div class="card warning">
   <div class="card-label">注意</div>
@@ -265,6 +276,7 @@ test(<span class="string">'应该能发送消息并收到回复'</span>, <span c
 
 <h3>5.2 项目测试优先级</h3>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="5.2 项目测试优先级（表格）">
 <table>
   <tr><th>优先级</th><th>测试类型</th><th>覆盖范围</th></tr>
   <tr><td>P0（必须）</td><td>ESLint</td><td>所有代码提交前检查</td></tr>
@@ -272,6 +284,7 @@ test(<span class="string">'应该能发送消息并收到回复'</span>, <span c
   <tr><td>P2（补充）</td><td>E2E 测试</td><td>核心用户流程（登录→选 Agent→对话）</td></tr>
   <tr><td>P3（可选）</td><td>视觉回归</td><td>关键页面截图对比</td></tr>
 </table>
+</div>
 
 <h3>5.3 AI 项目的特殊挑战</h3>
 

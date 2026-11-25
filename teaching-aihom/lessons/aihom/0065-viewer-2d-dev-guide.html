@@ -214,6 +214,7 @@
   li { margin-bottom: 0.3rem; }
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -273,6 +274,7 @@
 
 <p>viewer-2d 的交互逻辑分布在多个模块中，修改前需要先定位到正确的模块。</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="2. 如何修改交互逻辑（表格）">
 <table>
   <tr><th>交互类型</th><th>涉及模块</th><th>关键文件</th></tr>
   <tr><td>拖拽移动</td><td>transform</td><td><code>src/modules/transform/</code></td></tr>
@@ -282,6 +284,7 @@
   <tr><td>左侧面板交互</td><td>LeftPanel + views</td><td><code>src/app/views/</code>、<code>src/StateManager/LeftPanelStateManager.ts</code></td></tr>
   <tr><td>工具切换</td><td>Tools</td><td><code>src/app/Tools/</code></td></tr>
 </table>
+</div>
 
 <h3>修改交互的标准流程</h3>
 
@@ -325,6 +328,7 @@
 
 <h3>3.3 现有用例</h3>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="3.3 现有用例（表格）">
 <table>
   <tr><th>用例文件</th><th>验证内容</th></tr>
   <tr><td><code>viewer-bootstrap.e2e.ts</code></td><td>基础挂载验证</td></tr>
@@ -333,6 +337,7 @@
   <tr><td><code>room-fill-geometry.e2e.ts</code></td><td>房间铺贴边界回归</td></tr>
   <tr><td><code>ai-home-push-session.e2e.ts</code></td><td>多 iframe 推送订阅竞态</td></tr>
 </table>
+</div>
 
 <h3>3.4 编写新用例的原则</h3>
 
@@ -352,6 +357,7 @@
 
 <p>遇到问题时，先确定问题属于哪条链路，然后按路径定位：</p>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="4. 常见排查路径（表格）">
 <table>
   <tr><th>问题类型</th><th>排查起点</th></tr>
   <tr><td>页面不挂载 / 容器尺寸异常</td><td><code>plugin.ts</code> → <code>App.tsx</code> → <code>state.ts</code></td></tr>
@@ -362,6 +368,7 @@
   <tr><td>拖拽/吸附/推理逻辑异常</td><td><code>modules/layout/</code> → <code>modules/inference/</code> → <code>modules/transform/</code></td></tr>
   <tr><td>外部数据不同步</td><td><code>documentSource/</code> → <code>helpers/</code> → <code>OutsideStateManager.ts</code></td></tr>
 </table>
+</div>
 
 <h3>排查步骤</h3>
 

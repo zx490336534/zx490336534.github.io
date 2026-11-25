@@ -48,6 +48,7 @@
   @media(max-width:640px){.container{padding:2rem 1rem 3.5rem}h1{font-size:1.65rem}.flow-row{grid-template-columns:1fr}pre{font-size:.78rem}}
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <main class="container">
@@ -92,7 +93,8 @@ ConversationManager.ts
   @observable taskQueueInfo = null;
 }</pre>
 
-  <table>
+  <div class="course-table-scroll" tabindex="0" role="region" aria-label="2. 第一条状态线：ConversationManager 管聊天（表格）">
+<table>
     <tr><th>字段</th><th>页面含义</th><th>你读代码时怎么用</th></tr>
     <tr><td><code>messages</code></td><td>已经显示出来的聊天消息</td><td>消息列表为什么多了一条，先查它</td></tr>
     <tr><td><code>streamMessage</code></td><td>正在流式生成的消息</td><td>AI 边生成边显示，先查它</td></tr>
@@ -100,6 +102,7 @@ ConversationManager.ts
     <tr><td><code>connectionStatus</code></td><td>连接、断开、重连</td><td>聊天区连接提示，先查它</td></tr>
     <tr><td><code>taskQueueInfo</code></td><td>排队位置、队列长度</td><td>输入框上方排队提示，先查它</td></tr>
   </table>
+</div>
 
   <h3><code>@observable</code> 是什么？</h3>
   <p>你先不用理解内部实现。第一次读代码时，只要把 <code>@observable</code> 当作一个标记：<strong>这个字段变了，相关页面可能跟着变</strong>。</p>
@@ -136,13 +139,15 @@ class AIChatDrawer extends React.Component {
 
   <p>你可以把 <code>RootStateManager</code> 想成一个总目录：</p>
 
-  <table>
+  <div class="course-table-scroll" tabindex="0" role="region" aria-label="3. 第二条状态线：RootStateManager 管画布和 viewer（表格）">
+<table>
     <tr><th>入口</th><th>负责什么</th><th>例子</th></tr>
     <tr><td><code>rootState.scene2D</code></td><td>2D 画布状态</td><td>缩放、拖动画布、选中对象</td></tr>
     <tr><td><code>rootState.viewerState</code></td><td>viewer 同步状态</td><td>刷新 loading、同步状态、布局进度</td></tr>
     <tr><td><code>rootState.userInfo</code></td><td>用户信息</td><td>租户、会员、订阅状态</td></tr>
     <tr><td><code>rootState.designDoc</code></td><td>当前设计文档</td><td>户型、容器、图片、视频来源</td></tr>
   </table>
+</div>
 
   <h2>4. ViewerStateManager：一个真实的“改状态”例子</h2>
   <p><code>ViewerStateManager</code> 里面有几个 <code>Map</code>，用来记录不同 viewer 的状态：</p>
@@ -195,17 +200,20 @@ class AIChatDrawer extends React.Component {
   Viewer2DImpl
 );</pre>
 
-  <table>
+  <div class="course-table-scroll" tabindex="0" role="region" aria-label="5. connect：把 RootStateManager 接进组件（表格）">
+<table>
     <tr><th>代码位置</th><th>你怎么读</th></tr>
     <tr><td>第一个函数</td><td>从根状态里拿哪几个 manager</td></tr>
     <tr><td>第二个函数</td><td>从 manager 里拿哪些字段给组件</td></tr>
     <tr><td>第三个参数</td><td>真正要渲染的组件</td></tr>
   </table>
+</div>
 
   <p>所以上面这段的意思就是：<code>Viewer2DImpl</code> 关心 <code>viewerState</code> 里的同步状态、刷新 loading、布局进度。</p>
 
   <h2>6. 五个词，一次只理解到这个程度</h2>
-  <table>
+  <div class="course-table-scroll" tabindex="0" role="region" aria-label="6. 五个词，一次只理解到这个程度（表格）">
+<table>
     <tr><th>词</th><th>小白版解释</th><th>AIHom 里怎么看</th></tr>
     <tr><td><code>@observable</code></td><td>被追踪的数据</td><td>字段变了，页面可能变</td></tr>
     <tr><td><code>@observer</code></td><td>会响应数据变化的组件</td><td>看 <code>render()</code> 读了什么</td></tr>
@@ -213,6 +221,7 @@ class AIChatDrawer extends React.Component {
     <tr><td><code>combine</code></td><td>把多个 manager 组合起来</td><td>组成 <code>RootStateManager</code></td></tr>
     <tr><td><code>connect</code></td><td>把状态接到组件 props</td><td>看组件订阅了哪些字段</td></tr>
   </table>
+</div>
 
   <h2>7. 以后读状态代码，就按这四步</h2>
   <ol>

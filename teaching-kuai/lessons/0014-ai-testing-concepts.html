@@ -47,6 +47,7 @@
   .info::before{content:'ℹ️ '}
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -66,13 +67,15 @@
 
 <div class="step">
   <div class="step-title">版本化的核心概念</div>
-  <table>
+  <div class="course-table-scroll" tabindex="0" role="region" aria-label="1.1 Prompt 版本化（表格）">
+<table>
     <tr><th>概念</th><th>说明</th></tr>
     <tr><td><strong>Prompt 模板</strong></td><td>包含变量占位符的文本，如 <code>{{user_input}}</code></td></tr>
     <tr><td><strong>版本号</strong></td><td>每次修改自动递增，支持语义化版本（v1.0.0）</td></tr>
     <tr><td><strong>标签</strong></td><td>标记版本用途：<code>production</code>、<code>staging</code>、<code>experiment</code></td></tr>
     <tr><td><strong>变更日志</strong></td><td>每次修改的说明，记录改了什么、为什么改</td></tr>
   </table>
+</div>
 </div>
 
 <pre><code>// kuai-service 中的 Prompt 版本模型
@@ -128,6 +131,7 @@ GET  /api/prompt/{id}/versions/latest    // 获取最新版本</code></pre>
 <p>LLM 的输出是非确定性的，传统测试方法（断言精确匹配）不适用。Kuai 平台采用多层次评估体系。</p>
 
 <h3>2.1 评估维度</h3>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="2.1 评估维度（表格）">
 <table>
   <tr><th>维度</th><th>说明</th><th>评估方法</th></tr>
   <tr><td><strong>相关性</strong></td><td>回答是否切题</td><td>LLM-as-Judge / 人工评分</td></tr>
@@ -136,6 +140,7 @@ GET  /api/prompt/{id}/versions/latest    // 获取最新版本</code></pre>
   <tr><td><strong>幻觉率</strong></td><td>是否编造不存在的信息</td><td>DeepEval FaithfulnessMetric</td></tr>
   <tr><td><strong>格式合规</strong></td><td>输出格式是否符合要求</td><td>正则 / JSON Schema 校验</td></tr>
 </table>
+</div>
 
 <h3>2.2 DeepEval 集成</h3>
 <p>DeepEval 是 Kuai 平台使用的核心 LLM 评估框架，提供开箱即用的评估指标。</p>

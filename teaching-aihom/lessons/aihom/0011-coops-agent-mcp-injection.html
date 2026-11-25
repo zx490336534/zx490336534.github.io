@@ -9,6 +9,7 @@
   *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.78 -apple-system,BlinkMacSystemFont,"Noto Sans SC","Segoe UI",sans-serif}.container{max-width:900px;margin:0 auto;padding:3rem 2rem}h1{font-size:2rem;margin:.2rem 0 .5rem}.subtitle{color:var(--muted);padding-bottom:1.5rem;border-bottom:1px solid var(--border);margin-bottom:2rem}h2{font-size:1.35rem;margin:2.2rem 0 .9rem}p{margin:.35rem 0 1rem}code{background:var(--code);border-radius:4px;padding:.12em .35em;font-family:Menlo,Consolas,monospace;font-size:.9em}pre{background:#1c1917;color:#e7e5e4;border-radius:8px;padding:1rem 1.2rem;overflow:auto;font:14px/1.65 Menlo,Consolas,monospace}.card{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--info);border-radius:8px;padding:1rem 1.15rem;margin:1rem 0}.card.warn{border-left-color:var(--warn)}table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:1rem 0}th,td{padding:.65rem .75rem;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}th{font-size:.82rem;color:var(--muted);background:#f5f5f4}tr:last-child td{border-bottom:0}.ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;color:#1e40af;padding:1rem;margin:1.4rem 0}.ask-agent:before{content:"提示：";font-weight:700}.quiz{background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.15rem;margin:1.4rem 0}.quiz-options{list-style:none;margin:.5rem 0 0;padding:0}.quiz-options li{padding:.45rem .65rem;border-radius:6px;border:1px solid transparent;cursor:pointer}.quiz-options li:hover{border-color:#fbbf24}.correct{background:#dcfce7}.wrong{background:#fee2e2}.quiz-feedback{display:none;margin-top:.6rem;padding:.6rem;border-radius:6px}
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -24,6 +25,7 @@
 
 <h2>2. Coops 页面实际读取什么</h2>
 <p>打开 Coops 的 Agent 详情页时，页面会从 Nacos 配置读取当前 Agent 的四类核心配置。</p>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="2. Coops 页面实际读取什么（表格）">
 <table>
   <tr><th>配置文件</th><th>Nacos group</th><th>作用</th><th>AIHom 现场</th></tr>
   <tr><td><code>agent-base.json</code></td><td><code>ai-agent-{agentName}</code></td><td>Agent 描述、<code>promptKey</code>、最大迭代次数。</td><td><code>Ai_Home_Agent</code> 的 <code>promptKey</code> 是 <code>Ai_Home_Agent</code>，最大迭代 100。</td></tr>
@@ -32,11 +34,13 @@
   <tr><td><code>agent-skill.json</code></td><td><code>ai-agent-{agentName}</code></td><td>该 Agent 直接挂载哪些 Skill。</td><td>当前 Supervisor 页面显示直接 Skill 数量为 0。</td></tr>
   <tr><td><code>prompt-{promptKey}.json</code></td><td><code>nacos-ai-meta</code></td><td>Agent 实际使用的 System Prompt 模板。</td><td>Supervisor 的路由规则就在 Prompt 里。</td></tr>
 </table>
+</div>
 
 <p>“直接挂载为 0”不等于整个 AIHom 没有工具。AIHom 还通过 StateGraph 的 Supervisor 配置挂 SubAgent，每个 SubAgent 可以有自己的 local tools 或 MCP tools。</p>
 
 <h2>3. StateGraph 补充哪块视角</h2>
 <p>Coops Agent 详情页看单个 Agent 的 Nacos 配置。AIHom 还要结合 Graph 数据库配置，才能回答“当前 AI Home 实际跑的是哪个 Supervisor 图”。</p>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="3. StateGraph 补充哪块视角（表格）">
 <table>
   <tr><th>来源</th><th>读取内容</th><th>能判断什么</th></tr>
   <tr><td>DB API <code>/api/dbv/sql/exec</code></td><td>查询 <code>state_graph</code>，限定 <code>graph_id='graph_ai_home'</code>、<code>deleted=0</code>、<code>is_active=1</code>。</td><td>当前激活 Graph 的 id、版本、名称。</td></tr>
@@ -44,9 +48,11 @@
   <tr><td><code>node_config</code></td><td>解析 <code>agentName</code>、<code>subAgents</code>、<code>subAgentList</code>、<code>localTools</code>。</td><td>Supervisor 下有哪些 SubAgent，每个 SubAgent 挂了哪些本地工具。</td></tr>
   <tr><td>Nacos</td><td>按每个 Agent 的 <code>agent-base.json</code> 和 <code>prompt-{promptKey}.json</code> 拉描述与 Prompt。</td><td>看见每个 Agent 的真实提示词和配置。</td></tr>
 </table>
+</div>
 
 <h2>4. 后端代码如何注入 MCP 和 Agent</h2>
 <p>读代码时抓住两条路径即可。</p>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="4. 后端代码如何注入 MCP 和 Agent（表格）">
 <table>
   <tr><th>路径</th><th>关键类</th><th>真实含义</th></tr>
   <tr><td>Nacos Agent 路径</td><td><code>CustomNacosReactAgentBuilder</code></td><td>加载 <code>AgentVO</code>、<code>PromptVO</code>、<code>ModelVO</code>、<code>McpServersVO</code>，把 local tools 和 MCP tools 合并成 <code>allTools</code>。</td></tr>
@@ -55,6 +61,7 @@
   <tr><td>postmessage 工具</td><td><code>FrontendNacosMcpGatewayToolCallback</code></td><td>协议是 <code>postmessage</code> 时，工具调用不是后端 HTTP，而是转给浏览器前端执行。</td></tr>
   <tr><td>StateGraph 配置路径</td><td><code>AgentNodeFactory</code></td><td>从 <code>AgentConfigDto</code> 创建 ReactAgent/SupervisorAgent，支持 <code>localTools</code> 和 <code>mcpServers</code>。</td></tr>
 </table>
+</div>
 
 <pre>Coops / Nacos 配置
   ↓
@@ -84,6 +91,7 @@ AgentToolNode: 模型返回 tool_calls 后按 name 找 callback 执行</pre>
 </div>
 
 <h2>6. 资料来源</h2>
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="6. 资料来源（表格）">
 <table>
   <tr><th>来源</th><th>这节课用它确认什么</th></tr>
   <tr><td>Coops Agent 帮助文档</td><td>Agent 管理中心支持 Agent、Prompt、Model、MCP Server、Skill 配置，配置可热更新、可流转。</td></tr>
@@ -92,6 +100,7 @@ AgentToolNode: 模型返回 tool_calls 后按 name 找 callback 执行</pre>
   <tr><td><code>CustomNacosReactAgentBuilder.java</code></td><td>Nacos Agent 构建和 MCP tools 合并入口。</td></tr>
   <tr><td><code>CustomNacosMcpGatewayToolsInitializer.java</code></td><td>MCP Server 详情解析、协议过滤、whiteTools、enabled 过滤、ToolCallback 创建。</td></tr>
 </table>
+</div>
 
 <div class="ask-agent">问 agent：“请基于 Coops Agent 页、StateGraph 配置、CustomNacosReactAgentBuilder 和 CustomNacosMcpGatewayToolsInitializer，帮我判断某个工具为什么没有被模型看到。”同时贴 region、namespace、agentName、mcp-servers.json、目标 tool name。</div>
 

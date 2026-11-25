@@ -37,6 +37,7 @@
 .nav-links{max-width:900px;margin:2.5rem auto 0;padding:1.5rem 2rem;border-top:1px solid #e7e5e4;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem}.nav-links a{color:#b45309;text-decoration:none;font-weight:500}.nav-links a:hover{text-decoration:underline}
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -157,12 +158,14 @@ https://kuai.example.com/share/abc123<span class="keyword">?mode=guest</span>
 
 <div class="card warning">
   <div class="card-label">核心区别</div>
-  <table>
+  <div class="course-table-scroll" tabindex="0" role="region" aria-label="4.2 访客模式的工作原理（表格）">
+<table>
     <tr><th>行为</th><th>正常模式</th><th>访客模式</th></tr>
     <tr><td>收到 401 时</td><td>跳转 SSO 登录页</td><td>返回空响应，不跳转</td></tr>
     <tr><td>适用路由</td><td>所有页面</td><td>仅 <code>/share/*</code></td></tr>
     <tr><td>用户信息</td><td>完整用户信息</td><td>无 / 匿名</td></tr>
   </table>
+</div>
 </div>
 
 <p>请求封装中的判断逻辑：</p>

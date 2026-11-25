@@ -214,6 +214,7 @@
   li { margin-bottom: 0.3rem; }
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="../../course-layout.css">
 </head>
 <body>
 <div class="container">
@@ -274,6 +275,7 @@ room.closePath();
 room.endFill();
 </pre>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="1.4 Graphics — 矢量图形（表格）">
 <table>
   <tr><th>类型</th><th>用途</th><th>性能</th><th>示例</th></tr>
   <tr><td>Container</td><td>分组 / 变换</td><td>无渲染开销</td><td>房间层、门窗层</td></tr>
@@ -281,6 +283,7 @@ room.endFill();
   <tr><td>Graphics</td><td>矢量绘图</td><td>中等（路径复杂时较慢）</td><td>房间轮廓、标注线</td></tr>
   <tr><td>Text</td><td>文字渲染</td><td>中等</td><td>房间名称、尺寸数值</td></tr>
 </table>
+</div>
 
 <!-- ==================== Section 2 ==================== -->
 <h2>2. Scene2D 渲染管线</h2>
@@ -369,12 +372,14 @@ room.endFill();
 
 <h3>3.2 View 的生命周期</h3>
 
+<div class="course-table-scroll" tabindex="0" role="region" aria-label="3.2 View 的生命周期（表格）">
 <table>
   <tr><th>阶段</th><th>方法</th><th>职责</th></tr>
   <tr><td>初始化</td><td><code>onInit</code></td><td>创建 PixiJS 对象、设置默认样式、注册事件监听</td></tr>
   <tr><td>更新</td><td><code>onUpdate</code></td><td>根据 Entity 数据变化更新 Drawable 的位置、样式、可见性</td></tr>
   <tr><td>销毁</td><td><code>onDestroy</code></td><td>移除 PixiJS 对象、解绑事件、释放资源</td></tr>
 </table>
+</div>
 
 <h3>3.3 实体与 Drawable 的绑定</h3>
 <p>每个业务实体（房间、门窗、标注）在 Scene2D 中对应一个或多个 Drawable（PixiJS 显示对象）。实体数据变化时，View 负责同步更新对应的 Drawable。</p>
