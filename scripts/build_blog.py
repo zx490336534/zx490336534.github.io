@@ -355,13 +355,15 @@ def starts_article(body, image):
 def set_display_covers(posts, opening_covers):
     for post in posts:
         stem = Path(post.path).stem
+        editorial = f"/images/article-covers/{stem}.webp"
         curated = f"/images/blog-covers/{stem}.webp"
-        for image in (curated, post.cover):
+        for image in (editorial, curated, post.cover):
             if image.startswith("/images/") and (ROOT / image.lstrip("/")).is_file():
                 post.display_cover = image
                 break
 
-        expected_opening = opening_covers.get(stem)
+        # A separately designed cover should not alter the original opening image in the body.
+        expected_opening = opening_covers.get(stem) if post.display_cover != editorial else None
         if expected_opening or not post.display_cover:
             body = BeautifulSoup(post.body, "lxml")
             if expected_opening and starts_article(body, body.find("img", src=expected_opening)):
