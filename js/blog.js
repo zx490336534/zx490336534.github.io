@@ -6,6 +6,77 @@ const results = document.querySelector('#search-results');
 const status = document.querySelector('#search-status');
 let index;
 
+function enableScrollNavigation() {
+  const masthead = document.querySelector('.masthead');
+  if (!masthead) return;
+  const root = document.documentElement;
+  const position = () => Math.max(0, Math.min(scrollY, root.scrollHeight - root.clientHeight));
+  let previous = position();
+  let height = masthead.offsetHeight;
+  let distance = 0;
+  let visible;
+  let pending = false;
+
+  function setOffset() {
+    root.style.setProperty('--masthead-offset', visible ? height + 'px' : '0px');
+  }
+
+  function show(next) {
+    if (visible === next) return;
+    visible = next;
+    masthead.toggleAttribute('data-scroll-hidden', !visible);
+    setOffset();
+  }
+
+  function update() {
+    pending = false;
+    const y = position();
+    const delta = y - previous;
+    previous = y;
+    const focused = document.activeElement;
+    if (y <= height || (masthead.contains(focused) && focused.matches(':focus-visible'))) {
+      distance = 0;
+      show(true);
+      return;
+    }
+    if (!delta) return;
+    if (distance * delta < 0) distance = 0;
+    distance += delta;
+    if ((visible && distance >= 28) || (!visible && distance <= -14)) {
+      show(!visible);
+      distance = 0;
+    }
+  }
+
+  masthead.setAttribute('data-scroll-nav', '');
+  root.style.setProperty('--masthead-height', height + 'px');
+  show(previous <= height || masthead.contains(document.activeElement));
+  addEventListener('scroll', () => {
+    if (pending) return;
+    pending = true;
+    requestAnimationFrame(update);
+  }, {passive: true});
+  masthead.addEventListener('focusin', () => {
+    previous = position();
+    distance = 0;
+    show(true);
+  });
+
+  function measure() {
+    const next = masthead.offsetHeight;
+    if (next === height) return;
+    height = next;
+    root.style.setProperty('--masthead-height', height + 'px');
+    setOffset();
+    update();
+  }
+
+  if ('ResizeObserver' in window) new ResizeObserver(measure).observe(masthead);
+  else addEventListener('resize', measure);
+}
+
+enableScrollNavigation();
+
 if (matchMedia('(max-width: 760px)').matches) {
   document.querySelector('.outline details')?.removeAttribute('open');
   document.querySelector('.catalog-menu[data-compact]')?.removeAttribute('open');
