@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>《流畅的Python》第十三章学习笔记 · 测试游记</title>
+  <meta name="description" content="运算符重载的作用是让用户定义的对象使用中缀运算符或一元运算符">
+  <meta property="og:title" content="《流畅的Python》第十三章学习笔记 · 测试游记">
+  <meta property="og:description" content="运算符重载的作用是让用户定义的对象使用中缀运算符或一元运算符">
+  <meta property="og:url" content="https://www.zhongxin.website/article/wechat-b60d807fd0df46.html">
+  <link rel="canonical" href="https://www.zhongxin.website/article/wechat-b60d807fd0df46.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <link rel="stylesheet" href="/css/blog.css">
+  <script src="/js/blog.js" defer></script>
+
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记<span>听白</span></a>
+      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
+      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+    </div>
+  </header>
+  <main id="main" class="wrap">
+  <article class="article">
+    <header class="article-header">
+      <a class="back-link" href="/archives/">← 文章归档</a>
+      <h1 class="post-title">《流畅的Python》第十三章学习笔记</h1>
+      <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2021-02-21T08:00:00+08:00">2021-02-21</time>
+        <span class="post-category categories"><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span></div>
+    </header>
+    <div class="article-layout with-outline">
+      <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E4%B8%AD%E7%BC%80%E8%BF%90%E7%AE%97%E7%AC%A6">中缀运算符</a></li><li><a href="#%E4%B8%80%E5%85%83%E8%BF%90%E7%AE%97%E7%AC%A6">一元运算符</a></li><li><a href="#Python%E5%AF%B9%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD%E7%9A%84%E9%99%90%E5%88%B6">Python对运算符重载的限制</a></li><li><a href="#%E4%B8%80%E5%85%83%E8%BF%90%E7%AE%97%E7%AC%A6%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F">一元运算符处理方式</a></li><li><a href="#%E4%B8%80%E5%85%83%E5%8F%96%E8%B4%9F%E7%AE%97%E6%9C%AF%E8%BF%90%E7%AE%97%E7%AC%A6">一元取负算术运算符</a></li><li><a href="#%E4%B8%80%E5%85%83%E5%8F%96%E6%AD%A3%E7%AE%97%E6%9C%AF%E8%BF%90%E7%AE%97%E7%AC%A6">一元取正算术运算符</a></li><li><a href="#%E5%AF%B9%E6%95%B4%E6%95%B0%E6%8C%89%E4%BD%8D%E5%8F%96%E5%8F%8D">对整数按位取反</a></li><li><a href="#%E9%87%8D%E8%BD%BD%E5%8A%A0%E6%B3%95%E8%BF%90%E7%AE%97%E7%AC%A6">重载加法运算符+</a></li><li><a href="#%E6%AF%94%E8%BE%83%E8%BF%90%E7%AE%97%E7%AC%A6">比较运算符</a></li><li><a href="#%E5%A2%9E%E9%87%8F%E8%B5%8B%E5%80%BC%E8%BF%90%E7%AE%97%E7%AC%A6">增量赋值运算符</a></li></ol></details></aside>
+      <div class="article-main">
+        <div class="post-body"><section><section></section><h1><span></span><br/></h1><blockquote><p>运算符重载的作用是让用户定义的对象使用中缀运算符或一元运算符</p></blockquote><h2 id="中缀运算符"><span>中缀运算符</span></h2><p>是一个通用的算术或逻辑公式表示方法， 操作符是以中缀形式处于操作数的中间（例：3 + 4），中缀表达式是人们常用的算术表示方法。</p><p>与前缀表达式（例：+34）或后缀表达式（例：34+）相比，中缀表达式不容易被计算机解析，但仍被许多程序语言使用，因为它符合人们的普遍用法。</p><figure><img alt="" decoding="async" height="902" loading="lazy" src="/images/blog-media/35cda22395d07c5a34c9.webp" width="584"/><figcaption>中缀运算符</figcaption></figure><h2 id="一元运算符"><span>一元运算符</span></h2><p>一元运算符只对一个表达式执行操作，该表达式可以是数值数据类型类别中的任何一种数据类型。</p><h2 id="Python对运算符重载的限制"><span>Python对运算符重载的限制</span></h2><ul class="list-paddingleft-2"><li><p><span>不能重载内置类型的运算符</span></p></li><li><p><span>不能新建运算符，只能重载现有的</span></p></li><li><p>某些运算符不能重载：<code>is</code>、<code>and</code>、<code>or</code>和<code>not</code></p></li></ul><h2 id="一元运算符处理方式"><span>一元运算符处理方式</span></h2><p>支持一元运算符，只需要实现相应的特殊方法。这些特殊方法只有一个参数<code>self</code></p><p>需要遵循一个基本规则：始终返回一个新对象。不能修改<code>self</code>，要创建并返回合适类型的新实例。</p><h3 id="一元取负算术运算符"><span>一元取负算术运算符</span></h3><p><code>-</code>:<code>__neg__</code></p><h3 id="一元取正算术运算符"><span>一元取正算术运算符</span></h3><p><code>+</code>:<code>__pos__</code></p><h3 id="对整数按位取反"><span>对整数按位取反</span></h3><p><code>~</code>:<code>__invert__</code></p><h2 id="重载加法运算符"><span>重载加法运算符+</span></h2><p>定义<code>__add__(self, other)</code>方法</p><figure><img alt="" decoding="async" height="688" loading="lazy" src="/images/blog-media/579f3945dcb824014aae.webp" width="761"/><figcaption>加法运算符</figcaption></figure><p><code>__radd__</code>是<code>__add__</code>的「反射」版本或「反向」版本</p><p>一般<code>__radd__</code>直接委托<code>__add__</code></p><pre><code><span><span>def</span> <span>__radd__</span><span>(self, other)</span>:</span><br/>  <span>return</span> self + other<br/></code></pre><h2 id="比较运算符"><span>比较运算符</span></h2><ul class="list-paddingleft-2"><li><p><span>正向和反向调用使用的是同一系列方法</span></p></li><li><p>对<code>==</code>和<code>!=</code>来说，如果反向调用失败，python会比较对象的ID，而不抛出TypeError</p></li></ul><figure><img alt="" decoding="async" height="313" loading="lazy" src="/images/blog-media/8b4a9edfbd4553cccbc3.webp" width="979"/><figcaption>比较运算符</figcaption></figure><h2 id="增量赋值运算符"><span>增量赋值运算符</span></h2><p>增量赋值运算符不会修改不可变目标，而是新建实例，然后重新绑定</p></section></div>
+        <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/3yvD1OMDvSbBgkwRzSrJWQ">查看微信公众号原文 ↗</a></p>
+        <div class="post-tags"></div>
+        <nav class="related" aria-label="相邻文章"><a href="/article/wechat-17d721c97eef39.html"><small>较新文章</small>《流畅的Python》第十四章学习笔记</a><a href="/article/wechat-aa4557bd7f5116.html"><small>较早文章</small>《流畅的Python》第十二章学习笔记</a></nav>
+
+      </div>
+    </div>
+  </article></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记</a>
+    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
+    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

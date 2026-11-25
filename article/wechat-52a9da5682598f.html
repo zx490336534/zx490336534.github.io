@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>《流畅的Python》第三章学习笔记 · 测试游记</title>
+  <meta name="description" content="字典，集合">
+  <meta property="og:title" content="《流畅的Python》第三章学习笔记 · 测试游记">
+  <meta property="og:description" content="字典，集合">
+  <meta property="og:url" content="https://www.zhongxin.website/article/wechat-52a9da5682598f.html">
+  <link rel="canonical" href="https://www.zhongxin.website/article/wechat-52a9da5682598f.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <link rel="stylesheet" href="/css/blog.css">
+  <script src="/js/blog.js" defer></script>
+
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记<span>听白</span></a>
+      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
+      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+    </div>
+  </header>
+  <main id="main" class="wrap">
+  <article class="article">
+    <header class="article-header">
+      <a class="back-link" href="/archives/">← 文章归档</a>
+      <h1 class="post-title">《流畅的Python》第三章学习笔记</h1>
+      <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2020-12-02T21:31:24+08:00">2020-12-02</time>
+        <span class="post-category categories"><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span></div>
+    </header>
+    <div class="article-layout with-outline">
+      <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E5%AD%97%E5%85%B8%E7%9A%84%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95">字典的构造方法</a></li><li><a href="#%E7%BB%9F%E8%AE%A1%E4%B8%80%E4%B8%B2%E5%AD%97%E7%AC%A6%E5%90%84%E4%B8%AA%E5%AD%97%E6%AF%8D%E5%87%BA%E7%8E%B0%E7%9A%84%E7%B4%A2%E5%BC%95%E5%80%BC">统计一串字符各个字母出现的索引值</a></li><li><a href="#%E4%BD%BF%E7%94%A8%E5%B8%B8%E8%A7%84%E6%96%B9%E6%B3%95">使用常规方法</a></li><li><a href="#%E4%BD%BF%E7%94%A8setdefault">使用setdefault</a></li><li><a href="#%E5%BC%B9%E6%80%A7%E9%94%AE%E6%9F%A5%E8%AF%A2">弹性键查询</a></li><li><a href="#%E4%BD%BF%E7%94%A8defaultdict">使用defaultdict</a></li><li><a href="#%E5%AD%97%E5%85%B8%E7%9A%84%E5%8F%98%E7%A7%8D">字典的变种</a></li><li><a href="#OrdereDict">OrdereDict</a></li><li><a href="#ChainMap">ChainMap</a></li><li><a href="#Counter">Counter</a></li><li><a href="#UserDict">UserDict</a></li><li><a href="#%E6%B3%A8%E6%84%8F%E7%82%B9-%E9%80%9F%E5%BA%A6%E6%98%AF%E4%BB%A5%E7%89%BA%E7%89%B2%E7%A9%BA%E9%97%B4%E4%B8%BA%E4%BB%A3%E4%BB%B7%E8%80%8C%E6%8D%A2%E6%9D%A5%E7%9A%84">注意点：速度是以牺牲空间为代价而换来的</a></li></ol></details></aside>
+      <div class="article-main">
+        <div class="post-body"><section><section></section><blockquote><p><code>散列表</code>是字典类型性能出众的根本原因</p></blockquote><p><strong>可散列的数据类型</strong>:如果一个对象是可散列的，那么在这个对象的生命周期中，它的散列值是不变的，而且这个对象需要实现<code>__hash__()</code> 方法</p><p>需要有<code>__eq__()</code>方法才可以与其他键做比较。如果两个可散列对象是相等的，那么它们的散列值一定是一样的。<br/><strong>散列值</strong>:对象的<code>id()</code>函数的返回值</p><ul class="list-paddingleft-2"><li><p><span>可散列</span></p></li></ul><p>一个可散列的对象必须满足以下要求。</p><p>(1) 支持 hash() 函数，并且通过 <strong>hash__() 方法所得到的散列值是不变的。(2) 支持通过 __eq</strong>() 方法来检测相等性。<br/>(3) 若 a == b 为真，则 hash(a) == hash(b) 也为真。</p><h2 id="字典的构造方法"><span>字典的构造方法</span></h2><pre><code>a = dict(one=<span>1</span>, two=<span>2</span>, three=<span>3</span>)<br/>b = {<span>'one'</span>: <span>1</span>, <span>'two'</span>: <span>2</span>, <span>'three'</span>: <span>3</span>}<br/>c = dict(zip([<span>'one'</span>, <span>'two'</span>, <span>'three'</span>], [<span>1</span>, <span>2</span>, <span>3</span>]))<br/>d = dict([(<span>'one'</span>, <span>1</span>), (<span>'two'</span>, <span>2</span>), (<span>'three'</span>, <span>3</span>)])<br/>e = dict({<span>"one"</span>: <span>1</span>, <span>"two"</span>: <span>2</span>, <span>"three"</span>: <span>3</span>})<br/>f = {i: j <span>for</span> i, j <span>in</span> [(<span>"one"</span>, <span>1</span>), (<span>"two"</span>, <span>2</span>), (<span>"three"</span>, <span>3</span>)]} <span># 字典推导式</span><br/></code></pre><h2 id="统计一串字符各个字母出现的索引值"><span>统计一串字符各个字母出现的索引值</span></h2><pre><code>test_str = <span>'ashjdlkqashfljkaskldfjalshflaksdnvklzkxcbfihqwdjuabs'</span><br/></code></pre><h3 id="使用常规方法"><span>使用常规方法</span></h3><pre><code><span>for</span> index, s <span>in</span> enumerate(test_str):<br/>    <span>if</span> s <span>not</span> <span>in</span> my_dict:<br/>        my_dict[s] = []<br/>    my_dict[s].append(index)<br/></code></pre><h3 id="使用setdefault"><span>使用setdefault</span></h3><pre><code>my_dict = {}<br/><span>for</span> index, s <span>in</span> enumerate(test_str):<br/>    my_dict.setdefault(s, []).append(index)<br/></code></pre><h2 id="弹性键查询"><span>弹性键查询</span></h2><h3 id="使用defaultdict"><span>使用defaultdict</span></h3><p>上面的问题使用<code>defaultdict</code>可以很方便的解决</p><pre><code><span>import</span> collections<br/><br/>my_dict = collections.defaultdict(list)<br/><span>for</span> index, i <span>in</span> enumerate(test_str):<br/>    my_dict[i].append(index)<br/></code></pre><p><code>defaultdict</code>在使用get方法的时候不会自动创建默认的类型</p><figure><img alt="" decoding="async" height="291" loading="lazy" src="/images/blog-media/a6fcfda4ec9934003b27.webp" width="795"/><figcaption>missing</figcaption></figure><pre><code>print(my_dict[<span>'a1'</span>])  <span># []</span><br/>print(my_dict.get(<span>'a2'</span>))  <span># None</span><br/></code></pre><h2 id="字典的变种"><span>字典的变种</span></h2><h3 id="OrdereDict"><span>OrdereDict</span></h3><ul class="list-paddingleft-2"><li><p>有顺序的字典:<code>collections.OrdereDict</code></p></li></ul><pre><code><span>import</span> collections<br/><br/>a = collections.OrderedDict()<br/>a[<span>'a'</span>] = <span>1</span><br/>a[<span>'c'</span>] = <span>3</span><br/>a[<span>'b'</span>] = <span>2</span><br/>print(a)  <span># OrderedDict([('a', 1), ('c', 3), ('b', 2)])</span><br/>a.popitem()<br/>print(a)  <span># OrderedDict([('a', 1), ('c', 3)])</span><br/></code></pre><h3 id="ChainMap"><span>ChainMap</span></h3><ul class="list-paddingleft-2"><li><p>容纳不同的映射对象<code>collections.ChainMap</code></p></li></ul><blockquote><p>一个 <code>ChainMap</code> 类是为了将多个映射快速的链接到一起，这样它们就可以作为一个单元处理。它通常比创建一个新字典和多次调用 <code>update()</code> 要快很多。</p><p>这个类可以用于模拟嵌套作用域，并且在模版化的时候比较有用。</p></blockquote><p>将多个字典或者其他映射组合在一起，创建一个单独的可更新的视图</p><pre><code>b = collections.ChainMap(locals())<br/></code></pre><figure><img alt="" decoding="async" height="494" loading="lazy" src="/images/blog-media/88930a6af20032920c29.webp" width="1080"/><figcaption>b</figcaption></figure><p>创建一个对象，它内部包含了当前的局部变量</p><p>直接使用<code>b['a']</code>方法去查找内容</p><p>!b['a']</p><h3 id="Counter"><span>Counter</span></h3><ul class="list-paddingleft-2"><li><p>计数:<code>collections.Counter</code></p></li></ul><pre><code>c = collections.Counter(<span>"asfsdfasdfasdfasdf"</span>)<br/>print(c)<span># Counter({'s': 5, 'f': 5, 'a': 4, 'd': 4})</span><br/></code></pre><h3 id="UserDict"><span>UserDict</span></h3><p>纯python实现的dict</p><h2 id="注意点-速度是以牺牲空间为代价而换来的"><span>注意点：速度是以牺牲空间为代价而换来的</span></h2><p>字典在内存上的开销巨大。</p><p>如果需要存储数量巨大的内容，推荐使用元祖或者具名元祖。</p><p>字典的实现是典型的<code>空间换时间</code></p></section></div>
+        <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/v5kHSrqhY8fasCjkUf5WSA">查看微信公众号原文 ↗</a></p>
+        <div class="post-tags"></div>
+        <nav class="related" aria-label="相邻文章"><a href="/article/wechat-13268120edd300.html"><small>较新文章</small>《流畅的Python》第四章学习笔记</a><a href="/article/wechat-6859feac04e513.html"><small>较早文章</small>《流畅的Python》第二章学习笔记</a></nav>
+
+      </div>
+    </div>
+  </article></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记</a>
+    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
+    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

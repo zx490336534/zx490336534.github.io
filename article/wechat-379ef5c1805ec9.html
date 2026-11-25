@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>使用 Yaml 进行 selenium 的 po 设计 · 测试游记</title>
+  <meta name="description" content="第一次打包上传pypi">
+  <meta property="og:title" content="使用 Yaml 进行 selenium 的 po 设计 · 测试游记">
+  <meta property="og:description" content="第一次打包上传pypi">
+  <meta property="og:url" content="https://www.zhongxin.website/article/wechat-379ef5c1805ec9.html">
+  <link rel="canonical" href="https://www.zhongxin.website/article/wechat-379ef5c1805ec9.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <link rel="stylesheet" href="/css/blog.css">
+  <script src="/js/blog.js" defer></script>
+
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记<span>听白</span></a>
+      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
+      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+    </div>
+  </header>
+  <main id="main" class="wrap">
+  <article class="article">
+    <header class="article-header">
+      <a class="back-link" href="/archives/">← 文章归档</a>
+      <h1 class="post-title">使用 Yaml 进行 selenium 的 po 设计</h1>
+      <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2020-08-22T12:20:10+08:00">2020-08-22</time>
+        <span class="post-category categories"><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span></div>
+    </header>
+    <div class="article-layout with-outline">
+      <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E5%AE%89%E8%A3%85">安装</a></li><li><a href="#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95">使用方法</a></li><li><a href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%BB%BDyaml">创建一份yaml</a></li><li><a href="#%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E9%A1%B5%E9%9D%A2%E6%93%8D%E4%BD%9C%E5%AF%B9%E8%B1%A1">创建一个页面操作对象</a></li><li><a href="#%E6%B5%8B%E8%AF%95">测试</a></li><li><a href="#%E8%BE%93%E5%87%BA">输出</a></li><li><a href="#%E6%88%AA%E5%9B%BE">截图</a></li></ol></details></aside>
+      <div class="article-main">
+        <div class="post-body"><section><p>使用<code>Yaml</code>文件进行元素信息的管理</p><h2 id="安装"><span>安装</span></h2><blockquote><p>Github地址：https://github.com/zx490336534/selenium-po</p></blockquote><pre><code><span>$</span><span> pip install selenium-po</span><br/></code></pre><h1 id="使用方法"><span>使用方法</span></h1><h2 id="创建一份yaml"><span>创建一份yaml</span></h2><p>代码中使用的是<code>name</code>后的内容，实际页面元素定位使用的<code>value</code>中的内容，方便后续统一维护</p><pre><code>pages:<br/>  - page:<br/>      pageName: index<br/>      desc: 首页<br/>      locators:<br/>        - {desc: "搜索栏",type: "id",value: "kw",timeout: 3, name: "index_input"}<br/>        - {desc: "查询按钮",type: "id",value: "su",timeout: 3, name: "index_search"}<br/>  - page:<br/>      pageName: news<br/>      desc: 新闻<br/>      locators:<br/>        - {desc: "搜索栏",type: "id",value: "ww",timeout: 3, name: "news_input"}<br/>        - {desc: "查询按钮",type: "id",value: "s_btn_wr",timeout: 3, name: "news_search"}<br/></code></pre><h2 id="创建一个页面操作对象"><span>创建一个页面操作对象</span></h2><pre><code><span>import</span> os<br/><span>import</span> time<br/><span>from</span> selenium_po.elementoperator <span>import</span> ElementOperator<br/><br/>path = os.path.dirname(os.path.abspath(__file__))<br/><br/><br/><span><span>class</span> <span>BaiDuIndexAction</span><span>(ElementOperator)</span>:</span><br/>    <span><span>def</span> <span>__init__</span><span>(self, path=<span>f"<span>{path}</span>/pages.yaml"</span>, file_name=<span>'index'</span>, driver=None)</span>:</span><br/>        super(BaiDuIndexAction, self).__init__(path, file_name, driver)<br/>        self.url = <span>'http://www.baidu.com'</span><br/><br/><br/><span><span>class</span> <span>BaiDuNewsAction</span><span>(ElementOperator)</span>:</span><br/>    <span><span>def</span> <span>__init__</span><span>(self, path=<span>f"<span>{path}</span>/pages.yaml"</span>, file_name=<span>'news'</span>, driver=None)</span>:</span><br/>        super(BaiDuNewsAction, self).__init__(path, file_name, driver)<br/>        self.url = <span>'http://news.baidu.com/'</span><br/></code></pre><h2 id="测试"><span>测试</span></h2><pre><code><span>if</span> __name__ == <span>'__main__'</span>:<br/>    baidu = BaiDuIndexAction()<br/>    baidu.open(baidu.url, baidu.index_input)<br/>    baidu.input(baidu.index_input, <span>"python"</span>)<br/>    baidu.click(baidu.index_search)<br/>    time.sleep(<span>2</span>)<br/>    baidu.screenshot_pic(<span>"1.png"</span>)<br/>    <span># baidu.close()</span><br/>    baidu_news = BaiDuNewsAction(driver=baidu.driver)<br/>    baidu_news.open(baidu_news.url, baidu_news.news_input)<br/>    baidu_news.input(baidu_news.news_input, <span>"python新闻"</span>)<br/>    baidu_news.click(baidu_news.news_search)<br/>    time.sleep(<span>2</span>)<br/>    baidu_news.screenshot_pic(<span>"2.png"</span>)<br/>    baidu_news.close()<br/></code></pre><h3 id="输出"><span>输出</span></h3><pre><code>往「首页_搜索栏」输入「python」<br/>点击「首页_查询按钮」<br/>往「新闻_搜索栏」输入「python新闻」<br/>点击「新闻_查询按钮」<br/></code></pre><h3 id="截图"><span>截图</span></h3><figure><img alt="" decoding="async" height="565" loading="lazy" src="/images/blog-media/ef651d252e872435b98a.webp" width="1080"/><figcaption>测试截图</figcaption></figure><figure><img alt="" decoding="async" height="565" loading="lazy" src="/images/blog-media/fdc44e55eaf45406aa00.webp" width="1080"/><figcaption>测试截图2</figcaption></figure></section></div>
+        <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/-MZdzrlNRy1MikpFNMzWtw">查看微信公众号原文 ↗</a></p>
+        <div class="post-tags"></div>
+        <nav class="related" aria-label="相邻文章"><a href="/article/e4409899.html"><small>较新文章</small>Java自动化测试(selenium 22)</a><a href="/article/2f8cb43e.html"><small>较早文章</small>Java自动化测试(jenkins 21)</a></nav>
+
+      </div>
+    </div>
+  </article></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记</a>
+    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
+    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Django接口新增页面编写（十四） · 测试游记</title>
+  <meta name="description" content="要开始写主体页面了，好头大。首先需要梳理一下，如果写一条接口测试需要什么东西。">
+  <meta property="og:title" content="Django接口新增页面编写（十四） · 测试游记">
+  <meta property="og:description" content="要开始写主体页面了，好头大。首先需要梳理一下，如果写一条接口测试需要什么东西。">
+  <meta property="og:url" content="https://www.zhongxin.website/article/wechat-14d6aea2c5f5b9.html">
+  <link rel="canonical" href="https://www.zhongxin.website/article/wechat-14d6aea2c5f5b9.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <link rel="stylesheet" href="/css/blog.css">
+  <script src="/js/blog.js" defer></script>
+
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记<span>听白</span></a>
+      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
+      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+    </div>
+  </header>
+  <main id="main" class="wrap">
+  <article class="article">
+    <header class="article-header">
+      <a class="back-link" href="/archives/">← 文章归档</a>
+      <h1 class="post-title">Django接口新增页面编写（十四）</h1>
+      <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2019-03-10T00:00:00+08:00">2019-03-10</time>
+        <span class="post-category categories"><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span></div>
+    </header>
+    <div class="article-layout ">
+
+      <div class="article-main">
+        <div class="post-body"><section class="output_wrapper"><p>要开始写主体页面了，好头大。<br/>首先需要梳理一下，如果写一条接口测试需要什么东西。<br/>不如参考一下postman和httpbin～http://httpbin.org/<br/>不过这个页面太卡了，我决定把它部署在本地然后再测试。<br/>使用docker好了，也不用管那些乱七八糟的环境了。<br/><code>docker run -p 80:80 kennethreitz/httpbin</code><br/>建议有空可以去了解一下docker，毕竟把乱七八糟的环境装在自己的电脑上还是蛮烦的，可能一下子遇到个环境问题就浪费一天。<br/>使用这句话就可以把kennethreitz大神写的httpbin镜像下载并在我们的80端口上开启了。<br/></p><figure><img alt="" class="" decoding="async" height="709" loading="lazy" src="/images/blog-media/250df2993b77a378dcb6.webp" width="1080"/><figcaption>运行</figcaption></figure><br/>等待下载完成。<br/>在等待的途中，看一下Postman都要哪些东西。<br/><figure><img alt="" class="" decoding="async" height="228" loading="lazy" src="/images/blog-media/47e5fda0a288f3eb6b04.webp" width="1080"/><figcaption>Postman</figcaption></figure><br/>首先是请求方法（<code>GET</code>，<code>POST</code>，<code>PUT</code>，<code>DELETE</code>）其他的请求方法感觉用的不是很多，就不写了。<br/>然后是请求参数，GET的参数需要以url的形式拼接起来，POST和PUT就需要使用各种形式的表单传输，DELETE一般也是通过url拼接。<br/>然后是鉴权了，不登录什么接口都是白扯。<br/><figure><img alt="" class="" decoding="async" height="858" loading="lazy" src="/images/blog-media/8cc3617c569f04af4dbe.webp" width="664"/><figcaption>鉴权</figcaption></figure><br/>鉴权也是一个很让人头大的事情，一些难以鉴权的可能就需要直接提供cookies了。所以先做<code>Basci Auth</code>，<code>Digest Auth</code>还有<code>直接传入cookies</code>好了。<br/>还有就是数据传输方式了，为了降低难度，先只支持<code>源数据raw</code>好了，就这么愉快的决定了。<br/><figure><img alt="" class="" decoding="async" height="486" loading="lazy" src="/images/blog-media/04aa803e64e296341ef1.webp" width="1080"/><figcaption>数据传输方式</figcaption></figure><p>在经过漫长的等待后本地的httpbin终于下载完成了。<br/></p><figure><img alt="" class="" decoding="async" height="3600" loading="lazy" src="/images/blog-media/59642867a894c6cba2e0.webp" width="906"/><figcaption>httpbin.jpg</figcaption></figure><br/>里面看到的东西应该都是requests包支持的，所以放心大胆的模仿就好了，总能从requests中找到轮子的。<br/>所以我们大概知道要做什么了，先来画一个页面的雏形<br/><figure><img alt="" class="" decoding="async" height="434" loading="lazy" src="/images/blog-media/7289014d7b2e99784241.webp" width="1080"/><figcaption>页面雏形</figcaption></figure><p>新增接口的页面大概就长这样吧，然后然后开始补全下拉框。<br/>继续打开之前的演示界面，来找一找下拉框怎么写<br/></p><figure><img alt="" class="" decoding="async" height="1066" loading="lazy" src="/images/blog-media/f55cb525840cc98a4ebb.webp" width="1080"/><figcaption>演示界面</figcaption></figure><br/><figure><img alt="" class="" decoding="async" height="715" loading="lazy" src="/images/blog-media/7743ad12667bf6464d4b.webp" width="1080"/><figcaption>下拉框</figcaption></figure><figure><img alt="" class="" decoding="async" height="708" loading="lazy" src="/images/blog-media/714e59cbf6f59153b832.webp" width="1080"/><figcaption>元素检查</figcaption></figure><br/>不管三七二十一，复制过去看看，然后修改下里面的英文内容<pre><code class="html language-html hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"col-md-6"</span>&gt;</span><br/>                <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"form-group"</span>&gt;</span><br/>                  <span class="hljs-tag">&lt;<span class="hljs-name">label</span>&gt;</span>请求方式<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span><br/>                  <span class="hljs-tag">&lt;<span class="hljs-name">select</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"form-control select2 select2-hidden-accessible"</span> <span class="hljs-attr">style</span>=<span class="hljs-string">"width: 100%;"</span> <span class="hljs-attr">tabindex</span>=<span class="hljs-string">"-1"</span><br/>                          <span class="hljs-attr">aria-hidden</span>=<span class="hljs-string">"true"</span>&gt;</span><br/>                    <span class="hljs-tag">&lt;<span class="hljs-name">option</span> <span class="hljs-attr">selected</span>=<span class="hljs-string">"selected"</span>&gt;</span>GET<span class="hljs-tag">&lt;/<span class="hljs-name">option</span>&gt;</span><br/>                    <span class="hljs-tag">&lt;<span class="hljs-name">option</span>&gt;</span>POST<span class="hljs-tag">&lt;/<span class="hljs-name">option</span>&gt;</span><br/>                    <span class="hljs-tag">&lt;<span class="hljs-name">option</span>&gt;</span>PUT<span class="hljs-tag">&lt;/<span class="hljs-name">option</span>&gt;</span><br/>                    <span class="hljs-tag">&lt;<span class="hljs-name">option</span>&gt;</span>DELETE<span class="hljs-tag">&lt;/<span class="hljs-name">option</span>&gt;</span><br/>                  <span class="hljs-tag">&lt;/<span class="hljs-name">select</span>&gt;</span><br/>                  <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"select2 select2-container select2-container--default select2-container--below"</span><br/>                        <span class="hljs-attr">dir</span>=<span class="hljs-string">"ltr"</span> <span class="hljs-attr">style</span>=<span class="hljs-string">"width: 100%;"</span>&gt;</span><br/>                    <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"selection"</span>&gt;</span><br/>                        <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"select2-selection__arrow"</span> <span class="hljs-attr">role</span>=<span class="hljs-string">"presentation"</span>&gt;</span><br/>                          <span class="hljs-tag">&lt;<span class="hljs-name">b</span> <span class="hljs-attr">role</span>=<span class="hljs-string">"presentation"</span>&gt;</span><br/>                        <span class="hljs-tag">&lt;/<span class="hljs-name">b</span>&gt;</span><br/>                        <span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span><br/>                      <span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span><br/>                    <span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span><br/>                  <span class="hljs-tag">&lt;<span class="hljs-name">span</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"dropdown-wrapper"</span><br/>                        <span class="hljs-attr">aria-hidden</span>=<span class="hljs-string">"true"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span><br/>                  <span class="hljs-tag">&lt;/<span class="hljs-name">span</span>&gt;</span><br/>                <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br/>              <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br/></code></pre><figure><img alt="" class="" decoding="async" height="92" loading="lazy" src="/images/blog-media/42d0452fdb97a8995879.webp" width="1080"/><figcaption>展示状态</figcaption></figure><br/>就变成这样了，明显太长了。。<br/>吧style="width: 100%;"改成style="width: 20%;"就好了<br/><figure><img alt="" class="" decoding="async" height="106" loading="lazy" src="/images/blog-media/9183c7201a89e9a2e714.webp" width="1080"/><figcaption>长度问题</figcaption></figure><br/>  真的感觉这些布局太不听话了。老是不按我的想法移动<br/><figure><img alt="" class="" decoding="async" height="650" loading="lazy" src="/images/blog-media/6f9657f13344e0dd47bb.webp" width="1080"/><figcaption>初步结果一</figcaption></figure><br/>既然如此，那今天就先到这了～<p>欢迎关注我的公众号：zx94_11</p></section></div>
+        <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/gUcPNCnhfOjTDVe9SrcEpA">查看微信公众号原文 ↗</a></p>
+        <div class="post-tags"></div>
+        <nav class="related" aria-label="相邻文章"><a href="/article/wechat-a2412362325306.html"><small>较新文章</small>Django接口新增页面编写_2（十五）</a><a href="/article/wechat-fb703c5427d337.html"><small>较早文章</small>Django操作接口集删除（十三）</a></nav>
+
+      </div>
+    </div>
+  </article></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记</a>
+    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
+    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

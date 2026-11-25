@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>ARTS打卡(第一周) · 测试游记</title>
+  <meta name="description" content="Algorithm。主要是为了编程训练和学习。每周至少做一个 leetcode 的算法题（先从Easy开始，">
+  <meta property="og:title" content="ARTS打卡(第一周) · 测试游记">
+  <meta property="og:description" content="Algorithm。主要是为了编程训练和学习。每周至少做一个 leetcode 的算法题（先从Easy开始，">
+  <meta property="og:url" content="https://www.zhongxin.website/article/wechat-e6ff23bcca78fb.html">
+  <link rel="canonical" href="https://www.zhongxin.website/article/wechat-e6ff23bcca78fb.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <link rel="stylesheet" href="/css/blog.css">
+  <script src="/js/blog.js" defer></script>
+
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记<span>听白</span></a>
+      <nav aria-label="主导航"><a href="/archives/">文章归档</a><a href="/categories/">分类</a><a href="/#courses">教学</a><a href="/about/">关于</a></nav>
+      <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+    </div>
+  </header>
+  <main id="main" class="wrap">
+  <article class="article">
+    <header class="article-header">
+      <a class="back-link" href="/archives/">← 文章归档</a>
+      <h1 class="post-title">ARTS打卡(第一周)</h1>
+      <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2019-04-04T00:50:19+08:00">2019-04-04</time>
+        <span class="post-category categories"><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span></div>
+    </header>
+    <div class="article-layout with-outline">
+      <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#Algorithm">Algorithm</a></li><li><a href="#%E5%88%97%E8%A1%A8%E6%93%8D%E4%BD%9C%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6">列表操作时间复杂度</a></li><li><a href="#%E5%AD%97%E5%85%B8%E6%93%8D%E4%BD%9C%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6">字典操作时间复杂度</a></li><li><a href="#Review">Review</a></li><li><a href="#Docker%E5%9F%BA%E7%A1%80">Docker基础</a></li><li><a href="#Tip">Tip</a></li><li><a href="#Share">Share</a></li></ol></details></aside>
+      <div class="article-main">
+        <div class="post-body"><section class="output_wrapper"><blockquote><p><strong>Algorithm</strong>。<strong>主要是为了编程训练和学习。</strong>每周至少做一个 leetcode 的算法题（先从Easy开始，然后再Medium，最后才Hard）。进行编程训练，如果不训练你看再多的算法书，你依然不会做算法题，看完书后，你需要训练。关于做Leetcode的的优势，你可以看一下我在coolshell上的文章 Leetcode 编程训练 - 酷 壳 - CoolShell。</p><p><strong>Review：主要是为了学习英文，如果你的英文不行，你基本上无缘技术高手。</strong>所以，需要你阅读并点评至少一篇英文技术文章，我个人最喜欢去的地方是http://Medium.com（需要梯子）以及各个公司的技术blog，如Netflix的。</p><p><strong>Tip：主要是为了总结和归纳你在是常工作中所遇到的知识点</strong>。学习至少一个技术技巧。你在工作中遇到的问题，踩过的坑，学习的点滴知识。</p><p><strong>Share：主要是为了建立你的影响力，能够输出价值观。</strong>分享一篇有观点和思考的技术文章。</p></blockquote><h2 id="Algorithm"><span>Algorithm</span></h2><blockquote><p>给定一个整数数组 <code>nums</code> 和一个目标值 <code>target</code>，请你在该数组中找出和为目标值的那 <strong>两个</strong> 整数，并返回他们的数组下标。</p><p>你可以假设每种输入只会对应一个答案。但是，你不能重复利用这个数组中同样的元素。</p><p><strong>示例:</strong></p><pre><code class="python language-python hljs">给定 nums = [<span class="hljs-number">2</span>, <span class="hljs-number">7</span>, <span class="hljs-number">11</span>, <span class="hljs-number">15</span>], target = <span class="hljs-number">9</span><br/><br/>因为 nums[<span class="hljs-number">0</span>] + nums[<span class="hljs-number">1</span>] = <span class="hljs-number">2</span> + <span class="hljs-number">7</span> = <span class="hljs-number">9</span><br/>所以返回 [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>]<br/></code></pre></blockquote><pre><code class="python language-python hljs"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Solution</span>:</span><br/>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">twoSum</span><span class="hljs-params">(self, nums: List[int], target: int)</span> -&gt; List[int]:</span><br/>        new_nums = [target - i <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> nums]<br/>        <span class="hljs-keyword">for</span> i,num <span class="hljs-keyword">in</span> enumerate(new_nums):<br/>            <span class="hljs-keyword">for</span> j,_num <span class="hljs-keyword">in</span> enumerate(nums):<br/>                <span class="hljs-keyword">if</span> num == _num <span class="hljs-keyword">and</span> i != j:<br/>                    <span class="hljs-keyword">return</span> [i,j]<br/></code></pre><figure><img alt="" class="" decoding="async" height="693" loading="lazy" src="/images/blog-media/70ef330c3d110b7bd166.webp" width="1080"/><figcaption>结果</figcaption></figure><p>逻辑上没有问题，但是看样子运算时间太长了。</p><p>第一题就翻车了，只能先看答案学习了，之后要加强算法相关知识的学习了。</p><pre><code class="python language-python hljs"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Solution</span>:</span><br/>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">twoSum</span><span class="hljs-params">(self, nums: List[int], target: int)</span> -&gt; List[int]:</span><br/>        hashmap = {}<br/>        <span class="hljs-keyword">for</span> index,num <span class="hljs-keyword">in</span> enumerate(nums):<br/>            another_num = target - num<br/>            <span class="hljs-keyword">if</span> another_num <span class="hljs-keyword">in</span> hashmap:<br/>                <span class="hljs-keyword">return</span> [hashmap[another_num],index]<br/>            hashmap[num] = index<br/></code></pre><p>发现这个答案执行简单的时间要84ms反而比我那个长，但是数量多起来，反而变得很快了。</p><figure><img alt="" class="" decoding="async" height="716" loading="lazy" src="/images/blog-media/16dc4da259a5bdeabe22.webp" width="1080"/><figcaption>参考答案</figcaption></figure><h3 id="列表操作时间复杂度"><span>列表操作时间复杂度</span></h3><figure><img alt="" class="" decoding="async" height="429" loading="lazy" src="/images/blog-media/fe52844e9260c39adbd5.webp" width="445"/><figcaption>列表操作时间复杂度</figcaption></figure><h3 id="字典操作时间复杂度"><span>字典操作时间复杂度</span></h3><figure><img alt="" class="" decoding="async" height="246" loading="lazy" src="/images/blog-media/48c40f00fd3a221e697f.webp" width="454"/><figcaption>字典操作时间复杂度</figcaption></figure><p>似乎在《流畅的Python》中看到字典的读取复杂度远比列表的低，所以可能正是由于这个原因，所以可以更快的计算出来吧。看来以后对性能要求高的时候要多用字典少用列表了。</p><h2 id="Review"><span>Review</span></h2><figure><img alt="" class="" decoding="async" height="408" loading="lazy" src="/images/blog-media/b51d6946270b33edcf40.webp" width="1080"/><figcaption>初学者的Docker介绍</figcaption></figure><p>A Beginner-Friendly Introduction to Containers, VMs and Docker</p><figure><img alt="" class="" decoding="async" height="816" loading="lazy" src="/images/blog-media/cfd55ef779d7900d5146.webp" width="760"/><figcaption>VM</figcaption></figure><figure><img alt="" class="" decoding="async" height="594" loading="lazy" src="/images/blog-media/f3519c4ad8ac43518549.webp" width="820"/><figcaption>containers</figcaption></figure><blockquote><p>The one big difference between containers and VMs is that containers <em>share</em> the host system’s kernel with other containers.</p></blockquote><p>Docker is an open-source project based on Linux containers. It uses Linux Kernel features like namespaces and control groups to create containers on top of an operating system.</p><p>Docker发展迅速的原因：</p><ul class="list-paddingleft-2"><li><p><strong>Ease of use</strong></p></li><li><p><span>build once, run anywhere.</span></p></li><li><p><strong>Speed</strong></p></li><li><p><strong>Docker Hub</strong></p></li><li><p><span>app store for Docker images.</span></p></li><li><p><strong>Modularity and Scalability</strong></p></li><li><p><span>link containers together to create your application</span></p></li></ul><figure><img alt="" class="" decoding="async" height="860" loading="lazy" src="/images/blog-media/5432df828c69b02bed1b.webp" width="818"/><figcaption>Base</figcaption></figure><h3 id="Docker基础"><span>Docker基础</span></h3><ul class="list-paddingleft-2"><li><h4 id="Docker-Engine"><span>Docker Engine</span></h4></li><li><h4 id="Docker-Client"><span>Docker Client</span></h4></li><li><h4 id="Docker-Daemon"><span>Docker Daemon</span></h4></li><li><h4 id="Dockerfile"><span>Dockerfile</span></h4></li><li><p><strong>RUN apt-get y install some-package</strong>: to install a software package</p></li><li><p><strong>EXPOSE 8000:</strong> to expose a port</p></li><li><p><strong>ENV ANT_HOME /usr/local/apache-ant</strong> to pass an environment variable</p></li><li><h4 id="Docker-Image"><span>Docker Image</span></h4></li><li><p>#### Union File Systems</p></li></ul><figure><img alt="" class="" decoding="async" height="600" loading="lazy" src="/images/blog-media/8938fdf4b2bc764b03d9.webp" width="800"/><figcaption>运行起来的镜像=容器</figcaption></figure><p>看完一篇英文文档真的是很痛苦。而且由于一直在翻译，所以感觉看一点忘了一点。</p><h2 id="Tip"><span>Tip</span></h2><p>最近搭建了Gitlab服务器进行代码管理。</p><p>由于设备是Windows7，一开始使用的是Docker搭建的，但是Win7的Docker安装在一个虚拟机里面，发现每次一重启电脑，Docker中的gitlab中的数据就丢失了！虽然可以正常启动起来，但是数据丢失了，想使用<code>-v</code>进行数据持久化也没有用。所以最终的解决办法就是搭了一个虚拟机，在虚拟机上逐步的安装了一个Gitlab服务器。</p><h2 id="Share"><span>Share</span></h2><p>引入Gitlab，希望通过Code Review，团队一起提升代码质量。</p><p>使用Gitlab进行代码管理（Merge requests）</p></section></div>
+        <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/xfz1xjd5HWXXKDghslwd5g">查看微信公众号原文 ↗</a></p>
+        <div class="post-tags"></div>
+        <nav class="related" aria-label="相邻文章"><a href="/article/wechat-e24331548ad75f.html"><small>较新文章</small>ARTS第二周</a><a href="/article/3d056911.html"><small>较早文章</small>爬取大华产品信息</a></nav>
+
+      </div>
+    </div>
+  </article></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记</a>
+    <a href="/archives/">文章归档</a><a href="/tags/">标签</a><a href="/atom.xml">RSS</a>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索文章标题和正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题或正文…" autocomplete="off" autofocus>
+    <p id="search-status" role="status"></p><ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>
