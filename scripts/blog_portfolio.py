@@ -40,17 +40,42 @@ def home_work():
             f'<ul>{links}</ul></section>')
 
 
-def work_cards():
+DEMO_PREFIX = "/videos/portfolio/ai-test-cases-demo"
+DEMO_PATHS = tuple(DEMO_PREFIX + suffix for suffix in (".mp4", ".webp", ".zh-CN.vtt"))
+
+
+def work_demo(root):
+    if not all((root / path.lstrip("/")).is_file() and (root / path.lstrip("/")).stat().st_size > 0
+               for path in DEMO_PATHS):
+        return ""
+    src, poster, track = DEMO_PATHS
+    return (
+        '<figure class="work-demo" aria-labelledby="ai-test-cases-demo-caption">'
+        '<figcaption id="ai-test-cases-demo-caption">录屏实操｜虚构需求、本地模拟模型</figcaption>'
+        f'<video controls playsinline preload="none" width="1440" height="900" poster="{poster}" '
+        'aria-labelledby="ai-test-cases-demo-caption">'
+        f'<source src="{src}" type="video/mp4">'
+        f'<track kind="captions" src="{track}" srclang="zh-CN" label="简体中文">'
+        f'</video><p><a href="{src}" download>下载 MP4</a></p></figure>'
+    )
+
+
+def work_cards(root):
     cards = []
+    demo = work_demo(root)
     for slug, kind, title, problem, method, proof, links in SELECTED_WORK:
         actions = "".join(f'<li><a href="{escape(url)}">{escape(label)} <span aria-hidden="true">↗</span></a></li>' for label, url in links)
-        cards.append(f'<article class="work-card" id="{slug}" aria-labelledby="{slug}-title">'
-                     f'<p class="work-kind">{escape(kind)}</p><h3 id="{slug}-title">{escape(title)}</h3>'
-                     f'<p>{escape(problem)}</p><dl><dt>怎么做</dt><dd>{escape(method)}</dd>'
-                     f'<dt>怎么核对</dt><dd>{escape(proof)}</dd></dl><ul>{actions}</ul></article>')
+        feature = demo if slug == "ai-test-cases" else ""
+        body = (f'<p class="work-kind">{escape(kind)}</p><h3 id="{slug}-title">{escape(title)}</h3>'
+                f'<p>{escape(problem)}</p><dl><dt>怎么做</dt><dd>{escape(method)}</dd>'
+                f'<dt>怎么核对</dt><dd>{escape(proof)}</dd></dl><ul>{actions}</ul>')
+        layout = ' work-card-featured' if feature else ''
+        contents = f'<div class="work-card-copy">{body}</div>{feature}' if feature else body
+        cards.append(f'<article class="work-card{layout}" id="{slug}" aria-labelledby="{slug}-title">'
+                     f'{contents}</article>')
     return ('<section class="selected-work" id="selected-work" aria-labelledby="work-title"><h2 id="work-title">代表作品</h2>'
             '<p>从能直接打开的工具，到可按步骤复跑的评测，再到故障恢复的设计。</p>'
-            '<div class="work-cards">' + "".join(cards) + '</div></section>')
+            '<div class="work-cards' + (' with-demo' if demo else "") + '">' + "".join(cards) + '</div></section>')
 
 
 def profile_metadata(site):

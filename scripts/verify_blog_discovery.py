@@ -115,6 +115,21 @@ def main():
     assert must_email not in profile.select_one('script[type="application/ld+json"]').string
     if args.baseline:
         assert old_page(args.baseline, "/about/").select_one(".post-body").decode_contents() == profile.select_one(".post-body").decode_contents()
+    demo_prefix = "/videos/portfolio/ai-test-cases-demo"
+    demo_files = [demo_prefix + suffix for suffix in (".mp4", ".webp", ".zh-CN.vtt")]
+    demo_exists = all(target(path).is_file() and target(path).stat().st_size for path in demo_files)
+    demo = profile.select_one("#ai-test-cases figure.work-demo")
+    assert bool(demo) == demo_exists
+    if demo:
+        assert demo.select_one("figcaption").get_text(strip=True) == "录屏实操｜虚构需求、本地模拟模型"
+        media = demo.select_one("video")
+        assert (media["width"], media["height"], media["preload"], media["poster"]) == ("1440", "900", "none", demo_files[1])
+        assert "controls" in media.attrs and "playsinline" in media.attrs and "autoplay" not in media.attrs
+        assert media.select_one("source")["src"] == demo_files[0]
+        captions = media.select_one("track")
+        assert captions["src"] == demo_files[2] and captions["srclang"] == "zh-CN" and "default" not in captions.attrs
+        assert target(demo_files[2]).read_text().startswith("WEBVTT")
+        assert demo.select_one("a[download]")["href"] == demo_files[0]
     assert not tool.select_one(f'a[href="{must_email}"]')
     assert "/videos/" in paths
     library = page("/videos/")

@@ -877,7 +877,7 @@ def main():
         '<img class="profile-avatar" src="/images/avatar.jpeg" alt="" width="72" height="72"></header>'
         '<div class="profile-links work-profile-links"><a href="#selected-work">看代表作品 ↓</a>'
         '<a href="mailto:490336534@qq.com">邮件联系</a><a href="https://github.com/zx490336534">GitHub ↗</a></div>'
-        + portfolio.work_cards()
+        + portfolio.work_cards(ROOT)
         + f'<div class="post-body">{about_body}</div>'
         '<nav class="profile-links" aria-label="继续浏览"><a href="/categories/">浏览分类 ↗</a>'
         '<a href="/lab/">工具与课程 ↗</a><a href="/videos/">视频讲解目录 ↗</a><a href="/atom.xml">订阅 RSS ↗</a></nav>'
