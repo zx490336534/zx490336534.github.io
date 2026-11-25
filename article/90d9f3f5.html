@@ -20,7 +20,8 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/90d9f3f5.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/90d9f3f5.html">
-<script src="/js/comments.js?v=2" defer></script>
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,7 +57,7 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#%E9%9B%86%E7%BE%A4">集群</a></li><li><a href="#%E6%80%A7%E8%83%BD%E5%88%86%E5%B8%83%E5%BC%8F">性能分布式</a></li><li><a href="#%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E7%94%A8%E5%88%86%E5%B8%83%E5%BC%8F">什么时候用分布式</a></li><li><a href="#%E5%88%86%E5%B8%83%E5%BC%8F%E7%9A%84%E9%85%8D%E7%BD%AE">分布式的配置</a></li><li><a href="#%E5%89%8D%E6%8F%90%E6%9D%A1%E4%BB%B6">前提条件</a></li><li><a href="#slave">slave</a></li><li><a href="#master">master</a></li><li><a href="#%E5%90%AF%E5%8A%A8">启动</a></li><li><a href="#%E6%B3%A8%E6%84%8F">注意</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body"><span id="23-分布式"></span><h2 id="集群"><a class="headerlink" href="#集群" title="集群"></a>集群</h2><p>集合在一起的一群机器，多台机器向外提供服务器能力</p>
+        <div class="post-body" id="article-text"><span id="23-分布式"></span><h2 id="集群"><a class="headerlink" href="#集群" title="集群"></a>集群</h2><p>集合在一起的一群机器，多台机器向外提供服务器能力</p>
 <h2 id="性能分布式"><a class="headerlink" href="#性能分布式" title="性能分布式"></a>性能分布式</h2><p>多台机器分摊压力机，产生更大的并发，向服务器发起请求</p>
 <h2 id="什么时候用分布式"><a class="headerlink" href="#什么时候用分布式" title="什么时候用分布式"></a>什么时候用分布式</h2><p>在单台机器无法虚拟出更高并发数时</p>
 <span id="more"></span>
@@ -105,6 +106,7 @@
 </ol>
 <p><img alt="远程启动" decoding="async" height="364" loading="lazy" src="/images/blog-media/f82940ccde038de7931c.webp" width="284"/></p>
 <h2 id="注意"><a class="headerlink" href="#注意" title="注意"></a>注意</h2><p>Slave上的机器执行完全按照Master机器的指令执行。包括场景、脚本。所以我们只需要修改master上的脚本就可以了，无需修改slave上的内容</p></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/CGaYfaes6g91vb_qO-cN5A">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F/">分布式系统</a><a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a></div>
@@ -116,6 +118,16 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

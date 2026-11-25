@@ -20,7 +20,8 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/397c359f.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/397c359f.html">
-<script src="/js/comments.js?v=2" defer></script>
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,7 +57,7 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#%E6%97%B6%E9%97%B4%E8%A7%A6%E5%8F%91">时间触发</a></li><li><a href="#%E5%AE%9A%E6%97%B6%E6%89%A7%E8%A1%8C%EF%BC%9Acron">定时执行：cron</a></li><li><a href="#%E8%BD%AE%E8%AF%A2%E4%BB%A3%E7%A0%81%E4%BB%93%E5%BA%93%EF%BC%9ApollSCM">轮询代码仓库：pollSCM</a></li><li><a href="#%E4%BA%8B%E4%BB%B6%E8%A7%A6%E5%8F%91">事件触发</a></li><li><a href="#%E7%94%B1%E4%B8%8A%E6%B8%B8%E4%BB%BB%E5%8A%A1%E5%87%BA%E5%8F%91%EF%BC%9Aupstream">由上游任务出发：upstream</a></li><li><a href="#Gitlab%E9%80%9A%E7%9F%A5%E8%A7%A6%E5%8F%91">Gitlab通知触发</a></li><li><a href="#%E5%B0%86%E6%9E%84%E5%BB%BA%E4%BF%A1%E6%81%AF%E6%8E%A8%E9%80%81%E5%88%B0GitLab">将构建信息推送到GitLab</a></li><li><a href="#%E5%85%B6%E4%BB%96%E7%B3%BB%E7%BB%9F%E8%A7%A6%E5%8F%91Webhook">其他系统触发Webhook</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body"><span id="Jenkins-七"></span><p>触发流水线执行可以分为：</p>
+        <div class="post-body" id="article-text"><span id="Jenkins-七"></span><p>触发流水线执行可以分为：</p>
 <ul>
 <li>时间触发</li>
 <li>事件触发</li>
@@ -153,6 +154,7 @@
 <p><img alt="设置" decoding="async" height="688" loading="lazy" src="/images/blog-media/93c5dc03f00f1252f1bb.webp" width="1080"/></p>
 <figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/><span class="line">20</span><br/><span class="line">21</span><br/><span class="line">22</span><br/><span class="line">23</span><br/><span class="line">24</span><br/><span class="line">25</span><br/><span class="line">26</span><br/><span class="line">27</span><br/></pre></td><td class="code"><pre><span class="line">pipeline {</span><br/><span class="line">    agent any</span><br/><span class="line">    triggers {</span><br/><span class="line">        gitlab(<span class="attr">triggerOnPush:</span> <span class="literal">true</span>,</span><br/><span class="line">               <span class="symbol">triggerOnMergeRequest:</span> <span class="literal">true</span>,</span><br/><span class="line">               <span class="symbol">branchFilterType:</span> <span class="string">'All'</span>,</span><br/><span class="line">               <span class="symbol">secretToken:</span> <span class="string">'c342352fc4cf45e01c0f783a7fdf38b7'</span>)</span><br/><span class="line">    }</span><br/><span class="line">    stages {</span><br/><span class="line">        stage(<span class="string">'build'</span>) {</span><br/><span class="line">            steps {</span><br/><span class="line">                echo <span class="string">"Hello wolrd"</span></span><br/><span class="line">            }</span><br/><span class="line">        }</span><br/><span class="line">    }</span><br/><span class="line">    post {</span><br/><span class="line">        failure {</span><br/><span class="line">            updateGitlabCommitStatus <span class="attr">name:</span><span class="string">'build'</span>,<span class="attr">state:</span><span class="string">'failed'</span></span><br/><span class="line">        }</span><br/><span class="line">        success {</span><br/><span class="line">            updateGitlabCommitStatus <span class="attr">name:</span><span class="string">'build'</span>,<span class="attr">state:</span><span class="string">'success'</span></span><br/><span class="line">        }</span><br/><span class="line">    }</span><br/><span class="line">    options {</span><br/><span class="line">        gitLabConnecton(<span class="string">'gitlab'</span>)</span><br/><span class="line">    }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
 <h3 id="其他系统触发Webhook"><a class="headerlink" href="#其他系统触发Webhook" title="其他系统触发Webhook"></a>其他系统触发Webhook</h3><p>使用<code>Generic Webhook Trigger</code>插件，具体内容不展开</p></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/GXQW1LM6_nvi0fjzER4YPg">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Jenkins/">Jenkins</a><a href="/tags/CI/">CI</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/Jenkins/">Jenkins</a></div>
@@ -164,6 +166,16 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

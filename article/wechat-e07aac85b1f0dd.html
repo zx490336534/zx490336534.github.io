@@ -20,7 +20,8 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/wechat-e07aac85b1f0dd.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/wechat-e07aac85b1f0dd.html">
-<script src="/js/comments.js?v=2" defer></script>
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,7 +57,7 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#%E5%AE%89%E8%A3%85">安装</a></li><li><a href="#%E5%88%9B%E5%BB%BA%E7%8E%AF%E5%A2%83">创建环境</a></li><li><a href="#%E6%BF%80%E6%B4%BB%E7%8E%AF%E5%A2%83">激活环境</a></li><li><a href="#%E5%AE%89%E8%A3%85%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93">安装第三方库</a></li><li><a href="#%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8D%E7%8E%AF%E5%A2%83%E7%9A%84%E4%BE%9D%E8%B5%96">查看当前环境的依赖</a></li><li><a href="#%E6%B5%8B%E8%AF%95">测试</a></li><li><a href="#%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E7%A7%BB%E6%A4%8D">开发环境移植</a></li><li><a href="#%E6%96%B0%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95">新开发环境测试</a></li><li><a href="#%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E7%A7%BB%E6%A4%8D">生产环境移植</a></li><li><a href="#%E5%8D%B8%E8%BD%BD%E5%8C%85">卸载包</a></li><li><a href="#%E5%85%B6%E4%BB%96">其他</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body"><p>在一台新的机器上执行py文件的时候经常会遇到环境的问题。</p><p>现有的一些解决方案：</p><ul class="list-paddingleft-2"><li><p>requirements.txt</p></li><li><p>python2的virtualenv方案</p></li><li><p>python3的venv方案</p></li><li><p>pipenv</p><blockquote><p>pipenv 是 Pipfile 主要倡导者、requests 作者 Kenneth Reitz 写的一个命令行工具，主要包含了Pipfile、pip、click、requests和virtualenv。</p><p>Pipfile和pipenv本来都是Kenneth Reitz的个人项目，后来贡献给了pypa组织。</p><p>Pipfile是社区拟定的依赖管理文件，用于替代过于简陋的 requirements.txt 文件。</p></blockquote></li></ul><h2 id="安装">安装</h2><pre><code class="hljs language-shell">$ pip install pipenv</code></pre><h2 id="创建环境">创建环境</h2><p>在项目路径下使用</p><pre><code class="hljs language-shell">$ pipenv install
+        <div class="post-body" id="article-text"><p>在一台新的机器上执行py文件的时候经常会遇到环境的问题。</p><p>现有的一些解决方案：</p><ul class="list-paddingleft-2"><li><p>requirements.txt</p></li><li><p>python2的virtualenv方案</p></li><li><p>python3的venv方案</p></li><li><p>pipenv</p><blockquote><p>pipenv 是 Pipfile 主要倡导者、requests 作者 Kenneth Reitz 写的一个命令行工具，主要包含了Pipfile、pip、click、requests和virtualenv。</p><p>Pipfile和pipenv本来都是Kenneth Reitz的个人项目，后来贡献给了pypa组织。</p><p>Pipfile是社区拟定的依赖管理文件，用于替代过于简陋的 requirements.txt 文件。</p></blockquote></li></ul><h2 id="安装">安装</h2><pre><code class="hljs language-shell">$ pip install pipenv</code></pre><h2 id="创建环境">创建环境</h2><p>在项目路径下使用</p><pre><code class="hljs language-shell">$ pipenv install
 # 也可以按如下方式指定版本
 $ pipenv --python 3.6</code></pre><section class="output_wrapper"><figure><img alt="" class="" decoding="async" height="878" loading="lazy" src="/images/blog-media/e003a484e9d19acdfd7a.webp" width="1080"/><figcaption>创建环境</figcaption></figure></section><h2 id="激活环境">激活环境</h2><pre><code class="hljs language-shell">$ pipenv shell</code></pre><p><img alt="" decoding="async" height="754" loading="lazy" src="/images/blog-media/35aa5619dffba7e14223.webp" width="1080"/></p><p>使用<code>exit</code>可以退出环境</p><p>激活环境后可以直接使用<code>python xxx.py</code>以该环境运行脚本</p><p>也可以使用<code>pipenv run python xxx.py</code>在不激活环境的情况下用以该环境运行脚本</p><h2 id="安装第三方库">安装第三方库</h2><pre><code class="hljs language-shell">$ pipenv install flask</code></pre><p>也可以在安装第三方库之前，打开Pipfile修改一下里面的<code>url</code>为国内阿里云第三方库地址：</p><p><code>https://mirrors.aliyun.com/pypi/simple</code></p><pre><code class="hljs language-ini">[[source]]
 name = "pypi"
@@ -72,6 +73,7 @@ flask = "*"
 python_version = "3.7"</code></pre><section class="output_wrapper"><figure><img alt="" class="" decoding="async" height="754" loading="lazy" src="/images/blog-media/80e44be0841519ecc2cb.webp" width="1080"/><figcaption>安装flask</figcaption></figure></section><h2 id="查看当前环境的依赖">查看当前环境的依赖</h2><pre><code class="hljs language-shell">$ pipenv graph</code></pre><p><img alt="" decoding="async" height="754" loading="lazy" src="/images/blog-media/d6d92596c4261fb7659f.webp" width="1080"/></p><p>可以看出我们安装了一个Flask的同时，安装了它的4个依赖，其中Jinja2也安装了它的一个依赖</p><p>也可以使用<code>pipenv shell</code>进入虚拟环境后使用<code>pip list</code>查看环境</p><p><img alt="" decoding="async" height="754" loading="lazy" src="/images/blog-media/3d70d31e54799b9dcbc7.webp" width="1080"/></p><h2 id="测试">测试</h2><p>编写一个简单的flask脚本进行测试</p><p>app.py</p><pre><code class="hljs language-python"><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask
 app = Flask(__name__)<span class="hljs-decorator">@app.route('/')</span><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">index</span><span class="hljs-params">()</span>:</span>
    <span class="hljs-keyword">return</span> <span class="hljs-string">'&lt;h1&gt;Hello Pipenv&lt;/h1&gt;'</span></code></pre><p><img alt="" decoding="async" height="754" loading="lazy" src="/images/blog-media/e4b8e75d3ead6e1b80a1.webp" width="1080"/><img alt="" decoding="async" height="756" loading="lazy" src="/images/blog-media/ef1d6ce9850d57e83479.webp" width="1080"/></p><h2 id="开发环境移植">开发环境移植</h2><p>在一个新的环境中，将代码和Pipfile复制过去</p><p>由于Pipfile里面没有所有子依赖包或者确定的版本，因此该安装<strong>可能会更新未指定模块的版本号</strong>。</p><pre><code class="hljs language-shell">$ pipenv install --dev</code></pre><p><img alt="" decoding="async" height="976" loading="lazy" src="/images/blog-media/2b1d7c307f2c0325b2c1.webp" width="1080"/></p><h2 id="新开发环境测试">新开发环境测试</h2><pre><code class="hljs language-shell">$ pipenv run flask run</code></pre><p><img alt="" decoding="async" height="976" loading="lazy" src="/images/blog-media/a0074a8501ee182addcf.webp" width="1080"/></p><h2 id="生产环境移植">生产环境移植</h2><p>开发环境和生产环境稍微有点区别，开发环境中可能有一些不稳定的版本或依赖，而生产环境一般都比较固定</p><p>如果想只安装在开发环境才使用的包：</p><pre><code class="hljs language-shell">$ pipenv install &lt;第三方库&gt; --dev</code></pre><p>运行以下命令，把当前环境的模块lock住, 它会更新Pipfile.lock文件，该文件是用于生产环境的，不应该人为编辑它。</p><pre><code class="hljs language-shell">$ pipenv lock</code></pre><p>然后只需要把<code>代码</code>和<code>Pipfile.lock</code>放到生产环境，运行下面的代码，就可以创建和开发环境一样的环境，Pipfile.lock里记录了所有包和子依赖包的确切版本，因此是<strong>确定构建</strong>：</p><pre><code class="hljs language-shell">$ pipenv install --ignore-pipfile</code></pre><h2 id="卸载包">卸载包</h2><pre><code class="hljs language-shell">$ pipenv uninstall flask</code></pre><p><img alt="" decoding="async" height="1025" loading="lazy" src="/images/blog-media/3fa752a567217494bb1c.webp" width="1080"/></p><h2 id="其他">其他</h2><p>当前虚拟环境目录</p><pre><code class="hljs language-shell">$ pipenv --venv</code></pre><p>当前项目根目录</p><pre><code class="hljs language-shell">$ pipenv --where</code></pre><p>检查安全性和PEP508</p><pre><code class="hljs language-shell">$ pipenv check</code></pre><p><img alt="" decoding="async" height="773" loading="lazy" src="/images/blog-media/37cb5628dc1cb0a996b0.webp" width="1080"/></p><p>所以可以直接通过将Pipfile加入到版本管理来进行环境的管理</p><p>至于Pipfile.lock是否要加入就看具体需求了<br/></p></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/LqpU-65rhNFINApnXyjzpg">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Pipenv/">Pipenv</a><a href="/tags/Python/">Python</a><a href="/tags/%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86/">依赖管理</a></div>
         <div class="legacy-tags" hidden></div>
@@ -83,6 +85,16 @@ app = Flask(__name__)<span class="hljs-decorator">@app.route('/')</span><span cl
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

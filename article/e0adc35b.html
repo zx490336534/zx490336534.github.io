@@ -20,7 +20,8 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/e0adc35b.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/e0adc35b.html">
-<script src="/js/comments.js?v=2" defer></script>
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,7 +57,7 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#Flask-%E5%88%9D%E6%AD%A5%E5%85%A5%E9%97%A8-%E4%BA%8C">Flask(初步入门 二)</a></li><li><a href="#%E5%AE%89%E8%A3%85">安装</a></li><li><a href="#%E5%88%9D%E5%A7%8B%E5%8C%96application">初始化application</a></li><li><a href="#%E6%B7%BB%E5%8A%A0%E8%B7%AF%E7%94%B1">添加路由</a></li><li><a href="#%E8%BF%90%E8%A1%8C%E6%9C%8D%E5%8A%A1%E5%99%A8">运行服务器</a></li><li><a href="#%E8%AF%B7%E6%B1%82%E4%B8%8E%E5%93%8D%E5%BA%94">请求与响应</a></li><li><a href="#Flask%E7%9A%84-init">Flask的 __init__</a></li><li><a href="#%E6%B8%B2%E6%9F%93html">渲染html</a></li><li><a href="#run%E6%96%B9%E6%B3%95">run方法</a></li><li><a href="#debug">debug</a></li><li><a href="#host">host</a></li><li><a href="#if-name-quot-main-quot-%E7%9A%84%E4%BD%9C%E7%94%A8">if __name__ == &quot;__main__&quot; 的作用</a></li><li><a href="#%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%96%B9%E5%BC%8F%E8%BF%90%E8%A1%8C">使用命令行方式运行</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body"><h1 id="Flask-初步入门-二"><a class="headerlink" href="#Flask-初步入门-二" title="Flask(初步入门 二)"></a>Flask(初步入门 二)</h1><h2 id="安装"><a class="headerlink" href="#安装" title="安装"></a>安装</h2><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pip install flask</span></span><br/></pre></td></tr></tbody></table></figure>
+        <div class="post-body" id="article-text"><h1 id="Flask-初步入门-二"><a class="headerlink" href="#Flask-初步入门-二" title="Flask(初步入门 二)"></a>Flask(初步入门 二)</h1><h2 id="安装"><a class="headerlink" href="#安装" title="安装"></a>安装</h2><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pip install flask</span></span><br/></pre></td></tr></tbody></table></figure>
 <ul>
 <li>werkzeug:处理application</li>
 <li>jinja2:渲染html</li>
@@ -119,6 +120,7 @@
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/><span class="line">20</span><br/><span class="line">21</span><br/><span class="line">22</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> flask --<span class="built_in">help</span></span></span><br/><span class="line">Usage: flask [OPTIONS] COMMAND [ARGS]...</span><br/><span class="line"></span><br/><span class="line">A general utility script for Flask applications.</span><br/><span class="line"></span><br/><span class="line">Provides commands from Flask, extensions, and the application. Loads the</span><br/><span class="line">application defined in the FLASK_APP environment variable, or from a</span><br/><span class="line">wsgi.py file. Setting the FLASK_ENV environment variable to 'development'</span><br/><span class="line">will enable debug mode.</span><br/><span class="line"></span><br/><span class="line"><span class="meta">  $</span><span class="bash"> <span class="built_in">export</span> FLASK_APP=hello.py</span></span><br/><span class="line"><span class="meta">  $</span><span class="bash"> <span class="built_in">export</span> FLASK_ENV=development</span></span><br/><span class="line"><span class="meta">  $</span><span class="bash"> flask run</span></span><br/><span class="line"></span><br/><span class="line">Options:</span><br/><span class="line">--version  Show the flask version</span><br/><span class="line">--help     Show this message and exit.</span><br/><span class="line"></span><br/><span class="line">Commands:</span><br/><span class="line">routes  Show the routes for the app.</span><br/><span class="line">run     Run a development server.</span><br/><span class="line">shell   Run a shell in the app context.</span><br/></pre></td></tr></tbody></table></figure>
 <p>使用下面命令可以运行</p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">export</span> FLASK_APP=hello.py</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">export</span> FLASK_ENV=development</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> flask run</span></span><br/></pre></td></tr></tbody></table></figure></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/KiphWLshB78ZqIqRywp7eA">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Flask/">Flask</a><a href="/tags/Python/">Python</a><a href="/tags/WSGI/">WSGI</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/Flask/">Flask</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
@@ -130,6 +132,16 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

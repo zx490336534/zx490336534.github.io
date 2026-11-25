@@ -20,7 +20,8 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/c393dd15.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/c393dd15.html">
-<script src="/js/comments.js?v=2" defer></script>
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,7 +57,7 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#pipeline%E8%AF%AD%E6%B3%95">pipeline语法</a></li><li><a href="#%E5%9F%BA%E7%A1%80Groovy">基础Groovy</a></li><li><a href="#pipeline%E7%9A%84%E7%BB%84%E6%88%90">pipeline的组成</a></li><li><a href="#%E5%9C%A8%E5%A3%B0%E6%98%8E%E5%BC%8F%E6%B5%81%E6%B0%B4%E7%BA%BF%E4%B8%AD%E4%BD%BF%E7%94%A8%E8%84%9A%E6%9C%AC">在声明式流水线中使用脚本</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body"><span id="Jenkins-三"></span><h2 id="pipeline语法"><a class="headerlink" href="#pipeline语法" title="pipeline语法"></a>pipeline语法</h2><p>pipeline语法可以分为</p>
+        <div class="post-body" id="article-text"><span id="Jenkins-三"></span><h2 id="pipeline语法"><a class="headerlink" href="#pipeline语法" title="pipeline语法"></a>pipeline语法</h2><p>pipeline语法可以分为</p>
 <ul>
 <li><p>「声明式流水线」</p>
 </li>
@@ -187,6 +188,7 @@
 <figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/></pre></td><td class="code"><pre><span class="line">pipeline{</span><br/><span class="line">   agent any</span><br/><span class="line">   stages{</span><br/><span class="line">      stage(<span class="string">'Example'</span>){</span><br/><span class="line">         steps{</span><br/><span class="line">            script{</span><br/><span class="line">               <span class="keyword">def</span> browsers = [<span class="string">'chrome'</span>,<span class="string">'firefox'</span>]</span><br/><span class="line">               <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; browsers.size(); ++i){</span><br/><span class="line">                  echo <span class="string">"Testing the ${browsers[i]} browsers"</span></span><br/><span class="line">               }</span><br/><span class="line">            }</span><br/><span class="line">         }</span><br/><span class="line">      }</span><br/><span class="line">   }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
 <p>修改Jenkinsfile并推送至GitHub。</p>
 <p><img alt="运行" decoding="async" height="688" loading="lazy" src="/images/blog-media/aef1d2cf7aaeca0caff9.webp" width="1080"/></p></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/IyqAKhX4u1UDpkFjRYGnpA">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Jenkins/">Jenkins</a><a href="/tags/CI/">CI</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/Jenkins/">Jenkins</a></div>
@@ -198,6 +200,16 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

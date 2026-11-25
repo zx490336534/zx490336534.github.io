@@ -20,7 +20,8 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/926ba963.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/926ba963.html">
-<script src="/js/comments.js?v=2" defer></script>
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,7 +57,7 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#%E5%A4%9A%E6%80%81">多态</a></li><li><a href="#%E6%95%B0%E6%8D%AE%E5%92%8C%E8%87%AA%E7%9C%81">数据和自省</a></li><li><a href="#slots%E9%99%90%E5%88%B6%E7%B1%BB%E6%8B%A5%E6%9C%89%E7%9A%84%E5%B1%9E%E6%80%A7">slots限制类拥有的属性</a></li><li><a href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B1%9E%E6%80%A7%E8%AE%BF%E9%97%AE">自定义属性访问</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body"><span id="测试开发进阶-六"></span><blockquote>
+        <div class="post-body" id="article-text"><span id="测试开发进阶-六"></span><blockquote>
 <p>面向对象编程的三大特征：封装,集成,多态</p>
 <p>封装：将数据和方法放在一个类中</p>
 <p>继承：python中的一个类可以继承于一个或多个类，被继承的叫父类（基类，base class），继承的类叫子类</p>
@@ -110,6 +111,7 @@
 <li><code>__getattr__</code>:如果属性不存在，getattribute报AttributeError错误，该方法会主动捕获异常</li>
 </ul>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/><span class="line">20</span><br/><span class="line">21</span><br/><span class="line">22</span><br/><span class="line">23</span><br/><span class="line">24</span><br/></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Hero</span>(<span class="params"><span class="built_in">object</span></span>):</span></span><br/><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, name</span>):</span></span><br/><span class="line">        print(<span class="string">'-----init-----'</span>)</span><br/><span class="line">        self.name = name</span><br/><span class="line"></span><br/><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__getattribute__</span>(<span class="params">self, item</span>):</span></span><br/><span class="line">        <span class="string">"""查找属性，直接调用该方法进行查找"""</span></span><br/><span class="line">        print(<span class="string">f'这个是item:<span class="subst">{item}</span>'</span>)  <span class="comment"># 这个是item:name</span></span><br/><span class="line">        <span class="keyword">return</span> <span class="built_in">object</span>.__getattribute__(self, item)</span><br/><span class="line"></span><br/><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__getattr__</span>(<span class="params">self, item</span>):</span></span><br/><span class="line">        <span class="string">"""如果属性不存在，getattribute报AttributeError错误，该方法会主动捕获异常"""</span></span><br/><span class="line">        print(<span class="string">f'这是__getattr__的item:<span class="subst">{item}</span>'</span>)</span><br/><span class="line">        <span class="keyword">return</span> <span class="number">999</span></span><br/><span class="line"></span><br/><span class="line"></span><br/><span class="line">h = Hero(<span class="string">'zx'</span>)</span><br/><span class="line">print(h.name1)  </span><br/><span class="line"><span class="string">"""</span></span><br/><span class="line"><span class="string">-----init-----</span></span><br/><span class="line"><span class="string">这个是item:name1</span></span><br/><span class="line"><span class="string">这是__getattr__的item:name1</span></span><br/><span class="line"><span class="string">999</span></span><br/><span class="line"><span class="string">"""</span></span><br/></pre></td></tr></tbody></table></figure></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
 
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Python/">Python</a><a href="/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/">面向对象</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
@@ -121,6 +123,16 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

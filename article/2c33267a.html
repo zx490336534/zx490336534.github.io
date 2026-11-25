@@ -20,7 +20,8 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/2c33267a.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/2c33267a.html">
-<script src="/js/comments.js?v=2" defer></script>
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,7 +57,7 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#%E4%B8%80%E4%B8%AA%E7%99%BB%E5%BD%95%E9%A1%B5%E9%9D%A2">一个登录页面</a></li><li><a href="#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F">生命周期</a></li><li><a href="#%E7%BB%84%E4%BB%B6%E5%A3%B0%E6%98%8E">组件声明</a></li><li><a href="#%E8%B7%AF%E7%94%B1">路由</a></li><li><a href="#%E5%9C%A8%E9%A1%B9%E7%9B%AE%E8%B7%AF%E5%BE%84%E4%B8%8B%E5%AE%89%E8%A3%85">在项目路径下安装</a></li><li><a href="#%E4%BD%BF%E7%94%A8">使用</a></li><li><a href="#%E5%80%9F%E9%89%B4%E5%AE%98%E6%96%B9%E6%93%8D%E4%BD%9C">借鉴官方操作</a></li><li><a href="#%E5%91%BD%E5%90%8D%E8%B7%AF%E7%94%B1">命名路由</a></li><li><a href="#%E8%B7%AF%E5%BE%84%E5%8F%82%E6%95%B0">路径参数</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body"><span id="测试开发进阶-十八"></span><p><strong>欢迎关注我的公众号「测试游记」</strong></p>
+        <div class="post-body" id="article-text"><span id="测试开发进阶-十八"></span><p><strong>欢迎关注我的公众号「测试游记」</strong></p>
 <blockquote>
 <p>element-ui其实就是一个组件库</p>
 </blockquote>
@@ -153,6 +154,7 @@
 <p>修改<code>/src/components/greeting.vue</code></p>
 <figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">data</span>(<span class="params"></span>)</span> {</span><br/><span class="line">    <span class="keyword">return</span> {</span><br/><span class="line">        message: <span class="string">'Hello Python'</span>,</span><br/><span class="line">        name: <span class="string">'zhongxin'</span>,</span><br/><span class="line">        dream: <span class="string">'小目标'</span>,</span><br/><span class="line">        isNotFlag: <span class="literal">false</span>,</span><br/><span class="line">        username: <span class="built_in">this</span>.$route.params.username,</span><br/><span class="line">        age: <span class="built_in">this</span>.$route.params.age,</span><br/><span class="line">    }</span><br/><span class="line">},</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="image-20190918220105014" decoding="async" height="688" loading="lazy" src="/images/blog-media/03d3fe0605948a45fb80.webp" width="1080"/></p></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/KWxMQNTxwvNK9TF79MwDKA">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Vue/">Vue</a><a href="/tags/Element-UI/">Element UI</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
@@ -164,6 +166,16 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

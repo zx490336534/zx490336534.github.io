@@ -445,6 +445,17 @@ time { font-variant-numeric: tabular-nums; white-space: nowrap; }
 .article-comments p:empty { display: none; }
 .comment-retry { color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: .33rem; font-size: .85rem; padding: .4rem .65rem; margin-block-start: .5rem; }
 [data-jump-comments] { color: var(--accent); }
+.quote-action { position: fixed; z-index: 3; inset-block-start: var(--quote-top); inset-inline-start: var(--quote-left); min-block-size: 2.35rem; padding: .35rem .8rem; border: 1px solid var(--accent); border-radius: .35rem; background: var(--panel); color: var(--accent); box-shadow: 0 .35rem .95rem #0002; font-size: .86rem; font-weight: 700; }
+.quote-action:hover { background: var(--accent-wash); }
+@media (pointer: coarse) {
+  .quote-action { inset-block: auto max(1rem, env(safe-area-inset-bottom)); inset-inline: auto 1rem; min-block-size: 2.75rem; }
+}
+.comment-quote { margin-block-start: .85rem; padding: .8rem .9rem; border: 1px solid var(--line); border-radius: .35rem; background: var(--panel); }
+.comment-quote blockquote { margin: 0; border-inline-start: .18rem solid var(--accent); padding-inline-start: .7rem; max-block-size: 10rem; overflow: auto; overflow-wrap: anywhere; white-space: pre-wrap; }
+.comment-quote textarea { box-sizing: border-box; inline-size: 100%; min-block-size: 6rem; resize: vertical; background: var(--paper); color: var(--ink); border: 1px solid var(--line); padding: .5rem; font-size: .85rem; }
+.comment-quote-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem .8rem; margin-block-start: .45rem; color: var(--accent); font-size: .84rem; }
+.comment-quote-actions button { min-block-size: 2rem; padding: .25rem .5rem; border: 1px solid var(--line); border-radius: .3rem; background: var(--paper); color: inherit; font: inherit; }
+.post-body ::target-text { background: var(--accent-wash); color: var(--ink); text-decoration: underline var(--accent); }
 .giscus { margin-block-start: 1rem; }
 .giscus iframe { display: block; max-inline-size: 100%; }
 

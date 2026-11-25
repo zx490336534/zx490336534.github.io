@@ -20,7 +20,8 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/f873292f.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/f873292f.html">
-<script src="/js/comments.js?v=2" defer></script>
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,7 +57,7 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#%E6%89%8B%E5%8A%BF%E6%93%8D%E4%BD%9C-%E6%BB%91%E5%8A%A8">手势操作-滑动</a></li><li><a href="#%E6%BB%91%E5%8A%A8%E5%86%B3%E5%AE%9A%E5%9B%A0%E7%B4%A0%EF%BC%9A%E8%B7%9D%E7%A6%BB-%E6%97%B6%E9%97%B4">滑动决定因素：距离/时间</a></li><li><a href="#%E6%89%8B%E5%8A%BF%E6%93%8D%E4%BD%9C-%E5%A4%9A%E7%82%B9%E8%A7%A6%E6%91%B8">手势操作-多点触摸</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body"><span id="Java自动化测试-App特殊元素定位-34"></span><h2 id="手势操作-滑动"><a class="headerlink" href="#手势操作-滑动" title="手势操作-滑动"></a>手势操作-滑动</h2><blockquote>
+        <div class="post-body" id="article-text"><span id="Java自动化测试-App特殊元素定位-34"></span><h2 id="手势操作-滑动"><a class="headerlink" href="#手势操作-滑动" title="手势操作-滑动"></a>手势操作-滑动</h2><blockquote>
 <p>滑动操作 = 点击屏幕某一点 + 移动 + 松开</p>
 </blockquote>
 <span id="more"></span>
@@ -80,6 +81,7 @@
 </ul>
 <p>实现<code>放大</code>操作</p>
 <figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/><span class="line">20</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br/><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test01</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>{</span><br/><span class="line">    <span class="comment">//手指1</span></span><br/><span class="line">    TouchAction action1 = <span class="keyword">new</span> TouchAction(androidDriver);</span><br/><span class="line">    <span class="comment">//手指2</span></span><br/><span class="line">    TouchAction action2 = <span class="keyword">new</span> TouchAction(androidDriver);</span><br/><span class="line">    <span class="keyword">int</span> y = androidDriver.manage().window().getSize().getHeight();</span><br/><span class="line">    <span class="keyword">int</span> x = androidDriver.manage().window().getSize().getWidth();</span><br/><span class="line">    PointOption pointA = PointOption.point(x / <span class="number">5</span>, y / <span class="number">5</span>);</span><br/><span class="line">    PointOption pointB = PointOption.point(x * <span class="number">2</span> / <span class="number">5</span>, y * <span class="number">2</span> / <span class="number">5</span>);</span><br/><span class="line">    PointOption pointC = PointOption.point(x * <span class="number">3</span> / <span class="number">5</span>, y * <span class="number">3</span> / <span class="number">5</span>);</span><br/><span class="line">    PointOption pointD = PointOption.point(x * <span class="number">4</span> / <span class="number">5</span>, y * <span class="number">4</span> / <span class="number">5</span>);</span><br/><span class="line">    <span class="comment">// 放大 B-&gt;A C-&gt;D</span></span><br/><span class="line">    action1.press(pointB).moveTo(pointA).release();</span><br/><span class="line">    action2.press(pointC).moveTo(pointD).release();</span><br/><span class="line">    MultiTouchAction multiTouchAction = <span class="keyword">new</span> MultiTouchAction(androidDriver);</span><br/><span class="line">    multiTouchAction.add(action1);</span><br/><span class="line">    multiTouchAction.add(action2);</span><br/><span class="line">    multiTouchAction.perform();</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/Ag_peNyYNYFinOuQxZtWUw">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Java/">Java</a><a href="/tags/Appium/">Appium</a><a href="/tags/%E5%85%83%E7%B4%A0%E5%AE%9A%E4%BD%8D/">元素定位</a><a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Java/">Java</a><a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a></div>
@@ -91,6 +93,16 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

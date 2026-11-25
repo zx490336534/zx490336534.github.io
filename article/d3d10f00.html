@@ -20,7 +20,8 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/d3d10f00.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/d3d10f00.html">
-<script src="/js/comments.js?v=2" defer></script>
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,7 +57,7 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#%E7%94%A8%E6%88%B7%E6%A8%A1%E5%9D%97">用户模块</a></li><li><a href="#Json-Web-Token%E8%AE%A4%E8%AF%81">Json Web Token认证</a></li><li><a href="#JWT%EF%BC%88Json-Web-Token%EF%BC%89">JWT（Json Web Token）</a></li><li><a href="#%E5%AE%89%E8%A3%85djangorestframework-jwt">安装djangorestframework-jwt</a></li><li><a href="#%E4%BD%BF%E7%94%A8">使用</a></li><li><a href="#%E6%B7%BB%E5%8A%A0%E8%B7%AF%E7%94%B1">添加路由</a></li><li><a href="#%E4%BD%BF%E7%94%A8httpie%E5%8F%91%E8%B5%B7%E5%8C%85%E5%90%ABtoken%E7%9A%84%E5%86%85%E5%AE%B9">使用httpie发起包含token的内容</a></li><li><a href="#%E4%BF%AE%E6%94%B9%E8%BD%BD%E8%8D%B7">修改载荷</a></li><li><a href="#Django%E8%87%AA%E5%B8%A6%E7%9A%84%E7%94%A8%E6%88%B7%E6%A8%A1%E5%9E%8B">Django自带的用户模型</a></li><li><a href="#%E6%B3%A8%E5%86%8C">注册</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body"><span id="测试开发进阶-三十一"></span><h2 id="用户模块"><a class="headerlink" href="#用户模块" title="用户模块"></a>用户模块</h2><h3 id="Json-Web-Token认证"><a class="headerlink" href="#Json-Web-Token认证" title="Json Web Token认证"></a>Json Web Token认证</h3><p>最常见的认证机制</p>
+        <div class="post-body" id="article-text"><span id="测试开发进阶-三十一"></span><h2 id="用户模块"><a class="headerlink" href="#用户模块" title="用户模块"></a>用户模块</h2><h3 id="Json-Web-Token认证"><a class="headerlink" href="#Json-Web-Token认证" title="Json Web Token认证"></a>Json Web Token认证</h3><p>最常见的认证机制</p>
 <ul>
 <li>Session认证</li>
 <li>Token认证<span id="more"></span>
@@ -135,6 +136,7 @@
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> django.urls <span class="keyword">import</span> path</span><br/><span class="line"><span class="keyword">from</span> rest_framework_jwt.views <span class="keyword">import</span> obtain_jwt_token</span><br/><span class="line"><span class="keyword">from</span> . <span class="keyword">import</span> views</span><br/><span class="line"></span><br/><span class="line">urlpatterns = [</span><br/><span class="line">    path(<span class="string">'login/'</span>, obtain_jwt_token),</span><br/><span class="line">    path(<span class="string">'register/'</span>, views.RegisterView.as_view()),</span><br/><span class="line">]</span><br/></pre></td></tr></tbody></table></figure>
 <p><code>user/views.py</code></p>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> rest_framework.generics <span class="keyword">import</span> CreateAPIView</span><br/><span class="line"><span class="keyword">from</span> rest_framework_jwt.authentication <span class="keyword">import</span> JSONWebTokenAuthentication</span><br/><span class="line"></span><br/><span class="line"><span class="keyword">from</span> user.serializers <span class="keyword">import</span> RegisterSerializer</span><br/><span class="line"></span><br/><span class="line"></span><br/><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RegisterView</span>(<span class="params">CreateAPIView</span>):</span></span><br/><span class="line">    serializer_class = RegisterSerializer</span><br/><span class="line">    authentication_classes = (JSONWebTokenAuthentication,)</span><br/></pre></td></tr></tbody></table></figure></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/3UA7xfW8f2PaTCZEuUIFgg">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Django/">Django</a><a href="/tags/Python/">Python</a><a href="/tags/JWT/">JWT</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
@@ -146,6 +148,16 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

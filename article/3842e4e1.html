@@ -20,7 +20,8 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/3842e4e1.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/3842e4e1.html">
-<script src="/js/comments.js?v=2" defer></script>
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,7 +57,7 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#Flask-%E6%95%B0%E6%8D%AE%E5%BA%93%E6%93%8D%E4%BD%9C-%E5%8D%81%E4%B8%80">Flask(数据库操作 十一)</a></li><li><a href="#%E6%9F%A5%E8%AF%A2">查询</a></li><li><a href="#%E6%9F%A5%E8%AF%A2%E5%85%A8%E9%83%A8">查询全部</a></li><li><a href="#%E6%9F%A5%E8%AF%A2%E7%AC%AC%E4%B8%80%E4%B8%AA">查询第一个</a></li><li><a href="#%E9%80%9A%E8%BF%87%E4%B8%BB%E9%94%AE%E8%8E%B7%E5%8F%96">通过主键获取</a></li><li><a href="#filter-by%E7%AD%9B%E9%80%89">filter_by筛选</a></li><li><a href="#filter%E7%AD%9B%E9%80%89">filter筛选</a></li><li><a href="#%E6%8E%92%E5%BA%8F">排序</a></li><li><a href="#%E7%8E%B0%E5%9C%A8%E8%BF%94%E5%9B%9E%E7%94%A8%E6%88%B7%E7%9A%84%E6%95%B0%E9%87%8F">现在返回用户的数量</a></li><li><a href="#%E6%9C%AA%E6%89%BE%E5%88%B0">未找到</a></li><li><a href="#%E5%88%A0%E9%99%A4">删除</a></li><li><a href="#%E6%9B%B4%E6%96%B0">更新</a></li><li><a href="#%E5%A4%96%E9%94%AE%E5%85%B3%E8%81%94">外键关联</a></li><li><a href="#%E5%A4%9A%E5%AF%B9%E4%B8%80">多对一</a></li><li><a href="#%E4%B8%80%E5%AF%B9%E4%B8%80">一对一</a></li><li><a href="#%E5%A4%9A%E5%AF%B9%E5%A4%9A">多对多</a></li><li><a href="#%E8%87%AA%E5%BC%95%E7%94%A8">自引用</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body"><h1 id="Flask-数据库操作-十一"><a class="headerlink" href="#Flask-数据库操作-十一" title="Flask(数据库操作 十一)"></a>Flask(数据库操作 十一)</h1><h2 id="查询"><a class="headerlink" href="#查询" title="查询"></a>查询</h2><h3 id="查询全部"><a class="headerlink" href="#查询全部" title="查询全部"></a>查询全部</h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line">users = User.query.<span class="built_in">all</span>()</span><br/></pre></td></tr></tbody></table></figure>
+        <div class="post-body" id="article-text"><h1 id="Flask-数据库操作-十一"><a class="headerlink" href="#Flask-数据库操作-十一" title="Flask(数据库操作 十一)"></a>Flask(数据库操作 十一)</h1><h2 id="查询"><a class="headerlink" href="#查询" title="查询"></a>查询</h2><h3 id="查询全部"><a class="headerlink" href="#查询全部" title="查询全部"></a>查询全部</h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line">users = User.query.<span class="built_in">all</span>()</span><br/></pre></td></tr></tbody></table></figure>
 <h3 id="查询第一个"><a class="headerlink" href="#查询第一个" title="查询第一个"></a>查询第一个</h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line">users = User.query.first()</span><br/></pre></td></tr></tbody></table></figure>
 <h3 id="通过主键获取"><a class="headerlink" href="#通过主键获取" title="通过主键获取"></a>通过主键获取</h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line">users = User.query.get(<span class="number">1</span>)</span><br/></pre></td></tr></tbody></table></figure>
 <p>多个主键</p>
@@ -101,6 +102,7 @@
 <p>查找数据</p>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">'/select'</span></span>)</span></span><br/><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">select</span>():</span></span><br/><span class="line">    user = User.query.get(<span class="number">1</span>)</span><br/><span class="line">    s = user.subject</span><br/><span class="line">    print(s)</span><br/><span class="line">    <span class="keyword">return</span> <span class="string">'OK'</span></span><br/></pre></td></tr></tbody></table></figure>
 <h3 id="自引用"><a class="headerlink" href="#自引用" title="自引用"></a>自引用</h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Follower</span>(<span class="params">db.Model</span>):</span></span><br/><span class="line">    <span class="comment"># 粉丝ID</span></span><br/><span class="line">    fensi_id = db.Column(db.Integer, db.ForeignKey(<span class="string">'user.id'</span>), primary_key=<span class="literal">True</span>)</span><br/><span class="line">    <span class="comment"># 关注者ID</span></span><br/><span class="line">    guanzhuzhe_id = db.Column(db.Integer, db.ForeignKey(<span class="string">'user.id'</span>), primary_key=<span class="literal">True</span>)</span><br/><span class="line"></span><br/><span class="line"></span><br/><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">User</span>(<span class="params">db.Model</span>):</span></span><br/><span class="line">    <span class="built_in">id</span> = db.Column(db.Integer, primary_key=<span class="literal">True</span>)</span><br/><span class="line">    name = db.Column(db.String(<span class="number">20</span>), nullable=<span class="literal">False</span>)</span><br/><span class="line">    sujects = db.relationship(<span class="string">'Xuanke'</span>, back_populates=<span class="string">'student'</span>)</span><br/><span class="line">    fensis = db.relationship(<span class="string">'Follower'</span>, foreign_keys=[Follower.guanzhuzhe_id], backref=<span class="string">'guanzhuzhe'</span>)</span><br/><span class="line">    guanzhuzhes = db.relationship(<span class="string">'Follower'</span>, foreign_keys=[Follower.fensi_id], backref=<span class="string">'fensi'</span>)</span><br/></pre></td></tr></tbody></table></figure></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/Sw_zvltyCs5L9qoPaOIumA">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Flask/">Flask</a><a href="/tags/Python/">Python</a><a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/Flask/">Flask</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
@@ -112,6 +114,16 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

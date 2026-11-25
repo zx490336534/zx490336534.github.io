@@ -20,7 +20,8 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/4d941da4.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/4d941da4.html">
-<script src="/js/comments.js?v=2" defer></script>
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,7 +57,7 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#Git%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86-%E5%85%AD">Git基础知识(六)</a></li><li><a href="#%E5%88%86%E6%94%AF%E7%9A%84%E6%96%B0%E5%BB%BA%E4%B8%8E%E5%90%88%E5%B9%B6">分支的新建与合并</a></li><li><a href="#%E6%A8%A1%E6%8B%9F%E4%BF%AE%E5%A4%8DBug%E7%9A%84%E5%9C%BA%E6%99%AF">模拟修复Bug的场景</a></li><li><a href="#%E5%90%88%E5%B9%B6%E5%86%B2%E7%AA%81">合并冲突</a></li><li><a href="#%E5%88%86%E6%94%AF%E7%AE%A1%E7%90%86">分支管理</a></li><li><a href="#%E6%9F%A5%E7%9C%8B%E5%85%A8%E9%83%A8%E5%88%86%E6%94%AF">查看全部分支</a></li><li><a href="#%E8%BF%87%E6%BB%A4%E5%B7%B2%E7%BB%8F-%E8%BF%98%E6%B2%A1%E5%90%88%E5%B9%B6%E7%9A%84%E5%88%86%E6%94%AF">过滤已经/还没合并的分支</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body"><h1 id="Git基础知识-六"><a class="headerlink" href="#Git基础知识-六" title="Git基础知识(六)"></a>Git基础知识(六)</h1><h2 id="分支的新建与合并"><a class="headerlink" href="#分支的新建与合并" title="分支的新建与合并"></a>分支的新建与合并</h2><h3 id="模拟修复Bug的场景"><a class="headerlink" href="#模拟修复Bug的场景" title="模拟修复Bug的场景"></a>模拟修复Bug的场景</h3><ol>
+        <div class="post-body" id="article-text"><h1 id="Git基础知识-六"><a class="headerlink" href="#Git基础知识-六" title="Git基础知识(六)"></a>Git基础知识(六)</h1><h2 id="分支的新建与合并"><a class="headerlink" href="#分支的新建与合并" title="分支的新建与合并"></a>分支的新建与合并</h2><h3 id="模拟修复Bug的场景"><a class="headerlink" href="#模拟修复Bug的场景" title="模拟修复Bug的场景"></a>模拟修复Bug的场景</h3><ol>
 <li>正常在工作分支「dev」上进行特性开发</li>
 <li>测试告知主线版本「master」出现了一个bug「编号666」需要修复</li>
 <li>在出了版本的分支上新建一个新的分支「666」</li>
@@ -100,6 +101,7 @@
 <p><img alt="查看已合并的分支" decoding="async" height="270" loading="lazy" src="/images/blog-media/f89f04135cb3f0ae7674.webp" width="1080"/></p>
 <p>新建了一个分支「<code>D_</code>」并完成了一次提交，切换回「master」的时候使用<code>查看还未合并的分支</code>命令可以看到分支「<code>D_</code>」</p>
 <p><img alt="查看未合并的分支" decoding="async" height="493" loading="lazy" src="/images/blog-media/50385697cc9b35b6ec65.webp" width="1080"/></p></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/Z_y1u_4deI3LTJkDutR5oQ">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Git/">Git</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/Git/">Git</a></div>
@@ -111,6 +113,16 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

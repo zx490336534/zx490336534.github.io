@@ -20,7 +20,8 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/f78c5963.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/f78c5963.html">
-<script src="/js/comments.js?v=2" defer></script>
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,7 +57,7 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#%E7%94%9F%E6%88%90%E5%99%A8%E7%9A%84%E4%B8%89%E4%B8%AA%E6%96%B9%E6%B3%95">生成器的三个方法</a></li><li><a href="#%E5%87%BD%E6%95%B0">函数</a></li><li><a href="#%E9%80%92%E5%BD%92%E5%87%BD%E6%95%B0">递归函数</a></li><li><a href="#%E7%BA%AF%E5%87%BD%E6%95%B0">纯函数</a></li><li><a href="#%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B0">匿名函数</a></li><li><a href="#%E5%81%8F%E5%87%BD%E6%95%B0">偏函数</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body"><span id="测试开发进阶-三"></span><h3 id="生成器的三个方法"><a class="headerlink" href="#生成器的三个方法" title="生成器的三个方法"></a>生成器的三个方法</h3><ul>
+        <div class="post-body" id="article-text"><span id="测试开发进阶-三"></span><h3 id="生成器的三个方法"><a class="headerlink" href="#生成器的三个方法" title="生成器的三个方法"></a>生成器的三个方法</h3><ul>
 <li><p>send()和生成器内部进行数据交互</p>
 </li>
 <li><p>close()关闭生成器</p>
@@ -130,6 +131,7 @@
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> partial</span><br/><span class="line"></span><br/><span class="line">li = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>]</span><br/><span class="line">myfilter = partial(<span class="built_in">filter</span>, <span class="keyword">lambda</span> x: x &gt; <span class="number">5</span>)</span><br/><span class="line">print(<span class="built_in">list</span>(myfilter(li))) <span class="comment"># [6, 7, 8, 9, 10]</span></span><br/></pre></td></tr></tbody></table></figure>
 <p>一个简单的例子：</p>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> functools <span class="keyword">import</span> partial</span><br/><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">func1</span>(<span class="params">a, b, c</span>):</span></span><br/><span class="line">    print(a, b, c)</span><br/><span class="line"></span><br/><span class="line">func1(<span class="number">11</span>, <span class="number">22</span>, <span class="number">33</span>)</span><br/><span class="line">func1(<span class="number">11</span>, <span class="string">'bb'</span>, <span class="string">'cc'</span>)</span><br/><span class="line">func1(<span class="number">11</span>, <span class="string">'dd'</span>, <span class="string">'ee'</span>)</span><br/><span class="line"></span><br/><span class="line">myfilter1 = partial(func1, <span class="number">11</span>)</span><br/><span class="line">myfilter1(<span class="number">22</span>, <span class="number">33</span>)</span><br/><span class="line">myfilter1(<span class="string">'bb'</span>, <span class="string">'cc'</span>)</span><br/><span class="line">myfilter1(<span class="string">'dd'</span>, <span class="string">'ee'</span>)</span><br/><span class="line"></span><br/><span class="line">myfilter2 = partial(func1, b=<span class="number">22</span>)</span><br/><span class="line">myfilter2(a=<span class="number">11</span>, c=<span class="string">'cc'</span>) <span class="comment"># 11 22 cc</span></span><br/><span class="line"></span><br/><span class="line">myfilter2 = partial(func1, a=<span class="number">11</span>, b=<span class="number">22</span>)</span><br/><span class="line">myfilter2(c=<span class="string">'cc'</span>) <span class="comment"># 11 22 cc</span></span><br/></pre></td></tr></tbody></table></figure></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
 
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Python/">Python</a><a href="/tags/%E7%94%9F%E6%88%90%E5%99%A8/">生成器</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
@@ -141,6 +143,16 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

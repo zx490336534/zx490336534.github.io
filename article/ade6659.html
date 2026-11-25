@@ -20,7 +20,8 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/ade6659.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/ade6659.html">
-<script src="/js/comments.js?v=2" defer></script>
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,7 +57,7 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#Flask-%E8%AF%B7%E6%B1%82%E5%92%8C%E5%93%8D%E5%BA%94-%E4%BA%94">Flask(请求和响应 五)</a></li><li><a href="#%E8%B7%AF%E7%94%B1%E8%AE%BE%E8%AE%A1">路由设计</a></li><li><a href="#%E5%89%8D%E5%90%8E%E7%AB%AF%E4%B8%8D%E5%88%86%E7%A6%BB%EF%BC%8C%E6%A8%A1%E7%89%88%E6%B8%B2%E6%9F%93">前后端不分离，模版渲染</a></li><li><a href="#%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB%EF%BC%8C%E9%80%9A%E8%BF%87method">前后端分离，通过method</a></li><li><a href="#%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84ajax%E4%BE%8B%E5%AD%90">一个简单的ajax例子</a></li><li><a href="#html">html</a></li><li><a href="#python">python</a></li><li><a href="#request">request</a></li><li><a href="#values">values</a></li><li><a href="#cookies">cookies</a></li><li><a href="#data">data</a></li><li><a href="#stream">stream</a></li><li><a href="#headers">headers</a></li><li><a href="#files">files</a></li><li><a href="#environ">environ</a></li><li><a href="#method">method</a></li><li><a href="#remote-addr">remote_addr</a></li><li><a href="#user-agent">user-agent</a></li><li><a href="#%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0">文件上传</a></li><li><a href="#%E5%93%8D%E5%BA%94%E5%A4%B4">响应头</a></li><li><a href="#%E6%96%B9%E5%BC%8F%E4%B8%80">方式一</a></li><li><a href="#%E6%96%B9%E5%BC%8F%E4%BA%8C">方式二</a></li><li><a href="#%E6%96%B9%E5%BC%8F%E4%B8%89">方式三</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body"><h1 id="Flask-请求和响应-五"><a class="headerlink" href="#Flask-请求和响应-五" title="Flask(请求和响应 五)"></a>Flask(请求和响应 五)</h1><h2 id="路由设计"><a class="headerlink" href="#路由设计" title="路由设计"></a>路由设计</h2><h3 id="前后端不分离，模版渲染"><a class="headerlink" href="#前后端不分离，模版渲染" title="前后端不分离，模版渲染"></a>前后端不分离，模版渲染</h3><blockquote>
+        <div class="post-body" id="article-text"><h1 id="Flask-请求和响应-五"><a class="headerlink" href="#Flask-请求和响应-五" title="Flask(请求和响应 五)"></a>Flask(请求和响应 五)</h1><h2 id="路由设计"><a class="headerlink" href="#路由设计" title="路由设计"></a>路由设计</h2><h3 id="前后端不分离，模版渲染"><a class="headerlink" href="#前后端不分离，模版渲染" title="前后端不分离，模版渲染"></a>前后端不分离，模版渲染</h3><blockquote>
 <p>建议：一个视图函数写一个url</p>
 </blockquote>
 <ol>
@@ -121,6 +122,7 @@
 <h3 id="方式三"><a class="headerlink" href="#方式三" title="方式三"></a>方式三</h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask, jsonify</span><br/><span class="line"></span><br/><span class="line">app = Flask(__name__)</span><br/><span class="line"></span><br/><span class="line"></span><br/><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">'/'</span></span>)</span></span><br/><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span>():</span></span><br/><span class="line">    r = jsonify({<span class="string">"username"</span>: <span class="string">"zhongxin2"</span>})</span><br/><span class="line">    <span class="keyword">return</span> r</span><br/><span class="line"></span><br/><span class="line"></span><br/><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br/><span class="line">    app.run()</span><br/></pre></td></tr></tbody></table></figure>
 <p>可以看一下<code>jsonify</code>源码，其实也就是用的<code>make_response</code>中的 <code>current_app.response_class    </code></p>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">jsonify</span>(<span class="params">*args, **kwargs</span>):</span></span><br/><span class="line">    indent = <span class="literal">None</span></span><br/><span class="line">    separators = (<span class="string">","</span>, <span class="string">":"</span>)</span><br/><span class="line"></span><br/><span class="line">    <span class="keyword">if</span> current_app.config[<span class="string">"JSONIFY_PRETTYPRINT_REGULAR"</span>] <span class="keyword">or</span> current_app.debug:</span><br/><span class="line">        indent = <span class="number">2</span></span><br/><span class="line">        separators = (<span class="string">", "</span>, <span class="string">": "</span>)</span><br/><span class="line"></span><br/><span class="line">    <span class="keyword">if</span> args <span class="keyword">and</span> kwargs:</span><br/><span class="line">        <span class="keyword">raise</span> TypeError(<span class="string">"jsonify() behavior undefined when passed both args and kwargs"</span>)</span><br/><span class="line">    <span class="keyword">elif</span> <span class="built_in">len</span>(args) == <span class="number">1</span>:  <span class="comment"># single args are passed directly to dumps()</span></span><br/><span class="line">        data = args[<span class="number">0</span>]</span><br/><span class="line">    <span class="keyword">else</span>:</span><br/><span class="line">        data = args <span class="keyword">or</span> kwargs</span><br/><span class="line"></span><br/><span class="line">    <span class="keyword">return</span> current_app.response_class(</span><br/><span class="line">        dumps(data, indent=indent, separators=separators) + <span class="string">"\n"</span>,</span><br/><span class="line">        mimetype=current_app.config[<span class="string">"JSONIFY_MIMETYPE"</span>],</span><br/><span class="line">    )</span><br/></pre></td></tr></tbody></table></figure></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/K0ulI28xsdE7gxfJ7mXHSQ">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Flask/">Flask</a><a href="/tags/Python/">Python</a><a href="/tags/HTTP/">HTTP</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/Flask/">Flask</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
@@ -132,6 +134,16 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

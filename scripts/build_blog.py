@@ -562,6 +562,16 @@ def article(post, older, newer, series_position=None):
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>
@@ -593,7 +603,8 @@ def article(post, older, newer, series_position=None):
     <div class="wrap article-layout{' with-outline' if outline else ''}">
       {outline}
       <div class="article-main">
-        <div class="post-body">{post.body}</div>{article_video(post)}
+        <div class="post-body" id="article-text">{post.body}</div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>{article_video(post)}
         {source}
         <div class="post-tags" aria-label="文章标签">{tags}</div>
         <div class="legacy-tags" hidden>{original_tags}</div>
@@ -604,7 +615,8 @@ def article(post, older, newer, series_position=None):
   </article>'''
     head = (
         f'{cover_meta}\n<meta name="giscus:backlink" content="{html(SITE + post.path)}">\n'
-        '<script src="/js/comments.js?v=2" defer></script>'
+        '<script src="/js/comments.js?v=3" defer></script>'
+        '\n<script src="/js/comment-quotes.js" defer></script>'
     )
     return shell(post.display_title, post.path, content, post.description, head)
 

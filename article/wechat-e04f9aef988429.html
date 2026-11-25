@@ -20,7 +20,8 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/wechat-e04f9aef988429.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/wechat-e04f9aef988429.html">
-<script src="/js/comments.js?v=2" defer></script>
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,7 +57,8 @@
     <div class="wrap article-layout">
 
       <div class="article-main">
-        <div class="post-body"><section class="output_wrapper"><p>在完成了页面的布局之后，我们需要让页面动起来，一般来说头部信息需要添加好几个才能完成要求的接口请求。<br/>所以我们在之前的基础要进行键值对输入的新增功能。<br/>由于技术的原因，删除的操作没写出来。<br/>所以最终实现了类似如下图的内容：<br/></p><figure><img alt="" class="" decoding="async" height="602" loading="lazy" src="/images/blog-media/f8ad0fe12152b615a229.webp" width="1080"/><figcaption>新增</figcaption></figure><br/>把加号移动到了之前的操作位置，下面显示的是序列ID。所以会有诸多不便，但是删除指定行的操作还是等后续能力上升后再补全好了。<br/>下面来看一下新增部分的js代码<pre><code class="JavaScript language-JavaScript hljs">$(<span class="hljs-string">"#head_data_add"</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span> () </span>{<br/>        <span class="hljs-keyword">var</span> tr = <span class="hljs-string">"&lt;tr&gt;"</span> + <span class="hljs-string">'&lt;td&gt;'</span> + flag + <span class="hljs-string">'&lt;/td&gt;'</span><br/>            + <span class="hljs-string">'&lt;td&gt;&lt;input type="text" placeholder="请输入请求键" style="border-radius: 5px"&gt;&lt;/td&gt;'</span><br/>            + <span class="hljs-string">'&lt;td&gt;&lt;input type="text" placeholder="请输入请求值" style="border-radius: 5px"&gt;&lt;/td&gt;'</span><br/>            + <span class="hljs-string">'&lt;td&gt;&lt;input type="text" placeholder="请输入注释" style="border-radius: 5px"&gt;&lt;/td&gt;'</span><br/>            + <span class="hljs-string">'&lt;/tr&gt;'</span>;<br/>        $(<span class="hljs-string">"#head_data"</span>).append(tr);<br/>        flag++;<br/>    });<br/></code></pre><p>虽然就这么简单的几行，但是由于根本没有系统的学习过js，所以写的很痛苦。<br/>首先是定义了一个变量tr，它是通过字符串的拼接组合而成，可以看到和我们在html静态页面中写的列表的一行内容一样，唯一不同的是使用flag来指明了序号。因为第一行是固定的，所以定义flag的时候是从2开始。在每次操作的最后都会进行flag++的操作，完成计数+1。<br/></p><figure><img alt="" class="" decoding="async" height="524" loading="lazy" src="/images/blog-media/fdb0b6715f6a11e05f20.webp" width="1080"/><figcaption>html页面</figcaption></figure><p>从IDE左侧的标示可以看出修改的部分。这次为table增加了一个id为head_data<br/>为图标增加了一个a标签，并且指向的连接是javascript:void(0)<br/>使用javascript:void(0)点击后html页面不会有任何变化，如果使用#会刷新一次页面。并且为它增加了一个id为head_data_add。<br/>使用id是为了更方便的在js代码中定位到对应元素。<br/>通过几步简单的操作就完成了添加一行键值对输入行的操作了。<br/></p><figure><img alt="" class="" decoding="async" height="284" loading="lazy" src="/images/blog-media/b2447b6589d3ab8035e8.gif" width="599"/><figcaption>效果</figcaption></figure><br/>下面数据部分同理。<br/><figure><img alt="" class="" decoding="async" height="1223" loading="lazy" src="/images/blog-media/bc1f516a9920e48a1195.webp" width="1080"/><figcaption>效果</figcaption></figure><p>其他部分自行查看github上的代码吧～～<br/>https://github.com/zx490336534/Zxapitest<br/>欢迎关注我的公众号：zx94_11</p></section></div>
+        <div class="post-body" id="article-text"><section class="output_wrapper"><p>在完成了页面的布局之后，我们需要让页面动起来，一般来说头部信息需要添加好几个才能完成要求的接口请求。<br/>所以我们在之前的基础要进行键值对输入的新增功能。<br/>由于技术的原因，删除的操作没写出来。<br/>所以最终实现了类似如下图的内容：<br/></p><figure><img alt="" class="" decoding="async" height="602" loading="lazy" src="/images/blog-media/f8ad0fe12152b615a229.webp" width="1080"/><figcaption>新增</figcaption></figure><br/>把加号移动到了之前的操作位置，下面显示的是序列ID。所以会有诸多不便，但是删除指定行的操作还是等后续能力上升后再补全好了。<br/>下面来看一下新增部分的js代码<pre><code class="JavaScript language-JavaScript hljs">$(<span class="hljs-string">"#head_data_add"</span>).click(<span class="hljs-function"><span class="hljs-keyword">function</span> () </span>{<br/>        <span class="hljs-keyword">var</span> tr = <span class="hljs-string">"&lt;tr&gt;"</span> + <span class="hljs-string">'&lt;td&gt;'</span> + flag + <span class="hljs-string">'&lt;/td&gt;'</span><br/>            + <span class="hljs-string">'&lt;td&gt;&lt;input type="text" placeholder="请输入请求键" style="border-radius: 5px"&gt;&lt;/td&gt;'</span><br/>            + <span class="hljs-string">'&lt;td&gt;&lt;input type="text" placeholder="请输入请求值" style="border-radius: 5px"&gt;&lt;/td&gt;'</span><br/>            + <span class="hljs-string">'&lt;td&gt;&lt;input type="text" placeholder="请输入注释" style="border-radius: 5px"&gt;&lt;/td&gt;'</span><br/>            + <span class="hljs-string">'&lt;/tr&gt;'</span>;<br/>        $(<span class="hljs-string">"#head_data"</span>).append(tr);<br/>        flag++;<br/>    });<br/></code></pre><p>虽然就这么简单的几行，但是由于根本没有系统的学习过js，所以写的很痛苦。<br/>首先是定义了一个变量tr，它是通过字符串的拼接组合而成，可以看到和我们在html静态页面中写的列表的一行内容一样，唯一不同的是使用flag来指明了序号。因为第一行是固定的，所以定义flag的时候是从2开始。在每次操作的最后都会进行flag++的操作，完成计数+1。<br/></p><figure><img alt="" class="" decoding="async" height="524" loading="lazy" src="/images/blog-media/fdb0b6715f6a11e05f20.webp" width="1080"/><figcaption>html页面</figcaption></figure><p>从IDE左侧的标示可以看出修改的部分。这次为table增加了一个id为head_data<br/>为图标增加了一个a标签，并且指向的连接是javascript:void(0)<br/>使用javascript:void(0)点击后html页面不会有任何变化，如果使用#会刷新一次页面。并且为它增加了一个id为head_data_add。<br/>使用id是为了更方便的在js代码中定位到对应元素。<br/>通过几步简单的操作就完成了添加一行键值对输入行的操作了。<br/></p><figure><img alt="" class="" decoding="async" height="284" loading="lazy" src="/images/blog-media/b2447b6589d3ab8035e8.gif" width="599"/><figcaption>效果</figcaption></figure><br/>下面数据部分同理。<br/><figure><img alt="" class="" decoding="async" height="1223" loading="lazy" src="/images/blog-media/bc1f516a9920e48a1195.webp" width="1080"/><figcaption>效果</figcaption></figure><p>其他部分自行查看github上的代码吧～～<br/>https://github.com/zx490336534/Zxapitest<br/>欢迎关注我的公众号：zx94_11</p></section></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/bf8bA9NmGQkm-954HAGu7A">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Django/">Django</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%B9%B3%E5%8F%B0/">测试平台</a><a href="/tags/%E6%8E%A5%E5%8F%A3%E7%AE%A1%E7%90%86/">接口管理</a></div>
         <div class="legacy-tags" hidden></div>
@@ -68,6 +70,16 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

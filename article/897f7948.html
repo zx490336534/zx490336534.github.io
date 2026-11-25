@@ -20,7 +20,8 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/897f7948.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/897f7948.html">
-<script src="/js/comments.js?v=2" defer></script>
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,7 +57,7 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#%E7%BB%93%E6%9E%84%E5%8C%96%E5%B7%A5%E7%A8%8B">结构化工程</a></li><li><a href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E6%89%A9%E5%B1%95">数据类型扩展</a></li><li><a href="#%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B">基本数据类型</a></li><li><a href="#%E5%91%BD%E5%90%8D%E5%85%83%E7%A5%96">命名元祖</a></li><li><a href="#%E6%8E%A8%E5%AF%BC%E5%BC%8F">推导式</a></li><li><a href="#%E8%BF%AD%E4%BB%A3%E5%99%A8%E5%92%8C%E7%94%9F%E6%88%90%E5%99%A8">迭代器和生成器</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body"><span id="测试开发进阶-二"></span><h2 id="结构化工程"><a class="headerlink" href="#结构化工程" title="结构化工程"></a>结构化工程</h2><p><a href="https://pythonguidecn.readthedocs.io/zh/latest/writing/structure.html" rel="noopener" target="_blank">https://pythonguidecn.readthedocs.io/zh/latest/writing/structure.html</a></p>
+        <div class="post-body" id="article-text"><span id="测试开发进阶-二"></span><h2 id="结构化工程"><a class="headerlink" href="#结构化工程" title="结构化工程"></a>结构化工程</h2><p><a href="https://pythonguidecn.readthedocs.io/zh/latest/writing/structure.html" rel="noopener" target="_blank">https://pythonguidecn.readthedocs.io/zh/latest/writing/structure.html</a></p>
 <ul>
 <li>readme： 对项目的整体介绍，同时也是一份使用手册</li>
 <li>LICENS：阐述该项目的许可说明和授权</li>
@@ -167,6 +168,7 @@
 </ul>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gen</span>():</span></span><br/><span class="line">    i = <span class="number">0</span></span><br/><span class="line">    <span class="keyword">while</span> i &lt; <span class="number">10</span>:</span><br/><span class="line">        j = <span class="keyword">yield</span> i</span><br/><span class="line">        print(j)</span><br/><span class="line">        i += <span class="number">1</span></span><br/><span class="line"></span><br/><span class="line"></span><br/><span class="line">g = gen()</span><br/><span class="line">print(g) <span class="comment"># &lt;generator object gen at 0x114203138&gt;</span></span><br/><span class="line">print(<span class="built_in">next</span>(g)) <span class="comment"># 0</span></span><br/><span class="line">print(<span class="built_in">next</span>(g)) <span class="comment"># None 1</span></span><br/><span class="line">print(g.send(<span class="number">8</span>)) <span class="comment"># 8 2</span></span><br/></pre></td></tr></tbody></table></figure>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">gen1</span>():</span></span><br/><span class="line">    i = <span class="number">0</span></span><br/><span class="line">    <span class="keyword">while</span> i &lt; <span class="number">10</span>:</span><br/><span class="line">        j = <span class="keyword">yield</span> i</span><br/><span class="line">        <span class="keyword">if</span> j <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br/><span class="line">            i = j</span><br/><span class="line">        i += <span class="number">1</span></span><br/><span class="line">g = gen1()</span><br/><span class="line">print(<span class="built_in">next</span>(g)) <span class="comment"># 0</span></span><br/><span class="line">print(g.send(<span class="number">8</span>)) <span class="comment"># 9</span></span><br/><span class="line">print(g.send(<span class="number">5</span>)) <span class="comment"># 6</span></span><br/><span class="line">print(g.send(<span class="number">10</span>))</span><br/><span class="line"><span class="string">"""</span></span><br/><span class="line"><span class="string">Traceback (most recent call last):</span></span><br/><span class="line"><span class="string">  File "/Users/zhongxin/Desktop/py/zx/02/0807_5.py", line 26, in &lt;module&gt;</span></span><br/><span class="line"><span class="string">    print(g.send(10))</span></span><br/><span class="line"><span class="string">StopIteration</span></span><br/><span class="line"><span class="string">"""</span></span><br/></pre></td></tr></tbody></table></figure></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
 
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Python/">Python</a><a href="/tags/%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84/">项目结构</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
@@ -178,6 +180,16 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

@@ -20,7 +20,8 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/fa4fb010.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/fa4fb010.html">
-<script src="/js/comments.js?v=2" defer></script>
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,7 +57,7 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#%E4%BD%BF%E7%94%A8Gitlab%E8%BF%9B%E8%A1%8C%E4%BB%A3%E7%A0%81%E7%AE%A1%E7%90%86%EF%BC%88Merge-requests%EF%BC%89">使用Gitlab进行代码管理（Merge requests）</a></li><li><a href="#Gitlab%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA">Gitlab环境搭建</a></li><li><a href="#Merge-requests">Merge requests</a></li><li><a href="#%E5%8F%91%E8%B5%B7%E4%B8%80%E6%AC%A1%E5%90%88%E5%B9%B6%E8%AF%B7%E6%B1%82">发起一次合并请求</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body"><h1 id="使用Gitlab进行代码管理（Merge-requests）"><a class="headerlink" href="#使用Gitlab进行代码管理（Merge-requests）" title="使用Gitlab进行代码管理（Merge requests）"></a>使用Gitlab进行代码管理（Merge requests）</h1><p><img alt="image-20190324220607374" decoding="async" height="592" loading="lazy" src="/images/blog-media/311663951c6dd64c2ff4.webp" width="1080"/></p>
+        <div class="post-body" id="article-text"><h1 id="使用Gitlab进行代码管理（Merge-requests）"><a class="headerlink" href="#使用Gitlab进行代码管理（Merge-requests）" title="使用Gitlab进行代码管理（Merge requests）"></a>使用Gitlab进行代码管理（Merge requests）</h1><p><img alt="image-20190324220607374" decoding="async" height="592" loading="lazy" src="/images/blog-media/311663951c6dd64c2ff4.webp" width="1080"/></p>
 <p>从<a href="https://about.gitlab.com/" rel="noopener" target="_blank">Gitlab官网</a>的图中可以看到Gitlab支持软件开发的全流程。</p>
 <span id="more"></span>
 <h2 id="Gitlab环境搭建"><a class="headerlink" href="#Gitlab环境搭建" title="Gitlab环境搭建"></a>Gitlab环境搭建</h2><p>由于准备在内网中使用，所以使用的是开源版。</p>
@@ -120,6 +121,7 @@
 <p>下面用开发者账户发起一个合并请求</p>
 <p><img alt="image-20190324224711611" decoding="async" height="876" loading="lazy" src="/images/blog-media/84130cf6f21f97be7f4c.webp" width="1080"/></p>
 <p>可以看到请求无法直接被合并，需要有写权限的用户才能合并，切换回管理员账户进行查看，发现按钮变绿了。可以正常合并和提交了。</p></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/SBM5i-HqbZc-P4b-CkKGAA">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Git/">Git</a><a href="/tags/GitLab/">GitLab</a><a href="/tags/%E5%90%88%E5%B9%B6%E8%AF%B7%E6%B1%82/">合并请求</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/Git/">Git</a></div>
@@ -131,6 +133,16 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

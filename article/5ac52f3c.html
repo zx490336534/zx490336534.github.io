@@ -20,7 +20,8 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/5ac52f3c.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/5ac52f3c.html">
-<script src="/js/comments.js?v=2" defer></script>
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,7 +57,7 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#nmon">nmon</a></li><li><a href="#%E6%9F%A5%E7%9C%8BLinux%E7%9A%84%E5%8F%91%E8%A1%8C%E7%89%88%E6%9C%AC">查看Linux的发行版本</a></li><li><a href="#%E7%A1%AE%E5%AE%9A%E4%B8%8B%E8%BD%BD%E7%9A%84%E6%96%87%E4%BB%B6">确定下载的文件</a></li><li><a href="#%E8%A7%A3%E5%8E%8B">解压</a></li><li><a href="#nmon%E4%B8%89%E7%A7%8D%E8%BF%90%E8%A1%8C%E6%A8%A1%E5%BC%8F">nmon三种运行模式</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body"><span id="19-nmon"></span><h2 id="nmon"><a class="headerlink" href="#nmon" title="nmon"></a>nmon</h2><blockquote>
+        <div class="post-body" id="article-text"><span id="19-nmon"></span><h2 id="nmon"><a class="headerlink" href="#nmon" title="nmon"></a>nmon</h2><blockquote>
 <p><a href="http://nmon.sourceforge.net/" rel="noopener" target="_blank">http://nmon.sourceforge.net/</a></p>
 <p>C语言编写本身资源消耗非常小</p>
 </blockquote>
@@ -119,6 +120,7 @@
 <h4 id="定时收集模式"><a class="headerlink" href="#定时收集模式" title="定时收集模式"></a>定时收集模式</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/></pre></td><td class="code"><pre><span class="line">Capacity Planning mode - use cron to run each day</span><br/><span class="line">        -x            Sensible spreadsheet output for one day</span><br/><span class="line">                      Every 15 mins for 1 day ( i.e. -ft -s 900 -c 96)</span><br/><span class="line">        -X            Sensible spreadsheet output for busy hour</span><br/><span class="line">                      Every 30 secs for 1 hour ( i.e. -ft -s 30 -c 120)</span><br/><span class="line">        -z            Like -x but the output saved in /var/perf/tmp assuming root user</span><br/></pre></td></tr></tbody></table></figure>
 <p>-X:收集一小时</p>
 <p>-x:收集一天</p></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/rl6RQmuklsM-lr1hYwkrVg">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/nmon/">nmon</a><a href="/tags/%E7%9B%91%E6%8E%A7/">监控</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a></div>
@@ -130,6 +132,16 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

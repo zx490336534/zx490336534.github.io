@@ -20,7 +20,8 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/wechat-3ba898d5b50563.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/wechat-3ba898d5b50563.html">
-<script src="/js/comments.js?v=2" defer></script>
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,7 +57,8 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#concurrent-futures">concurrent.futures</a></li><li><a href="#%E4%BE%8B%E5%AD%90">例子</a></li><li><a href="#future">future</a></li><li><a href="#%E9%98%BB%E5%A1%9E%E5%9E%8BI-O%E5%92%8CGIL">阻塞型I/O和GIL</a></li><li><a href="#%E4%BD%BF%E7%94%A8ProcessPoolExecutor%E8%BF%9B%E8%A1%8C%E5%B9%B6%E8%A1%8C%E8%AE%A1%E7%AE%97">使用ProcessPoolExecutor进行并行计算</a></li><li><a href="#lelo">lelo</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body"><section><section></section><h1><span></span><br/></h1><h2 id="concurrent-futures"><span>concurrent.futures</span></h2><p><code>concurrent.futures</code>模块的主要特色是<code>ThreadPoolExecutor</code>和<code>ProcessPoolExecutor</code>类。</p><p>这两个类实现的接口能分别在不同的线程或者进程中执行可调用的对象。</p><p>这两个类在内部维护着一个工作线程或进程池，以及要执行的任务队列。</p><h3 id="例子"><span>例子</span></h3><pre><code><span>from</span> concurrent <span>import</span> futures<br/><br/>MAX_WORKERS = <span>20</span><br/><br/><br/><span><span>def</span> <span>download_one</span><span>(cc)</span>:</span><br/>    <span>return</span> cc<br/><br/><br/><span><span>def</span> <span>download_many</span><span>(cc_list)</span>:</span><br/>    workers = min(MAX_WORKERS, len(cc_list))<br/>    <span>with</span> futures.ThreadPoolExecutor(workers) <span>as</span> executor:<br/>        res = executor.map(download_one, sorted(cc_list))<br/>    <span>return</span> len(list(res))<br/></code></pre><h2 id="future"><span>future</span></h2><blockquote><p>future表示终将发生的事情，而确定某件事会发生的唯一方式是执行的时间已经排定</p></blockquote><p>future封装待完成的操作，可以放入队列，完成的状态可以查询，得到结果（或抛出异常）后可以获取结果（或异常）。</p><p>通常情况下自己不应该创建future，而只能由并发框架实例化。</p><h2 id="阻塞型I-O和GIL"><span>阻塞型I/O和GIL</span></h2><blockquote><p>GIL几乎对I/O密集型处理无害</p></blockquote><p>Cpython解释器本身就不是线程安全的，因此有全局解释器锁「GIL」，一次只运行使用一个线程执行Python字节码。</p><p>因此，一个Python进程通常不能同时使用多个CPU核心。</p><p>标准库中所有执行阻塞性I/O操作的函数，在等待操作系统返回结果时都会释放GIL</p><h3 id="使用ProcessPoolExecutor进行并行计算"><span>使用ProcessPoolExecutor进行并行计算</span></h3><p><code>ProcessPoolExecutor</code>类把工作分配给多个Python进程处理。它能绕开GIL，利用所有可用的CPU核心</p><p><code>ProcessPoolExecutor</code>的价值体现在CPU密集型作业上</p><h2 id="lelo"><span>lelo</span></h2><p>定义了一个<code>@parallel</code>装饰器，应用在任何函数上，把函数变成非阻塞：调用被装饰的函数时，函数在一个新的进程中执行。</p><p>https://bitbucket.org/jsbueno/lelo/src/master/</p></section></div>
+        <div class="post-body" id="article-text"><section><section></section><h1><span></span><br/></h1><h2 id="concurrent-futures"><span>concurrent.futures</span></h2><p><code>concurrent.futures</code>模块的主要特色是<code>ThreadPoolExecutor</code>和<code>ProcessPoolExecutor</code>类。</p><p>这两个类实现的接口能分别在不同的线程或者进程中执行可调用的对象。</p><p>这两个类在内部维护着一个工作线程或进程池，以及要执行的任务队列。</p><h3 id="例子"><span>例子</span></h3><pre><code><span>from</span> concurrent <span>import</span> futures<br/><br/>MAX_WORKERS = <span>20</span><br/><br/><br/><span><span>def</span> <span>download_one</span><span>(cc)</span>:</span><br/>    <span>return</span> cc<br/><br/><br/><span><span>def</span> <span>download_many</span><span>(cc_list)</span>:</span><br/>    workers = min(MAX_WORKERS, len(cc_list))<br/>    <span>with</span> futures.ThreadPoolExecutor(workers) <span>as</span> executor:<br/>        res = executor.map(download_one, sorted(cc_list))<br/>    <span>return</span> len(list(res))<br/></code></pre><h2 id="future"><span>future</span></h2><blockquote><p>future表示终将发生的事情，而确定某件事会发生的唯一方式是执行的时间已经排定</p></blockquote><p>future封装待完成的操作，可以放入队列，完成的状态可以查询，得到结果（或抛出异常）后可以获取结果（或异常）。</p><p>通常情况下自己不应该创建future，而只能由并发框架实例化。</p><h2 id="阻塞型I-O和GIL"><span>阻塞型I/O和GIL</span></h2><blockquote><p>GIL几乎对I/O密集型处理无害</p></blockquote><p>Cpython解释器本身就不是线程安全的，因此有全局解释器锁「GIL」，一次只运行使用一个线程执行Python字节码。</p><p>因此，一个Python进程通常不能同时使用多个CPU核心。</p><p>标准库中所有执行阻塞性I/O操作的函数，在等待操作系统返回结果时都会释放GIL</p><h3 id="使用ProcessPoolExecutor进行并行计算"><span>使用ProcessPoolExecutor进行并行计算</span></h3><p><code>ProcessPoolExecutor</code>类把工作分配给多个Python进程处理。它能绕开GIL，利用所有可用的CPU核心</p><p><code>ProcessPoolExecutor</code>的价值体现在CPU密集型作业上</p><h2 id="lelo"><span>lelo</span></h2><p>定义了一个<code>@parallel</code>装饰器，应用在任何函数上，把函数变成非阻塞：调用被装饰的函数时，函数在一个新的进程中执行。</p><p>https://bitbucket.org/jsbueno/lelo/src/master/</p></section></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/W6nCPf1ZQJ4IOmT1cUZNWA">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%81%E7%95%85%E7%9A%84-Python/">流畅的 Python</a></div>
         <div class="legacy-tags" hidden></div>
@@ -68,6 +70,16 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

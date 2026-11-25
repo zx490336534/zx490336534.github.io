@@ -20,7 +20,8 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/31aee3cf.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/31aee3cf.html">
-<script src="/js/comments.js?v=2" defer></script>
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,7 +57,7 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#%E7%94%A8%E4%BE%8B%E6%A8%A1%E5%9D%97">用例模块</a></li><li><a href="#%E7%94%9F%E6%88%90yaml%E7%94%A8%E4%BE%8B">生成yaml用例</a></li><li><a href="#%E6%89%A7%E8%A1%8Cyaml%E6%96%87%E4%BB%B6">执行yaml文件</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body"><span id="测试开发进阶-三十八"></span><h2 id="用例模块"><a class="headerlink" href="#用例模块" title="用例模块"></a>用例模块</h2><p>需要使用httprunner来进行用例的执行与报告的生成</p>
+        <div class="post-body" id="article-text"><span id="测试开发进阶-三十八"></span><h2 id="用例模块"><a class="headerlink" href="#用例模块" title="用例模块"></a>用例模块</h2><p>需要使用httprunner来进行用例的执行与报告的生成</p>
 <p>所以我们需要生成一个yaml用例文件，再执行它</p>
 <span id="more"></span>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">@action(<span class="params">methods=[<span class="string">'post'</span>], detail=<span class="literal">True</span></span>)</span></span><br/><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">run</span>(<span class="params">self, request, *args, **kwargs</span>):</span></span><br/><span class="line">    instance = self.get_object()</span><br/><span class="line">    serializer = self.get_serializer(instance, data=request.data)</span><br/><span class="line">    serializer.is_valid(raise_exception=<span class="literal">True</span>)</span><br/><span class="line">    datas = serializer.validated_data</span><br/><span class="line">    env_id = datas.get(<span class="string">'env_id'</span>)</span><br/><span class="line">    testcase_dir_path = os.path.join(settings.SUITES_DIR, datetime.strftime(datetime.now(), <span class="string">'%Y%m%d%H%M%S%f'</span>))</span><br/><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(testcase_dir_path):</span><br/><span class="line">        os.mkdir(testcase_dir_path)</span><br/><span class="line">    env = Envs.objects.<span class="built_in">filter</span>(<span class="built_in">id</span>=env_id, is_delete=<span class="literal">False</span>).first()</span><br/><span class="line">    <span class="comment"># 生成yaml用例文件</span></span><br/><span class="line">    common.generate_testcase_files(instance, env, testcase_dir_path)</span><br/><span class="line">    <span class="comment"># 运行用例</span></span><br/><span class="line">    <span class="keyword">return</span> common.run_testcase(instance, testcase_dir_path)</span><br/></pre></td></tr></tbody></table></figure>
@@ -75,6 +76,7 @@
 <p><img alt="结果" decoding="async" height="688" loading="lazy" src="/images/blog-media/e6b6f447d6fdf75b4e8b.webp" width="1080"/></p>
 <p>其他模块的执行与报告展示也调用了这两个函数</p>
 <p><a href="https://github.com/zx490336534/ApiTest" rel="noopener" target="_blank">https://github.com/zx490336534/ApiTest</a></p></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/IDLqkTFKjcNO4f3SO1BL7A">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/%E6%B5%8B%E8%AF%95%E5%B9%B3%E5%8F%B0/">测试平台</a><a href="/tags/Django/">Django</a><a href="/tags/HttpRunner/">HttpRunner</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
@@ -86,6 +88,16 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

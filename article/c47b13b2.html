@@ -20,7 +20,8 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/c47b13b2.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/c47b13b2.html">
-<script src="/js/comments.js?v=2" defer></script>
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,7 +57,7 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#Flask-%E4%B8%AD%E9%97%B4%E4%BB%B6%E4%B8%8E%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F-%E4%B9%9D">Flask(中间件与全局变量 九)</a></li><li><a href="#%E4%B8%AD%E9%97%B4%E4%BB%B6-middleware">中间件 middleware</a></li><li><a href="#request">request</a></li><li><a href="#%E8%AF%B7%E6%B1%82%E9%92%A9%E5%AD%90-before-request">请求钩子 before_request</a></li><li><a href="#after-request">after_request</a></li><li><a href="#teardown-request">teardown_request</a></li><li><a href="#before-first-request">before_first_request</a></li><li><a href="#%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F">全局变量</a></li><li><a href="#g%EF%BC%9A%E5%90%8C%E4%B8%80%E4%B8%AA%E8%AF%B7%E6%B1%82%E4%B8%AD-%E5%85%B1%E4%BA%AB%E6%95%B0%E6%8D%AE">g：同一个请求中 共享数据</a></li><li><a href="#session">session</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body"><h1 id="Flask-中间件与全局变量-九"><a class="headerlink" href="#Flask-中间件与全局变量-九" title="Flask(中间件与全局变量 九)"></a>Flask(中间件与全局变量 九)</h1><h2 id="中间件-middleware"><a class="headerlink" href="#中间件-middleware" title="中间件 middleware"></a>中间件 middleware</h2><h3 id="request"><a class="headerlink" href="#request" title="request"></a>request</h3><p>当Flask应用处理请求时，它会根据从WSGI服务器收到的环境创建一个<code>Request</code>对象.</p>
+        <div class="post-body" id="article-text"><h1 id="Flask-中间件与全局变量-九"><a class="headerlink" href="#Flask-中间件与全局变量-九" title="Flask(中间件与全局变量 九)"></a>Flask(中间件与全局变量 九)</h1><h2 id="中间件-middleware"><a class="headerlink" href="#中间件-middleware" title="中间件 middleware"></a>中间件 middleware</h2><h3 id="request"><a class="headerlink" href="#request" title="request"></a>request</h3><p>当Flask应用处理请求时，它会根据从WSGI服务器收到的环境创建一个<code>Request</code>对象.</p>
 <p>因为工作者（取决于服务器的线程，进程或者协程）一次只能处理一个请求，所以在该请求期间请求数据可被认为是该工作者的全部数据。</p>
 <p>Flask对此的术语为<code>本地请求</code></p>
 <span id="more"></span>
@@ -93,6 +94,7 @@
 <p><img alt="登陆" decoding="async" height="688" loading="lazy" src="/images/blog-media/061a64c67c0e4f728ed3.webp" width="1080"/></p>
 <p>访问首页</p>
 <p><img alt="首页" decoding="async" height="818" loading="lazy" src="/images/blog-media/c94036377d94f260f2a0.webp" width="972"/></p></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/_sfpxzs3vpzgrfXRUW44Uw">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Flask/">Flask</a><a href="/tags/Python/">Python</a><a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/">中间件</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/Flask/">Flask</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
@@ -104,6 +106,16 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

@@ -20,7 +20,8 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/2d7f092b.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/2d7f092b.html">
-<script src="/js/comments.js?v=2" defer></script>
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,7 +57,7 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#%E9%A6%96%E9%A1%B5">首页</a></li><li><a href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8">如何使用</a></li><li><a href="#%E9%83%A8%E7%BD%B2">部署</a></li><li><a href="#%E6%B5%81%E7%A8%8B">流程</a></li><li><a href="#Shell">Shell</a></li><li><a href="#shell%E7%9A%84%E5%88%86%E7%B1%BB">shell的分类</a></li><li><a href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4">常用命令</a></li><li><a href="#%E5%8F%98%E9%87%8F">变量</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body"><span id="测试开发进阶-三十九"></span><h2 id="首页"><a class="headerlink" href="#首页" title="首页"></a>首页</h2><p>使用一个简单的get函数返回需要的内容</p>
+        <div class="post-body" id="article-text"><span id="测试开发进阶-三十九"></span><h2 id="首页"><a class="headerlink" href="#首页" title="首页"></a>首页</h2><p>使用一个简单的get函数返回需要的内容</p>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/></pre></td><td class="code"><pre><span class="line">statistics = {</span><br/><span class="line">    <span class="string">'projects_count'</span>: projects_count,</span><br/><span class="line">    <span class="string">'interfaces_count'</span>: interfaces_count,</span><br/><span class="line">    <span class="string">'testcases_count'</span>: testcases_count,</span><br/><span class="line">    <span class="string">'testsuits_count'</span>: testsuits_count,</span><br/><span class="line">    <span class="string">'configures_count'</span>: configures_count,</span><br/><span class="line">    <span class="string">'envs_count'</span>: envs_count,</span><br/><span class="line">    <span class="string">'debug_talks_count'</span>: debug_talks_count,</span><br/><span class="line">    <span class="string">'reports_count'</span>: reports_count,</span><br/><span class="line">    <span class="string">'success_rate'</span>: success_rate,</span><br/><span class="line">    <span class="string">'fail_rate'</span>: fail_rate,</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
 <p>他们都是从数据库中计算并统计出来的</p>
 <p>需要有权限才能访问</p>
@@ -191,6 +192,7 @@
 </ul>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br/><span class="line">echo "参数的总个数:$#"</span><br/><span class="line">echo "脚本名为:$0"</span><br/><span class="line">echo "第二个参数:$2"</span><br/><span class="line">echo "第十个参数:${10}"</span><br/><span class="line">echo "获取所有参数:$*"</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="8" decoding="async" height="384" loading="lazy" src="/images/blog-media/13b149b57c88f5557d5a.webp" width="1032"/></p></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/knty71Wyba8Hz26tu4aG-g">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/%E6%B5%8B%E8%AF%95%E5%B9%B3%E5%8F%B0/">测试平台</a><a href="/tags/Django/">Django</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
@@ -202,6 +204,16 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

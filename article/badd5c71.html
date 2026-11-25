@@ -20,7 +20,8 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/badd5c71.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/badd5c71.html">
-<script src="/js/comments.js?v=2" defer></script>
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,7 +57,7 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#%E6%88%AA%E5%9B%BE">截图</a></li><li><a href="#%E5%B0%86%E6%88%AA%E5%9B%BE%E5%B1%95%E7%A4%BA%E5%9C%A8Allure%E6%8A%A5%E5%91%8A%E4%B8%AD">将截图展示在Allure报告中</a></li><li><a href="#%E9%87%8D%E8%AF%95">重试</a></li><li><a href="#%E5%85%A8%E9%83%A8%E6%B7%BB%E5%8A%A0%E9%87%8D%E8%AF%95">全部添加重试</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body"><span id="Java自动化测试-web自动化测试框架2-29"></span><blockquote>
+        <div class="post-body" id="article-text"><span id="Java自动化测试-web自动化测试框架2-29"></span><blockquote>
 <p>项目地址:<a href="https://github.com/zx490336534/java_web_base" rel="noopener" target="_blank">https://github.com/zx490336534/java_web_base</a></p>
 </blockquote>
 <h2 id="截图"><a class="headerlink" href="#截图" title="截图"></a>截图</h2><span id="more"></span>
@@ -77,6 +78,7 @@
 <h3 id="全部添加重试"><a class="headerlink" href="#全部添加重试" title="全部添加重试"></a>全部添加重试</h3><figure class="highlight java"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/><span class="line">20</span><br/><span class="line">21</span><br/><span class="line">22</span><br/><span class="line">23</span><br/><span class="line">24</span><br/><span class="line">25</span><br/><span class="line">26</span><br/><span class="line">27</span><br/><span class="line">28</span><br/><span class="line">29</span><br/><span class="line">30</span><br/><span class="line">31</span><br/></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.zhongxin.listeners;</span><br/><span class="line"></span><br/><span class="line"><span class="keyword">import</span> com.zhongxin.common.BaseCase;</span><br/><span class="line"><span class="keyword">import</span> io.qameta.allure.Attachment;</span><br/><span class="line"><span class="keyword">import</span> org.openqa.selenium.OutputType;</span><br/><span class="line"><span class="keyword">import</span> org.openqa.selenium.TakesScreenshot;</span><br/><span class="line"><span class="keyword">import</span> org.testng.IHookCallBack;</span><br/><span class="line"><span class="keyword">import</span> org.testng.IHookable;</span><br/><span class="line"><span class="keyword">import</span> org.testng.ITestResult;</span><br/><span class="line"></span><br/><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AllureReportListener</span> <span class="keyword">implements</span> <span class="title">IHookable</span> </span>{</span><br/><span class="line"></span><br/><span class="line">    <span class="meta">@Attachment(value = "Page screenshot", type = "image/png")</span></span><br/><span class="line">    <span class="keyword">public</span> <span class="keyword">byte</span>[] saveScreenshot(<span class="keyword">byte</span>[] screenShot) {</span><br/><span class="line">        <span class="keyword">return</span> screenShot;</span><br/><span class="line">    }</span><br/><span class="line"></span><br/><span class="line">    <span class="meta">@Override</span></span><br/><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">(IHookCallBack iHookCallBack, ITestResult iTestResult)</span> </span>{</span><br/><span class="line">        iHookCallBack.runTestMethod(iTestResult);</span><br/><span class="line">        Throwable throwable = iTestResult.getThrowable();</span><br/><span class="line">        <span class="keyword">if</span> (throwable != <span class="keyword">null</span>) {</span><br/><span class="line">            <span class="comment">//throwable不等于异常说明@Test出现异常了，执行截图</span></span><br/><span class="line">            Object object = iTestResult.getInstance();</span><br/><span class="line">            BaseCase baseCase = (BaseCase) object;</span><br/><span class="line">            TakesScreenshot screenshot = (TakesScreenshot) baseCase.driver;</span><br/><span class="line">            <span class="keyword">byte</span>[] screenshotAs = screenshot.getScreenshotAs(OutputType.BYTES);</span><br/><span class="line">            saveScreenshot(screenshotAs);</span><br/><span class="line">        }</span><br/><span class="line">    }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
 <p>在<code>testng.xml</code>中</p>
 <figure class="highlight xml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">listener</span> <span class="attr">class-name</span>=<span class="string">"com.zhongxin.listeners.RetryListener"</span>&gt;</span><span class="tag">&lt;/<span class="name">listener</span>&gt;</span></span><br/></pre></td></tr></tbody></table></figure></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
 
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Java/">Java</a><a href="/tags/Selenium/">Selenium</a><a href="/tags/%E6%B5%8F%E8%A7%88%E5%99%A8%E8%87%AA%E5%8A%A8%E5%8C%96/">浏览器自动化</a><a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Java/">Java</a><a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a></div>
@@ -88,6 +90,16 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

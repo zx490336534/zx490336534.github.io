@@ -20,7 +20,8 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/92dcbfcd.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/92dcbfcd.html">
-<script src="/js/comments.js?v=2" defer></script>
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,7 +57,7 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90">日志分析</a></li><li><a href="#%E5%85%B3%E9%94%AE%E5%AD%97">关键字</a></li><li><a href="#%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87">性能指标</a></li><li><a href="#CPU">CPU</a></li><li><a href="#%E5%90%AF%E5%8A%A8%E6%97%B6%E9%97%B4">启动时间</a></li><li><a href="#%E6%B5%81%E9%87%8F">流量</a></li><li><a href="#%E7%94%B5%E9%87%8F">电量</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body"><span id="测试开发进阶-四十七"></span><h2 id="日志分析"><a class="headerlink" href="#日志分析" title="日志分析"></a>日志分析</h2><p>使用adb获取日志</p>
+        <div class="post-body" id="article-text"><span id="测试开发进阶-四十七"></span><h2 id="日志分析"><a class="headerlink" href="#日志分析" title="日志分析"></a>日志分析</h2><p>使用adb获取日志</p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> adb logcat</span> </span><br/><span class="line"><span class="meta">$</span><span class="bash"> adb logcat &gt; logcat_1215.log</span></span><br/></pre></td></tr></tbody></table></figure>
 <span id="more"></span>
 <p><img alt="查看日志" decoding="async" height="754" loading="lazy" src="/images/blog-media/b91bd1b808589581f354.webp" width="1080"/></p>
@@ -198,6 +199,7 @@
 <li>系统源码PowerProfile读取power_profile.xml，并提供API访问部件电流数值</li>
 <li>怎么获取power_profile.xml：反编译framework-res.apk</li>
 </ol></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/6k8D2ZpYmHfuS-tmHAZjgQ">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Android/">Android</a><a href="/tags/ADB/">ADB</a><a href="/tags/%E6%97%A5%E5%BF%97/">日志</a><a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
@@ -209,6 +211,16 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

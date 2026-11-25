@@ -20,7 +20,8 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/15e929aa.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/15e929aa.html">
-<script src="/js/comments.js?v=2" defer></script>
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,7 +57,7 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#mock%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83">mock测试环境</a></li><li><a href="#%E7%89%B9%E6%80%A7">特性</a></li><li><a href="#%E5%8D%95%E6%9C%BA%E7%89%88">单机版</a></li><li><a href="#Maven">Maven</a></li><li><a href="#runner-java">runner.java</a></li><li><a href="#%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE">测试数据</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body"><span id="Java自动化测试-mock-21"></span><blockquote>
+        <div class="post-body" id="article-text"><span id="Java自动化测试-mock-21"></span><blockquote>
 <p>mock测试就是在测试过程中，对于某些不容易构造或者不容易获取的对象，用一个虚拟的对象来创建以便测试的测试方法。</p>
 </blockquote>
 <h2 id="mock测试环境"><a class="headerlink" href="#mock测试环境" title="mock测试环境"></a>mock测试环境</h2><blockquote>
@@ -124,6 +125,7 @@
 <li><code>foo9.json</code></li>
 </ul>
 <figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/><span class="line">20</span><br/><span class="line">21</span><br/><span class="line">22</span><br/><span class="line">23</span><br/><span class="line">24</span><br/><span class="line">25</span><br/><span class="line">26</span><br/><span class="line">27</span><br/><span class="line">28</span><br/><span class="line">29</span><br/><span class="line">30</span><br/><span class="line">31</span><br/><span class="line">32</span><br/><span class="line">33</span><br/><span class="line">34</span><br/><span class="line">35</span><br/><span class="line">36</span><br/><span class="line">37</span><br/></pre></td><td class="code"><pre><span class="line">[</span><br/><span class="line">   {</span><br/><span class="line">      <span class="attr">"description"</span>: <span class="string">"登录"</span>,</span><br/><span class="line">      <span class="attr">"request"</span>: {</span><br/><span class="line">         <span class="attr">"uri"</span>: <span class="string">"/member/login"</span>,</span><br/><span class="line">         <span class="attr">"method"</span>: <span class="string">"post"</span>,</span><br/><span class="line">         <span class="attr">"headers"</span>: {</span><br/><span class="line">            <span class="attr">"X-Lemonban-Media-Type"</span>: <span class="string">"lemonban.v2"</span>,</span><br/><span class="line">            <span class="attr">"content-type"</span>: <span class="string">"application/json;charset=utf-8"</span></span><br/><span class="line">         },</span><br/><span class="line">         <span class="attr">"json"</span>: {</span><br/><span class="line">            <span class="attr">"mobile_phone"</span>: <span class="string">"13212312312"</span>,</span><br/><span class="line">            <span class="attr">"pwd"</span>: <span class="string">"12345678"</span></span><br/><span class="line">         }</span><br/><span class="line">      },</span><br/><span class="line">      <span class="attr">"response"</span>: {</span><br/><span class="line">         <span class="attr">"json"</span>: {</span><br/><span class="line">            <span class="attr">"code"</span>: <span class="number">0</span>,</span><br/><span class="line">            <span class="attr">"msg"</span>: <span class="string">"OK"</span>,</span><br/><span class="line">            <span class="attr">"data"</span>: {</span><br/><span class="line">               <span class="attr">"id"</span>: <span class="number">70362</span>,</span><br/><span class="line">               <span class="attr">"leave_amount"</span>: <span class="number">0.0</span>,</span><br/><span class="line">               <span class="attr">"mobile_phone"</span>: <span class="string">"13212312312"</span>,</span><br/><span class="line">               <span class="attr">"reg_name"</span>: <span class="string">"小柠檬"</span>,</span><br/><span class="line">               <span class="attr">"reg_time"</span>: <span class="string">"2019-12-19 21:12:21.0"</span>,</span><br/><span class="line">               <span class="attr">"type"</span>: <span class="number">1</span>,</span><br/><span class="line">               <span class="attr">"token_info"</span>: {</span><br/><span class="line">                  <span class="attr">"token_type"</span>: <span class="string">"Bearer"</span>,</span><br/><span class="line">                  <span class="attr">"expires_in"</span>: <span class="string">"2019-12-19 21:17:23"</span>,</span><br/><span class="line">                  <span class="attr">"token"</span>: <span class="string">"eyJhbGciOiJIUzUxMiJ9.eyJtZW1iZXJfaWQiOjg5ODU4LCJleHAiOjE1NzY3NjE0NDN9.ZJKz-aOxWtCQakvhOfRjTSTA_K7amiKe0e9wpaF9lpzKQaTZiVjsoUDmpA2DCKtIdMyaQ4QYWWybP1ZD5QDVWQ"</span></span><br/><span class="line">               }</span><br/><span class="line">            },</span><br/><span class="line">            <span class="attr">"copyright"</span>: <span class="string">"Copyright 柠檬班 © 2017-2019 湖南省零檬信息技术有限公司 All Rights Reserved"</span></span><br/><span class="line">         }</span><br/><span class="line">      }</span><br/><span class="line">   }</span><br/><span class="line">]</span><br/></pre></td></tr></tbody></table></figure></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/ZWEj4BwFHfZ7dmWN-1dnZQ">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Mock/">Mock</a><a href="/tags/Java/">Java</a><a href="/tags/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95/">接口测试</a><a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Java/">Java</a><a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a></div>
@@ -135,6 +137,16 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

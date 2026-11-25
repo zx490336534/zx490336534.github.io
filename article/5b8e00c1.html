@@ -20,7 +20,8 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/5b8e00c1.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/5b8e00c1.html">
-<script src="/js/comments.js?v=2" defer></script>
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -56,7 +57,7 @@
     <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#%E7%94%B5%E9%87%8F">电量</a></li><li><a href="#%E7%BB%9F%E8%AE%A1%E6%96%B9%E6%B3%95-%E5%B7%A5%E5%85%B7">统计方法/工具</a></li><li><a href="#%E6%89%8B%E6%9C%BA%E6%8A%95%E5%B1%8F%E8%BD%AF%E4%BB%B6">手机投屏软件</a></li><li><a href="#Battery-Historian">Battery Historian</a></li><li><a href="#%E6%B5%81%E7%95%85%E5%BA%A6">流畅度</a></li><li><a href="#%E5%B8%A7%E7%8E%87-amp-%E5%88%B7%E6%96%B0%E9%A2%91%E7%8E%87">帧率 &amp; 刷新频率</a></li><li><a href="#%E5%8D%A1%E9%A1%BFroot-cause">卡顿root cause</a></li><li><a href="#FPS%E6%8C%87%E6%A0%87">FPS指标</a></li><li><a href="#%E8%AE%A1%E7%AE%97%E6%B5%81%E7%95%85%E5%BA%A6">计算流畅度</a></li><li><a href="#%E6%8C%87%E6%A0%87%E8%8E%B7%E5%8F%96">指标获取</a></li><li><a href="#%E6%B5%81%E7%95%85%E5%BA%A6%E5%BD%B1%E5%93%8D%E5%9B%A0%E7%B4%A0">流畅度影响因素</a></li><li><a href="#UI%E6%B8%B2%E6%9F%93">UI渲染</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body"><span id="测试开发进阶-四十八"></span><h2 id="电量"><a class="headerlink" href="#电量" title="电量"></a>电量</h2><p>统计耗电本身也是一件耗电行为，所以软件统计方式其实都不是很精确</p>
+        <div class="post-body" id="article-text"><span id="测试开发进阶-四十八"></span><h2 id="电量"><a class="headerlink" href="#电量" title="电量"></a>电量</h2><p>统计耗电本身也是一件耗电行为，所以软件统计方式其实都不是很精确</p>
 <h3 id="统计方法-工具"><a class="headerlink" href="#统计方法-工具" title="统计方法/工具"></a>统计方法/工具</h3><ul>
 <li>功耗仪：统计整机的耗电</li>
 <li>腾讯GT工具</li>
@@ -177,6 +178,7 @@
 </ul>
 <p>在代码里或者开发者选项中开启，查看应用哪些操作在主线程上执行时间过长</p>
 <p>当一些操作违背了严格模式时，屏幕四周会闪烁红色，同时输出StrictMode的相关信息到LOGCAT日志中</p></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/KNQHp4NouQ4r1geX5fbZaA">查看微信公众号原文 ↗</a></p>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Android/">Android</a><a href="/tags/%E5%8A%9F%E8%80%97/">功耗</a><a href="/tags/App-%E6%B5%8B%E8%AF%95/">App 测试</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
@@ -188,6 +190,16 @@
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
           <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
           <p role="status"></p>
           <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>

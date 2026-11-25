@@ -6,7 +6,7 @@
 
   const retry = comments.querySelector('[data-retry-comments], [data-open-comments]');
   const guide = comments.querySelector('[data-comment-guide]');
-  const status = comments.querySelector('[role="status"]');
+  const status = comments.querySelector(':scope > [role="status"]');
   const mount = comments.querySelector('.giscus');
   const origin = 'https://giscus.app';
   const blog = new URL(document.querySelector('link[rel="canonical"]').href).origin;
