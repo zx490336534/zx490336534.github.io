@@ -138,29 +138,81 @@ if (library) {
   });
 }
 
-if (navigator.clipboard?.writeText) {
-  for (const block of document.querySelectorAll('.post-body pre')) {
-    const highlight = block.closest('figure.highlight');
-    if (highlight && !block.closest('.code')) continue;
-    const target = highlight ?? block;
-    const tools = document.createElement('div');
-    tools.className = 'code-tools';
+const codeLanguageNames = {
+  bash: 'Bash', sh: 'Shell', shell: 'Shell', zsh: 'Zsh',
+  py: 'Python', python: 'Python', js: 'JavaScript', javascript: 'JavaScript',
+  ts: 'TypeScript', typescript: 'TypeScript', java: 'Java', groovy: 'Groovy',
+  ruby: 'Ruby', rust: 'Rust', go: 'Go', swift: 'Swift', dockerfile: 'Dockerfile',
+};
+
+function codeLanguage(block, highlight) {
+  const classes = [...block.classList, ...(block.querySelector('code')?.classList ?? [])];
+  const explicit = classes.find(name => /^(?:language-|lang-)[\w+.-]+$/i.test(name));
+  const legacy = [...(highlight?.classList ?? [])].find(name => name !== 'highlight');
+  const language = (explicit?.replace(/^(?:language-|lang-)/i, '') ?? legacy ?? '').toLowerCase();
+  if (!language || /^(?:plain|plaintext|text|nohighlight)$/.test(language)) return '代码';
+  return Object.hasOwn(codeLanguageNames, language) ? codeLanguageNames[language] : language.toUpperCase();
+}
+
+function codeText(block) {
+  const lines = block.querySelectorAll('.line');
+  if (lines.length) return [...lines].map(line => line.textContent).join('\n');
+  const clone = block.cloneNode(true);
+  clone.querySelectorAll('.linenum').forEach(number => number.remove());
+  clone.querySelectorAll('br').forEach(br => br.replaceWith('\n'));
+  const numbered = clone.querySelector('ol.linenums');
+  return numbered ? [...numbered.children].map(line => line.textContent).join('\n') : clone.textContent;
+}
+
+const codePanels = new Set();
+for (const block of document.querySelectorAll('.post-body pre')) {
+  const highlight = block.closest('figure.highlight');
+  const target = highlight ?? block;
+  if ((highlight && block.closest('.gutter')) || codePanels.has(target)) continue;
+  codePanels.add(target);
+
+  const panel = document.createElement('div');
+  panel.className = 'code-panel';
+  const tools = document.createElement('div');
+  tools.className = 'code-tools';
+  const language = document.createElement('span');
+  language.className = 'code-language';
+  language.textContent = codeLanguage(block, highlight);
+  tools.append(language);
+
+  if (navigator.clipboard?.writeText) {
     const copy = document.createElement('button');
     copy.type = 'button';
     copy.textContent = '复制代码';
-    copy.setAttribute('aria-live', 'polite');
+    const feedback = document.createElement('span');
+    feedback.className = 'visually-hidden';
+    feedback.setAttribute('role', 'status');
+    let reset;
     copy.addEventListener('click', async () => {
-      const lines = [...block.querySelectorAll('.line')];
-      const text = lines.length ? lines.map(line => line.textContent).join('\n') : block.innerText;
       try {
-        await navigator.clipboard.writeText(text);
+        await navigator.clipboard.writeText(codeText(block));
         copy.textContent = '已复制';
+        feedback.textContent = '代码已复制';
       } catch {
         copy.textContent = '复制失败';
+        feedback.textContent = '复制失败，可选中代码手动复制';
       }
-      setTimeout(() => { copy.textContent = '复制代码'; }, 1600);
+      clearTimeout(reset);
+      reset = setTimeout(() => {
+        copy.textContent = '复制代码';
+        feedback.textContent = '';
+      }, 2000);
     });
-    tools.append(copy);
-    target.before(tools);
+    tools.append(copy, feedback);
   }
+
+  const scroll = document.createElement('div');
+  scroll.className = 'code-scroll';
+  scroll.tabIndex = 0;
+  scroll.setAttribute('role', 'region');
+  scroll.setAttribute('aria-label', language.textContent === '代码' ? '代码' : language.textContent + ' 代码');
+  for (const number of target.querySelectorAll('.gutter, span.linenum')) number.setAttribute('aria-hidden', 'true');
+  target.before(panel);
+  scroll.append(target);
+  panel.append(tools, scroll);
 }
