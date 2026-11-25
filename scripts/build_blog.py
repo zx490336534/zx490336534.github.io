@@ -886,7 +886,7 @@ def main():
         '<p class="analytics-notice">本站使用 Umami 统计公开页面访问和常用入口点击。统计字段为页面路径、标题、来源站点和入口。'
         '浏览器的不跟踪或全局隐私信号会关闭统计。</p></section>'
     )
-    write("/about/", shell("听白的公开作品", "/about/", profile, portfolio.PROFILE_SUMMARY, portfolio.profile_metadata(SITE)))
+    write("/about/", shell("听白的公开作品", "/about/", profile, portfolio.PROFILE_SUMMARY, portfolio.profile_metadata(SITE, ROOT)))
     missing = ('<section class="listing missing-page"><header class="page-heading"><h1>找不到页面</h1></header>'
                '<div class="profile-links"><a href="/archives/">浏览文章归档 ↗</a><a href="/">返回首页 ↗</a>'
                '<button type="button" data-open-search>搜索文章</button></div></section>')

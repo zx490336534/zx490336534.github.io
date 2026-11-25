@@ -120,6 +120,15 @@ def main():
     assert must_email not in profile.select_one('script[type="application/ld+json"]').string
     if args.baseline:
         assert old_page(args.baseline, "/about/").select_one(".post-body").decode_contents() == profile.select_one(".post-body").decode_contents()
+    from blog_portfolio import PROFILE_SHARE_ALT, PROFILE_SHARE_IMAGE
+    assert profile.select_one('head meta[property="og:type"]')["content"] == "website"
+    if target(PROFILE_SHARE_IMAGE).is_file():
+        expected_share = {"og:image": SITE + PROFILE_SHARE_IMAGE, "og:image:type": "image/jpeg",
+                          "og:image:width": "1586", "og:image:height": "992",
+                          "og:image:alt": PROFILE_SHARE_ALT}
+        for key, value in expected_share.items():
+            matches = profile.select(f'head meta[property="{key}"]')
+            assert len(matches) == 1 and matches[0]["content"] == value, key
     demo_prefix = "/videos/portfolio/ai-test-cases-demo-v3"
     demo_files = [demo_prefix + suffix for suffix in (".mp4", ".webp", ".zh-CN.vtt")]
     demo_exists = all(target(path).is_file() and target(path).stat().st_size for path in demo_files)

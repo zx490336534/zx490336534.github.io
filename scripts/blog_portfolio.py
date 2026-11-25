@@ -90,12 +90,23 @@ def work_cards(root):
             '<div class="work-cards' + (' with-demo' if demo else "") + '">' + "".join(cards) + '</div></section>')
 
 
-def profile_metadata(site):
+PROFILE_SHARE_IMAGE = "/videos/portfolio/ai-test-cases-demo-v3-share.jpg"
+PROFILE_SHARE_ALT = "一份需求文档连接三张测试用例卡片"
+
+
+def profile_metadata(site, root):
     path = site + "/about/"
-    return json_ld({"@type": "ProfilePage", "url": path, "inLanguage": "zh-CN",
+    profile_json = json_ld({"@type": "ProfilePage", "url": path, "inLanguage": "zh-CN",
                     "description": PROFILE_SUMMARY, "mainEntity": {"@type": "Person",
                     "@id": path + "#tingbai", "name": "听白", "url": path,
                     "sameAs": "https://github.com/zx490336534"}})
+    meta = {"og:type": "website"}
+    if (root / PROFILE_SHARE_IMAGE.lstrip("/")).is_file():
+        meta.update({"og:image": site + PROFILE_SHARE_IMAGE, "og:image:type": "image/jpeg",
+                     "og:image:width": "1586", "og:image:height": "992",
+                     "og:image:alt": PROFILE_SHARE_ALT})
+    return "\n".join([*(f'<meta property="{prop}" content="{escape(value)}">'
+                         for prop, value in meta.items()), profile_json])
 
 @lru_cache(maxsize=None)
 def dimensions(path, root):
