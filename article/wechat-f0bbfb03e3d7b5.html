@@ -28,7 +28,7 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记</a>
-      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/">视频</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
       <div class="masthead-actions">
         <label class="visually-hidden" for="site-appearance">外观</label>
         <select id="site-appearance" class="site-appearance" hidden>
@@ -43,7 +43,7 @@
   <main id="main">
   <article class="article">
     <header class="article-header">
-      <figure class="article-cover" style="--cover-art:url(&quot;/images/article-covers/wechat-f0bbfb03e3d7b5.webp&quot;)"><img src="/images/article-covers/wechat-f0bbfb03e3d7b5.webp" alt="" fetchpriority="high" decoding="async"></figure>
+      <figure class="article-cover" style="--cover-art:url(&quot;/images/article-covers/wechat-f0bbfb03e3d7b5.webp&quot;)"><img src="/images/article-covers/wechat-f0bbfb03e3d7b5.webp" alt="" width="1440" height="668" fetchpriority="high" decoding="async"></figure>
       <div class="wrap article-heading">
         <h1 class="post-title" data-topic-title="用 Robot Framework 编写 HTTP 接口用例">Robot Framework 接口自动化 · 第 05 篇｜用 Robot Framework 编写 HTTP 接口用例</h1>
         <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2020-05-05T14:50:57+08:00">2020-05-05</time>
@@ -59,7 +59,7 @@
       <div class="article-main">
 
         <div class="post-body" id="article-text"><div><blockquote id="passage-f5fdf1d9e2a2"><p id="passage-a0529c846efc">接口测试作为测试金字塔结构的中间层，有低成本，高回报的优势。</p></blockquote><p id="passage-da467fae7b33">接口：本质上不需要关注具体事项，对接并不理解的程序或服务时，需要遵守的一些了格式或者流程规定。</p><p id="passage-7b4affd4dccb">本质就是「约定」。</p><h2 id="接口类别">接口类别</h2><ul><li id="passage-ce1744324017">硬件设施层面的接口</li><li id="passage-3b25e3b12d4f">软件程序交互的接口</li></ul><p id="passage-2245169e2f2f">软件层面的接口也可以分为：</p><ul><li id="passage-b68c5ce0062f">程序内部的接口</li><li id="passage-622ecfee85fa">系统对外的接口</li></ul><h2 id="接口测试">接口测试</h2><p id="passage-3cf3263243dd">接口测试是测试系统组件间接口的一种测试手段。</p><p id="passage-dbbd985ce8e5">主要用于检测外部系统和系统之间及内部各个子系统之间的交互点。</p><p id="passage-d459afc170d3">测试的重点是检查数据的交互，传递和控制管理过程，以及系统间的相互逻辑依赖关系。</p><h3 id="测试策略">测试策略</h3><ul><li id="passage-913287a735ed">接口功能测试</li><li id="passage-ca5be1556385">接口性能测试</li><li id="passage-d794dd8dd93c">接口稳定性测试</li><li id="passage-191caaca5155">接口安全性测试</li></ul><p id="passage-499abfd4cf49">总之：接口测试就是通过测试不同情况下的入参和与之相应的出参，来判断接口是否符合或满足相应的功能性，安全性要求。</p><h3 id="必要性">必要性</h3><ul><li id="passage-3754b1b501cb">发现页面操作发现不了的bug，覆盖更多前端无法测试的场景</li><li id="passage-f785da526b8f">越底层的bug，修复成本越低</li><li id="passage-2323ff632795">检查系统的异常处理能力</li><li id="passage-6463881c2f86">检查系统的安全性，稳定性，前端入参可信度</li><li id="passage-2bd75fcd8604">进行项目回归</li><li id="passage-2e8056ea85a2">容易实现自动化持续集成</li><li id="passage-3c503d043995">可以尽早介入测试</li><li id="passage-0b1a74d5c8c5">保障接口测试后，测试工程师可以专注于各分层间的测试质量保障</li></ul><h3 id="关注点">关注点</h3><p id="passage-fcf03133e6b0">检查数据的交互，传递和控制管理过程。</p><h2 id="环境安装">环境安装</h2><pre id="passage-79b22f781236"><code>$ pip install requests</code></pre><pre id="passage-09293837981e"><code>$ pip install robotframework-requests</code></pre><pre id="passage-170ba0d25bc0"><code>$ pip install robotframework-httplibrary</code></pre><h2 id="接口测试文件结构">接口测试文件结构</h2><ul><li id="passage-bda12830f96b">创建项目</li></ul><p><img alt="" decoding="async" height="186" loading="lazy" src="/images/blog-media/6e46de3bc68f23141a22.webp" width="1080"/></p><ul><li id="passage-6efadc7a377d">创建接口测试子目录</li></ul><p><img alt="" decoding="async" height="177" loading="lazy" src="/images/blog-media/9b6624950a1c9fe180e7.webp" width="1080"/></p><ul><li id="passage-333723bcfa91">创建资源子目录</li></ul><p><img alt="" decoding="async" height="177" loading="lazy" src="/images/blog-media/8dc3d2802e06504caf53.webp" width="1080"/></p><ul><li id="passage-5035c0c06fb0">创建资源次级目录</li></ul><p id="passage-3186d2c326b8">Business：统一存放各个产品业务下的资源文件，按照不同业务线划分，存放该业务线下通用的资源文件和关键字</p><p><img alt="" decoding="async" height="166" loading="lazy" src="/images/blog-media/5ce04c2cde19da73a4f7.webp" width="1080"/></p><p><img alt="" decoding="async" height="145" loading="lazy" src="/images/blog-media/3be4374e9948c45969cc.webp" width="1080"/></p><p id="passage-157f2e26d678">Public：统一存放通用的资源文件</p><p><img alt="" decoding="async" height="166" loading="lazy" src="/images/blog-media/08aa40c69d6031c89c95.webp" width="1080"/></p><p id="passage-471905c3c2c3">Lib：存放第三方库文件</p><p><img alt="" decoding="async" height="166" loading="lazy" src="/images/blog-media/f61ca9c776602a16dacf.webp" width="1080"/></p><ul><li id="passage-887bb310c1e4">实战项目业务分层</li></ul><p><img alt="" decoding="async" height="161" loading="lazy" src="/images/blog-media/126e7e2a44269a55c990.webp" width="1080"/></p><p id="passage-29daf5e06283">Single_Api：存放各个单接口测试套，测试用例。主要验证俺哥接口的功能及数据正确性。</p><p><img alt="" decoding="async" height="148" loading="lazy" src="/images/blog-media/bb40093cc5d059455ca0.webp" width="1080"/></p><p id="passage-d23e5fcb733f">Business_Api：存放不同业务场景下的测试套件，测试用例。主要验证在不同业务功能场景下，多个接口数据之间的信息传递是否正确。</p><p><img alt="" decoding="async" height="148" loading="lazy" src="/images/blog-media/bb40093cc5d059455ca0.webp" width="1080"/></p><p><img alt="" decoding="async" height="456" loading="lazy" src="/images/blog-media/391402c98a38f899a8ec.webp" width="456"/></p><div></div></div></div>
-        <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/5dLEKq27Q3VMVRGufvlPMw">查看微信公众号原文 ↗</a></p>
+        <aside class="source-panel" aria-labelledby="article-sources-title"><h2 id="article-sources-title">来源与参考</h2><ul><li><a class="source-link" href="https://mp.weixin.qq.com/s/5dLEKq27Q3VMVRGufvlPMw">查看微信公众号原文 ↗</a></li></ul></aside>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Robot-Framework/">Robot Framework</a><a href="/tags/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95/">接口测试</a><a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a></div>
         <div class="legacy-tags" hidden></div>
         <section class="series-continuation"><h2><a href="/series/robot-framework-api/">查看系列目录 ↗</a></h2><nav class="related" aria-label="同系列文章"><a href="/article/wechat-6995097b45f532.html"><small>同系列上一篇</small>第 04 篇｜用内置关键字处理字符串、列表和字典</a><a href="/article/wechat-b2cd2a79209aee.html"><small>同系列下一篇</small>第 06 篇｜封装请求头、Cookie 和 POST 公共关键字</a></nav></section>
@@ -81,6 +81,9 @@
     <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
     <nav aria-label="页脚导航">
       <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
     </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">

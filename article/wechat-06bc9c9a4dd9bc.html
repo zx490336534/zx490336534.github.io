@@ -28,7 +28,7 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记</a>
-      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/">视频</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
       <div class="masthead-actions">
         <label class="visually-hidden" for="site-appearance">外观</label>
         <select id="site-appearance" class="site-appearance" hidden>
@@ -43,10 +43,10 @@
   <main id="main">
   <article class="article">
     <header class="article-header">
-      <figure class="article-cover" style="--cover-art:url(&quot;/images/article-covers/wechat-06bc9c9a4dd9bc.webp&quot;)"><img src="/images/article-covers/wechat-06bc9c9a4dd9bc.webp" alt="" fetchpriority="high" decoding="async"></figure>
+      <figure class="article-cover" style="--cover-art:url(&quot;/images/article-covers/wechat-06bc9c9a4dd9bc.webp&quot;)"><img src="/images/article-covers/wechat-06bc9c9a4dd9bc.webp" alt="" width="1440" height="668" fetchpriority="high" decoding="async"></figure>
       <div class="wrap article-heading">
         <h1 class="post-title" data-topic-title="用 Obsidian、Ollama 和本地向量模型做笔记问答">RAG 与知识库搭建 · 第 06 篇｜用 Obsidian、Ollama 和本地向量模型做笔记问答</h1>
-        <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2025-03-10T10:27:16+08:00">2025-03-10</time>
+        <div class="entry-meta"><span class="post-author"><a href="/about/" rel="author">听白</a></span><time itemprop="datePublished" datetime="2025-03-10T10:27:16+08:00">2025-03-10</time>
           <span class="post-category" hidden><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span>
           <span class="read-time">约 1 分钟</span>
           <span class="public-counter" data-public-count="reads" data-article-path="/article/wechat-06bc9c9a4dd9bc.html" hidden><span>累计阅读</span> <strong></strong></span>
@@ -59,7 +59,7 @@
       <div class="article-main">
 
         <div class="post-body" id="article-text"><section><h2 id="安装Ollama"><span><span>安装Ollama</span></span></h2><p id="passage-5c0e534f5eb9"><span>https://ollama.com/</span></p><h3 id="下载模型"><span><span>下载模型</span></span></h3><h4 id="下载大语言模型"><span><span>下载大语言模型</span></span></h4><p id="passage-2ae5200310e6"><span>根据自己电脑的配置选择模型的大小</span></p><pre id="passage-2fa42ae07b82"><code><span>ollama run deepseek-r1:8b</span><span><br/></span></code></pre><h4 id="下载向量处理模型"><span><span>下载向量处理模型</span></span></h4><p id="passage-ffa5b91a460e"><span>创建向量数据库时需要使用Embedding模型对文本进行向量化处理</span></p><pre id="passage-16b8b38f9c19"><code><span>ollama pull nomic-embed-text</span><span><br/></span></code></pre><h4 id="查看安装的模型"><span><span>查看安装的模型</span></span></h4><pre id="passage-0f3b388c21e3"><code><span>ollama list</span><span><br/></span><span><br/></span><span>NAME                       ID              SIZE      MODIFIED       </span><span><br/></span><span>nomic-embed-text:latest    0a109f422b47    274 MB    31 minutes ago    </span><span><br/></span><span>deepseek-r1:14b            ea35dfe18182    9.0 GB    4 weeks ago       </span><span><br/></span><span>deepseek-r1:8b             28f8fd6cdc67    4.9 GB    4 weeks ago</span><span><br/></span></code></pre><h2 id="Obsidian中配置Copilot"><span><span>Obsidian中配置Copilot</span></span></h2><h3 id="下载Obsidian"><span><span>下载Obsidian</span></span></h3><p id="passage-f4ed461df6cd"><span>https://obsidian.md/</span></p><h3 id="安装三方插件Copilot"><span><span>安装三方插件Copilot</span></span></h3><blockquote id="passage-cf95e9efcf38"><p id="passage-2b27160817ce"><span>可能需要科学上网</span></p></blockquote><section><img alt="" class="rich_pages wxw-img" decoding="async" height="884" loading="lazy" src="/images/blog-media/0c330309f81c8986e8cd.webp" width="1080"/></section><h3 id="启用并配置"><span><span>启用并配置</span></span></h3><section><img alt="" class="rich_pages wxw-img" decoding="async" height="879" loading="lazy" src="/images/blog-media/899dd6d5f4dd344c127f.webp" width="1080"/></section><p id="passage-116d19815711"><span><br/></span><span><br/></span><span>1、点击「Add Custom Model」</span><span><br/></span><span>2、「Model Name」输入「deepseek-r1:8b」</span><span><br/></span><span>3、「Provider」选择Ollama</span><span><br/></span><span>4、勾选全部选项后点击「Verify」</span><span><br/></span><span><br/></span></p><section><img alt="" class="rich_pages wxw-img" decoding="async" height="626" loading="lazy" src="/images/blog-media/a2600ae74d52406d37ad.webp" width="431"/></section><p id="passage-8e53471987cc"><span><br/></span><span><br/></span><span>5、添加自定义向量模型（Model Tab下滑）</span><span><br/></span><span><br/></span></p><section><img alt="" class="rich_pages wxw-img" decoding="async" height="883" loading="lazy" src="/images/blog-media/ebaa5427b3efe31b39db.webp" width="1080"/></section><section><img alt="" class="rich_pages wxw-img" decoding="async" height="621" loading="lazy" src="/images/blog-media/038798e19407eb9f4e2a.webp" width="427"/></section><p id="passage-7e8119c4270d"><span><br/></span><span><br/></span><span>6、选择默认的模型</span><span><br/></span><span><br/></span></p><section><img alt="" class="rich_pages wxw-img" decoding="async" height="877" loading="lazy" src="/images/blog-media/f21907aced8263b936a8.webp" width="1080"/></section><p id="passage-692f8da6f216"><span><br/></span><span><br/></span><span>7.开始使用</span></p><h2 id="使用"><span><span>使用</span></span></h2><section><img alt="" class="rich_pages wxw-img" decoding="async" height="357" loading="lazy" src="/images/blog-media/ec14594d851ddae7846c.webp" width="409"/></section><section><img alt="" class="rich_pages wxw-img" decoding="async" height="1019" loading="lazy" src="/images/blog-media/a69f68a4aa3b22a9b2ef.webp" width="494"/></section><section><img alt="" class="rich_pages wxw-img" decoding="async" height="1022" loading="lazy" src="/images/blog-media/f4d3d3abdd0cab5aa92d.webp" width="493"/></section><p id="passage-ae05bcb2f3f0"><span><br/></span><span><br/></span><span>不过8b的幻觉好像有点严重，可以考虑使用云端满血的大模型</span></p></section><section><span><br/></span></section></div>
-        <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/FZkk0j3c9Dncn2afmbZFjQ">查看微信公众号原文 ↗</a></p>
+        <aside class="source-panel" aria-labelledby="article-sources-title"><h2 id="article-sources-title">来源与参考</h2><ul><li><a class="source-link" href="https://mp.weixin.qq.com/s/FZkk0j3c9Dncn2afmbZFjQ">查看微信公众号原文 ↗</a></li></ul></aside>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Obsidian/">Obsidian</a><a href="/tags/DeepSeek/">DeepSeek</a><a href="/tags/Embedding/">Embedding</a></div>
         <div class="legacy-tags" hidden></div>
         <section class="series-continuation"><h2><a href="/series/rag-knowledge-base/">查看系列目录 ↗</a></h2><nav class="related" aria-label="同系列文章"><a href="/article/wechat-a74e66513669c2.html"><small>同系列上一篇</small>第 05 篇｜用 Streamlit 和 LangChain 搭建文档问答</a><a href="/article/wechat-922250fd295742.html"><small>同系列下一篇</small>第 07 篇｜用 FastGPT 管理知识库并接入 LangChain.js</a></nav></section>
@@ -81,6 +81,9 @@
     <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
     <nav aria-label="页脚导航">
       <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
     </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">

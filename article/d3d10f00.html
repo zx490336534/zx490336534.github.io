@@ -28,7 +28,7 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记</a>
-      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/">视频</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
       <div class="masthead-actions">
         <label class="visually-hidden" for="site-appearance">外观</label>
         <select id="site-appearance" class="site-appearance" hidden>
@@ -43,10 +43,10 @@
   <main id="main">
   <article class="article">
     <header class="article-header">
-      <figure class="article-cover" style="--cover-art:url(&quot;/images/article-covers/d3d10f00.webp&quot;)"><img src="/images/article-covers/d3d10f00.webp" alt="" fetchpriority="high" decoding="async"></figure>
+      <figure class="article-cover" style="--cover-art:url(&quot;/images/article-covers/d3d10f00.webp&quot;)"><img src="/images/article-covers/d3d10f00.webp" alt="" width="1440" height="668" fetchpriority="high" decoding="async"></figure>
       <div class="wrap article-heading">
         <h1 class="post-title" data-topic-title="Django 用户注册与 JWT 认证">Python 测试开发进阶 · 第 31 篇｜Django 用户注册与 JWT 认证</h1>
-        <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2019-10-29T17:51:38+08:00">2019-10-29</time>
+        <div class="entry-meta"><span class="post-author"><a href="/about/" rel="author">听白</a></span><time itemprop="datePublished" datetime="2019-10-29T17:51:38+08:00">2019-10-29</time>
           <span class="post-category" hidden><a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">Python测试开发进阶</a></span>
           <span class="read-time">约 4 分钟</span>
           <span class="public-counter" data-public-count="reads" data-article-path="/article/d3d10f00.html" hidden><span>累计阅读</span> <strong></strong></span>
@@ -137,7 +137,7 @@
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/></pre></td><td class="code"><pre id="passage-f509310df057"><span class="line"><span class="keyword">from</span> django.urls <span class="keyword">import</span> path</span><br/><span class="line"><span class="keyword">from</span> rest_framework_jwt.views <span class="keyword">import</span> obtain_jwt_token</span><br/><span class="line"><span class="keyword">from</span> . <span class="keyword">import</span> views</span><br/><span class="line"></span><br/><span class="line">urlpatterns = [</span><br/><span class="line">    path(<span class="string">'login/'</span>, obtain_jwt_token),</span><br/><span class="line">    path(<span class="string">'register/'</span>, views.RegisterView.as_view()),</span><br/><span class="line">]</span><br/></pre></td></tr></tbody></table></figure>
 <p id="passage-1e4c88ba01a4"><code>user/views.py</code></p>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/></pre></td><td class="code"><pre id="passage-686753f7976b"><span class="line"><span class="keyword">from</span> rest_framework.generics <span class="keyword">import</span> CreateAPIView</span><br/><span class="line"><span class="keyword">from</span> rest_framework_jwt.authentication <span class="keyword">import</span> JSONWebTokenAuthentication</span><br/><span class="line"></span><br/><span class="line"><span class="keyword">from</span> user.serializers <span class="keyword">import</span> RegisterSerializer</span><br/><span class="line"></span><br/><span class="line"></span><br/><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RegisterView</span>(<span class="params">CreateAPIView</span>):</span></span><br/><span class="line">    serializer_class = RegisterSerializer</span><br/><span class="line">    authentication_classes = (JSONWebTokenAuthentication,)</span><br/></pre></td></tr></tbody></table></figure></div>
-        <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/3UA7xfW8f2PaTCZEuUIFgg">查看微信公众号原文 ↗</a></p>
+        <aside class="source-panel" aria-labelledby="article-sources-title"><h2 id="article-sources-title">来源与参考</h2><ul><li><a class="source-link" href="https://mp.weixin.qq.com/s/3UA7xfW8f2PaTCZEuUIFgg">查看微信公众号原文 ↗</a></li></ul></aside>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Django/">Django</a><a href="/tags/Python/">Python</a><a href="/tags/JWT/">JWT</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
         <section class="series-continuation"><h2><a href="/series/python-test-development/">查看系列目录 ↗</a></h2><nav class="related" aria-label="同系列文章"><a href="/article/8ffb6d81.html"><small>同系列上一篇</small>第 30 篇｜用 drf-yasg 为 Django 项目生成 API 文档</a><a href="/article/7ce09462.html"><small>同系列下一篇</small>第 32 篇｜配置 Django 跨域并运行首个 HttpRunner 用例</a></nav></section>
@@ -159,6 +159,9 @@
     <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
     <nav aria-label="页脚导航">
       <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
     </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">

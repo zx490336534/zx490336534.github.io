@@ -28,7 +28,7 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记</a>
-      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/">视频</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
       <div class="masthead-actions">
         <label class="visually-hidden" for="site-appearance">外观</label>
         <select id="site-appearance" class="site-appearance" hidden>
@@ -43,10 +43,10 @@
   <main id="main">
   <article class="article">
     <header class="article-header">
-      <figure class="article-cover" style="--cover-art:url(&quot;/images/article-covers/3842e4e1.webp&quot;)"><img src="/images/article-covers/3842e4e1.webp" alt="" fetchpriority="high" decoding="async"></figure>
+      <figure class="article-cover" style="--cover-art:url(&quot;/images/article-covers/3842e4e1.webp&quot;)"><img src="/images/article-covers/3842e4e1.webp" alt="" width="1440" height="668" fetchpriority="high" decoding="async"></figure>
       <div class="wrap article-heading">
         <h1 class="post-title" data-topic-title="用 SQLAlchemy 查询、筛选和排序">Flask Web 开发 · 第 11 篇｜用 SQLAlchemy 查询、筛选和排序</h1>
-        <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2020-07-26T08:12:00+08:00">2020-07-26</time>
+        <div class="entry-meta"><span class="post-author"><a href="/about/" rel="author">听白</a></span><time itemprop="datePublished" datetime="2020-07-26T08:12:00+08:00">2020-07-26</time>
           <span class="post-category" hidden><a href="/categories/Flask%E5%9F%BA%E7%A1%80/">Flask基础</a></span>
           <span class="read-time">约 3 分钟</span>
           <span class="public-counter" data-public-count="reads" data-article-path="/article/3842e4e1.html" hidden><span>累计阅读</span> <strong></strong></span>
@@ -103,7 +103,7 @@
 <p id="passage-a9c528599e65">查找数据</p>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/></pre></td><td class="code"><pre id="passage-53e8107bd028"><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">'/select'</span></span>)</span></span><br/><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">select</span>():</span></span><br/><span class="line">    user = User.query.get(<span class="number">1</span>)</span><br/><span class="line">    s = user.subject</span><br/><span class="line">    print(s)</span><br/><span class="line">    <span class="keyword">return</span> <span class="string">'OK'</span></span><br/></pre></td></tr></tbody></table></figure>
 <h3 id="自引用"><a class="headerlink" href="#自引用" title="自引用"></a>自引用</h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/></pre></td><td class="code"><pre id="passage-d9b9c44df567"><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Follower</span>(<span class="params">db.Model</span>):</span></span><br/><span class="line">    <span class="comment"># 粉丝ID</span></span><br/><span class="line">    fensi_id = db.Column(db.Integer, db.ForeignKey(<span class="string">'user.id'</span>), primary_key=<span class="literal">True</span>)</span><br/><span class="line">    <span class="comment"># 关注者ID</span></span><br/><span class="line">    guanzhuzhe_id = db.Column(db.Integer, db.ForeignKey(<span class="string">'user.id'</span>), primary_key=<span class="literal">True</span>)</span><br/><span class="line"></span><br/><span class="line"></span><br/><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">User</span>(<span class="params">db.Model</span>):</span></span><br/><span class="line">    <span class="built_in">id</span> = db.Column(db.Integer, primary_key=<span class="literal">True</span>)</span><br/><span class="line">    name = db.Column(db.String(<span class="number">20</span>), nullable=<span class="literal">False</span>)</span><br/><span class="line">    sujects = db.relationship(<span class="string">'Xuanke'</span>, back_populates=<span class="string">'student'</span>)</span><br/><span class="line">    fensis = db.relationship(<span class="string">'Follower'</span>, foreign_keys=[Follower.guanzhuzhe_id], backref=<span class="string">'guanzhuzhe'</span>)</span><br/><span class="line">    guanzhuzhes = db.relationship(<span class="string">'Follower'</span>, foreign_keys=[Follower.fensi_id], backref=<span class="string">'fensi'</span>)</span><br/></pre></td></tr></tbody></table></figure></div>
-        <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/Sw_zvltyCs5L9qoPaOIumA">查看微信公众号原文 ↗</a></p>
+        <aside class="source-panel" aria-labelledby="article-sources-title"><h2 id="article-sources-title">来源与参考</h2><ul><li><a class="source-link" href="https://mp.weixin.qq.com/s/Sw_zvltyCs5L9qoPaOIumA">查看微信公众号原文 ↗</a></li></ul></aside>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Flask/">Flask</a><a href="/tags/Python/">Python</a><a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/Flask/">Flask</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
         <section class="series-continuation"><h2><a href="/series/flask-web/">查看系列目录 ↗</a></h2><nav class="related" aria-label="同系列文章"><a href="/article/9ce49263.html"><small>同系列上一篇</small>第 10 篇｜用 SQLite 和 SQLAlchemy 定义数据模型</a></nav></section>
@@ -125,6 +125,9 @@
     <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
     <nav aria-label="页脚导航">
       <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
     </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">

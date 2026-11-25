@@ -28,7 +28,7 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记</a>
-      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/">视频</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
       <div class="masthead-actions">
         <label class="visually-hidden" for="site-appearance">外观</label>
         <select id="site-appearance" class="site-appearance" hidden>
@@ -43,10 +43,10 @@
   <main id="main">
   <article class="article">
     <header class="article-header">
-      <figure class="article-cover" style="--cover-art:url(&quot;/images/article-covers/213b449.webp&quot;)"><img src="/images/article-covers/213b449.webp" alt="" fetchpriority="high" decoding="async"></figure>
+      <figure class="article-cover" style="--cover-art:url(&quot;/images/article-covers/213b449.webp&quot;)"><img src="/images/article-covers/213b449.webp" alt="" width="1440" height="668" fetchpriority="high" decoding="async"></figure>
       <div class="wrap article-heading">
         <h1 class="post-title" data-topic-title="HttpRunner 用例进阶：变量、校验与数据驱动">Python 测试开发进阶 · 第 33 篇｜HttpRunner 用例进阶：变量、校验与数据驱动</h1>
-        <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2019-11-01T17:51:38+08:00">2019-11-01</time>
+        <div class="entry-meta"><span class="post-author"><a href="/about/" rel="author">听白</a></span><time itemprop="datePublished" datetime="2019-11-01T17:51:38+08:00">2019-11-01</time>
           <span class="post-category" hidden><a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">Python测试开发进阶</a></span>
           <span class="read-time">约 5 分钟</span>
           <span class="public-counter" data-public-count="reads" data-article-path="/article/213b449.html" hidden><span>累计阅读</span> <strong></strong></span>
@@ -133,7 +133,7 @@
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/></pre></td><td class="code"><pre id="passage-3ae9ffa387a6"><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_accounts</span>():</span></span><br/><span class="line">    accounts = [</span><br/><span class="line">        {<span class="string">"title"</span>: <span class="string">"正常登录"</span>, <span class="string">"username"</span>: <span class="string">"zhongxin"</span>, <span class="string">"password"</span>: <span class="string">"123456"</span>, <span class="string">"status_code"</span>: <span class="number">200</span>, <span class="string">"contain_msg"</span>: <span class="string">"token"</span>},</span><br/><span class="line">        {<span class="string">"title"</span>: <span class="string">"密码错误"</span>, <span class="string">"username"</span>: <span class="string">"zhongxin"</span>, <span class="string">"password"</span>: <span class="string">"1234567"</span>, <span class="string">"status_code"</span>: <span class="number">400</span>, <span class="string">"contain_msg"</span>: <span class="string">"non_field_errors"</span>},</span><br/><span class="line">    ]</span><br/><span class="line">    <span class="keyword">return</span> accounts</span><br/></pre></td></tr></tbody></table></figure>
 <figure class="highlight yaml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-424e57f4cd81"><span class="line"><span class="bullet">-</span> <span class="attr">title-username-password-status_code-contain_msg:</span> <span class="string">${get_accounts()}</span></span><br/></pre></td></tr></tbody></table></figure>
 <h2 id="使用py文件调用httprunner"><a class="headerlink" href="#使用py文件调用httprunner" title="使用py文件调用httprunner"></a>使用py文件调用httprunner</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/></pre></td><td class="code"><pre id="passage-b81af60a3d50"><span class="line"><span class="keyword">from</span> httprunner.api <span class="keyword">import</span> HttpRunner</span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 创建HttpRunner对象</span></span><br/><span class="line"><span class="comment"># failfast:False 用例执行失败后不终止</span></span><br/><span class="line">runner = HttpRunner(failfast=<span class="literal">False</span>)</span><br/><span class="line"><span class="comment"># 运行用例</span></span><br/><span class="line"><span class="comment"># run方法支持如下参数</span></span><br/><span class="line"><span class="comment"># yaml用例文件的路径</span></span><br/><span class="line"><span class="comment"># 字典(用例的信息)</span></span><br/><span class="line">runner.run(<span class="string">'/Users/zhongxin/Desktop/httprunner_learn/testcases/login.yml'</span>)</span><br/><span class="line">print(runner.summary)</span><br/></pre></td></tr></tbody></table></figure></div>
-        <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/bP5X_PxNTf0gtNirHdl2eA">查看微信公众号原文 ↗</a></p>
+        <aside class="source-panel" aria-labelledby="article-sources-title"><h2 id="article-sources-title">来源与参考</h2><ul><li><a class="source-link" href="https://mp.weixin.qq.com/s/bP5X_PxNTf0gtNirHdl2eA">查看微信公众号原文 ↗</a></li></ul></aside>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/HttpRunner/">HttpRunner</a><a href="/tags/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95/">接口测试</a><a href="/tags/%E5%8F%98%E9%87%8F/">变量</a><a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a></div>
         <div class="legacy-tags" hidden><a href="/tags/Python/">Python</a><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
         <section class="series-continuation"><h2><a href="/series/python-test-development/">查看系列目录 ↗</a></h2><nav class="related" aria-label="同系列文章"><a href="/article/7ce09462.html"><small>同系列上一篇</small>第 32 篇｜配置 Django 跨域并运行首个 HttpRunner 用例</a><a href="/article/f8505b46.html"><small>同系列下一篇</small>第 34 篇｜设计测试平台的数据模型和项目接口</a></nav></section>
@@ -155,6 +155,9 @@
     <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
     <nav aria-label="页脚导航">
       <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
     </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">

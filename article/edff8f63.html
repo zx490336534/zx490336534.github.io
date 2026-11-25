@@ -28,7 +28,7 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记</a>
-      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/">视频</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
       <div class="masthead-actions">
         <label class="visually-hidden" for="site-appearance">外观</label>
         <select id="site-appearance" class="site-appearance" hidden>
@@ -43,10 +43,10 @@
   <main id="main">
   <article class="article">
     <header class="article-header">
-      <figure class="article-cover" style="--cover-art:url(&quot;/images/article-covers/edff8f63.webp&quot;)"><img src="/images/article-covers/edff8f63.webp" alt="" fetchpriority="high" decoding="async"></figure>
+      <figure class="article-cover" style="--cover-art:url(&quot;/images/article-covers/edff8f63.webp&quot;)"><img src="/images/article-covers/edff8f63.webp" alt="" width="1440" height="668" fetchpriority="high" decoding="async"></figure>
       <div class="wrap article-heading">
         <h1 class="post-title">Excel合并小工具编写</h1>
-        <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2020-04-12T08:43:00+08:00">2020-04-12</time>
+        <div class="entry-meta"><span class="post-author"><a href="/about/" rel="author">听白</a></span><time itemprop="datePublished" datetime="2020-04-12T08:43:00+08:00">2020-04-12</time>
           <span class="post-category" hidden><a href="/categories/%E6%9D%82%E9%A1%B9/">杂项</a></span>
           <span class="read-time">约 3 分钟</span>
           <span class="public-counter" data-public-count="reads" data-article-path="/article/edff8f63.html" hidden><span>累计阅读</span> <strong></strong></span>
@@ -89,7 +89,7 @@
 <h2 id="使用TK编写简单的GUI界面"><a class="headerlink" href="#使用TK编写简单的GUI界面" title="使用TK编写简单的GUI界面"></a>使用TK编写简单的GUI界面</h2><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/><span class="line">20</span><br/><span class="line">21</span><br/><span class="line">22</span><br/><span class="line">23</span><br/></pre></td><td class="code"><pre id="passage-fa8a9bbfb944"><span class="line">top = Tk()</span><br/><span class="line">top.title(<span class="string">'Excel合并工具'</span>)</span><br/><span class="line">top.geometry(<span class="string">'600x400'</span>)</span><br/><span class="line">frame = Frame(top)</span><br/><span class="line">frame.pack()</span><br/><span class="line">lab = Label(frame, text=<span class="string">'待合并Excel路径:   '</span>)</span><br/><span class="line">lab.grid(row=<span class="number">0</span>, column=<span class="number">0</span>, sticky=W)</span><br/><span class="line">path = Entry(frame)</span><br/><span class="line">path.insert(<span class="number">0</span>, <span class="string">'/Users/zhongxin/PycharmProjects/datawork/ZB-ECRC分销出货查询 4.10-4.11浙皖.xls'</span>)</span><br/><span class="line">path.grid(row=<span class="number">0</span>, column=<span class="number">1</span>, sticky=W)</span><br/><span class="line"></span><br/><span class="line">lab = Label(frame, text=<span class="string">'子sheet名称(使用|分割):   '</span>)</span><br/><span class="line">lab.grid(row=<span class="number">1</span>, column=<span class="number">0</span>, sticky=W)</span><br/><span class="line">sheet = Entry(frame)</span><br/><span class="line">sheet.insert(<span class="number">0</span>, <span class="string">'分销明细|分销明细_1'</span>)</span><br/><span class="line">sheet.grid(row=<span class="number">1</span>, column=<span class="number">1</span>, sticky=W)</span><br/><span class="line"></span><br/><span class="line">btn1 = Button(frame, text=<span class="string">"开始合并"</span>, command=<span class="keyword">lambda</span>: thread_it(work), width=<span class="number">20</span>)</span><br/><span class="line">btn1.grid(row=<span class="number">1</span>, column=<span class="number">2</span>, sticky=W)</span><br/><span class="line"></span><br/><span class="line">text = Text(top, width=<span class="number">20</span>, height=<span class="number">100</span>)</span><br/><span class="line">text.pack(fill=X, side=BOTTOM)</span><br/><span class="line">top.mainloop()</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="GUI界面" decoding="async" height="810" loading="lazy" src="/images/blog-media/c14909d7b24d5b7a2a37.webp" width="1080"/></p>
 <h2 id="github路径"><a class="headerlink" href="#github路径" title="github路径"></a>github路径</h2><p id="passage-dfab3d130aae"><a href="https://github.com/zx490336534/ExcelConcat" rel="noopener" target="_blank">https://github.com/zx490336534/ExcelConcat</a></p></div>
-        <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/svHR2p5TpkhvE-8gQ5WaIA">查看微信公众号原文 ↗</a></p>
+        <aside class="source-panel" aria-labelledby="article-sources-title"><h2 id="article-sources-title">来源与参考</h2><ul><li><a class="source-link" href="https://mp.weixin.qq.com/s/svHR2p5TpkhvE-8gQ5WaIA">查看微信公众号原文 ↗</a></li></ul></aside>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Excel/">Excel</a><a href="/tags/%E6%95%88%E7%8E%87%E5%B7%A5%E5%85%B7/">效率工具</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a></div>
         <nav class="related" aria-label="相邻文章"><a href="/article/wechat-985e12c58d30fc.html"><small>较新文章</small>Robot Framework 接口自动化 · 第 01 篇｜在 RIDE 中创建测试套件并使用变量</a><a href="/article/c2f6043e.html"><small>较早文章</small>操作记事本控件：输入、替换与键盘事件</a></nav>
@@ -111,6 +111,9 @@
     <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
     <nav aria-label="页脚导航">
       <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
     </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">

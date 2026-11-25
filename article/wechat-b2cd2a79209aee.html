@@ -28,7 +28,7 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记</a>
-      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/">视频</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
       <div class="masthead-actions">
         <label class="visually-hidden" for="site-appearance">外观</label>
         <select id="site-appearance" class="site-appearance" hidden>
@@ -43,7 +43,7 @@
   <main id="main">
   <article class="article">
     <header class="article-header">
-      <figure class="article-cover" style="--cover-art:url(&quot;/images/article-covers/wechat-b2cd2a79209aee.webp&quot;)"><img src="/images/article-covers/wechat-b2cd2a79209aee.webp" alt="" fetchpriority="high" decoding="async"></figure>
+      <figure class="article-cover" style="--cover-art:url(&quot;/images/article-covers/wechat-b2cd2a79209aee.webp&quot;)"><img src="/images/article-covers/wechat-b2cd2a79209aee.webp" alt="" width="1440" height="668" fetchpriority="high" decoding="async"></figure>
       <div class="wrap article-heading">
         <h1 class="post-title" data-topic-title="封装请求头、Cookie 和 POST 公共关键字">Robot Framework 接口自动化 · 第 06 篇｜封装请求头、Cookie 和 POST 公共关键字</h1>
         <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2020-05-16T12:52:45+08:00">2020-05-16</time>
@@ -59,7 +59,7 @@
       <div class="article-main">
 
         <div class="post-body" id="article-text"><section><br/></section><h2 id="导入第三方库">导入第三方库</h2><p id="passage-974d27ce7d86">Http请求的发送需要使用第三方库<code>RequestsLibrary</code></p><p><img alt="" decoding="async" height="242" loading="lazy" src="/images/blog-media/80a017629616652a34b6.webp" width="1080"/></p><p><img alt="" decoding="async" height="351" loading="lazy" src="/images/blog-media/64cf0a971f22cbed9e0f.webp" width="1080"/></p><pre id="passage-836f3f960c64"><code>$ pip install robotframework-requests<br/>$ pip install robotframework-httplibrary</code></pre><p><img alt="" decoding="async" height="214" loading="lazy" src="/images/blog-media/6c4d1105327beb91e03f.webp" width="976"/></p><ul class="list-paddingleft-2"><li id="passage-879f09fd8366"><p id="passage-fcd492742454">RequestsLibrary:实现底层模拟HTTP请求</p></li><li id="passage-1675d255305d"><p id="passage-b03723b092db">Collections:用于字典列表的创建</p></li><li id="passage-6763f8dea44f"><p id="passage-4809405836ab">String:用于字符串处理</p></li><li id="passage-fac81f68a1bf"><p id="passage-aa2d6256150c">HttpLibrary.HTTP:处理http请求返回内容，Get Json Value可以从Json结构体中获取数据</p></li></ul><h2 id="新建关键字">新建关键字</h2><h3 id="Post">Post</h3><p><img alt="" decoding="async" height="271" loading="lazy" src="/images/blog-media/16f00a4cdb9ceda55521.webp" width="1080"/></p><ul class="list-paddingleft-2"><li id="passage-004dcdf4877c"><p id="passage-b8aac143a804">host:请求域名</p></li><li id="passage-24a655f0f2f4"><p id="passage-8b10cac1158a">path:请求路径</p></li><li id="passage-648d068cbcf0"><p id="passage-a189bc31d648">datas:post数据</p></li><li id="passage-c1cc7aa79828"><p id="passage-81eae5f3d88a">params:请求参数字符串</p></li><li id="passage-f541f384ae3e"><p id="passage-953f189433c7">headers:请求头</p></li><li id="passage-dff5358188d1"><p id="passage-3dc1877c6d57">cookies:cookie信息</p></li><li id="passage-ca7b866cd6e8"><p id="passage-1fe8e0d31778">timeout:超时时间</p></li></ul><h4 id="_Post_Requets本体">_Post_Requets本体</h4><p><img alt="" decoding="async" height="287" loading="lazy" src="/images/blog-media/a62308eb0816574dc41e.webp" width="1080"/></p><h4 id="关键字add_header">关键字add_header</h4><p><img alt="" decoding="async" height="309" loading="lazy" src="/images/blog-media/084c8db25fd4785e4ed9.webp" width="1080"/></p><p><img alt="" decoding="async" height="605" loading="lazy" src="/images/blog-media/56d8b362d829044dfeb6.webp" width="1080"/></p><h4 id="关键字add_cookies">关键字add_cookies</h4><p><img alt="" decoding="async" height="309" loading="lazy" src="/images/blog-media/ebe02d16d48c66f3f559.webp" width="1080"/></p><p><img alt="" decoding="async" height="639" loading="lazy" src="/images/blog-media/b54804b36f5ebdae40dc.webp" width="1080"/></p><h2 id="小结">小结</h2><p id="passage-f7083efdf17d">写到这里可以明显感觉到Robot Framework来实现内容的困难了，上面内容在正常的IDE里面几分钟就可以完成。RIDE中这个难度上升了数倍。在学完基础概念之后其实后续的内容都是基于这种模式来进行拓展，这时候又变成了对开发者个人其他能力的考验。</p><p id="passage-42d5edee4eab">例如进行页面自动化需要了解前端知识。</p><p id="passage-3863e17c3689">进行接口自动化需要了解接口请求。</p><p id="passage-89f27d0ec0ab">进行移动端自动化需要了解移动端开发机制等等。</p><p id="passage-fa9609b7da59">将这些简单的小步骤使用关键字进行封装后结合具体的用例流程进行填空就可以进行自动化测试了。</p></div>
-        <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/UJXKWhpZpib8vFvjHT2rVg">查看微信公众号原文 ↗</a></p>
+        <aside class="source-panel" aria-labelledby="article-sources-title"><h2 id="article-sources-title">来源与参考</h2><ul><li><a class="source-link" href="https://mp.weixin.qq.com/s/UJXKWhpZpib8vFvjHT2rVg">查看微信公众号原文 ↗</a></li></ul></aside>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Robot-Framework/">Robot Framework</a><a href="/tags/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95/">接口测试</a><a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a></div>
         <div class="legacy-tags" hidden></div>
         <section class="series-continuation"><h2><a href="/series/robot-framework-api/">查看系列目录 ↗</a></h2><nav class="related" aria-label="同系列文章"><a href="/article/wechat-f0bbfb03e3d7b5.html"><small>同系列上一篇</small>第 05 篇｜用 Robot Framework 编写 HTTP 接口用例</a></nav></section>
@@ -81,6 +81,9 @@
     <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
     <nav aria-label="页脚导航">
       <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
     </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">

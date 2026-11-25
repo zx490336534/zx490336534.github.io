@@ -28,7 +28,7 @@
   <header class="masthead">
     <div class="wrap masthead-inner">
       <a class="wordmark" href="/">测试游记</a>
-      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/">视频</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
       <div class="masthead-actions">
         <label class="visually-hidden" for="site-appearance">外观</label>
         <select id="site-appearance" class="site-appearance" hidden>
@@ -43,7 +43,7 @@
   <main id="main">
   <article class="article">
     <header class="article-header">
-      <figure class="article-cover" style="--cover-art:url(&quot;/images/article-covers/wechat-379ef5c1805ec9.webp&quot;)"><img src="/images/article-covers/wechat-379ef5c1805ec9.webp" alt="" fetchpriority="high" decoding="async"></figure>
+      <figure class="article-cover" style="--cover-art:url(&quot;/images/article-covers/wechat-379ef5c1805ec9.webp&quot;)"><img src="/images/article-covers/wechat-379ef5c1805ec9.webp" alt="" width="1440" height="668" fetchpriority="high" decoding="async"></figure>
       <div class="wrap article-heading">
         <h1 class="post-title">使用 Yaml 进行 selenium 的 po 设计</h1>
         <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2020-08-22T12:20:10+08:00">2020-08-22</time>
@@ -59,7 +59,7 @@
       <div class="article-main">
 
         <div class="post-body" id="article-text"><section><p id="passage-858ff3d6b679">使用<code>Yaml</code>文件进行元素信息的管理</p><h2 id="安装"><span>安装</span></h2><blockquote id="passage-f56cdc195f45"><p id="passage-74522a71b5f2">Github地址：https://github.com/zx490336534/selenium-po</p></blockquote><pre id="passage-f3eecce47959"><code><span>$</span><span> pip install selenium-po</span><br/></code></pre><h1 id="使用方法"><span>使用方法</span></h1><h2 id="创建一份yaml"><span>创建一份yaml</span></h2><p id="passage-36a129eebc0b">代码中使用的是<code>name</code>后的内容，实际页面元素定位使用的<code>value</code>中的内容，方便后续统一维护</p><pre id="passage-f1c3151d2d16"><code>pages:<br/>  - page:<br/>      pageName: index<br/>      desc: 首页<br/>      locators:<br/>        - {desc: "搜索栏",type: "id",value: "kw",timeout: 3, name: "index_input"}<br/>        - {desc: "查询按钮",type: "id",value: "su",timeout: 3, name: "index_search"}<br/>  - page:<br/>      pageName: news<br/>      desc: 新闻<br/>      locators:<br/>        - {desc: "搜索栏",type: "id",value: "ww",timeout: 3, name: "news_input"}<br/>        - {desc: "查询按钮",type: "id",value: "s_btn_wr",timeout: 3, name: "news_search"}<br/></code></pre><h2 id="创建一个页面操作对象"><span>创建一个页面操作对象</span></h2><pre id="passage-95ea946d5914"><code><span>import</span> os<br/><span>import</span> time<br/><span>from</span> selenium_po.elementoperator <span>import</span> ElementOperator<br/><br/>path = os.path.dirname(os.path.abspath(__file__))<br/><br/><br/><span><span>class</span> <span>BaiDuIndexAction</span><span>(ElementOperator)</span>:</span><br/>    <span><span>def</span> <span>__init__</span><span>(self, path=<span>f"<span>{path}</span>/pages.yaml"</span>, file_name=<span>'index'</span>, driver=None)</span>:</span><br/>        super(BaiDuIndexAction, self).__init__(path, file_name, driver)<br/>        self.url = <span>'http://www.baidu.com'</span><br/><br/><br/><span><span>class</span> <span>BaiDuNewsAction</span><span>(ElementOperator)</span>:</span><br/>    <span><span>def</span> <span>__init__</span><span>(self, path=<span>f"<span>{path}</span>/pages.yaml"</span>, file_name=<span>'news'</span>, driver=None)</span>:</span><br/>        super(BaiDuNewsAction, self).__init__(path, file_name, driver)<br/>        self.url = <span>'http://news.baidu.com/'</span><br/></code></pre><h2 id="测试"><span>测试</span></h2><pre id="passage-44f6ef5205c2"><code><span>if</span> __name__ == <span>'__main__'</span>:<br/>    baidu = BaiDuIndexAction()<br/>    baidu.open(baidu.url, baidu.index_input)<br/>    baidu.input(baidu.index_input, <span>"python"</span>)<br/>    baidu.click(baidu.index_search)<br/>    time.sleep(<span>2</span>)<br/>    baidu.screenshot_pic(<span>"1.png"</span>)<br/>    <span># baidu.close()</span><br/>    baidu_news = BaiDuNewsAction(driver=baidu.driver)<br/>    baidu_news.open(baidu_news.url, baidu_news.news_input)<br/>    baidu_news.input(baidu_news.news_input, <span>"python新闻"</span>)<br/>    baidu_news.click(baidu_news.news_search)<br/>    time.sleep(<span>2</span>)<br/>    baidu_news.screenshot_pic(<span>"2.png"</span>)<br/>    baidu_news.close()<br/></code></pre><h3 id="输出"><span>输出</span></h3><pre id="passage-094b08848691"><code>往「首页_搜索栏」输入「python」<br/>点击「首页_查询按钮」<br/>往「新闻_搜索栏」输入「python新闻」<br/>点击「新闻_查询按钮」<br/></code></pre><h3 id="截图"><span>截图</span></h3><figure><img alt="" decoding="async" height="565" loading="lazy" src="/images/blog-media/ef651d252e872435b98a.webp" width="1080"/><figcaption id="passage-94e5a4734284">测试截图</figcaption></figure><figure><img alt="" decoding="async" height="565" loading="lazy" src="/images/blog-media/fdc44e55eaf45406aa00.webp" width="1080"/><figcaption id="passage-72f606f260c5">测试截图2</figcaption></figure></section></div>
-        <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/-MZdzrlNRy1MikpFNMzWtw">查看微信公众号原文 ↗</a></p>
+        <aside class="source-panel" aria-labelledby="article-sources-title"><h2 id="article-sources-title">来源与参考</h2><ul><li><a class="source-link" href="https://mp.weixin.qq.com/s/-MZdzrlNRy1MikpFNMzWtw">查看微信公众号原文 ↗</a></li></ul></aside>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Selenium/">Selenium</a><a href="/tags/YAML/">YAML</a><a href="/tags/Page-Object/">Page Object</a><a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">自动化测试</a></div>
         <div class="legacy-tags" hidden></div>
         <nav class="related" aria-label="相邻文章"><a href="/article/e4409899.html"><small>较新文章</small>Java 自动化测试 · 第 23 篇｜Selenium 录制回放与 Java 环境搭建</a><a href="/article/2f8cb43e.html"><small>较早文章</small>Java 自动化测试 · 第 22 篇｜用 Jenkins 运行 Maven 测试并发布 Allure 报告</a></nav>
@@ -81,6 +81,9 @@
     <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
     <nav aria-label="页脚导航">
       <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
     </nav>
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">
