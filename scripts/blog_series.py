@@ -134,12 +134,13 @@ def series_page(series, thumbnail):
         for post in chapters:
             rows.append(
                 f'<li id="chapter-{number}"><a href="{escape(post.path)}" class="series-chapter-link">'
+                '<span class="list-rank" aria-hidden="true"></span>'
                 f'{thumbnail(post)}<strong>{escape(post.title)}</strong></a></li>'
             )
             number += 1
         stages.append(
             f'<section class="series-stage" id="{anchor}"><h2>{title}</h2>'
-            f'<ol class="series-chapters" start="{first_number}">{"".join(rows)}</ol></section>'
+            f'<ol class="series-chapters" role="list" start="{first_number}">{"".join(rows)}</ol></section>'
         )
     jump = ('<nav class="series-stage-links" aria-label="阅读阶段">' + "".join(shortcuts) + '</nav>') if len(stages) > 1 else ""
 

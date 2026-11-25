@@ -256,7 +256,10 @@ def shell(title, path, content, description=DESCRIPTION, extra_head=""):
     links_html = "".join(links)
     canonical = html(SITE + path)
     summary = excerpt(description, 180)
-    counts = '\n  <script src="/js/public-counts.js?v=2" defer></script>' if path == "/" or is_article else ""
+    counts = (
+        f'\n  <script src="/js/public-counts.js?v={3 if path == "/" else 2}" defer></script>'
+        if path == "/" or is_article else ""
+    )
     main_class = "" if is_article else ' class="wrap"'
     return f'''<!doctype html>
 <html lang="zh-CN">
@@ -428,13 +431,14 @@ def popular_section(posts):
     rows = []
     for path in dict.fromkeys(ranked_paths):
         if post := post_by_path.get(path):
-            rows.append(f'<li><a href="{html(post.path)}">{thumbnail(post)}'
-                        f'<span><strong>{html(post.display_title)}</strong></span></a></li>')
+            rows.append(f'<li><a href="{html(post.path)}"><span class="list-rank" aria-hidden="true"></span>'
+                        f'<span class="popular-thumb">{thumbnail(post)}</span>'
+                        f'<span class="popular-copy"><strong>{html(post.display_title)}</strong></span></a></li>')
     if not rows:
         return ""
     return f'''<section class="section" id="popular" aria-labelledby="popular-title">
     <header class="section-title"><h2 id="popular-title">热门文章</h2><p class="popular-basis" data-popular-basis>按公众号阅读人数排序</p></header>
-    <ol class="popular-list" data-popular-list>{"".join(rows)}</ol>
+    <ol class="popular-list" role="list" data-popular-list>{"".join(rows)}</ol>
   </section>'''
 
 

@@ -22,6 +22,11 @@
       const row = document.createElement('li');
       const link = document.createElement('a');
       link.href = article.path;
+      const rank = document.createElement('span');
+      rank.className = 'list-rank';
+      rank.setAttribute('aria-hidden', 'true');
+      const thumb = document.createElement('span');
+      thumb.className = 'popular-thumb';
       if (typeof article.cover === 'string' && article.cover.startsWith('/images/')) {
         const image = document.createElement('img');
         image.className = 'post-thumbnail';
@@ -31,15 +36,16 @@
         image.height = 90;
         image.loading = 'lazy';
         image.decoding = 'async';
-        link.append(image);
+        thumb.append(image);
       }
       const copy = document.createElement('span');
+      copy.className = 'popular-copy';
       const title = document.createElement('strong');
       title.textContent = article.title;
       const count = document.createElement('small');
       count.textContent = '累计点击 ' + digits.format(article.clicks);
       copy.append(title, count);
-      link.append(copy);
+      link.append(rank, thumb, copy);
       row.append(link);
       rows.push(row);
     }
