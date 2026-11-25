@@ -79,7 +79,7 @@ def main():
     remotion = root / 'node_modules/.bin/remotion'
     if not remotion.is_file():
         raise SystemExit('请先在项目目录运行 npm ci。')
-    entry = 'EditionSecond.jsx' if kind == 'animated' else 'Classic.jsx'
+    entry = {'animated': 'EditionSecond.jsx', 'newest': 'EditionNewest.jsx'}.get(kind, 'Classic.jsx')
     composition = 'ArticleFilm' if kind == 'pilot' else 'EditorialArticle'
     with tempfile.TemporaryDirectory(prefix='blog-video-') as temp:
         props = Path(temp) / 'props.json'

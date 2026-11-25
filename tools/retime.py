@@ -30,7 +30,7 @@ def main():
     intro = project / 'assets' / 'establish.webp'
     if data['slug'] != a.episode or (cover and not intro.is_file()):
         raise SystemExit('请检查 storyboard.json 的文章 ID 和片头插画。')
-    script = 'second_audio.py' if meta['renderer'] == 'animated' else 'pilot_audio.py'
+    script = 'second_audio.py' if meta['renderer'] in {'animated', 'newest'} else 'pilot_audio.py'
     env = os.environ | {'VIDEO_FPS': str(meta['fps']), 'VIDEO_OPEN_FRAMES': '48' if cover else '0'}
     with tempfile.TemporaryDirectory() as d:
         tmp = Path(d)

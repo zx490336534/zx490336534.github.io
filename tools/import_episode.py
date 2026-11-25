@@ -43,6 +43,8 @@ def main():
     p.add_argument('--timeline', required=True, type=Path)
     p.add_argument('--assets', required=True, type=Path)
     p.add_argument('--captions', required=True, type=Path)
+    p.add_argument('--renderer', choices=('animated', 'newest'), default='animated',
+                   help='use newest for storyboards with custom late-series maps')
     p.add_argument('--check-only', action='store_true', help='validate without writing any files')
     p.add_argument('--reviewed', action='store_true',
                    help='confirm visual, narration and text were checked for placeholders')
@@ -57,6 +59,8 @@ def main():
     slug = story['slug']
     if not re.fullmatch(r'[a-z0-9][a-z0-9-]{2,95}', slug) or slug != data['slug']:
         p.error('storyboard and timeline must use the same valid article ID')
+    if any(str(s.get('mode', '')).endswith('-map') for s in data['slides']) and a.renderer != 'newest':
+        p.error('custom map visual mode requires --renderer newest')
     if not vtt.startswith('WEBVTT\n') or len(story['scenes']) != len(data['slides']):
         p.error('captions must be VTT and storyboard/timeline scene counts must match')
     cue_files = set()
@@ -95,7 +99,7 @@ def main():
         (one/'captions.vtt').write_text(vtt.rstrip()+'\n', encoding='utf-8')
         for f in sorted(cue_files):
             shutil.copyfile(a.assets/f, one/'assets'/f)
-        catalog[slug] = {'renderer': 'animated', 'fps': 16, 'title': story['title'],
+        catalog[slug] = {'renderer': a.renderer, 'fps': 16, 'title': story['title'],
                          'frameCount': sum(s['duration'] for s in data['slides']) + 48*bool(data.get('cover'))}
         new_index = w/'episodes.json'
         new_index.write_text(json.dumps(catalog, indent=2, ensure_ascii=False)+'\n', encoding='utf-8')
