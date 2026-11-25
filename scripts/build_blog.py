@@ -268,7 +268,7 @@ def home(posts):
   <section class="section" aria-labelledby="tools-title">
     <header class="section-title"><h2 id="tools-title">在线工具</h2></header>
     <div class="course-grid">
-      <a href="/tools/test-cases/"><strong>测试用例脑图生成器</strong><span aria-hidden="true">↗</span></a>
+      <a href="{SITE}/tools/test-cases/"><strong>测试用例脑图生成器</strong><span aria-hidden="true">↗</span></a>
     </div>
   </section>
   <section class="section" aria-labelledby="recent-title">
