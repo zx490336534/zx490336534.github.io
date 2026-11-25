@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <script src="/js/public-counts.js" defer></script>
 
 </head>
 <body>
@@ -42,7 +43,8 @@
       <h1 class="post-title">测试开发进阶(一)</h1>
       <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2019-08-06T07:15:00+08:00">2019-08-06</time>
         <span class="post-category" hidden><a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">Python测试开发进阶</a></span>
-        <span class="read-time">约 3 分钟</span></div>
+        <span class="read-time">约 3 分钟</span>
+        <span class="public-counter" data-public-count="reads" data-article-path="/article/264ee22a.html" hidden><span>近 30 天阅读</span> <strong></strong></span></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83">虚拟环境</a></li><li><a href="#%E5%AE%89%E8%A3%85">安装</a></li><li><a href="#%E6%9F%A5%E7%9C%8B%E5%B7%B2%E5%AE%89%E8%A3%85%E7%9A%84%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83">查看已安装的虚拟环境</a></li><li><a href="#Windows%E4%BF%AE%E6%94%B9%E5%AE%89%E8%A3%85%E7%9A%84%E4%BD%8D%E7%BD%AE">Windows修改安装的位置</a></li><li><a href="#Linux%E4%BF%AE%E6%94%B9%E5%AE%89%E8%A3%85%E7%9A%84%E4%BD%8D%E7%BD%AE">Linux修改安装的位置</a></li><li><a href="#%E5%88%9B%E5%BB%BA%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83">创建虚拟环境</a></li><li><a href="#%E8%BF%9B%E5%85%A5%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83">进入虚拟环境</a></li><li><a href="#%E9%80%80%E5%87%BA%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83">退出虚拟环境</a></li><li><a href="#%E5%88%A0%E9%99%A4%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83">删除虚拟环境</a></li><li><a href="#%E5%AF%BC%E5%87%BA%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83%E4%B8%AD%E6%89%80%E6%9C%89%E7%9A%84%E6%A8%A1%E5%9D%97%E5%92%8C%E5%8C%85">导出虚拟环境中所有的模块和包</a></li><li><a href="#%E5%AE%89%E8%A3%85requirements-txt%E4%B8%AD%E7%9A%84%E5%8C%85">安装requirements.txt中的包</a></li><li><a href="#virtualenv%E5%AD%98%E5%9C%A8%E7%9A%84%E9%97%AE%E9%A2%98">virtualenv存在的问题</a></li><li><a href="#pipenv">pipenv</a></li><li><a href="#%E5%88%9B%E5%BB%BA%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83-1">创建虚拟环境</a></li><li><a href="#%E8%BF%9B%E5%85%A5%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83-1">进入虚拟环境</a></li><li><a href="#%E9%80%80%E5%87%BA%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83-1">退出虚拟环境</a></li><li><a href="#%E5%AE%89%E8%A3%85%E5%8C%85">安装包</a></li><li><a href="#%E6%9F%A5%E7%9C%8B%E4%BE%9D%E8%B5%96">查看依赖</a></li><li><a href="#%E5%8D%B8%E8%BD%BD%E5%8C%85">卸载包</a></li><li><a href="#%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E5%AE%89%E8%A3%85">开发环境安装</a></li><li><a href="#%E5%AF%BC%E5%87%BA%E5%8C%85">导出包</a></li><li><a href="#%E5%88%A0%E9%99%A4%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83-1">删除虚拟环境</a></li><li><a href="#%E7%BC%96%E7%A0%81%E8%A7%84%E8%8C%83">编码规范</a></li><li><a href="#%E7%BC%A9%E8%BF%9B">缩进</a></li><li><a href="#%E8%A1%8C%E7%9A%84%E6%9C%80%E5%A4%A7%E9%95%BF%E5%BA%A6">行的最大长度</a></li><li><a href="#%E7%A9%BA%E8%A1%8C">空行</a></li><li><a href="#%E6%B3%A8%E9%87%8A">注释</a></li><li><a href="#%E6%A8%A1%E5%9D%97%E5%8C%85%E5%AF%BC%E5%85%A5">模块包导入</a></li><li><a href="#%E7%BB%93%E6%9E%84%E5%8C%96%E5%B7%A5%E7%A8%8B">结构化工程</a></li></ol></details></aside>

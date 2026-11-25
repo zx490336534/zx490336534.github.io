@@ -221,6 +221,7 @@ def shell(title, path, content, description=DESCRIPTION, extra_head=""):
     links_html = "".join(links)
     canonical = html(SITE + path)
     summary = excerpt(description, 180)
+    counts = '\n  <script src="/js/public-counts.js" defer></script>' if path == "/" or path.startswith("/article/") else ""
     return f'''<!doctype html>
 <html lang="zh-CN">
 <head>
@@ -238,7 +239,7 @@ def shell(title, path, content, description=DESCRIPTION, extra_head=""):
   <script src="/js/appearance.js"></script>
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
-  {analytics_script()}
+  {analytics_script()}{counts}
   {extra_head}
 </head>
 <body>
@@ -279,6 +280,12 @@ def shell(title, path, content, description=DESCRIPTION, extra_head=""):
 
 def date_label(post):
     return f'<time datetime="{html(post.published)}">{html(post.day)}</time>'
+
+
+def public_counter(metric, label, article_path=None):
+    path = f' data-article-path="{html(article_path)}"' if article_path else ""
+    return (f'<span class="public-counter" data-public-count="{metric}"{path} hidden>'
+            f'<span>{label}</span> <strong></strong></span>')
 
 
 def category_links(post):
@@ -388,6 +395,7 @@ def home(posts, catalog):
     <div>
       <h1>测试开发与 AI 工程实践</h1>
       <p>听白的技术博客</p>
+      {public_counter("clicks", "近 30 天全站点击")}
     </div>
     <div class="publication-actions">
       <a class="solid-link" href="/categories/">浏览分类 <span aria-hidden="true">↗</span></a>
@@ -436,7 +444,8 @@ def article(post, older, newer):
       <h1 class="post-title">{html(post.title)}</h1>
       <div class="entry-meta"><span class="post-author">{html(post.author)}</span><time itemprop="datePublished" datetime="{html(post.published)}">{html(post.day)}</time>
         <span class="post-category" hidden>{original_categories}</span>
-        <span class="read-time">{reading_time(post)}</span></div>
+        <span class="read-time">{reading_time(post)}</span>
+        {public_counter("reads", "近 30 天阅读", post.path)}</div>
     </header>
     <div class="article-layout {'with-outline' if outline else ''}">
       {outline}

@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <script src="/js/public-counts.js" defer></script>
 
 </head>
 <body>
@@ -42,7 +43,8 @@
       <h1 class="post-title">Agent-BS、CS架构选择</h1>
       <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2026-04-08T10:11:46+08:00">2026-04-08</time>
         <span class="post-category" hidden><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span>
-        <span class="read-time">约 6 分钟</span></div>
+        <span class="read-time">约 6 分钟</span>
+        <span class="public-counter" data-public-count="reads" data-article-path="/article/wechat-82b02d4337507c.html" hidden><span>近 30 天阅读</span> <strong></strong></span></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#Agent-%E6%9E%B6%E6%9E%84%E9%80%89%E6%8B%A9">Agent 架构选择</a></li><li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%80%9A%E7%94%A8%E6%99%BA%E8%83%BD%E4%BD%93%E4%BC%9A%E8%AE%A9%E4%BA%BA%E8%A7%89%E5%BE%97%E5%BE%88%E5%A5%BD%E7%94%A8">为什么通用智能体会让人觉得很好用</a></li><li><a href="#Agent-%E7%9A%84%E6%A0%B8%E5%BF%83%E4%B8%8D%E5%8F%AA%E6%98%AF%E6%A8%A1%E5%9E%8B">Agent 的核心不只是模型</a></li><li><a href="#%E7%8E%B0%E6%9C%89Skills%E7%B1%BB%E5%9E%8B">现有Skills类型</a></li><li><a href="#1-%E7%BA%AF%E6%8F%90%E7%A4%BA%E8%AF%8D%E5%9E%8B-Skill">1. 纯提示词型 Skill</a></li><li><a href="#2-%E5%B7%A5%E4%BD%9C%E6%B5%81%E5%9E%8B-Skill">2. 工作流型 Skill</a></li><li><a href="#3-%E7%9F%A5%E8%AF%86%E5%A2%9E%E5%BC%BA%E5%9E%8B-Skill">3. 知识增强型 Skill</a></li><li><a href="#4-%E7%BB%84%E5%90%88%E7%BC%96%E6%8E%92%E5%9E%8B-Skill">4. 组合编排型 Skill</a></li><li><a href="#5-%E4%BB%A3%E7%90%86%E5%8D%8F%E4%BD%9C%E5%9E%8B-Skill">5. 代理协作型 Skill</a></li><li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%9B%B4%E5%81%8F%E5%90%91-BS">为什么更偏向 BS</a></li><li><a href="#1-Skill-%E4%B8%80%E5%A4%9A-%E6%8C%82%E5%9C%A8%E6%9C%AC%E5%9C%B0-Agent-%E4%B8%8A%E5%BE%88%E5%AE%B9%E6%98%93%E5%8F%98%E5%BD%A2">1. Skill 一多，挂在本地 Agent 上很容易变形</a></li><li><a href="#2-%E7%9C%9F%E6%AD%A3%E6%9C%89%E4%BB%B7%E5%80%BC%E7%9A%84%E8%83%BD%E5%8A%9B-%E6%9C%80%E5%90%8E%E9%83%BD%E5%BA%94%E8%AF%A5%E8%83%BD-API-%E5%8C%96">2. 真正有价值的能力，最后都应该能 API 化</a></li><li><a href="#3-CS-%E5%89%8D%E6%9C%9F%E7%9C%8B%E8%B5%B7%E6%9D%A5%E5%BF%AB-%E4%BD%86%E5%90%8E%E9%9D%A2%E5%AE%B9%E6%98%93%E4%B8%80%E7%9B%B4%E8%83%8C%E7%9D%80%E9%9A%90%E6%80%A7%E6%88%90%E6%9C%AC">3. CS 前期看起来快，但后面容易一直背着隐性成本</a></li><li><a href="#4-BS-%E7%9A%84%E5%A5%BD%E5%A4%84-%E4%B8%8D%E5%8F%AA%E6%98%AF%E5%BD%A2%E5%BC%8F%E5%8F%98%E4%BA%86-%E8%80%8C%E6%98%AF%E8%83%BD%E5%8A%9B%E6%9B%B4%E5%AE%B9%E6%98%93%E6%B2%89%E6%B7%80%E4%B8%8B%E6%9D%A5">4. BS 的好处，不只是形式变了，而是能力更容易沉淀下来</a></li><li><a href="#%E6%88%90%E6%9C%AC%E9%97%AE%E9%A2%98">成本问题</a></li><li><a href="#%E7%BB%93%E8%AE%BA">结论</a></li></ol></details></aside>

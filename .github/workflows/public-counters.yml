@@ -1,0 +1,48 @@
+name: Update public blog counts
+
+on:
+  schedule:
+    - cron: '23 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - .github/workflows/public-counters.yml
+      - scripts/public-counts.browser.js
+      - scripts/publish-public-counts.mjs
+      - search.json
+
+permissions:
+  contents: write
+
+concurrency:
+  group: blog-public-counters
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install browser driver
+        run: npm install --prefix "$RUNNER_TEMP/blog-counter-deps" --no-audit --no-fund --no-save playwright-core@1.65.1
+      - name: Export only aggregate counts
+        env:
+          UMAMI_COUNTS_SHARE: ${{ secrets.UMAMI_COUNTS_SHARE }}
+        run: node scripts/publish-public-counts.mjs "$RUNNER_TEMP/stats.json"
+      - name: Publish counter snapshot
+        shell: bash
+        run: |
+          ref=refs/heads/codex/blog-public-counters
+          parents=()
+          if git ls-remote --exit-code origin "$ref" >/dev/null; then
+            git fetch --no-tags --depth=1 origin "$ref"
+            parents=(-p "$(git rev-parse FETCH_HEAD)")
+          fi
+          object=$(git hash-object -w "$RUNNER_TEMP/stats.json")
+          tree=$(printf '100644 blob %s\tstats.json\n' "$object" | git mktree)
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          snapshot=$(git commit-tree "$tree" "${parents[@]}" -m "Refresh public blog counts")
+          git push origin "$snapshot:$ref"

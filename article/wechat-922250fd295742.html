@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <script src="/js/public-counts.js" defer></script>
 
 </head>
 <body>
@@ -42,7 +43,8 @@
       <h1 class="post-title">基于 FastGPT 的 LangChain.js + RAG 系统实现</h1>
       <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2026-01-08T10:18:13+08:00">2026-01-08</time>
         <span class="post-category" hidden><a href="/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/">公众号</a></span>
-        <span class="read-time">约 5 分钟</span></div>
+        <span class="read-time">约 5 分钟</span>
+        <span class="public-counter" data-public-count="reads" data-article-path="/article/wechat-922250fd295742.html" hidden><span>近 30 天阅读</span> <strong></strong></span></div>
     </header>
     <div class="article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E5%9F%BA%E4%BA%8E-FastGPT-%E7%9A%84-RAG-%E7%B3%BB%E7%BB%9F%E5%AE%9E%E7%8E%B0">基于 FastGPT 的 RAG 系统实现</a></li><li><a href="#%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0">系统概述</a></li><li><a href="#%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B">核心流程</a></li><li><a href="#FastGPT-%E7%9A%84%E4%BD%9C%E7%94%A8">FastGPT 的作用</a></li><li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8-LangChain-js-RAG">为什么要使用 LangChain.js + RAG</a></li><li><a href="#%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84">系统架构</a></li><li><a href="#%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84">整体架构</a></li><li><a href="#%E6%95%B0%E6%8D%AE%E6%B5%81%E8%BD%AC">数据流转</a></li><li><a href="#FastGPT-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">FastGPT 数据结构</a></li><li><a href="#PostgreSQL-%E5%90%91%E9%87%8F%E8%A1%A8">PostgreSQL 向量表</a></li><li><a href="#MongoDB-QA-%E8%A1%A8">MongoDB QA 表</a></li><li><a href="#%E6%95%B0%E6%8D%AE%E5%85%B3%E8%81%94%E6%B5%81%E7%A8%8B">数据关联流程</a></li><li><a href="#LangChain-js-RAG-%E7%B3%BB%E7%BB%9F%E5%AE%9E%E7%8E%B0">LangChain.js + RAG 系统实现</a></li><li><a href="#%E6%8A%80%E6%9C%AF%E6%A0%88">技术栈</a></li><li><a href="#1-%E8%AF%BB%E5%8F%96-FastGPT-%E7%9F%A5%E8%AF%86%E5%BA%93">1. 读取 FastGPT 知识库</a></li><li><a href="#2-%E5%90%91%E9%87%8F%E6%A3%80%E7%B4%A2">2. 向量检索</a></li><li><a href="#3-Embedding-%E6%9C%8D%E5%8A%A1">3. Embedding 服务</a></li><li><a href="#LangChain-js-%E9%9B%86%E6%88%90">LangChain.js 集成</a></li><li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8-LangChain-js">为什么使用 LangChain.js？</a></li><li><a href="#%E5%88%9B%E5%BB%BA-LangChain-Tool">创建 LangChain Tool</a></li><li><a href="#%E5%88%9B%E5%BB%BA-LangChain-Agent">创建 LangChain Agent</a></li><li><a href="#LangChain-%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B">LangChain 工作流程</a></li><li><a href="#%E6%80%BB%E7%BB%93">总结</a></li></ol></details></aside>
