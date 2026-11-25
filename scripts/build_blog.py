@@ -22,6 +22,7 @@ from blog_topics import Topic, browser_page, links as taxonomy_links, read_catal
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = "https://www.zhongxin.website"
+UMAMI_WEBSITE_ID = "1b24a540-f89e-43de-bf0f-d783133d4a28"
 NAME = "测试游记"
 DESCRIPTION = "听白的技术博客，记录测试开发、自动化与 AI 工程实践。"
 ALLOWED_TAGS = set("a abbr b blockquote br caption code col colgroup dd del details div dl dt em figcaption figure h1 h2 h3 h4 h5 h6 hr i img kbd li mark ol p pre s section small span strong sub summary sup table tbody td th thead tfoot tr u ul".split())
@@ -185,6 +186,29 @@ def import_posts(path, posts):
     return list(existing.values())
 
 
+def analytics_script():
+    return (f'<script id="site-analytics" src="/js/site-analytics.js" '
+            f'data-website-id="{UMAMI_WEBSITE_ID}" defer></script>')
+
+
+def add_analytics_to_resources():
+    readers = [
+        ROOT / "tools/test-cases/index.html",
+        *(ROOT / "teaching-aihom").rglob("*.html"),
+        *(ROOT / "teaching-kuai").rglob("*.html"),
+    ]
+    for file in readers:
+        page = file.read_text()
+        if 'id="site-analytics"' in page:
+            updated = re.sub(r'<script id="site-analytics"[^>]*></script>', analytics_script(), page, count=1)
+        else:
+            updated, count = re.subn(r"</head>", "  " + analytics_script() + "\n</head>", page, count=1, flags=re.I)
+            if count != 1:
+                raise ValueError(f"缺少页面头部 {file.relative_to(ROOT)}")
+        if updated != page:
+            file.write_text(updated)
+
+
 def shell(title, path, content, description=DESCRIPTION, extra_head=""):
     title_tag = NAME if path == "/" else f"{title} · {NAME}"
     nav = [("归档", "/archives/"), ("分类", "/categories/"), ("工具与课程", "/lab/"), ("关于", "/about/")]
@@ -214,6 +238,7 @@ def shell(title, path, content, description=DESCRIPTION, extra_head=""):
   <script src="/js/appearance.js"></script>
   <link rel="stylesheet" href="/css/blog.css">
   <script src="/js/blog.js" defer></script>
+  {analytics_script()}
   {extra_head}
 </head>
 <body>
@@ -635,13 +660,16 @@ def main():
         '<img class="profile-avatar" src="/images/avatar.jpeg" alt="" width="72" height="72"></header>'
         f'<div class="post-body">{about_body}</div>'
         '<nav class="profile-links" aria-label="继续浏览"><a href="/categories/">浏览分类 ↗</a>'
-        '<a href="/lab/">工具与课程 ↗</a><a href="/atom.xml">订阅 RSS ↗</a></nav></section>'
+        '<a href="/lab/">工具与课程 ↗</a><a href="/atom.xml">订阅 RSS ↗</a></nav>'
+        '<p class="analytics-notice">本站使用 Umami 统计公开页面访问和常用入口点击。统计字段为页面路径、标题、来源站点和入口。'
+        '浏览器的不跟踪或全局隐私信号会关闭统计。</p></section>'
     )
     write("/about/", shell("关于", "/about/", profile))
     missing = ('<section class="listing missing-page"><header class="page-heading"><h1>找不到页面</h1></header>'
                '<div class="profile-links"><a href="/archives/">浏览文章归档 ↗</a><a href="/">返回首页 ↗</a>'
                '<button type="button" data-open-search>搜索文章</button></div></section>')
     write("/404.html", shell("找不到页面", "/404.html", missing))
+    add_analytics_to_resources()
     print(f"已生成 {len(posts)} 篇文章及首页、归档、分类、搜索和 RSS。")
 
 
