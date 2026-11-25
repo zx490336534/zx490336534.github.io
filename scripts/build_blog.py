@@ -265,6 +265,12 @@ def home(posts):
       <a class="read-link" href="{html(feature.path)}">阅读全文 <span aria-hidden="true">↗</span></a>
     </article>
   </section>
+  <section class="section" aria-labelledby="tools-title">
+    <header class="section-title"><h2 id="tools-title">在线工具</h2></header>
+    <div class="course-grid">
+      <a href="/tools/test-cases/"><strong>测试用例脑图生成器</strong><span aria-hidden="true">↗</span></a>
+    </div>
+  </section>
   <section class="section" aria-labelledby="recent-title">
     <header class="section-title"><h2 id="recent-title">近期文章</h2><a href="/archives/">全部文章 <span aria-hidden="true">→</span></a></header>
     <div class="recent-grid">{recent}</div>
