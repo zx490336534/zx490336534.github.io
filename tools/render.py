@@ -22,7 +22,13 @@ def load(id):
     narration = []
     assert id == data['slug'] == story['slug']
     assert len(data['slides']) == len(story['scenes'])
-    for scene in data['slides']:
+    arts = set()
+    for i, scene in enumerate(data['slides']):
+        art = scene.get('artAsset')
+        assert art == story['scenes'][i].get('artAsset'), id
+        if art:
+            assert re.fullmatch(r'scene-[0-9]{2}\.webp', art), id
+            arts.add(art)
         pos = -1
         for cue in scene['cues']:
             name = cue['file']
@@ -31,8 +37,10 @@ def load(id):
             narration.append(cue["text"])
             assert pos <= cue['from'] < cue['to'] <= scene['duration'], id
             pos = cue['to']
-    files = cues | ({'establish.webp'} if cover_frames else set())
-    assert files == {x.name for x in (project / 'assets').iterdir()}, id
+    assert not arts or meta['renderer'] == 'illustrated', id
+    files = cues | arts | ({'establish.webp'} if cover_frames else set())
+    actual = {x.name for x in (project / 'assets').iterdir()}
+    assert files <= actual and all(re.fullmatch(r'scene-[0-9]{2}\.webp', x) for x in actual-files), id
     assert all((project / 'assets' / f).stat().st_size > 0 for f in files), id
     vtt = (project / 'captions.vtt').read_text(encoding='utf-8')
     assert vtt.startswith('WEBVTT\n'), id
@@ -79,7 +87,7 @@ def main():
     remotion = root / 'node_modules/.bin/remotion'
     if not remotion.is_file():
         raise SystemExit('请先在项目目录运行 npm ci。')
-    entry = {'animated': 'EditionSecond.jsx', 'newest': 'EditionNewest.jsx'}.get(kind, 'Classic.jsx')
+    entry = {'animated': 'EditionSecond.jsx', 'newest': 'EditionNewest.jsx', 'illustrated': 'EditionIllustrated.jsx'}.get(kind, 'Classic.jsx')
     composition = 'ArticleFilm' if kind == 'pilot' else 'EditorialArticle'
     with tempfile.TemporaryDirectory(prefix='blog-video-') as temp:
         props = Path(temp) / 'props.json'

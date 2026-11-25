@@ -34,8 +34,12 @@ def main():
         slides=[]; requests=[]
         for i,scene in enumerate(story['scenes']):
             previous=old['slides'][i] if i<len(old['slides']) else {}
-            slide={k:v for k,v in previous.items() if k not in {'cues','duration'}}
+            slide={k:v for k,v in previous.items() if k not in {'cues','duration','artAsset'}}
             slide.update({k:v for k,v in scene.items() if k!='voice'})
+            art=slide.get('artAsset')
+            if art is not None:
+                assert meta['renderer']=='illustrated' and re.fullmatch(r'scene-[0-9]{2}\.webp',art)
+                assert (project/'assets'/art).is_file(), f'Missing approved art {art}'
             text=[s.strip() for s in re.split(r'(?<=[。！？])',scene['voice']) if s.strip()]
             if not text: raise ValueError('Every scene requires nonempty narration.')
             cues=[dict(text=s,file=f'{i}-{j}.mp3') for j,s in enumerate(text)]

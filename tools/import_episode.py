@@ -43,7 +43,7 @@ def main():
     p.add_argument('--timeline', required=True, type=Path)
     p.add_argument('--assets', required=True, type=Path)
     p.add_argument('--captions', required=True, type=Path)
-    p.add_argument('--renderer', choices=('animated', 'newest'), default='animated',
+    p.add_argument('--renderer', choices=('animated', 'newest', 'illustrated'), default='animated',
                    help='use newest for storyboards with custom late-series maps')
     p.add_argument('--check-only', action='store_true', help='validate without writing any files')
     p.add_argument('--reviewed', action='store_true',
@@ -65,7 +65,17 @@ def main():
         p.error('captions must be VTT and storyboard/timeline scene counts must match')
     cue_files = set()
     narration = []
-    for scene in data['slides']:
+    scene_art = set()
+    for i, scene in enumerate(data['slides']):
+        art = scene.get('artAsset')
+        planned = story['scenes'][i].get('artAsset')
+        if art != planned or (art is not None and (not isinstance(art,str) or not re.fullmatch(r'scene-[0-9]{2}\.webp',art))):
+            p.error('artAsset must match the storyboard and use a stable scene-XX.webp asset filename')
+        if art:
+            raw = regular_file(a.assets/art).read_bytes()
+            if len(raw) > 3_000_000 or raw[:4] != b'RIFF' or raw[8:12] != b'WEBP':
+                p.error('scene art must be a local WebP up to 3 MB')
+            scene_art.add(art)
         at = 0
         for cue in scene['cues']:
             name = cue['file']
@@ -78,6 +88,9 @@ def main():
             narration.append(cue['text'])
     if ['\n'.join(block.splitlines()[1:]) for block in vtt.strip().split('\n\n')[1:]] != narration:
         p.error('timeline and VTT cue text do not match')
+    if scene_art and a.renderer != 'illustrated':
+        p.error('scene illustrations require the illustrated renderer')
+    cue_files |= scene_art
     if data.get('cover'):
         cue_files.add('establish.webp')
     for f in sorted(cue_files):

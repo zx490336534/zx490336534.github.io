@@ -7,7 +7,7 @@
 - `episodes.json`：视频标题、文章 ID、帧率、已归档时间轴的帧数及渲染器。
 - `episodes/<文章ID>/storyboard.json`：分镜、画面数据和旁白文本。旧首片的分镜从其最终时间轴整理。
 - `episodes/<文章ID>/timeline.json`：Remotion 读入的时间轴，包含口播片段、帧位置和屏幕字幕。
-- `episodes/<文章ID>/assets/`：按场景和句子拆分的实际配音 MP3；仅有片头画面的篇目包含对应无字插画。
+- `episodes/<文章ID>/assets/`：按场景和句子拆分的实际配音 MP3；若分镜包含片头或场景插画，也存放实际渲染使用的 WebP 原画。
 - `episodes/<文章ID>/captions.vtt`：已发布的独立中文字幕。
 - `renderers/`：原动态图解、SVG 和布局。首片分章节混合两版场景；Redis 第五章保留发布版的独立指标图。
 - `tools/` 和 `package-lock.json`：渲染、检查与可选的配音重建工具。没有成片、生成日志、临时文件或网站正文。
@@ -43,5 +43,7 @@ python3 tools/import_episode.py \
   --storyboard path/to/storyboard.json --timeline path/to/pilot-props.json \
   --assets path/to/audio --captions path/to/article.vtt --check-only
 ```
+
+场景使用原创插画时，`storyboard.json` 和 `timeline.json` 的对应场次都使用同一个 `artAsset`（例如 `scene-01.webp`。它是稳定的素材名，调整场次顺序时不用改名），保存到该篇 `assets/`，导入时加 `--renderer illustrated`。渲染器先展示对应插画，再淡入精确的动态图解和字幕。
 
 脚本只能检查文件结构和若干常见敏感格式，不能代替听看配音、图像和字幕。素材包含账户、身份或访问凭据时，须在进入工程之前用虚构值或占位符替换，不要只是给原值加模糊效果。
