@@ -48,26 +48,69 @@
         <h1 class="post-title">我怎么用 Codex 和 Obsidian，把散落笔记编成可追溯的 Wiki</h1>
         <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2026-11-25T14:52:11+08:00">2026-11-25</time>
           <span class="post-category" hidden></span>
-          <span class="read-time">约 2 分钟</span>
+          <span class="read-time">约 3 分钟</span>
           <span class="public-counter" data-public-count="reads" data-article-path="/article/codex-obsidian-wiki.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
           <a href="#comments" data-jump-comments>评论</a></div>
         <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/ai/">AI 工程</a> <span aria-hidden="true">/</span> <a href="/categories/ai/rag/">RAG 与知识库</a></nav>
       </div>
     </header>
     <div class="wrap article-layout with-outline">
-      <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E4%B8%80%E6%9D%A1%E7%BB%93%E8%AE%BA%E5%8F%AF%E4%BB%A5%E5%86%99%E5%9B%9E%E5%8E%9F%E6%9D%A5%E7%9A%84%E9%A1%B5%E9%9D%A2">一条结论可以写回原来的页面</a></li><li><a href="#%E6%9C%89%E4%B8%80%E5%A4%A9%E8%B0%83%E5%BA%A6%E8%AF%B4%E6%88%90%E5%8A%9F-%E4%BA%A7%E7%89%A9%E5%8D%B4%E6%B2%A1%E4%BA%A4%E9%BD%90">有一天调度说成功，产物却没交齐</a></li><li><a href="#%E5%8F%82%E8%80%83">参考</a></li></ol></details></aside>
+      <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E4%B8%80%E6%AC%A1%E7%AC%94%E8%AE%B0%E5%86%99%E5%85%A5%E5%92%8C%E4%B8%80%E6%AC%A1%E7%9F%A5%E8%AF%86%E7%BC%96%E8%AF%91">一次笔记写入和一次知识编译</a></li><li><a href="#%E7%BB%99-Codex-%E7%9A%84%E8%BE%93%E5%85%A5%E5%8F%AF%E4%BB%A5%E6%AF%94%E6%95%B4%E4%B8%AA%E5%BA%93%E5%B0%8F%E5%BE%97%E5%A4%9A">给 Codex 的输入可以比整个库小得多</a></li><li><a href="#%E8%B0%83%E5%BA%A6%E6%98%BE%E7%A4%BA%E6%88%90%E5%8A%9F%E5%90%8E-%E8%BF%98%E8%A6%81%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6%E7%9C%8B%E4%B8%80%E6%AC%A1">调度显示成功后，还要打开文件看一次</a></li><li><a href="#%E5%8F%82%E8%80%83">参考</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><p>我的 Obsidian 里有原始笔记，也有从笔记整理出来的结论。原始笔记不断增加以后，一个眼熟的关键词往往能搜出十几篇。里面有调研时的猜测，有后来的验证，也有已经过时的做法。再碰到同样的问题，我还得从头挑一遍。</p>
-<p>我借用了 Karpathy 公开的 LLM Wiki 思路，让 Agent 维护一层可以回查来源的 Wiki。组织方式沿用自己原来的 PARA 目录。最重要的改动，是给阅读原文和更新结论设了两个不同的入口。</p>
-<h2 id="一条结论可以写回原来的页面">一条结论可以写回原来的页面</h2>
-<p>拿 MCP 工具整理举例。一次调试可能只发现两个工具用了相同的名字，另一次调研才比较了命名前缀和按组加载。原始笔记各自保留时间和条件。Wiki 的 MCP 页面写明结论适用于哪个环节、工具名到了哪里发生冲突，再给能找到依据的来源。</p>
-<p>下次笔记提供了新证据，Codex 先找这个页面。原结论仍成立时补充边界。有反例时修改原来的描述，并记下为何修改。这样，同一个判断不会因为出现了两次就变成两份相互竞争的答案。</p>
-<figure class="article-figure"><a href="/images/article-figures/codex-obsidian-wiki.webp" title="查看原图"><img alt="原始记录、主题结论和索引日志之间的关系" decoding="async" height="480" loading="lazy" src="/images/article-figures/codex-obsidian-wiki.webp" width="1200"/></a><figcaption>教学示意。结论页保留来源，索引提供入口，日志记录本次改动。</figcaption></figure>
-<p>在这套目录里，我从索引进主题页。查到一个有用的判断，再打开原笔记看适用条件。规则文件写得更具体一些，例如遇到已有页面时先更新原页，临时排查记录只归位，无稳定增量就允许这轮没有新产出。不同机器或工具要接手时，也从这几个入口读起。</p>
-<h2 id="有一天调度说成功-产物却没交齐">有一天调度说成功，产物却没交齐</h2>
-<p>一次周度编译里，执行记录显示成功，报告自己写明日志覆盖、统计和文件修改都没有做完整。看调度状态，这一轮已经结束。回到笔记库，想借日志找到本次更新，却对不上。</p>
-<p>后来我把写后回读加进流程。Agent 要指出本轮改了哪些页面、索引和日志有没有对应的记录。发现文件没写齐时，保留缺口，不能只报一个完成。对个人笔记库来说，这一步比每天自动生成几篇摘要更重要。几周以后能回到这条来源，才知道这次整理有没有留下可用的东西。</p>
-<p>最容易开始的做法是先挑一个反复搜索的主题，整理一页。下一次用到它时，从结论顺着来源走回去。如果仍要翻同样的十几篇，就看看这次遗漏的是哪个条件，再补到原页。</p>
+        <div class="post-body" id="article-text"><p>以前我在 Obsidian 搜一个技术词，常常要打开好几份笔记才敢下结论。第一份写的是遇到了什么，另一份记录了当时没证实的猜测，后面还有一份修正。它们都值得留，但我每次问「现在应该怎么做」，都得把那段考据重新走一遍。我想省掉的是这部分重复劳动。</p>
+<p>我借用了 Karpathy 的 LLM Wiki 思路，然后用 Codex 维护这层结论。Obsidian 仍用来看和写 Markdown。PARA 解决资料放哪里，Wiki 解决一个稳定结论放哪里，两套结构有不同的更新时机。</p>
+<span id="一条结论可以写回原来的页面"></span><h2 id="一次笔记写入和一次知识编译">一次笔记写入和一次知识编译</h2>
+<p>我的库里有三个入口。</p>
+<div aria-label="数据表格" class="table-scroll" role="region" tabindex="0"><table>
+<thead>
+<tr>
+<th>入口</th>
+<th>实际存放的东西</th>
+<th>什么时候改</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PARA 原始资料</td>
+<td>调研记录、当时的证据、会话和剪藏</td>
+<td>有新材料时保存，原始记录保留当时的条件</td>
+</tr>
+<tr>
+<td>Wiki 主题页</td>
+<td>当前结论、成立条件、反例和来源</td>
+<td>确认有增量时更新已有主题</td>
+</tr>
+<tr>
+<td>规则、索引和日志</td>
+<td>编译规则、主题入口、本轮改了什么</td>
+<td>按需维护规则，主题变更后对照索引和日志</td>
+</tr>
+</tbody>
+</table></div>
+<p>拿 MCP 同名工具做公开示例。第一轮记录说，聚合层碰到两个 <code>search</code>。后来找到原因，调用时按连接顺序查找同名工具，结果取决于谁排在前面。第三份材料补了前缀和路由表。编译后的主题页只需要留下要继续复用的判断，例如「聚合层使用唯一工具名，并保存对后端原名的显式映射」。再写出条件，两套服务各自公开的工具名只在各自服务范围内唯一。读者想知道错路由怎么被发现，仍然能回到那次验证。</p>
+<p>我会让 Agent 先找已有主题页，再对比新材料属于哪一种情况。只是重复了原判断，可以补来源。有了新的成立条件，就更新对应小节。旧判断被推翻，就改正文并在日志注明原因。这一步很重要。每次都建一份「最新结论」，几轮以后我又要在多份新版之间选一遍。</p>
+<figure class="article-figure"><a href="/images/article-figures/codex-obsidian-wiki.webp" title="查看原图"><img alt="原始记录、主题结论和索引日志之间的关系" decoding="async" height="480" loading="lazy" src="/images/article-figures/codex-obsidian-wiki.webp" width="1200"/></a><figcaption>结论页保留来源，索引提供入口，日志记录本次改动。</figcaption></figure>
+<h2 id="给-Codex-的输入可以比整个库小得多">给 Codex 的输入可以比整个库小得多</h2>
+<p>新一轮先读总规则和索引。通过索引找到一至三个可能相关的主题，再顺着来源打开原始材料。运行中如果有长期偏好、一次性任务状态、可复用技术判断，分别写入对应的位置。一次排查的详细流水先当原始记录，只有它改变了以后怎么判断或怎么操作时，才进入主题页。</p>
+<p>一条供编译用的判断可以写得很朴素。下面是去掉了实际路径的示例结构，链接用普通 Markdown 保存。</p>
+<pre><code class="language-text">主题  MCP 工具聚合
+判断  调用按公开工具名查显式路由
+条件  多个服务可能暴露同一个本地工具名
+证据  同一个测试在调换两个服务的注册顺序后仍应返回同一后端
+来源  两份原始记录的相对路径和相关段落
+</code></pre>
+<p>日常归位只处理今天进来的东西。周度编译看最近一周的新增和修改。月度巡检再解决孤立页、重复主题、断链和过时的结论。同一份工作运行太频繁，会花不少时间清理模型反复写出来的摘要。我宁可允许一次编译没有产出，日志写「现有结论仍适用」，也不增加一页没人会打开的文字。</p>
+<span id="有一天调度说成功-产物却没交齐"></span><h2 id="调度显示成功后-还要打开文件看一次">调度显示成功后，还要打开文件看一次</h2>
+<p>2026 年 10 月一轮周度编译，调度标记为 <code>ok</code>，报告却写明日志覆盖、统计和文件改动都没有做完整。我回查时，没法从日志判断这批材料到底有多少已经处理。这个问题发生在产物验收这一层。任务退出时没有报错，最多说明调度器看到了正常结束。</p>
+<p>后来补了写后回读。每一轮要能回答四个问题。</p>
+<ol>
+<li>声称更新的主题页，磁盘上是不是已经出现预期内容。</li>
+<li>索引里能不能找到它，链接会不会指向其他同名页面。</li>
+<li>日志能不能对应这次变更，哪些来源已经处理。</li>
+<li>没查到原文或没写完整的部分，报告有没有标出来。</li>
+</ol>
+<p>同一批内容重试时，按主题和来源判断已有改动，避免每次都追加同一段。查到链接要确认它指向实际证据，文件存在只能证明路径对了。发给模型的材料可以经过语义检索召回，最后仍应回读原始 Markdown。索引能加速找资料，错过来源时也不会自动补齐证据。</p>
+<p>如果只想做一个试点，挑最近翻过三次的主题。保留原笔记，写一条有条件、有来源的判断，再从一个新会话问同样的问题。能顺着索引找到结论，也能说出它在哪种情况下失效，这一页就已经帮我省了一次翻找。</p>
 <h2 id="参考">参考</h2>
 <ul>
 <li><a href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f">Karpathy 的 LLM Wiki 说明</a></li>

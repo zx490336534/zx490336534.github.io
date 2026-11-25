@@ -48,28 +48,39 @@
         <h1 class="post-title">Pi Agent 为什么默认只给四个工具？</h1>
         <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2026-11-25T14:52:11+08:00">2026-11-25</time>
           <span class="post-category" hidden></span>
-          <span class="read-time">约 2 分钟</span>
+          <span class="read-time">约 3 分钟</span>
           <span class="public-counter" data-public-count="reads" data-article-path="/article/pi-agent-four-tools.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
           <a href="#comments" data-jump-comments>评论</a></div>
         <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/ai/">AI 工程</a> <span aria-hidden="true">/</span> <a href="/categories/ai/agents/">Agent 与工作流</a> <span aria-hidden="true">/</span> <a href="/categories/ai/agents/build/">Agent 架构与开发</a></nav>
       </div>
     </header>
     <div class="wrap article-layout with-outline">
-      <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E4%BF%AE%E4%B8%80%E4%B8%AA%E5%A4%B1%E8%B4%A5%E6%B5%8B%E8%AF%95-%E5%9B%9B%E4%B8%AA%E5%8A%A8%E4%BD%9C%E5%B0%B1%E8%83%BD%E4%B8%B2%E8%B5%B7%E6%9D%A5">修一个失败测试，四个动作就能串起来</a></li><li><a href="#%E8%A6%81%E6%89%A9%E5%B1%95%E6%97%B6-%E5%85%88%E7%9C%8B%E7%BC%BA%E7%9A%84%E6%98%AF%E5%93%AA%E4%B8%80%E7%A7%8D%E8%83%BD%E5%8A%9B">要扩展时，先看缺的是哪一种能力</a></li><li><a href="#%E5%8F%82%E8%80%83">参考</a></li></ol></details></aside>
+      <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E5%9B%9B%E4%B8%AA%E5%B7%A5%E5%85%B7%E6%80%8E%E6%A0%B7%E8%B7%91%E5%AE%8C%E4%B8%80%E6%AC%A1%E4%BB%A3%E7%A0%81%E4%BF%AE%E5%A4%8D">四个工具怎样跑完一次代码修复</a></li><li><a href="#%E6%8A%8A%E4%B8%80%E6%AC%A1%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8%E6%8B%86%E5%BC%80%E7%9C%8B">把一次工具调用拆开看</a></li><li><a href="#%E4%BC%9A%E8%AF%9D%E5%88%86%E6%94%AF%E8%A7%A3%E5%86%B3%E7%9A%84%E6%98%AF%E5%AF%B9%E8%AF%9D%E9%80%89%E6%8B%A9">会话分支解决的是对话选择</a></li><li><a href="#%E5%9B%A2%E9%98%9F%E8%A6%81%E8%A1%A5%E7%9A%84%E4%B8%9C%E8%A5%BF-%E5%8F%AF%E4%BB%A5%E4%BB%8E%E4%B8%80%E6%AC%A1%E7%9C%9F%E5%AE%9E%E4%BB%BB%E5%8A%A1%E9%87%8C%E6%89%BE">团队要补的东西，可以从一次真实任务里找</a></li><li><a href="#%E5%8F%82%E8%80%83">参考</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><p>读 Pi coding agent 的公开文档时，我先看了它默认暴露给模型的工具。<code>read</code> 读取文件，<code>bash</code> 执行命令，<code>edit</code> 修改现有内容，<code>write</code> 新建或重写文件。搜索、测试和 Git 都可以通过命令完成。要看这四件事够不够用，可以拿一次修复失败测试的任务来走一遍。</p>
-<h2 id="修一个失败测试-四个动作就能串起来">修一个失败测试，四个动作就能串起来</h2>
-<p>模型先用 <code>bash</code> 跑单测，从错误输出判断需要看哪些文件。用 <code>read</code> 读实现和测试，用 <code>edit</code> 改掉有问题的分支，再回到 <code>bash</code> 跑相同的测试。如果需要新建测试文件，用 <code>write</code> 保存。这个例子只有少数几次文件操作，测试命令本身就能给出下一步所需的信息。</p>
-<figure class="article-figure"><a href="/images/article-figures/pi-agent-four-tools.webp" title="查看原图"><img alt="Pi 用命令执行、读文件、编辑和再次执行完成一次修复" decoding="async" height="480" loading="lazy" src="/images/article-figures/pi-agent-four-tools.webp" width="1200"/></a><figcaption>教学示意。最后一次执行应回到最初失败的测试，验证改动有没有解决原问题。</figcaption></figure>
-<p>四个是默认配置。Pi 的文档还列了 <code>grep</code>、<code>find</code>、<code>ls</code> 等可选工具，也允许调整模型能看到的工具集合。每个项目所需的外围能力也不同。命令能找到测试，不代表它能生成代码审查证据，或者为多人协作记录同一份验收决定。</p>
-<h2 id="要扩展时-先看缺的是哪一种能力">要扩展时，先看缺的是哪一种能力</h2>
-<p>如果团队总要先检查工作目录，再允许执行高影响命令，可以用扩展接住工具调用。Pi 提供了在调用前拦截的扩展事件。这个入口也可以补一些重复出现的项目规则。文件访问和进程隔离仍依赖运行环境。给 Agent 一个工作目录，只确定了它从哪里开始，并不会自动限制外部访问。</p>
-<p>另一项值得看的功能是会话树。走到一半发现假设错了，可以回到前面一个节点，沿着新的方向继续对话，旧分支仍能查看。会话树记录对话的路径。工作目录里已经改过的代码，要用 Git 或自己的检查点处理。准备从旧节点尝试另一条路线时，我会先看工作区有没有未提交改动。</p>
-<p>如果任务是围绕一个仓库反复读代码、改文件、跑验证，默认工具足以用来试做一次完整修复。我会从这个任务开始，看结果里具体缺了什么。团队要把发布审批、隔离环境或交付证据放进去时，再决定哪些由扩展处理，哪些该保留在外部流程。</p>
+        <div class="post-body" id="article-text"><p>读 Pi 的公开文档和源码时，我注意到它的默认工具只有四个。<code>read</code> 读文件，<code>edit</code> 改现有文件，<code>write</code> 写文件，<code>bash</code> 跑命令。把这四项列出来很容易。更值得看的是，搜索、测试、Git 和会话管理是怎么接进去的，以及一旦要给团队用，哪些事仍得由自己做。</p>
+<span id="修一个失败测试-四个动作就能串起来"></span><h2 id="四个工具怎样跑完一次代码修复">四个工具怎样跑完一次代码修复</h2>
+<p>假设项目里有一条测试失败。模型先用 <code>bash</code> 跑测试，从输出里读到失败位置。接着用 <code>read</code> 读实现和相关用例，用 <code>edit</code> 改错误分支，再跑同一条测试。需要加一个文件时用 <code>write</code>。代码搜索可以在 <code>bash</code> 里执行项目已有的搜索命令，构建和版本检查也一样。模型只需要知道当前目录有什么工具和项目规则允许做什么。</p>
+<p>Pi 也提供 <code>grep</code>、<code>find</code>、<code>ls</code> 等可选工具。可以用 <code>--tools</code> 替换默认集合。比如只想让模型解释一个模块，可以显式只给读和搜索工具。</p>
+<pre><code class="language-bash">pi --tools read,grep,find,ls
+</code></pre>
+<figure class="article-figure"><a href="/images/article-figures/pi-agent-four-tools.webp" title="查看原图"><img alt="Pi 用命令执行、读文件、编辑和再次执行完成一次修复" decoding="async" height="480" loading="lazy" src="/images/article-figures/pi-agent-four-tools.webp" width="1200"/></a><figcaption>一次修复通常从失败输出开始，最后回到原来失败的测试。</figcaption></figure>
+<p>四项工具描述的是默认启用的集合。当前官方文档也提供 <code>pi mcp</code> 来配置外部服务，扩展可以再注册专用工具。看早期文章时，要留意它写的是哪个版本，以及用了哪些本地配置。</p>
+<p>这个默认配置利用了开发环境已经有的能力。一个项目有清楚的测试命令，Agent 就能直接运行。换到另一个项目，调用形式也一样，项目约束则从当前目录的说明读。反过来，通用命令也让权限变得粗。给了 <code>bash</code>，能执行多少操作取决于 Pi 进程、系统和运行环境。只开放读工具适合约束模型此次能选择的动作。有文件权限边界时，还要由隔离环境限制进程实际能碰到什么。</p>
+<span id="要扩展时-先看缺的是哪一种能力"></span><h2 id="把一次工具调用拆开看">把一次工具调用拆开看</h2>
+<p>Pi 的 Agent 循环接收模型的流式输出。如果模型结束这一轮时请求了工具，就执行工具，把结果加入上下文，再决定要不要发起下一轮模型请求。测试失败的输出会出现在随后一轮上下文里。模型可以根据它继续读代码或给出结果。运行时本身不会因为看到一句「测试失败」就自动切换到某个固定的开发流程。</p>
+<p>扩展能在几个时点接入。<code>tool_call</code> 发生在实际执行前，可以拒绝或调整输入。<code>tool_result</code> 发生在执行后，可以整理返回内容。要给团队保留完整证据，我会让执行记录保留实际命令、退出状态和结果出处，再给模型一份更短的摘要。测试只跑了一个文件时，模型最后的结论也应该保留范围。</p>
+<p>当前文档还提到了同一助手消息的多个工具调用。默认并行模式下，前置检查依次执行，真正任务可以并发。两个同时发起的命令有先后依赖时，不能指望第二个在自己的前置检查阶段就能看到第一个的完成结果。像「先写配置，再跑构建」这种依赖，最好按明确顺序执行和取证。</p>
+<h2 id="会话分支解决的是对话选择">会话分支解决的是对话选择</h2>
+<p>从 <code>/tree</code> 回到更早的消息继续，可以留下两条尝试路线。下一次请求只使用当前分支的对话历史。这样试过的方案还在，需要时也能回来比较。如果之前的分支已经改过文件，切换对话节点以后，磁盘上的改动仍在。想让研究结果也隔离，可以给分支准备独立的 Git worktree，或者在切换前保留工作区检查点。</p>
+<p>上下文压缩处理的是另一个问题。对话太长时，运行时让摘要接替较早的部分，并保留最近消息，历史记录仍可访问。摘要适合让模型继续干活。某个兼容性条件、禁止写入的目录和验收标准不适合只藏在旧聊天里。我会把这些东西写进项目说明或任务记录，让会话压缩后还能重新读到。</p>
+<h2 id="团队要补的东西-可以从一次真实任务里找">团队要补的东西，可以从一次真实任务里找</h2>
+<p>一段仓库说明适合解释如何构建和验收。Skill 适合告诉模型什么时候按某种做法处理。扩展适合在执行前后加检查，独立的 CI 则可以重复验证实际产物。比如主分支发布必须检查特定测试报告，这条规则可以在 CI 上强制。给模型一段说明能让它知道自己应该干什么，发布权限仍应由外部流程控制。</p>
+<p>挑一个能用同一条测试验证的修复，先观察三件事。它有没有读到项目说明，失败后用了哪条证据决定下一步，以及最终报告对应哪次运行。看完再决定要加什么。如果问题出在看不到代码，补读工具或上下文就够了。如果问题出在误把一次局部通过当整体通过，优先补验证和取证规则。</p>
 <h2 id="参考">参考</h2>
 <ul>
-<li><a href="https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/cli.md#tools">Pi coding agent 官方文档</a></li>
-<li><a href="https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/extensions.md">Pi 扩展文档</a></li>
+<li><a href="https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/cli.md#tools">Pi CLI 工具配置</a></li>
+<li><a href="https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/extensions.md">Pi 扩展和工具调用事件</a></li>
+<li><a href="https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/sessions.md">Pi 会话、分支与上下文</a></li>
 </ul></div>
         <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
 

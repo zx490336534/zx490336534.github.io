@@ -48,45 +48,79 @@
         <h1 class="post-title">用 Promptfoo 把一个 Agent 失败案例变成回归测试</h1>
         <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2026-11-25T14:52:11+08:00">2026-11-25</time>
           <span class="post-category" hidden></span>
-          <span class="read-time">约 2 分钟</span>
+          <span class="read-time">约 3 分钟</span>
           <span class="public-counter" data-public-count="reads" data-article-path="/article/promptfoo-agent-regression.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
           <a href="#comments" data-jump-comments>评论</a></div>
         <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/quality/">质量工程</a></nav>
       </div>
     </header>
     <div class="wrap article-layout with-outline">
-      <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E5%85%88%E8%AE%A9%E5%9D%8F%E6%A0%B7%E6%9C%AC%E7%A8%B3%E5%AE%9A%E5%A4%B1%E8%B4%A5">先让坏样本稳定失败</a></li><li><a href="#%E5%9B%9E%E6%94%BE%E5%92%8C%E5%AE%9E%E6%97%B6%E6%89%A7%E8%A1%8C%E5%9B%9E%E7%AD%94%E4%B8%A4%E4%B8%AA%E9%97%AE%E9%A2%98">回放和实时执行回答两个问题</a></li><li><a href="#%E5%8F%82%E8%80%83">参考</a></li></ol></details></aside>
+      <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E5%85%88%E5%86%99%E4%BB%BB%E5%8A%A1%E7%8A%B6%E6%80%81%E7%9A%84%E7%BA%A6%E5%AE%9A">先写任务状态的约定</a></li><li><a href="#Promptfoo-%E5%AE%9E%E9%99%85%E5%9C%A8%E6%89%A7%E8%A1%8C%E5%93%AA%E4%BA%9B%E4%B8%9C%E8%A5%BF">Promptfoo 实际在执行哪些东西</a></li><li><a href="#%E5%93%AA%E4%BA%9B%E5%A4%B1%E8%B4%A5%E5%BA%94%E8%AF%A5%E6%8B%A6%E4%BD%8F%E5%8F%91%E5%B8%83">哪些失败应该拦住发布</a></li><li><a href="#%E5%8F%82%E8%80%83">参考</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><p>Agent 处理异步任务时，很容易把「已提交」写成「已完成」。这两个状态差一个词，用户看到的结果却差很多。假设一个任务助手在产物生成前就宣称完成，第一条回归只需要检查一件事。任务还在排队时，回复必须保留待完成状态。</p>
-<p>我会先把出错时的输出保存下来，给它写一个能重复检查的断言。Promptfoo 负责把输入、执行方式和断言组合起来。最小版本可以先检查已经记录好的输出，再接当前的 Agent。</p>
-<h2 id="先让坏样本稳定失败">先让坏样本稳定失败</h2>
-<p>下面是教学配置，使用 <code>echo</code> 把样本原样送到断言，不需要模型或 API 密钥。两个用例的业务条件相同，任务都还在排队。第二个用例故意保留错误回复。</p>
+        <div class="post-body" id="article-text"><p>Agent 接到一份生成任务，后端仍在排队，它回复「已经生成」。有些团队会给这条回复打一个低分。我更想把这个错误变成一条稳定失败的测试。这样以后改模型、提示词或任务状态接口，可以直接问同一个问题。当前版本还会提前告诉用户任务完成吗？</p>
+<span id="先让坏样本稳定失败"></span><h2 id="先写任务状态的约定">先写任务状态的约定</h2>
+<p>我给教学例子定的规则很小。任务处于排队状态时，返回合法 JSON，<code>status</code> 为 <code>pending</code>，同时不提供 <code>assetId</code>。这里刻意分开了三类错误。第一类提前宣布完成，第二类状态词写对了却带了并不存在的产物编号，第三类没返回约定的结构。只检查回答是否包含 <code>pending</code>，抓不全这三类。</p>
+<p>先把四份构造输出放进 Promptfoo。<code>echo</code> 只把输入返回给断言。四个用例都模拟排队状态，区别仅在于保存下来的输出。</p>
 <pre><code class="language-yaml">prompts:
-  - '{{recorded_output}}'
+  - '{{fixture}}'
 providers:
   - echo
 defaultTest:
   assert:
     - type: is-json
     - type: javascript
-      value: 'JSON.parse(output).status === "pending"'
+      value: |
+        try {
+          const result = JSON.parse(output);
+          return result?.status === 'pending' &amp;&amp; !Object.hasOwn(result, 'assetId');
+        } catch {
+          return false;
+        }
 tests:
-  - description: Expected output while a job is queued
+  - description: 正确报告排队
     vars:
-      recorded_output: '{"status":"pending"}'
-  - description: Regression fixture that must fail
+      fixture: '{"status":"pending"}'
+  - description: 提前宣称完成
     vars:
-      recorded_output: '{"status":"completed"}'
+      fixture: '{"status":"completed"}'
+  - description: 排队状态却返回产物编号
+    vars:
+      fixture: '{"status":"pending","assetId":"demo-01"}'
+  - description: 根本没有返回结构
+    vars:
+      fixture: '稍等一下'
 </code></pre>
-<p>保存成 <code>promptfooconfig.yaml</code>，然后在同一目录运行 <code>npx --yes promptfoo@0.126.0 eval --no-cache</code>。用这个版本跑上面的配置，结果是一条通过、一条失败，执行错误为零。如果两条都过，先查断言有没有接到真实输出。练习时留着这个失败样本可以证明检查有用。接入 CI 时，把它保留为断言的负例，常规回归则调用当前应用，检查它能否在相同条件下给出正确状态。</p>
-<figure class="article-figure"><a href="/images/article-figures/promptfoo-agent-regression.webp" title="查看原图"><img alt="正确样本通过和错误样本失败的对照流程" decoding="async" height="480" loading="lazy" src="/images/article-figures/promptfoo-agent-regression.webp" width="1200"/></a><figcaption>教学示意。期望和断言相同，两份输出分别确认通过路径和失败路径。</figcaption></figure>
-<h2 id="回放和实时执行回答两个问题">回放和实时执行回答两个问题</h2>
-<p>回放帮我确认规则变更之后，旧样本还能被正确判定。实时执行要看新版本会不会再产生同一种错误。两者最好有不同的报告名称。回放全绿之后，当前服务的接口、权限和任务状态仍要在实时用例里检查。</p>
-<p>这个例子用 JSON 状态做断言，错误位置很明确。如果输出是自然语言，可以先让实际应用返回一个能检查的结构化状态，把文案留给另一条测试。需要判断说明有没有误导时，可以再加模型评分，并用已知正反样本校准。一次评测可能跑多个模型、提示词和用例的组合，我会先把这一行跑明白，再逐步展开组合矩阵。</p>
-<p>进发布门禁以前，我会故意把 <code>pending</code> 换回 <code>completed</code>，看失败结果是否能传到 CI。否则即使评测工具识别了错误，发布流程也未必会拦住它。</p>
+<p>保存为 <code>promptfooconfig.yaml</code>，在同目录执行 <code>npx --yes promptfoo@0.126.0 eval --no-cache --output results.json</code>。这份配置实测为一条通过、三条断言失败、零个执行错误，退出码为 <code>100</code>。故意加入的坏样本用于检验断言，常规应用回归要另建一套配置。</p>
+<figure class="article-figure"><a href="/images/article-figures/promptfoo-agent-regression.webp" title="查看原图"><img alt="正确样本通过和错误样本失败的对照流程" decoding="async" height="480" loading="lazy" src="/images/article-figures/promptfoo-agent-regression.webp" width="1200"/></a><figcaption>同一断言检查正反样本。图中展示其中两条，正文配置另外覆盖了产物编号和结构错误。</figcaption></figure>
+<span id="回放和实时执行回答两个问题"></span><h2 id="Promptfoo-实际在执行哪些东西">Promptfoo 实际在执行哪些东西</h2>
+<p>配置中的 <code>Test</code> 提供场景变量，Prompt 把变量变成输入，Provider 执行被测对象，Assertion 检查输出。现在用 Provider <code>echo</code> 复查固定输出，能确认判定规则有没有变。等 Provider 换成当前版本的 Agent API，变量应换成业务输入，例如同一条生成请求与一个稳定的排队任务夹具。断言接到的是这次真实调用的输出。两场评测的目标不同，报告也应该分开。</p>
+<p>从固定样本切换到实时执行，可以保留这组断言，只替换输入和 Provider。下面是我用在本地模拟接口上的配置片段，省略了相同的断言。<code>scenario</code> 指向一个可重复准备的任务状态。实际接入时，可以通过预先建立的任务或测试环境夹具控制它。</p>
+<pre><code class="language-yaml">prompts:
+  - '{{message}}'
+providers:
+  - id: http
+    config:
+      url: http://127.0.0.1:8765/agent
+      method: POST
+      headers:
+        Content-Type: application/json
+      body:
+        message: '{{prompt}}'
+        scenario: '{{scenario}}'
+      transformResponse: 'JSON.stringify(json)'
+</code></pre>
+<p>我让模拟接口对两条相同用户请求返回不同状态。请求参数从 <code>queued-ok</code> 改成 <code>queued-bug</code>，后端就把 <code>pending</code> 换成 <code>completed</code>。服务端记录到两次请求，Promptfoo 显示一条通过、一条失败、零个执行错误。这个实验确认的是输入确实经过 HTTP，到达服务，并由同一份断言判定。真实 Agent 的性能和稳定性要在目标环境里验证。</p>
+<p>对于已有应用，我会先让 Provider 调用应用正常的入口，服务端继续使用自己的提示词和工具。把服务端 Prompt 复制到评测配置，会形成两个版本来源。服务升级后，评测很容易继续测到旧副本。只有专门比较提示词时，再把多个版本作为实验变量放进配置。</p>
+<p>没有过滤条件时，2 个用例、2 份 Prompt、2 个 Provider，每个组合执行 3 次，就是 24 个评测单元。一次应用调用内部可能调多次模型，模型裁判还会增加请求。因此这里的 24 用来预估运行组合，账单要另外看实际请求数。先跑一个组，确认测试命中了预期 Provider，再展开全部矩阵。</p>
+<h2 id="哪些失败应该拦住发布">哪些失败应该拦住发布</h2>
+<p>明确的业务约定适合用机器断言。例如任务还在队列中、金额错误、缺少强制字段，能立刻说明是哪条规则失败。文案是否让用户明白下一步，可以另设辅助评分，并先用人工确认的正反样本校准。文案得分再高，状态错误仍应单独报出来。</p>
+<p>也要单独记执行错误。测试环境未启动、请求超时、权限失败，先查运行条件。服务正常返回了一个错误的业务状态，则进入产品回归。两者都可能让 CI 失败，但修法不同。检查 <code>results.json</code> 的逐条断言和运行状态，比只看一行总通过率容易定位得多。</p>
+<p>我会在首次接入 CI 时故意只破坏一条已知业务规则，核对评估报告与 CI 结果都能抓住它。实时检验用例还要看缓存策略。回放一般希望完全可重复。判断部署后的应用行为时，要确认这次真的打到了预期环境和最新版本。</p>
 <h2 id="参考">参考</h2>
 <ul>
+<li><a href="https://www.promptfoo.dev/docs/configuration/test-cases/">Promptfoo 测试用例配置</a></li>
 <li><a href="https://www.promptfoo.dev/docs/configuration/expected-outputs/">Promptfoo 断言</a></li>
+<li><a href="https://www.promptfoo.dev/docs/providers/http/">Promptfoo HTTP Provider</a></li>
 <li><a href="https://github.com/promptfoo/promptfoo/blob/main/src/providers/echo.ts">Promptfoo Echo Provider 源码</a></li>
 </ul></div>
         <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>

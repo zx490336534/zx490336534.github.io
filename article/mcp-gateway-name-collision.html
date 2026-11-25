@@ -48,50 +48,60 @@
         <h1 class="post-title">两个 MCP Server 暴露了同名工具，网关怎么处理？</h1>
         <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2026-11-25T14:52:11+08:00">2026-11-25</time>
           <span class="post-category" hidden></span>
-          <span class="read-time">约 2 分钟</span>
+          <span class="read-time">约 3 分钟</span>
           <span class="public-counter" data-public-count="reads" data-article-path="/article/mcp-gateway-name-collision.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
           <a href="#comments" data-jump-comments>评论</a></div>
         <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/ai/">AI 工程</a> <span aria-hidden="true">/</span> <a href="/categories/ai/mcp/">MCP 与 Skills</a> <span aria-hidden="true">/</span> <a href="/categories/ai/mcp/integration/">MCP 协议与接入</a></nav>
       </div>
     </header>
     <div class="wrap article-layout with-outline">
-      <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E5%85%88%E8%AE%A9%E6%AF%8F%E4%B8%AA%E8%B0%83%E7%94%A8%E6%9C%89%E5%94%AF%E4%B8%80%E5%8E%BB%E5%A4%84">先让每个调用有唯一去处</a></li><li><a href="#%E5%88%86%E7%BB%84%E8%83%BD%E7%BC%A9%E5%B0%8F%E6%A8%A1%E5%9E%8B%E7%9A%84%E9%80%89%E6%8B%A9%E8%8C%83%E5%9B%B4">分组能缩小模型的选择范围</a></li><li><a href="#%E5%8F%82%E8%80%83">参考</a></li></ol></details></aside>
+      <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E5%85%88%E8%A7%A3%E5%86%B3%E5%88%97%E8%A1%A8%E5%92%8C%E5%AE%9E%E9%99%85%E8%B0%83%E7%94%A8%E9%87%8C%E7%9A%84%E5%90%8D%E5%AD%97">先解决列表和实际调用里的名字</a></li><li><a href="#%E5%88%86%E7%BB%84%E5%92%8C%E6%9D%83%E9%99%90%E5%90%84%E8%87%AA%E6%94%B9%E5%8F%98%E4%BB%80%E4%B9%88">分组和权限各自改变什么</a></li><li><a href="#%E6%8E%A5%E5%85%A5%E7%9C%9F%E5%AE%9E%E4%BC%9A%E8%AF%9D%E5%90%8E-%E5%AE%B9%E6%98%93%E6%BC%8F%E6%8E%89%E5%93%AA%E4%BA%9B%E7%8A%B6%E6%80%81">接入真实会话后，容易漏掉哪些状态</a></li><li><a href="#%E5%8F%82%E8%80%83">参考</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><p>聚合多个 MCP Server 时，我遇到过工具名字撞在一起的问题。单独接一个服务时，<code>search</code> 很清楚。接到同一个客户端以后，文档服务和产品目录服务都叫 <code>search</code>，模型看到两个相近的描述，网关也得知道收到调用后转给谁。</p>
-<p>这个问题有两部分。首先得给客户端一个稳定、唯一的工具名。其次，当前任务用不到的工具，最好别出现在它的列表里。</p>
-<h2 id="先让每个调用有唯一去处">先让每个调用有唯一去处</h2>
-<p>假设有两个后端，工具都叫 <code>search</code>。网关在读取工具列表时给它们加上稳定的前缀，再保留一份显式映射。</p>
+        <div class="post-body" id="article-text"><p>单独接入一个 MCP Server 时，<code>search</code> 是个好名字。文档服务和产品目录服务都用这个名字也合理，直到它们出现在同一份工具列表里。我遇到这类问题时，先追一次调用从列表到转发走了哪几步。最难排查的是服务返回了正常结果，但结果来自错误的数据源。</p>
+<span id="先让每个调用有唯一去处"></span><h2 id="先解决列表和实际调用里的名字">先解决列表和实际调用里的名字</h2>
+<p>假设网关从两个后端读工具列表，两个都有 <code>search</code>。读列表时就给每个工具生成唯一的公开名称，并记录后端连接和原始名字。</p>
 <div aria-label="数据表格" class="table-scroll" role="region" tabindex="0"><table>
 <thead>
 <tr>
-<th>客户端工具名</th>
-<th>后端</th>
-<th>后端工具名</th>
+<th>暴露给客户端</th>
+<th>对应后端</th>
+<th>转发给后端的工具名</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>docs__search</code></td>
-<td>文档</td>
+<td>文档服务</td>
 <td><code>search</code></td>
 </tr>
 <tr>
 <td><code>catalog__search</code></td>
-<td>目录</td>
+<td>目录服务</td>
 <td><code>search</code></td>
 </tr>
 </tbody>
 </table></div>
-<p>收到 <code>docs__search</code> 时，网关通过映射查到文档服务，向它发起 <code>search</code>，把参数和返回结果交回当前会话。路由表最好也记录工具描述和参数 Schema。这样上游改了签名，下游可以在更新工具列表时发现，少等一次实际调用报错。</p>
-<figure class="article-figure"><a href="/images/article-figures/mcp-gateway-name-collision.webp" title="查看原图"><img alt="网关将两个唯一公开名称映射到不同后端各自的 search" decoding="async" height="480" loading="lazy" src="/images/article-figures/mcp-gateway-name-collision.webp" width="1200"/></a><figcaption>教学示意。客户端用带前缀的名字，网关向各后端转发时使用原名。</figcaption></figure>
-<p>前缀用稳定的服务标识。用服务在配置文件中的位置命名，重排配置后就可能换掉含义。迁移已有客户端时，我会先列出被调用的旧名和各自去处，再决定是否需要为已知用法保留兼容入口。来源不清楚的短名应当返回明确错误，避免碰巧调用了错误的服务。</p>
-<h2 id="分组能缩小模型的选择范围">分组能缩小模型的选择范围</h2>
-<p>只做文档问答时，可以只给客户端 <code>docs__search</code>。需要查产品目录时，再提供目录相关工具。描述里也写清能搜索什么，以及一次调用返回的是条目列表、正文，还是摘要。命名解决唯一性，描述和分组帮助模型选中合适的工具。</p>
-<p>分组如果涉及权限，就在处理 <code>tools/call</code> 时再次校验身份和允许的工具。工具列表决定客户端看见什么。调用检查决定它实际能执行什么。只筛选列表，已经知道名字的客户端仍可能直接发调用请求。</p>
-<p>我会用两个返回不同固定文本的模拟服务做验收。先在完整工具列表分别调用两个名字，确认响应来自各自的后端。再切换到只开放文档工具的配置，用已有名字直接调用目录工具，确认网关拒绝。在这两步通过以后，再接真实后端和模型。</p>
+<p>客户端的 <code>tools/call</code> 请求带 <code>docs__search</code>，网关用它查路由表，找到文档服务的会话，把参数连同原名 <code>search</code> 交给后端。避免在收到调用后遍历会话找第一个叫 <code>search</code> 的工具。按顺序找，注册顺序一变，同一条调用的含义也会变。即使两个后端都能返回格式相同的 JSON，产品也可能拿到错误领域的结果。</p>
+<figure class="article-figure"><a href="/images/article-figures/mcp-gateway-name-collision.webp" title="查看原图"><img alt="网关将两个唯一公开名称映射到不同后端各自的 search" decoding="async" height="480" loading="lazy" src="/images/article-figures/mcp-gateway-name-collision.webp" width="1200"/></a><figcaption>网关向客户端暴露稳定的公开名，转发给各后端时使用后端原名。</figcaption></figure>
+<p>前缀用稳定的服务标识。配置更新时检查最终生成出的公开名，发现冲突就拒绝这份路由。维护一份显式映射的好处是，改前缀规则之后不用猜下划线属于哪一段。迁移旧客户端时，可以给明确知道归属的短名做兼容入口。两个后端都有 <code>search</code> 时，含义不清的短名适合直接停用。</p>
+<span id="分组能缩小模型的选择范围"></span><h2 id="分组和权限各自改变什么">分组和权限各自改变什么</h2>
+<p>处理文档问答时，模型只需要看到文档工具。给它一页与当前任务无关的搜索和写入工具，会增加选错的机会。列表根据会话或用户可用的工具生成，名称之后的描述顺手写清搜索范围、参数的含义以及返回内容。这样模型可以在它真的需要选择时，根据清楚的对象来选。</p>
+<p>服务端处理 <code>tools/call</code> 时，还要在当前身份和会话下重新确认权限。客户端用过某个工具，可能记着旧名字。名单发生过调整后，旧名单不应作为当前调用的依据。下面的代码省略了协议封包、用户认证和输入校验，展示路由顺序。</p>
+<pre><code class="language-python">def dispatch(routes, allowed, sessions, name, arguments):
+    if name not in allowed:
+        raise PermissionError('tool unavailable')
+    server, native_name = routes[name]
+    return sessions[server].call_tool(native_name, arguments)
+</code></pre>
+<p>我用两个返回固定文本的模拟后端跑了这个路由测试。调换两个服务的注册顺序，两种公开名都仍然调用各自的后端，传下去的工具名都为 <code>search</code>。切换到只允许文档工具的会话，再调用 <code>catalog__search</code> 或没有前缀的 <code>search</code>，两次都在网关拒绝，两个后端都没有收到调用。这个结果验证的是路由和权限检查顺序，协议互通仍要用真实客户端和服务端测。</p>
+<h2 id="接入真实会话后-容易漏掉哪些状态">接入真实会话后，容易漏掉哪些状态</h2>
+<p>连接管理和工具路由可以独立处理。后端可能通过本地 stdio 接入，也可能通过 Streamable HTTP 接入。网关收到的是某个公开工具名，按路由找到已经初始化的会话。更换传输方式时，客户端看到的公开名和输入 Schema 可以保持一致。至于会话是否能复用，要按连接是否携带用户身份判断。属于两个用户的连接不能只按服务名共用一份。</p>
+<p>调用失败也要保留失败来源。如果网关找不到公开名，这是网关路由问题。连接中断或超时是传输问题。后端完成了协议往返，却返回工具执行错误，应把这一状态按原有含义传回客户端。把三类都折叠成空结果，用户只会以为真的什么也没搜到。</p>
+<p>工具列表缓存也要有更新条件。后端变更 Schema 或网关改变权限后，更新的路由表和对外列表应来自同一份配置。否则一次列表刷新就能看到新工具，随后调用仍被旧路由拒绝。在验收时我会加一个用例，更新后端工具定义后重新获取列表，再用新参数调一次，确认网关没有继续把请求送到旧会话。</p>
+<p>把这几个检查做完，再比较接入多少工具、有没有必要按描述做检索。语义检索可以帮模型缩小候选。调用究竟转去哪个后端，仍应由唯一名和显式路由决定。</p>
 <h2 id="参考">参考</h2>
 <ul>
-<li><a href="https://modelcontextprotocol.io/specification/latest/server/tools">MCP 工具协议</a></li>
+<li><a href="https://modelcontextprotocol.io/specification/latest/server/tools">MCP 工具协议与错误处理</a></li>
 </ul></div>
         <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
 

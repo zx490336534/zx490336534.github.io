@@ -48,52 +48,95 @@
         <h1 class="post-title">Agent 时代的 UI 自动化，哪些步骤值得用 AI？</h1>
         <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2026-11-25T14:52:11+08:00">2026-11-25</time>
           <span class="post-category" hidden></span>
-          <span class="read-time">约 2 分钟</span>
+          <span class="read-time">约 4 分钟</span>
           <span class="public-counter" data-public-count="reads" data-article-path="/article/agent-ui-testing.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
           <a href="#comments" data-jump-comments>评论</a></div>
         <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/automation/">自动化测试</a> <span aria-hidden="true">/</span> <a href="/categories/testing/automation/browser/">Web 与桌面自动化</a></nav>
       </div>
     </header>
     <div class="wrap article-layout with-outline">
-      <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E5%90%8C%E4%B8%80%E6%9D%A1%E7%94%A8%E4%BE%8B%E8%A6%81%E9%80%9A%E8%BF%87%E4%B8%A4%E4%B8%AA%E5%88%A4%E6%96%AD">同一条用例要通过两个判断</a></li><li><a href="#%E8%A7%86%E8%A7%89%E6%93%8D%E4%BD%9C%E5%8F%AF%E4%BB%A5%E5%8D%95%E7%8B%AC%E4%BA%A4%E7%BB%99%E6%A8%A1%E5%9E%8B">视觉操作可以单独交给模型</a></li><li><a href="#%E4%BF%AE%E6%B5%8B%E8%AF%95%E7%9A%84%E6%97%B6%E5%80%99%E7%95%99%E4%BD%8F%E5%A4%B1%E8%B4%A5%E6%9D%A1%E4%BB%B6">修测试的时候留住失败条件</a></li><li><a href="#%E5%8F%82%E8%80%83">参考</a></li></ol></details></aside>
+      <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E4%B8%80%E4%B8%AA%E9%94%99%E8%AF%AF%E5%AE%9E%E7%8E%B0-%E4%B9%9F%E8%83%BD%E8%AE%A9-%E4%BF%9D%E5%AD%98%E6%88%90%E5%8A%9F-%E9%80%9A%E8%BF%87">一个错误实现，也能让「保存成功」通过</a></li><li><a href="#AI-%E6%94%BE%E5%9C%A8%E5%93%AA%E4%B8%80%E6%AD%A5-%E5%86%B3%E5%AE%9A%E5%A4%B1%E8%B4%A5%E6%97%B6%E8%83%BD%E7%9C%8B%E5%88%B0%E4%BB%80%E4%B9%88">AI 放在哪一步，决定失败时能看到什么</a></li><li><a href="#%E4%BF%AE%E8%84%9A%E6%9C%AC%E4%B9%8B%E5%89%8D-%E5%85%88%E4%BF%9D%E4%BD%8F%E5%AE%83%E6%8A%93%E8%BF%87%E7%9A%84%E9%94%99%E8%AF%AF">修脚本之前，先保住它抓过的错误</a></li><li><a href="#%E5%8F%82%E8%80%83">参考</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><p>我给 UI 自动化选工具时，先看 AI 在什么阶段工作。它可以在写测试时读页面、生成脚本，也可以在每次执行时观察页面、决定怎么操作。这两种方式都能从一句自然语言开始，但以后每次跑回归，耗时、成本和失败证据会很不一样。</p>
-<h2 id="同一条用例要通过两个判断">同一条用例要通过两个判断</h2>
-<p>拿一个可以公开演示的场景。用户在网页编辑器里放置一张卡片，点保存，刷新后还要看到刚才保存的内容。这里有两件事要验证。先看卡片能不能放到目标位置，再看保存的数据能不能恢复。</p>
-<p>表单、保存按钮、已保存记录都有明确的角色或标识。用 Playwright 按按钮名称定位，再读取刷新后的记录。只要保存动作虚报成功，后半段就会失败。只检查成功提示的话，前端即使在请求还没结束时弹出提示，用例也可能过去。</p>
-<figure class="article-figure"><a href="/images/article-figures/agent-ui-testing.webp" title="查看原图"><img alt="从放置卡片到刷新回读的三个检查点" decoding="async" height="480" loading="lazy" src="/images/article-figures/agent-ui-testing.webp" width="1200"/></a><figcaption>教学示意。保存提示之后增加刷新回读，才能覆盖恢复行为。</figcaption></figure>
-<h2 id="视觉操作可以单独交给模型">视觉操作可以单独交给模型</h2>
-<p>画布里的卡片如果只画在 Canvas 上，就很难直接拿到卡片的 DOM 元素。有视觉能力的工具能看截图，按目标位置完成拖拽。以 Midscene 为例，可以让模型规划几步操作，也可以在固定脚本里只把定位这一步交给模型。后者的好处是失败时能知道卡在定位、拖拽还是保存。</p>
-<p>我会保留独立的结果检查。适合用于回归的版本，大致是这样的。</p>
+        <div class="post-body" id="article-text"><p>我给 UI 自动化选工具时，会先找出一条用例里最难写的动作。有些步骤难在定位，比如画布上没有 DOM 节点的图形。有些步骤难在判断结果，比如保存以后到底有没有写入服务端。前者可以让模型看图，后者通常能找到更明确的检查点。把两种难处混在一个自然语言用例里，出了问题很难判断应该修脚本、修提示词，还是修产品。</p>
+<span id="同一条用例要通过两个判断"></span><h2 id="一个错误实现-也能让-保存成功-通过">一个错误实现，也能让「保存成功」通过</h2>
+<p>我用一个小编辑器复现了这种假通过。输入卡片名，点击保存，两个版本都返回 HTTP 200，也都显示「保存成功」。区别在服务端。正常版本写入记录，故障版本收到同一份请求后直接返回成功。</p>
+<p>用 Playwright 依次检查请求、页面提示、刷新后的已保存列表，实际结果如下。两个版本走相同的前端，一个服务进程内分别提供正常和故障路由。每次用新的浏览器上下文，卡片名也由用例控制。</p>
 <div aria-label="数据表格" class="table-scroll" role="region" tabindex="0"><table>
 <thead>
 <tr>
-<th>动作</th>
-<th>验收信号</th>
+<th>服务端行为</th>
+<th>POST 响应</th>
+<th>成功提示</th>
+<th>刷新后查已保存列表</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>放置卡片</td>
-<td>应用公开的可读状态中出现卡片标识和预期位置</td>
+<td>写入后应答</td>
+<td>200</td>
+<td>通过</td>
+<td>找到卡片</td>
 </tr>
 <tr>
-<td>提交保存</td>
-<td>对应这次操作的请求完成</td>
-</tr>
-<tr>
-<td>刷新并重开</td>
-<td>从服务端重新读到同一个卡片标识和内容</td>
+<td>丢弃写入后应答</td>
+<td>200</td>
+<td>通过</td>
+<td>找不到卡片</td>
 </tr>
 </tbody>
 </table></div>
-<p>没有接口可用时，也可以验证重开后的稳定 UI 状态。核心是让断言覆盖用户真正依赖的行为。坐标容差、等待条件、是否允许空结果，都要先从产品规则里找依据。</p>
-<h2 id="修测试的时候留住失败条件">修测试的时候留住失败条件</h2>
-<p>Agent 看到按钮改名，可以去改定位器。遇到刷新后卡片消失，它可以补日志和 trace，我会先看是不是保存真的退回了旧状态。把刷新回读删掉，或者把定位失败改成跳过，也能让报告变绿，但下次它就抓不到这个问题了。</p>
-<p>日常 CI 我会先用确定性脚本跑普通 Web 页面。遇到确实难以稳定定位的画布，再把那一步交给视觉模型。如果要加入发布门禁，我会在本地故意关掉保存，看这个用例能不能失败。能抓到这个反例，再把它留在回归里。</p>
+<p>下面是测试的关键部分。<code>base</code> 是本地演示服务的地址，<code>mode</code> 用来选择正常或故障路由。对同一接口同时存在读取和保存请求时，需要同时匹配 URL 和 HTTP 方法，否则用例有可能等到列表的 GET。</p>
+<pre><code class="language-python">page.get_by_label('卡片名称').fill('回归卡片')
+with page.expect_response(
+    lambda r: r.url == f'{base}/api/{mode}' and r.request.method == 'POST'
+) as save:
+    page.get_by_role('button', name='保存').click()
+assert save.value.ok
+expect(page.get_by_role('status')).to_have_text('保存成功')
+page.reload()
+cards = page.get_by_role('list', name='已保存卡片')
+expect(cards.get_by_text('回归卡片', exact=True)).to_be_visible()
+</code></pre>
+<p>演示页刷新时会重新请求服务端，关闭了缓存，也没有把卡片放进本地存储。实际应用要先确认刷新读的是哪一层。如果它会先用浏览器缓存恢复页面，刷新仍可能复用旧状态。此时可用新的浏览器上下文重新登录回读，或者直接检查服务端详情接口。列表里历史上存在过同名卡片时，按本次生成的 ID 查，比按文本查更稳。</p>
+<figure class="article-figure"><a href="/images/article-figures/agent-ui-testing.webp" title="查看原图"><img alt="从放置卡片到刷新回读的三个检查点" decoding="async" height="480" loading="lazy" src="/images/article-figures/agent-ui-testing.webp" width="1200"/></a><figcaption>保存提示之后增加刷新回读，可以检查重新打开时的结果。</figcaption></figure>
+<span id="视觉操作可以单独交给模型"></span><h2 id="AI-放在哪一步-决定失败时能看到什么">AI 放在哪一步，决定失败时能看到什么</h2>
+<p>Playwright 的 <code>get_by_role</code> 或 <code>get_by_label</code> 适合角色和名称稳定的控件。Agent 可以在编写阶段检查页面、生成测试、读 trace，再修改定位方式。测试进 CI 后继续按确定的过程执行。这种写法适合表单、导航、权限提示、接口和持久化验证。</p>
+<p>Canvas 和 WebGL 界面经常只暴露一个画布元素。可以算坐标点击，但缩放、工具栏位置或布局一变，原来的坐标就可能落错。以 Midscene 为例，可以让模型用 <code>aiAct</code> 规划多步操作，也可以继续由脚本决定顺序，只让视觉工具做定位或拖放。拿放置卡片来说，我会把「将这张卡拖到右边列」交给视觉工具，随后由脚本读取卡片所属的列和最终保存状态。模型在截图里识别到了目标，只能说明它观察到什么。应用回读到列标识和卡片 ID，才能作为通过证据。</p>
+<div aria-label="数据表格" class="table-scroll" role="region" tabindex="0"><table>
+<thead>
+<tr>
+<th>用法</th>
+<th>适合解决的问题</th>
+<th>出错时优先核对</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Agent 写脚本，运行时用 Playwright</td>
+<td>普通 DOM 上的稳定回归</td>
+<td>页面定位、请求和业务断言</td>
+</tr>
+<tr>
+<td>脚本编排，视觉模型做少量操作</td>
+<td>图形界面中的定位或操作</td>
+<td>截图、实际点击位置、动作后的产品状态</td>
+</tr>
+<tr>
+<td>模型规划多步探索</td>
+<td>操作顺序不固定、需要发现异常</td>
+<td>操作轨迹及复现证据，确认是否能编入回归</td>
+</tr>
+</tbody>
+</table></div>
+<p>这里也不用预先规定每套测试必须是同一种模式。把视觉能力放进需要它的那几步，可以让剩下的步骤继续确定执行。视觉操作的成功与任务完成分别记，排查时不用猜一句笼统的「成功」指什么。</p>
+<span id="修测试的时候留住失败条件"></span><h2 id="修脚本之前-先保住它抓过的错误">修脚本之前，先保住它抓过的错误</h2>
+<p>按钮改名导致定位失败时，调整定位器是合理修复。刷新后读不到卡片时，我会保留这条失败，从请求有没有提交、任务状态是否结束、最终记录是否能读取逐段排查。把失败断言改为检查成功弹窗，相当于把这次实测抓住的错误重新放过去。</p>
+<p>如果后台返回 202，响应只说明任务被受理。把等待拆成两个条件更容易诊断。先等对应的任务进入明确终态，再按返回 ID 回读产物。不能只看到任何一个历史任务完成就结束，也不要用固定睡眠替代等待条件。测试失败时记录这次操作的 ID、最后一次任务状态，以及最终回读失败的那一步。</p>
+<p>发布前我会保留一个故障版本做验证。让它显示保存成功、故意漏掉持久化，看用例能否失败。动作会不会点击错、页面能不能回读、回归能否拦住已知错误，分别回答，才知道这条用例适不适合守发布。</p>
 <h2 id="参考">参考</h2>
 <ul>
 <li><a href="https://playwright.dev/docs/locators">Playwright 定位器</a></li>
+<li><a href="https://playwright.dev/python/docs/api/class-page#page-expect-response">Playwright 的网络响应等待</a></li>
 <li><a href="https://github.com/web-infra-dev/midscene">Midscene 项目与集成示例</a></li>
 </ul></div>
         <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>

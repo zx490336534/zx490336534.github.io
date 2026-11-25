@@ -48,24 +48,24 @@
         <h1 class="post-title">为什么一批空输出，能让 AI 裁判看起来更准？</h1>
         <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2026-11-25T14:52:11+08:00">2026-11-25</time>
           <span class="post-category" hidden></span>
-          <span class="read-time">约 1 分钟</span>
+          <span class="read-time">约 3 分钟</span>
           <span class="public-counter" data-public-count="reads" data-article-path="/article/llm-judge-empty-output.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
           <a href="#comments" data-jump-comments>评论</a></div>
         <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/quality/">质量工程</a></nav>
       </div>
     </header>
     <div class="wrap article-layout with-outline">
-      <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E6%8A%8A%E5%90%8C%E4%B8%80%E7%BB%84%E7%BB%93%E6%9E%9C%E7%AE%97%E4%B8%A4%E9%81%8D">把同一组结果算两遍</a></li><li><a href="#%E7%A9%BA%E8%BE%93%E5%87%BA%E5%BA%94%E8%AF%A5%E6%80%8E%E4%B9%88%E7%AE%97">空输出应该怎么算</a></li></ol></details></aside>
+      <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E7%A9%BA%E6%A0%B7%E6%9C%AC%E6%80%8E%E6%A0%B7%E6%94%B9%E5%8F%98%E4%B8%80%E4%B8%AA%E6%AD%A3%E7%A1%AE%E7%9A%84%E6%95%B0%E5%AD%97">空样本怎样改变一个正确的数字</a></li><li><a href="#%E6%B1%87%E6%80%BB%E7%9B%B8%E5%85%B3%E6%80%A7%E9%AB%98-%E4%B9%9F%E5%8F%AF%E8%83%BD%E6%80%BB%E9%80%89%E9%94%99%E5%90%8C%E9%A2%98%E7%BB%93%E6%9E%9C">汇总相关性高，也可能总选错同题结果</a></li><li><a href="#%E6%A0%A1%E5%87%86%E6%97%B6-%E8%AE%A9%E6%A8%A1%E5%9E%8B%E5%9B%9E%E7%AD%94%E5%87%86%E5%A4%87%E6%9B%BF%E4%BA%BA%E5%81%9A%E7%9A%84%E5%88%A4%E6%96%AD">校准时，让模型回答准备替人做的判断</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><p>用大模型做评测时，我会看它和人工判定或硬性规则的一致率。如果把很多空输出混入样本，两边通常都会把它们判成失败。一致率会记录这些正确判断。拿这个数字去推测它能不能判断那些已经产出结果、但质量有差异的样本，就容易高估它。</p>
-<h2 id="把同一组结果算两遍">把同一组结果算两遍</h2>
-<p>用八条虚构数据做个小算例。四条完全没有产物，人工和模型都判失败。另外四条有产物，两边只判得一样两次。</p>
+        <div class="post-body" id="article-text"><p>用大模型给生成结果做评测时，我会把它和人工判定或者硬规则对照。只报一个总体一致率，有时会把两件事混在一起。大模型能不能识别完全没产出的样本，和它能不能在两个有效结果之间做出靠谱选择。前一件事很容易，后一件事通常才是引入模型裁判的理由。</p>
+<span id="把同一组结果算两遍"></span><h2 id="空样本怎样改变一个正确的数字">空样本怎样改变一个正确的数字</h2>
+<p>假设有八条记录。四条没交付任何产物，人和模型都判失败。剩下四条有产物，人工和模型只有两次判定相同。下面都是为说明问题构造的数据。</p>
 <div aria-label="数据表格" class="table-scroll" role="region" tabindex="0"><table>
 <thead>
 <tr>
-<th>样本组</th>
-<th>一致的条数</th>
-<th>总条数</th>
+<th>统计范围</th>
+<th>一致数</th>
+<th>总数</th>
 <th>一致率</th>
 </tr>
 </thead>
@@ -83,19 +83,61 @@
 <td>50%</td>
 </tr>
 <tr>
-<td>混合统计</td>
+<td>混在一起</td>
 <td>6</td>
 <td>8</td>
 <td>75%</td>
 </tr>
 </tbody>
 </table></div>
-<p>75% 这项算术没错，它描述的是这八条样本。如果团队要判断模型能不能替人检查已经生成的内容，更直接的数字是后四条的 50%。同一个评测器，两种口径，没有修改其中任何一条判定。</p>
-<figure class="article-figure"><a href="/images/article-figures/llm-judge-empty-output.webp" title="查看原图"><img alt="四条空输出四次一致，四条有输出两次一致，汇总六次一致" decoding="async" height="480" loading="lazy" src="/images/article-figures/llm-judge-empty-output.webp" width="1200"/></a><figcaption>教学示意。示例中的八条记录为构造数据，用于演示样本组成对一致率的影响。</figcaption></figure>
-<h2 id="空输出应该怎么算">空输出应该怎么算</h2>
-<p>空输出本身值得关注。它会影响用户能不能拿到任何结果。我会把它作为一项单独的指标，记录多少次本该产出却没有产出。能用固定规则判断时，就直接检查是否存在有效结果。把剩下的样本交给人工和模型，按同一份评分标准看质量，再记下分歧集中在哪里。</p>
-<p>模糊的地方可以用正反例补规则。例如一个回答只生成了标题，没有给出正文。算空输出、算不完整，还是按低质量处理，跟产品约定有关。这个归类必须在看模型得分前定好。否则每次换一种分组方法，数字就可能变好，但对裁判能力的判断没有更清楚。</p>
-<p>如果要比较同一个输入的多个候选，直接在这组候选里看排名也更容易定位问题。把不同难度的输入混在一起，模型可能只区分了哪些任务容易有结果。上线前我会抽几组已有产物、质量接近的候选让人工先盲评，再看模型有没有把前后顺序排反。</p></div>
+<p>75% 如实描述了这批数据。假如我们再放进八条两边都判失败的空输出，整体一致率变成 14 除以 16，也就是 87.5%。有产物的四条没有发生变化，模型判断这些产物的表现仍是两次一致。提高的是容易判的样本占比。</p>
+<figure class="article-figure"><a href="/images/article-figures/llm-judge-empty-output.webp" title="查看原图"><img alt="四条空输出四次一致，四条有输出两次一致，汇总六次一致" decoding="async" height="480" loading="lazy" src="/images/article-figures/llm-judge-empty-output.webp" width="1200"/></a><figcaption>构造数据中的两种统计口径。应用到真实报告时要同时给出分子和分母。</figcaption></figure>
+<p>空结果要留在评测范围内，因为它直接影响产品表现。我会将它作为产出情况单列。明确缺失的输出可以用固定规则判定。在有产物的组里，再检查模型是否能给出与人工接近的质量判断。定义空输出时，要写清空字符串、只有标题、无效附件、生成任务还在运行分别怎样处理。有些样本应该归为未结束，有些是产出不完整。先在标注规范里定下来，避免看过结果后再改分组定义。</p>
+<h2 id="汇总相关性高-也可能总选错同题结果">汇总相关性高，也可能总选错同题结果</h2>
+<p>假设上线场景要给同一张图的两个版本排序。这个场景还有一个容易误读的数字。下面同样是构造的示例，人工和模型在每张图内都把两个候选排反了。</p>
+<div aria-label="数据表格" class="table-scroll" role="region" tabindex="0"><table>
+<thead>
+<tr>
+<th>输入</th>
+<th>人工给候选 A 与 B 的分数</th>
+<th>模型给候选 A 与 B 的分数</th>
+<th>同题排序</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>图 1</td>
+<td>1、2</td>
+<td>2、1</td>
+<td>排反</td>
+</tr>
+<tr>
+<td>图 2</td>
+<td>4、5</td>
+<td>5、4</td>
+<td>排反</td>
+</tr>
+<tr>
+<td>图 3</td>
+<td>7、8</td>
+<td>8、7</td>
+<td>排反</td>
+</tr>
+</tbody>
+</table></div>
+<p>把六个分数平铺后算 Pearson 相关系数，结果是 0.92。模型和人工都给第三张图更高的分，所以总体分数同涨同跌。落到每张图选一个版本，三次都选反了。要验证这种用法，优先看同一输入的候选排序一致率。候选数量更多时，也可以按输入计算排名相关，再汇总，并事先约定并列怎么处理。</p>
+<p>用 Python 可以直接复算这组分数。</p>
+<pre><code class="language-python">from statistics import correlation
+
+human = [1, 2, 4, 5, 7, 8]
+judge = [2, 1, 5, 4, 8, 7]
+print(round(correlation(human, judge), 2))  # 0.92
+</code></pre>
+<p>同样的报告适合同时保留总体分布和组内比较。总体分布能看分数有没有漂移，组内指标回答哪个候选更好。两者用同一批样本，也可能告诉团队不同的信息。</p>
+<span id="空输出应该怎么算"></span><h2 id="校准时-让模型回答准备替人做的判断">校准时，让模型回答准备替人做的判断</h2>
+<p>如果裁判只是为了过滤明显空白，先把没有产出的条件写成稳定规则，记录规则拦到了多少和漏了多少。如果它准备辅助发布验收，我会用有产物的样本单独做校准，优先放进质量接近、容易分歧的候选。先让人工按固定口径独立标注，再看模型错在哪类问题上，并保留裁判输入、版本和证据。只存一个分数，下一轮改变提示词时很难追到实际差异。</p>
+<p>对影响发布的硬问题，还应该区分漏报和误报。人工确认某份结果应拦，模型给放过，这是漏报。人工认为可以通过，模型拦了，这是误报。只报相同判定的比例，看不到两类错误各有多少。样本很少的分组仍然可以报告计数，但应该把分母写出来，避免把两三条上的变化理解成稳定改进。</p>
+<p>我最先想看的报告只有三行。空输出有多少。有产物的样本里，两边在哪些条件下一致。同一个输入的候选里，模型是否选到了人工更认可的那个。第三行还没有建立证据时，先停在辅助审查，保留人工确认需要发布的样本。</p></div>
         <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
 
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Agent-%E8%AF%84%E6%B5%8B/">Agent 评测</a><a href="/tags/LLM-Judge/">LLM Judge</a><a href="/tags/%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE/">测试数据</a></div>
