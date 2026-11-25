@@ -1,4 +1,4 @@
-async ({api, slug, website, articles}) => {
+async ({api, slug, website, articles, previous}) => {
   async function get(path, headers = {}) {
     const response = await fetch(api + path, {
       headers: {Accept: 'application/json', ...headers},
@@ -14,13 +14,33 @@ async ({api, slug, website, articles}) => {
   if (share.websiteId !== website || !share.token) throw new Error('Unexpected read-only Umami resource');
   const auth = {'x-umami-share-context': '1', 'x-umami-share-token': share.token};
   const days = 30;
+  const day = 86400000;
   const end = Date.now();
+  const firstDay = Date.UTC(2026, 10, 25);
+  const checkpoint = previous?.clickCheckpoint ?? {through: firstDay, count: 0};
+  if (!Number.isSafeInteger(checkpoint.through) || checkpoint.through < firstDay || checkpoint.through > end ||
+      checkpoint.through % day !== 0 || !Number.isSafeInteger(checkpoint.count) || checkpoint.count < 0) {
+    throw new Error('Invalid cumulative click checkpoint');
+  }
+
+  const retentionStart = new Date(end);
+  const date = retentionStart.getUTCDate();
+  retentionStart.setUTCDate(1);
+  retentionStart.setUTCMonth(retentionStart.getUTCMonth() - 6);
+  const lastDay = new Date(Date.UTC(retentionStart.getUTCFullYear(), retentionStart.getUTCMonth() + 1, 0)).getUTCDate();
+  retentionStart.setUTCDate(Math.min(date, lastDay));
+  if (checkpoint.through < retentionStart.getTime()) {
+    throw new Error('Click checkpoint is older than the Umami retention window');
+  }
+
+  // Keep yesterday's and today's clicks open so recent reporting delays can settle.
+  const through = Math.max(checkpoint.through, Math.floor(end / day) * day - day);
   const metricsPath = '/websites/' + website + '/metrics?';
 
-  async function metrics(type, eventType) {
+  async function metrics(type, eventType, startAt, endAt) {
     const query = new URLSearchParams({
-      startAt: String(end - days * 86400000),
-      endAt: String(end),
+      startAt: String(startAt),
+      endAt: String(endAt),
       type,
       eventType: String(eventType),
       limit: '1000',
@@ -35,12 +55,23 @@ async ({api, slug, website, articles}) => {
     return rows;
   }
 
-  const [paths, events] = await Promise.all([metrics('path', 1), metrics('event', 2)]);
+  async function clicksBetween(startAt, endAt) {
+    if (endAt < startAt) return 0;
+    const events = await metrics('event', 2, startAt, endAt);
+    return events.filter(row => row.x.endsWith('_click')).reduce((sum, row) => sum + row.y, 0);
+  }
+
+  // Umami's metric range is inclusive at both ends. Advance at a UTC midnight.
+  const [paths, archived, recent] = await Promise.all([
+    metrics('path', 1, end - days * day, end),
+    clicksBetween(checkpoint.through, through - 1),
+    clicksBetween(through, end),
+  ]);
   const known = new Set(articles);
   const reads = {};
   for (const row of paths) {
     if (known.has(row.x)) reads[row.x] = (reads[row.x] ?? 0) + row.y;
   }
-  const clicks = events.filter(row => row.x.endsWith('_click')).reduce((sum, row) => sum + row.y, 0);
-  return {days, updatedAt: new Date(end).toISOString(), clicks, reads};
+  const count = checkpoint.count + archived;
+  return {days, updatedAt: new Date(end).toISOString(), clicks: count + recent, clickCheckpoint: {through, count}, reads};
 }

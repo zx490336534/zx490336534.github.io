@@ -19,30 +19,42 @@ concurrency:
   group: blog-public-counters
   cancel-in-progress: false
 
+env:
+  COUNTER_REF: refs/heads/codex/blog-public-counters
+
 jobs:
   update:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v6
+      - name: Read the previous counts
+        shell: bash
+        run: |
+          if git ls-remote --exit-code origin "$COUNTER_REF" >/dev/null; then
+            git fetch --no-tags --depth=1 origin "$COUNTER_REF"
+            git show FETCH_HEAD:stats.json > "$RUNNER_TEMP/previous-stats.json"
+            git rev-parse FETCH_HEAD > "$RUNNER_TEMP/stats-parent"
+          else
+            test "$?" -eq 2
+            printf 'null\n' > "$RUNNER_TEMP/previous-stats.json"
+          fi
       - name: Install browser driver
         run: npm install --prefix "$RUNNER_TEMP/blog-counter-deps" --no-audit --no-fund --no-save playwright-core@1.65.1
       - name: Export only aggregate counts
         env:
           UMAMI_COUNTS_SHARE: ${{ secrets.UMAMI_COUNTS_SHARE }}
-        run: node scripts/publish-public-counts.mjs "$RUNNER_TEMP/stats.json"
+        run: node scripts/publish-public-counts.mjs "$RUNNER_TEMP/stats.json" "$RUNNER_TEMP/previous-stats.json"
       - name: Publish counter snapshot
         shell: bash
         run: |
-          ref=refs/heads/codex/blog-public-counters
           parents=()
-          if git ls-remote --exit-code origin "$ref" >/dev/null; then
-            git fetch --no-tags --depth=1 origin "$ref"
-            parents=(-p "$(git rev-parse FETCH_HEAD)")
+          if test -s "$RUNNER_TEMP/stats-parent"; then
+            parents=(-p "$(cat "$RUNNER_TEMP/stats-parent")")
           fi
           object=$(git hash-object -w "$RUNNER_TEMP/stats.json")
           tree=$(printf '100644 blob %s\tstats.json\n' "$object" | git mktree)
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           snapshot=$(git commit-tree "$tree" "${parents[@]}" -m "Refresh public blog counts")
-          git push origin "$snapshot:$ref"
+          git push origin "$snapshot:$COUNTER_REF"

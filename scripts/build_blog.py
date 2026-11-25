@@ -439,7 +439,7 @@ def home(posts, catalog):
     <div>
       <h1>测试开发与 AI 工程实践</h1>
       <p>听白的技术博客</p>
-      {public_counter("clicks", "近 30 天全站点击")}
+      {public_counter("clicks", "全站累计点击")}
     </div>
     <div class="publication-actions">
       <a class="solid-link" href="/categories/">浏览分类 <span aria-hidden="true">↗</span></a>

@@ -3,6 +3,7 @@
 (() => {
   const counters = [...document.querySelectorAll('[data-public-count]')];
   if (!counters.length) return;
+  const showsLifetimeClicks = counters.some(counter => counter.dataset.publicCount === 'clicks');
 
   const digits = new Intl.NumberFormat('zh-CN');
   const dates = new Intl.DateTimeFormat('zh-CN', {dateStyle: 'short', timeStyle: 'short', timeZone: 'Asia/Shanghai'});
@@ -12,6 +13,7 @@
     const updated = Date.parse(data.updatedAt);
     if (data.days !== 30 || !Number.isFinite(updated) || updated <= displayedAt ||
         !Number.isSafeInteger(data.clicks) || data.clicks < 0 ||
+        (showsLifetimeClicks && !data.clickCheckpoint) ||
         !data.reads || typeof data.reads !== 'object' || Array.isArray(data.reads)) return;
     displayedAt = updated;
     for (const counter of counters) {
