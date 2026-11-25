@@ -138,6 +138,8 @@ def main():
         for proof in ("1:09｜对话增删改", "P1 改为 P0", "2:49｜核对导出", "删除项不再出现"):
             assert proof in demo_text, proof
         assert demo.select_one("a[download]")["href"] == demo_files[0]
+        sample = demo_prefix + "-sample.csv"
+        assert bool(demo.select_one(f'a[download][href="{sample}"]')) == target(sample).is_file()
     assert not tool.select_one(f'a[href="{must_email}"]')
     assert "/videos/" in paths
     library = page("/videos/")
