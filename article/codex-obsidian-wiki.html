@@ -55,64 +55,60 @@
       </div>
     </header>
     <div class="wrap article-layout with-outline">
-      <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E4%B8%80%E6%AC%A1%E7%AC%94%E8%AE%B0%E5%86%99%E5%85%A5%E5%92%8C%E4%B8%80%E6%AC%A1%E7%9F%A5%E8%AF%86%E7%BC%96%E8%AF%91">一次笔记写入和一次知识编译</a></li><li><a href="#%E7%BB%99-Codex-%E7%9A%84%E8%BE%93%E5%85%A5%E5%8F%AF%E4%BB%A5%E6%AF%94%E6%95%B4%E4%B8%AA%E5%BA%93%E5%B0%8F%E5%BE%97%E5%A4%9A">给 Codex 的输入可以比整个库小得多</a></li><li><a href="#%E8%B0%83%E5%BA%A6%E6%98%BE%E7%A4%BA%E6%88%90%E5%8A%9F%E5%90%8E-%E8%BF%98%E8%A6%81%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6%E7%9C%8B%E4%B8%80%E6%AC%A1">调度显示成功后，还要打开文件看一次</a></li><li><a href="#%E5%8F%82%E8%80%83">参考</a></li></ol></details></aside>
+      <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E4%B8%80%E6%AC%A1%E7%AC%94%E8%AE%B0%E5%86%99%E5%85%A5%E5%92%8C%E4%B8%80%E6%AC%A1%E7%9F%A5%E8%AF%86%E7%BC%96%E8%AF%91">新证据来了，先改原来的结论</a></li><li><a href="#%E7%BB%99-Codex-%E7%9A%84%E8%BE%93%E5%85%A5%E5%8F%AF%E4%BB%A5%E6%AF%94%E6%95%B4%E4%B8%AA%E5%BA%93%E5%B0%8F%E5%BE%97%E5%A4%9A">新会话从索引开始读</a></li><li><a href="#%E8%B0%83%E5%BA%A6%E6%98%BE%E7%A4%BA%E6%88%90%E5%8A%9F%E5%90%8E-%E8%BF%98%E8%A6%81%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6%E7%9C%8B%E4%B8%80%E6%AC%A1">调度显示成功，先打开文件复核</a></li><li><a href="#%E5%8F%82%E8%80%83">参考</a></li></ol></details></aside>
       <div class="article-main">
-        <div class="post-body" id="article-text"><p>以前我在 Obsidian 搜一个技术词，常常要打开好几份笔记才敢下结论。第一份写的是遇到了什么，另一份记录了当时没证实的猜测，后面还有一份修正。它们都值得留，但我每次问「现在应该怎么做」，都得把那段考据重新走一遍。我想省掉的是这部分重复劳动。</p>
-<p>我借用了 Karpathy 的 LLM Wiki 思路，然后用 Codex 维护这层结论。Obsidian 仍用来看和写 Markdown。PARA 解决资料放哪里，Wiki 解决一个稳定结论放哪里，两套结构有不同的更新时机。</p>
-<figure class="article-figure article-figure--supplement"><a href="/images/article-figures/codex-obsidian-wiki-scene.webp" title="查看原图"><img alt="多条原始笔记共同指向一页结论，结论更新后仍保留来源。" decoding="async" height="854" loading="lazy" src="/images/article-figures/codex-obsidian-wiki-scene.webp" width="1280"/></a><figcaption>发现新证据时更新原有主题，并保留能查回去的来源。</figcaption></figure>
-<span id="一条结论可以写回原来的页面"></span><h2 id="一次笔记写入和一次知识编译">一次笔记写入和一次知识编译</h2>
-<p>我的库里有三个入口。</p>
-<div aria-label="数据表格" class="table-scroll" role="region" tabindex="0"><table>
+        <div class="post-body" id="article-text"><p class="article-lead">以前在 Obsidian 搜一个技术词，我常常要把几份笔记按时间翻一遍。第一份是当时的现象，第二份是猜测，后面还有一份修正。每次有人问「现在应该怎么做」，都得把这段考据重走一遍。</p>
+<p>我沿用 PARA 收资料，借了 Karpathy 的 LLM Wiki 思路，用 Codex 更新主题页。<strong>下次先从主题页读当前结论，要核对时再顺着来源找回原笔记。</strong></p>
+<figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/codex-obsidian-wiki-scene.webp" title="查看原图"><img alt="多条原始笔记共同指向一页结论，结论更新后仍保留来源。" decoding="async" height="854" loading="lazy" src="/images/article-figures/codex-obsidian-wiki-scene.webp" width="1280"/></a><figcaption>教学示意。新证据进入现有主题，先前的来源仍然可查。</figcaption></figure>
+<span id="一条结论可以写回原来的页面"></span>
+<h2 id="一次笔记写入和一次知识编译">新证据来了，先改原来的结论</h2>
+<div aria-labelledby="article-table-1" class="table-scroll article-evidence" role="region" tabindex="0"><table><caption id="article-table-1">原始资料、主题页与维护记录的写入规则</caption>
 <thead>
 <tr>
-<th>入口</th>
-<th>实际存放的东西</th>
-<th>什么时候改</th>
+<th scope="col">放在哪里</th>
+<th scope="col">存什么</th>
+<th scope="col">什么情况下改</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>PARA 原始资料</td>
-<td>调研记录、当时的证据、会话和剪藏</td>
-<td>有新材料时保存，原始记录保留当时的条件</td>
+<th scope="row">PARA 原始资料</th>
+<td>调研、对话、操作记录、剪藏</td>
+<td>新材料出现时归位，保留当时的条件</td>
 </tr>
 <tr>
-<td>Wiki 主题页</td>
-<td>当前结论、成立条件、反例和来源</td>
-<td>确认有增量时更新已有主题</td>
+<th scope="row">Wiki 主题页</th>
+<td>当前结论、适用条件、反例和来源</td>
+<td>结论或依据变化时更新</td>
 </tr>
 <tr>
-<td>规则、索引和日志</td>
-<td>编译规则、主题入口、本轮改了什么</td>
-<td>按需维护规则，主题变更后对照索引和日志</td>
+<th scope="row">规则、索引和日志</th>
+<td>编辑约定、主题入口、本轮改动</td>
+<td>主题更新后核对索引和日志</td>
 </tr>
 </tbody>
 </table></div>
-<p>拿 MCP 同名工具做公开示例。第一轮记录说，聚合层碰到两个 <code>search</code>。后来找到原因，调用时按连接顺序查找同名工具，结果取决于谁排在前面。第三份材料补了前缀和路由表。编译后的主题页只需要留下要继续复用的判断，例如「聚合层使用唯一工具名，并保存对后端原名的显式映射」。再写出条件，两套服务各自公开的工具名只在各自服务范围内唯一。读者想知道错路由怎么被发现，仍然能回到那次验证。</p>
-<p>我会让 Agent 先找已有主题页，再对比新材料属于哪一种情况。只是重复了原判断，可以补来源。有了新的成立条件，就更新对应小节。旧判断被推翻，就改正文并在日志注明原因。这一步很重要。每次都建一份「最新结论」，几轮以后我又要在多份新版之间选一遍。</p>
-<figure class="article-figure"><a href="/images/article-figures/codex-obsidian-wiki.webp" title="查看原图"><img alt="原始记录、主题结论和索引日志之间的关系" decoding="async" height="480" loading="lazy" src="/images/article-figures/codex-obsidian-wiki.webp" width="1200"/></a><figcaption>结论页保留来源，索引提供入口，日志记录本次改动。</figcaption></figure>
-<h2 id="给-Codex-的输入可以比整个库小得多">给 Codex 的输入可以比整个库小得多</h2>
-<p>新一轮先读总规则和索引。通过索引找到一至三个可能相关的主题，再顺着来源打开原始材料。运行中如果有长期偏好、一次性任务状态、可复用技术判断，分别写入对应的位置。一次排查的详细流水先当原始记录，只有它改变了以后怎么判断或怎么操作时，才进入主题页。</p>
-<p>一条供编译用的判断可以写得很朴素。下面是去掉了实际路径的示例结构，链接用普通 Markdown 保存。</p>
-<pre><code class="language-text">主题  MCP 工具聚合
+<p>拿同名 MCP 工具做例子。第一份记录写两个服务都有 <code>search</code>。第二份查出网关按连接顺序找同名工具，调换顺序就可能选到另一个服务。后续才补上工具名前缀和显式路由。</p>
+<p>写进主题页时，用一条判断把三份材料串起来。多个服务的工具名可能重复，聚合层要提供唯一公开名，并保留它到后端原名的映射。以前怎样复现错路由，仍然留在原始记录里。</p>
+<p>如果新材料只是重复这个判断，最多补一个来源。发现原来没写的成立条件，更新条件。碰到反例推翻了判断，改正文并在日志注明原因。能在原页处理，就少建一页「最新结论」。</p>
+<figure class="article-figure article-figure--edited"><a href="/images/article-figures/codex-obsidian-wiki.webp" title="查看原图"><img alt="原始记录、主题结论和索引日志之间的关系" decoding="async" height="480" loading="lazy" src="/images/article-figures/codex-obsidian-wiki.webp" width="1200"/></a><figcaption>查结论从索引进主题页，查细节再回原始记录。</figcaption></figure>
+<h2 id="给-Codex-的输入可以比整个库小得多">新会话从索引开始读</h2>
+<p>Codex 先读总规则和索引，再打开一至三个相关主题。碰到会改变判断的细节，沿着来源读原始 Markdown。语义检索也可以用来找候选，最终引用哪一条，仍要看原文。</p>
+<p>原始笔记的结构可以很轻。下面用同名工具示例说明，哪些内容足够支持以后复查。来源用普通 Markdown 链接指向原始文件和相关段落。</p>
+<pre class="article-code"><code class="language-text">主题  MCP 工具聚合
 判断  调用按公开工具名查显式路由
 条件  多个服务可能暴露同一个本地工具名
 证据  同一个测试在调换两个服务的注册顺序后仍应返回同一后端
 来源  两份原始记录的相对路径和相关段落
 </code></pre>
-<p>日常归位只处理今天进来的东西。周度编译看最近一周的新增和修改。月度巡检再解决孤立页、重复主题、断链和过时的结论。同一份工作运行太频繁，会花不少时间清理模型反复写出来的摘要。我宁可允许一次编译没有产出，日志写「现有结论仍适用」，也不增加一页没人会打开的文字。</p>
-<span id="有一天调度说成功-产物却没交齐"></span><h2 id="调度显示成功后-还要打开文件看一次">调度显示成功后，还要打开文件看一次</h2>
-<p>2026 年 10 月一轮周度编译，调度标记为 <code>ok</code>，报告却写明日志覆盖、统计和文件改动都没有做完整。我回查时，没法从日志判断这批材料到底有多少已经处理。这个问题发生在产物验收这一层。任务退出时没有报错，最多说明调度器看到了正常结束。</p>
-<p>后来补了写后回读。每一轮要能回答四个问题。</p>
-<ol>
-<li>声称更新的主题页，磁盘上是不是已经出现预期内容。</li>
-<li>索引里能不能找到它，链接会不会指向其他同名页面。</li>
-<li>日志能不能对应这次变更，哪些来源已经处理。</li>
-<li>没查到原文或没写完整的部分，报告有没有标出来。</li>
-</ol>
-<p>同一批内容重试时，按主题和来源判断已有改动，避免每次都追加同一段。查到链接要确认它指向实际证据，文件存在只能证明路径对了。发给模型的材料可以经过语义检索召回，最后仍应回读原始 Markdown。索引能加速找资料，错过来源时也不会自动补齐证据。</p>
-<figure class="article-figure article-figure--supplement"><a href="/images/article-figures/codex-obsidian-wiki-detail.webp" title="查看原图"><img alt="编译完成后核对主题页、索引、日志、未完成项。" decoding="async" height="729" loading="lazy" src="/images/article-figures/codex-obsidian-wiki-detail.webp" width="900"/></a><figcaption>一次编译能否验收，要同时看文件内容和本轮处理记录。</figcaption></figure>
-<p>如果只想做一个试点，挑最近翻过三次的主题。保留原笔记，写一条有条件、有来源的判断，再从一个新会话问同样的问题。能顺着索引找到结论，也能说出它在哪种情况下失效，这一页就已经帮我省了一次翻找。</p>
+<p>还有一些材料根本用不到 Wiki。当前项目的下一步留在项目记录里，一次排查的经过留在原笔记里，会改变下一次判断的做法才更新主题页。这样新会话可以按任务打开需要的文件。</p>
+<p>日常只归位新资料。周度编译看最近一周的新增和修改。孤立主题、重复页面、断链和过时结论，放到月度巡检。没发现会改变做法的新材料时，这一轮可以只在日志里记「现有结论仍适用」。</p>
+<span id="有一天调度说成功-产物却没交齐"></span>
+<h2 id="调度显示成功后-还要打开文件看一次">调度显示成功，先打开文件复核</h2>
+<p>2026 年 10 月有一轮周度编译，调度标了 <code>ok</code>，报告却写明日志、统计和文件改动都没有做完整。我回查时，没法从日志判断这批材料到底处理了多少。</p>
+<p>后来我加了写后回读。先打开声称更新的主题，确认新结论已写入。然后沿索引点进去，检查是不是指到了同名的另一页。最后把更新记录和本轮来源对一遍，没找到原文或没写完整的部分，在报告里列出来。</p>
+<figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/codex-obsidian-wiki-detail.webp" title="查看原图"><img alt="编译完成后核对主题页、索引、日志、未完成项。" decoding="async" height="729" loading="lazy" src="/images/article-figures/codex-obsidian-wiki-detail.webp" width="900"/></a><figcaption>回读时核对页面、索引、日志和缺项报告。</figcaption></figure>
+<p>同一批任务重试时，先按主题和来源查已有改动，再补缺项。只核对文件存在，仍可能漏掉写错结论或重复追加。小规模试点可以从一个常查的主题开始。下一次开新会话，请它给出结论、成立条件和来源。三样都找得到，就够检验这一页能不能用。</p>
 <h2 id="参考">参考</h2>
 <ul>
 <li><a href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f">Karpathy 的 LLM Wiki 说明</a></li>

@@ -286,7 +286,7 @@ time { font-variant-numeric: tabular-nums; white-space: nowrap; }
 .post-body .article-figure { margin-inline: 0; }
 .post-body .article-figure img { display: block; inline-size: 100%; }
 .post-body .article-figure--supplement { max-inline-size: 47.5rem; margin-inline: auto; margin-block: 1.5rem 1.75rem; }
-.post-body .article-figure--supplement figcaption { margin-block-start: .55rem; color: var(--muted); font-size: .92rem; line-height: 1.55; }
+.post-body :is(.article-figure--supplement, .article-figure--edited) figcaption { margin-block-start: .55rem; color: var(--muted); font-size: .92rem; line-height: 1.55; }
 .post-body :where(code, pre) { font-family: var(--mono); }
 .post-body pre, .post-body .highlight, .table-scroll { max-inline-size: 100%; overflow: auto; }
 .post-body :where(pre, .highlight) { background: var(--panel); border: 1px solid var(--line); border-radius: .52rem; }
@@ -325,6 +325,17 @@ time { font-variant-numeric: tabular-nums; white-space: nowrap; }
 .post-body .table-scroll th { background: var(--accent-wash); color: var(--ink); }
 .post-body .table-scroll tbody tr:nth-child(even) { background: var(--surface); }
 .post-body .table-scroll tbody tr:last-child :where(th, td) { border-block-end: 0; }
+.post-body .article-lead { font-size: clamp(1.12rem, 1.05rem + .35vw, 1.3rem); line-height: 1.65; }
+.post-body .article-example { margin-block: 1rem 1.35rem; background: var(--surface); border: 1px solid var(--line); border-radius: .45rem; }
+.post-body .article-example summary { cursor: pointer; padding: .6rem .85rem; color: var(--accent); font-weight: 650; }
+.post-body .article-example[open] summary { border-block-end: 1px solid var(--line); }
+.post-body .article-example pre { margin-block: 0; border: 0; }
+.post-body .article-example .code-panel { margin: 0; border: 0; border-radius: 0; }
+.post-body pre.article-code { white-space: pre-wrap; overflow-wrap: anywhere; }
+.post-body .article-evidence table { min-inline-size: 0; }
+.post-body .article-evidence caption { text-align: start; padding: .55rem .75rem; color: var(--muted); font-size: .92rem; font-weight: 650; }
+.post-body .article-evidence :where(th, td) { overflow-wrap: anywhere; vertical-align: top; }
+.post-body .article-evidence tbody th { background: transparent; font-weight: 600; }
 .post-body hr { border: 0; border-block-start: 1px solid var(--line); margin-block: 1.5rem; }
 .post-tags { display: flex; flex-wrap: wrap; gap: .65rem; margin-block: 1.3rem; font-size: .86rem; color: var(--accent); }
 .post-tags:empty { display: none; }
