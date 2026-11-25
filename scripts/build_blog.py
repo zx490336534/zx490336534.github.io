@@ -19,6 +19,7 @@ from bs4 import BeautifulSoup
 import nh3
 
 import blog_discovery as discovery
+import blog_portfolio as portfolio
 
 from blog_series import article_navigation, cards as series_cards, catalog_page, chapter_title, load_series, position_link, series_page
 from blog_topics import Topic, browser_page, links as taxonomy_links, read_catalog, topic_trail
@@ -224,12 +225,12 @@ def add_analytics_to_resources():
             file.write_text(updated)
 
 
-def shell(title, path, content, description=DESCRIPTION, extra_head=""):
+def shell(title, path, content, description=DESCRIPTION, extra_head="", *, canonical_path=None, noindex=False):
     is_article = path.startswith("/article/")
     title_tag = discovery.HOME_TITLE if path == "/" else f"{title} · {NAME}"
     nav = [
         ("首页", "/"), ("归档", "/archives/"), ("分类", "/categories/"),
-        ("系列", "/series/"), ("工具与课程", "/lab/"), ("关于", "/about/"),
+        ("系列", "/series/"), ("视频", "/videos/"), ("工具与课程", "/lab/"), ("关于", "/about/"),
     ]
     links = []
     for label, url in nav:
@@ -238,7 +239,8 @@ def shell(title, path, content, description=DESCRIPTION, extra_head=""):
             current = ' aria-current="location"'
         links.append(f'<a href="{url}"{current}>{label}</a>')
     links_html = "".join(links)
-    canonical = html(SITE + path)
+    canonical = html(SITE + (canonical_path or path))
+    robots = '\n  <meta name="robots" content="noindex,follow">' if noindex else ""
     summary = excerpt(description, 180)
     counts = (
         '\n  <script src="/js/public-counts.js?v=4" defer></script>'
@@ -261,7 +263,7 @@ def shell(title, path, content, description=DESCRIPTION, extra_head=""):
   <meta property="og:title" content="{html(title_tag)}">
   <meta property="og:description" content="{summary}">
   <meta property="og:url" content="{canonical}">
-  <link rel="canonical" href="{canonical}">
+  <link rel="canonical" href="{canonical}">{robots}
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
   <link rel="icon" href="/images/avatar.jpeg">
   <script src="/js/appearance.js"></script>
@@ -292,6 +294,9 @@ def shell(title, path, content, description=DESCRIPTION, extra_head=""):
     <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
     <nav aria-label="页脚导航">
       <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
     </nav>{footer_stats}
   </footer>
   <dialog id="search-dialog" aria-labelledby="search-title">
@@ -328,11 +333,15 @@ def excerpt(description, limit):
     return html(text[:limit])
 
 
-def thumbnail(post):
+def thumbnail(post, context="row"):
     if not post.display_cover:
         return ""
-    return (f'<img class="post-thumbnail" src="{html(post.display_cover)}" alt="" '
-            'width="180" height="90" loading="lazy" decoding="async">')
+    sizes = "(max-width: 760px) 104px, (max-width: 1080px) 34vw, 370px" if context == "series" else "136px"
+    attrs = portfolio.cover_attributes(post.display_cover, ROOT, sizes)
+    if not attrs:
+        attrs = ' width="180" height="90"'
+    return (f'<img class="post-thumbnail" src="{html(post.display_cover)}" alt=""'
+            f'{attrs} loading="lazy" decoding="async">')
 
 
 def post_rows(posts, *, show_category=True):
@@ -392,8 +401,11 @@ def resource_cards():
 def home_story(post, picture, lead=False):
     heading = "h2" if lead else "h3"
     priority = 'fetchpriority="high"' if lead else 'loading="lazy"'
+    sizes = ("(max-width: 760px) 96vw, (max-width: 1160px) 57vw, 680px" if lead
+             else "(max-width: 760px) 94vw, (max-width: 1160px) 29vw, 345px")
+    attrs = portfolio.cover_attributes(picture, ROOT, sizes) if picture else ""
     image = (
-        f'<div class="front-media"><img src="{html(picture)}" alt="" decoding="async" {priority}></div>'
+        f'<div class="front-media"><img src="{html(picture)}" alt=""{attrs} decoding="async" {priority}></div>'
         if picture else ""
     )
     meta = post.topic.trail()[0].name if post.topic and post.topic.trail() else ""
@@ -455,7 +467,7 @@ def home(posts, catalog, series):
     routes = (
         '<section class="section" id="start" aria-labelledby="start-title">'
         '<header class="section-title"><h2 id="start-title">从这里开始</h2><a href="/series/">全部系列 ↗</a></header>'
-        + series_cards(featured_series, thumbnail) + '</section>'
+        + series_cards(featured_series, lambda post: thumbnail(post, "series")) + '</section>'
     ) if featured_series else ""
     featured = {post.path for post, _ in photos}
     recent = [post for post in posts[1:] if post.path not in featured][:7]
@@ -466,6 +478,7 @@ def home(posts, catalog, series):
   </section>
   <div class="publication-actions">
     <a class="solid-link" href="/categories/">浏览分类 <span aria-hidden="true">↗</span></a>
+    <a href="/videos/">视频讲解目录 <span aria-hidden="true">↗</span></a>
     <a href="/lab/">工具与课程 <span aria-hidden="true">↗</span></a>
   </div>
   <nav class="publication-topics" aria-label="主要分类">{paths}</nav>
@@ -556,7 +569,10 @@ def article(post, older, newer, series_position=None):
     original_tags = taxonomy_links(post.tags)
     original_categories = taxonomy_links(post.categories)
     trail = topic_trail(post.topic) if post.topic else original_categories
-    source = f'<p class="source"><a class="source-link" href="{html(post.source)}">查看微信公众号原文 ↗</a></p>' if post.source else ''
+    source = portfolio.source_panel(post)
+    if post.source and 'class="source-link"' not in source:
+        source += f'<p class="source"><a class="source-link" href="{html(post.source)}">查看原文 ↗</a></p>'
+    author = (f'<a href="/about/" rel="author">{html(post.author)}</a>' if post.author == "听白" else html(post.author))
     if series_position:
         related = article_navigation(series_position)
     else:
@@ -583,9 +599,10 @@ def article(post, older, newer, series_position=None):
     if post.display_cover:
         cover_meta += f'\n<meta property="og:image" content="{html(SITE + post.display_cover)}">'
         cover_art = html(f'url("{quote(post.display_cover, safe="/%")}")')
+        image_dimensions = portfolio.cover_dimensions(post.display_cover, ROOT)
         cover_image = (
             f'<figure class="article-cover" style="--cover-art:{cover_art}">'
-            f'<img src="{html(post.display_cover)}" alt="" fetchpriority="high" decoding="async"></figure>'
+            f'<img src="{html(post.display_cover)}" alt=""{image_dimensions} fetchpriority="high" decoding="async"></figure>'
         )
     stem = Path(post.path).stem
     watch_link = (f'<p class="watch-link"><a href="{discovery.watch_path(stem)}">打开独立观看页和文字稿 →</a></p>'
@@ -597,7 +614,7 @@ def article(post, older, newer, series_position=None):
       {cover_image}
       <div class="wrap article-heading">
         <h1 class="post-title"{topic_title}>{html(post.display_title)}</h1>
-        <div class="entry-meta"><span class="post-author">{html(post.author)}</span><time itemprop="datePublished" datetime="{html(post.published)}">{html(post.day)}</time>
+        <div class="entry-meta"><span class="post-author">{author}</span><time itemprop="datePublished" datetime="{html(post.published)}">{html(post.day)}</time>
           <span class="post-category" hidden>{original_categories}</span>
           <span class="read-time">{reading_time(post)}</span>
           {public_counter("reads", "累计阅读", post.path)}
@@ -626,8 +643,9 @@ def article(post, older, newer, series_position=None):
     return shell(post.display_title, post.path, content, post.description, head)
 
 
-def listing(title, path, posts, pagination="", intro=""):
-    return shell(title, path, f'<section class="listing"><h1>{html(title)}</h1>{intro}{post_rows(posts)}{pagination}</section>')
+def listing(title, path, posts, pagination="", intro="", *, canonical_path=None, noindex=False):
+    return shell(title, path, f'<section class="listing"><h1>{html(title)}</h1>{intro}{post_rows(posts)}{pagination}</section>',
+                 canonical_path=canonical_path, noindex=noindex or (not posts and "/page/" in path))
 
 
 def path_for(file):
@@ -750,10 +768,12 @@ def indexes(posts, catalog):
     for base in ("/", "/archives/"):
         for page in range(2, count + 1):
             path = f"{base}page/{page}/"
-            write(path, listing(f"全部文章 · 第 {page} 页", path, posts[(page - 1) * 10:page * 10], pagination(base, count, page)))
+            main_path = f"/archives/page/{page}/"
+            write(path, listing(f"全部文章 · 第 {page} 页", path, posts[(page - 1) * 10:page * 10],
+                                pagination("/archives/", count, page), canonical_path=main_path))
     for file in (ROOT / "archives/page").glob("*/index.html"):
         if file.parent.name == "1":
-            write(path_for(file), listing("文章归档", path_for(file), posts[:10], pagination("/archives/", count, 1)))
+            write(path_for(file), listing("文章归档", path_for(file), posts[:10], pagination("/archives/", count, 1), noindex=True))
     archive(posts)
     category_indexes(posts, catalog)
     tag_indexes(posts)
@@ -817,12 +837,14 @@ def main():
             record, number = position
             post.numbered_title = f"{record.title} · {chapter_title(post, number)}"
     write("/", home(posts, catalog, series))
-    write("/series/", shell("系列阅读", "/series/", catalog_page(series, thumbnail)))
+    write("/series/", shell("系列阅读", "/series/", catalog_page(series, lambda post: thumbnail(post, "series")),
+                           "按测试开发、AI 工程、研发工具和学习笔记浏览测试游记的系列教程，选择适合自己的阅读顺序。"))
     for record in series:
-        series_content = series_page(record, thumbnail)
+        series_content = series_page(record, thumbnail, series)
         if record.url == "/series/agent-development/":
             series_content += discovery.series_evidence()
-        write(record.url, shell(record.title, record.url, series_content, record.description))
+        summary, markup = portfolio.series_metadata(record, SITE)
+        write(record.url, shell(record.title, record.url, series_content, summary, markup))
     for i, post in enumerate(posts):
         older = posts[i + 1] if i + 1 < len(posts) else None
         newer = posts[i - 1] if i else None
@@ -832,6 +854,8 @@ def main():
         if Path(post.path).stem in discovery.WATCH:
             path, content, description, head = discovery.video_watch(post, ROOT, SITE)
             write(path, shell(post.display_title + "｜视频讲解", path, content, description, head))
+    content, description, markup = portfolio.video_library(posts, series, positions, SITE)
+    write("/videos/", shell("视频讲解目录", "/videos/", content, description, markup))
     write("/sitemap.xml", discovery.sitemap(posts, series, SITE))
     lab = (
         '<section class="listing resource-library"><header class="page-heading">'
@@ -852,7 +876,9 @@ def main():
         '<img class="profile-avatar" src="/images/avatar.jpeg" alt="" width="72" height="72"></header>'
         f'<div class="post-body">{about_body}</div>'
         '<nav class="profile-links" aria-label="继续浏览"><a href="/categories/">浏览分类 ↗</a>'
-        '<a href="/lab/">工具与课程 ↗</a><a href="/atom.xml">订阅 RSS ↗</a></nav>'
+        '<a href="/lab/">工具与课程 ↗</a><a href="/videos/">视频讲解目录 ↗</a><a href="/atom.xml">订阅 RSS ↗</a></nav>'
+        '<section class="profile-contact" aria-labelledby="contact-title"><h2 id="contact-title">联系听白</h2>'
+        '<p>邮箱：<a href="mailto:490336534@qq.com">490336534@qq.com</a> · <a href="https://github.com/zx490336534">GitHub</a></p></section>'
         '<p class="analytics-notice">本站使用 Umami 统计公开页面访问和常用入口点击。统计字段为页面路径、标题、来源站点和入口。'
         '浏览器的不跟踪或全局隐私信号会关闭统计。</p></section>'
     )
@@ -860,7 +886,7 @@ def main():
     missing = ('<section class="listing missing-page"><header class="page-heading"><h1>找不到页面</h1></header>'
                '<div class="profile-links"><a href="/archives/">浏览文章归档 ↗</a><a href="/">返回首页 ↗</a>'
                '<button type="button" data-open-search>搜索文章</button></div></section>')
-    write("/404.html", shell("找不到页面", "/404.html", missing))
+    write("/404.html", shell("找不到页面", "/404.html", missing, noindex=True))
     add_analytics_to_resources()
     tool = ROOT / "tools/test-cases/index.html"
     original_tool = tool.read_text()

@@ -12,6 +12,7 @@ import xml.etree.ElementTree as ET
 
 from bs4 import BeautifulSoup
 from blog_discovery import EVIDENCE, WATCH, watch_path
+from blog_portfolio import dimensions
 
 SITE = "https://www.zhongxin.website"
 ROOT = Path(__file__).resolve().parents[1]
@@ -94,6 +95,44 @@ def main():
     if args.baseline:
         before = old_page(args.baseline, "/tools/test-cases/")
         assert [s.string for s in before.select("script:not([src])")] == [s.string for s in tool.select("script:not([src])")]
+    must_email = "mailto:490336534@qq.com"
+    for address in ("/", "/archives/", "/series/agent-development/", "/videos/", "/article/promptfoo-agent-regression.html"):
+        footer = page(address).select_one("footer .footer-contact")
+        assert [a["href"] for a in footer.select("a[href]")] == [must_email, "https://github.com/zx490336534"], address
+    assert page("/about/").select_one(f'.profile-contact a[href="{must_email}"]')
+    assert not tool.select_one(f'a[href="{must_email}"]')
+    assert "/videos/" in paths
+    library = page("/videos/")
+    manifest = json.loads((ROOT / "scripts/article_videos.json").read_text())
+    expected = {watch_path(Path(p).stem) if Path(p).stem in WATCH else p + "#article-video-title"
+                for p,v in manifest.items() if v.get("voice") == "zh-CN-XiaoxiaoNeural" and v.get("poster") and v.get("captions")}
+    all_links = {a["href"] for a in library.select(".video-shelf li a[href]")}
+    assert all_links == expected and library.select_one("h1").get_text(strip=True) == "视频讲解目录"
+    for item in json.loads((ROOT / "scripts/series_catalog.json").read_text()):
+        series_url = f"/series/{item['id']}/"
+        series_pg = page(series_url)
+        assert series_pg.select_one('.article-path a[href="/"]')
+        assert series_pg.select_one(f'.article-path a[href="/series/#topic-{item["section"]}"]')
+        video_link = series_pg.select_one('.series-start-links a[href^="/videos/#"]')
+        if video_link:
+            assert library.find(id=video_link["href"].split("#",1)[1]), series_url
+    for slug in WATCH:
+        watch = page(watch_path(slug))
+        v = json.loads(watch.select_one('script[type="application/ld+json"]').string)["@graph"][0]
+        assert {a["href"] for a in watch.select("[data-watch-offset]")} == {c["url"].removeprefix(SITE + watch_path(slug)) for c in v["hasPart"]}
+        assert len(v["hasPart"]) == 5 and len({c["startOffset"] for c in v["hasPart"]}) == 5
+        assert watch.select_one('meta[property="og:image"]')["content"] == v["thumbnailUrl"][0]
+    for i in range(2, (len(articles) + 9)//10 + 1):
+        alias, primary = page(f"/page/{i}/"), page(f"/archives/page/{i}/")
+        assert alias.select_one('link[rel=canonical]')["href"] == SITE + f"/archives/page/{i}/"
+        assert [a["href"] for a in alias.select(".post-list .row-title")] == [a["href"] for a in primary.select(".post-list .row-title")]
+    for img in home.select(".front-media img[srcset]"):
+        for part in img["srcset"].split(","):
+            path, width = part.split()
+            assert target(path).stat().st_size <= target(img["src"]).stat().st_size
+            if path.startswith("/images/article-covers/"):
+                assert dimensions(path, ROOT)[0] == int(width[:-1])
+    print(f"OK: {len(expected)} Xiaoxiao library entries; 25-series navigation; exact archive alias consolidation; footer contacts.")
     print(f"OK: {len(paths)} canonical sitemap routes; {len(articles)} articles; 5 evidence cards; 3 complete watch transcripts.")
 
 

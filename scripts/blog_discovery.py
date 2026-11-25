@@ -169,10 +169,15 @@ def video_watch(post, root, site):
         transcript[part].append(" ".join(lines[timings + 1:]))
     if any(not part for part in transcript):
         raise ValueError(f"字幕与观看页章节不匹配：{post.path}")
-    nav, sections = [], []
+    nav, sections, clips = [], [], []
     for i, ((seconds, label), lines) in enumerate(zip(chapters, transcript), 1):
         time = f"{seconds//60}:{seconds%60:02}"
-        nav.append(f'<li><a href="#chapter-{i}">{time} {escape(label)}</a></li>')
+        nav.append(f'<li><a href="?t={seconds}" data-watch-offset="{seconds}">{time} {escape(label)}</a> '
+                   f'<a href="#chapter-{i}" aria-label="阅读{escape(label)}的文字稿">文字稿</a></li>')
+        clip = {"@type": "Clip", "name": label, "startOffset": seconds, "url": f"{site}{path}?t={seconds}"}
+        if i < len(chapters):
+            clip["endOffset"] = chapters[i][0]
+        clips.append(clip)
         paragraphs = "".join(f"<p>{escape(line)}</p>" for line in lines)
         sections.append(f'<section id="chapter-{i}"><h3>{time} {escape(label)}</h3>{paragraphs}</section>')
     video = {
@@ -185,9 +190,10 @@ def video_watch(post, root, site):
         "contentUrl": media["src"],
         "inLanguage": "zh-CN",
         "url": site + path,
+        "hasPart": clips,
     }
     body = f"""<article class="watch-page">
-      <header><h1>{escape(post.display_title)}：视频讲解</h1></header>
+      <header><p class="article-path"><a href="/videos/">视频讲解目录</a></p><h1>{escape(post.display_title)}：视频讲解</h1></header>
       <video controls playsinline preload="metadata" width="1280" height="720" poster="{escape(media["poster"])}"
          aria-label="{escape(post.display_title)}">
         <source src="{escape(media["src"])}" type="video/mp4">
@@ -199,12 +205,15 @@ def video_watch(post, root, site):
         {''.join(sections)}
       </div>
     </article>"""
-    return path, body, description, json_ld(video)
+    head = (f'<meta property="og:type" content="video.other">\n'
+            f'<meta property="og:image" content="{site}{escape(media["poster"])}">\n'
+            '<script src="/js/video-chapters.js" defer></script>\n' + json_ld(video))
+    return path, body, description, head
 
 
 def sitemap(posts, series, site):
     paths = {
-        "/", "/archives/", "/series/", "/categories/", "/about/", "/lab/", TOOL_PATH,
+        "/", "/archives/", "/series/", "/categories/", "/about/", "/lab/", "/videos/", TOOL_PATH,
         *(p.path for p in posts), *(s.url for s in series), *(watch_path(slug) for slug in WATCH),
     }
     video_ns = "http://www.google.com/schemas/sitemap-video/1.1"

@@ -115,7 +115,7 @@ def catalog_page(collection, thumbnail):
 </section>'''
 
 
-def series_page(series, thumbnail):
+def series_page(series, thumbnail, collection=()):
     first = series.chapters[0]
     resources = ""
     if series.resource:
@@ -132,10 +132,12 @@ def series_page(series, thumbnail):
         rows = []
         first_number = number
         for post in chapters:
+            footage = (' <span class="series-video-badge">有视频</span>'
+                       if post.video and post.video.get("voice") == "zh-CN-XiaoxiaoNeural" else "")
             rows.append(
                 f'<li id="chapter-{number}"><a href="{escape(post.path)}" class="series-chapter-link">'
                 '<span class="list-rank" aria-hidden="true"></span>'
-                f'{thumbnail(post)}<strong>{escape(post.title)}</strong></a></li>'
+                f'{thumbnail(post)}<strong>{escape(post.title)}</strong>{footage}</a></li>'
             )
             number += 1
         stages.append(
@@ -144,19 +146,29 @@ def series_page(series, thumbnail):
         )
     jump = ('<nav class="series-stage-links" aria-label="阅读阶段">' + "".join(shortcuts) + '</nav>') if len(stages) > 1 else ""
 
+    related = [other for other in collection if other.section == series.section and other is not series]
+    related.sort(key=lambda other: (not other.featured, other.title))
+    related_html = ("<ul>" + "".join(f'<li><a href="{other.url}">{escape(other.title)}</a></li>' for other in related[:3]) + "</ul>") if related else ""
+    series_idx = f"/series/#topic-{series.section}"
+    video_link = (f'<a href="/videos/#videos-{series.slug}">本系列视频 ↗</a>'
+                  if any(p.video and p.video.get("voice") == "zh-CN-XiaoxiaoNeural" for p in series.chapters) else "")
     return f'''<section class="listing series-page">
-  <nav class="article-path" aria-label="系列位置"><a href="/series/">系列阅读</a> <span aria-hidden="true">/</span> <span aria-current="page">{escape(series.title)}</span></nav>
+  <nav class="article-path" aria-label="系列位置"><a href="/">首页</a> <span aria-hidden="true">/</span>
+    <a href="/series/">系列阅读</a> <span aria-hidden="true">/</span>
+    <a href="{series_idx}">{escape(CATALOG_SECTIONS[series.section])}</a> <span aria-hidden="true">/</span>
+    <span aria-current="page">{escape(series.title)}</span></nav>
   <header class="page-heading"><div><h1>{escape(series.title)}</h1><p>{escape(series.description)}</p></div>
     <span class="series-size">{len(series.chapters)} 篇</span></header>
   <div class="series-start">
     <p><strong>适合</strong> {escape(series.audience)}</p>
     <div class="series-start-links">
       <a class="series-start-link" href="{escape(first.path)}">读第一篇 · {escape(first.title)} ↗</a>
-      {resources}
+      {resources} {video_link}
     </div>
   </div>
   {jump}
   {"".join(stages)}
+  <section class="series-stage"><h2>相关系列</h2>{related_html}<p><a href="{series_idx}">查看同主题的全部系列 →</a></p></section>
 </section>'''
 
 
