@@ -15,3 +15,24 @@
 .site-return a { color: inherit; text-decoration: none; }
 .site-return a:hover, .site-return a:focus-visible { text-decoration: underline; }
 .site-return a:last-child { color: #f2d9ab; }
+
+.tool-workspace-host {
+  display: flex;
+  flex-direction: column;
+  block-size: 100dvh;
+  overflow: hidden;
+}
+.tool-workspace-host > .site-return {
+  flex: none;
+  padding-block-start: max(.45rem, env(safe-area-inset-top, 0px));
+  padding-inline: max(clamp(1rem, 4vw, 2.5rem), env(safe-area-inset-left, 0px))
+    max(clamp(1rem, 4vw, 2.5rem), env(safe-area-inset-right, 0px));
+}
+.tool-workspace-host > #root {
+  flex: 1;
+  min-block-size: 0;
+  --workspace-safe-top: 0px;
+}
+.tool-workspace-host > #root > main {
+  max-block-size: 100%;
+}
