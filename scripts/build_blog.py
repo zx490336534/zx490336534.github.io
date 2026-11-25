@@ -226,11 +226,14 @@ def add_analytics_to_resources():
 
 def shell(title, path, content, description=DESCRIPTION, extra_head=""):
     title_tag = NAME if path == "/" else f"{title} · {NAME}"
-    nav = [("归档", "/archives/"), ("分类", "/categories/"), ("系列", "/series/"), ("工具与课程", "/lab/"), ("关于", "/about/")]
+    nav = [
+        ("首页", "/"), ("归档", "/archives/"), ("分类", "/categories/"),
+        ("系列", "/series/"), ("工具与课程", "/lab/"), ("关于", "/about/"),
+    ]
     links = []
     for label, url in nav:
         current = ' aria-current="page"' if url == path else ""
-        if not current and (path.startswith(url) or (path.startswith("/article/") and url == "/archives/")):
+        if not current and url != "/" and (path.startswith(url) or (path.startswith("/article/") and url == "/archives/")):
             current = ' aria-current="location"'
         links.append(f'<a href="{url}"{current}>{label}</a>')
     links_html = "".join(links)
