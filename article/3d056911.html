@@ -39,21 +39,23 @@
       </div>
     </div>
   </header>
-  <main id="main" class="wrap">
+  <main id="main">
   <article class="article">
     <header class="article-header">
-      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/crawling/">爬虫与数据采集</a></nav>
-      <h1 class="post-title" data-topic-title="抓取产品列表、详情页并保存结构化数据">Python 网页采集练习 · 第 06 篇｜抓取产品列表、详情页并保存结构化数据</h1>
-      <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2019-03-20T08:43:00+08:00">2019-03-20</time>
-        <span class="post-category" hidden><a href="/categories/%E7%88%AC%E8%99%AB/">爬虫</a></span>
-        <span class="read-time">约 5 分钟</span>
-        <span class="public-counter" data-public-count="reads" data-article-path="/article/3d056911.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/python-web-scraping/#chapter-6">Python 网页采集练习 · 第 6/7 篇</a></div>
+      <figure class="article-cover" style="--cover-art:url(&quot;/images/blog-covers/3d056911.webp&quot;)"><img src="/images/blog-covers/3d056911.webp" alt="" fetchpriority="high" decoding="async"></figure>
+      <div class="wrap article-heading">
+        <h1 class="post-title" data-topic-title="抓取产品列表、详情页并保存结构化数据">Python 网页采集练习 · 第 06 篇｜抓取产品列表、详情页并保存结构化数据</h1>
+        <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2019-03-20T08:43:00+08:00">2019-03-20</time>
+          <span class="post-category" hidden><a href="/categories/%E7%88%AC%E8%99%AB/">爬虫</a></span>
+          <span class="read-time">约 5 分钟</span>
+          <span class="public-counter" data-public-count="reads" data-article-path="/article/3d056911.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
+          <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/python-web-scraping/#chapter-6">Python 网页采集练习 · 第 6/7 篇</a></div>
+        <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/crawling/">爬虫与数据采集</a></nav>
+      </div>
     </header>
-    <div class="article-layout with-outline">
+    <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E5%88%9B%E5%BB%BA%E9%A1%B9%E7%9B%AE">创建项目</a></li><li><a href="#%E5%88%86%E6%9E%90%E7%88%AC%E5%8F%96%E5%86%85%E5%AE%B9">分析爬取内容</a></li><li><a href="#%E8%8E%B7%E5%8F%96%E8%AE%BE%E5%A4%87%E7%B1%BB%E5%9E%8B%E5%88%97%E8%A1%A8">获取设备类型列表</a></li><li><a href="#%E8%8E%B7%E5%8F%96%E8%AE%BE%E5%A4%87%E5%88%97%E8%A1%A8">获取设备列表</a></li><li><a href="#%E8%8E%B7%E5%8F%96%E8%AF%A6%E6%83%85%E9%A1%B5">获取详情页</a></li><li><a href="#%E6%95%B0%E6%8D%AE%E6%8C%81%E4%B9%85%E5%8C%96">数据持久化</a></li><li><a href="#%E4%BF%AE%E6%94%B9Dahua-settings-py">修改 Dahua/settings.py</a></li><li><a href="#%E6%9F%A5%E7%9C%8B%E7%BB%93%E6%9E%9C">查看结果</a></li></ol></details></aside>
       <div class="article-main">
-        <figure class="article-cover"><img src="/images/blog-covers/3d056911.webp" alt="" fetchpriority="high" decoding="async"></figure>
         <div class="post-body"><span id="爬取大华产品信息"></span><p><strong>欢迎关注我的公众号「测试游记」</strong></p>
 <p>由于想要了解一下友商的产品信息，所以简单的写一下爬取他们信息的爬虫</p>
 <h2 id="创建项目"><a class="headerlink" href="#创建项目" title="创建项目"></a>创建项目</h2><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> scrapy startproject Dahua</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> Dahua</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> scrapy genspider dahua dahuatech.com</span></span><br/></pre></td></tr></tbody></table></figure>

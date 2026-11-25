@@ -39,21 +39,23 @@
       </div>
     </div>
   </header>
-  <main id="main" class="wrap">
+  <main id="main">
   <article class="article">
     <header class="article-header">
-      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/performance/">性能与监控</a> <span aria-hidden="true">/</span> <a href="/categories/testing/performance/monitoring/">系统与性能监控</a></nav>
-      <h1 class="post-title" data-topic-title="部署 Zabbix 采集服务器指标并接入 Grafana">性能测试入门与实践 · 第 21 篇｜部署 Zabbix 采集服务器指标并接入 Grafana</h1>
-      <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2021-05-16T17:39:00+08:00">2021-05-16</time>
-        <span class="post-category" hidden><a href="/categories/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a></span>
-        <span class="read-time">约 4 分钟</span>
-        <span class="public-counter" data-public-count="reads" data-article-path="/article/3fb58e39.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/performance-testing/#chapter-21">性能测试入门与实践 · 第 21/31 篇</a></div>
+      <figure class="article-cover" style="--cover-art:url(&quot;/images/blog-covers/3fb58e39.webp&quot;)"><img src="/images/blog-covers/3fb58e39.webp" alt="" fetchpriority="high" decoding="async"></figure>
+      <div class="wrap article-heading">
+        <h1 class="post-title" data-topic-title="部署 Zabbix 采集服务器指标并接入 Grafana">性能测试入门与实践 · 第 21 篇｜部署 Zabbix 采集服务器指标并接入 Grafana</h1>
+        <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2021-05-16T17:39:00+08:00">2021-05-16</time>
+          <span class="post-category" hidden><a href="/categories/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a></span>
+          <span class="read-time">约 4 分钟</span>
+          <span class="public-counter" data-public-count="reads" data-article-path="/article/3fb58e39.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
+          <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/performance-testing/#chapter-21">性能测试入门与实践 · 第 21/31 篇</a></div>
+        <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/performance/">性能与监控</a> <span aria-hidden="true">/</span> <a href="/categories/testing/performance/monitoring/">系统与性能监控</a></nav>
+      </div>
     </header>
-    <div class="article-layout with-outline">
+    <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#zabbix%E7%9A%84%E7%BB%84%E6%88%90">zabbix的组成</a></li><li><a href="#%E5%AE%89%E8%A3%85">安装</a></li><li><a href="#%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96">安装依赖</a></li><li><a href="#%E5%AE%89%E8%A3%85mysql">安装mysql</a></li><li><a href="#%E5%90%AF%E5%8A%A8mysql">启动mysql</a></li><li><a href="#%E4%BF%AE%E6%94%B9%E6%95%B0%E6%8D%AE%E5%BA%93%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-etc-my-cnf">修改数据库配置文件 /etc/my.cnf</a></li><li><a href="#%E6%9F%A5%E6%89%BE%E5%8E%9F%E5%A7%8B%E5%AF%86%E7%A0%81">查找原始密码</a></li><li><a href="#%E4%BF%AE%E6%94%B9%E5%AF%86%E7%A0%81">修改密码</a></li><li><a href="#%E5%AE%89%E8%A3%85fping-%E5%8F%AF%E8%B7%B3%E8%BF%87">安装fping(可跳过)</a></li><li><a href="#%E5%AE%89%E8%A3%85zabbix-server-zabbix-agent">安装zabbix-server zabbix-agent</a></li><li><a href="#%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6zabbix-repo">修改配置文件zabbix.repo</a></li><li><a href="#%E5%AE%89%E8%A3%85zabbix-frontend">安装zabbix frontend</a></li><li><a href="#%E9%85%8D%E7%BD%AE%E6%95%B0%E6%8D%AE%E5%BA%93">配置数据库</a></li><li><a href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E6%95%B0%E6%8D%AE%E5%BA%93">初始化数据库</a></li><li><a href="#%E9%85%8D%E7%BD%AEzabbix-server">配置zabbix-server</a></li><li><a href="#%E9%85%8D%E7%BD%AE%E5%89%8D%E7%AB%AFphp">配置前端php</a></li><li><a href="#%E9%85%8D%E7%BD%AE%E5%90%AF%E7%94%A8nginx">配置启用nginx</a></li><li><a href="#%E5%90%AF%E5%8A%A8%E6%89%80%E6%9C%89%E6%9C%8D%E5%8A%A1">启动所有服务</a></li><li><a href="#%E7%9B%B4%E6%8E%A5%E4%BD%BF%E7%94%A8%E5%B7%B2%E5%AE%89%E8%A3%85%E9%A1%B9%E7%9B%AE">直接使用已安装项目</a></li><li><a href="#%E7%B3%BB%E7%BB%9F%E8%B4%A6%E5%8F%B7%E5%AF%86%E7%A0%81">系统账号密码</a></li><li><a href="#%E6%98%BE%E7%A4%BAIP">显示IP</a></li><li><a href="#%E5%89%8D%E7%AB%AF%E7%99%BB%E5%BD%95">前端登录</a></li><li><a href="#grafana-zabbix%E9%9B%86%E6%88%90">grafana + zabbix集成</a></li></ol></details></aside>
       <div class="article-main">
-        <figure class="article-cover"><img src="/images/blog-covers/3fb58e39.webp" alt="" fetchpriority="high" decoding="async"></figure>
         <div class="post-body"><span id="21-zabbix"></span><blockquote>
 <p>企业级的、高度成熟的、分布式开源监控解决方案。</p>
 <p>它能监控众多网络参数和服务器的健康度、完整性，把数据存储在数据库中，然后再通过web页面，用不同的方式，展示各种监控数据，再通过告警机制，设置告警阈值，发送收取告警信息</p>

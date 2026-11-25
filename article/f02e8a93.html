@@ -39,21 +39,23 @@
       </div>
     </div>
   </header>
-  <main id="main" class="wrap">
+  <main id="main">
   <article class="article">
     <header class="article-header">
-      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/engineering/">工程工具</a> <span aria-hidden="true">/</span> <a href="/categories/engineering/ci/">持续集成</a></nav>
-      <h1 class="post-title" data-topic-title="实现参数化流水线与 Jenkins 共享库">Jenkins 流水线 · 第 08 篇｜实现参数化流水线与 Jenkins 共享库</h1>
-      <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2019-07-13T22:48:00+08:00">2019-07-13</time>
-        <span class="post-category" hidden><a href="/categories/Jenkins/">Jenkins</a></span>
-        <span class="read-time">约 3 分钟</span>
-        <span class="public-counter" data-public-count="reads" data-article-path="/article/f02e8a93.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/jenkins-pipeline/#chapter-8">Jenkins 流水线 · 第 8/8 篇</a></div>
+      <figure class="article-cover" style="--cover-art:url(&quot;/images/blog-covers/f02e8a93.webp&quot;)"><img src="/images/blog-covers/f02e8a93.webp" alt="" fetchpriority="high" decoding="async"></figure>
+      <div class="wrap article-heading">
+        <h1 class="post-title" data-topic-title="实现参数化流水线与 Jenkins 共享库">Jenkins 流水线 · 第 08 篇｜实现参数化流水线与 Jenkins 共享库</h1>
+        <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2019-07-13T22:48:00+08:00">2019-07-13</time>
+          <span class="post-category" hidden><a href="/categories/Jenkins/">Jenkins</a></span>
+          <span class="read-time">约 3 分钟</span>
+          <span class="public-counter" data-public-count="reads" data-article-path="/article/f02e8a93.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
+          <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/jenkins-pipeline/#chapter-8">Jenkins 流水线 · 第 8/8 篇</a></div>
+        <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/engineering/">工程工具</a> <span aria-hidden="true">/</span> <a href="/categories/engineering/ci/">持续集成</a></nav>
+      </div>
     </header>
-    <div class="article-layout with-outline">
+    <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E5%8F%82%E6%95%B0%E5%8C%96%E6%B5%81%E6%B0%B4%E7%BA%BF">参数化流水线</a></li><li><a href="#%E6%94%AF%E6%8C%81%E7%9A%84%E5%8F%82%E6%95%B0%E7%B1%BB%E5%9E%8B">支持的参数类型</a></li><li><a href="#Extended-Choice-Parameter">Extended Choice Parameter</a></li><li><a href="#%E6%9C%80%E5%90%8E">最后</a></li></ol></details></aside>
       <div class="article-main">
-        <figure class="article-cover"><img src="/images/blog-covers/f02e8a93.webp" alt="" fetchpriority="high" decoding="async"></figure>
         <div class="post-body"><span id="Jenkins-八"></span><h2 id="参数化流水线"><a class="headerlink" href="#参数化流水线" title="参数化流水线"></a>参数化流水线</h2><p>Jenkins pipeline中定义参数使用<code>parameters</code>指令，只允许放在pipeline块下</p>
 <p>在<a href="http://127.0.0.1:8080/directive-generator/%E5%8F%AF%E4%BB%A5%E8%87%AA%E5%8A%A8%E7%94%9F%E6%88%90" rel="noopener" target="_blank">http://127.0.0.1:8080/directive-generator/可以自动生成</a></p>
 <p><img alt="生成" decoding="async" height="688" loading="lazy" src="/images/blog-media/1e5e24348249c7eeb9f5.webp" width="1080"/></p>

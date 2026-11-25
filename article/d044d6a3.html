@@ -39,21 +39,23 @@
       </div>
     </div>
   </header>
-  <main id="main" class="wrap">
+  <main id="main">
   <article class="article">
     <header class="article-header">
-      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/">后端开发</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/python-web/">Python Web</a></nav>
-      <h1 class="post-title" data-topic-title="从 WSGI 理解 Python Web 请求处理">Flask Web 开发 · 第 01 篇｜从 WSGI 理解 Python Web 请求处理</h1>
-      <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2020-06-13T08:43:00+08:00">2020-06-13</time>
-        <span class="post-category" hidden><a href="/categories/Flask%E5%9F%BA%E7%A1%80/">Flask基础</a></span>
-        <span class="read-time">约 3 分钟</span>
-        <span class="public-counter" data-public-count="reads" data-article-path="/article/d044d6a3.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/flask-web/#chapter-1">Flask Web 开发 · 第 1/11 篇</a></div>
+      <figure class="article-cover" style="--cover-art:url(&quot;/images/blog-covers/d044d6a3.webp&quot;)"><img src="/images/blog-covers/d044d6a3.webp" alt="" fetchpriority="high" decoding="async"></figure>
+      <div class="wrap article-heading">
+        <h1 class="post-title" data-topic-title="从 WSGI 理解 Python Web 请求处理">Flask Web 开发 · 第 01 篇｜从 WSGI 理解 Python Web 请求处理</h1>
+        <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2020-06-13T08:43:00+08:00">2020-06-13</time>
+          <span class="post-category" hidden><a href="/categories/Flask%E5%9F%BA%E7%A1%80/">Flask基础</a></span>
+          <span class="read-time">约 3 分钟</span>
+          <span class="public-counter" data-public-count="reads" data-article-path="/article/d044d6a3.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
+          <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/flask-web/#chapter-1">Flask Web 开发 · 第 1/11 篇</a></div>
+        <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/">后端开发</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/python-web/">Python Web</a></nav>
+      </div>
     </header>
-    <div class="article-layout with-outline">
+    <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#Flask-%E4%BB%8Ewsgi%E5%BC%80%E5%A7%8B-%E4%B8%80">Flask(从wsgi开始 一)</a></li><li><a href="#web%E5%BA%94%E7%94%A8%E5%A4%84%E7%90%86%E8%AF%B7%E6%B1%82%E7%9A%84%E5%85%B7%E4%BD%93%E6%B5%81%E7%A8%8B">web应用处理请求的具体流程</a></li><li><a href="#%E4%B8%80%E4%B8%AAwsgi%E6%9C%8D%E5%8A%A1">一个 wsgi 服务</a></li><li><a href="#%E6%8B%93%E5%B1%951%EF%BC%88%E9%9D%A2%E5%90%91%E8%BF%87%E7%A8%8B%EF%BC%89">拓展1（面向过程）</a></li><li><a href="#%E6%8B%93%E5%B1%952%EF%BC%88%E5%AD%97%E5%85%B8%E8%B7%AF%E7%94%B1%EF%BC%89">拓展2（字典路由）</a></li><li><a href="#%E4%BD%BF%E7%94%A8%E8%A3%85%E9%A5%B0%E5%99%A8%E6%8B%93%E5%B1%95">使用装饰器拓展</a></li></ol></details></aside>
       <div class="article-main">
-        <figure class="article-cover"><img src="/images/blog-covers/d044d6a3.webp" alt="" fetchpriority="high" decoding="async"></figure>
         <div class="post-body"><h1 id="Flask-从wsgi开始-一"><a class="headerlink" href="#Flask-从wsgi开始-一" title="Flask(从wsgi开始 一)"></a>Flask(从wsgi开始 一)</h1><blockquote>
 <p>运行Flask=开启一个服务</p>
 </blockquote>

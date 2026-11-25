@@ -39,21 +39,23 @@
       </div>
     </div>
   </header>
-  <main id="main" class="wrap">
+  <main id="main">
   <article class="article">
     <header class="article-header">
-      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/quality/">质量工程</a></nav>
-      <h1 class="post-title" data-topic-title="评估自动化测试可行性并规划实施流程">Java 自动化测试 · 第 28 篇｜评估自动化测试可行性并规划实施流程</h1>
-      <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2020-09-08T06:34:25+08:00">2020-09-08</time>
-        <span class="post-category" hidden><a href="/categories/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">Java自动化测试</a></span>
-        <span class="read-time">约 2 分钟</span>
-        <span class="public-counter" data-public-count="reads" data-article-path="/article/3d748498.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/java-test-automation/#chapter-28">Java 自动化测试 · 第 28/36 篇</a></div>
+      <figure class="article-cover" style="--cover-art:url(&quot;/images/blog-covers/3d748498.webp&quot;)"><img src="/images/blog-covers/3d748498.webp" alt="" fetchpriority="high" decoding="async"></figure>
+      <div class="wrap article-heading">
+        <h1 class="post-title" data-topic-title="评估自动化测试可行性并规划实施流程">Java 自动化测试 · 第 28 篇｜评估自动化测试可行性并规划实施流程</h1>
+        <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2020-09-08T06:34:25+08:00">2020-09-08</time>
+          <span class="post-category" hidden><a href="/categories/Java%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95/">Java自动化测试</a></span>
+          <span class="read-time">约 2 分钟</span>
+          <span class="public-counter" data-public-count="reads" data-article-path="/article/3d748498.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
+          <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/java-test-automation/#chapter-28">Java 自动化测试 · 第 28/36 篇</a></div>
+        <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/quality/">质量工程</a></nav>
+      </div>
     </header>
-    <div class="article-layout with-outline">
+    <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E8%83%8C%E6%99%AF">自动化测试背景</a></li><li><a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95">什么是自动化测试</a></li><li><a href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E4%BC%98%E7%82%B9">自动化测试优点</a></li><li><a href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E5%8A%A3%E5%8A%BF">自动化测试劣势</a></li><li><a href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E5%AE%9E%E6%96%BD%E6%B5%81%E7%A8%8B">自动化测试实施流程</a></li><li><a href="#1-%E8%AF%84%E4%BC%B0%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E5%AE%9E%E6%96%BD%E5%8F%AF%E8%A1%8C%E6%80%A7">1.评估自动化测试实施可行性</a></li><li><a href="#2-%E6%B5%8B%E8%AF%95%E9%9C%80%E6%B1%82%E5%88%86%E6%9E%90">2.测试需求分析</a></li><li><a href="#3-%E5%88%B6%E5%AE%9A%E6%B5%8B%E8%AF%95%E8%AE%A1%E5%88%92">3.制定测试计划</a></li><li><a href="#4-%E6%90%AD%E5%BB%BA%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83%EF%BC%8C%E8%AE%BE%E8%AE%A1%E6%A1%86%E6%9E%B6">4.搭建自动化测试环境，设计框架</a></li><li><a href="#5-%E5%BC%80%E5%8F%91%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E8%84%9A%E6%9C%AC">5.开发自动化测试脚本</a></li><li><a href="#6-%E6%89%A7%E8%A1%8C%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95">6.执行自动化测试</a></li><li><a href="#7-%E5%88%86%E6%9E%90%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C">7.分析自动化测试结果</a></li><li><a href="#8-%E6%A1%86%E6%9E%B6-%E8%84%9A%E6%9C%AC%E7%BB%B4%E6%8A%A4">8.框架/脚本维护</a></li><li><a href="#9-%E6%88%90%E5%8A%9F%E5%B1%95%E7%A4%BA%E3%80%8C%E8%90%BD%E5%9C%B0%E3%80%8D">9.成功展示「落地」</a></li><li><a href="#%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E5%8F%AF%E4%BB%A5%E8%BE%BE%E5%88%B0100-%E8%A6%86%E7%9B%96%E7%8E%87%E5%90%97">自动化测试可以达到100%覆盖率吗</a></li></ol></details></aside>
       <div class="article-main">
-        <figure class="article-cover"><img src="/images/blog-covers/3d748498.webp" alt="" fetchpriority="high" decoding="async"></figure>
         <div class="post-body"><span id="Java自动化测试-自动化测试背景与流程-27"></span><h2 id="自动化测试背景"><a class="headerlink" href="#自动化测试背景" title="自动化测试背景"></a>自动化测试背景</h2><h3 id="什么是自动化测试"><a class="headerlink" href="#什么是自动化测试" title="什么是自动化测试"></a>什么是自动化测试</h3><p>机器代替手工测试，自动验证结果是否符合预期</p>
 <h3 id="自动化测试优点"><a class="headerlink" href="#自动化测试优点" title="自动化测试优点"></a>自动化测试优点</h3><ol>
 <li>替代大量重复手工测试</li>

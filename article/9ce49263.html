@@ -39,21 +39,23 @@
       </div>
     </div>
   </header>
-  <main id="main" class="wrap">
+  <main id="main">
   <article class="article">
     <header class="article-header">
-      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/">后端开发</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/python-web/">Python Web</a></nav>
-      <h1 class="post-title" data-topic-title="用 SQLite 和 SQLAlchemy 定义数据模型">Flask Web 开发 · 第 10 篇｜用 SQLite 和 SQLAlchemy 定义数据模型</h1>
-      <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2020-07-11T11:01:00+08:00">2020-07-11</time>
-        <span class="post-category" hidden><a href="/categories/Flask%E5%9F%BA%E7%A1%80/">Flask基础</a></span>
-        <span class="read-time">约 3 分钟</span>
-        <span class="public-counter" data-public-count="reads" data-article-path="/article/9ce49263.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/flask-web/#chapter-10">Flask Web 开发 · 第 10/11 篇</a></div>
+      <figure class="article-cover" style="--cover-art:url(&quot;/images/blog-covers/9ce49263.webp&quot;)"><img src="/images/blog-covers/9ce49263.webp" alt="" fetchpriority="high" decoding="async"></figure>
+      <div class="wrap article-heading">
+        <h1 class="post-title" data-topic-title="用 SQLite 和 SQLAlchemy 定义数据模型">Flask Web 开发 · 第 10 篇｜用 SQLite 和 SQLAlchemy 定义数据模型</h1>
+        <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2020-07-11T11:01:00+08:00">2020-07-11</time>
+          <span class="post-category" hidden><a href="/categories/Flask%E5%9F%BA%E7%A1%80/">Flask基础</a></span>
+          <span class="read-time">约 3 分钟</span>
+          <span class="public-counter" data-public-count="reads" data-article-path="/article/9ce49263.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
+          <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/flask-web/#chapter-10">Flask Web 开发 · 第 10/11 篇</a></div>
+        <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/">后端开发</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/python-web/">Python Web</a></nav>
+      </div>
     </header>
-    <div class="article-layout with-outline">
+    <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#Flask-%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8C%E6%A8%A1%E5%9E%8B-%E5%8D%81">Flask(数据库和模型 十)</a></li><li><a href="#%E4%BD%BF%E7%94%A8%E5%8E%9F%E7%94%9FSQL%E6%9D%A5%E8%BF%9B%E8%A1%8Csqlite%E7%9A%84%E4%BD%BF%E7%94%A8">使用原生SQL来进行sqlite的使用</a></li><li><a href="#sqlite%E7%9A%84%E5%A5%BD%E5%A4%84">sqlite的好处</a></li><li><a href="#%E8%BF%9E%E6%8E%A5%E4%B8%8E%E4%BD%BF%E7%94%A8">连接与使用</a></li><li><a href="#ORM">ORM</a></li><li><a href="#%E4%BB%80%E4%B9%88%E6%98%AFORM">什么是ORM</a></li><li><a href="#%E5%A5%BD%E5%A4%84">好处</a></li><li><a href="#%E5%9D%8F%E5%A4%84">坏处</a></li><li><a href="#%E5%BB%BA%E8%A1%A8">建表</a></li><li><a href="#ORM%E6%95%B0%E6%8D%AE%E5%BA%93%E5%88%9B%E5%BB%BA%E6%AD%A5%E9%AA%A4">ORM数据库创建步骤</a></li><li><a href="#%E5%AE%89%E8%A3%85">安装</a></li><li><a href="#%E9%85%8D%E7%BD%AE">配置</a></li><li><a href="#%E5%AE%9A%E4%B9%89%E8%A1%A8%E7%BB%93%E6%9E%84%EF%BC%8C%E8%AE%BE%E8%AE%A1%E8%A1%A8">定义表结构，设计表</a></li><li><a href="#%E5%88%9B%E5%BB%BA%E8%A1%A8">创建表</a></li><li><a href="#%E8%BF%90%E8%A1%8C">运行</a></li><li><a href="#%E5%85%B6%E4%BB%96%E6%96%B9%E5%BC%8F%E5%88%9B%E5%BB%BA">其他方式创建</a></li><li><a href="#%E6%B7%BB%E5%8A%A0%E6%95%B0%E6%8D%AE">添加数据</a></li><li><a href="#%E6%9F%A5%E8%AF%A2%E6%95%B0%E6%8D%AE">查询数据</a></li></ol></details></aside>
       <div class="article-main">
-        <figure class="article-cover"><img src="/images/blog-covers/9ce49263.webp" alt="" fetchpriority="high" decoding="async"></figure>
         <div class="post-body"><h1 id="Flask-数据库和模型-十"><a class="headerlink" href="#Flask-数据库和模型-十" title="Flask(数据库和模型 十)"></a>Flask(数据库和模型 十)</h1><h2 id="使用原生SQL来进行sqlite的使用"><a class="headerlink" href="#使用原生SQL来进行sqlite的使用" title="使用原生SQL来进行sqlite的使用"></a>使用原生SQL来进行sqlite的使用</h2><h3 id="sqlite的好处"><a class="headerlink" href="#sqlite的好处" title="sqlite的好处"></a>sqlite的好处</h3><ol>
 <li>sqlite3 开箱即用</li>
 <li>小巧，功能还比较强大，百万级别</li>

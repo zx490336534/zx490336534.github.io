@@ -16,7 +16,6 @@ from urllib.parse import quote, unquote, urlsplit
 import xml.etree.ElementTree as ET
 
 from bs4 import BeautifulSoup
-from bs4.element import NavigableString
 import nh3
 
 from blog_series import article_navigation, cards as series_cards, catalog_page, chapter_title, load_series, position_link, series_page
@@ -71,7 +70,6 @@ class Post:
     topic: Topic | None = None
     editorial_tags: list = field(default_factory=list)
     display_cover: str = ""
-    opening_cover: str = ""
     numbered_title: str = ""
     video: dict | None = None
 
@@ -225,6 +223,7 @@ def add_analytics_to_resources():
 
 
 def shell(title, path, content, description=DESCRIPTION, extra_head=""):
+    is_article = path.startswith("/article/")
     title_tag = NAME if path == "/" else f"{title} · {NAME}"
     nav = [
         ("首页", "/"), ("归档", "/archives/"), ("分类", "/categories/"),
@@ -239,7 +238,8 @@ def shell(title, path, content, description=DESCRIPTION, extra_head=""):
     links_html = "".join(links)
     canonical = html(SITE + path)
     summary = excerpt(description, 180)
-    counts = '\n  <script src="/js/public-counts.js" defer></script>' if path == "/" or path.startswith("/article/") else ""
+    counts = '\n  <script src="/js/public-counts.js" defer></script>' if path == "/" or is_article else ""
+    main_class = "" if is_article else ' class="wrap"'
     return f'''<!doctype html>
 <html lang="zh-CN">
 <head>
@@ -277,7 +277,7 @@ def shell(title, path, content, description=DESCRIPTION, extra_head=""):
       </div>
     </div>
   </header>
-  <main id="main" class="wrap">{content}</main>
+  <main id="main"{main_class}>{content}</main>
   <footer class="wrap footer">
     <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
     <nav aria-label="页脚导航">
@@ -341,21 +341,7 @@ def post_rows(posts, *, show_category=True):
     return f'<ul class="{css}">' + "".join(rows) + "</ul>"
 
 
-def starts_article(body, image):
-    if image is None:
-        return False
-    text_before = 0
-    for item in body.descendants:
-        if item is image:
-            return True
-        if isinstance(item, NavigableString):
-            text_before += len(item.strip())
-        if text_before > 175 or getattr(item, "name", "") in {"pre", "table"}:
-            return False
-    return False
-
-
-def set_display_covers(posts, opening_covers):
+def set_display_covers(posts):
     for post in posts:
         stem = Path(post.path).stem
         editorial = f"/images/article-covers/{stem}.webp"
@@ -365,24 +351,17 @@ def set_display_covers(posts, opening_covers):
                 post.display_cover = image
                 break
 
-        # A separately designed cover should not alter the original opening image in the body.
-        expected_opening = opening_covers.get(stem) if post.display_cover != editorial else None
-        if expected_opening or not post.display_cover:
-            body = BeautifulSoup(post.body, "lxml")
-            if expected_opening and starts_article(body, body.find("img", src=expected_opening)):
-                post.opening_cover = expected_opening
-
-            if not post.display_cover:
-                for img in body.select("img[src][width][height]"):
-                    width, height = str(img["width"]), str(img["height"])
-                    path = img["src"]
-                    if (width.isdigit() and height.isdigit() and int(width) >= 320 and int(height) >= 160
-                            and path.startswith("/images/blog-media/") and Path(path).suffix in {".webp", ".jpg", ".png"}
-                            and (ROOT / path.lstrip("/")).is_file()):
-                        post.display_cover = path
-                        if starts_article(body, img):
-                            post.opening_cover = path
-                        break
+        if post.display_cover:
+            continue
+        body = BeautifulSoup(post.body, "lxml")
+        for img in body.select("img[src][width][height]"):
+            width, height = str(img["width"]), str(img["height"])
+            path = img["src"]
+            if (width.isdigit() and height.isdigit() and int(width) >= 320 and int(height) >= 160
+                    and path.startswith("/images/blog-media/") and Path(path).suffix in {".webp", ".jpg", ".png"}
+                    and (ROOT / path.lstrip("/")).is_file()):
+                post.display_cover = path
+                break
 
 
 RESOURCES = [
@@ -589,31 +568,32 @@ def article(post, older, newer, series_position=None):
           <div class="giscus"></div>
         </section>'''
     cover_meta = f'<meta name="blog-cover" content="{html(post.cover)}">' if post.cover else ""
+    cover_image = ""
     if post.display_cover:
         cover_meta += f'\n<meta property="og:image" content="{html(SITE + post.display_cover)}">'
-    if post.opening_cover:
-        cover_meta += f'\n<link rel="preload" as="image" href="{html(post.opening_cover)}">'
-    cover_image = (
-        f'<figure class="article-cover"><img src="{html(post.display_cover)}" alt="" '
-        'fetchpriority="high" decoding="async"></figure>'
-        if post.display_cover and not post.opening_cover else ""
-    )
+        cover_art = html(f'url("{quote(post.display_cover, safe="/%")}")')
+        cover_image = (
+            f'<figure class="article-cover" style="--cover-art:{cover_art}">'
+            f'<img src="{html(post.display_cover)}" alt="" fetchpriority="high" decoding="async"></figure>'
+        )
     topic_title = f' data-topic-title="{html(post.title)}"' if post.numbered_title else ""
     content = f'''
   <article class="article">
     <header class="article-header">
-      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> {trail}</nav>
-      <h1 class="post-title"{topic_title}>{html(post.display_title)}</h1>
-      <div class="entry-meta"><span class="post-author">{html(post.author)}</span><time itemprop="datePublished" datetime="{html(post.published)}">{html(post.day)}</time>
-        <span class="post-category" hidden>{original_categories}</span>
-        <span class="read-time">{reading_time(post)}</span>
-        {public_counter("reads", "近 30 天阅读", post.path)}
-        <a href="#comments" data-jump-comments>评论</a>{position_link(series_position)}</div>
+      {cover_image}
+      <div class="wrap article-heading">
+        <h1 class="post-title"{topic_title}>{html(post.display_title)}</h1>
+        <div class="entry-meta"><span class="post-author">{html(post.author)}</span><time itemprop="datePublished" datetime="{html(post.published)}">{html(post.day)}</time>
+          <span class="post-category" hidden>{original_categories}</span>
+          <span class="read-time">{reading_time(post)}</span>
+          {public_counter("reads", "近 30 天阅读", post.path)}
+          <a href="#comments" data-jump-comments>评论</a>{position_link(series_position)}</div>
+        <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> {trail}</nav>
+      </div>
     </header>
-    <div class="article-layout {'with-outline' if outline else ''}">
+    <div class="wrap article-layout{' with-outline' if outline else ''}">
       {outline}
       <div class="article-main">
-        {cover_image}
         <div class="post-body">{post.body}</div>{article_video(post)}
         {source}
         <div class="post-tags" aria-label="文章标签">{tags}</div>
@@ -813,8 +793,7 @@ def main():
         posts = import_posts(args.import_posts, posts)
     posts.sort(key=lambda post: (post.published, post.path), reverse=True)
     catalog = read_catalog(posts, ROOT / "scripts/topic_catalog.json")
-    openings = json.loads((ROOT / "scripts/cover_openings.json").read_text())
-    set_display_covers(posts, openings)
+    set_display_covers(posts)
     read_article_videos(posts)
     series, positions = load_series(posts, ROOT / "scripts/series_catalog.json")
     for post in posts:

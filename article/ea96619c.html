@@ -39,21 +39,23 @@
       </div>
     </div>
   </header>
-  <main id="main" class="wrap">
+  <main id="main">
   <article class="article">
     <header class="article-header">
-      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/">后端开发</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/python-web/">Python Web</a></nav>
-      <h1 class="post-title" data-topic-title="用 MethodView 编写基于类的视图">Flask Web 开发 · 第 04 篇｜用 MethodView 编写基于类的视图</h1>
-      <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2020-06-14T15:14:00+08:00">2020-06-14</time>
-        <span class="post-category" hidden><a href="/categories/Flask%E5%9F%BA%E7%A1%80/">Flask基础</a></span>
-        <span class="read-time">约 3 分钟</span>
-        <span class="public-counter" data-public-count="reads" data-article-path="/article/ea96619c.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/flask-web/#chapter-4">Flask Web 开发 · 第 4/11 篇</a></div>
+      <figure class="article-cover" style="--cover-art:url(&quot;/images/blog-covers/ea96619c.webp&quot;)"><img src="/images/blog-covers/ea96619c.webp" alt="" fetchpriority="high" decoding="async"></figure>
+      <div class="wrap article-heading">
+        <h1 class="post-title" data-topic-title="用 MethodView 编写基于类的视图">Flask Web 开发 · 第 04 篇｜用 MethodView 编写基于类的视图</h1>
+        <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2020-06-14T15:14:00+08:00">2020-06-14</time>
+          <span class="post-category" hidden><a href="/categories/Flask%E5%9F%BA%E7%A1%80/">Flask基础</a></span>
+          <span class="read-time">约 3 分钟</span>
+          <span class="public-counter" data-public-count="reads" data-article-path="/article/ea96619c.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
+          <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/flask-web/#chapter-4">Flask Web 开发 · 第 4/11 篇</a></div>
+        <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/">后端开发</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/python-web/">Python Web</a></nav>
+      </div>
     </header>
-    <div class="article-layout with-outline">
+    <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#Flask-%E8%A7%86%E5%9B%BE%E5%87%BD%E6%95%B0-%E5%9B%9B">Flask(视图函数 四)</a></li><li><a href="#%E5%9F%BA%E4%BA%8E%E7%B1%BB%E7%9A%84%E8%A7%86%E5%9B%BE%EF%BC%8C%E5%8F%AF%E6%8F%92%E6%8B%94%E8%A7%86%E5%9B%BE">基于类的视图，可插拔视图</a></li><li><a href="#%E8%A3%85%E9%A5%B0%E8%BF%99%E4%B8%AA%E7%B1%BB%E8%A7%86%E5%9B%BE">装饰这个类视图</a></li><li><a href="#%E4%BD%BF%E7%94%A8MethodView">使用 MethodView</a></li><li><a href="#%E4%BD%BF%E7%94%A8MethodView%E5%AE%9E%E7%8E%B0reful%E9%A3%8E%E6%A0%BC%E6%8E%A5%E5%8F%A3">使用MethodView实现reful风格接口</a></li><li><a href="#request%E8%8E%B7%E5%8F%96%E8%AF%B7%E6%B1%82%E6%95%B0%E6%8D%AE">request获取请求数据</a></li><li><a href="#get">get</a></li><li><a href="#%E8%A1%A8%E5%8D%95">表单</a></li><li><a href="#json">json</a></li><li><a href="#file">file</a></li><li><a href="#%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6%E7%9A%84%E4%BB%A3%E7%A0%81">上传文件的代码</a></li><li><a href="#html">html</a></li><li><a href="#python%E4%BB%A3%E7%A0%81">python代码</a></li></ol></details></aside>
       <div class="article-main">
-        <figure class="article-cover"><img src="/images/blog-covers/ea96619c.webp" alt="" fetchpriority="high" decoding="async"></figure>
         <div class="post-body"><h1 id="Flask-视图函数-四"><a class="headerlink" href="#Flask-视图函数-四" title="Flask(视图函数 四)"></a>Flask(视图函数 四)</h1><h2 id="基于类的视图，可插拔视图"><a class="headerlink" href="#基于类的视图，可插拔视图" title="基于类的视图，可插拔视图"></a>基于类的视图，可插拔视图</h2><blockquote>
 <p>从Django学来的</p>
 </blockquote>

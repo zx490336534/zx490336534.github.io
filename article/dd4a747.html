@@ -39,21 +39,23 @@
       </div>
     </div>
   </header>
-  <main id="main" class="wrap">
+  <main id="main">
   <article class="article">
     <header class="article-header">
-      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/automation/">自动化测试</a> <span aria-hidden="true">/</span> <a href="/categories/testing/automation/mobile/">移动端与小程序</a></nav>
-      <h1 class="post-title" data-topic-title="App 专项测试：兼容性、Monkey 稳定性与弱网">Python 测试开发进阶 · 第 46 篇｜App 专项测试：兼容性、Monkey 稳定性与弱网</h1>
-      <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2019-12-13T17:51:39+08:00">2019-12-13</time>
-        <span class="post-category" hidden><a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">Python测试开发进阶</a></span>
-        <span class="read-time">约 3 分钟</span>
-        <span class="public-counter" data-public-count="reads" data-article-path="/article/dd4a747.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/python-test-development/#chapter-46">Python 测试开发进阶 · 第 46/48 篇</a></div>
+      <figure class="article-cover" style="--cover-art:url(&quot;/images/blog-covers/dd4a747.webp&quot;)"><img src="/images/blog-covers/dd4a747.webp" alt="" fetchpriority="high" decoding="async"></figure>
+      <div class="wrap article-heading">
+        <h1 class="post-title" data-topic-title="App 专项测试：兼容性、Monkey 稳定性与弱网">Python 测试开发进阶 · 第 46 篇｜App 专项测试：兼容性、Monkey 稳定性与弱网</h1>
+        <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2019-12-13T17:51:39+08:00">2019-12-13</time>
+          <span class="post-category" hidden><a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">Python测试开发进阶</a></span>
+          <span class="read-time">约 3 分钟</span>
+          <span class="public-counter" data-public-count="reads" data-article-path="/article/dd4a747.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
+          <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/python-test-development/#chapter-46">Python 测试开发进阶 · 第 46/48 篇</a></div>
+        <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/automation/">自动化测试</a> <span aria-hidden="true">/</span> <a href="/categories/testing/automation/mobile/">移动端与小程序</a></nav>
+      </div>
     </header>
-    <div class="article-layout with-outline">
+    <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%81%9AAPP%E4%B8%93%E9%A1%B9%E6%B5%8B%E8%AF%95">为什么要做APP专项测试</a></li><li><a href="#%E4%B8%93%E9%A1%B9%E7%BA%AC%E5%BA%A6">专项纬度</a></li><li><a href="#%E5%9C%BA%E6%99%AF%E6%B5%8B%E8%AF%95">场景测试</a></li><li><a href="#%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95">性能测试</a></li><li><a href="#%E5%85%BC%E5%AE%B9%E6%80%A7%E6%B5%8B%E8%AF%95-1">兼容性测试</a></li><li><a href="#%E6%96%B9%E6%A1%88">方案</a></li><li><a href="#%E5%8E%8B%E5%8A%9B%E7%A8%B3%E5%AE%9A%E6%80%A7%E6%B5%8B%E8%AF%95-1">压力稳定性测试</a></li><li><a href="#adb">adb</a></li><li><a href="#monkey">monkey</a></li><li><a href="#%E4%BA%8B%E4%BB%B6%E7%99%BE%E5%88%86%E6%AF%94">事件百分比</a></li><li><a href="#%E5%BC%B1%E7%BD%91%E6%B5%8B%E8%AF%95-1">弱网测试</a></li></ol></details></aside>
       <div class="article-main">
-        <figure class="article-cover"><img src="/images/blog-covers/dd4a747.webp" alt="" fetchpriority="high" decoding="async"></figure>
         <div class="post-body"><span id="测试开发进阶-四十六"></span><h3 id="为什么要做APP专项测试"><a class="headerlink" href="#为什么要做APP专项测试" title="为什么要做APP专项测试"></a>为什么要做APP专项测试</h3><ul>
 <li>奔溃(crash)</li>
 <li>卡顿</li>

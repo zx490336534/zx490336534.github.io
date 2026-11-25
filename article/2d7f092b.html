@@ -39,21 +39,23 @@
       </div>
     </div>
   </header>
-  <main id="main" class="wrap">
+  <main id="main">
   <article class="article">
     <header class="article-header">
-      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/platforms/">测试平台与工具</a></nav>
-      <h1 class="post-title" data-topic-title="测试平台首页、部署与 Shell 基础">Python 测试开发进阶 · 第 39 篇｜测试平台首页、部署与 Shell 基础</h1>
-      <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2019-11-17T18:02:45+08:00">2019-11-17</time>
-        <span class="post-category" hidden><a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">Python测试开发进阶</a></span>
-        <span class="read-time">约 4 分钟</span>
-        <span class="public-counter" data-public-count="reads" data-article-path="/article/2d7f092b.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/python-test-development/#chapter-39">Python 测试开发进阶 · 第 39/48 篇</a></div>
+      <figure class="article-cover" style="--cover-art:url(&quot;/images/blog-covers/2d7f092b.webp&quot;)"><img src="/images/blog-covers/2d7f092b.webp" alt="" fetchpriority="high" decoding="async"></figure>
+      <div class="wrap article-heading">
+        <h1 class="post-title" data-topic-title="测试平台首页、部署与 Shell 基础">Python 测试开发进阶 · 第 39 篇｜测试平台首页、部署与 Shell 基础</h1>
+        <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2019-11-17T18:02:45+08:00">2019-11-17</time>
+          <span class="post-category" hidden><a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">Python测试开发进阶</a></span>
+          <span class="read-time">约 4 分钟</span>
+          <span class="public-counter" data-public-count="reads" data-article-path="/article/2d7f092b.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
+          <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/python-test-development/#chapter-39">Python 测试开发进阶 · 第 39/48 篇</a></div>
+        <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/platforms/">测试平台与工具</a></nav>
+      </div>
     </header>
-    <div class="article-layout with-outline">
+    <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E9%A6%96%E9%A1%B5">首页</a></li><li><a href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8">如何使用</a></li><li><a href="#%E9%83%A8%E7%BD%B2">部署</a></li><li><a href="#%E6%B5%81%E7%A8%8B">流程</a></li><li><a href="#Shell">Shell</a></li><li><a href="#shell%E7%9A%84%E5%88%86%E7%B1%BB">shell的分类</a></li><li><a href="#%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4">常用命令</a></li><li><a href="#%E5%8F%98%E9%87%8F">变量</a></li></ol></details></aside>
       <div class="article-main">
-        <figure class="article-cover"><img src="/images/blog-covers/2d7f092b.webp" alt="" fetchpriority="high" decoding="async"></figure>
         <div class="post-body"><span id="测试开发进阶-三十九"></span><h2 id="首页"><a class="headerlink" href="#首页" title="首页"></a>首页</h2><p>使用一个简单的get函数返回需要的内容</p>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/></pre></td><td class="code"><pre><span class="line">statistics = {</span><br/><span class="line">    <span class="string">'projects_count'</span>: projects_count,</span><br/><span class="line">    <span class="string">'interfaces_count'</span>: interfaces_count,</span><br/><span class="line">    <span class="string">'testcases_count'</span>: testcases_count,</span><br/><span class="line">    <span class="string">'testsuits_count'</span>: testsuits_count,</span><br/><span class="line">    <span class="string">'configures_count'</span>: configures_count,</span><br/><span class="line">    <span class="string">'envs_count'</span>: envs_count,</span><br/><span class="line">    <span class="string">'debug_talks_count'</span>: debug_talks_count,</span><br/><span class="line">    <span class="string">'reports_count'</span>: reports_count,</span><br/><span class="line">    <span class="string">'success_rate'</span>: success_rate,</span><br/><span class="line">    <span class="string">'fail_rate'</span>: fail_rate,</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
 <p>他们都是从数据库中计算并统计出来的</p>

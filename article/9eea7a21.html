@@ -39,21 +39,23 @@
       </div>
     </div>
   </header>
-  <main id="main" class="wrap">
+  <main id="main">
   <article class="article">
     <header class="article-header">
-      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/">后端开发</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/python-web/">Python Web</a></nav>
-      <h1 class="post-title" data-topic-title="DRF 序列化器如何处理外键和反向关系">Python 测试开发进阶 · 第 27 篇｜DRF 序列化器如何处理外键和反向关系</h1>
-      <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2019-10-16T18:15:05+08:00">2019-10-16</time>
-        <span class="post-category" hidden><a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">Python测试开发进阶</a></span>
-        <span class="read-time">约 9 分钟</span>
-        <span class="public-counter" data-public-count="reads" data-article-path="/article/9eea7a21.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/python-test-development/#chapter-27">Python 测试开发进阶 · 第 27/48 篇</a></div>
+      <figure class="article-cover" style="--cover-art:url(&quot;/images/blog-covers/9eea7a21.webp&quot;)"><img src="/images/blog-covers/9eea7a21.webp" alt="" fetchpriority="high" decoding="async"></figure>
+      <div class="wrap article-heading">
+        <h1 class="post-title" data-topic-title="DRF 序列化器如何处理外键和反向关系">Python 测试开发进阶 · 第 27 篇｜DRF 序列化器如何处理外键和反向关系</h1>
+        <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2019-10-16T18:15:05+08:00">2019-10-16</time>
+          <span class="post-category" hidden><a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">Python测试开发进阶</a></span>
+          <span class="read-time">约 9 分钟</span>
+          <span class="public-counter" data-public-count="reads" data-article-path="/article/9eea7a21.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
+          <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/python-test-development/#chapter-27">Python 测试开发进阶 · 第 27/48 篇</a></div>
+        <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/">后端开发</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/python-web/">Python Web</a></nav>
+      </div>
     </header>
-    <div class="article-layout with-outline">
+    <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E5%A4%96%E9%94%AE">外键</a></li><li><a href="#PrimaryKeyRelatedField">PrimaryKeyRelatedField</a></li><li><a href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%85%B3%E8%81%94%E5%AD%97%E6%AE%B5StringRelatedField">字符串关联字段StringRelatedField</a></li><li><a href="#%E6%8C%87%E5%AE%9A%E5%AD%97%E6%AE%B5%E6%95%B0%E6%8D%AESlugRelatedField">指定字段数据SlugRelatedField</a></li><li><a href="#%E5%85%B3%E8%81%94%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96%E5%99%A8">关联对象的序列化器</a></li><li><a href="#%E5%8F%8D%E5%90%91%E6%8C%87%E5%AE%9A">反向指定</a></li><li><a href="#%E7%88%B6%E8%A1%A8%E4%B8%AD%E9%BB%98%E8%AE%A4%E4%B8%8D%E4%BC%9A%E7%94%9F%E4%BA%A7%E5%85%B3%E8%81%94%E5%AD%97%E6%AE%B5-%E4%BB%8E%E8%A1%A8-%E5%8F%AF%E4%BB%A5%E6%89%8B%E5%8A%A8%E6%8C%87%E5%AE%9A%EF%BC%8C%E5%AD%97%E6%AE%B5%E5%90%8D%E9%BB%98%E8%AE%A4%E4%B8%BA%E5%AD%90%E8%A1%A8%E6%A8%A1%E5%9E%8B%E7%B1%BB%E5%90%8D%E3%80%8C%E5%B0%8F%E5%86%99-set%E3%80%8D">父表中默认不会生产关联字段(从表),可以手动指定，字段名默认为子表模型类名「小写_set」</a></li><li><a href="#%E4%BC%98%E5%8C%96%E8%A7%86%E5%9B%BE-%E8%AF%B7%E6%B1%82">优化视图-请求</a></li><li><a href="#%E5%8F%91%E9%80%81json">发送json</a></li><li><a href="#%E5%8F%91%E9%80%81form%E8%A1%A8%E5%8D%95">发送form表单</a></li><li><a href="#Request">Request</a></li><li><a href="#%E4%BC%98%E5%8C%96%E8%A7%86%E5%9B%BE-%E6%B8%B2%E6%9F%93">优化视图-渲染</a></li><li><a href="#%E6%B8%B2%E6%9F%931">渲染1</a></li><li><a href="#%E6%B8%B2%E6%9F%932">渲染2</a></li><li><a href="#Response">Response</a></li><li><a href="#%E7%8A%B6%E6%80%81%E7%A0%81">状态码</a></li><li><a href="#%E6%94%AF%E6%8C%81%E5%88%86%E9%A1%B5%EF%BC%8C%E6%8E%92%E5%BA%8F%E7%9A%84%E7%88%B6%E7%B1%BBGenericAPIView">支持分页，排序的父类GenericAPIView</a></li><li><a href="#%E6%9C%AC%E8%BD%AE%E4%BC%98%E5%8C%96%E5%90%8E%E7%9A%84%E8%A7%86%E5%9B%BE">本轮优化后的视图</a></li><li><a href="#%E6%AD%A3%E5%BA%8F">正序</a></li><li><a href="#%E5%80%92%E5%BA%8F">倒序</a></li></ol></details></aside>
       <div class="article-main">
-        <figure class="article-cover"><img src="/images/blog-covers/9eea7a21.webp" alt="" fetchpriority="high" decoding="async"></figure>
         <div class="post-body"><span id="测试开发进阶-二十七"></span><h2 id="外键"><a class="headerlink" href="#外键" title="外键"></a>外键</h2><h3 id="PrimaryKeyRelatedField"><a class="headerlink" href="#PrimaryKeyRelatedField" title="PrimaryKeyRelatedField"></a>PrimaryKeyRelatedField</h3><p><code>interfaces/serializer.py</code>中创建序列化器</p>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> rest_framework <span class="keyword">import</span> serializers</span><br/><span class="line"><span class="keyword">from</span> interfaces.models <span class="keyword">import</span> Interfaces</span><br/><span class="line"></span><br/><span class="line"></span><br/><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">InterfaceModelSerializer</span>(<span class="params">serializers.ModelSerializer</span>):</span></span><br/><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br/><span class="line">        model = Interfaces</span><br/><span class="line">        fields = <span class="string">'__all__'</span></span><br/></pre></td></tr></tbody></table></figure>
 <span id="more"></span>

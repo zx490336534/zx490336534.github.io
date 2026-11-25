@@ -39,21 +39,23 @@
       </div>
     </div>
   </header>
-  <main id="main" class="wrap">
+  <main id="main">
   <article class="article">
     <header class="article-header">
-      <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/automation/">自动化测试</a> <span aria-hidden="true">/</span> <a href="/categories/testing/automation/api/">接口自动化</a></nav>
-      <h1 class="post-title" data-topic-title="HttpRunner 用例进阶：变量、校验与数据驱动">Python 测试开发进阶 · 第 33 篇｜HttpRunner 用例进阶：变量、校验与数据驱动</h1>
-      <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2019-11-01T17:51:38+08:00">2019-11-01</time>
-        <span class="post-category" hidden><a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">Python测试开发进阶</a></span>
-        <span class="read-time">约 5 分钟</span>
-        <span class="public-counter" data-public-count="reads" data-article-path="/article/213b449.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
-        <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/python-test-development/#chapter-33">Python 测试开发进阶 · 第 33/48 篇</a></div>
+      <figure class="article-cover" style="--cover-art:url(&quot;/images/blog-covers/213b449.webp&quot;)"><img src="/images/blog-covers/213b449.webp" alt="" fetchpriority="high" decoding="async"></figure>
+      <div class="wrap article-heading">
+        <h1 class="post-title" data-topic-title="HttpRunner 用例进阶：变量、校验与数据驱动">Python 测试开发进阶 · 第 33 篇｜HttpRunner 用例进阶：变量、校验与数据驱动</h1>
+        <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2019-11-01T17:51:38+08:00">2019-11-01</time>
+          <span class="post-category" hidden><a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">Python测试开发进阶</a></span>
+          <span class="read-time">约 5 分钟</span>
+          <span class="public-counter" data-public-count="reads" data-article-path="/article/213b449.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
+          <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/python-test-development/#chapter-33">Python 测试开发进阶 · 第 33/48 篇</a></div>
+        <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/automation/">自动化测试</a> <span aria-hidden="true">/</span> <a href="/categories/testing/automation/api/">接口自动化</a></nav>
+      </div>
     </header>
-    <div class="article-layout with-outline">
+    <div class="wrap article-layout with-outline">
       <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F">局部变量</a></li><li><a href="#%E8%B0%83%E7%94%A8%E5%87%BD%E6%95%B0">调用函数</a></li><li><a href="#%E6%A0%A1%E9%AA%8C">校验</a></li><li><a href="#%E6%95%B0%E6%8D%AE%E9%A9%B1%E5%8A%A8">数据驱动</a></li><li><a href="#%E6%96%B9%E5%BC%8F%E4%B8%80%EF%BC%9A%E4%BD%BF%E7%94%A8yaml">方式一：使用yaml</a></li><li><a href="#%E6%96%B9%E5%BC%8F%E4%BA%8C%EF%BC%9A%E8%AF%BB%E5%8F%96%E6%96%87%E4%BB%B6">方式二：读取文件</a></li><li><a href="#%E6%96%B9%E5%BC%8F%E4%B8%89%EF%BC%9A%E4%BD%BF%E7%94%A8%E5%87%BD%E6%95%B0">方式三：使用函数</a></li><li><a href="#%E4%BD%BF%E7%94%A8py%E6%96%87%E4%BB%B6%E8%B0%83%E7%94%A8httprunner">使用py文件调用httprunner</a></li></ol></details></aside>
       <div class="article-main">
-        <figure class="article-cover"><img src="/images/blog-covers/213b449.webp" alt="" fetchpriority="high" decoding="async"></figure>
         <div class="post-body"><span id="测试开发进阶-三十三"></span><h2 id="局部变量"><a class="headerlink" href="#局部变量" title="局部变量"></a>局部变量</h2><figure class="highlight yaml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/></pre></td><td class="code"><pre><span class="line"><span class="attr">name:</span> <span class="string">登录接口</span></span><br/><span class="line"><span class="attr">variables:</span></span><br/><span class="line">    <span class="attr">username:</span> <span class="string">${ENV(USERNAME)}</span></span><br/><span class="line">    <span class="attr">password:</span> <span class="string">${ENV(PASSWORD)}</span></span><br/><span class="line"><span class="attr">request:</span></span><br/><span class="line">    <span class="attr">url:</span> <span class="string">http://127.0.0.1:8000/user/login/</span></span><br/><span class="line">    <span class="attr">method:</span> <span class="string">POST</span></span><br/><span class="line">    <span class="attr">headers:</span></span><br/><span class="line">        <span class="attr">Content-Type:</span> <span class="string">"application/json"</span></span><br/><span class="line">    <span class="attr">json:</span></span><br/><span class="line">        <span class="attr">username:</span> <span class="string">$username</span></span><br/><span class="line">        <span class="attr">password:</span> <span class="string">$password</span></span><br/><span class="line"><span class="attr">validate:</span></span><br/><span class="line">    <span class="bullet">-</span> <span class="attr">eq:</span> [<span class="string">"status_code"</span>, <span class="number">200</span>]</span><br/><span class="line"><span class="attr">extract:</span></span><br/><span class="line">    <span class="bullet">-</span> <span class="attr">uname:</span> <span class="string">content.username</span></span><br/></pre></td></tr></tbody></table></figure>
 <p>可以修改<code>variables</code>定义变量，导入环境变量作为值</p>
 <p><code>request</code>中可以使用<code>$变量名</code>来获取<code>variables</code>区域下的变量</p>
