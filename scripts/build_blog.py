@@ -538,7 +538,8 @@ def article_video(post):
 
 def article(post, older, newer, series_position=None):
     toc = "".join(f'<li><a href="#{quote(anchor, safe="")}">{html(label)}</a></li>' for anchor, label in post.toc)
-    outline = f'<aside class="outline"><details open><summary>本文目录</summary><ol>{toc}</ol></details></aside>' if toc else ''
+    outline = (f'<aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>'
+               f'本文目录</summary><ol>{toc}</ol></details></aside>') if toc else ''
     tags = taxonomy_links(post.editorial_tags or post.tags)
     original_tags = taxonomy_links(post.tags)
     original_categories = taxonomy_links(post.categories)
@@ -560,11 +561,9 @@ def article(post, older, newer, series_position=None):
           {legacy_anchor}
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
-          <div class="comment-actions">
-            <button type="button" data-open-comments>打开评论</button>
-            <a href="https://github.com/{GISCUS_REPO}/discussions">GitHub 讨论区 ↗</a>
-          </div>
+          <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
           <p role="status"></p>
+          <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>
         </section>'''
     cover_meta = f'<meta name="blog-cover" content="{html(post.cover)}">' if post.cover else ""
@@ -605,7 +604,7 @@ def article(post, older, newer, series_position=None):
   </article>'''
     head = (
         f'{cover_meta}\n<meta name="giscus:backlink" content="{html(SITE + post.path)}">\n'
-        '<script src="/js/comments.js" defer></script>'
+        '<script src="/js/comments.js?v=2" defer></script>'
     )
     return shell(post.display_title, post.path, content, post.description, head)
 

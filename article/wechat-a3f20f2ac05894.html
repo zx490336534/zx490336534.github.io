@@ -20,7 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/wechat-a3f20f2ac05894.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/wechat-a3f20f2ac05894.html">
-<script src="/js/comments.js" defer></script>
+<script src="/js/comments.js?v=2" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -54,7 +54,7 @@
       </div>
     </header>
     <div class="wrap article-layout with-outline">
-      <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E7%8C%B4%E5%AD%90%E8%A1%A5%E4%B8%81">猴子补丁</a></li><li><a href="#%E9%B8%AD%E5%AD%90%E7%B1%BB%E5%9E%8B">鸭子类型</a></li><li><a href="#%E6%8A%BD%E8%B1%A1%E5%9F%BA%E7%B1%BB">抽象基类</a></li><li><a href="#%E8%99%9A%E6%8B%9F%E5%AD%90%E7%B1%BB">虚拟子类</a></li></ol></details></aside>
+      <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#%E7%8C%B4%E5%AD%90%E8%A1%A5%E4%B8%81">猴子补丁</a></li><li><a href="#%E9%B8%AD%E5%AD%90%E7%B1%BB%E5%9E%8B">鸭子类型</a></li><li><a href="#%E6%8A%BD%E8%B1%A1%E5%9F%BA%E7%B1%BB">抽象基类</a></li><li><a href="#%E8%99%9A%E6%8B%9F%E5%AD%90%E7%B1%BB">虚拟子类</a></li></ol></details></aside>
       <div class="article-main">
         <div class="post-body"><section><section></section><h1><span></span><br/></h1><blockquote><p>不建议编写抽象基类，容易过度设计</p><p>抽象基类与描述符和元类一样，是用于构建框架的工具</p></blockquote><p>一个类可能实现多个接口，从而让实例扮演多个角色。</p><p>协议是接口，但不是正式的，因此协议不能像正式接口那样施加限制。一个类可能只实现部分接口。</p><h2 id="猴子补丁"><span>猴子补丁</span></h2><p>Python是动态语言，所以可以在运行时进行修正</p><pre><code><span><span>class</span> <span>A</span>:</span><br/>    <span><span>def</span> <span>f</span><span>(self)</span>:</span><br/>        <span>pass</span><br/><br/><br/><span><span>def</span> <span>f</span><span>(a)</span>:</span><br/>    <span>return</span> <span>'Hello World'</span><br/><br/><br/><span>if</span> __name__ == <span>'__main__'</span>:<br/>    A.f = f<br/>    a = A()<br/>    print(a.f())<br/></code></pre><p>在运行过程中修改类<code>A</code>的<code>f</code>方法</p><h2 id="鸭子类型"><span>鸭子类型</span></h2><p>忽略对象的真正类型，转而关注对象有没有实现所需的方法、签名和语义。</p><p>在框架之外，鸭子类型通常比类型检查更简单，也更灵活</p><h2 id="抽象基类"><span>抽象基类</span></h2><p><code>collections.abc</code>中有很多有用的抽象类</p><p>Python的抽象基类可以使用<code>register</code>类方法在终端用户的代码中把某个类「声明」为一个抽象基类的「虚拟」子类。</p><p>让解释器把调用分派给正确的方法，而不是if/elif/else块硬编码分派逻辑</p><p>抽象基类是用于封装框架引入的一般性概念和抽象。基本上不需要自己编写新的抽象基类，只要正确使用现有的抽象基类就能获得99.9%的好处，而不用冒着设计不当导致的巨大风险。</p><figure><img alt="" decoding="async" height="1429" loading="lazy" src="/images/blog-media/46df7ad649160c83a81f.webp" width="826"/><figcaption>容器抽象基类</figcaption></figure><p>注意：与其他方法描述符一起使用时，<code>abstractmethod</code>需要放在最里面</p><h2 id="虚拟子类"><span>虚拟子类</span></h2><p>即便不继承，也有办法把一个类注册为抽象基类的虚拟子类。</p><p>注册虚拟子类的方法是在抽象基类上调用<code>register</code>方法。<code>issubclass</code>和 <code>isinstance</code>等函数都能识别，但是注册的类不会从抽象基类中继承任何方法或属性。</p><p>为了避免运行错误，虚拟子类需要<strong>实现所需的全部方法</strong></p></section></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/iq4wY-RQybSBpPIBrh_Siw">查看微信公众号原文 ↗</a></p>
@@ -67,11 +67,9 @@
 
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
-          <div class="comment-actions">
-            <button type="button" data-open-comments>打开评论</button>
-            <a href="https://github.com/zx490336534/zx490336534.github.io/discussions">GitHub 讨论区 ↗</a>
-          </div>
+          <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
           <p role="status"></p>
+          <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>
         </section>
       </div>

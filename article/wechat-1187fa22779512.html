@@ -20,7 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/wechat-1187fa22779512.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/wechat-1187fa22779512.html">
-<script src="/js/comments.js" defer></script>
+<script src="/js/comments.js?v=2" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -54,7 +54,7 @@
       </div>
     </header>
     <div class="wrap article-layout with-outline">
-      <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E8%8E%B7%E5%8F%96%E5%8F%82%E6%95%B0%E5%8C%96%E5%86%85%E5%AE%B9">获取参数化内容</a></li><li><a href="#%E8%8E%B7%E5%8F%96Jenkins%E8%87%AA%E5%B8%A6%E5%8F%98%E9%87%8F">获取Jenkins自带变量</a></li></ol></details></aside>
+      <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#%E8%8E%B7%E5%8F%96%E5%8F%82%E6%95%B0%E5%8C%96%E5%86%85%E5%AE%B9">获取参数化内容</a></li><li><a href="#%E8%8E%B7%E5%8F%96Jenkins%E8%87%AA%E5%B8%A6%E5%8F%98%E9%87%8F">获取Jenkins自带变量</a></li></ol></details></aside>
       <div class="article-main">
         <div class="post-body"><section><h2 id="获取参数化内容"><span>获取参数化内容</span></h2><p>在使用Jenkins管理测试流程的时候，我们可以通过参数化来动态修改测试执行的一些参数</p><p>使用Jenkins执行任务之后，我们选择的参数就变成了环境变量，可以使用python的<code>os.getenv(name)</code>方法来获取到内容</p><figure><img alt="" class="rich_pages wxw-img" decoding="async" height="151" loading="lazy" src="/images/blog-media/27e9b623e39c7799581c.webp" width="277"/></figure><p>比如我想要拿到robot的内容</p><p>我可以使用<code>os.getenv('robot')</code></p><p>封装一个函数处理一下字符串的空格问题</p><pre><code><span><span>def</span> <span>get_env</span><span>(name, base=<span>''</span>)</span>:</span><br/>    <span>"""<br/>    从环境变量中获取指的信息<br/>    @param name: 环境变量信息<br/>    @param base: 默认信息<br/>    @return:<br/>    """</span><br/>    <span>return</span> os.getenv(name) <span>and</span> os.getenv(name).strip() <span>or</span> base<br/></code></pre><p>这样获取robot就变为了</p><pre><code>ROBOT = get_env(<span>"robot"</span>)  <span># 企业微信群机器人</span><br/></code></pre><p>把上一节Jenkinsfile用到的参数都获取一下</p><pre><code>parameters {<br/>      gitParameter(name: <span>'branch'</span>, branch: <span>''</span>, branchFilter: <span>'.*'</span>, defaultValue: <span>'origin/master'</span>, description: <span>'代码分支'</span>, quickFilterEnabled: false, selectedValue: <span>'NONE'</span>, sortMode: <span>'NONE'</span>, tagFilter: <span>'*'</span>, type: <span>'PT_BRANCH'</span>)<br/>      choice(name: <span>'test_PC'</span>, choices: [<span>'a'</span>, <span>'b'</span>], description: <span>'执行设备'</span>)<br/>      choice(name: <span>'headless'</span>, choices: [<span>'false'</span>, <span>'true'</span>], description: <span>'是否不显示浏览器界面'</span>)<br/>      choice(name: <span>'concurrent'</span>, choices: [<span>'否'</span>, <span>'1'</span>, <span>'2'</span>, <span>'3'</span>, <span>'4'</span>, <span>'auto'</span>], description: <span>'是否并发执行,并发数'</span>)<br/>      string(name: <span>'robot'</span>, defaultValue: <span>''</span>, description: <span>'企业微信群机器人地址,以逗号分隔'</span>)<br/>      string(name: <span>'email'</span>, defaultValue: <span>''</span>, description: <span>'邮箱地址,以逗号分隔'</span>)<br/>      text(name: <span>'cases'</span>, defaultValue: <span>''''''</span>, description: <span>'要执行的用例'</span>, )<br/> }<br/></code></pre><p>也就是</p><pre><code>CASES = get_env(<span>"cases"</span>)  <span># 测试用例</span><br/>HEADLESS = get_env(<span>"headless"</span>, <span>"false"</span>)  <span># 是否不显示浏览器</span><br/>CONCURRENT = get_env(<span>"concurrent"</span>, <span>"否"</span>)  <span># 并发数 [0, 1, 2, 3, 4, auto, 否]</span><br/>EMAIL = get_env(<span>"email"</span>)  <span># 邮件</span><br/>ROBOT = get_env(<span>"robot"</span>)  <span># 企业微信群机器人</span><br/></code></pre><h2 id="获取Jenkins自带变量"><span>获取Jenkins自带变量</span></h2><p>在发送测试报告的时候，需要拿到Jenkins的工程名称，任务id等信息，也可以通过上述方法拿到</p><p>具体的名称可以从 「流水线语法」-「全局变量参考」中获取到</p><figure><img alt="" class="rich_pages wxw-img" decoding="async" height="382" loading="lazy" src="/images/blog-media/253bd367a7ec4dae3308.webp" width="358"/></figure><p>比如我们要拿到</p><ul class="list-paddingleft-2"><li><p><span>构建项目名称</span></p></li><li><p><span>构建项目URL</span></p></li><li><p><span>构建编号</span></p></li></ul><pre><code>ProjectName = get_env(<span>"JOB_NAME"</span>, <span>"非jenkins运行"</span>)  <span># 构建项目名称</span><br/>BUILD_URL = get_env(<span>"BUILD_URL"</span>, <span>"非jenkins运行"</span>)  <span># 构建项目URL</span><br/>BUILD_NUMBER = get_env(<span>"BUILD_NUMBER"</span>, <span>0</span>)  <span># 构建编号</span><br/></code></pre><p>这里传入0，编辑器会提示类型问题，上面的入参稍微修改一下</p><pre><code><span>from</span> typing <span>import</span> Union<br/><br/><span><span>def</span> <span>get_env</span><span>(name, base: Union[str, int] = <span>''</span>)</span>:</span><br/></code></pre><p>这样base形参就允许为int类型了</p></section></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/-k_V2f-Kf1unqqU7uGUs5A">查看微信公众号原文 ↗</a></p>
@@ -67,11 +67,9 @@
 
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
-          <div class="comment-actions">
-            <button type="button" data-open-comments>打开评论</button>
-            <a href="https://github.com/zx490336534/zx490336534.github.io/discussions">GitHub 讨论区 ↗</a>
-          </div>
+          <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
           <p role="status"></p>
+          <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>
         </section>
       </div>

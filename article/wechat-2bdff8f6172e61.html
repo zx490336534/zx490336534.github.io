@@ -20,7 +20,7 @@
 
 <meta property="og:image" content="https://www.zhongxin.website/images/article-covers/wechat-2bdff8f6172e61.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/wechat-2bdff8f6172e61.html">
-<script src="/js/comments.js" defer></script>
+<script src="/js/comments.js?v=2" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -54,7 +54,7 @@
       </div>
     </header>
     <div class="wrap article-layout with-outline">
-      <aside class="outline"><details open><summary>本文目录</summary><ol><li><a href="#%E8%83%8C%E6%99%AF">背景</a></li><li><a href="#%E5%AE%89%E8%A3%85%E6%8F%92%E4%BB%B6">安装插件</a></li><li><a href="#%E9%85%8D%E7%BD%AEMCP">配置MCP</a></li><li><a href="#%E9%85%8D%E7%BD%AEplaywright">配置playwright</a></li><li><a href="#%E6%B5%8B%E8%AF%95">测试</a></li></ol></details></aside>
+      <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#%E8%83%8C%E6%99%AF">背景</a></li><li><a href="#%E5%AE%89%E8%A3%85%E6%8F%92%E4%BB%B6">安装插件</a></li><li><a href="#%E9%85%8D%E7%BD%AEMCP">配置MCP</a></li><li><a href="#%E9%85%8D%E7%BD%AEplaywright">配置playwright</a></li><li><a href="#%E6%B5%8B%E8%AF%95">测试</a></li></ol></details></aside>
       <div class="article-main">
         <div class="post-body"><section><h2 id="背景"><span><span>背景</span></span></h2><p><span>在Obsidian中结合mcp高效的使用AI来完成任务</span></p><h2 id="安装插件"><span><span>安装插件</span></span></h2><p><span>安装Smart Composer插件</span></p><figure><span><img alt="image.png" class="rich_pages wxw-img" decoding="async" height="319" loading="lazy" src="/images/blog-media/7ce4fc4237a88daa9022.webp" width="562"/></span><figcaption><span>image.png</span></figcaption></figure><br/><span>修改配置完成大模型的添加</span><br/><span>1、直接使用现有的大模型提供商</span><br/><span>2、添加自定义提供商，例如硅基流动</span><br/><span>base url：https://api.siliconflow.cn/v1</span><br/><figure><span><img alt="image.png" class="rich_pages wxw-img" decoding="async" height="724" loading="lazy" src="/images/blog-media/142dadcfe6acfff02ded.webp" width="778"/></span><figcaption><span>image.png</span></figcaption></figure><br/><span>添加大模型</span><br/><span>这边添加了Qwen/Qwen3-235B-A22B</span><figure><span><img alt="image.png" class="rich_pages wxw-img" decoding="async" height="132" loading="lazy" src="/images/blog-media/595cd03369e6407b03b1.webp" width="772"/></span><figcaption><span>image.png</span></figcaption></figure><br/><span>侧边栏打开聊天窗口</span><br/><figure><span><img alt="image.png" class="rich_pages wxw-img" decoding="async" height="70" loading="lazy" src="/images/blog-media/abc193b8db11cb641615.webp" width="209"/></span><figcaption><span>image.png</span></figcaption></figure><br/><figure><span><img alt="image.png" class="rich_pages wxw-img" decoding="async" height="747" loading="lazy" src="/images/blog-media/2e180aae279e01639956.webp" width="550"/></span><figcaption><span>image.png</span></figcaption></figure><h2 id="配置MCP"><span><span>配置MCP</span></span></h2><figure><span><img alt="image.png" class="rich_pages wxw-img" decoding="async" height="611" loading="lazy" src="/images/blog-media/6d8b7b72f1a89ea72ebf.webp" width="1080"/></span><figcaption><span>image.png</span></figcaption></figure><h3 id="配置playwright"><span><span>配置playwright</span></span></h3><figure><span><img alt="image.png" class="rich_pages wxw-img" decoding="async" height="514" loading="lazy" src="/images/blog-media/a523df74465d9d9d8f31.webp" width="694"/></span><figcaption><span>image.png</span></figcaption></figure><pre><code><span>{</span><br/><span>  </span><span><span>"command"</span></span><span>: </span><span><span>"npx"</span></span><span>,</span><br/><span>  </span><span><span>"args"</span></span><span>: [</span><br/><span>    </span><span><span>"-y"</span></span><span>,</span><br/><span>    </span><span><span>"@playwright/mcp@latest"</span></span><span>,</span><br/><span>    </span><span><span>"--headless"</span></span><br/><span>  ]</span><br/><span>}</span><br/></code></pre><p><span>其他本地的mcp配置也类似</span><br/><span>如果要配置sse类型的mcp则需要使用mcp-proxy，参考：</span></p><pre><code><span>{</span><br/><span>  </span><span><span>"command"</span></span><span>: </span><span><span>"mcp-proxy"</span></span><span>,</span><br/><span>  </span><span><span>"args"</span></span><span>: [</span><br/><span>    </span><span><span>"http://saas-help-mcp-dev.k8s-qunhe.qunhequnhe.com/cf-mcp"</span></span><br/><span>  ]</span><br/><span>}</span><br/></code></pre><h2 id="测试"><span><span>测试</span></span></h2><figure><span><img alt="image.png" class="rich_pages wxw-img" decoding="async" height="523" loading="lazy" src="/images/blog-media/5f32a4ddd51037fe1abc.webp" width="559"/></span><figcaption><span>image.png</span></figcaption></figure></section><section><span><br/></span></section></div>
         <p class="source"><a class="source-link" href="https://mp.weixin.qq.com/s/KOxQmqvUbyOkHJgzZv7rog">查看微信公众号原文 ↗</a></p>
@@ -67,11 +67,9 @@
 
           <h2 id="comments-title">评论与讨论</h2>
           <p>使用 GitHub 账号留言，评论公开显示。</p>
-          <div class="comment-actions">
-            <button type="button" data-open-comments>打开评论</button>
-            <a href="https://github.com/zx490336534/zx490336534.github.io/discussions">GitHub 讨论区 ↗</a>
-          </div>
+          <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
           <p role="status"></p>
+          <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
           <div class="giscus"></div>
         </section>
       </div>
