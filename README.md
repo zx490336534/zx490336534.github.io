@@ -31,7 +31,7 @@ npm run render -- wechat-2499cfc9d36cbb
 ## 如何修改
 
 - 微调画面或字幕：修改该条 `timeline.json` 的画面数据和对应的 `captions.vtt`；改通用的动画样式用 `renderers/`。注意字幕文本修改不会替换配音。
-- 修改旁白或增删分镜：改 `storyboard.json`。可在已经安装 Tingting 中文语音与 FFmpeg 的 Mac 上运行 `python3 tools/retime.py <文章ID> --apply`；此命令会替换该篇配音、字幕、时间轴，应先备份原配音。其它平台可自行替换 MP3 并手动调整三个源文件，不需要调用额外服务。
+- 修改旁白或增删分镜：先改 `storyboard.json` 并备份原配音。安装 `python3 -m pip install -r requirements-voice.txt`，然后运行 `python3 tools/retime.py <文章ID> --apply`（需要联网和本机 FFmpeg）。此命令只用 Microsoft Edge TTS 晓晓普通话 `zh-CN-XiaoxiaoNeural`，服务失败时停止，不回退到其他声线；提交给服务的旁白必须只含可公开的内容。它会更新配音、字幕、时间轴和音色校验证据。已归档配音的本地重渲仍不需要联网。
 - 演示手机号、密钥、口令、令牌或其他身份资料时，只能用合成值或占位符。不要把原始值放进分镜文件、图像、旁白、字幕或其它随工程公开的素材。
 
 ## 归档后续批次
