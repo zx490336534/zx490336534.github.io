@@ -1,0 +1,18 @@
+{
+  "requirement": "自习室预约：每个时段只容纳 1 人。已满时不可创建预约。取消后，名额立即释放。请生成正向、已满和取消后再预约三种用例。",
+  "modules": [
+    {
+      "id":"reservation","title":"基础预约","description":"验证有空位和满员时的预约行为","riskPoints":["时段容量为 1"],
+      "cases":[
+        {"id":"normal","category":"基础预约","topic":"有空位时预约成功","priority":"P0","precondition":"目标时段无人预约","steps":"1. 提交目标时段的预约","expected":"1. 创建预约，目标时段变为已满"},
+        {"id":"full","category":"基础预约","topic":"满员时拒绝预约","priority":"P0","precondition":"目标时段已有 1 个有效预约","steps":"1. 提交目标时段的预约","expected":"1. 本次预约未创建"}
+      ]
+    },
+    {
+      "id":"cancel","title":"取消与释放","description":"验证取消后空位可被重新预约","riskPoints":["取消后立即释放"],
+      "cases":[
+        {"id":"release","category":"取消与释放","topic":"取消后可以重新预约","priority":"P1","precondition":"目标时段已有 1 个有效预约","steps":"1. 取消原预约\n2. 提交目标时段的新预约","expected":"1. 目标时段恢复可预约\n2. 创建新预约"}
+      ]
+    }
+  ]
+}
