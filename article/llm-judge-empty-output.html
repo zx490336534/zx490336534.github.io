@@ -126,6 +126,7 @@
 </tbody>
 </table></div>
 <p>把六个分数平铺后算 Pearson 相关系数，结果是 0.92。模型和人工都给第三张图更高的分，所以总体分数同涨同跌。落到每张图选一个版本，三次都选反了。要验证这种用法，优先看同一输入的候选排序一致率。候选数量更多时，也可以按输入计算排名相关，再汇总，并事先约定并列怎么处理。</p>
+<figure class="article-figure article-figure--supplement"><a href="/images/article-figures/llm-judge-empty-output-detail.webp" title="查看原图"><img alt="三组候选在人和模型的评分中都排反。总体 Pearson 相关为 0.92，逐组选对为零次。" decoding="async" height="730" loading="lazy" src="/images/article-figures/llm-judge-empty-output-detail.webp" width="900"/></a><figcaption>构造数据。总体分数一起上升时，仍要逐组检查谁被排在前面。</figcaption></figure>
 <p>用 Python 可以直接复算这组分数。</p>
 <pre><code class="language-python">from statistics import correlation
 
@@ -136,6 +137,7 @@ print(round(correlation(human, judge), 2))  # 0.92
 <p>同样的报告适合同时保留总体分布和组内比较。总体分布能看分数有没有漂移，组内指标回答哪个候选更好。两者用同一批样本，也可能告诉团队不同的信息。</p>
 <span id="空输出应该怎么算"></span><h2 id="校准时-让模型回答准备替人做的判断">校准时，让模型回答准备替人做的判断</h2>
 <p>如果裁判只是为了过滤明显空白，先把没有产出的条件写成稳定规则，记录规则拦到了多少和漏了多少。如果它准备辅助发布验收，我会用有产物的样本单独做校准，优先放进质量接近、容易分歧的候选。先让人工按固定口径独立标注，再看模型错在哪类问题上，并保留裁判输入、版本和证据。只存一个分数，下一轮改变提示词时很难追到实际差异。</p>
+<figure class="article-figure article-figure--supplement"><a href="/images/article-figures/llm-judge-empty-output-scene.webp" title="查看原图"><img alt="相比不同输入间明显的差异，用放大镜查看同一输入下两个相似候选。" decoding="async" height="854" loading="lazy" src="/images/article-figures/llm-judge-empty-output-scene.webp" width="1280"/></a><figcaption>如果上线后要在相近候选中做选择，校准集也需要这样的对照。</figcaption></figure>
 <p>对影响发布的硬问题，还应该区分漏报和误报。人工确认某份结果应拦，模型给放过，这是漏报。人工认为可以通过，模型拦了，这是误报。只报相同判定的比例，看不到两类错误各有多少。样本很少的分组仍然可以报告计数，但应该把分母写出来，避免把两三条上的变化理解成稳定改进。</p>
 <p>我最先想看的报告只有三行。空输出有多少。有产物的样本里，两边在哪些条件下一致。同一个输入的候选里，模型是否选到了人工更认可的那个。第三行还没有建立证据时，先停在辅助审查，保留人工确认需要发布的样本。</p></div>
         <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>

@@ -87,6 +87,7 @@
 <span id="分组能缩小模型的选择范围"></span><h2 id="分组和权限各自改变什么">分组和权限各自改变什么</h2>
 <p>处理文档问答时，模型只需要看到文档工具。给它一页与当前任务无关的搜索和写入工具，会增加选错的机会。列表根据会话或用户可用的工具生成，名称之后的描述顺手写清搜索范围、参数的含义以及返回内容。这样模型可以在它真的需要选择时，根据清楚的对象来选。</p>
 <p>服务端处理 <code>tools/call</code> 时，还要在当前身份和会话下重新确认权限。客户端用过某个工具，可能记着旧名字。名单发生过调整后，旧名单不应作为当前调用的依据。下面的代码省略了协议封包、用户认证和输入校验，展示路由顺序。</p>
+<figure class="article-figure article-figure--supplement"><a href="/images/article-figures/mcp-gateway-name-collision-scene.webp" title="查看原图"><img alt="网关在工具列表之后还有调用检查，已不允许的请求停在检查点。" decoding="async" height="854" loading="lazy" src="/images/article-figures/mcp-gateway-name-collision-scene.webp" width="1280"/></a><figcaption>客户端可以记住工具名，每次收到调用仍要按当前会话权限检查。</figcaption></figure>
 <pre><code class="language-python">def dispatch(routes, allowed, sessions, name, arguments):
     if name not in allowed:
         raise PermissionError('tool unavailable')
@@ -97,6 +98,7 @@
 <h2 id="接入真实会话后-容易漏掉哪些状态">接入真实会话后，容易漏掉哪些状态</h2>
 <p>连接管理和工具路由可以独立处理。后端可能通过本地 stdio 接入，也可能通过 Streamable HTTP 接入。网关收到的是某个公开工具名，按路由找到已经初始化的会话。更换传输方式时，客户端看到的公开名和输入 Schema 可以保持一致。至于会话是否能复用，要按连接是否携带用户身份判断。属于两个用户的连接不能只按服务名共用一份。</p>
 <p>调用失败也要保留失败来源。如果网关找不到公开名，这是网关路由问题。连接中断或超时是传输问题。后端完成了协议往返，却返回工具执行错误，应把这一状态按原有含义传回客户端。把三类都折叠成空结果，用户只会以为真的什么也没搜到。</p>
+<figure class="article-figure article-figure--supplement"><a href="/images/article-figures/mcp-gateway-name-collision-detail.webp" title="查看原图"><img alt="分别区分网关拒绝、连接或请求超时，以及后端工具自身执行失败。" decoding="async" height="609" loading="lazy" src="/images/article-figures/mcp-gateway-name-collision-detail.webp" width="900"/></a><figcaption>响应保留失败发生的位置，调用方才能选对排查入口。</figcaption></figure>
 <p>工具列表缓存也要有更新条件。后端变更 Schema 或网关改变权限后，更新的路由表和对外列表应来自同一份配置。否则一次列表刷新就能看到新工具，随后调用仍被旧路由拒绝。在验收时我会加一个用例，更新后端工具定义后重新获取列表，再用新参数调一次，确认网关没有继续把请求送到旧会话。</p>
 <p>把这几个检查做完，再比较接入多少工具、有没有必要按描述做检索。语义检索可以帮模型缩小候选。调用究竟转去哪个后端，仍应由唯一名和显式路由决定。</p>
 <h2 id="参考">参考</h2>

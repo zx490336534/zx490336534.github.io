@@ -60,6 +60,7 @@
         <div class="post-body" id="article-text"><p>我给 UI 自动化选工具时，会先找出一条用例里最难写的动作。有些步骤难在定位，比如画布上没有 DOM 节点的图形。有些步骤难在判断结果，比如保存以后到底有没有写入服务端。前者可以让模型看图，后者通常能找到更明确的检查点。把两种难处混在一个自然语言用例里，出了问题很难判断应该修脚本、修提示词，还是修产品。</p>
 <span id="同一条用例要通过两个判断"></span><h2 id="一个错误实现-也能让-保存成功-通过">一个错误实现，也能让「保存成功」通过</h2>
 <p>我用一个小编辑器复现了这种假通过。输入卡片名，点击保存，两个版本都返回 HTTP 200，也都显示「保存成功」。区别在服务端。正常版本写入记录，故障版本收到同一份请求后直接返回成功。</p>
+<figure class="article-figure article-figure--supplement"><a href="/images/article-figures/agent-ui-testing-scene.webp" title="查看原图"><img alt="两个编辑器都显示保存成功，刷新后只有一边还能看到卡片。" decoding="async" height="854" loading="lazy" src="/images/article-figures/agent-ui-testing-scene.webp" width="1280"/></a><figcaption>两个版本给出了同样的成功提示，刷新回读才暴露区别。</figcaption></figure>
 <p>用 Playwright 依次检查请求、页面提示、刷新后的已保存列表，实际结果如下。两个版本走相同的前端，一个服务进程内分别提供正常和故障路由。每次用新的浏览器上下文，卡片名也由用例控制。</p>
 <div aria-label="数据表格" class="table-scroll" role="region" tabindex="0"><table>
 <thead>
@@ -129,6 +130,7 @@ expect(cards.get_by_text('回归卡片', exact=True)).to_be_visible()
 </tbody>
 </table></div>
 <p>这里也不用预先规定每套测试必须是同一种模式。把视觉能力放进需要它的那几步，可以让剩下的步骤继续确定执行。视觉操作的成功与任务完成分别记，排查时不用猜一句笼统的「成功」指什么。</p>
+<figure class="article-figure article-figure--supplement"><a href="/images/article-figures/agent-ui-testing-detail.webp" title="查看原图"><img alt="普通控件用确定性脚本，难定位的视觉动作交给模型，业务结果用状态和回读作断言。" decoding="async" height="609" loading="lazy" src="/images/article-figures/agent-ui-testing-detail.webp" width="900"/></a><figcaption>同一条用例可以混用这三种检查。定位和验收各自留下证据。</figcaption></figure>
 <span id="修测试的时候留住失败条件"></span><h2 id="修脚本之前-先保住它抓过的错误">修脚本之前，先保住它抓过的错误</h2>
 <p>按钮改名导致定位失败时，调整定位器是合理修复。刷新后读不到卡片时，我会保留这条失败，从请求有没有提交、任务状态是否结束、最终记录是否能读取逐段排查。把失败断言改为检查成功弹窗，相当于把这次实测抓住的错误重新放过去。</p>
 <p>如果后台返回 202，响应只说明任务被受理。把等待拆成两个条件更容易诊断。先等对应的任务进入明确终态，再按返回 ID 回读产物。不能只看到任何一个历史任务完成就结束，也不要用固定睡眠替代等待条件。测试失败时记录这次操作的 ID、最后一次任务状态，以及最终回读失败的那一步。</p>

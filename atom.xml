@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom"><title>测试游记</title><id>http://zx490336534.github.io/</id><link href="https://www.zhongxin.website/" /><link href="https://www.zhongxin.website/atom.xml" rel="self" /><updated>2026-11-25T14:52:11+08:00</updated><author><name>听白</name></author><entry><id>http://zx490336534.github.io/article/temporal-agent-recovery.html</id><title>Agent 任务跑到一半崩了，Temporal 怎么让它接着跑？</title><link href="https://www.zhongxin.website/article/temporal-agent-recovery.html" /><updated>2026-11-25T14:52:11+08:00</updated><published>2026-11-25T14:52:11+08:00</published><summary>用一次丢失回执的故障解释 Temporal 的事件重放、Activity 重试和业务幂等。</summary><content type="html">&lt;p&gt;比如一个图片生成任务，先调用模型，再存产物，最后更新任务状态。Worker 退出后从头跑，会多花一次生成费用。只从最后一步跑，又得知道模型结果是否可读，存储服务是否真的写完。Temporal 在这里解决的是进度的记录和恢复。要避免重复写入，还得看业务侧怎么处理同一次操作。&lt;/p&gt;
 &lt;h2 id="Workflow-记住步骤-Activity-执行外部动作"&gt;Workflow 记住步骤，Activity 执行外部动作&lt;/h2&gt;
-&lt;p&gt;Workflow 是编排代码，Temporal Service 保存事件历史并协调任务，Worker 拿任务运行代码。调用模型、写文件、访问数据库这类会碰到外部系统的操作放到 Activity。Workflow Worker 接手时，按历史重新执行编排逻辑。它跑到一个已经记录完成的 Activity，可以使用保存的结果继续，外部接口不会因为这次重放再次调用。&lt;/p&gt;
+&lt;p&gt;Workflow 是编排代码，Temporal Service 保存事件历史并协调任务，Worker 拿任务运行代码。调用模型、写文件、访问数据库这类会碰到外部系统的操作放到 Activity。Workflow Worker 接手时，按历史重新执行编排逻辑。它跑到一个已经记录完成的 Activity，可以使用保存的结果继续，外部接口不会因为这次重放再次调用。&lt;/p&gt;&lt;figure class="article-figure article-figure--supplement"&gt;&lt;a href="/images/article-figures/temporal-agent-recovery-scene.webp" title="查看原图"&gt;&lt;img alt="旧 Worker 停止后，新 Worker 从保存的事件历史恢复流程。" decoding="async" height="854" loading="lazy" src="/images/article-figures/temporal-agent-recovery-scene.webp" width="1280"/&gt;&lt;/a&gt;&lt;figcaption&gt;教学示意。另一个 Worker 接手时，从保存的事件历史继续推进。&lt;/figcaption&gt;&lt;/figure&gt;
 &lt;p&gt;因此，Workflow 的代码要能根据同一份历史产生一致的决策。需要时间、定时器或等待条件时，用 SDK 提供的机制。在编排代码里直接访问当前网络状态，同一份历史在不同时间可能走到不同分支。修改已经运行过的 Workflow 代码也要考虑兼容。增加一步或调整调用顺序之前，挑正在运行的历史做 replay 验证，必要时让旧历史继续由兼容版本处理。&lt;/p&gt;
 &lt;span id="先看外部动作成功-回执还没写进去的情况"&gt;&lt;/span&gt;&lt;h2 id="存储已经成功-完成记录还有可能丢"&gt;存储已经成功，完成记录还有可能丢&lt;/h2&gt;
 &lt;p&gt;最容易误解的是这段间隔。Activity 把数据写进存储，外部事务已经提交，Worker 还没把完成结果写回 Temporal。若此时执行失败，历史中没有这一条成功记录，流程可以安排重试。重试重新运行的是 Activity 代码。Temporal 知道谁还没确认完成，存储端是否已经产生文件，则要用业务数据判断。&lt;/p&gt;
@@ -57,7 +57,7 @@ class Generate:
 ON CONFLICT(operation) DO NOTHING;
 SELECT asset FROM assets WHERE operation = ?;
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;真实业务还要检查同一个键是否匹配同一次业务操作。比如用户修改输入后重新生成，这是第二个合法请求，不能误用原操作的键。支付、邮件等外部系统还有自己的限制。要能把操作键传给下游，或者在无法确认时先做状态查询和对账。超时表示这边没拿到结果，不能据此推断下游没有执行。&lt;/p&gt;
+&lt;p&gt;真实业务还要检查同一个键是否匹配同一次业务操作。比如用户修改输入后重新生成，这是第二个合法请求，不能误用原操作的键。支付、邮件等外部系统还有自己的限制。要能把操作键传给下游，或者在无法确认时先做状态查询和对账。超时表示这边没拿到结果，不能据此推断下游没有执行。&lt;/p&gt;&lt;figure class="article-figure article-figure--supplement"&gt;&lt;a href="/images/article-figures/temporal-agent-recovery-detail.webp" title="查看原图"&gt;&lt;img alt="本地实验中模型步骤一次、保存步骤两次、最终只写一条记录，重放没有增加执行次数。" decoding="async" height="501" loading="lazy" src="/images/article-figures/temporal-agent-recovery-detail.webp" width="900"/&gt;&lt;/a&gt;&lt;figcaption&gt;在本地模拟保存事务提交后报错。重试沿用同一个键，读回已保存的结果。&lt;/figcaption&gt;&lt;/figure&gt;
 &lt;span id="恢复到哪里-取决于步骤怎么拆"&gt;&lt;/span&gt;&lt;h2 id="重试粒度写进流程-故障时才看得出来"&gt;重试粒度写进流程，故障时才看得出来&lt;/h2&gt;
 &lt;p&gt;如果调用模型、保存产物、写业务状态都放在一个大 Activity，最后的状态更新报错，之前的动作可能都要再走一遍。按可确认的边界拆成多个 Activity，能保留已经确认的模型结果。拆太细也有成本，每增加一个步骤就要考虑超时、日志、版本兼容和错误处理。我用三个条件判断是否值得拆。中间结果能否单独查到，下一步失败会不会要重复昂贵的操作，以及这两步是否需要不同的重试规则。&lt;/p&gt;
 &lt;p&gt;单次执行的超时限定一次 Activity 能占多久，总时限要覆盖调度等待和重试。长操作如果能报 heartbeat，可以更早发现停滞，也能在实现支持时记录恢复进度。参数非法或业务明确拒绝，可以直接结束。网络超时和服务暂不可用才进入有上限的重试。用户取消后，已经发出的外部任务是否还能继续、迟到产物怎么处理，需要单独约定。&lt;/p&gt;
@@ -121,9 +121,9 @@ providers:
         scenario: '{{scenario}}'
       transformResponse: 'JSON.stringify(json)'
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;我让模拟接口对两条相同用户请求返回不同状态。请求参数从 &lt;code&gt;queued-ok&lt;/code&gt; 改成 &lt;code&gt;queued-bug&lt;/code&gt;，后端就把 &lt;code&gt;pending&lt;/code&gt; 换成 &lt;code&gt;completed&lt;/code&gt;。服务端记录到两次请求，Promptfoo 显示一条通过、一条失败、零个执行错误。这个实验确认的是输入确实经过 HTTP，到达服务，并由同一份断言判定。真实 Agent 的性能和稳定性要在目标环境里验证。&lt;/p&gt;
+&lt;p&gt;我让模拟接口对两条相同用户请求返回不同状态。请求参数从 &lt;code&gt;queued-ok&lt;/code&gt; 改成 &lt;code&gt;queued-bug&lt;/code&gt;，后端就把 &lt;code&gt;pending&lt;/code&gt; 换成 &lt;code&gt;completed&lt;/code&gt;。服务端记录到两次请求，Promptfoo 显示一条通过、一条失败、零个执行错误。这个实验确认的是输入确实经过 HTTP，到达服务，并由同一份断言判定。真实 Agent 的性能和稳定性要在目标环境里验证。&lt;/p&gt;&lt;figure class="article-figure article-figure--supplement"&gt;&lt;a href="/images/article-figures/promptfoo-agent-regression-scene.webp" title="查看原图"&gt;&lt;img alt="固定输出和通过实时请求取得的输出进入同一个断言检查。" decoding="async" height="854" loading="lazy" src="/images/article-figures/promptfoo-agent-regression-scene.webp" width="1280"/&gt;&lt;/a&gt;&lt;figcaption&gt;保存过的输出可以反复检查断言。实时请求用同一条断言检查当前服务。&lt;/figcaption&gt;&lt;/figure&gt;
 &lt;p&gt;对于已有应用，我会先让 Provider 调用应用正常的入口，服务端继续使用自己的提示词和工具。把服务端 Prompt 复制到评测配置，会形成两个版本来源。服务升级后，评测很容易继续测到旧副本。只有专门比较提示词时，再把多个版本作为实验变量放进配置。&lt;/p&gt;
-&lt;p&gt;没有过滤条件时，2 个用例、2 份 Prompt、2 个 Provider，每个组合执行 3 次，就是 24 个评测单元。一次应用调用内部可能调多次模型，模型裁判还会增加请求。因此这里的 24 用来预估运行组合，账单要另外看实际请求数。先跑一个组，确认测试命中了预期 Provider，再展开全部矩阵。&lt;/p&gt;
+&lt;p&gt;没有过滤条件时，2 个用例、2 份 Prompt、2 个 Provider，每个组合执行 3 次，就是 24 个评测单元。一次应用调用内部可能调多次模型，模型裁判还会增加请求。因此这里的 24 用来预估运行组合，账单要另外看实际请求数。先跑一个组，确认测试命中了预期 Provider，再展开全部矩阵。&lt;/p&gt;&lt;figure class="article-figure article-figure--supplement"&gt;&lt;a href="/images/article-figures/promptfoo-agent-regression-detail.webp" title="查看原图"&gt;&lt;img alt="两条用例乘两份 Prompt、两个 Provider、每组运行三次，得到 24 个评测单元。" decoding="async" height="690" loading="lazy" src="/images/article-figures/promptfoo-agent-regression-detail.webp" width="900"/&gt;&lt;/a&gt;&lt;figcaption&gt;组合数用于估算评测规模，Provider 和评分过程发了多少模型请求需要另记。&lt;/figcaption&gt;&lt;/figure&gt;
 &lt;h2 id="哪些失败应该拦住发布"&gt;哪些失败应该拦住发布&lt;/h2&gt;
 &lt;p&gt;明确的业务约定适合用机器断言。例如任务还在队列中、金额错误、缺少强制字段，能立刻说明是哪条规则失败。文案是否让用户明白下一步，可以另设辅助评分，并先用人工确认的正反样本校准。文案得分再高，状态错误仍应单独报出来。&lt;/p&gt;
 &lt;p&gt;也要单独记执行错误。测试环境未启动、请求超时、权限失败，先查运行条件。服务正常返回了一个错误的业务状态，则进入产品回归。两者都可能让 CI 失败，但修法不同。检查 &lt;code&gt;results.json&lt;/code&gt; 的逐条断言和运行状态，比只看一行总通过率容易定位得多。&lt;/p&gt;
@@ -146,10 +146,10 @@ providers:
 &lt;span id="要扩展时-先看缺的是哪一种能力"&gt;&lt;/span&gt;&lt;h2 id="把一次工具调用拆开看"&gt;把一次工具调用拆开看&lt;/h2&gt;
 &lt;p&gt;Pi 的 Agent 循环接收模型的流式输出。如果模型结束这一轮时请求了工具，就执行工具，把结果加入上下文，再决定要不要发起下一轮模型请求。测试失败的输出会出现在随后一轮上下文里。模型可以根据它继续读代码或给出结果。运行时本身不会因为看到一句「测试失败」就自动切换到某个固定的开发流程。&lt;/p&gt;
 &lt;p&gt;扩展能在几个时点接入。&lt;code&gt;tool_call&lt;/code&gt; 发生在实际执行前，可以拒绝或调整输入。&lt;code&gt;tool_result&lt;/code&gt; 发生在执行后，可以整理返回内容。要给团队保留完整证据，我会让执行记录保留实际命令、退出状态和结果出处，再给模型一份更短的摘要。测试只跑了一个文件时，模型最后的结论也应该保留范围。&lt;/p&gt;
-&lt;p&gt;当前文档还提到了同一助手消息的多个工具调用。默认并行模式下，前置检查依次执行，真正任务可以并发。两个同时发起的命令有先后依赖时，不能指望第二个在自己的前置检查阶段就能看到第一个的完成结果。像「先写配置，再跑构建」这种依赖，最好按明确顺序执行和取证。&lt;/p&gt;
+&lt;p&gt;当前文档还提到了同一助手消息的多个工具调用。默认并行模式下，前置检查依次执行，真正任务可以并发。两个同时发起的命令有先后依赖时，不能指望第二个在自己的前置检查阶段就能看到第一个的完成结果。像「先写配置，再跑构建」这种依赖，最好按明确顺序执行和取证。&lt;/p&gt;&lt;figure class="article-figure article-figure--supplement"&gt;&lt;a href="/images/article-figures/pi-agent-four-tools-detail.webp" title="查看原图"&gt;&lt;img alt="两个工具调用先按顺序检查，默认并行模式下可以重叠执行，再分别返回结果。" decoding="async" height="727" loading="lazy" src="/images/article-figures/pi-agent-four-tools-detail.webp" width="900"/&gt;&lt;/a&gt;&lt;figcaption&gt;工具 A 的完成结果如果是工具 B 的输入，要把先后顺序显式写出来。&lt;/figcaption&gt;&lt;/figure&gt;
 &lt;h2 id="会话分支解决的是对话选择"&gt;会话分支解决的是对话选择&lt;/h2&gt;
 &lt;p&gt;从 &lt;code&gt;/tree&lt;/code&gt; 回到更早的消息继续，可以留下两条尝试路线。下一次请求只使用当前分支的对话历史。这样试过的方案还在，需要时也能回来比较。如果之前的分支已经改过文件，切换对话节点以后，磁盘上的改动仍在。想让研究结果也隔离，可以给分支准备独立的 Git worktree，或者在切换前保留工作区检查点。&lt;/p&gt;
-&lt;p&gt;上下文压缩处理的是另一个问题。对话太长时，运行时让摘要接替较早的部分，并保留最近消息，历史记录仍可访问。摘要适合让模型继续干活。某个兼容性条件、禁止写入的目录和验收标准不适合只藏在旧聊天里。我会把这些东西写进项目说明或任务记录，让会话压缩后还能重新读到。&lt;/p&gt;
+&lt;p&gt;上下文压缩处理的是另一个问题。对话太长时，运行时让摘要接替较早的部分，并保留最近消息，历史记录仍可访问。摘要适合让模型继续干活。某个兼容性条件、禁止写入的目录和验收标准不适合只藏在旧聊天里。我会把这些东西写进项目说明或任务记录，让会话压缩后还能重新读到。&lt;/p&gt;&lt;figure class="article-figure article-figure--supplement"&gt;&lt;a href="/images/article-figures/pi-agent-four-tools-scene.webp" title="查看原图"&gt;&lt;img alt="对话可以在两条分支间切换，磁盘上的工作文件仍独立保留。" decoding="async" height="854" loading="lazy" src="/images/article-figures/pi-agent-four-tools-scene.webp" width="1280"/&gt;&lt;/a&gt;&lt;figcaption&gt;教学示意。切换会话分支后，磁盘状态要从 Git 或工作区检查点确认。&lt;/figcaption&gt;&lt;/figure&gt;
 &lt;h2 id="团队要补的东西-可以从一次真实任务里找"&gt;团队要补的东西，可以从一次真实任务里找&lt;/h2&gt;
 &lt;p&gt;一段仓库说明适合解释如何构建和验收。Skill 适合告诉模型什么时候按某种做法处理。扩展适合在执行前后加检查，独立的 CI 则可以重复验证实际产物。比如主分支发布必须检查特定测试报告，这条规则可以在 CI 上强制。给模型一段说明能让它知道自己应该干什么，发布权限仍应由外部流程控制。&lt;/p&gt;
 &lt;p&gt;挑一个能用同一条测试验证的修复，先观察三件事。它有没有读到项目说明，失败后用了哪条证据决定下一步，以及最终报告对应哪次运行。看完再决定要加什么。如果问题出在看不到代码，补读工具或上下文就够了。如果问题出在误把一次局部通过当整体通过，优先补验证和取证规则。&lt;/p&gt;
@@ -187,7 +187,7 @@ providers:
 &lt;p&gt;前缀用稳定的服务标识。配置更新时检查最终生成出的公开名，发现冲突就拒绝这份路由。维护一份显式映射的好处是，改前缀规则之后不用猜下划线属于哪一段。迁移旧客户端时，可以给明确知道归属的短名做兼容入口。两个后端都有 &lt;code&gt;search&lt;/code&gt; 时，含义不清的短名适合直接停用。&lt;/p&gt;
 &lt;span id="分组能缩小模型的选择范围"&gt;&lt;/span&gt;&lt;h2 id="分组和权限各自改变什么"&gt;分组和权限各自改变什么&lt;/h2&gt;
 &lt;p&gt;处理文档问答时，模型只需要看到文档工具。给它一页与当前任务无关的搜索和写入工具，会增加选错的机会。列表根据会话或用户可用的工具生成，名称之后的描述顺手写清搜索范围、参数的含义以及返回内容。这样模型可以在它真的需要选择时，根据清楚的对象来选。&lt;/p&gt;
-&lt;p&gt;服务端处理 &lt;code&gt;tools/call&lt;/code&gt; 时，还要在当前身份和会话下重新确认权限。客户端用过某个工具，可能记着旧名字。名单发生过调整后，旧名单不应作为当前调用的依据。下面的代码省略了协议封包、用户认证和输入校验，展示路由顺序。&lt;/p&gt;
+&lt;p&gt;服务端处理 &lt;code&gt;tools/call&lt;/code&gt; 时，还要在当前身份和会话下重新确认权限。客户端用过某个工具，可能记着旧名字。名单发生过调整后，旧名单不应作为当前调用的依据。下面的代码省略了协议封包、用户认证和输入校验，展示路由顺序。&lt;/p&gt;&lt;figure class="article-figure article-figure--supplement"&gt;&lt;a href="/images/article-figures/mcp-gateway-name-collision-scene.webp" title="查看原图"&gt;&lt;img alt="网关在工具列表之后还有调用检查，已不允许的请求停在检查点。" decoding="async" height="854" loading="lazy" src="/images/article-figures/mcp-gateway-name-collision-scene.webp" width="1280"/&gt;&lt;/a&gt;&lt;figcaption&gt;客户端可以记住工具名，每次收到调用仍要按当前会话权限检查。&lt;/figcaption&gt;&lt;/figure&gt;
 &lt;pre&gt;&lt;code class="language-python"&gt;def dispatch(routes, allowed, sessions, name, arguments):
     if name not in allowed:
         raise PermissionError('tool unavailable')
@@ -197,7 +197,7 @@ providers:
 &lt;p&gt;我用两个返回固定文本的模拟后端跑了这个路由测试。调换两个服务的注册顺序，两种公开名都仍然调用各自的后端，传下去的工具名都为 &lt;code&gt;search&lt;/code&gt;。切换到只允许文档工具的会话，再调用 &lt;code&gt;catalog__search&lt;/code&gt; 或没有前缀的 &lt;code&gt;search&lt;/code&gt;，两次都在网关拒绝，两个后端都没有收到调用。这个结果验证的是路由和权限检查顺序，协议互通仍要用真实客户端和服务端测。&lt;/p&gt;
 &lt;h2 id="接入真实会话后-容易漏掉哪些状态"&gt;接入真实会话后，容易漏掉哪些状态&lt;/h2&gt;
 &lt;p&gt;连接管理和工具路由可以独立处理。后端可能通过本地 stdio 接入，也可能通过 Streamable HTTP 接入。网关收到的是某个公开工具名，按路由找到已经初始化的会话。更换传输方式时，客户端看到的公开名和输入 Schema 可以保持一致。至于会话是否能复用，要按连接是否携带用户身份判断。属于两个用户的连接不能只按服务名共用一份。&lt;/p&gt;
-&lt;p&gt;调用失败也要保留失败来源。如果网关找不到公开名，这是网关路由问题。连接中断或超时是传输问题。后端完成了协议往返，却返回工具执行错误，应把这一状态按原有含义传回客户端。把三类都折叠成空结果，用户只会以为真的什么也没搜到。&lt;/p&gt;
+&lt;p&gt;调用失败也要保留失败来源。如果网关找不到公开名，这是网关路由问题。连接中断或超时是传输问题。后端完成了协议往返，却返回工具执行错误，应把这一状态按原有含义传回客户端。把三类都折叠成空结果，用户只会以为真的什么也没搜到。&lt;/p&gt;&lt;figure class="article-figure article-figure--supplement"&gt;&lt;a href="/images/article-figures/mcp-gateway-name-collision-detail.webp" title="查看原图"&gt;&lt;img alt="分别区分网关拒绝、连接或请求超时，以及后端工具自身执行失败。" decoding="async" height="609" loading="lazy" src="/images/article-figures/mcp-gateway-name-collision-detail.webp" width="900"/&gt;&lt;/a&gt;&lt;figcaption&gt;响应保留失败发生的位置，调用方才能选对排查入口。&lt;/figcaption&gt;&lt;/figure&gt;
 &lt;p&gt;工具列表缓存也要有更新条件。后端变更 Schema 或网关改变权限后，更新的路由表和对外列表应来自同一份配置。否则一次列表刷新就能看到新工具，随后调用仍被旧路由拒绝。在验收时我会加一个用例，更新后端工具定义后重新获取列表，再用新参数调一次，确认网关没有继续把请求送到旧会话。&lt;/p&gt;
 &lt;p&gt;把这几个检查做完，再比较接入多少工具、有没有必要按描述做检索。语义检索可以帮模型缩小候选。调用究竟转去哪个后端，仍应由唯一名和显式路由决定。&lt;/p&gt;
 &lt;h2 id="参考"&gt;参考&lt;/h2&gt;
@@ -271,7 +271,7 @@ providers:
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;&lt;/div&gt;
-&lt;p&gt;把六个分数平铺后算 Pearson 相关系数，结果是 0.92。模型和人工都给第三张图更高的分，所以总体分数同涨同跌。落到每张图选一个版本，三次都选反了。要验证这种用法，优先看同一输入的候选排序一致率。候选数量更多时，也可以按输入计算排名相关，再汇总，并事先约定并列怎么处理。&lt;/p&gt;
+&lt;p&gt;把六个分数平铺后算 Pearson 相关系数，结果是 0.92。模型和人工都给第三张图更高的分，所以总体分数同涨同跌。落到每张图选一个版本，三次都选反了。要验证这种用法，优先看同一输入的候选排序一致率。候选数量更多时，也可以按输入计算排名相关，再汇总，并事先约定并列怎么处理。&lt;/p&gt;&lt;figure class="article-figure article-figure--supplement"&gt;&lt;a href="/images/article-figures/llm-judge-empty-output-detail.webp" title="查看原图"&gt;&lt;img alt="三组候选在人和模型的评分中都排反。总体 Pearson 相关为 0.92，逐组选对为零次。" decoding="async" height="730" loading="lazy" src="/images/article-figures/llm-judge-empty-output-detail.webp" width="900"/&gt;&lt;/a&gt;&lt;figcaption&gt;构造数据。总体分数一起上升时，仍要逐组检查谁被排在前面。&lt;/figcaption&gt;&lt;/figure&gt;
 &lt;p&gt;用 Python 可以直接复算这组分数。&lt;/p&gt;
 &lt;pre&gt;&lt;code class="language-python"&gt;from statistics import correlation
 
@@ -281,10 +281,10 @@ print(round(correlation(human, judge), 2))  # 0.92
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;同样的报告适合同时保留总体分布和组内比较。总体分布能看分数有没有漂移，组内指标回答哪个候选更好。两者用同一批样本，也可能告诉团队不同的信息。&lt;/p&gt;
 &lt;span id="空输出应该怎么算"&gt;&lt;/span&gt;&lt;h2 id="校准时-让模型回答准备替人做的判断"&gt;校准时，让模型回答准备替人做的判断&lt;/h2&gt;
-&lt;p&gt;如果裁判只是为了过滤明显空白，先把没有产出的条件写成稳定规则，记录规则拦到了多少和漏了多少。如果它准备辅助发布验收，我会用有产物的样本单独做校准，优先放进质量接近、容易分歧的候选。先让人工按固定口径独立标注，再看模型错在哪类问题上，并保留裁判输入、版本和证据。只存一个分数，下一轮改变提示词时很难追到实际差异。&lt;/p&gt;
+&lt;p&gt;如果裁判只是为了过滤明显空白，先把没有产出的条件写成稳定规则，记录规则拦到了多少和漏了多少。如果它准备辅助发布验收，我会用有产物的样本单独做校准，优先放进质量接近、容易分歧的候选。先让人工按固定口径独立标注，再看模型错在哪类问题上，并保留裁判输入、版本和证据。只存一个分数，下一轮改变提示词时很难追到实际差异。&lt;/p&gt;&lt;figure class="article-figure article-figure--supplement"&gt;&lt;a href="/images/article-figures/llm-judge-empty-output-scene.webp" title="查看原图"&gt;&lt;img alt="相比不同输入间明显的差异，用放大镜查看同一输入下两个相似候选。" decoding="async" height="854" loading="lazy" src="/images/article-figures/llm-judge-empty-output-scene.webp" width="1280"/&gt;&lt;/a&gt;&lt;figcaption&gt;如果上线后要在相近候选中做选择，校准集也需要这样的对照。&lt;/figcaption&gt;&lt;/figure&gt;
 &lt;p&gt;对影响发布的硬问题，还应该区分漏报和误报。人工确认某份结果应拦，模型给放过，这是漏报。人工认为可以通过，模型拦了，这是误报。只报相同判定的比例，看不到两类错误各有多少。样本很少的分组仍然可以报告计数，但应该把分母写出来，避免把两三条上的变化理解成稳定改进。&lt;/p&gt;
 &lt;p&gt;我最先想看的报告只有三行。空输出有多少。有产物的样本里，两边在哪些条件下一致。同一个输入的候选里，模型是否选到了人工更认可的那个。第三行还没有建立证据时，先停在辅助审查，保留人工确认需要发布的样本。&lt;/p&gt;</content></entry><entry><id>http://zx490336534.github.io/article/codex-obsidian-wiki.html</id><title>我怎么用 Codex 和 Obsidian，把散落笔记编成可追溯的 Wiki</title><link href="https://www.zhongxin.website/article/codex-obsidian-wiki.html" /><updated>2026-11-25T14:52:11+08:00</updated><published>2026-11-25T14:52:11+08:00</published><summary>在 Obsidian 里保留原始笔记，用 Codex 更新主题结论，并回查来源、索引和写入日志。</summary><content type="html">&lt;p&gt;以前我在 Obsidian 搜一个技术词，常常要打开好几份笔记才敢下结论。第一份写的是遇到了什么，另一份记录了当时没证实的猜测，后面还有一份修正。它们都值得留，但我每次问「现在应该怎么做」，都得把那段考据重新走一遍。我想省掉的是这部分重复劳动。&lt;/p&gt;
-&lt;p&gt;我借用了 Karpathy 的 LLM Wiki 思路，然后用 Codex 维护这层结论。Obsidian 仍用来看和写 Markdown。PARA 解决资料放哪里，Wiki 解决一个稳定结论放哪里，两套结构有不同的更新时机。&lt;/p&gt;
+&lt;p&gt;我借用了 Karpathy 的 LLM Wiki 思路，然后用 Codex 维护这层结论。Obsidian 仍用来看和写 Markdown。PARA 解决资料放哪里，Wiki 解决一个稳定结论放哪里，两套结构有不同的更新时机。&lt;/p&gt;&lt;figure class="article-figure article-figure--supplement"&gt;&lt;a href="/images/article-figures/codex-obsidian-wiki-scene.webp" title="查看原图"&gt;&lt;img alt="多条原始笔记共同指向一页结论，结论更新后仍保留来源。" decoding="async" height="854" loading="lazy" src="/images/article-figures/codex-obsidian-wiki-scene.webp" width="1280"/&gt;&lt;/a&gt;&lt;figcaption&gt;发现新证据时更新原有主题，并保留能查回去的来源。&lt;/figcaption&gt;&lt;/figure&gt;
 &lt;span id="一条结论可以写回原来的页面"&gt;&lt;/span&gt;&lt;h2 id="一次笔记写入和一次知识编译"&gt;一次笔记写入和一次知识编译&lt;/h2&gt;
 &lt;p&gt;我的库里有三个入口。&lt;/p&gt;
 &lt;div aria-label="数据表格" class="table-scroll" role="region" tabindex="0"&gt;&lt;table&gt;
@@ -335,14 +335,14 @@ print(round(correlation(human, judge), 2))  # 0.92
 &lt;li&gt;日志能不能对应这次变更，哪些来源已经处理。&lt;/li&gt;
 &lt;li&gt;没查到原文或没写完整的部分，报告有没有标出来。&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;同一批内容重试时，按主题和来源判断已有改动，避免每次都追加同一段。查到链接要确认它指向实际证据，文件存在只能证明路径对了。发给模型的材料可以经过语义检索召回，最后仍应回读原始 Markdown。索引能加速找资料，错过来源时也不会自动补齐证据。&lt;/p&gt;
+&lt;p&gt;同一批内容重试时，按主题和来源判断已有改动，避免每次都追加同一段。查到链接要确认它指向实际证据，文件存在只能证明路径对了。发给模型的材料可以经过语义检索召回，最后仍应回读原始 Markdown。索引能加速找资料，错过来源时也不会自动补齐证据。&lt;/p&gt;&lt;figure class="article-figure article-figure--supplement"&gt;&lt;a href="/images/article-figures/codex-obsidian-wiki-detail.webp" title="查看原图"&gt;&lt;img alt="编译完成后核对主题页、索引、日志、未完成项。" decoding="async" height="729" loading="lazy" src="/images/article-figures/codex-obsidian-wiki-detail.webp" width="900"/&gt;&lt;/a&gt;&lt;figcaption&gt;一次编译能否验收，要同时看文件内容和本轮处理记录。&lt;/figcaption&gt;&lt;/figure&gt;
 &lt;p&gt;如果只想做一个试点，挑最近翻过三次的主题。保留原笔记，写一条有条件、有来源的判断，再从一个新会话问同样的问题。能顺着索引找到结论，也能说出它在哪种情况下失效，这一页就已经帮我省了一次翻找。&lt;/p&gt;
 &lt;h2 id="参考"&gt;参考&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f"&gt;Karpathy 的 LLM Wiki 说明&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</content></entry><entry><id>http://zx490336534.github.io/article/agent-ui-testing.html</id><title>Agent 时代的 UI 自动化，哪些步骤值得用 AI？</title><link href="https://www.zhongxin.website/article/agent-ui-testing.html" /><updated>2026-11-25T14:52:11+08:00</updated><published>2026-11-25T14:52:11+08:00</published><summary>同一条 UI 回归里，视觉模型可以负责画布操作，确定性断言负责验收保存和刷新恢复。</summary><content type="html">&lt;p&gt;我给 UI 自动化选工具时，会先找出一条用例里最难写的动作。有些步骤难在定位，比如画布上没有 DOM 节点的图形。有些步骤难在判断结果，比如保存以后到底有没有写入服务端。前者可以让模型看图，后者通常能找到更明确的检查点。把两种难处混在一个自然语言用例里，出了问题很难判断应该修脚本、修提示词，还是修产品。&lt;/p&gt;
 &lt;span id="同一条用例要通过两个判断"&gt;&lt;/span&gt;&lt;h2 id="一个错误实现-也能让-保存成功-通过"&gt;一个错误实现，也能让「保存成功」通过&lt;/h2&gt;
-&lt;p&gt;我用一个小编辑器复现了这种假通过。输入卡片名，点击保存，两个版本都返回 HTTP 200，也都显示「保存成功」。区别在服务端。正常版本写入记录，故障版本收到同一份请求后直接返回成功。&lt;/p&gt;
+&lt;p&gt;我用一个小编辑器复现了这种假通过。输入卡片名，点击保存，两个版本都返回 HTTP 200，也都显示「保存成功」。区别在服务端。正常版本写入记录，故障版本收到同一份请求后直接返回成功。&lt;/p&gt;&lt;figure class="article-figure article-figure--supplement"&gt;&lt;a href="/images/article-figures/agent-ui-testing-scene.webp" title="查看原图"&gt;&lt;img alt="两个编辑器都显示保存成功，刷新后只有一边还能看到卡片。" decoding="async" height="854" loading="lazy" src="/images/article-figures/agent-ui-testing-scene.webp" width="1280"/&gt;&lt;/a&gt;&lt;figcaption&gt;两个版本给出了同样的成功提示，刷新回读才暴露区别。&lt;/figcaption&gt;&lt;/figure&gt;
 &lt;p&gt;用 Playwright 依次检查请求、页面提示、刷新后的已保存列表，实际结果如下。两个版本走相同的前端，一个服务进程内分别提供正常和故障路由。每次用新的浏览器上下文，卡片名也由用例控制。&lt;/p&gt;
 &lt;div aria-label="数据表格" class="table-scroll" role="region" tabindex="0"&gt;&lt;table&gt;
 &lt;thead&gt;
@@ -411,7 +411,7 @@ expect(cards.get_by_text('回归卡片', exact=True)).to_be_visible()
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;&lt;/div&gt;
-&lt;p&gt;这里也不用预先规定每套测试必须是同一种模式。把视觉能力放进需要它的那几步，可以让剩下的步骤继续确定执行。视觉操作的成功与任务完成分别记，排查时不用猜一句笼统的「成功」指什么。&lt;/p&gt;
+&lt;p&gt;这里也不用预先规定每套测试必须是同一种模式。把视觉能力放进需要它的那几步，可以让剩下的步骤继续确定执行。视觉操作的成功与任务完成分别记，排查时不用猜一句笼统的「成功」指什么。&lt;/p&gt;&lt;figure class="article-figure article-figure--supplement"&gt;&lt;a href="/images/article-figures/agent-ui-testing-detail.webp" title="查看原图"&gt;&lt;img alt="普通控件用确定性脚本，难定位的视觉动作交给模型，业务结果用状态和回读作断言。" decoding="async" height="609" loading="lazy" src="/images/article-figures/agent-ui-testing-detail.webp" width="900"/&gt;&lt;/a&gt;&lt;figcaption&gt;同一条用例可以混用这三种检查。定位和验收各自留下证据。&lt;/figcaption&gt;&lt;/figure&gt;
 &lt;span id="修测试的时候留住失败条件"&gt;&lt;/span&gt;&lt;h2 id="修脚本之前-先保住它抓过的错误"&gt;修脚本之前，先保住它抓过的错误&lt;/h2&gt;
 &lt;p&gt;按钮改名导致定位失败时，调整定位器是合理修复。刷新后读不到卡片时，我会保留这条失败，从请求有没有提交、任务状态是否结束、最终记录是否能读取逐段排查。把失败断言改为检查成功弹窗，相当于把这次实测抓住的错误重新放过去。&lt;/p&gt;
 &lt;p&gt;如果后台返回 202，响应只说明任务被受理。把等待拆成两个条件更容易诊断。先等对应的任务进入明确终态，再按返回 ID 回读产物。不能只看到任何一个历史任务完成就结束，也不要用固定睡眠替代等待条件。测试失败时记录这次操作的 ID、最后一次任务状态，以及最终回读失败的那一步。&lt;/p&gt;

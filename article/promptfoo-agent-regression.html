@@ -110,8 +110,10 @@ providers:
       transformResponse: 'JSON.stringify(json)'
 </code></pre>
 <p>我让模拟接口对两条相同用户请求返回不同状态。请求参数从 <code>queued-ok</code> 改成 <code>queued-bug</code>，后端就把 <code>pending</code> 换成 <code>completed</code>。服务端记录到两次请求，Promptfoo 显示一条通过、一条失败、零个执行错误。这个实验确认的是输入确实经过 HTTP，到达服务，并由同一份断言判定。真实 Agent 的性能和稳定性要在目标环境里验证。</p>
+<figure class="article-figure article-figure--supplement"><a href="/images/article-figures/promptfoo-agent-regression-scene.webp" title="查看原图"><img alt="固定输出和通过实时请求取得的输出进入同一个断言检查。" decoding="async" height="854" loading="lazy" src="/images/article-figures/promptfoo-agent-regression-scene.webp" width="1280"/></a><figcaption>保存过的输出可以反复检查断言。实时请求用同一条断言检查当前服务。</figcaption></figure>
 <p>对于已有应用，我会先让 Provider 调用应用正常的入口，服务端继续使用自己的提示词和工具。把服务端 Prompt 复制到评测配置，会形成两个版本来源。服务升级后，评测很容易继续测到旧副本。只有专门比较提示词时，再把多个版本作为实验变量放进配置。</p>
 <p>没有过滤条件时，2 个用例、2 份 Prompt、2 个 Provider，每个组合执行 3 次，就是 24 个评测单元。一次应用调用内部可能调多次模型，模型裁判还会增加请求。因此这里的 24 用来预估运行组合，账单要另外看实际请求数。先跑一个组，确认测试命中了预期 Provider，再展开全部矩阵。</p>
+<figure class="article-figure article-figure--supplement"><a href="/images/article-figures/promptfoo-agent-regression-detail.webp" title="查看原图"><img alt="两条用例乘两份 Prompt、两个 Provider、每组运行三次，得到 24 个评测单元。" decoding="async" height="690" loading="lazy" src="/images/article-figures/promptfoo-agent-regression-detail.webp" width="900"/></a><figcaption>组合数用于估算评测规模，Provider 和评分过程发了多少模型请求需要另记。</figcaption></figure>
 <h2 id="哪些失败应该拦住发布">哪些失败应该拦住发布</h2>
 <p>明确的业务约定适合用机器断言。例如任务还在队列中、金额错误、缺少强制字段，能立刻说明是哪条规则失败。文案是否让用户明白下一步，可以另设辅助评分，并先用人工确认的正反样本校准。文案得分再高，状态错误仍应单独报出来。</p>
 <p>也要单独记执行错误。测试环境未启动、请求超时、权限失败，先查运行条件。服务正常返回了一个错误的业务状态，则进入产品回归。两者都可能让 CI 失败，但修法不同。检查 <code>results.json</code> 的逐条断言和运行状态，比只看一行总通过率容易定位得多。</p>
