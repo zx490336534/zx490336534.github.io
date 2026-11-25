@@ -15,7 +15,7 @@ TOOL_REPO = "https://github.com/zx490336534/next-ai-test-cases"
 SELECTED_WORK = (
     ("ai-test-cases", "开源应用", "AI 测试用例脑图",
      "把需求变成可编辑的用例节点，支持对话式修改，再从当前脑图导出 CSV 或 XMind。",
-     "用 Next.js 和 TypeScript 实现对话、脑图编辑与导出。两版均可导入文字 Skill；完整版还支持 MCP 读取已配置的文档。",
+     "用 Next.js 和 TypeScript 实现对话式增删改、脑图编辑与文件导出。两版均可导入文字 Skill；完整版还支持 MCP 读取已配置的文档。",
      "仓库公开了界面示例、运行说明和测试代码。编辑和导出不需要模型；AI 生成需要配置模型。",
      (("打开工具", "/tools/test-cases/"), ("查看 GitHub 源码", TOOL_REPO), ("查看测试代码", TOOL_REPO + "/tree/main/tests"))),
     ("agent-regression", "可复跑案例", "把 Agent 失败变成回归测试",
@@ -40,7 +40,7 @@ def home_work():
             f'<ul>{links}</ul></section>')
 
 
-DEMO_PREFIX = "/videos/portfolio/ai-test-cases-demo-v2"
+DEMO_PREFIX = "/videos/portfolio/ai-test-cases-demo-v3"
 DEMO_PATHS = tuple(DEMO_PREFIX + suffix for suffix in (".mp4", ".webp", ".zh-CN.vtt"))
 
 
@@ -51,7 +51,7 @@ def work_demo(root):
     src, poster, track = DEMO_PATHS
     return (
         '<figure class="work-demo" aria-labelledby="ai-test-cases-demo-caption">'
-        '<figcaption id="ai-test-cases-demo-caption">完整版实录｜Skill、MCP 与用例导出 · 虚构需求、本地模拟模型</figcaption>'
+        '<figcaption id="ai-test-cases-demo-caption">完整版实录｜Skill、MCP、对话增删改与导出 · 虚构需求、本地模拟模型</figcaption>'
         f'<video controls playsinline preload="none" width="1440" height="900" poster="{poster}" '
         'aria-labelledby="ai-test-cases-demo-caption">'
         f'<source src="{src}" type="video/mp4">'
