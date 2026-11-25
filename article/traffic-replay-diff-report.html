@@ -111,7 +111,18 @@ print(json.dumps({
 <figure class="article-figure article-figure--supplement"><img alt="同一处差异分别出现在报告附件、单页差异和批次查询中" decoding="async" height="675" loading="lazy" src="/images/blog-media/traffic-replay-diff-report-illustration.webp" width="1200"/><figcaption id="passage-78f7998bdbf1">AI 生成示意。从左到右分别是失败用例附件、单页差异报告和按批次筛选的查询页面。</figcaption></figure>
 <p id="passage-1a416dc20a0b">如果手上已经用 pytest 跑回放，我会先在失败用例里附上标明基线和待测的两份响应。报告摘要直接写 <code>inStock</code> 的变化，点开附件再查看上下文。<a href="https://allurereport.org/docs/pytest-reference/#attachments">Allure Pytest 附件文档</a></p>
 <p id="passage-5b7d893cfa13">要跨用例浏览整批结果，可以让脚本输出一行一个 JSON 对象的日志，Flask 读取字段后交给 Jinja 模板展示。查历史批次的需求稳定下来，再把差异存到 SQLite，页面按批次、接口和字段筛选。同一次请求有三处字段变化时，按请求统计是一条，按字段统计是三条，汇总页要写清用哪个口径。<a href="https://flask.palletsprojects.com/en/stable/templating/">Flask 模板文档</a></p>
-<p id="passage-037ca854c859">第一版跑通一条差异就可以停。先请开发只看报告，试着找出变化字段和对应的请求。哪个信息还得回日志里找，就先补哪个。</p></div>
+<p id="passage-037ca854c859">第一版跑通一条差异就可以停。先请开发只看报告，试着找出变化字段和对应的请求。哪个信息还得回日志里找，就先补哪个。</p></div><section class="article-video" aria-labelledby="article-video-title">
+          <header class="article-video-header">
+            <h2 id="article-video-title">本文视频讲解</h2>
+            <p>普通话 · <time datetime="PT163S">2:43</time></p>
+          </header>
+          <video controls playsinline preload="none" poster="/videos/article-posters/traffic-replay-diff-report.webp" aria-label="本文视频讲解">
+            <source src="https://github.com/zx490336534/zx490336534.github.io/releases/download/article-videos-20261125/traffic-replay-diff-report.mp4" type="video/mp4">
+            <track kind="captions" srclang="zh" label="简体中文" src="/videos/article-captions/traffic-replay-diff-report.vtt">
+            此浏览器无法内嵌播放，可以打开下方链接。
+          </video>
+          <p class="article-video-download"><a href="https://github.com/zx490336534/zx490336534.github.io/releases/download/article-videos-20261125/traffic-replay-diff-report.mp4">打开或下载 MP4 ↗</a></p>
+        </section>
 
         <div class="post-tags" aria-label="文章标签"><a href="/tags/%E6%B5%81%E9%87%8F%E5%9B%9E%E6%94%BE/">流量回放</a><a href="/tags/Allure/">Allure</a><a href="/tags/%E6%B5%8B%E8%AF%95%E6%8A%A5%E5%91%8A/">测试报告</a></div>
         <div class="legacy-tags" hidden></div>
