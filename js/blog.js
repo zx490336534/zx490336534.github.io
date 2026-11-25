@@ -8,6 +8,7 @@ let index;
 
 if (matchMedia('(max-width: 760px)').matches) {
   document.querySelector('.outline details')?.removeAttribute('open');
+  document.querySelector('.catalog-menu[data-compact]')?.removeAttribute('open');
 }
 
 function entries() {

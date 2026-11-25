@@ -6,7 +6,7 @@
 
 import argparse
 from collections import defaultdict
-from dataclasses import dataclass, field, replace
+from dataclasses import dataclass, field
 from datetime import date
 from html import escape, unescape
 import json
@@ -17,6 +17,8 @@ import xml.etree.ElementTree as ET
 
 from bs4 import BeautifulSoup
 import nh3
+
+from blog_topics import Topic, browser_page, links as taxonomy_links, read_catalog, topic_trail
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = "https://www.zhongxin.website"
@@ -59,6 +61,8 @@ class Post:
     search_text: str = ""
     legacy_comments: bool = False
     author: str = "听白"
+    topic: Topic | None = None
+    editorial_tags: list = field(default_factory=list)
 
     @property
     def day(self):
@@ -116,6 +120,7 @@ def read_post(path):
     source = page.select_one("a.source-link")
     cover = page.select_one('meta[name="blog-cover"]')
     author = page.select_one(".post-author")
+    tag_metadata = page.select_one(".legacy-tags") or page.select_one(".post-tags")
     title = title.get_text(strip=True)
     toc = prepare_body(body, title)
     summary = compact(description.get("content", "") if description else "")
@@ -126,7 +131,7 @@ def read_post(path):
         body.decode_contents().strip(),
         summary or compact(body.get_text(" ", strip=True))[:150],
         [(a.get_text(strip=True), normalized_path(a["href"])) for a in page.select(".post-category a[href]")],
-        [(a.get_text(strip=True).removeprefix("#").strip(), normalized_path(a["href"])) for a in page.select(".post-tags a[href]")],
+        [(a.get_text(strip=True).removeprefix("#").strip(), normalized_path(a["href"])) for a in (tag_metadata.select("a[href]") if tag_metadata else [])],
         source["href"] if source else "", cover["content"] if cover else "", toc,
         compact(body.get_text(" ", strip=True)), bool(page.select_one("#disqus_thread")),
         author.get_text(strip=True) if author else "听白",
@@ -183,7 +188,13 @@ def import_posts(path, posts):
 def shell(title, path, content, description=DESCRIPTION, extra_head=""):
     title_tag = NAME if path == "/" else f"{title} · {NAME}"
     nav = [("文章归档", "/archives/"), ("分类", "/categories/"), ("教学", "/#courses"), ("关于", "/about/")]
-    links = "".join(f'<a href="{url}"' + (' aria-current="page"' if url == path else '') + f'>{label}</a>' for label, url in nav)
+    links = []
+    for label, url in nav:
+        current = ' aria-current="page"' if url == path else ""
+        if not current and url == "/categories/" and path.startswith(url):
+            current = ' aria-current="location"'
+        links.append(f'<a href="{url}"{current}>{label}</a>')
+    links = "".join(links)
     canonical = html(SITE + path)
     return f'''<!doctype html>
 <html lang="zh-CN">
@@ -233,15 +244,26 @@ def date_label(post):
 
 
 def category_links(post):
-    return "".join(f'<a href="{html(url)}">{html(label)}</a>' for label, url in post.categories)
+    if post.topic:
+        return taxonomy_links([(post.topic.name, post.topic.url)])
+    return taxonomy_links(post.categories)
 
 
-def post_rows(posts):
-    return '<ul class="post-list">' + "".join(
+def excerpt(description, limit):
+    # WeChat descriptions can carry escaped HTML entities from their page metadata.
+    text = unescape(re.sub(r"\\x26(?=(?:[a-zA-Z]+|#[xX]?[0-9a-fA-F]+);)", "&", description))
+    return html(text[:limit])
+
+
+def post_rows(posts, *, show_category=True):
+    css = "post-list" if show_category else "post-list without-category"
+    return f'<ul class="{css}">' + "".join(
         f'<li>{date_label(post)}<div><a class="row-title" href="{html(post.path)}">{html(post.title)}</a>'
-        f'<p>{html(post.description[:110])}</p></div><span class="categories">{category_links(post)}</span></li>'
+        f'<p>{excerpt(post.description, 110)}</p></div>'
+        + (f'<span class="categories">{category_links(post)}</span>' if show_category else "")
+        + "</li>"
         for post in posts
-    ) + '</ul>'
+    ) + "</ul>"
 
 
 def home_picture(post):
@@ -275,7 +297,7 @@ def home_story(post, picture, layout):
         <div class="front-copy">
           <div class="front-meta">{status}{date_label(post)}</div>
           <{heading}>{html(post.title)}</{heading}>
-          <p>{html(post.description[:150])}</p>
+          <p>{excerpt(post.description, 150)}</p>
           {action}
         </div>
       </a>
@@ -283,11 +305,6 @@ def home_story(post, picture, layout):
 
 
 def home(posts):
-    # WeChat descriptions can carry escaped HTML entities from their page metadata.
-    posts = [
-        replace(post, description=unescape(re.sub(r"\\x26(?=(?:[a-zA-Z]+|#[xX]?[0-9a-fA-F]+);)", "&", post.description)))
-        for post in posts
-    ]
     feature = posts[0]
     photos = []
     for post in posts[1:40]:
@@ -338,7 +355,10 @@ def home(posts):
 def article(post, older, newer):
     toc = "".join(f'<li><a href="#{quote(anchor, safe="")}">{html(label)}</a></li>' for anchor, label in post.toc)
     outline = f'<aside class="outline"><details open><summary>本文目录</summary><ol>{toc}</ol></details></aside>' if toc else ''
-    tags = "".join(f'<a href="{html(url)}">{html(tag)}</a>' for tag, url in post.tags)
+    tags = taxonomy_links(post.editorial_tags or post.tags)
+    original_tags = taxonomy_links(post.tags)
+    original_categories = taxonomy_links(post.categories)
+    trail = topic_trail(post.topic) if post.topic else original_categories
     source = f'<p class="source"><a class="source-link" href="{html(post.source)}">查看微信公众号原文 ↗</a></p>' if post.source else ''
     related = "".join(f'<a href="{html(link.path)}"><small>{direction}</small>{html(link.title)}</a>'
                       for link, direction in [(newer, "较新文章"), (older, "较早文章")] if link)
@@ -350,7 +370,8 @@ def article(post, older, newer):
       <a class="back-link" href="/archives/">← 文章归档</a>
       <h1 class="post-title">{html(post.title)}</h1>
       <div class="entry-meta"><span class="post-author">{html(post.author)}</span><time itemprop="datePublished" datetime="{html(post.published)}">{html(post.day)}</time>
-        <span class="post-category categories">{category_links(post)}</span></div>
+        <span class="post-category" hidden>{original_categories}</span>
+        <nav class="topic-context" aria-label="文章分类">{trail}</nav></div>
     </header>
     <div class="article-layout {'with-outline' if outline else ''}">
       {outline}
@@ -358,6 +379,7 @@ def article(post, older, newer):
         <div class="post-body">{post.body}</div>
         {source}
         <div class="post-tags">{tags}</div>
+        <div class="legacy-tags" hidden>{original_tags}</div>
         <nav class="related" aria-label="相邻文章">{related}</nav>
         {comments}
       </div>
@@ -395,25 +417,53 @@ def pagination(path, total):
     ) + '</nav>'
 
 
-def taxonomy(posts, attribute):
-    base = f"/{attribute}/"
-    title = "分类" if attribute == "categories" else "标签"
-    groups = defaultdict(list)
-    labels = {}
+def taxonomy_groups(posts, attribute):
+    groups = {}
     for post in posts:
         for name, url in getattr(post, attribute):
-            assert url.startswith(base) and url.endswith("/"), url
-            groups[url].append(post)
-            labels[url] = name
-    links = "".join(f'<li><a href="{html(url)}">{html(labels[url])} <span>{len(groups[url])}</span></a></li>'
-                    for url in sorted(groups, key=lambda url: (-len(groups[url]), labels[url])))
-    write(base, shell(title, base, f'<section class="listing"><h1>{title}</h1><ul class="taxonomy">{links}</ul></section>'))
-    for url, members in groups.items():
-        write(url, listing(labels[url], url, members))
+            if url not in groups:
+                groups[url] = (name, [])
+            groups[url][1].append(post)
+    return groups
+
+
+def taxonomy_listings(groups, historical=None):
+    for url, (name, members) in groups.items():
+        write(url, listing(name, url, members))
         for file in (ROOT / unquote(url).lstrip("/")).glob("page/*/index.html"):
             page = int(file.parent.name)
             path = path_for(file)
-            write(path, listing(labels[url], path, members[10 * (page - 1):10 * page], intro=f'<p><a href="{html(url)}">查看此主题的全部文章</a></p>'))
+            paged_members = historical.get(url, (name, members))[1] if historical else members
+            write(path, listing(name, path, paged_members[10 * (page - 1):10 * page],
+                                intro=f'<p><a href="{html(url)}">查看此主题的全部文章</a></p>'))
+
+
+def category_indexes(posts, catalog):
+    old = taxonomy_groups(posts, "categories")
+    taxonomy_listings(old)
+    history = sorted(
+        ((name, url, len(members)) for url, (name, members) in old.items()),
+        key=lambda item: (-item[2], item[0]),
+    )
+    for node in catalog.walk():
+        write(node.url, shell(node.name, node.url, browser_page(catalog, node, post_rows, history)))
+
+
+def tag_indexes(posts):
+    old = taxonomy_groups(posts, "tags")
+    edited = taxonomy_groups(posts, "editorial_tags")
+    taxonomy_listings({**old, **edited}, historical=old)
+    current = sorted(edited.items(), key=lambda row: (-len(row[1][1]), row[1][0].casefold()))
+    common, rest = [], []
+    for url, (name, members) in current:
+        item = f'<li><a href="{html(url)}">{html(name)} <span>{len(members)}</span></a></li>'
+        (common if len(members) >= 2 else rest).append(item)
+    more = ('<details class="catalog-history"><summary>更多标签</summary>'
+            f'<ul class="taxonomy">{"".join(rest)}</ul></details>') if rest else ""
+    body = ('<section class="listing tag-library"><header class="section-title"><h1>标签</h1>'
+            '<a href="/categories/">按分类浏览 ↗</a></header>'
+            f'<ul class="taxonomy">{"".join(common)}</ul>{more}</section>')
+    write("/tags/", shell("标签", "/tags/", body))
 
 
 def archive(posts):
@@ -442,7 +492,7 @@ def archive(posts):
         write(path, listing(f"{year} 年" + (f" {int(month)} 月" if month else "") + "文章", path, members))
 
 
-def indexes(posts):
+def indexes(posts, catalog):
     count = (len(posts) + 9) // 10
     for base in ("/", "/archives/"):
         for page in range(2, count + 1):
@@ -452,17 +502,20 @@ def indexes(posts):
         if file.parent.name == "1":
             write(path_for(file), listing("文章归档", path_for(file), posts[:10], pagination("/archives/", count)))
     archive(posts)
-    taxonomy(posts, "categories")
-    taxonomy(posts, "tags")
+    category_indexes(posts, catalog)
+    tag_indexes(posts)
     search = [{"path": post.path, "title": post.title, "date": post.day,
-               "text": post.search_text, "topics": [name for name, _ in post.categories + post.tags]} for post in posts]
+               "text": post.search_text, "topics": list(dict.fromkeys(
+                   [topic.name for topic in post.topic.trail()] + [name for name, _ in post.editorial_tags or post.tags]
+               ))} for post in posts]
     write("/search.json", json.dumps(search, ensure_ascii=False, separators=(",", ":")) + "\n")
     search_xml = ET.Element("search")
     for post in posts:
         entry = ET.SubElement(search_xml, "entry")
         for name, value in [("title", post.title), ("link", post.path.lstrip("/")), ("url", post.path.lstrip("/")), ("content", post.body)]:
             ET.SubElement(entry, name).text = value
-        for collection, tag in [(post.categories, "category"), (post.tags, "tag")]:
+        categories = [(topic.name, topic.url) for topic in post.topic.trail()]
+        for collection, tag in [(categories, "category"), (post.editorial_tags or post.tags, "tag")]:
             if collection:
                 parent = ET.SubElement(entry, f"{tag[:-1]}ies" if tag == "category" else "tags")
                 for label, _ in collection:
@@ -501,12 +554,13 @@ def main():
     if args.import_posts:
         posts = import_posts(args.import_posts, posts)
     posts.sort(key=lambda post: (post.published, post.path), reverse=True)
+    catalog = read_catalog(posts, ROOT / "scripts/topic_catalog.json")
     write("/", home(posts))
     for i, post in enumerate(posts):
         older = posts[i + 1] if i + 1 < len(posts) else None
         newer = posts[i - 1] if i else None
         write(post.path, article(post, older, newer))
-    indexes(posts)
+    indexes(posts, catalog)
     about = BeautifulSoup((ROOT / "about/index.html").read_text(), "lxml").select_one(".post-body")
     assert about is not None
     write("/about/", shell("关于", "/about/", f'<section class="listing"><h1>关于</h1><div class="post-body">{about.decode_contents().strip()}</div></section>'))
