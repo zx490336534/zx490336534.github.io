@@ -73,6 +73,7 @@ class Post:
     display_cover: str = ""
     opening_cover: str = ""
     numbered_title: str = ""
+    video: dict | None = None
 
     @property
     def display_title(self):
@@ -483,6 +484,57 @@ def reading_time(post):
     return f"约 {minutes} 分钟"
 
 
+def read_article_videos(posts):
+    manifest = json.loads((ROOT / "scripts/article_videos.json").read_text())
+    assert isinstance(manifest, dict)
+    by_path = {post.path: post for post in posts}
+    owner = re.escape(GISCUS_REPO)
+    for path, entry in manifest.items():
+        if path not in by_path or not isinstance(entry, dict):
+            raise ValueError(f"无效视频文章：{path}")
+        stem = Path(path).stem
+        file = re.escape(stem) + r"(?:-[a-z0-9]+)?\.mp4"
+        src = entry.get("src", "")
+        remote = re.fullmatch(rf"https://github\.com/{owner}/releases/download/article-videos-[a-z0-9-]+/{file}", src)
+        local = re.fullmatch(rf"/videos/article-media/{file}", src)
+        if not remote and not (local and (ROOT / src.lstrip("/")).is_file()):
+            raise ValueError(f"无效视频源：{path}")
+        duration = entry.get("duration")
+        if type(duration) is not int or duration < 1:
+            raise ValueError(f"无效视频长度：{path}")
+        for kind, suffix, folder in (("captions", "vtt", "article-captions"),
+                                      ("poster", "webp", "article-posters")):
+            value = entry.get(kind)
+            if value is not None and (value != f"/videos/{folder}/{stem}.{suffix}"
+                                      or not (ROOT / value.lstrip("/")).is_file()):
+                raise ValueError(f"缺少视频{kind}资源：{path}")
+        by_path[path].video = entry
+
+
+def article_video(post):
+    if not post.video:
+        return ""
+    entry = post.video
+    seconds = entry["duration"]
+    time = f"{seconds // 60}:{seconds % 60:02}"
+    src = html(entry["src"])
+    poster = html(entry.get("poster", post.display_cover))
+    track = (f'<track kind="captions" srclang="zh" label="简体中文" src="{html(entry["captions"])}">'
+             if entry.get("captions") else "")
+    return f"""<section class="article-video" aria-labelledby="article-video-title">
+          <header class="article-video-header">
+            <h2 id="article-video-title">本文视频讲解</h2>
+            <p>普通话 · <time datetime="PT{seconds}S">{time}</time></p>
+          </header>
+          <video controls playsinline preload="none" poster="{poster}" aria-label="本文视频讲解">
+            <source src="{src}" type="video/mp4">
+            {track}
+            此浏览器无法内嵌播放，可以打开下方链接。
+          </video>
+          <p class="article-video-download"><a href="{src}">打开或下载 MP4 ↗</a></p>
+        </section>"""
+
+
 def article(post, older, newer, series_position=None):
     toc = "".join(f'<li><a href="#{quote(anchor, safe="")}">{html(label)}</a></li>' for anchor, label in post.toc)
     outline = f'<aside class="outline"><details open><summary>本文目录</summary><ol>{toc}</ol></details></aside>' if toc else ''
@@ -540,7 +592,7 @@ def article(post, older, newer, series_position=None):
       {outline}
       <div class="article-main">
         {cover_image}
-        <div class="post-body">{post.body}</div>
+        <div class="post-body">{post.body}</div>{article_video(post)}
         {source}
         <div class="post-tags" aria-label="文章标签">{tags}</div>
         <div class="legacy-tags" hidden>{original_tags}</div>
@@ -741,6 +793,7 @@ def main():
     catalog = read_catalog(posts, ROOT / "scripts/topic_catalog.json")
     openings = json.loads((ROOT / "scripts/cover_openings.json").read_text())
     set_display_covers(posts, openings)
+    read_article_videos(posts)
     series, positions = load_series(posts, ROOT / "scripts/series_catalog.json")
     for post in posts:
         if position := positions.get(post.path):
