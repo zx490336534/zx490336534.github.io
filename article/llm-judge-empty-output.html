@@ -91,7 +91,7 @@
 </tbody>
 </table></div>
 <p>75% 这项算术没错，它描述的是这八条样本。如果团队要判断模型能不能替人检查已经生成的内容，更直接的数字是后四条的 50%。同一个评测器，两种口径，没有修改其中任何一条判定。</p>
-<figure><img alt="四条空输出四次一致，四条有输出两次一致，汇总六次一致" decoding="async" height="480" loading="lazy" src="/images/article-figures/llm-judge-empty-output.webp" width="1200"/><figcaption>教学示意。示例中的八条记录为构造数据，用于演示样本组成对一致率的影响。</figcaption></figure>
+<figure class="article-figure"><a href="/images/article-figures/llm-judge-empty-output.webp" title="查看原图"><img alt="四条空输出四次一致，四条有输出两次一致，汇总六次一致" decoding="async" height="480" loading="lazy" src="/images/article-figures/llm-judge-empty-output.webp" width="1200"/></a><figcaption>教学示意。示例中的八条记录为构造数据，用于演示样本组成对一致率的影响。</figcaption></figure>
 <h2 id="空输出应该怎么算">空输出应该怎么算</h2>
 <p>空输出本身值得关注。它会影响用户能不能拿到任何结果。我会把它作为一项单独的指标，记录多少次本该产出却没有产出。能用固定规则判断时，就直接检查是否存在有效结果。把剩下的样本交给人工和模型，按同一份评分标准看质量，再记下分歧集中在哪里。</p>
 <p>模糊的地方可以用正反例补规则。例如一个回答只生成了标题，没有给出正文。算空输出、算不完整，还是按低质量处理，跟产品约定有关。这个归类必须在看模型得分前定好。否则每次换一种分组方法，数字就可能变好，但对裁判能力的判断没有更清楚。</p>

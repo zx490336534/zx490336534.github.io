@@ -61,7 +61,7 @@
 <h2 id="同一条用例要通过两个判断">同一条用例要通过两个判断</h2>
 <p>拿一个可以公开演示的场景。用户在网页编辑器里放置一张卡片，点保存，刷新后还要看到刚才保存的内容。这里有两件事要验证。先看卡片能不能放到目标位置，再看保存的数据能不能恢复。</p>
 <p>表单、保存按钮、已保存记录都有明确的角色或标识。用 Playwright 按按钮名称定位，再读取刷新后的记录。只要保存动作虚报成功，后半段就会失败。只检查成功提示的话，前端即使在请求还没结束时弹出提示，用例也可能过去。</p>
-<figure><img alt="从放置卡片到刷新回读的三个检查点" decoding="async" height="480" loading="lazy" src="/images/article-figures/agent-ui-testing.webp" width="1200"/><figcaption>教学示意。保存提示之后增加刷新回读，才能覆盖恢复行为。</figcaption></figure>
+<figure class="article-figure"><a href="/images/article-figures/agent-ui-testing.webp" title="查看原图"><img alt="从放置卡片到刷新回读的三个检查点" decoding="async" height="480" loading="lazy" src="/images/article-figures/agent-ui-testing.webp" width="1200"/></a><figcaption>教学示意。保存提示之后增加刷新回读，才能覆盖恢复行为。</figcaption></figure>
 <h2 id="视觉操作可以单独交给模型">视觉操作可以单独交给模型</h2>
 <p>画布里的卡片如果只画在 Canvas 上，就很难直接拿到卡片的 DOM 元素。有视觉能力的工具能看截图，按目标位置完成拖拽。以 Midscene 为例，可以让模型规划几步操作，也可以在固定脚本里只把定位这一步交给模型。后者的好处是失败时能知道卡在定位、拖拽还是保存。</p>
 <p>我会保留独立的结果检查。适合用于回归的版本，大致是这样的。</p>

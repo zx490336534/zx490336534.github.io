@@ -60,7 +60,7 @@
         <div class="post-body" id="article-text"><p>读 Pi coding agent 的公开文档时，我先看了它默认暴露给模型的工具。<code>read</code> 读取文件，<code>bash</code> 执行命令，<code>edit</code> 修改现有内容，<code>write</code> 新建或重写文件。搜索、测试和 Git 都可以通过命令完成。要看这四件事够不够用，可以拿一次修复失败测试的任务来走一遍。</p>
 <h2 id="修一个失败测试-四个动作就能串起来">修一个失败测试，四个动作就能串起来</h2>
 <p>模型先用 <code>bash</code> 跑单测，从错误输出判断需要看哪些文件。用 <code>read</code> 读实现和测试，用 <code>edit</code> 改掉有问题的分支，再回到 <code>bash</code> 跑相同的测试。如果需要新建测试文件，用 <code>write</code> 保存。这个例子只有少数几次文件操作，测试命令本身就能给出下一步所需的信息。</p>
-<figure><img alt="Pi 用命令执行、读文件、编辑和再次执行完成一次修复" decoding="async" height="480" loading="lazy" src="/images/article-figures/pi-agent-four-tools.webp" width="1200"/><figcaption>教学示意。最后一次执行应回到最初失败的测试，验证改动有没有解决原问题。</figcaption></figure>
+<figure class="article-figure"><a href="/images/article-figures/pi-agent-four-tools.webp" title="查看原图"><img alt="Pi 用命令执行、读文件、编辑和再次执行完成一次修复" decoding="async" height="480" loading="lazy" src="/images/article-figures/pi-agent-four-tools.webp" width="1200"/></a><figcaption>教学示意。最后一次执行应回到最初失败的测试，验证改动有没有解决原问题。</figcaption></figure>
 <p>四个是默认配置。Pi 的文档还列了 <code>grep</code>、<code>find</code>、<code>ls</code> 等可选工具，也允许调整模型能看到的工具集合。每个项目所需的外围能力也不同。命令能找到测试，不代表它能生成代码审查证据，或者为多人协作记录同一份验收决定。</p>
 <h2 id="要扩展时-先看缺的是哪一种能力">要扩展时，先看缺的是哪一种能力</h2>
 <p>如果团队总要先检查工作目录，再允许执行高影响命令，可以用扩展接住工具调用。Pi 提供了在调用前拦截的扩展事件。这个入口也可以补一些重复出现的项目规则。文件访问和进程隔离仍依赖运行环境。给 Agent 一个工作目录，只确定了它从哪里开始，并不会自动限制外部访问。</p>

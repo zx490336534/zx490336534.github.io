@@ -3,7 +3,7 @@
 &lt;p&gt;Temporal 会记录 Workflow 的运行事件。Worker 接手后，可以用这些事件重建流程状态。已经记录完成的 Activity 会复用历史结果。编排代码可以继续往下运行，外部调用放在 Activity 里。&lt;/p&gt;
 &lt;h2 id="先看外部动作成功-回执还没写进去的情况"&gt;先看外部动作成功、回执还没写进去的情况&lt;/h2&gt;
 &lt;p&gt;用保存结果举例。Activity 把文件交给存储服务，存储已经成功，Worker 在向 Temporal 报告之前退出。从 Temporal 的历史看，这个 Activity 还没有完成。到了超时和重试条件，另一个 Worker 可能重新执行它。重放能告诉系统哪些结果已经确认，外部系统收到了什么，还得靠双方约定查证。&lt;/p&gt;
-&lt;figure&gt;&lt;img alt="外部保存成功、完成回执丢失、Activity 重试的时序" decoding="async" height="480" loading="lazy" src="/images/article-figures/temporal-agent-recovery.webp" width="1200"/&gt;&lt;figcaption&gt;教学示意。保存动作发生在外部服务，Temporal 是否记录完成取决于回执。&lt;/figcaption&gt;&lt;/figure&gt;
+&lt;figure class="article-figure"&gt;&lt;a href="/images/article-figures/temporal-agent-recovery.webp" title="查看原图"&gt;&lt;img alt="外部保存成功、完成回执丢失、Activity 重试的时序" decoding="async" height="480" loading="lazy" src="/images/article-figures/temporal-agent-recovery.webp" width="1200"/&gt;&lt;/a&gt;&lt;figcaption&gt;教学示意。保存动作发生在外部服务，Temporal 是否记录完成取决于回执。&lt;/figcaption&gt;&lt;/figure&gt;
 &lt;p&gt;给每次业务动作一个稳定的幂等键，可以让重试继续处理同一个结果。比如存储服务能按任务编号和操作名称找到已保存的对象，就可以返回它的标识。每次重试都生成新编号的话，这个办法就失效了。对计费或发通知，应该先查下游接口有没有相同的去重承诺。没有的话，把可能重复的动作写清楚，再决定重试、对账或人工处理。&lt;/p&gt;
 &lt;h2 id="恢复到哪里-取决于步骤怎么拆"&gt;恢复到哪里，取决于步骤怎么拆&lt;/h2&gt;
 &lt;p&gt;如果模型调用、存文件和回写状态都塞到同一个 Activity，前两步跑完后崩溃，第三步的错误就可能让整个 Activity 重试。我会先找两个容易单独取证的地方，一个是模型结果已经可读，一个是最终业务状态已更新。各自需要什么重试策略，哪些错误应该结束任务，再按实际边界拆分。&lt;/p&gt;
@@ -35,7 +35,7 @@ tests:
       recorded_output: '{"status":"completed"}'
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;保存成 &lt;code&gt;promptfooconfig.yaml&lt;/code&gt;，然后在同一目录运行 &lt;code&gt;npx --yes promptfoo@0.126.0 eval --no-cache&lt;/code&gt;。用这个版本跑上面的配置，结果是一条通过、一条失败，执行错误为零。如果两条都过，先查断言有没有接到真实输出。练习时留着这个失败样本可以证明检查有用。接入 CI 时，把它保留为断言的负例，常规回归则调用当前应用，检查它能否在相同条件下给出正确状态。&lt;/p&gt;
-&lt;figure&gt;&lt;img alt="正确样本通过和错误样本失败的对照流程" decoding="async" height="480" loading="lazy" src="/images/article-figures/promptfoo-agent-regression.webp" width="1200"/&gt;&lt;figcaption&gt;教学示意。期望和断言相同，两份输出分别确认通过路径和失败路径。&lt;/figcaption&gt;&lt;/figure&gt;
+&lt;figure class="article-figure"&gt;&lt;a href="/images/article-figures/promptfoo-agent-regression.webp" title="查看原图"&gt;&lt;img alt="正确样本通过和错误样本失败的对照流程" decoding="async" height="480" loading="lazy" src="/images/article-figures/promptfoo-agent-regression.webp" width="1200"/&gt;&lt;/a&gt;&lt;figcaption&gt;教学示意。期望和断言相同，两份输出分别确认通过路径和失败路径。&lt;/figcaption&gt;&lt;/figure&gt;
 &lt;h2 id="回放和实时执行回答两个问题"&gt;回放和实时执行回答两个问题&lt;/h2&gt;
 &lt;p&gt;回放帮我确认规则变更之后，旧样本还能被正确判定。实时执行要看新版本会不会再产生同一种错误。两者最好有不同的报告名称。回放全绿之后，当前服务的接口、权限和任务状态仍要在实时用例里检查。&lt;/p&gt;
 &lt;p&gt;这个例子用 JSON 状态做断言，错误位置很明确。如果输出是自然语言，可以先让实际应用返回一个能检查的结构化状态，把文案留给另一条测试。需要判断说明有没有误导时，可以再加模型评分，并用已知正反样本校准。一次评测可能跑多个模型、提示词和用例的组合，我会先把这一行跑明白，再逐步展开组合矩阵。&lt;/p&gt;
@@ -47,7 +47,7 @@ tests:
 &lt;/ul&gt;</content></entry><entry><id>http://zx490336534.github.io/article/pi-agent-four-tools.html</id><title>Pi Agent 为什么默认只给四个工具？</title><link href="https://www.zhongxin.website/article/pi-agent-four-tools.html" /><updated>2026-11-25T14:52:11+08:00</updated><published>2026-11-25T14:52:11+08:00</published><summary>沿着一次失败测试看 Pi 默认工具怎样配合，以及扩展和会话分支各自负责什么。</summary><content type="html">&lt;p&gt;读 Pi coding agent 的公开文档时，我先看了它默认暴露给模型的工具。&lt;code&gt;read&lt;/code&gt; 读取文件，&lt;code&gt;bash&lt;/code&gt; 执行命令，&lt;code&gt;edit&lt;/code&gt; 修改现有内容，&lt;code&gt;write&lt;/code&gt; 新建或重写文件。搜索、测试和 Git 都可以通过命令完成。要看这四件事够不够用，可以拿一次修复失败测试的任务来走一遍。&lt;/p&gt;
 &lt;h2 id="修一个失败测试-四个动作就能串起来"&gt;修一个失败测试，四个动作就能串起来&lt;/h2&gt;
 &lt;p&gt;模型先用 &lt;code&gt;bash&lt;/code&gt; 跑单测，从错误输出判断需要看哪些文件。用 &lt;code&gt;read&lt;/code&gt; 读实现和测试，用 &lt;code&gt;edit&lt;/code&gt; 改掉有问题的分支，再回到 &lt;code&gt;bash&lt;/code&gt; 跑相同的测试。如果需要新建测试文件，用 &lt;code&gt;write&lt;/code&gt; 保存。这个例子只有少数几次文件操作，测试命令本身就能给出下一步所需的信息。&lt;/p&gt;
-&lt;figure&gt;&lt;img alt="Pi 用命令执行、读文件、编辑和再次执行完成一次修复" decoding="async" height="480" loading="lazy" src="/images/article-figures/pi-agent-four-tools.webp" width="1200"/&gt;&lt;figcaption&gt;教学示意。最后一次执行应回到最初失败的测试，验证改动有没有解决原问题。&lt;/figcaption&gt;&lt;/figure&gt;
+&lt;figure class="article-figure"&gt;&lt;a href="/images/article-figures/pi-agent-four-tools.webp" title="查看原图"&gt;&lt;img alt="Pi 用命令执行、读文件、编辑和再次执行完成一次修复" decoding="async" height="480" loading="lazy" src="/images/article-figures/pi-agent-four-tools.webp" width="1200"/&gt;&lt;/a&gt;&lt;figcaption&gt;教学示意。最后一次执行应回到最初失败的测试，验证改动有没有解决原问题。&lt;/figcaption&gt;&lt;/figure&gt;
 &lt;p&gt;四个是默认配置。Pi 的文档还列了 &lt;code&gt;grep&lt;/code&gt;、&lt;code&gt;find&lt;/code&gt;、&lt;code&gt;ls&lt;/code&gt; 等可选工具，也允许调整模型能看到的工具集合。每个项目所需的外围能力也不同。命令能找到测试，不代表它能生成代码审查证据，或者为多人协作记录同一份验收决定。&lt;/p&gt;
 &lt;h2 id="要扩展时-先看缺的是哪一种能力"&gt;要扩展时，先看缺的是哪一种能力&lt;/h2&gt;
 &lt;p&gt;如果团队总要先检查工作目录，再允许执行高影响命令，可以用扩展接住工具调用。Pi 提供了在调用前拦截的扩展事件。这个入口也可以补一些重复出现的项目规则。文件访问和进程隔离仍依赖运行环境。给 Agent 一个工作目录，只确定了它从哪里开始，并不会自动限制外部访问。&lt;/p&gt;
@@ -83,7 +83,7 @@ tests:
 &lt;/tbody&gt;
 &lt;/table&gt;&lt;/div&gt;
 &lt;p&gt;收到 &lt;code&gt;docs__search&lt;/code&gt; 时，网关通过映射查到文档服务，向它发起 &lt;code&gt;search&lt;/code&gt;，把参数和返回结果交回当前会话。路由表最好也记录工具描述和参数 Schema。这样上游改了签名，下游可以在更新工具列表时发现，少等一次实际调用报错。&lt;/p&gt;
-&lt;figure&gt;&lt;img alt="网关将两个唯一公开名称映射到不同后端各自的 search" decoding="async" height="480" loading="lazy" src="/images/article-figures/mcp-gateway-name-collision.webp" width="1200"/&gt;&lt;figcaption&gt;教学示意。客户端用带前缀的名字，网关向各后端转发时使用原名。&lt;/figcaption&gt;&lt;/figure&gt;
+&lt;figure class="article-figure"&gt;&lt;a href="/images/article-figures/mcp-gateway-name-collision.webp" title="查看原图"&gt;&lt;img alt="网关将两个唯一公开名称映射到不同后端各自的 search" decoding="async" height="480" loading="lazy" src="/images/article-figures/mcp-gateway-name-collision.webp" width="1200"/&gt;&lt;/a&gt;&lt;figcaption&gt;教学示意。客户端用带前缀的名字，网关向各后端转发时使用原名。&lt;/figcaption&gt;&lt;/figure&gt;
 &lt;p&gt;前缀用稳定的服务标识。用服务在配置文件中的位置命名，重排配置后就可能换掉含义。迁移已有客户端时，我会先列出被调用的旧名和各自去处，再决定是否需要为已知用法保留兼容入口。来源不清楚的短名应当返回明确错误，避免碰巧调用了错误的服务。&lt;/p&gt;
 &lt;h2 id="分组能缩小模型的选择范围"&gt;分组能缩小模型的选择范围&lt;/h2&gt;
 &lt;p&gt;只做文档问答时，可以只给客户端 &lt;code&gt;docs__search&lt;/code&gt;。需要查产品目录时，再提供目录相关工具。描述里也写清能搜索什么，以及一次调用返回的是条目列表、正文，还是摘要。命名解决唯一性，描述和分组帮助模型选中合适的工具。&lt;/p&gt;
@@ -126,7 +126,7 @@ tests:
 &lt;/tbody&gt;
 &lt;/table&gt;&lt;/div&gt;
 &lt;p&gt;75% 这项算术没错，它描述的是这八条样本。如果团队要判断模型能不能替人检查已经生成的内容，更直接的数字是后四条的 50%。同一个评测器，两种口径，没有修改其中任何一条判定。&lt;/p&gt;
-&lt;figure&gt;&lt;img alt="四条空输出四次一致，四条有输出两次一致，汇总六次一致" decoding="async" height="480" loading="lazy" src="/images/article-figures/llm-judge-empty-output.webp" width="1200"/&gt;&lt;figcaption&gt;教学示意。示例中的八条记录为构造数据，用于演示样本组成对一致率的影响。&lt;/figcaption&gt;&lt;/figure&gt;
+&lt;figure class="article-figure"&gt;&lt;a href="/images/article-figures/llm-judge-empty-output.webp" title="查看原图"&gt;&lt;img alt="四条空输出四次一致，四条有输出两次一致，汇总六次一致" decoding="async" height="480" loading="lazy" src="/images/article-figures/llm-judge-empty-output.webp" width="1200"/&gt;&lt;/a&gt;&lt;figcaption&gt;教学示意。示例中的八条记录为构造数据，用于演示样本组成对一致率的影响。&lt;/figcaption&gt;&lt;/figure&gt;
 &lt;h2 id="空输出应该怎么算"&gt;空输出应该怎么算&lt;/h2&gt;
 &lt;p&gt;空输出本身值得关注。它会影响用户能不能拿到任何结果。我会把它作为一项单独的指标，记录多少次本该产出却没有产出。能用固定规则判断时，就直接检查是否存在有效结果。把剩下的样本交给人工和模型，按同一份评分标准看质量，再记下分歧集中在哪里。&lt;/p&gt;
 &lt;p&gt;模糊的地方可以用正反例补规则。例如一个回答只生成了标题，没有给出正文。算空输出、算不完整，还是按低质量处理，跟产品约定有关。这个归类必须在看模型得分前定好。否则每次换一种分组方法，数字就可能变好，但对裁判能力的判断没有更清楚。&lt;/p&gt;
@@ -135,7 +135,7 @@ tests:
 &lt;h2 id="一条结论可以写回原来的页面"&gt;一条结论可以写回原来的页面&lt;/h2&gt;
 &lt;p&gt;拿 MCP 工具整理举例。一次调试可能只发现两个工具用了相同的名字，另一次调研才比较了命名前缀和按组加载。原始笔记各自保留时间和条件。Wiki 的 MCP 页面写明结论适用于哪个环节、工具名到了哪里发生冲突，再给能找到依据的来源。&lt;/p&gt;
 &lt;p&gt;下次笔记提供了新证据，Codex 先找这个页面。原结论仍成立时补充边界。有反例时修改原来的描述，并记下为何修改。这样，同一个判断不会因为出现了两次就变成两份相互竞争的答案。&lt;/p&gt;
-&lt;figure&gt;&lt;img alt="原始记录、主题结论和索引日志之间的关系" decoding="async" height="480" loading="lazy" src="/images/article-figures/codex-obsidian-wiki.webp" width="1200"/&gt;&lt;figcaption&gt;教学示意。结论页保留来源，索引提供入口，日志记录本次改动。&lt;/figcaption&gt;&lt;/figure&gt;
+&lt;figure class="article-figure"&gt;&lt;a href="/images/article-figures/codex-obsidian-wiki.webp" title="查看原图"&gt;&lt;img alt="原始记录、主题结论和索引日志之间的关系" decoding="async" height="480" loading="lazy" src="/images/article-figures/codex-obsidian-wiki.webp" width="1200"/&gt;&lt;/a&gt;&lt;figcaption&gt;教学示意。结论页保留来源，索引提供入口，日志记录本次改动。&lt;/figcaption&gt;&lt;/figure&gt;
 &lt;p&gt;在这套目录里，我从索引进主题页。查到一个有用的判断，再打开原笔记看适用条件。规则文件写得更具体一些，例如遇到已有页面时先更新原页，临时排查记录只归位，无稳定增量就允许这轮没有新产出。不同机器或工具要接手时，也从这几个入口读起。&lt;/p&gt;
 &lt;h2 id="有一天调度说成功-产物却没交齐"&gt;有一天调度说成功，产物却没交齐&lt;/h2&gt;
 &lt;p&gt;一次周度编译里，执行记录显示成功，报告自己写明日志覆盖、统计和文件修改都没有做完整。看调度状态，这一轮已经结束。回到笔记库，想借日志找到本次更新，却对不上。&lt;/p&gt;
@@ -148,7 +148,7 @@ tests:
 &lt;h2 id="同一条用例要通过两个判断"&gt;同一条用例要通过两个判断&lt;/h2&gt;
 &lt;p&gt;拿一个可以公开演示的场景。用户在网页编辑器里放置一张卡片，点保存，刷新后还要看到刚才保存的内容。这里有两件事要验证。先看卡片能不能放到目标位置，再看保存的数据能不能恢复。&lt;/p&gt;
 &lt;p&gt;表单、保存按钮、已保存记录都有明确的角色或标识。用 Playwright 按按钮名称定位，再读取刷新后的记录。只要保存动作虚报成功，后半段就会失败。只检查成功提示的话，前端即使在请求还没结束时弹出提示，用例也可能过去。&lt;/p&gt;
-&lt;figure&gt;&lt;img alt="从放置卡片到刷新回读的三个检查点" decoding="async" height="480" loading="lazy" src="/images/article-figures/agent-ui-testing.webp" width="1200"/&gt;&lt;figcaption&gt;教学示意。保存提示之后增加刷新回读，才能覆盖恢复行为。&lt;/figcaption&gt;&lt;/figure&gt;
+&lt;figure class="article-figure"&gt;&lt;a href="/images/article-figures/agent-ui-testing.webp" title="查看原图"&gt;&lt;img alt="从放置卡片到刷新回读的三个检查点" decoding="async" height="480" loading="lazy" src="/images/article-figures/agent-ui-testing.webp" width="1200"/&gt;&lt;/a&gt;&lt;figcaption&gt;教学示意。保存提示之后增加刷新回读，才能覆盖恢复行为。&lt;/figcaption&gt;&lt;/figure&gt;
 &lt;h2 id="视觉操作可以单独交给模型"&gt;视觉操作可以单独交给模型&lt;/h2&gt;
 &lt;p&gt;画布里的卡片如果只画在 Canvas 上，就很难直接拿到卡片的 DOM 元素。有视觉能力的工具能看截图，按目标位置完成拖拽。以 Midscene 为例，可以让模型规划几步操作，也可以在固定脚本里只把定位这一步交给模型。后者的好处是失败时能知道卡在定位、拖拽还是保存。&lt;/p&gt;
 &lt;p&gt;我会保留独立的结果检查。适合用于回归的版本，大致是这样的。&lt;/p&gt;

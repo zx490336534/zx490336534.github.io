@@ -61,7 +61,7 @@
 <p>Temporal 会记录 Workflow 的运行事件。Worker 接手后，可以用这些事件重建流程状态。已经记录完成的 Activity 会复用历史结果。编排代码可以继续往下运行，外部调用放在 Activity 里。</p>
 <h2 id="先看外部动作成功-回执还没写进去的情况">先看外部动作成功、回执还没写进去的情况</h2>
 <p>用保存结果举例。Activity 把文件交给存储服务，存储已经成功，Worker 在向 Temporal 报告之前退出。从 Temporal 的历史看，这个 Activity 还没有完成。到了超时和重试条件，另一个 Worker 可能重新执行它。重放能告诉系统哪些结果已经确认，外部系统收到了什么，还得靠双方约定查证。</p>
-<figure><img alt="外部保存成功、完成回执丢失、Activity 重试的时序" decoding="async" height="480" loading="lazy" src="/images/article-figures/temporal-agent-recovery.webp" width="1200"/><figcaption>教学示意。保存动作发生在外部服务，Temporal 是否记录完成取决于回执。</figcaption></figure>
+<figure class="article-figure"><a href="/images/article-figures/temporal-agent-recovery.webp" title="查看原图"><img alt="外部保存成功、完成回执丢失、Activity 重试的时序" decoding="async" height="480" loading="lazy" src="/images/article-figures/temporal-agent-recovery.webp" width="1200"/></a><figcaption>教学示意。保存动作发生在外部服务，Temporal 是否记录完成取决于回执。</figcaption></figure>
 <p>给每次业务动作一个稳定的幂等键，可以让重试继续处理同一个结果。比如存储服务能按任务编号和操作名称找到已保存的对象，就可以返回它的标识。每次重试都生成新编号的话，这个办法就失效了。对计费或发通知，应该先查下游接口有没有相同的去重承诺。没有的话，把可能重复的动作写清楚，再决定重试、对账或人工处理。</p>
 <h2 id="恢复到哪里-取决于步骤怎么拆">恢复到哪里，取决于步骤怎么拆</h2>
 <p>如果模型调用、存文件和回写状态都塞到同一个 Activity，前两步跑完后崩溃，第三步的错误就可能让整个 Activity 重试。我会先找两个容易单独取证的地方，一个是模型结果已经可读，一个是最终业务状态已更新。各自需要什么重试策略，哪些错误应该结束任务，再按实际边界拆分。</p>

@@ -79,7 +79,7 @@ tests:
       recorded_output: '{"status":"completed"}'
 </code></pre>
 <p>保存成 <code>promptfooconfig.yaml</code>，然后在同一目录运行 <code>npx --yes promptfoo@0.126.0 eval --no-cache</code>。用这个版本跑上面的配置，结果是一条通过、一条失败，执行错误为零。如果两条都过，先查断言有没有接到真实输出。练习时留着这个失败样本可以证明检查有用。接入 CI 时，把它保留为断言的负例，常规回归则调用当前应用，检查它能否在相同条件下给出正确状态。</p>
-<figure><img alt="正确样本通过和错误样本失败的对照流程" decoding="async" height="480" loading="lazy" src="/images/article-figures/promptfoo-agent-regression.webp" width="1200"/><figcaption>教学示意。期望和断言相同，两份输出分别确认通过路径和失败路径。</figcaption></figure>
+<figure class="article-figure"><a href="/images/article-figures/promptfoo-agent-regression.webp" title="查看原图"><img alt="正确样本通过和错误样本失败的对照流程" decoding="async" height="480" loading="lazy" src="/images/article-figures/promptfoo-agent-regression.webp" width="1200"/></a><figcaption>教学示意。期望和断言相同，两份输出分别确认通过路径和失败路径。</figcaption></figure>
 <h2 id="回放和实时执行回答两个问题">回放和实时执行回答两个问题</h2>
 <p>回放帮我确认规则变更之后，旧样本还能被正确判定。实时执行要看新版本会不会再产生同一种错误。两者最好有不同的报告名称。回放全绿之后，当前服务的接口、权限和任务状态仍要在实时用例里检查。</p>
 <p>这个例子用 JSON 状态做断言，错误位置很明确。如果输出是自然语言，可以先让实际应用返回一个能检查的结构化状态，把文案留给另一条测试。需要判断说明有没有误导时，可以再加模型评分，并用已知正反样本校准。一次评测可能跑多个模型、提示词和用例的组合，我会先把这一行跑明白，再逐步展开组合矩阵。</p>

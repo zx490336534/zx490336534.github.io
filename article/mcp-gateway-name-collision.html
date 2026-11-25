@@ -83,7 +83,7 @@
 </tbody>
 </table></div>
 <p>收到 <code>docs__search</code> 时，网关通过映射查到文档服务，向它发起 <code>search</code>，把参数和返回结果交回当前会话。路由表最好也记录工具描述和参数 Schema。这样上游改了签名，下游可以在更新工具列表时发现，少等一次实际调用报错。</p>
-<figure><img alt="网关将两个唯一公开名称映射到不同后端各自的 search" decoding="async" height="480" loading="lazy" src="/images/article-figures/mcp-gateway-name-collision.webp" width="1200"/><figcaption>教学示意。客户端用带前缀的名字，网关向各后端转发时使用原名。</figcaption></figure>
+<figure class="article-figure"><a href="/images/article-figures/mcp-gateway-name-collision.webp" title="查看原图"><img alt="网关将两个唯一公开名称映射到不同后端各自的 search" decoding="async" height="480" loading="lazy" src="/images/article-figures/mcp-gateway-name-collision.webp" width="1200"/></a><figcaption>教学示意。客户端用带前缀的名字，网关向各后端转发时使用原名。</figcaption></figure>
 <p>前缀用稳定的服务标识。用服务在配置文件中的位置命名，重排配置后就可能换掉含义。迁移已有客户端时，我会先列出被调用的旧名和各自去处，再决定是否需要为已知用法保留兼容入口。来源不清楚的短名应当返回明确错误，避免碰巧调用了错误的服务。</p>
 <h2 id="分组能缩小模型的选择范围">分组能缩小模型的选择范围</h2>
 <p>只做文档问答时，可以只给客户端 <code>docs__search</code>。需要查产品目录时，再提供目录相关工具。描述里也写清能搜索什么，以及一次调用返回的是条目列表、正文，还是摘要。命名解决唯一性，描述和分组帮助模型选中合适的工具。</p>
