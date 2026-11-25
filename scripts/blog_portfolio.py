@@ -56,7 +56,9 @@ def work_demo(root):
         'aria-labelledby="ai-test-cases-demo-caption">'
         f'<source src="{src}" type="video/mp4">'
         f'<track kind="captions" src="{track}" srclang="zh-CN" label="简体中文">'
-        f'</video><p><a href="{src}" download>下载 MP4</a></p></figure>'
+        '</video><p><strong>1:09｜对话增删改。</strong> 在同一个聊天框新增「重复提交」用例，把它从 P1 改为 P0 并补上预期结果，再删除另一条用例。'
+        '<br><strong>2:49｜核对导出。</strong> CSV 和 XMind 都保留了新增和修改，删除项不再出现。</p>'
+        f'<p><a href="{src}" download>下载 MP4</a></p></figure>'
     )
 
 
