@@ -143,6 +143,10 @@ def position_link(position):
     )
 
 
+def chapter_title(post, number):
+    return f"第 {number:02d} 篇｜{post.title}"
+
+
 def article_navigation(position):
     series, number = position
     directory = f'<h2><a href="{series.url}">查看系列目录 ↗</a></h2>'
@@ -150,6 +154,6 @@ def article_navigation(position):
     for index, label in ((number - 2, "同系列上一篇"), (number, "同系列下一篇")):
         if 0 <= index < len(series.chapters):
             post = series.chapters[index]
-            neighbors.append(f'<a href="{escape(post.path)}"><small>{label}</small>{escape(post.title)}</a>')
+            neighbors.append(f'<a href="{escape(post.path)}"><small>{label}</small>{escape(chapter_title(post, index + 1))}</a>')
     return ('<section class="series-continuation">' + directory
             + '<nav class="related" aria-label="同系列文章">' + "".join(neighbors) + '</nav></section>')

@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <title>JVM 内存分析：堆、垃圾回收与泄漏排查 · 测试游记</title>
+  <title>性能测试入门与实践 · 第 27 篇｜JVM 内存分析：堆、垃圾回收与泄漏排查 · 测试游记</title>
   <meta name="description" content="27-内存知识基础概念 内存又叫主存，是CPU与其他设备沟通的桥梁，主要用来临时存放数据，配合CPU工作，协调CPU的处理速度 硬盘数据，外设数据，玩了传输数据，要进CPU前，都要先进入内存 临时存放，在断电后，内存内容就会丢失 内存的组成：内存地址+存储单元 存储单元-数据结构堆栈 两种不同的数据结构 堆（heap）一种经过排序的树型数据结构 存放程序的对">
-  <meta property="og:title" content="JVM 内存分析：堆、垃圾回收与泄漏排查 · 测试游记">
+  <meta property="og:title" content="性能测试入门与实践 · 第 27 篇｜JVM 内存分析：堆、垃圾回收与泄漏排查 · 测试游记">
   <meta property="og:description" content="27-内存知识基础概念 内存又叫主存，是CPU与其他设备沟通的桥梁，主要用来临时存放数据，配合CPU工作，协调CPU的处理速度 硬盘数据，外设数据，玩了传输数据，要进CPU前，都要先进入内存 临时存放，在断电后，内存内容就会丢失 内存的组成：内存地址+存储单元 存储单元-数据结构堆栈 两种不同的数据结构 堆（heap）一种经过排序的树型数据结构 存放程序的对">
   <meta property="og:url" content="https://www.zhongxin.website/article/f32ce47c.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/f32ce47c.html">
@@ -43,7 +43,7 @@
   <article class="article">
     <header class="article-header">
       <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/performance/">性能与监控</a> <span aria-hidden="true">/</span> <a href="/categories/testing/performance/monitoring/">系统与性能监控</a></nav>
-      <h1 class="post-title">JVM 内存分析：堆、垃圾回收与泄漏排查</h1>
+      <h1 class="post-title" data-topic-title="JVM 内存分析：堆、垃圾回收与泄漏排查">性能测试入门与实践 · 第 27 篇｜JVM 内存分析：堆、垃圾回收与泄漏排查</h1>
       <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2021-06-05T10:44:00+08:00">2021-06-05</time>
         <span class="post-category" hidden><a href="/categories/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a></span>
         <span class="read-time">约 6 分钟</span>
@@ -189,7 +189,7 @@
 
         <div class="post-tags" aria-label="文章标签"><a href="/tags/%E5%86%85%E5%AD%98/">内存</a><a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a></div>
         <div class="legacy-tags" hidden><a href="/tags/%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91/">测试开发</a><a href="/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a></div>
-        <section class="series-continuation"><h2><a href="/series/performance-testing/">查看系列目录 ↗</a></h2><nav class="related" aria-label="同系列文章"><a href="/article/92781838.html"><small>同系列上一篇</small>CPU 性能分析：负载、使用率与上下文切换</a><a href="/article/daf73f86.html"><small>同系列下一篇</small>Linux 磁盘 I/O 分析：IOPS、吞吐量与响应时间</a></nav></section>
+        <section class="series-continuation"><h2><a href="/series/performance-testing/">查看系列目录 ↗</a></h2><nav class="related" aria-label="同系列文章"><a href="/article/92781838.html"><small>同系列上一篇</small>第 26 篇｜CPU 性能分析：负载、使用率与上下文切换</a><a href="/article/daf73f86.html"><small>同系列下一篇</small>第 28 篇｜Linux 磁盘 I/O 分析：IOPS、吞吐量与响应时间</a></nav></section>
         <section class="article-comments" id="comments" aria-labelledby="comments-title"
           data-repo="zx490336534/zx490336534.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzNDQwOTE0MTc="
           data-category="文章评论" data-category-id="DIC_kwDOFIJrGc4DL60Q" data-article-path="/article/f32ce47c.html">

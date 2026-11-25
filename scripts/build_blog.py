@@ -19,7 +19,7 @@ from bs4 import BeautifulSoup
 from bs4.element import NavigableString
 import nh3
 
-from blog_series import article_navigation, cards as series_cards, catalog_page, load_series, position_link, series_page
+from blog_series import article_navigation, cards as series_cards, catalog_page, chapter_title, load_series, position_link, series_page
 from blog_topics import Topic, browser_page, links as taxonomy_links, read_catalog, topic_trail
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -72,6 +72,11 @@ class Post:
     editorial_tags: list = field(default_factory=list)
     display_cover: str = ""
     opening_cover: str = ""
+    numbered_title: str = ""
+
+    @property
+    def display_title(self):
+        return self.numbered_title or self.title
 
     @property
     def day(self):
@@ -130,7 +135,8 @@ def read_post(path):
     cover = page.select_one('meta[name="blog-cover"]')
     author = page.select_one(".post-author")
     tag_metadata = page.select_one(".legacy-tags") or page.select_one(".post-tags")
-    title = title.get_text(strip=True)
+    # Published articles are also build inputs. Read the topic before adding the series prefix again.
+    title = title.get("data-topic-title") or title.get_text(strip=True)
     toc = prepare_body(body, title)
     summary = compact(description.get("content", "") if description else "")
     if summary.startswith(title + " "):
@@ -325,7 +331,7 @@ def post_rows(posts, *, show_category=True):
         rows.append(
             f'<li{marker}>{date_label(post)}<div>'
             f'<a class="row-title post-row-link" href="{html(post.path)}">{cover}'
-            f'<span>{html(post.title)}<span class="row-excerpt">{excerpt(post.description, 110)}</span></span></a>'
+            f'<span>{html(post.display_title)}<span class="row-excerpt">{excerpt(post.description, 110)}</span></span></a>'
             f'</div>{category}</li>'
         )
     return f'<ul class="{css}">' + "".join(rows) + "</ul>"
@@ -405,7 +411,7 @@ def home_story(post, picture, lead=False):
         {image}
         <div class="front-copy">
           <div class="front-meta">{label}{date_label(post)}</div>
-          <{heading}>{html(post.title)}</{heading}>
+          <{heading}>{html(post.display_title)}</{heading}>
           <p>{excerpt(post.description, 150)}</p>
           {action}
         </div>
@@ -488,7 +494,7 @@ def article(post, older, newer, series_position=None):
     if series_position:
         related = article_navigation(series_position)
     else:
-        links = "".join(f'<a href="{html(link.path)}"><small>{direction}</small>{html(link.title)}</a>'
+        links = "".join(f'<a href="{html(link.path)}"><small>{direction}</small>{html(link.display_title)}</a>'
                         for link, direction in [(newer, "较新文章"), (older, "较早文章")] if link)
         related = f'<nav class="related" aria-label="相邻文章">{links}</nav>'
     legacy_anchor = (
@@ -518,11 +524,12 @@ def article(post, older, newer, series_position=None):
         'fetchpriority="high" decoding="async"></figure>'
         if post.display_cover and not post.opening_cover else ""
     )
+    topic_title = f' data-topic-title="{html(post.title)}"' if post.numbered_title else ""
     content = f'''
   <article class="article">
     <header class="article-header">
       <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> {trail}</nav>
-      <h1 class="post-title">{html(post.title)}</h1>
+      <h1 class="post-title"{topic_title}>{html(post.display_title)}</h1>
       <div class="entry-meta"><span class="post-author">{html(post.author)}</span><time itemprop="datePublished" datetime="{html(post.published)}">{html(post.day)}</time>
         <span class="post-category" hidden>{original_categories}</span>
         <span class="read-time">{reading_time(post)}</span>
@@ -546,7 +553,7 @@ def article(post, older, newer, series_position=None):
         f'{cover_meta}\n<meta name="giscus:backlink" content="{html(SITE + post.path)}">\n'
         '<script src="/js/comments.js" defer></script>'
     )
-    return shell(post.title, post.path, content, post.description, head)
+    return shell(post.display_title, post.path, content, post.description, head)
 
 
 def listing(title, path, posts, pagination="", intro=""):
@@ -680,7 +687,7 @@ def indexes(posts, catalog):
     archive(posts)
     category_indexes(posts, catalog)
     tag_indexes(posts)
-    search = [{"path": post.path, "title": post.title, "date": post.day,
+    search = [{"path": post.path, "title": post.display_title, "date": post.day,
                "text": post.search_text, "summary": unescape(excerpt(post.description, 180)),
                "cover": post.display_cover, "topics": list(dict.fromkeys(
                    [topic.name for topic in post.topic.trail()] + [name for name, _ in post.editorial_tags or post.tags]
@@ -689,7 +696,7 @@ def indexes(posts, catalog):
     search_xml = ET.Element("search")
     for post in posts:
         entry = ET.SubElement(search_xml, "entry")
-        for name, value in [("title", post.title), ("link", post.path.lstrip("/")), ("url", post.path.lstrip("/")), ("content", post.body)]:
+        for name, value in [("title", post.display_title), ("link", post.path.lstrip("/")), ("url", post.path.lstrip("/")), ("content", post.body)]:
             ET.SubElement(entry, name).text = value
         categories = [(topic.name, topic.url) for topic in post.topic.trail()]
         for collection, tag in [(categories, "category"), (post.editorial_tags or post.tags, "tag")]:
@@ -709,7 +716,7 @@ def indexes(posts, catalog):
     for post in posts[:20]:
         entry = ET.SubElement(feed, "entry")
         ET.SubElement(entry, "id").text = ("http://zx490336534.github.io" if not post.path.startswith("/article/wechat-") else SITE) + post.path
-        ET.SubElement(entry, "title").text = post.title
+        ET.SubElement(entry, "title").text = post.display_title
         ET.SubElement(entry, "link", href=SITE + post.path)
         ET.SubElement(entry, "updated").text = timestamp(post)
         ET.SubElement(entry, "published").text = timestamp(post)
@@ -735,6 +742,10 @@ def main():
     openings = json.loads((ROOT / "scripts/cover_openings.json").read_text())
     set_display_covers(posts, openings)
     series, positions = load_series(posts, ROOT / "scripts/series_catalog.json")
+    for post in posts:
+        if position := positions.get(post.path):
+            record, number = position
+            post.numbered_title = f"{record.title} · {chapter_title(post, number)}"
     write("/", home(posts, catalog, series))
     write("/series/", shell("系列阅读", "/series/", catalog_page(series, thumbnail)))
     for record in series:
