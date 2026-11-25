@@ -112,6 +112,11 @@ def main():
             link = urlsplit(a["href"])
             assert target(link.path).is_file() and (not link.fragment or page(link.path).find(id=link.fragment)), a["href"]
     assert profile.select_one('.work-card a[href="https://github.com/zx490336534/next-ai-test-cases"]')
+    from blog_portfolio import CODEX_EVIDENCE_TEST, CODEX_RELEASE
+    plugin_card = profile.select_one("#ai-test-cases")
+    assert plugin_card.select_one(f'a[href="{CODEX_RELEASE}"]')
+    assert plugin_card.select_one(f'a[href="{CODEX_EVIDENCE_TEST}"]')
+    assert "仍可查到当时执行的版本" in plugin_card.get_text(" ", strip=True)
     assert must_email not in profile.select_one('script[type="application/ld+json"]').string
     if args.baseline:
         assert old_page(args.baseline, "/about/").select_one(".post-body").decode_contents() == profile.select_one(".post-body").decode_contents()

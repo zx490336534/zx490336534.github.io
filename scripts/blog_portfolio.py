@@ -12,6 +12,8 @@ from blog_discovery import WATCH, json_ld, watch_path
 PROFILE_FOCUS = "AI 应用开发、Agent 评测与研发效能"
 PROFILE_SUMMARY = "听白的公开作品：TypeScript 测试用例脑图工具、Promptfoo Agent 回归案例，以及 Temporal Agent 恢复设计。可直接查看源码、演示和验证依据。"
 TOOL_REPO = "https://github.com/zx490336534/next-ai-test-cases"
+CODEX_RELEASE = TOOL_REPO + "/releases/tag/v0.3.0"
+CODEX_EVIDENCE_TEST = TOOL_REPO + "/blob/v0.3.0/tests/codex-plugin.test.ts#L55"
 SELECTED_WORK = (
     ("ai-test-cases", "开源应用", "AI 测试用例脑图",
      "把需求变成可编辑的用例节点，支持对话式修改，再从当前脑图导出 CSV 或 XMind。",
@@ -71,6 +73,11 @@ def work_cards(root):
         body = (f'<p class="work-kind">{escape(kind)}</p><h3 id="{slug}-title">{escape(title)}</h3>'
                 f'<p>{escape(problem)}</p><dl><dt>怎么做</dt><dd>{escape(method)}</dd>'
                 f'<dt>怎么核对</dt><dd>{escape(proof)}</dd></dl><ul>{actions}</ul>')
+        if slug == "ai-test-cases":
+            body += ('<p><strong>本地 Codex 插件：</strong>从看板选中要测的用例，记录执行结果和依据。'
+                     '之后即使用例被编辑，仍可查到当时执行的版本。'
+                     f' <a href="{CODEX_RELEASE}">查看 GitHub 发布版 v0.3.0</a> · '
+                     f'<a href="{CODEX_EVIDENCE_TEST}">看版本留存测试</a></p>')
         layout = ' work-card-featured' if feature else ''
         contents = f'<div class="work-card-copy">{body}</div>{feature}' if feature else body
         cards.append(f'<article class="work-card{layout}" id="{slug}" aria-labelledby="{slug}-title">'
