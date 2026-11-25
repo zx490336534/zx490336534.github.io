@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>用 Kitaru 把一次 Agent 失败变成回归测试 · 测试游记</title>
+  <meta name="description" content="用 Kitaru 的公开退货示例解释如何固定样本、设置重放策略，并检查 Agent 是否采取了预期动作。">
+  <meta property="og:title" content="用 Kitaru 把一次 Agent 失败变成回归测试 · 测试游记">
+  <meta property="og:description" content="用 Kitaru 的公开退货示例解释如何固定样本、设置重放策略，并检查 Agent 是否采取了预期动作。">
+  <meta property="og:url" content="https://www.zhongxin.website/article/kitaru-agent-replay-regression.html">
+  <link rel="canonical" href="https://www.zhongxin.website/article/kitaru-agent-replay-regression.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css">
+  <script src="/js/blog.js" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <script src="/js/public-counts.js?v=2" defer></script>
+  <meta name="blog-cover" content="/images/blog-covers/kitaru-agent-replay-regression.webp">
+<meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/kitaru-agent-replay-regression.webp">
+<meta name="giscus:backlink" content="https://www.zhongxin.website/article/kitaru-agent-replay-regression.html">
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记</a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+  <article class="article">
+    <header class="article-header">
+      <figure class="article-cover" style="--cover-art:url(&quot;/images/blog-covers/kitaru-agent-replay-regression.webp&quot;)"><img src="/images/blog-covers/kitaru-agent-replay-regression.webp" alt="" fetchpriority="high" decoding="async"></figure>
+      <div class="wrap article-heading">
+        <h1 class="post-title">用 Kitaru 把一次 Agent 失败变成回归测试</h1>
+        <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2026-11-25">2026-11-25</time>
+          <span class="post-category" hidden></span>
+          <span class="read-time">约 2 分钟</span>
+          <span class="public-counter" data-public-count="reads" data-article-path="/article/kitaru-agent-replay-regression.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
+          <a href="#comments" data-jump-comments>评论</a></div>
+        <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/quality/">质量工程</a></nav>
+      </div>
+    </header>
+    <div class="wrap article-layout with-outline">
+      <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E5%85%88%E6%98%8E%E7%A1%AE%E5%A4%B1%E8%B4%A5%E5%9C%A8%E5%93%AA%E9%87%8C">先明确失败在哪里</a></li><li><a href="#%E9%87%8D%E6%94%BE%E6%97%B6%E8%AE%A9%E5%A4%96%E9%83%A8%E6%9D%A1%E4%BB%B6%E5%8F%AF%E6%AF%94">重放时让外部条件可比</a></li><li><a href="#%E6%89%BE%E4%B8%80%E7%BB%84%E8%83%BD%E5%8C%BA%E5%88%86%E5%A5%BD%E5%9D%8F%E7%9A%84%E6%A0%B7%E6%9C%AC">找一组能区分好坏的样本</a></li></ol></details></aside>
+      <div class="article-main">
+        <div class="post-body" id="article-text"><p>一次 Agent 失败留在日志里，可以用来排查。把当时的输入、预期动作和检查条件固定下来，下一次改提示词时，就可以拿它做回归测试。这里用 Kitaru 的公开退货客服示例讲一下这个过程。</p>
+<h2 id="先明确失败在哪里">先明确失败在哪里</h2>
+<p>官方退货示例给行李订单设了 200 美元的人工审批门槛。沿用这个规则，构造一条 280 美元的退款请求来说明检查方式。要检查的是 Agent 有没有直接调用退款工具，以及它有没有把请求转给人工。只扫一眼回复里的措辞，容易漏掉已经发出去的工具调用。 <a href="https://github.com/zenml-io/kitaru/blob/develop/docs/book/tutorials/returns-agent/README.md">Kitaru 退货 Agent 教程</a></p>
+<p>我会把检查条件写到可观察的动作上。对于这个样本，超出审批门槛后，应该出现转人工的动作，退款工具调用应当为空。正常退货也要留一条。如果修改后所有请求都转人工，超额退款可能消失了，原本能正常完成的请求也受到了影响。</p>
+<h2 id="重放时让外部条件可比">重放时让外部条件可比</h2>
+<p>Kitaru 会重新运行 Agent。支持历史工具回放的适配器可以用原记录里的工具结果回答同样的调用。比如订单查询仍返回原来那份示例订单，模型再根据输入和提示词做一次决定。模型这次怎么选，正是我们要看的。 <a href="https://github.com/zenml-io/kitaru/blob/develop/docs/book/concepts/replay.md">Kitaru 重放文档</a></p>
+<figure>
+<img alt="基线与候选版本的重放对照" decoding="async" height="630" loading="lazy" src="/images/blog-media/kitaru-agent-replay-regression-diagram.webp" width="1120"/>
+<figcaption aria-hidden="true">用同一组正常和异常样本运行两次，再逐条比较工具动作。</figcaption>
+</figure>
+<p>记录的工具名和参数对不上时，重放策略决定接下来怎么走。如果这轮只想检查决策，我会明确设为只用基线记录。出现未记录的工具调用时，让重放停止，再查看新调用为什么出现。按官方文档，省略工具策略可能执行真实工具。不同适配器支持的策略也有差异，运行前需要确认。 <a href="https://github.com/zenml-io/kitaru/blob/develop/docs/book/concepts/replay.md#tool-policies">Kitaru 工具策略</a></p><figure><img alt="测试设备连着本地记录，旁边的外部连接处于断开状态" decoding="async" height="675" loading="lazy" src="/images/blog-media/kitaru-agent-replay-regression-illustration.webp" width="1200"/><figcaption>AI 生成示意。测试使用历史工具返回，未记录的调用按设定停止。</figcaption></figure>
+<h2 id="找一组能区分好坏的样本">找一组能区分好坏的样本</h2>
+<p>我会先用未修改的版本做一次基线重放，看看这次是否还能重现原来的问题。基线本身跑不出原来的行为，后面就很难解释候选版本为什么看起来通过了。</p>
+<p>接着只改一项，例如在提示词里把人工审批条件写清楚。候选版本仍使用同一组样本和判断条件。看结果时逐条对照超额样本、原本通过的样本和发生变化的工具调用。这一步能查出改动是否修了目标问题，以及有没有把正常流程一并挡掉。</p>
+<p>这篇用的是官方示例。固定工具返回的重放适合比较模型判断。需要验证真实接口超时、权限或连接配置时，再用受控环境跑一次实际调用，把结果单独记录。</p></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
+
+        <div class="post-tags" aria-label="文章标签"><a href="/tags/Kitaru/">Kitaru</a><a href="/tags/Agent-%E8%AF%84%E6%B5%8B/">Agent 评测</a><a href="/tags/%E5%9B%9E%E5%BD%92%E6%B5%8B%E8%AF%95/">回归测试</a></div>
+        <div class="legacy-tags" hidden></div>
+        <nav class="related" aria-label="相邻文章"><a href="/article/text-fragment-report-links.html"><small>较新文章</small>用 URL 文本片段把测试报告定位到具体一行</a><a href="/article/ai-visual-assertions-ui-testing.html"><small>较早文章</small>用 AI 补上 UI 自动化里的视觉断言</a></nav>
+        <section class="article-comments" id="comments" aria-labelledby="comments-title"
+          data-repo="zx490336534/zx490336534.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzNDQwOTE0MTc="
+          data-category="文章评论" data-category-id="DIC_kwDOFIJrGc4DL60Q" data-article-path="/article/kitaru-agent-replay-regression.html">
+
+          <h2 id="comments-title">评论与讨论</h2>
+          <p>使用 GitHub 账号留言，评论公开显示。</p>
+          <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
+          <p role="status"></p>
+          <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
+          <div class="giscus"></div>
+        </section>
+      </div>
+    </div>
+  </article></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

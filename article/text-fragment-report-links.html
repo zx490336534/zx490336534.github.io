@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>用 URL 文本片段把测试报告定位到具体一行 · 测试游记</title>
+  <meta name="description" content="用 URL 文本片段定位测试报告中的函数名，处理重复文字和匹配失败的情况。">
+  <meta property="og:title" content="用 URL 文本片段把测试报告定位到具体一行 · 测试游记">
+  <meta property="og:description" content="用 URL 文本片段定位测试报告中的函数名，处理重复文字和匹配失败的情况。">
+  <meta property="og:url" content="https://www.zhongxin.website/article/text-fragment-report-links.html">
+  <link rel="canonical" href="https://www.zhongxin.website/article/text-fragment-report-links.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css">
+  <script src="/js/blog.js" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <script src="/js/public-counts.js?v=2" defer></script>
+  <meta name="blog-cover" content="/images/blog-covers/text-fragment-report-links.webp">
+<meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/text-fragment-report-links.webp">
+<meta name="giscus:backlink" content="https://www.zhongxin.website/article/text-fragment-report-links.html">
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记</a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+  <article class="article">
+    <header class="article-header">
+      <figure class="article-cover" style="--cover-art:url(&quot;/images/blog-covers/text-fragment-report-links.webp&quot;)"><img src="/images/blog-covers/text-fragment-report-links.webp" alt="" fetchpriority="high" decoding="async"></figure>
+      <div class="wrap article-heading">
+        <h1 class="post-title">用 URL 文本片段把测试报告定位到具体一行</h1>
+        <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2026-11-25">2026-11-25</time>
+          <span class="post-category" hidden></span>
+          <span class="read-time">约 1 分钟</span>
+          <span class="public-counter" data-public-count="reads" data-article-path="/article/text-fragment-report-links.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
+          <a href="#comments" data-jump-comments>评论</a></div>
+        <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/engineering/">工程工具</a> <span aria-hidden="true">/</span> <a href="/categories/engineering/productivity/">效率工具</a></nav>
+      </div>
+    </header>
+    <div class="wrap article-layout with-outline">
+      <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E5%85%88%E4%BB%8E%E4%B8%80%E6%AE%B5%E8%83%BD%E5%94%AF%E4%B8%80%E5%8C%B9%E9%85%8D%E7%9A%84%E6%96%87%E5%AD%97%E5%BC%80%E5%A7%8B">先从一段能唯一匹配的文字开始</a></li><li><a href="#%E5%90%8C%E4%B8%80%E4%B8%AA%E5%87%BD%E6%95%B0%E5%90%8D%E5%87%BA%E7%8E%B0%E4%B8%A4%E6%AC%A1%E6%80%8E%E4%B9%88%E5%8A%9E">同一个函数名出现两次怎么办</a></li><li><a href="#%E9%93%BE%E6%8E%A5%E4%BB%8D%E7%84%B6%E8%A6%81%E8%AE%A9%E4%BA%BA%E6%89%8B%E5%8A%A8%E6%89%BE%E5%BE%97%E5%88%B0">链接仍然要让人手动找得到</a></li></ol></details></aside>
+      <div class="article-main">
+        <div class="post-body" id="article-text"><p>一份测试结果列出了未覆盖的函数。我想从列表点一下，直接打开覆盖率报告里对应的函数名。有些生成出来的 HTML 报告给章节加了锚点，却没有给每个函数一个单独的 <code>id</code>。这时可以用 URL 文本片段，让浏览器去页面里找已知文字。</p>
+<h2 id="先从一段能唯一匹配的文字开始">先从一段能唯一匹配的文字开始</h2>
+<p>文本片段写在 URL 的片段部分。浏览器支持这项功能并且匹配成功时，会滚动到目标位置并高亮文本。下面的地址用于说明格式，<code>report.html</code> 和其中的文字都是构造示例。 <a href="https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Fragment/Text_fragments">MDN 文本片段说明</a></p>
+<pre aria-label="示例 1" class="text" role="region" tabindex="0"><code>https://example.com/report.html#:~:text=calculateTotal</code></pre>
+<figure>
+<img alt="链接打开并定位目标函数" decoding="async" height="630" loading="lazy" src="/images/blog-media/text-fragment-report-links-diagram.webp" width="1120"/>
+<figcaption aria-hidden="true">合成报告示意。支持的浏览器匹配成功后，会滚动并高亮目标文字。</figcaption>
+</figure>
+<p>如果列表里拿得到模块名和函数名，可以先找报告上实际显示的名字。生成链接时，对文字部分做 URL 百分号编码，连接用的分隔符留在文字外面。空格可以编码为 <code>%20</code>，作为文本内容出现的短横线也需要编码为 <code>%2D</code>。</p>
+<h2 id="同一个函数名出现两次怎么办">同一个函数名出现两次怎么办</h2>
+<p>报告可能在目录、结果表格和代码详情里都写了 <code>calculateTotal</code>。只传这个名字，浏览器会高亮第一个符合条件的匹配。可以用紧邻目标的前文或后文缩小范围。下面表示目标文字前面需要紧跟着 <code>module B</code>，两段中间允许有空白。</p>
+<pre aria-label="示例 2" class="text" role="region" tabindex="0"><code>https://example.com/report.html#:~:text=module%20B-,calculateTotal</code></pre>
+<p>这里的前文有位置约束。如果 <code>module B</code> 只出现在另一个章节标题里，中间还隔着表头或其他文字，就不能用它来精确匹配这次示例。实际生成链接时，要从渲染后的报告里选相邻文字。</p><figure><img alt="报告里出现两段相同文字，第二段连同邻近的前文被框出" decoding="async" height="800" loading="lazy" src="/images/blog-media/text-fragment-report-links-illustration.webp" width="1200"/><figcaption>AI 生成示意。目标文字重复时，用紧邻的前文缩小匹配范围。</figcaption></figure>
+<h2 id="链接仍然要让人手动找得到">链接仍然要让人手动找得到</h2>
+<p>报告重新生成后，展示文字可能会变。匹配失败或浏览器不支持时，读者仍能打开这份报告，可以用链接旁的模块名和函数名继续查。有稳定章节锚点时，直接用章节锚点。页面只有可见文字时，再用文本片段补上定位。MDN 的示例页面能直接试一下滚动和高亮。 <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a#:~:text=linked%20URL">打开公开示例</a></p></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
+
+        <div class="post-tags" aria-label="文章标签"><a href="/tags/%E6%96%87%E6%9C%AC%E7%89%87%E6%AE%B5/">文本片段</a><a href="/tags/%E6%B5%8B%E8%AF%95%E6%8A%A5%E5%91%8A/">测试报告</a><a href="/tags/%E6%B5%8F%E8%A7%88%E5%99%A8/">浏览器</a></div>
+        <div class="legacy-tags" hidden></div>
+        <nav class="related" aria-label="相邻文章"><a href="/article/traffic-replay-diff-report.html"><small>较新文章</small>流量回放出了差异，报告该怎么做</a><a href="/article/kitaru-agent-replay-regression.html"><small>较早文章</small>用 Kitaru 把一次 Agent 失败变成回归测试</a></nav>
+        <section class="article-comments" id="comments" aria-labelledby="comments-title"
+          data-repo="zx490336534/zx490336534.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzNDQwOTE0MTc="
+          data-category="文章评论" data-category-id="DIC_kwDOFIJrGc4DL60Q" data-article-path="/article/text-fragment-report-links.html">
+
+          <h2 id="comments-title">评论与讨论</h2>
+          <p>使用 GitHub 账号留言，评论公开显示。</p>
+          <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
+          <p role="status"></p>
+          <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
+          <div class="giscus"></div>
+        </section>
+      </div>
+    </div>
+  </article></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

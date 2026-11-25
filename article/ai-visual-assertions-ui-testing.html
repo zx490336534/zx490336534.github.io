@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>用 AI 补上 UI 自动化里的视觉断言 · 测试游记</title>
+  <meta name="description" content="用两张合成页面讲清视觉断言的范围、结构化返回和人工复核条件。">
+  <meta property="og:title" content="用 AI 补上 UI 自动化里的视觉断言 · 测试游记">
+  <meta property="og:description" content="用两张合成页面讲清视觉断言的范围、结构化返回和人工复核条件。">
+  <meta property="og:url" content="https://www.zhongxin.website/article/ai-visual-assertions-ui-testing.html">
+  <link rel="canonical" href="https://www.zhongxin.website/article/ai-visual-assertions-ui-testing.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css">
+  <script src="/js/blog.js" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <script src="/js/public-counts.js?v=2" defer></script>
+  <meta name="blog-cover" content="/images/blog-covers/ai-visual-assertions-ui-testing.webp">
+<meta property="og:image" content="https://www.zhongxin.website/images/blog-covers/ai-visual-assertions-ui-testing.webp">
+<meta name="giscus:backlink" content="https://www.zhongxin.website/article/ai-visual-assertions-ui-testing.html">
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记</a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+  <article class="article">
+    <header class="article-header">
+      <figure class="article-cover" style="--cover-art:url(&quot;/images/blog-covers/ai-visual-assertions-ui-testing.webp&quot;)"><img src="/images/blog-covers/ai-visual-assertions-ui-testing.webp" alt="" fetchpriority="high" decoding="async"></figure>
+      <div class="wrap article-heading">
+        <h1 class="post-title">用 AI 补上 UI 自动化里的视觉断言</h1>
+        <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2026-11-25">2026-11-25</time>
+          <span class="post-category" hidden></span>
+          <span class="read-time">约 2 分钟</span>
+          <span class="public-counter" data-public-count="reads" data-article-path="/article/ai-visual-assertions-ui-testing.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
+          <a href="#comments" data-jump-comments>评论</a></div>
+        <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/automation/">自动化测试</a> <span aria-hidden="true">/</span> <a href="/categories/testing/automation/browser/">Web 与桌面自动化</a></nav>
+      </div>
+    </header>
+    <div class="wrap article-layout with-outline">
+      <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E6%8A%8A%E8%A6%81%E5%88%A4%E6%96%AD%E7%9A%84%E7%8E%B0%E8%B1%A1%E8%AF%B4%E7%AA%84%E4%B8%80%E7%82%B9">把要判断的现象说窄一点</a></li><li><a href="#%E8%AE%A9%E8%84%9A%E6%9C%AC%E8%AF%BB%E5%88%B0%E5%88%A4%E6%96%AD%E8%BF%98%E8%83%BD%E6%9F%A5%E5%AE%83%E7%9A%84%E4%BE%9D%E6%8D%AE">让脚本读到判断，还能查它的依据</a></li></ol></details></aside>
+      <div class="article-main">
+        <div class="post-body" id="article-text"><p>有些页面看起来出错了，UI 自动化还会通过。脚本确认了画布存在，按钮也能点，截图里却出现一块不该出现的黑区。原来的元素断言仍然有用，只是它回答不了画面是否异常。</p>
+<p>我在尝试补这类断言时，把截图和要问的问题一起交给模型，要求它返回结构化结果。这里用合成截图解释怎样提问和处理结果，图中的页面与数据都为演示构造。</p>
+<h2 id="把要判断的现象说窄一点">把要判断的现象说窄一点</h2>
+<p>直接问“这个页面有没有问题”，每次检查的范围都可能变。模型可能评价配色，也可能把正常的暗色背景当成错误。这个例子里，我只问它一件事，画布内容区是否被一块非预期的连续黑色区域盖住。顶部导航、侧栏和正常的暗色背景都不计入判断。</p>
+<figure>
+<img alt="正常暗色内容与异常遮挡对照" decoding="async" height="630" loading="lazy" src="/images/blog-media/ai-visual-assertions-ui-testing-diagram.webp" width="1120"/>
+<figcaption aria-hidden="true">合成示例只检查内容区，正常暗色背景和导航不计入判断。</figcaption>
+</figure>
+<p>先指定截图范围，脚本也更容易复查。比如固定在页面进入可截图状态之后截取画布区域，报告里保留实际传给模型的那张图。用户从失败记录点进去，能看到模型判断的是哪一块。</p><figure><img alt="青色边框只框住画布，导航栏和侧栏在框外，画布内有黑色遮挡" decoding="async" height="675" loading="lazy" src="/images/blog-media/ai-visual-assertions-ui-testing-illustration.webp" width="1200"/><figcaption>AI 生成示意。视觉断言的范围是框内画布，框外的导航与侧栏不参与判断。</figcaption></figure>
+<h2 id="让脚本读到判断还能查它的依据">让脚本读到判断，还能查它的依据</h2>
+<p>返回结构只留三项。状态用 <code>pass</code>、<code>fail</code> 或 <code>uncertain</code>，再给一条可见依据和画面位置。下面是合成图片对应的示例返回，供说明格式。</p>
+<pre aria-label="示例 1" class="json" role="region" tabindex="0"><code>{
+  "verdict": "fail",
+  "evidence": "A solid black block covers part of the content",
+  "region": "upper-right area of the canvas"
+}</code></pre>
+<p>脚本先校验 JSON 和状态枚举。模型输出不合法、图片读取失败，或者无法确定黑区是不是设计的一部分，就进入人工复核。测试报告保留截图、原判断和可见依据，方便人对照画面核对。</p>
+<p>我会保留原来的确定性断言。元素存在、文字内容、颜色值和尺寸这类可以直接读出来的条件，继续用脚本检查。等到需要判断截图里的组合现象，再用视觉模型补一项单独结果。是否能把这项结果升级成发布条件，要用标好的正常和异常样本核对误报与漏报。当前材料能说明这种接法，暂时不足以给出准确率。</p></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
+
+        <div class="post-tags" aria-label="文章标签"><a href="/tags/UI-%E8%87%AA%E5%8A%A8%E5%8C%96/">UI 自动化</a><a href="/tags/%E8%A7%86%E8%A7%89%E6%96%AD%E8%A8%80/">视觉断言</a><a href="/tags/AI-%E6%B5%8B%E8%AF%95/">AI 测试</a></div>
+        <div class="legacy-tags" hidden></div>
+        <nav class="related" aria-label="相邻文章"><a href="/article/kitaru-agent-replay-regression.html"><small>较新文章</small>用 Kitaru 把一次 Agent 失败变成回归测试</a><a href="/article/wechat-d41d5dcfd90fdd.html"><small>较早文章</small>eli5，把长文做成能操作的图解</a></nav>
+        <section class="article-comments" id="comments" aria-labelledby="comments-title"
+          data-repo="zx490336534/zx490336534.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzNDQwOTE0MTc="
+          data-category="文章评论" data-category-id="DIC_kwDOFIJrGc4DL60Q" data-article-path="/article/ai-visual-assertions-ui-testing.html">
+
+          <h2 id="comments-title">评论与讨论</h2>
+          <p>使用 GitHub 账号留言，评论公开显示。</p>
+          <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
+          <p role="status"></p>
+          <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
+          <div class="giscus"></div>
+        </section>
+      </div>
+    </div>
+  </article></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>
