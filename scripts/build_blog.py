@@ -360,8 +360,7 @@ def set_display_covers(posts, opening_covers):
                 post.display_cover = image
                 break
 
-        # Keep body diagrams and screenshots in place independently of curated cover artwork.
-        expected_opening = opening_covers.get(stem) if post.display_cover != curated else None
+        expected_opening = opening_covers.get(stem)
         if expected_opening or not post.display_cover:
             body = BeautifulSoup(post.body, "lxml")
             if expected_opening and starts_article(body, body.find("img", src=expected_opening)):
