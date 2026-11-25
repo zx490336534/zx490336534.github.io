@@ -2,12 +2,12 @@
 
 (() => {
   const counters = [...document.querySelectorAll('[data-public-count]')];
-  if (!counters.length) return;
+  const popularList = document.querySelector('[data-popular-list]');
+  if (!counters.length && !popularList) return;
   const showsLifetimeClicks = counters.some(counter => counter.dataset.publicCount === 'clicks');
 
   const digits = new Intl.NumberFormat('zh-CN');
   const dates = new Intl.DateTimeFormat('zh-CN', {dateStyle: 'short', timeStyle: 'short', timeZone: 'Asia/Shanghai'});
-  const popularList = document.querySelector('[data-popular-list]');
   const wechatRows = popularList ? [...popularList.children] : [];
   let displayedAt = 0;
 

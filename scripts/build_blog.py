@@ -238,7 +238,7 @@ def shell(title, path, content, description=DESCRIPTION, extra_head=""):
     links_html = "".join(links)
     canonical = html(SITE + path)
     summary = excerpt(description, 180)
-    counts = '\n  <script src="/js/public-counts.js" defer></script>' if path == "/" or is_article else ""
+    counts = '\n  <script src="/js/public-counts.js?v=2" defer></script>' if path == "/" or is_article else ""
     main_class = "" if is_article else ' class="wrap"'
     return f'''<!doctype html>
 <html lang="zh-CN">
@@ -264,7 +264,7 @@ def shell(title, path, content, description=DESCRIPTION, extra_head=""):
   <a class="skip-link" href="#main">跳到正文</a>
   <header class="masthead">
     <div class="wrap masthead-inner">
-      <a class="wordmark" href="/">测试游记<span>听白</span></a>
+      <a class="wordmark" href="/">测试游记</a>
       <nav aria-label="主导航">{links_html}</nav>
       <div class="masthead-actions">
         <label class="visually-hidden" for="site-appearance">外观</label>
@@ -380,7 +380,7 @@ def resource_cards():
 
 
 def home_story(post, picture, lead=False):
-    heading = "h2" if lead else "h3"
+    heading = "h1" if lead else "h3"
     priority = 'fetchpriority="high"' if lead else 'loading="lazy"'
     image = (
         f'<div class="front-media"><img src="{html(picture)}" alt="" decoding="async" {priority}></div>'
@@ -449,20 +449,13 @@ def home(posts, catalog, series):
     featured = {post.path for post, _ in photos}
     recent = [post for post in posts[1:] if post.path not in featured][:7]
     content = f'''
-  <header class="publication-heading">
-    <div>
-      <h1>测试开发与 AI 工程实践</h1>
-      <p>听白的技术博客</p>
-      {public_counter("clicks", "全站累计点击")}
-    </div>
-    <div class="publication-actions">
-      <a class="solid-link" href="/categories/">浏览分类 <span aria-hidden="true">↗</span></a>
-      <a href="/lab/">工具与课程 <span aria-hidden="true">↗</span></a>
-    </div>
-  </header>
   <section class="publication-feature" aria-label="最新文章">
     {home_story(feature, feature.display_cover, lead=True)}
   </section>
+  <div class="publication-actions">
+    <a class="solid-link" href="/categories/">浏览分类 <span aria-hidden="true">↗</span></a>
+    <a href="/lab/">工具与课程 <span aria-hidden="true">↗</span></a>
+  </div>
   <nav class="publication-topics" aria-label="主要分类">{paths}</nav>
   {popular_section(posts)}
   {routes}
