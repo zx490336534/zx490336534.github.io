@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>为什么一批空输出，能让 AI 裁判看起来更准？ · 测试游记</title>
+  <meta name="description" content="用八条构造数据算两次一致率，说明混入空输出怎样改变对模型裁判的判断。">
+  <meta property="og:title" content="为什么一批空输出，能让 AI 裁判看起来更准？ · 测试游记">
+  <meta property="og:description" content="用八条构造数据算两次一致率，说明混入空输出怎样改变对模型裁判的判断。">
+  <meta property="og:url" content="https://www.zhongxin.website/article/llm-judge-empty-output.html">
+  <link rel="canonical" href="https://www.zhongxin.website/article/llm-judge-empty-output.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css">
+  <script src="/js/blog.js" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <script src="/js/public-counts.js" defer></script>
+
+<meta property="og:image" content="https://www.zhongxin.website/images/article-covers/llm-judge-empty-output.webp">
+<meta name="giscus:backlink" content="https://www.zhongxin.website/article/llm-judge-empty-output.html">
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记<span>听白</span></a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+  <article class="article">
+    <header class="article-header">
+      <figure class="article-cover" style="--cover-art:url(&quot;/images/article-covers/llm-judge-empty-output.webp&quot;)"><img src="/images/article-covers/llm-judge-empty-output.webp" alt="" fetchpriority="high" decoding="async"></figure>
+      <div class="wrap article-heading">
+        <h1 class="post-title">为什么一批空输出，能让 AI 裁判看起来更准？</h1>
+        <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2026-11-25T14:52:11+08:00">2026-11-25</time>
+          <span class="post-category" hidden></span>
+          <span class="read-time">约 1 分钟</span>
+          <span class="public-counter" data-public-count="reads" data-article-path="/article/llm-judge-empty-output.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
+          <a href="#comments" data-jump-comments>评论</a></div>
+        <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/quality/">质量工程</a></nav>
+      </div>
+    </header>
+    <div class="wrap article-layout with-outline">
+      <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#%E6%8A%8A%E5%90%8C%E4%B8%80%E7%BB%84%E7%BB%93%E6%9E%9C%E7%AE%97%E4%B8%A4%E9%81%8D">把同一组结果算两遍</a></li><li><a href="#%E7%A9%BA%E8%BE%93%E5%87%BA%E5%BA%94%E8%AF%A5%E6%80%8E%E4%B9%88%E7%AE%97">空输出应该怎么算</a></li></ol></details></aside>
+      <div class="article-main">
+        <div class="post-body" id="article-text"><p>用大模型做评测时，我会看它和人工判定或硬性规则的一致率。如果把很多空输出混入样本，两边通常都会把它们判成失败。一致率会记录这些正确判断。拿这个数字去推测它能不能判断那些已经产出结果、但质量有差异的样本，就容易高估它。</p>
+<h2 id="把同一组结果算两遍">把同一组结果算两遍</h2>
+<p>用八条虚构数据做个小算例。四条完全没有产物，人工和模型都判失败。另外四条有产物，两边只判得一样两次。</p>
+<div aria-label="数据表格" class="table-scroll" role="region" tabindex="0"><table>
+<thead>
+<tr>
+<th>样本组</th>
+<th>一致的条数</th>
+<th>总条数</th>
+<th>一致率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>空输出</td>
+<td>4</td>
+<td>4</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>有输出</td>
+<td>2</td>
+<td>4</td>
+<td>50%</td>
+</tr>
+<tr>
+<td>混合统计</td>
+<td>6</td>
+<td>8</td>
+<td>75%</td>
+</tr>
+</tbody>
+</table></div>
+<p>75% 这项算术没错，它描述的是这八条样本。如果团队要判断模型能不能替人检查已经生成的内容，更直接的数字是后四条的 50%。同一个评测器，两种口径，没有修改其中任何一条判定。</p>
+<figure><img alt="四条空输出四次一致，四条有输出两次一致，汇总六次一致" decoding="async" height="480" loading="lazy" src="/images/article-figures/llm-judge-empty-output.webp" width="1200"/><figcaption>教学示意。示例中的八条记录为构造数据，用于演示样本组成对一致率的影响。</figcaption></figure>
+<h2 id="空输出应该怎么算">空输出应该怎么算</h2>
+<p>空输出本身值得关注。它会影响用户能不能拿到任何结果。我会把它作为一项单独的指标，记录多少次本该产出却没有产出。能用固定规则判断时，就直接检查是否存在有效结果。把剩下的样本交给人工和模型，按同一份评分标准看质量，再记下分歧集中在哪里。</p>
+<p>模糊的地方可以用正反例补规则。例如一个回答只生成了标题，没有给出正文。算空输出、算不完整，还是按低质量处理，跟产品约定有关。这个归类必须在看模型得分前定好。否则每次换一种分组方法，数字就可能变好，但对裁判能力的判断没有更清楚。</p>
+<p>如果要比较同一个输入的多个候选，直接在这组候选里看排名也更容易定位问题。把不同难度的输入混在一起，模型可能只区分了哪些任务容易有结果。上线前我会抽几组已有产物、质量接近的候选让人工先盲评，再看模型有没有把前后顺序排反。</p></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
+
+        <div class="post-tags" aria-label="文章标签"><a href="/tags/Agent-%E8%AF%84%E6%B5%8B/">Agent 评测</a><a href="/tags/LLM-Judge/">LLM Judge</a><a href="/tags/%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE/">测试数据</a></div>
+        <div class="legacy-tags" hidden></div>
+        <nav class="related" aria-label="相邻文章"><a href="/article/mcp-gateway-name-collision.html"><small>较新文章</small>两个 MCP Server 暴露了同名工具，网关怎么处理？</a><a href="/article/codex-obsidian-wiki.html"><small>较早文章</small>我怎么用 Codex 和 Obsidian，把散落笔记编成可追溯的 Wiki</a></nav>
+        <section class="article-comments" id="comments" aria-labelledby="comments-title"
+          data-repo="zx490336534/zx490336534.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzNDQwOTE0MTc="
+          data-category="文章评论" data-category-id="DIC_kwDOFIJrGc4DL60Q" data-article-path="/article/llm-judge-empty-output.html">
+
+          <h2 id="comments-title">评论与讨论</h2>
+          <p>使用 GitHub 账号留言，评论公开显示。</p>
+          <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
+          <p role="status"></p>
+          <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
+          <div class="giscus"></div>
+        </section>
+      </div>
+    </div>
+  </article></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

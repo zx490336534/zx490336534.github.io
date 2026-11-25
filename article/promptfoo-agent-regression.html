@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>用 Promptfoo 把一个 Agent 失败案例变成回归测试 · 测试游记</title>
+  <meta name="description" content="从一条错误的任务状态开始，用 Promptfoo 写断言，分别验证回放样本和当前 Agent。">
+  <meta property="og:title" content="用 Promptfoo 把一个 Agent 失败案例变成回归测试 · 测试游记">
+  <meta property="og:description" content="从一条错误的任务状态开始，用 Promptfoo 写断言，分别验证回放样本和当前 Agent。">
+  <meta property="og:url" content="https://www.zhongxin.website/article/promptfoo-agent-regression.html">
+  <link rel="canonical" href="https://www.zhongxin.website/article/promptfoo-agent-regression.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css">
+  <script src="/js/blog.js" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <script src="/js/public-counts.js" defer></script>
+
+<meta property="og:image" content="https://www.zhongxin.website/images/article-covers/promptfoo-agent-regression.webp">
+<meta name="giscus:backlink" content="https://www.zhongxin.website/article/promptfoo-agent-regression.html">
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记<span>听白</span></a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+  <article class="article">
+    <header class="article-header">
+      <figure class="article-cover" style="--cover-art:url(&quot;/images/article-covers/promptfoo-agent-regression.webp&quot;)"><img src="/images/article-covers/promptfoo-agent-regression.webp" alt="" fetchpriority="high" decoding="async"></figure>
+      <div class="wrap article-heading">
+        <h1 class="post-title">用 Promptfoo 把一个 Agent 失败案例变成回归测试</h1>
+        <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2026-11-25T14:52:11+08:00">2026-11-25</time>
+          <span class="post-category" hidden></span>
+          <span class="read-time">约 2 分钟</span>
+          <span class="public-counter" data-public-count="reads" data-article-path="/article/promptfoo-agent-regression.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
+          <a href="#comments" data-jump-comments>评论</a></div>
+        <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/quality/">质量工程</a></nav>
+      </div>
+    </header>
+    <div class="wrap article-layout with-outline">
+      <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#%E5%85%88%E8%AE%A9%E5%9D%8F%E6%A0%B7%E6%9C%AC%E7%A8%B3%E5%AE%9A%E5%A4%B1%E8%B4%A5">先让坏样本稳定失败</a></li><li><a href="#%E5%9B%9E%E6%94%BE%E5%92%8C%E5%AE%9E%E6%97%B6%E6%89%A7%E8%A1%8C%E5%9B%9E%E7%AD%94%E4%B8%A4%E4%B8%AA%E9%97%AE%E9%A2%98">回放和实时执行回答两个问题</a></li><li><a href="#%E5%8F%82%E8%80%83">参考</a></li></ol></details></aside>
+      <div class="article-main">
+        <div class="post-body" id="article-text"><p>Agent 处理异步任务时，很容易把「已提交」写成「已完成」。这两个状态差一个词，用户看到的结果却差很多。假设一个任务助手在产物生成前就宣称完成，第一条回归只需要检查一件事。任务还在排队时，回复必须保留待完成状态。</p>
+<p>我会先把出错时的输出保存下来，给它写一个能重复检查的断言。Promptfoo 负责把输入、执行方式和断言组合起来。最小版本可以先检查已经记录好的输出，再接当前的 Agent。</p>
+<h2 id="先让坏样本稳定失败">先让坏样本稳定失败</h2>
+<p>下面是教学配置，使用 <code>echo</code> 把样本原样送到断言，不需要模型或 API 密钥。两个用例的业务条件相同，任务都还在排队。第二个用例故意保留错误回复。</p>
+<pre><code class="language-yaml">prompts:
+  - '{{recorded_output}}'
+providers:
+  - echo
+defaultTest:
+  assert:
+    - type: is-json
+    - type: javascript
+      value: 'JSON.parse(output).status === "pending"'
+tests:
+  - description: Expected output while a job is queued
+    vars:
+      recorded_output: '{"status":"pending"}'
+  - description: Regression fixture that must fail
+    vars:
+      recorded_output: '{"status":"completed"}'
+</code></pre>
+<p>保存成 <code>promptfooconfig.yaml</code>，然后在同一目录运行 <code>npx --yes promptfoo@0.126.0 eval --no-cache</code>。用这个版本跑上面的配置，结果是一条通过、一条失败，执行错误为零。如果两条都过，先查断言有没有接到真实输出。练习时留着这个失败样本可以证明检查有用。接入 CI 时，把它保留为断言的负例，常规回归则调用当前应用，检查它能否在相同条件下给出正确状态。</p>
+<figure><img alt="正确样本通过和错误样本失败的对照流程" decoding="async" height="480" loading="lazy" src="/images/article-figures/promptfoo-agent-regression.webp" width="1200"/><figcaption>教学示意。期望和断言相同，两份输出分别确认通过路径和失败路径。</figcaption></figure>
+<h2 id="回放和实时执行回答两个问题">回放和实时执行回答两个问题</h2>
+<p>回放帮我确认规则变更之后，旧样本还能被正确判定。实时执行要看新版本会不会再产生同一种错误。两者最好有不同的报告名称。回放全绿之后，当前服务的接口、权限和任务状态仍要在实时用例里检查。</p>
+<p>这个例子用 JSON 状态做断言，错误位置很明确。如果输出是自然语言，可以先让实际应用返回一个能检查的结构化状态，把文案留给另一条测试。需要判断说明有没有误导时，可以再加模型评分，并用已知正反样本校准。一次评测可能跑多个模型、提示词和用例的组合，我会先把这一行跑明白，再逐步展开组合矩阵。</p>
+<p>进发布门禁以前，我会故意把 <code>pending</code> 换回 <code>completed</code>，看失败结果是否能传到 CI。否则即使评测工具识别了错误，发布流程也未必会拦住它。</p>
+<h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://www.promptfoo.dev/docs/configuration/expected-outputs/">Promptfoo 断言</a></li>
+<li><a href="https://github.com/promptfoo/promptfoo/blob/main/src/providers/echo.ts">Promptfoo Echo Provider 源码</a></li>
+</ul></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
+
+        <div class="post-tags" aria-label="文章标签"><a href="/tags/Promptfoo/">Promptfoo</a><a href="/tags/Agent-%E8%AF%84%E6%B5%8B/">Agent 评测</a><a href="/tags/%E5%9B%9E%E5%BD%92%E6%B5%8B%E8%AF%95/">回归测试</a></div>
+        <div class="legacy-tags" hidden></div>
+        <nav class="related" aria-label="相邻文章"><a href="/article/temporal-agent-recovery.html"><small>较新文章</small>Agent 任务跑到一半崩了，Temporal 怎么让它接着跑？</a><a href="/article/pi-agent-four-tools.html"><small>较早文章</small>Pi Agent 为什么默认只给四个工具？</a></nav>
+        <section class="article-comments" id="comments" aria-labelledby="comments-title"
+          data-repo="zx490336534/zx490336534.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzNDQwOTE0MTc="
+          data-category="文章评论" data-category-id="DIC_kwDOFIJrGc4DL60Q" data-article-path="/article/promptfoo-agent-regression.html">
+
+          <h2 id="comments-title">评论与讨论</h2>
+          <p>使用 GitHub 账号留言，评论公开显示。</p>
+          <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
+          <p role="status"></p>
+          <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
+          <div class="giscus"></div>
+        </section>
+      </div>
+    </div>
+  </article></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

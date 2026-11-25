@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Agent 任务跑到一半崩了，Temporal 怎么让它接着跑？ · 测试游记</title>
+  <meta name="description" content="用一次丢失回执的故障解释 Temporal 的事件重放、Activity 重试和业务幂等。">
+  <meta property="og:title" content="Agent 任务跑到一半崩了，Temporal 怎么让它接着跑？ · 测试游记">
+  <meta property="og:description" content="用一次丢失回执的故障解释 Temporal 的事件重放、Activity 重试和业务幂等。">
+  <meta property="og:url" content="https://www.zhongxin.website/article/temporal-agent-recovery.html">
+  <link rel="canonical" href="https://www.zhongxin.website/article/temporal-agent-recovery.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css">
+  <script src="/js/blog.js" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <script src="/js/public-counts.js" defer></script>
+
+<meta property="og:image" content="https://www.zhongxin.website/images/article-covers/temporal-agent-recovery.webp">
+<meta name="giscus:backlink" content="https://www.zhongxin.website/article/temporal-agent-recovery.html">
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记<span>听白</span></a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+  <article class="article">
+    <header class="article-header">
+      <figure class="article-cover" style="--cover-art:url(&quot;/images/article-covers/temporal-agent-recovery.webp&quot;)"><img src="/images/article-covers/temporal-agent-recovery.webp" alt="" fetchpriority="high" decoding="async"></figure>
+      <div class="wrap article-heading">
+        <h1 class="post-title">Agent 任务跑到一半崩了，Temporal 怎么让它接着跑？</h1>
+        <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2026-11-25T14:52:11+08:00">2026-11-25</time>
+          <span class="post-category" hidden></span>
+          <span class="read-time">约 2 分钟</span>
+          <span class="public-counter" data-public-count="reads" data-article-path="/article/temporal-agent-recovery.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
+          <a href="#comments" data-jump-comments>评论</a></div>
+        <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/ai/">AI 工程</a> <span aria-hidden="true">/</span> <a href="/categories/ai/agents/">Agent 与工作流</a> <span aria-hidden="true">/</span> <a href="/categories/ai/agents/workflows/">工作流与多 Agent</a></nav>
+      </div>
+    </header>
+    <div class="wrap article-layout with-outline">
+      <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#%E5%85%88%E7%9C%8B%E5%A4%96%E9%83%A8%E5%8A%A8%E4%BD%9C%E6%88%90%E5%8A%9F-%E5%9B%9E%E6%89%A7%E8%BF%98%E6%B2%A1%E5%86%99%E8%BF%9B%E5%8E%BB%E7%9A%84%E6%83%85%E5%86%B5">先看外部动作成功、回执还没写进去的情况</a></li><li><a href="#%E6%81%A2%E5%A4%8D%E5%88%B0%E5%93%AA%E9%87%8C-%E5%8F%96%E5%86%B3%E4%BA%8E%E6%AD%A5%E9%AA%A4%E6%80%8E%E4%B9%88%E6%8B%86">恢复到哪里，取决于步骤怎么拆</a></li><li><a href="#%E5%8F%82%E8%80%83">参考</a></li></ol></details></aside>
+      <div class="article-main">
+        <div class="post-body" id="article-text"><p>我查 Temporal 时，最关心它能解决哪一种中断。一个图片生成任务可能要调用模型、等待结果，再把文件存起来。Worker 在第三步前退出，服务重启后要知道前两步走到了哪里。要是从头再来，可能多花一次推理费用，也可能留下两份结果。</p>
+<p>Temporal 会记录 Workflow 的运行事件。Worker 接手后，可以用这些事件重建流程状态。已经记录完成的 Activity 会复用历史结果。编排代码可以继续往下运行，外部调用放在 Activity 里。</p>
+<h2 id="先看外部动作成功-回执还没写进去的情况">先看外部动作成功、回执还没写进去的情况</h2>
+<p>用保存结果举例。Activity 把文件交给存储服务，存储已经成功，Worker 在向 Temporal 报告之前退出。从 Temporal 的历史看，这个 Activity 还没有完成。到了超时和重试条件，另一个 Worker 可能重新执行它。重放能告诉系统哪些结果已经确认，外部系统收到了什么，还得靠双方约定查证。</p>
+<figure><img alt="外部保存成功、完成回执丢失、Activity 重试的时序" decoding="async" height="480" loading="lazy" src="/images/article-figures/temporal-agent-recovery.webp" width="1200"/><figcaption>教学示意。保存动作发生在外部服务，Temporal 是否记录完成取决于回执。</figcaption></figure>
+<p>给每次业务动作一个稳定的幂等键，可以让重试继续处理同一个结果。比如存储服务能按任务编号和操作名称找到已保存的对象，就可以返回它的标识。每次重试都生成新编号的话，这个办法就失效了。对计费或发通知，应该先查下游接口有没有相同的去重承诺。没有的话，把可能重复的动作写清楚，再决定重试、对账或人工处理。</p>
+<h2 id="恢复到哪里-取决于步骤怎么拆">恢复到哪里，取决于步骤怎么拆</h2>
+<p>如果模型调用、存文件和回写状态都塞到同一个 Activity，前两步跑完后崩溃，第三步的错误就可能让整个 Activity 重试。我会先找两个容易单独取证的地方，一个是模型结果已经可读，一个是最终业务状态已更新。各自需要什么重试策略，哪些错误应该结束任务，再按实际边界拆分。</p>
+<p>对于已经有图状态持久化的 Agent，也要先划清职责。图框架可以保存会话中的步骤，Temporal 可以管更外层的等待与恢复。同一步外部调用如果在两层都配置重试，问题出现时就很难从记录判断究竟执行了几次。</p>
+<p>我会用一个很小的试点验收。先在存储成功、回执未写入时终止 Worker，再检查 Workflow 有没有继续、业务上有没有产生第二份文件，以及外部调用实际发生了几次。三项数据分别记录。拿到这些证据，再决定有没有必要为这个流程接入持久化执行框架。</p>
+<h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://docs.temporal.io/activity-definition">Temporal Activity 定义</a></li>
+<li><a href="https://docs.temporal.io/workflow-definition">Temporal Workflow 定义</a></li>
+</ul></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
+
+        <div class="post-tags" aria-label="文章标签"><a href="/tags/Temporal/">Temporal</a><a href="/tags/%E5%B7%A5%E4%BD%9C%E6%B5%81/">工作流</a><a href="/tags/%E5%B9%82%E7%AD%89/">幂等</a></div>
+        <div class="legacy-tags" hidden></div>
+        <nav class="related" aria-label="相邻文章"><a href="/article/promptfoo-agent-regression.html"><small>较早文章</small>用 Promptfoo 把一个 Agent 失败案例变成回归测试</a></nav>
+        <section class="article-comments" id="comments" aria-labelledby="comments-title"
+          data-repo="zx490336534/zx490336534.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzNDQwOTE0MTc="
+          data-category="文章评论" data-category-id="DIC_kwDOFIJrGc4DL60Q" data-article-path="/article/temporal-agent-recovery.html">
+
+          <h2 id="comments-title">评论与讨论</h2>
+          <p>使用 GitHub 账号留言，评论公开显示。</p>
+          <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
+          <p role="status"></p>
+          <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
+          <div class="giscus"></div>
+        </section>
+      </div>
+    </div>
+  </article></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

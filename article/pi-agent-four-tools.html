@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Pi Agent 为什么默认只给四个工具？ · 测试游记</title>
+  <meta name="description" content="沿着一次失败测试看 Pi 默认工具怎样配合，以及扩展和会话分支各自负责什么。">
+  <meta property="og:title" content="Pi Agent 为什么默认只给四个工具？ · 测试游记">
+  <meta property="og:description" content="沿着一次失败测试看 Pi 默认工具怎样配合，以及扩展和会话分支各自负责什么。">
+  <meta property="og:url" content="https://www.zhongxin.website/article/pi-agent-four-tools.html">
+  <link rel="canonical" href="https://www.zhongxin.website/article/pi-agent-four-tools.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css">
+  <script src="/js/blog.js" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <script src="/js/public-counts.js" defer></script>
+
+<meta property="og:image" content="https://www.zhongxin.website/images/article-covers/pi-agent-four-tools.webp">
+<meta name="giscus:backlink" content="https://www.zhongxin.website/article/pi-agent-four-tools.html">
+<script src="/js/comments.js?v=3" defer></script>
+<script src="/js/comment-quotes.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记<span>听白</span></a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/" aria-current="location">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main">
+  <article class="article">
+    <header class="article-header">
+      <figure class="article-cover" style="--cover-art:url(&quot;/images/article-covers/pi-agent-four-tools.webp&quot;)"><img src="/images/article-covers/pi-agent-four-tools.webp" alt="" fetchpriority="high" decoding="async"></figure>
+      <div class="wrap article-heading">
+        <h1 class="post-title">Pi Agent 为什么默认只给四个工具？</h1>
+        <div class="entry-meta"><span class="post-author">听白</span><time itemprop="datePublished" datetime="2026-11-25T14:52:11+08:00">2026-11-25</time>
+          <span class="post-category" hidden></span>
+          <span class="read-time">约 2 分钟</span>
+          <span class="public-counter" data-public-count="reads" data-article-path="/article/pi-agent-four-tools.html" hidden><span>近 30 天阅读</span> <strong></strong></span>
+          <a href="#comments" data-jump-comments>评论</a></div>
+        <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/ai/">AI 工程</a> <span aria-hidden="true">/</span> <a href="/categories/ai/agents/">Agent 与工作流</a> <span aria-hidden="true">/</span> <a href="/categories/ai/agents/build/">Agent 架构与开发</a></nav>
+      </div>
+    </header>
+    <div class="wrap article-layout with-outline">
+      <aside class="outline"><details open><summary><span class="outline-rail-icon" aria-hidden="true"></span>本文目录</summary><ol><li><a href="#%E4%BF%AE%E4%B8%80%E4%B8%AA%E5%A4%B1%E8%B4%A5%E6%B5%8B%E8%AF%95-%E5%9B%9B%E4%B8%AA%E5%8A%A8%E4%BD%9C%E5%B0%B1%E8%83%BD%E4%B8%B2%E8%B5%B7%E6%9D%A5">修一个失败测试，四个动作就能串起来</a></li><li><a href="#%E8%A6%81%E6%89%A9%E5%B1%95%E6%97%B6-%E5%85%88%E7%9C%8B%E7%BC%BA%E7%9A%84%E6%98%AF%E5%93%AA%E4%B8%80%E7%A7%8D%E8%83%BD%E5%8A%9B">要扩展时，先看缺的是哪一种能力</a></li><li><a href="#%E5%8F%82%E8%80%83">参考</a></li></ol></details></aside>
+      <div class="article-main">
+        <div class="post-body" id="article-text"><p>读 Pi coding agent 的公开文档时，我先看了它默认暴露给模型的工具。<code>read</code> 读取文件，<code>bash</code> 执行命令，<code>edit</code> 修改现有内容，<code>write</code> 新建或重写文件。搜索、测试和 Git 都可以通过命令完成。要看这四件事够不够用，可以拿一次修复失败测试的任务来走一遍。</p>
+<h2 id="修一个失败测试-四个动作就能串起来">修一个失败测试，四个动作就能串起来</h2>
+<p>模型先用 <code>bash</code> 跑单测，从错误输出判断需要看哪些文件。用 <code>read</code> 读实现和测试，用 <code>edit</code> 改掉有问题的分支，再回到 <code>bash</code> 跑相同的测试。如果需要新建测试文件，用 <code>write</code> 保存。这个例子只有少数几次文件操作，测试命令本身就能给出下一步所需的信息。</p>
+<figure><img alt="Pi 用命令执行、读文件、编辑和再次执行完成一次修复" decoding="async" height="480" loading="lazy" src="/images/article-figures/pi-agent-four-tools.webp" width="1200"/><figcaption>教学示意。最后一次执行应回到最初失败的测试，验证改动有没有解决原问题。</figcaption></figure>
+<p>四个是默认配置。Pi 的文档还列了 <code>grep</code>、<code>find</code>、<code>ls</code> 等可选工具，也允许调整模型能看到的工具集合。每个项目所需的外围能力也不同。命令能找到测试，不代表它能生成代码审查证据，或者为多人协作记录同一份验收决定。</p>
+<h2 id="要扩展时-先看缺的是哪一种能力">要扩展时，先看缺的是哪一种能力</h2>
+<p>如果团队总要先检查工作目录，再允许执行高影响命令，可以用扩展接住工具调用。Pi 提供了在调用前拦截的扩展事件。这个入口也可以补一些重复出现的项目规则。文件访问和进程隔离仍依赖运行环境。给 Agent 一个工作目录，只确定了它从哪里开始，并不会自动限制外部访问。</p>
+<p>另一项值得看的功能是会话树。走到一半发现假设错了，可以回到前面一个节点，沿着新的方向继续对话，旧分支仍能查看。会话树记录对话的路径。工作目录里已经改过的代码，要用 Git 或自己的检查点处理。准备从旧节点尝试另一条路线时，我会先看工作区有没有未提交改动。</p>
+<p>如果任务是围绕一个仓库反复读代码、改文件、跑验证，默认工具足以用来试做一次完整修复。我会从这个任务开始，看结果里具体缺了什么。团队要把发布审批、隔离环境或交付证据放进去时，再决定哪些由扩展处理，哪些该保留在外部流程。</p>
+<h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/cli.md#tools">Pi coding agent 官方文档</a></li>
+<li><a href="https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/extensions.md">Pi 扩展文档</a></li>
+</ul></div>
+        <button type="button" class="quote-action" data-quote-action aria-controls="comments" hidden>划线评论</button>
+
+        <div class="post-tags" aria-label="文章标签"><a href="/tags/Pi/">Pi</a><a href="/tags/Coding-Agent/">Coding Agent</a><a href="/tags/Harness/">Harness</a></div>
+        <div class="legacy-tags" hidden></div>
+        <nav class="related" aria-label="相邻文章"><a href="/article/promptfoo-agent-regression.html"><small>较新文章</small>用 Promptfoo 把一个 Agent 失败案例变成回归测试</a><a href="/article/mcp-gateway-name-collision.html"><small>较早文章</small>两个 MCP Server 暴露了同名工具，网关怎么处理？</a></nav>
+        <section class="article-comments" id="comments" aria-labelledby="comments-title"
+          data-repo="zx490336534/zx490336534.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkzNDQwOTE0MTc="
+          data-category="文章评论" data-category-id="DIC_kwDOFIJrGc4DL60Q" data-article-path="/article/pi-agent-four-tools.html">
+
+          <h2 id="comments-title">评论与讨论</h2>
+          <p>使用 GitHub 账号留言，评论公开显示。</p>
+          <p data-comment-guide hidden>点评论时间可定位到原评论，在 GitHub 用评论旁的「…」修改或删除自己的留言。</p>
+          <div class="comment-quote" data-comment-quote hidden>
+            <blockquote data-comment-quote-text></blockquote>
+            <textarea data-comment-quote-copy aria-label="引用和原文定位链接" readonly hidden></textarea>
+            <p data-comment-quote-status role="status"></p>
+            <div class="comment-quote-actions">
+              <button type="button" data-copy-comment-quote>复制引用</button>
+              <a data-comment-quote-source>返回原文</a>
+              <button type="button" data-clear-comment-quote>取消引用</button>
+            </div>
+          </div>
+          <p role="status"></p>
+          <button type="button" class="comment-retry" data-retry-comments hidden>重新加载评论</button>
+          <div class="giscus"></div>
+        </section>
+      </div>
+    </div>
+  </article></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>
