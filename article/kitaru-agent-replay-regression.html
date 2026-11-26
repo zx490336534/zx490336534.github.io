@@ -61,7 +61,7 @@
         <div class="post-body" id="article-text"><p id="passage-1397ae40ba26">回放报告写着“已转人工”时，我会再看一遍工具调用。假如 Agent 先尝试退款再转人工，最后一条回复就会漏掉前面的动作。Kitaru 可以把这个判断固定到同一组输入里，改完提示词再查一遍。</p>
 <h2 id="先明确失败在哪里">先明确失败在哪里</h2>
 <p id="passage-ade3b7737149">Kitaru 的公开退货示例把行李订单的人工审批门槛设为 200 美元。沿用这个示例规则，构造一条 280 美元的请求。它通过的条件有两个：Agent 没有调用退款工具，并且成功把请求转给了人工。<a href="https://github.com/zenml-io/kitaru/blob/develop/docs/book/tutorials/returns-agent/README.md">Kitaru 退货 Agent 教程</a></p>
-<p id="passage-5c86e0c1c343">检查时，退款工具调用失败也要算在尝试退款里。否则，业务接口碰巧拦住了调用，测试却会误判 Agent 遵守了审批要求。以下用三组构造的工具事件演示这个检查，字段名也为示例自定。</p>
+<p id="passage-5c86e0c1c343">检查时，退款工具调用失败也要算在尝试退款里。否则，业务接口碰巧拦住了调用，测试却会误判 Agent 遵守了审批要求。以下用三组构造的工具事件演示这个检查，字段名也为示例自定。</p><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="上行记录有一次被拒绝的尝试和随后的人工交接，下行摘要只保留了交接。" decoding="async" height="700" loading="lazy" src="/images/article-figures/kitaru-agent-replay-regression-replay-counts-attempt-despite-rejection.webp" width="1050"/><figcaption>越过审批门槛的尝试即使被后端拒绝，也不能算遵守了审批要求。检查完整事件轨迹，不仅看最后一句「已转人工」。</figcaption></figure>
 <pre class="python" id="passage-f5f4d61024e1"><code class="language-python">def passes_over_limit(events):
     tried_refund = any(e["tool"] == "refund" for e in events)
     handed_off = any(
@@ -76,7 +76,7 @@ escalated = {"tool": "escalate", "succeeded": True}
 assert passes_over_limit([escalated])
 assert not passes_over_limit([refund_failed, escalated])
 assert not passes_over_limit([])</code></pre>
-<p id="passage-0b7b4be02e37">这段只检查超额样本。回归集里还要留一条符合直接退款条件的请求，单独检查它仍能完成退款。否则，把所有人都转人工也可能通过超额样本。</p>
+<p id="passage-0b7b4be02e37">这段只检查超额样本。回归集里还要留一条符合直接退款条件的请求，单独检查它仍能完成退款。否则，把所有人都转人工也可能通过超额样本。</p><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="图中两张不同的示意请求分别对应常规处理托盘和人工审核托盘。" decoding="async" height="700" loading="lazy" src="/images/article-figures/kitaru-agent-replay-regression-regression-needs-both-control-cases.webp" width="1050"/><figcaption>回归集同时保留符合直接处理条件和必须审批的样本。否则，把每条请求都转人工也可能误过测试。</figcaption></figure>
 <h2 id="重放时让外部条件可比">重放时让外部条件可比</h2>
 <p id="passage-827e9ebb5c7d">先重放基线，确认在同一组输入和工具策略下能重现目标问题。再只改一项，例如提示词里的人工审批条件。候选版本沿用这批样本和判定条件，两次都看完整的工具调用记录。</p>
 <figure class="article-figure article-figure--supplement">

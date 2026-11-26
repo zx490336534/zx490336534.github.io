@@ -66,7 +66,7 @@
 <img alt="同一请求的字段差异" decoding="async" height="630" loading="lazy" src="/images/blog-media/traffic-replay-diff-report-diagram.webp" width="1120"/>
 <figcaption aria-hidden="true" id="passage-2c6e3c12d511">构造的库存查询示例。两边都返回 HTTP 200，变化发生在 inStock 字段。</figcaption>
 </figure>
-<p id="passage-a8e78b578553">报告按请求记录批次、方法和路径，再存差异字段在响应里的位置和两个值。记住一个容易漏掉的情况：<strong>字段缺失和值为 <code>null</code> 要分别记。</strong> 下面的 Python 示例用一个标记区分这两种情况，再输出库存差异。</p>
+<p id="passage-a8e78b578553">报告按请求记录批次、方法和路径，再存差异字段在响应里的位置和两个值。记住一个容易漏掉的情况：<strong>字段缺失和值为 <code>null</code> 要分别记。</strong> 下面的 Python 示例用一个标记区分这两种情况，再输出库存差异。</p><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="左侧记录的目标位置是空位，右侧同一位置有一枚表示空值的圆环。" decoding="async" height="700" loading="lazy" src="/images/article-figures/traffic-replay-diff-report-distinguish-missing-property-and-null.webp" width="1050"/><figcaption>字段缺失与字段存在但值为 null 是两件事。差异报告分开记录，排查时才知道发生的是删字段还是改值。图中数据是构造的。</figcaption></figure>
 <pre class="python" id="passage-4b0413a00e20"><code class="language-python">import json
 
 def field(payload, name):
@@ -112,7 +112,7 @@ print(json.dumps({
 </table></div>
 <figure class="article-figure article-figure--supplement"><img alt="同一处差异分别出现在报告附件、单页差异和批次查询中" decoding="async" height="675" loading="lazy" src="/images/blog-media/traffic-replay-diff-report-illustration.webp" width="1200"/><figcaption id="passage-78f7998bdbf1">AI 生成示意。从左到右分别是失败用例附件、单页差异报告和按批次筛选的查询页面。</figcaption></figure>
 <p id="passage-1a416dc20a0b">如果手上已经用 pytest 跑回放，我会先在失败用例里附上标明基线和待测的两份响应。报告摘要直接写 <code>inStock</code> 的变化，点开附件再查看上下文。<a href="https://allurereport.org/docs/pytest-reference/#attachments">Allure Pytest 附件文档</a></p>
-<p id="passage-5b7d893cfa13">要跨用例浏览整批结果，可以让脚本输出一行一个 JSON 对象的日志，Flask 读取字段后交给 Jinja 模板展示。查历史批次的需求稳定下来，再把差异存到 SQLite，页面按批次、接口和字段筛选。同一次请求有三处字段变化时，按请求统计是一条，按字段统计是三条，汇总页要写清用哪个口径。<a href="https://flask.palletsprojects.com/en/stable/templating/">Flask 模板文档</a></p>
+<p id="passage-5b7d893cfa13">要跨用例浏览整批结果，可以让脚本输出一行一个 JSON 对象的日志，Flask 读取字段后交给 Jinja 模板展示。查历史批次的需求稳定下来，再把差异存到 SQLite，页面按批次、接口和字段筛选。同一次请求有三处字段变化时，按请求统计是一条，按字段统计是三条，汇总页要写清用哪个口径。<a href="https://flask.palletsprojects.com/en/stable/templating/">Flask 模板文档</a></p><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="一份请求档案夹展开为三张分别记录字段变化的卡片。" decoding="async" height="700" loading="lazy" src="/images/article-figures/traffic-replay-diff-report-count-requests-separately-from-fields.webp" width="1050"/><figcaption>一次请求里变化了三个字段，按请求数是一条，按字段变化数是三条。汇总时先写明采用哪种口径。</figcaption></figure>
 <p id="passage-037ca854c859">第一版跑通一条差异就可以停。先请开发只看报告，试着找出变化字段和对应的请求。哪个信息还得回日志里找，就先补哪个。</p></div><section class="article-video" aria-labelledby="article-video-title">
           <header class="article-video-header">
             <h2 id="article-video-title">本文视频讲解</h2>
