@@ -48,7 +48,7 @@
         <h1 class="post-title" data-topic-title="配置定时、上游任务与 GitLab 触发">Jenkins 流水线 · 第 07 篇｜配置定时、上游任务与 GitLab 触发</h1>
         <div class="entry-meta"><span class="post-author"><a href="/about/" rel="author">听白</a></span><time itemprop="datePublished" datetime="2019-07-13T15:53:00+08:00">2019-07-13</time>
           <span class="post-category" hidden><a href="/categories/Jenkins/">Jenkins</a></span>
-          <span class="read-time">约 3 分钟</span>
+          <span class="read-time">约 4 分钟</span>
           <span class="public-counter" data-public-count="reads" data-article-path="/article/397c359f.html" hidden><span>累计阅读</span> <strong></strong></span>
           <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/jenkins-pipeline/#chapter-7">Jenkins 流水线 · 第 7/8 篇</a></div>
         <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/engineering/">工程工具</a> <span aria-hidden="true">/</span> <a href="/categories/engineering/ci/">持续集成</a></nav>
@@ -63,7 +63,7 @@
 <li id="passage-38ccbd578cb9">时间触发</li>
 <li id="passage-d5b5f8543f69">事件触发</li>
 </ul>
-<h2 id="时间触发"><a class="headerlink" href="#时间触发" title="时间触发"></a>时间触发</h2><p id="passage-e05b1461b6c5">定义一个时间，时间到了就触发pipeline。</p>
+<h2 id="时间触发"><a class="headerlink" href="#时间触发" title="时间触发"></a>时间触发</h2><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="时钟事件指向待执行任务，与旁边的手动操作标记分开" decoding="async" height="591" loading="lazy" src="/images/article-figures/397c359f-time-trigger-vs-manual.webp" width="1050"/><figcaption>定时触发由时间条件决定，不需要有人在那个时刻点击运行。</figcaption></figure><p id="passage-e05b1461b6c5">定义一个时间，时间到了就触发pipeline。</p>
 <p id="passage-6cb0f7c921cf">在Jenkins pipeline中使用<code>trigger</code>指令来定义时间触发</p>
 <span id="more"></span>
 <h3 id="定时执行：cron"><a class="headerlink" href="#定时执行：cron" title="定时执行：cron"></a>定时执行：cron</h3><blockquote id="passage-dda444f427d4">
@@ -104,7 +104,7 @@
 <li id="passage-c432401c8af0">其他job触发</li>
 <li id="passage-4e61df0d3efd">HTTP API Webhook触发</li>
 </ul>
-<h3 id="由上游任务出发：upstream"><a class="headerlink" href="#由上游任务出发：upstream" title="由上游任务触发：upstream"></a>由上游任务触发：upstream</h3><p id="passage-8b2522a066c2">当B任务的执行依赖A任务的执行结果，A就是B的上游任务。</p>
+<h3 id="由上游任务出发：upstream"><a class="headerlink" href="#由上游任务出发：upstream" title="由上游任务触发：upstream"></a>由上游任务触发：upstream</h3><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="上游任务出现完成标记，向还在等待的后续任务递交一枚事件卡" decoding="async" height="591" loading="lazy" src="/images/article-figures/397c359f-upstream-completion-event.webp" width="1050"/><figcaption>上游触发关注的是另一个任务的结果，而不是几点钟。只在预设的条件满足时，才开始后续任务。</figcaption></figure><p id="passage-8b2522a066c2">当B任务的执行依赖A任务的执行结果，A就是B的上游任务。</p>
 <figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre id="passage-57829746d9a2"><span class="line">triggers {</span><br/><span class="line">   upstream(<span class="attr">upstreamProjects:</span> <span class="string">'job1,job2'</span>,<span class="attr">threshold:</span>hudson.model.Result.SUCCESS)</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
 <ul>
 <li id="passage-0fb55e4b1442">job1和job2是任务名</li>

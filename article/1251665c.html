@@ -61,7 +61,7 @@
         <div class="post-body" id="article-text"><span id="Jenkins-一"></span><blockquote id="passage-b1090d333dd9">
 <p id="passage-6c18eaf33083">从某种抽象层次上讲，部署流水线(Deployment pipeline)是指从软件版本控制库到用户手中这一过程的自动化表现形式。—《持续交付-发布可靠软件的系统方法》</p>
 </blockquote>
-<h2 id="pipeline"><a class="headerlink" href="#pipeline" title="pipeline"></a>pipeline</h2><p id="passage-55953fe3de90">Jenkins1.x只能通过界面手动操作来「描述」部署流水线。</p>
+<h2 id="pipeline"><a class="headerlink" href="#pipeline" title="pipeline"></a>pipeline</h2><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="一个虚构构建产物顺序经过三个不同的工位" decoding="async" height="591" loading="lazy" src="/images/article-figures/1251665c-pipeline-split-into-stages.webp" width="1050"/><figcaption>流水线把构建、检查等工作拆成可区分的阶段，便于按顺序处理并定位出问题的环节。</figcaption></figure><p id="passage-55953fe3de90">Jenkins1.x只能通过界面手动操作来「描述」部署流水线。</p>
 <p id="passage-6f79cf1562c5">Jenkins2.x支持pipeline as code，可以通过代码来「描述」部署流水线。</p>
 <p id="passage-f69be4e9431d">使用「代码」而非「UI」的意义：</p>
 <ul>
@@ -100,7 +100,7 @@
 <h3 id="在Pipeline节点下输入以下内容"><a class="headerlink" href="#在Pipeline节点下输入以下内容" title="在Pipeline节点下输入以下内容"></a>在Pipeline节点下输入以下内容</h3><figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/></pre></td><td class="code"><pre id="passage-3f348e242df0"><span class="line">pipeline{</span><br/><span class="line">    agent any</span><br/><span class="line">    stages{</span><br/><span class="line">        stage(<span class="string">'Build'</span>){</span><br/><span class="line">            steps{</span><br/><span class="line">                echo <span class="string">'Hello World'</span></span><br/><span class="line">            }</span><br/><span class="line">        }</span><br/><span class="line">    }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="流水线" decoding="async" height="744" loading="lazy" src="/images/blog-media/054c4ec2aa120035f67d.webp" width="1080"/></p>
 <h3 id="执行"><a class="headerlink" href="#执行" title="执行"></a>执行</h3><p><img alt="构建" decoding="async" height="744" loading="lazy" src="/images/blog-media/4a0c9b8c862692f3734c.webp" width="1080"/></p>
-<h3 id="结果查看"><a class="headerlink" href="#结果查看" title="结果查看"></a>结果查看</h3><p><img alt="结果查看" decoding="async" height="744" loading="lazy" src="/images/blog-media/934752316807ba9ab8b7.webp" width="1080"/></p></div><section class="article-video" aria-labelledby="article-video-title">
+<h3 id="结果查看"><a class="headerlink" href="#结果查看" title="结果查看"></a>结果查看</h3><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="三个流水线阶段中，前段已完成，中间显示异常，后段还没有结果" decoding="async" height="591" loading="lazy" src="/images/article-figures/1251665c-which-pipeline-stage-failed.webp" width="1050"/><figcaption>查看一次构建，不只看最终状态，还要分清哪个阶段先失败、哪些后续阶段没有运行。</figcaption></figure><p><img alt="结果查看" decoding="async" height="744" loading="lazy" src="/images/blog-media/934752316807ba9ab8b7.webp" width="1080"/></p></div><section class="article-video" aria-labelledby="article-video-title">
           <header class="article-video-header">
             <h2 id="article-video-title">本文视频讲解</h2>
           </header>
