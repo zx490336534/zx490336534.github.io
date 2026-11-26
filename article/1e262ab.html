@@ -48,7 +48,7 @@
         <h1 class="post-title" data-topic-title="DRF 序列化器：字段参数与自定义校验">Python 测试开发进阶 · 第 26 篇｜DRF 序列化器：字段参数与自定义校验</h1>
         <div class="entry-meta"><span class="post-author"><a href="/about/" rel="author">听白</a></span><time itemprop="datePublished" datetime="2019-10-13T20:15:05+08:00">2019-10-13</time>
           <span class="post-category" hidden><a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">Python测试开发进阶</a></span>
-          <span class="read-time">约 7 分钟</span>
+          <span class="read-time">约 8 分钟</span>
           <span class="public-counter" data-public-count="reads" data-article-path="/article/1e262ab.html" hidden><span>累计阅读</span> <strong></strong></span>
           <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/python-test-development/#chapter-26">Python 测试开发进阶 · 第 26/48 篇</a></div>
         <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/development/">开发技术</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/">后端开发</a> <span aria-hidden="true">/</span> <a href="/categories/development/backend/python-web/">Python Web</a></nav>
@@ -108,7 +108,7 @@
 <p id="passage-02b7e803ecae">修改<code>projects.json</code></p>
 <figure class="highlight json"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/></pre></td><td class="code"><pre id="passage-d399cdf34224"><span class="line"># projects.json</span><br/><span class="line">{</span><br/><span class="line">  <span class="attr">"name"</span>: <span class="string">"测试游记项目1"</span>,</span><br/><span class="line">  <span class="attr">"leader"</span>: <span class="string">"zhongxin"</span>,</span><br/><span class="line">  <span class="attr">"tester"</span>: <span class="string">"zhongxin"</span>,</span><br/><span class="line">  <span class="attr">"programer"</span>: <span class="string">"zhong3"</span>,</span><br/><span class="line">  <span class="attr">"publish_app"</span>: <span class="string">"公众号"</span>,</span><br/><span class="line">  <span class="attr">"desc"</span>: <span class="string">"无"</span></span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="测试2" decoding="async" height="754" loading="lazy" src="/images/blog-media/47f73588fafebdcea198.webp" width="1080"/></p>
-<h3 id="多字段校验"><a class="headerlink" href="#多字段校验" title="多字段校验"></a>多字段校验</h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre id="passage-7ee93fbe5fcf"><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">validate</span>(<span class="params">self, attrs</span>):</span></span><br/><span class="line">    <span class="keyword">pass</span></span><br/></pre></td></tr></tbody></table></figure>
+<h3 id="多字段校验"><a class="headerlink" href="#多字段校验" title="多字段校验"></a>多字段校验</h3><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="上下两组各有两块拼片，上面能合拢，下面两块都完整，却不能彼此拼合。" decoding="async" height="734" loading="lazy" src="/images/article-figures/1e262ab-serializer-joint-validation-between-fields.webp" width="1100"/><figcaption>单个字段都合法，不代表组合也合法。单字段校验先看每一项；涉及两项以上关系的规则，再放到序列化器的 validate() 里。</figcaption></figure><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre id="passage-7ee93fbe5fcf"><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">validate</span>(<span class="params">self, attrs</span>):</span></span><br/><span class="line">    <span class="keyword">pass</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="多字段" decoding="async" height="646" loading="lazy" src="/images/blog-media/3a5bf10bd3ef6bf3f6fb.webp" width="1080"/></p>
 <p id="passage-ed9892a85293">这里<code>name</code>为<code>None</code>是因为上面单字段校验没有返回value</p>
 <p id="passage-d33e91a6b3af">修改后再次测试</p>
@@ -151,7 +151,7 @@
 </li>
 <li id="passage-45ecf637eb87"><p id="passage-1a1507ca2b96"><code>exclude</code>:指定排除哪些</p>
 </li>
-<li id="passage-7ab0e1915e7d"><p id="passage-0968b375c9e2"><code>read_only_fields</code>:指定<code>read_only=True</code>的字段</p>
+<li id="passage-7ab0e1915e7d"><p id="passage-0968b375c9e2"><code>read_only_fields</code>:指定<code>read_only=True</code>的字段</p><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="左侧输入卡只有蓝色长块，右侧输出卡还多了一枚金色标记。" decoding="async" height="734" loading="lazy" src="/images/article-figures/1e262ab-serializer-read-only-output-field.webp" width="1100"/><figcaption>只读字段可以出现在序列化结果里，但不会作为客户端输入用于赋值。比如系统生成的编号可显示在输出里，不必让输入再填写。</figcaption></figure>
 </li>
 </ul>
 <p id="passage-30151189d8ab">如果需要修改<code>name</code>的校验，自定义一个<code>name</code>字段</p>

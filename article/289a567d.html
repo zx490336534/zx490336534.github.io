@@ -48,7 +48,7 @@
         <h1 class="post-title" data-topic-title="Git 分支如何指向提交，怎样创建和切换">Git 与 GitLab 协作 · 第 05 篇｜Git 分支如何指向提交，怎样创建和切换</h1>
         <div class="entry-meta"><span class="post-author"><a href="/about/" rel="author">听白</a></span><time itemprop="datePublished" datetime="2020-06-17T08:43:00+08:00">2020-06-17</time>
           <span class="post-category" hidden><a href="/categories/Git/">Git</a></span>
-          <span class="read-time">约 2 分钟</span>
+          <span class="read-time">约 3 分钟</span>
           <span class="public-counter" data-public-count="reads" data-article-path="/article/289a567d.html" hidden><span>累计阅读</span> <strong></strong></span>
           <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/git-collaboration/#chapter-5">Git 与 GitLab 协作 · 第 5/12 篇</a></div>
         <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/engineering/">工程工具</a> <span aria-hidden="true">/</span> <a href="/categories/engineering/git/">Git 与代码协作</a></nav>
@@ -105,11 +105,11 @@
 <p><img alt="首次提交对象及其树结构" decoding="async" height="622" loading="lazy" src="/images/blog-media/1c8bb9707067e3cbf3d0.webp" width="1080"/></p>
 <p id="passage-b141dbb9bc04">在修改之后，指针就会指向新的提交</p>
 <p><img alt="提交后指向" decoding="async" height="406" loading="lazy" src="/images/blog-media/b86eb10435b78f14b529.webp" width="1080"/></p>
-<h3 id="创建分支"><a class="headerlink" href="#创建分支" title="创建分支"></a>创建分支</h3><p id="passage-47fb865e4a6d">我们要创建一个分支，就相当于要创建一个可以<code>移动的新指针</code>。</p>
+<h3 id="创建分支"><a class="headerlink" href="#创建分支" title="创建分支"></a>创建分支</h3><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="两个不同颜色的分支旗都指向同一提交" decoding="async" height="591" loading="lazy" src="/images/article-figures/289a567d-two-branch-names-same-tip.webp" width="1050"/><figcaption>新建分支时新增的是一个引用。若从当前提交创建，两个分支可以暂时指向同一个提交，不会复制历史。</figcaption></figure><p id="passage-47fb865e4a6d">我们要创建一个分支，就相当于要创建一个可以<code>移动的新指针</code>。</p>
 <p id="passage-544f7ebc7bc4">使用的是<code>git branch &lt;name&gt;</code></p>
 <p><img alt="创建分支" decoding="async" height="433" loading="lazy" src="/images/blog-media/59bcdc1233152da802c6.webp" width="1080"/></p>
 <p id="passage-22584e68128f">虽然我们创建了一个分支，但其实我们还是在master上，我们当前的位置其实是由<code>HEAD</code>这个特殊的指针决定的。</p>
-<h3 id="切换分支"><a class="headerlink" href="#切换分支" title="切换分支"></a>切换分支</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-25d63cfd858f"><span class="line"><span class="meta">$</span><span class="bash"> git checkout testing</span></span><br/></pre></td></tr></tbody></table></figure>
+<h3 id="切换分支"><a class="headerlink" href="#切换分支" title="切换分支"></a>切换分支</h3><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="两条分支的末端分开，仍共享同一个较早的提交" decoding="async" height="591" loading="lazy" src="/images/article-figures/289a567d-branch-tips-diverge.webp" width="1050"/><figcaption>在当前分支新增提交时，该分支指针向前移动；另一条分支不会跟着移动。两条分支仍可以共享早期历史。</figcaption></figure><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-25d63cfd858f"><span class="line"><span class="meta">$</span><span class="bash"> git checkout testing</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="切换分支" decoding="async" height="455" loading="lazy" src="/images/blog-media/43f0585b102a37a9addc.webp" width="1080"/></p>
 <p id="passage-0c19ac884428">我们可以在这个分支上进行后续的提交</p>
 <p><img alt="分支上新增一个提交" decoding="async" height="863" loading="lazy" src="/images/blog-media/f9f3bd9b2756e4ff8198.webp" width="1080"/></p>
