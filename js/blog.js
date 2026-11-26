@@ -242,6 +242,19 @@ function codeText(block) {
 }
 
 const codePanels = new Set();
+const codeWrapControls = new WeakMap();
+function updateCodeWrap(scroll) {
+  const { panel, button } = codeWrapControls.get(scroll);
+  const wrapped = panel.classList.contains('is-wrapped');
+  const overflows = scroll.clientWidth > 0 && scroll.scrollWidth > scroll.clientWidth + 1;
+  button.hidden = !wrapped && !overflows;
+}
+const codeResize = typeof ResizeObserver === 'function' ? new ResizeObserver(entries => {
+  for (const { target } of entries) updateCodeWrap(target);
+}) : null;
+function refreshCodeWrap() {
+  for (const scroll of document.querySelectorAll('.code-scroll')) updateCodeWrap(scroll);
+}
 for (const block of document.querySelectorAll('.post-body pre')) {
   const highlight = block.closest('figure.highlight');
   const target = highlight ?? block;
@@ -256,6 +269,15 @@ for (const block of document.querySelectorAll('.post-body pre')) {
   language.className = 'code-language';
   language.textContent = codeLanguage(block, highlight);
   tools.append(language);
+  const actions = document.createElement('div');
+  actions.className = 'code-actions';
+  const wrap = document.createElement('button');
+  wrap.type = 'button';
+  wrap.textContent = '自动换行';
+  wrap.setAttribute('aria-pressed', 'false');
+  wrap.hidden = true;
+  actions.append(wrap);
+  tools.append(actions);
 
   if (navigator.clipboard?.writeText) {
     const copy = document.createElement('button');
@@ -280,7 +302,7 @@ for (const block of document.querySelectorAll('.post-body pre')) {
         feedback.textContent = '';
       }, 2000);
     });
-    tools.append(copy, feedback);
+    actions.append(copy, feedback);
   }
 
   const scroll = document.createElement('div');
@@ -292,4 +314,22 @@ for (const block of document.querySelectorAll('.post-body pre')) {
   target.before(panel);
   scroll.append(target);
   panel.append(tools, scroll);
+  codeWrapControls.set(scroll, { panel, button: wrap });
+  wrap.addEventListener('click', () => {
+    const wrapped = panel.classList.toggle('is-wrapped');
+    wrap.setAttribute('aria-pressed', String(wrapped));
+    scroll.scrollLeft = 0;
+    // Keep focus when restoring horizontal layout after a viewport resize.
+    if (wrapped || scroll.scrollWidth > scroll.clientWidth + 1) updateCodeWrap(scroll);
+    else wrap.addEventListener('blur', () => updateCodeWrap(scroll), { once: true });
+  });
+  codeResize?.observe(scroll);
+}
+if (codePanels.size) {
+  window.addEventListener('load', refreshCodeWrap, { once: true });
+  document.fonts?.ready.then(refreshCodeWrap);
+  if (!codeResize) {
+    window.addEventListener('resize', refreshCodeWrap);
+    document.addEventListener('toggle', refreshCodeWrap, true);
+  }
 }

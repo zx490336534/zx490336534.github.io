@@ -302,11 +302,11 @@ time { font-variant-numeric: tabular-nums; white-space: nowrap; }
 .post-body :where(code, pre) { font-family: var(--mono); }
 .post-body pre, .post-body .highlight, .table-scroll { max-inline-size: 100%; overflow: auto; }
 .post-body :where(pre, .highlight) { background: var(--panel); border: 1px solid var(--line); border-radius: .52rem; }
-.post-body pre { padding: .85rem 1rem; font-size: .87rem; line-height: 1.62; white-space: pre; overflow-wrap: normal; tab-size: 4; font-variant-ligatures: none; }
+.post-body pre { padding: .85rem clamp(.65rem, 3vw, 1rem); font-size: .87rem; line-height: 1.62; white-space: pre; overflow-wrap: normal; tab-size: 4; font-variant-ligatures: none; }
 .post-body figure.highlight { margin-inline: 0; }
 .post-body .highlight pre { margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; overflow: visible; }
 .post-body .highlight table { min-inline-size: 100%; border-collapse: collapse; }
-.post-body .highlight td { padding: .85rem 1rem; vertical-align: top; }
+.post-body .highlight td { padding: .85rem clamp(.65rem, 3vw, 1rem); vertical-align: top; }
 .post-body .highlight .gutter { padding-inline: .7rem; color: var(--muted); inline-size: 1%; background: var(--surface); user-select: none; text-align: end; }
 .post-body .highlight .code { white-space: pre; }
 .post-body pre span.linenum { display: inline-block; min-inline-size: 2.05em; text-align: end; margin-inline-end: .7rem; color: var(--muted); user-select: none; }
@@ -315,7 +315,7 @@ time { font-variant-numeric: tabular-nums; white-space: nowrap; }
 .post-body pre ol.linenums li::marker { color: var(--muted); }
 .post-body code:not(pre code) { padding: .07em .28em; border-radius: .24rem; background: var(--accent-wash); color: var(--ink); font-size: .9em; }
 .code-panel { max-inline-size: 100%; margin-block: 0 1.2rem; border: 1px solid var(--line); border-radius: .6rem; overflow: clip; background: var(--panel); }
-.code-scroll { max-inline-size: 100%; overflow: auto; }
+.code-scroll { max-inline-size: 100%; overflow: auto; overscroll-behavior-inline: contain; }
 .code-scroll:focus-visible { outline-offset: -.16rem; }
 .post-body .code-scroll > :is(pre, figure.highlight) { margin: 0; border: 0; border-radius: 0; background: none; overflow: visible; }
 .code-tools {
@@ -324,8 +324,16 @@ time { font-variant-numeric: tabular-nums; white-space: nowrap; }
   border-block-end: 1px solid var(--line); background: var(--accent-wash); color: var(--accent); user-select: none;
 }
 .code-language { font-size: .73rem; font-weight: 750; letter-spacing: .035em; overflow-wrap: anywhere; }
-.code-tools button { flex: none; min-inline-size: 4.65rem; min-block-size: 1.65rem; color: var(--accent); background: var(--panel); border: 1px solid var(--line); border-radius: .28rem; padding: .12rem .38rem; font-size: .75rem; }
+.code-actions { display: flex; flex: 1 1 auto; justify-content: flex-end; flex-wrap: wrap; gap: .3rem; }
+.code-tools button { flex: none; min-inline-size: 4.1rem; min-block-size: 1.9rem; color: var(--accent); background: var(--panel); border: 1px solid var(--line); border-radius: .28rem; padding: .12rem .38rem; font-size: .75rem; }
 .code-tools button:hover { border-color: var(--accent); }
+.code-tools button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: var(--panel); }
+/* Opt-in visual wrapping, without touching code text or copied lines. Keep the
+   legacy gutter visible only while its rows match the original line heights. */
+.post-body .code-panel.is-wrapped :is(pre, .highlight .code) { white-space: pre-wrap; overflow-wrap: anywhere; }
+.post-body .code-panel.is-wrapped pre :where(code, .line, ol.linenums, ol.linenums > li) { white-space: inherit; overflow-wrap: inherit; }
+.post-body .code-panel.is-wrapped .highlight table { inline-size: 100%; table-layout: fixed; }
+.post-body .code-panel.is-wrapped .highlight .gutter { display: none; }
 .post-body pre :is(.keyword, .hljs-keyword, .built_in, .hljs-built_in, .kwd, .hljs-name, .tag > .name) { color: var(--accent); font-weight: 700; }
 .post-body pre :is(.string, .regexp, .str, .hljs-string, .hljs-regexp, .attr, .hljs-attr) { color: var(--code-string); }
 .post-body pre :is(.number, .literal, .hljs-number, .hljs-literal, .atv, .lit) { color: var(--code-number); }

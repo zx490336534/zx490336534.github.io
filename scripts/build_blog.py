@@ -268,8 +268,8 @@ def shell(title, path, content, description=DESCRIPTION, extra_head="", *, canon
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
   <link rel="icon" href="/images/avatar.jpeg">
   <script src="/js/appearance.js"></script>
-  <link rel="stylesheet" href="/css/blog.css">
-  <script src="/js/blog.js" defer></script>
+  <link rel="stylesheet" href="/css/blog.css?v=code-20261126">
+  <script src="/js/blog.js?v=code-20261126" defer></script>
   {analytics_script()}{counts}
   {extra_head}
 </head>
