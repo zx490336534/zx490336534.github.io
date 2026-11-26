@@ -109,7 +109,7 @@
 <li id="passage-f4f20e721966">栈区：存放程序中的变量</li>
 <li id="passage-1e6df70da863">堆区：存放程序中的对象</li>
 </ul>
-<h3 id="JVM-java虚拟机"><a class="headerlink" href="#JVM-java虚拟机" title="JVM java虚拟机"></a>JVM java虚拟机</h3><p id="passage-c2194619aa71">程序计数器、java虚拟机栈、本地方法栈、方法区、堆内存</p>
+<h3 id="JVM-java虚拟机"><a class="headerlink" href="#JVM-java虚拟机" title="JVM java虚拟机"></a>JVM java虚拟机</h3><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="左侧两摞各自独立的栈帧用青色线指向右侧同一个大托盘中的同一块对象。" decoding="async" height="591" loading="lazy" src="/images/article-figures/f32ce47c-jvm-thread-local-stacks-shared-heap.webp" width="1050"/><figcaption>每个 Java 线程有自己的虚拟机栈，堆由各线程共享。两根线表示两个线程的栈帧里都可以持有对同一个堆对象的引用。</figcaption></figure><p id="passage-c2194619aa71">程序计数器、java虚拟机栈、本地方法栈、方法区、堆内存</p>
 <ul>
 <li id="passage-b91047e9797b">程序计数器：记录持续执行字节码的行号指示器</li>
 <li id="passage-8523a60db756">java虚拟机栈：java方法执行时的内存模型<ul>
@@ -130,7 +130,7 @@
 </ul>
 <h3 id="内存空间的释放"><a class="headerlink" href="#内存空间的释放" title="内存空间的释放"></a>内存空间的释放</h3><p id="passage-252706423084">GC资源回收</p>
 <p id="passage-b79f47a9b374">需要有GC，但是频率要合理，不能过高</p>
-<h4 id="怎么判断是可回收"><a class="headerlink" href="#怎么判断是可回收" title="怎么判断是可回收"></a>怎么判断是可回收</h4><ul>
+<h4 id="怎么判断是可回收"><a class="headerlink" href="#怎么判断是可回收" title="怎么判断是可回收"></a>怎么判断是可回收</h4><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="左侧根节点可以沿连线到达青色对象；右下方两个金色对象彼此相连，与左侧没有连线。" decoding="async" height="591" loading="lazy" src="/images/article-figures/f32ce47c-jvm-gc-unreachable-connected-group.webp" width="1050"/><figcaption>判断可达性要从 GC Roots 出发。右下的对象即使互相引用，也没有路径能从根到达，因此仍可被回收；不代表会在同一时刻回收。</figcaption></figure><ul>
 <li id="passage-d1f56110ba6d">是否可达</li>
 <li id="passage-485972b195fe">是否存活</li>
 </ul>
