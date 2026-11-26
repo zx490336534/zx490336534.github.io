@@ -65,7 +65,7 @@
 <p id="passage-2e50f84d0699">nginx里面记录不同机器的ip，配置不同的分配策略</p>
 <p id="passage-2ed80a666381">nginx：web服务器，并不一定是一般理解的前台服务</p>
 <p id="passage-b437c8263c43">前后分离：front+server</p>
-<h2 id="负载均衡"><a class="headerlink" href="#负载均衡" title="负载均衡"></a>负载均衡</h2><ul>
+<h2 id="负载均衡"><a class="headerlink" href="#负载均衡" title="负载均衡"></a>负载均衡</h2><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="同一虚构读请求经过多个阶段，每段都有独立的时间标记" decoding="async" height="591" loading="lazy" src="/images/article-figures/88f586e9-read-request-latency-checkpoints.webp" width="1050"/><figcaption>请求变慢时，先区分哪一段变慢，不要只看端到端的响应时间就归因给某一层。</figcaption></figure><ul>
 <li id="passage-2c6fedfa7605">最典型的软件是nginx</li>
 <li id="passage-73cef128cf9c">也可以是硬件F5</li>
 <li id="passage-cf6c53247b4e">阿里云的SLB，也是一个软件负载均衡</li>
@@ -310,7 +310,7 @@
 <figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre id="passage-7e6121c37a75"><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">'%slow_query_log%'</span> 查看慢查询的开关与日志路径 默认<span class="number">10</span>秒为慢查询</span><br/><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">'long_query_time'</span> 慢查询的阈值默认<span class="number">10</span>秒</span><br/></pre></td></tr></tbody></table></figure>
 <figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre id="passage-e40103349293"><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">'max_connections%'</span> 查看系统配置的最大连接数</span><br/><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">'Max_used_connections'</span> 查看当前用户已经建立的连接数</span><br/></pre></td></tr></tbody></table></figure>
 <p id="passage-ffdb36293939">当出现<code>ERROR 1040:Too many connections</code>可以通过修改连接数来解决</p>
-<h3 id="定位慢查询日志"><a class="headerlink" href="#定位慢查询日志" title="定位慢查询日志"></a>定位慢查询日志</h3><ol>
+<h3 id="定位慢查询日志"><a class="headerlink" href="#定位慢查询日志" title="定位慢查询日志"></a>定位慢查询日志</h3><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="两条虚构查询记录中，放大镜对准耗时更长的一条" decoding="async" height="591" loading="lazy" src="/images/article-figures/88f586e9-slow-query-evidence.webp" width="1050"/><figcaption>慢查询记录能帮你找到需要调查的读请求。定位到一条慢记录是线索，还不能单凭耗时判定根因。</figcaption></figure><ol>
 <li id="passage-4ef1ea58e8e1">开启慢查询的开关</li>
 </ol>
 <blockquote id="passage-6885eb066ce6">

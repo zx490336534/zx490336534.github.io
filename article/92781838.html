@@ -105,7 +105,7 @@
 <p><img alt="lscpu" decoding="async" height="721" loading="lazy" src="/images/blog-media/da8dfd057b7d118a0e22.webp" width="1080"/></p>
 <p><img alt="字段含义" decoding="async" height="297" loading="lazy" src="/images/blog-media/47d00e5842c33302f22f.webp" width="628"/></p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre id="passage-11a24325428a"><span class="line">cat /proc/cpuinfo 内存中记录的cpu信息</span><br/><span class="line">cat /proc/cpuinfo | grep "physical id"|sort |uniq |wc -l 查看物理cpu数量</span><br/><span class="line">cat /proc/cpuinfo | grep "cpu cores"|uniq 查看CPU的core数「核数」</span><br/><span class="line">cat /proc/cpuinfo | grep "processor"|wc -l 查看逻辑CPU数量</span><br/></pre></td></tr></tbody></table></figure>
-<h2 id="监控cpu"><a class="headerlink" href="#监控cpu" title="监控cpu"></a>监控cpu</h2><h3 id="load-average值-和CPU使用率之间的关系"><a class="headerlink" href="#load-average值-和CPU使用率之间的关系" title="load average值 和CPU使用率之间的关系"></a>load average值 和CPU使用率之间的关系</h3><p id="passage-a198f95c11cf">现在的linux服务器中 load average 不等于 CPU使用率</p>
+<h2 id="监控cpu"><a class="headerlink" href="#监控cpu" title="监控cpu"></a>监控cpu</h2><h3 id="load-average值-和CPU使用率之间的关系"><a class="headerlink" href="#load-average值-和CPU使用率之间的关系" title="load average值 和CPU使用率之间的关系"></a>load average值 和CPU使用率之间的关系</h3><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="左侧托盘表示等待工作，右侧单独表示处理器忙碌程度" decoding="async" height="591" loading="lazy" src="/images/article-figures/92781838-queue-and-busy-time.webp" width="1050"/><figcaption>在 Linux 上，负载平均值和 CPU 使用率不是同一个量；前者还可能受处于不可中断等待的任务影响。</figcaption></figure><p id="passage-a198f95c11cf">现在的linux服务器中 load average 不等于 CPU使用率</p>
 <p id="passage-c7f8c9ddeed3">Linux 的 load average 统计可运行任务和处于不可中断睡眠状态的任务数，等待磁盘 I/O 是后一种情况的常见例子</p>
 <p id="passage-84a53e64db77">它分别按 1、5、15 分钟给出平均负载，不是 CPU、磁盘、网络利用率相加</p>
 <p id="passage-04d82f86a044">CPU的使用：用户进程使用时间us、系统内核运行时间sy、空闲时间idle、管理被抢占时间st</p>
@@ -124,7 +124,7 @@
 <li id="passage-b7188d6e046d">wa：等待资源 I/O问题（磁盘、网络）</li>
 <li id="passage-027e006ceb18">st：抢占资源（宿主机抢占资源）</li>
 </ul>
-<h3 id="CPU上下文"><a class="headerlink" href="#CPU上下文" title="CPU上下文"></a>CPU上下文</h3><p id="passage-b6897f76f88f">上下文：CPU寄存器和程序计数器</p>
+<h3 id="CPU上下文"><a class="headerlink" href="#CPU上下文" title="CPU上下文"></a>CPU上下文</h3><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="处理器工作位从蓝色任务切换到橙色任务，蓝色任务的资料留在旁边" decoding="async" height="591" loading="lazy" src="/images/article-figures/92781838-context-switch-save-restore.webp" width="1050"/><figcaption>切换任务时会保存当前任务的执行状态，再恢复另一个任务的状态。</figcaption></figure><p id="passage-b6897f76f88f">上下文：CPU寄存器和程序计数器</p>
 <p id="passage-188cd18f69d1">程序计数器：存储CPU正在执行的指令位置和下一条指令的位置</p>
 <p id="passage-3c81193b0a4b">上下文切换：先把当前的任务CPU上下文（CPU寄存器和程序计数器）保存起来，然后加载新任务的上下文到CPU的寄存器和程序计数器中，CPU再跳转到计数器上执行新任务</p>
 <p id="passage-75faf5f05dae">上下文切换可以分为：</p>
