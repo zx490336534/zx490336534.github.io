@@ -48,7 +48,7 @@
         <h1 class="post-title" data-topic-title="用 JMeter JDBC 读写数据库并批量构造测试数据">性能测试入门与实践 · 第 12 篇｜用 JMeter JDBC 读写数据库并批量构造测试数据</h1>
         <div class="entry-meta"><span class="post-author"><a href="/about/" rel="author">听白</a></span><time itemprop="datePublished" datetime="2021-04-23T19:48:00+08:00">2021-04-23</time>
           <span class="post-category" hidden><a href="/categories/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/">性能测试</a></span>
-          <span class="read-time">约 1 分钟</span>
+          <span class="read-time">约 2 分钟</span>
           <span class="public-counter" data-public-count="reads" data-article-path="/article/b1e20de1.html" hidden><span>累计阅读</span> <strong></strong></span>
           <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/performance-testing/#chapter-12">性能测试入门与实践 · 第 12/31 篇</a></div>
         <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/testing/">测试与质量</a> <span aria-hidden="true">/</span> <a href="/categories/testing/performance/">性能与监控</a> <span aria-hidden="true">/</span> <a href="/categories/testing/performance/load/">性能测试与压测</a></nav>
@@ -105,7 +105,7 @@
 <p><img alt="截屏2021-04-23 下午8.47.17" decoding="async" height="349" loading="lazy" src="/images/blog-media/8753cdb13d99f82b3e00.webp" width="1080"/></p>
 <p id="passage-47036f1e4bc3">运行之后可以在结果中查看，每个值都打印出来了</p>
 <p><img alt="截屏2021-04-23 下午8.47.26" decoding="async" height="508" loading="lazy" src="/images/blog-media/55938351ea95a02ee0a8.webp" width="1080"/></p>
-<h4 id="Result-variable-name"><a class="headerlink" href="#Result-variable-name" title="Result variable name"></a>Result variable name</h4><blockquote id="passage-a087b1618c86">
+<h4 id="Result-variable-name"><a class="headerlink" href="#Result-variable-name" title="Result variable name"></a>Result variable name</h4><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="左边完整表格的中间一列被标出，右上只留这一列，右下仍保留整份行列关系。" decoding="async" height="734" loading="lazy" src="/images/article-figures/b1e20de1-selected-synthetic-column-versus-full-result-rows.webp" width="1100"/><figcaption>只接收某列，适合逐项使用该列的值；接收完整结果，则能保留每一行里各字段的对应关系。两种输出不能互换。</figcaption></figure><blockquote id="passage-a087b1618c86">
 <p id="passage-0f782c83029b">接收全部结果，并以列表展示</p>
 </blockquote>
 <p id="passage-b4a9a0817f87">添加一个名为「allvar」的变量接收</p>
@@ -116,7 +116,7 @@
 <h2 id="使用JDBC批量造数据"><a class="headerlink" href="#使用JDBC批量造数据" title="使用JDBC批量造数据"></a>使用JDBC批量造数据</h2><blockquote id="passage-e0721bec2784">
 <p id="passage-d21b3133cb82">思路：循环执行insert语句</p>
 </blockquote>
-<h3 id="使用SQLite存储数据"><a class="headerlink" href="#使用SQLite存储数据" title="使用SQLite存储数据"></a>使用<code>SQLite</code>存储数据</h3><p id="passage-419bf71be953">先连接数据库</p>
+<h3 id="使用SQLite存储数据"><a class="headerlink" href="#使用SQLite存储数据" title="使用SQLite存储数据"></a>使用<code>SQLite</code>存储数据</h3><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="左边蓝卡放着三种合成输入，右边金边卡单独放着一个绿色预期标记，两张卡之间没有连接。" decoding="async" height="734" loading="lazy" src="/images/article-figures/b1e20de1-external-synthetic-input-versus-independent-expectation.webp" width="1100"/><figcaption>外部文件可以保存用于测试的输入，预期结果则要按规则单独准备。不要把本次实际得到的值填回预期栏，否则断言就失去了作用。</figcaption></figure><p id="passage-419bf71be953">先连接数据库</p>
 <p><img alt="连接数据库" decoding="async" height="703" loading="lazy" src="/images/blog-media/bbef743044cab4d3e626.webp" width="1080"/></p>
 <p id="passage-62c497e5cecc">创建一张表</p>
 <p><img alt="创建表" decoding="async" height="703" loading="lazy" src="/images/blog-media/35363b0ce2b70e9ae9be.webp" width="1080"/></p>
