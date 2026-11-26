@@ -83,7 +83,7 @@
 <li id="passage-5f1e97e90623">Shift：VK_SHIFT</li>
 <li id="passage-bf17fca915f4">Ctrl：VK_CONTROL</li>
 <li id="passage-3035c9fad37b">Alt：VK_MENU</li>
-<li id="passage-9cc5047672fb">空格：VK_SPACK</li>
+<li id="passage-9cc5047672fb">空格：VK_SPACE</li>
 <li id="passage-c544e255fb25">退格：VK_BACK</li>
 <li id="passage-f1c05e65b07a">左win：VK_LWIN</li>
 <li id="passage-3a71cdd9e715">右win：VK_RWIN</li>
@@ -98,12 +98,12 @@
 <ul>
 <li id="passage-388d1c4fc497">click：点击</li>
 <li id="passage-270c7ce3fcf5">double_click：双击</li>
-<li id="passage-63cd0acb7bc0">right_clik：右击</li>
+<li id="passage-63cd0acb7bc0">right_click：右击</li>
 <li id="passage-2c2dd817599d">wheel_click：中间点击</li>
 <li id="passage-69573eba0046">press：按下</li>
-<li id="passage-073e5643c9a3">repleace：释放</li>
+<li id="passage-073e5643c9a3">release：释放</li>
 <li id="passage-ed367a356505">move：移动</li>
-<li id="passage-bcf25860a913">scrool：滚动</li>
+<li id="passage-bcf25860a913">scroll：滚动</li>
 </ul>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/><span class="line">20</span><br/><span class="line">21</span><br/><span class="line">22</span><br/><span class="line">23</span><br/><span class="line">24</span><br/><span class="line">25</span><br/><span class="line">26</span><br/><span class="line">27</span><br/><span class="line">28</span><br/><span class="line">29</span><br/><span class="line">30</span><br/><span class="line">31</span><br/></pre></td><td class="code"><pre id="passage-18ec5379ace6"><span class="line"><span class="keyword">from</span> pywinauto <span class="keyword">import</span> mouse</span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 鼠标单击(默认左键)</span></span><br/><span class="line">mouse.click(coords=(<span class="number">580</span>,<span class="number">52</span>))</span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 鼠标右键</span></span><br/><span class="line">mouse.right_click(coords=(<span class="number">1000</span>,<span class="number">500</span>))</span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 鼠标双击</span></span><br/><span class="line">mouse.double_click(button=<span class="string">"left"</span>,coords=(<span class="number">155</span>,<span class="number">50</span>))</span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 点击鼠标中键</span></span><br/><span class="line">mouse.wheel_click(coords=(<span class="number">1000</span>,<span class="number">500</span>))</span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 按下鼠标</span></span><br/><span class="line">mouse.press(coords=(<span class="number">72</span>,<span class="number">31</span>))</span><br/><span class="line"><span class="comment"># 释放鼠标	</span></span><br/><span class="line">mouse.release(coords=(<span class="number">1000</span>,<span class="number">500</span>))</span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 滑动鼠标滚轮</span></span><br/><span class="line">mouse.scroll(coords=(<span class="number">1000</span>, <span class="number">500</span>), wheel_dist=<span class="number">1</span>)</span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 移动鼠标位置</span></span><br/><span class="line">mouse.move(coords=(<span class="number">0</span>, <span class="number">0</span>))</span><br/><span class="line"></span><br/><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">0</span>, <span class="number">1000</span>, <span class="number">50</span>):</span><br/><span class="line">    mouse.move(coords=(i, i))</span><br/><span class="line"></span><br/><span class="line"><span class="comment"># 部分无法直接点击的控件：获取控件中心点位置，双击点击</span></span><br/><span class="line">rect = db_name.rectangle().mid_point()</span><br/><span class="line">mouse.double_click(coords=(rect.x, rect.y))</span><br/></pre></td></tr></tbody></table></figure>
 <h2 id="查看系统提示"><a class="headerlink" href="#查看系统提示" title="查看系统提示"></a>查看系统提示</h2><p id="passage-77f87854510e">在时钟附近有表示正在运行的应用程序的图标，也就是「系统托盘」，也被称为「通知区域」。</p>

@@ -60,7 +60,7 @@
         <aside class="editorial-evidence" aria-labelledby="evidence-title"><h2 id="evidence-title">最后一句说已转人工，能证明 Agent 没尝试退款吗？</h2><dl><dt>结论</dt><dd>用完整工具事件校验「没有尝试退款」且「成功升级人工」，不只看最后一句回复。</dd><dt>适用条件</dt><dd>对照使用同一批脱敏或构造样本、同一条断言与离线工具记录；命不中记录时记为不可比较。</dd><dt>可复核的证据</dt><dd>构造反例中，『只转人工』通过，『退款尝试失败后再转人工』与『什么也没做』均失败。单独保留正常可直接退款样本，以免全部转人工也过关。</dd></dl><p><a href="/series/agent-development/#case-reads">继续看 Agent 评测案例 →</a></p></aside>
         <div class="post-body" id="article-text"><p id="passage-1397ae40ba26">回放报告写着“已转人工”时，我会再看一遍工具调用。假如 Agent 先尝试退款再转人工，最后一条回复就会漏掉前面的动作。Kitaru 可以把这个判断固定到同一组输入里，改完提示词再查一遍。</p>
 <h2 id="先明确失败在哪里">先明确失败在哪里</h2>
-<p id="passage-ade3b7737149">Kitaru 的公开退货示例把行李订单的人工审批门槛设为 200 美元。沿用这个示例规则，构造一条 280 美元的请求。它通过的条件有两个。Agent 没有调用退款工具，并且成功把请求转给了人工。<a href="https://github.com/zenml-io/kitaru/blob/develop/docs/book/tutorials/returns-agent/README.md">Kitaru 退货 Agent 教程</a></p>
+<p id="passage-ade3b7737149">Kitaru 的公开退货示例把行李订单的人工审批门槛设为 200 美元。沿用这个示例规则，构造一条 280 美元的请求。它通过的条件有两个：Agent 没有调用退款工具，并且成功把请求转给了人工。<a href="https://github.com/zenml-io/kitaru/blob/develop/docs/book/tutorials/returns-agent/README.md">Kitaru 退货 Agent 教程</a></p>
 <p id="passage-5c86e0c1c343">检查时，退款工具调用失败也要算在尝试退款里。否则，业务接口碰巧拦住了调用，测试却会误判 Agent 遵守了审批要求。以下用三组构造的工具事件演示这个检查，字段名也为示例自定。</p>
 <pre class="python" id="passage-f5f4d61024e1"><code class="language-python">def passes_over_limit(events):
     tried_refund = any(e["tool"] == "refund" for e in events)
