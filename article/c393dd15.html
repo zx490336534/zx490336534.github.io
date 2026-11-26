@@ -105,7 +105,7 @@
 <li id="passage-035f67b10681">闭包的另类用法</li>
 </ul>
 <figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/></pre></td><td class="code"><pre id="passage-79cdb750c2c0"><span class="line"><span class="keyword">def</span> stage(String name, a){</span><br/><span class="line">   println name <span class="comment">//输出字符串name</span></span><br/><span class="line">   a() <span class="comment">//调用闭包函数a</span></span><br/><span class="line">}</span><br/><span class="line"><span class="comment">// 正常使用stage函数⬇️</span></span><br/><span class="line">stage(<span class="string">"stage name"</span>,{print <span class="string">"hello world"</span>})</span><br/><span class="line"><span class="comment">// Groovy提供的另一种使用stage函数的方法⬇️</span></span><br/><span class="line">stage(<span class="string">"stage name"</span>){</span><br/><span class="line">   print <span class="string">"hello world"</span></span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
-<h3 id="pipeline的组成"><a class="headerlink" href="#pipeline的组成" title="pipeline的组成"></a>pipeline的组成</h3><blockquote id="passage-b0900fc32d89">
+<h3 id="pipeline的组成"><a class="headerlink" href="#pipeline的组成" title="pipeline的组成"></a>pipeline的组成</h3><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="三个不同色框各是一段流水线，其中摆着多种操作图标。" decoding="async" height="397" loading="lazy" src="/images/article-figures/c393dd15-jenkins-stage-groups-several-steps.webp" width="1400"/><figcaption>阶段用于把工作按目的分组，步骤是组内具体执行的动作。例如测试阶段可以同时包含准备、运行和写出结果。</figcaption></figure><blockquote id="passage-b0900fc32d89">
 <p id="passage-5c27626c9969">Jenkins pipeline其实就是基于Groovy语言实现的一种DSL(领域特定语言)，用于描述整条流水线上如何进行的。</p>
 <p id="passage-d33b7cc033db">流水线的内容包括：执行编译，打包，测试，输出测试报告等。</p>
 </blockquote>
@@ -122,7 +122,7 @@
 <p id="passage-42d885e1f565"><a href="https://github.com/jenkinsci/pipeline-plugin/blob/master/COMPATIBILITY.md" rel="noopener" target="_blank">https://github.com/jenkinsci/pipeline-plugin/blob/master/COMPATIBILITY.md</a></p>
 <p id="passage-554e11be6435">通过「流水线语法」可以可视化的进行插件步骤的编辑与生成，降低学习成本。</p>
 <p><img alt="流水线语法自动生成1" decoding="async" height="688" loading="lazy" src="/images/blog-media/2a7b3d40d3021fd947b9.webp" width="1080"/><img alt="流水线语法自动生成2" decoding="async" height="688" loading="lazy" src="/images/blog-media/81594e6d140786612a06.webp" width="1080"/></p>
-<h4 id="post部分"><a class="headerlink" href="#post部分" title="post部分"></a>post部分</h4><p id="passage-ec6c8feb4964">在pipeline执行之后会执行post部分</p>
+<h4 id="post部分"><a class="headerlink" href="#post部分" title="post部分"></a>post部分</h4><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="不同的执行路径都显示通过和失败状态，并汇向同一个证据文件夹。" decoding="async" height="491" loading="lazy" src="/images/article-figures/c393dd15-jenkins-final-evidence-irrespective-of-outcome.webp" width="1400"/><figcaption>用于保留证据的收尾步骤可以配置为在不同结果下都尝试执行。它让失败更容易排查，不会把失败变成通过。</figcaption></figure><p id="passage-ec6c8feb4964">在pipeline执行之后会执行post部分</p>
 <p id="passage-5006470c0b43">根据pipeline的完成状态，post可以分成不同的条件块</p>
 <ul>
 <li id="passage-061ce66e1d07">always：完成后就执行</li>

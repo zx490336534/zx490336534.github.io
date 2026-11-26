@@ -48,7 +48,7 @@
         <h1 class="post-title" data-topic-title="在 Jenkinsfile 中操作文件、命令和构建产物">Jenkins 流水线 · 第 04 篇｜在 Jenkinsfile 中操作文件、命令和构建产物</h1>
         <div class="entry-meta"><span class="post-author"><a href="/about/" rel="author">听白</a></span><time itemprop="datePublished" datetime="2019-07-12T21:23:00+08:00">2019-07-12</time>
           <span class="post-category" hidden><a href="/categories/Jenkins/">Jenkins</a></span>
-          <span class="read-time">约 3 分钟</span>
+          <span class="read-time">约 4 分钟</span>
           <span class="public-counter" data-public-count="reads" data-article-path="/article/39d0321a.html" hidden><span>累计阅读</span> <strong></strong></span>
           <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/jenkins-pipeline/#chapter-4">Jenkins 流水线 · 第 4/8 篇</a></div>
         <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/engineering/">工程工具</a> <span aria-hidden="true">/</span> <a href="/categories/engineering/ci/">持续集成</a></nav>
@@ -93,10 +93,10 @@
 <p><img alt="执行结果" decoding="async" height="688" loading="lazy" src="/images/blog-media/da4ed3dfc3aa1c1b0259.webp" width="1080"/></p>
 <p id="passage-08a5e7ded5eb"><code>amVua2lucyBib29r</code>是<code>jenkins book</code>的Base64编码</p>
 <p><img alt="转码" decoding="async" height="754" loading="lazy" src="/images/blog-media/287e10b613a38bfe1426.webp" width="1080"/></p>
-<h2 id="制品相关步骤"><a class="headerlink" href="#制品相关步骤" title="制品相关步骤"></a>制品相关步骤</h2><ul>
+<h2 id="制品相关步骤"><a class="headerlink" href="#制品相关步骤" title="制品相关步骤"></a>制品相关步骤</h2><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="柜子分三层存放不同的构建产物，每层有独立标识。" decoding="async" height="505" loading="lazy" src="/images/article-figures/39d0321a-ci-retained-artifacts-grouped-by-build.webp" width="1400"/><figcaption>要在以后回看时，应把产物与生成它的那次构建一起辨认，而不是只找「最新那个文件」。旧产物能保留多久，取决于清理策略。</figcaption></figure><ul>
 <li id="passage-269d5d443928"><p id="passage-06a835b51f5a">stash：保存临时文件</p>
 <blockquote id="passage-72fd6dc84480">
-<p id="passage-1770f36a7df8">将文件保存起来，以便同一次构建的其他步骤或阶段使用。</p>
+<p id="passage-1770f36a7df8">将文件保存起来，以便同一次构建的其他步骤或阶段使用。</p><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="同一工作区的两个工位，通过中间托盘交接同一个有丝带的包裹。" decoding="async" height="415" loading="lazy" src="/images/article-figures/39d0321a-jenkins-same-run-artifact-handoff.webp" width="1400"/><figcaption>这里交接的是同一次构建中已经产出的文件，使下一阶段可以继续用它。这种临时交接并不等于向之后的构建公开存档。</figcaption></figure>
 <p id="passage-6ae54fc76a4a">如果整个流水线在同一台机器上执行，那stash是多余的，一般用于跨Jenkins node使用。</p>
 <p id="passage-8e9494da01b5">stash步骤会将文件存储在tar文件中，对于大文件的stash操作会消耗Jenkins master的计算资源。</p>
 </blockquote>
