@@ -244,10 +244,12 @@ function codeText(block) {
 const codePanels = new Set();
 const codeWrapControls = new WeakMap();
 function updateCodeWrap(scroll) {
-  const { panel, button } = codeWrapControls.get(scroll);
+  const controls = codeWrapControls.get(scroll);
+  if (!controls) return;
+  const { panel, button } = controls;
   const wrapped = panel.classList.contains('is-wrapped');
   const overflows = scroll.clientWidth > 0 && scroll.scrollWidth > scroll.clientWidth + 1;
-  button.hidden = !wrapped && !overflows;
+  button.hidden = scroll.hidden || (!wrapped && !overflows);
 }
 const codeResize = typeof ResizeObserver === 'function' ? new ResizeObserver(entries => {
   for (const { target } of entries) updateCodeWrap(target);
@@ -255,6 +257,7 @@ const codeResize = typeof ResizeObserver === 'function' ? new ResizeObserver(ent
 function refreshCodeWrap() {
   for (const scroll of document.querySelectorAll('.code-scroll')) updateCodeWrap(scroll);
 }
+let codeControlId = 0;
 for (const block of document.querySelectorAll('.post-body pre')) {
   const highlight = block.closest('figure.highlight');
   const target = highlight ?? block;
@@ -307,6 +310,8 @@ for (const block of document.querySelectorAll('.post-body pre')) {
 
   const scroll = document.createElement('div');
   scroll.className = 'code-scroll';
+  do { scroll.id = 'article-code-block-' + (++codeControlId); }
+  while (document.getElementById(scroll.id));
   scroll.tabIndex = 0;
   scroll.setAttribute('role', 'region');
   scroll.setAttribute('aria-label', language.textContent === '代码' ? '代码' : language.textContent + ' 代码');
@@ -314,7 +319,23 @@ for (const block of document.querySelectorAll('.post-body pre')) {
   target.before(panel);
   scroll.append(target);
   panel.append(tools, scroll);
-  codeWrapControls.set(scroll, { panel, button: wrap });
+  const fold = document.createElement('button');
+  fold.type = 'button';
+  fold.className = 'code-fold';
+  fold.textContent = '折叠代码';
+  fold.setAttribute('aria-controls', scroll.id);
+  fold.setAttribute('aria-expanded', 'true');
+  actions.prepend(fold);
+  function setCodeCollapsed(collapsed) {
+    scroll.hidden = collapsed;
+    fold.setAttribute('aria-expanded', String(!collapsed));
+    fold.textContent = collapsed ? '展开代码' : '折叠代码';
+    panel.classList.toggle('is-collapsed', collapsed);
+    updateCodeWrap(scroll);
+    if (!collapsed) requestAnimationFrame(() => updateCodeWrap(scroll));
+  }
+  fold.addEventListener('click', () => setCodeCollapsed(!scroll.hidden));
+  codeWrapControls.set(scroll, { panel, button: wrap, setCodeCollapsed });
   wrap.addEventListener('click', () => {
     const wrapped = panel.classList.toggle('is-wrapped');
     wrap.setAttribute('aria-pressed', String(wrapped));
@@ -326,6 +347,15 @@ for (const block of document.querySelectorAll('.post-body pre')) {
   codeResize?.observe(scroll);
 }
 if (codePanels.size) {
+  window.addEventListener('hashchange', () => {
+    let anchor;
+    try { anchor = document.getElementById(decodeURIComponent(location.hash.slice(1))); }
+    catch { return; }
+    const scroll = anchor?.closest('.code-scroll');
+    if (!scroll?.hidden) return;
+    codeWrapControls.get(scroll)?.setCodeCollapsed(false);
+    requestAnimationFrame(() => anchor.scrollIntoView({ block: 'start' }));
+  });
   window.addEventListener('load', refreshCodeWrap, { once: true });
   document.fonts?.ready.then(refreshCodeWrap);
   if (!codeResize) {
