@@ -60,7 +60,7 @@
         <aside class="reading-guide" data-reading-kind="sections" aria-labelledby="reading-guide-title"><h2 id="reading-guide-title">本文速读</h2><nav aria-label="可核对的原文段落"><ul><li><a href="#TCP%E6%95%B0%E6%8D%AE%E7%9A%84%E7%BB%84%E6%88%90">TCP数据的组成</a></li><li><a href="#%E7%BD%91%E7%BB%9C-%E6%8E%A5%E6%94%B6%E6%96%B9%E9%99%90%E5%88%B6-%E7%BD%91%E7%BB%9C%E8%BF%9E%E6%8E%A5%E9%85%8D%E7%BD%AE">网络-接收方限制-网络连接配置</a></li><li><a href="#%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95%E5%89%8D%E6%9C%9F%E6%AD%A3%E5%B8%B8%EF%BC%8C%E5%90%8E%E6%9C%9F%E6%8A%A5%E9%94%99">性能测试前期正常，后期报错</a></li></ul></nav><p class="reading-scope"><strong>主题：</strong><a href="/categories/testing/performance/monitoring/">系统与性能监控</a></p></aside>
         <div class="post-body" id="article-text"><span id="29-网络知识"></span><p id="passage-c107c24b5ee5">通常说的网络，都是在TCP/IP协议族的基础上运作的，HTTP协议，只是这个协议族中的一个。</p>
 <ul>
-<li id="passage-7008d1815d70">TCP协议：通过数据发送者和接收者相互回应对方发来的确认信息，可靠的进行数据传输</li>
+<li id="passage-7008d1815d70">TCP协议：通过数据发送者和接收者相互回应对方发来的确认信息，可靠地传输数据</li>
 <li id="passage-bb9756e531c6">IP协议：指定数据发送的ip信息，以及通过路由转发数据</li>
 </ul>
 <h2 id="TCP数据的组成"><a class="headerlink" href="#TCP数据的组成" title="TCP数据的组成"></a>TCP数据的组成</h2><ul>
@@ -73,12 +73,12 @@
 <p id="passage-6e7941d625d1">一个请求：源地址:源端口 –&gt; 网卡 –&gt; 互联网(局域网) –&gt; 目标服务器网卡 –&gt; 目标服务器内部</p>
 <span id="more"></span>
 <h3 id="源端口"><a class="headerlink" href="#源端口" title="源端口"></a>源端口</h3><ul>
-<li id="passage-99f99184aca2">端口有限个：共65535个</li>
+<li id="passage-99f99184aca2">端口编号为 0 至 65535，共 65536 个编号</li>
 <li id="passage-353099ac36c9">0～1023公认端口，服务器使用端口，被作为特殊服务所定义</li>
 <li id="passage-41328f0a6db7">1024～49151注册端口，自己定义的一个服务端口</li>
 <li id="passage-97d604af8fc3">49152～65535动态端口</li>
 </ul>
-<p id="passage-734588c6684d">我们要与被访问的服务建立连接，我们本地要消耗端口，端口区间1024～65535。实际上，发起方这边，能消耗的最大端口大概是1.64w</p>
+<p id="passage-734588c6684d">客户端建立连接时需要本地源端口。上面的动态端口段约有 1.64 万个编号；操作系统实际分配的临时端口范围取决于本机配置</p>
 <p id="passage-e0343650d9be">每一次通信，都会占用1个端口</p>
 <ul>
 <li id="passage-c0b7baa0da0d">端口开启：发送方分配一个端口，数据从端口出去，进入网络</li>
@@ -86,8 +86,8 @@
 </ul>
 <ol>
 <li id="passage-51ba45a7e484">对于普通使用，端口数量没有问题，但是性能测试时候，就可能出现问题</li>
-<li id="passage-30331d92521e">常见错误「Address aready in use:connect」</li>
-<li id="passage-b213372d15f8">在一段时间中，我们最多和服务建立1.64w的连接</li>
+<li id="passage-30331d92521e">常见错误「Address already in use: connect」</li>
+<li id="passage-b213372d15f8">实际能同时建立多少连接，还要看本机配置和连接目标，不能直接按这 1.64 万个编号推算</li>
 <li id="passage-633b6447b805">长连接，占用连接的时间比较长，短连接，占用时间比较短</li>
 <li id="passage-d13746cd0789">长连接，连接占用时间是可以配置的，调低长连接占用时间，是可以使端口得到更快的释放，从而实现端口复用</li>
 </ol>
@@ -161,7 +161,7 @@
 <p id="passage-d9fe050740fa">永久修改，需要重启后生效</p>
 <h3 id="常见问题"><a class="headerlink" href="#常见问题" title="常见问题"></a>常见问题</h3><p id="passage-85cd51f576c1">当系统允许打开的文件数很大，但是查看到系统打开的文件总数量远小于系统允许打开的文件数量。</p>
 <p id="passage-abd9a380abea">当进行性能测试的时候，发现出现不能打开更多文件的报错，这个时候的原因就是，你当前部署用的账号，打开的文件数量限制导致的。</p>
-<p id="passage-775140391a00">如果通过修改系统配置文件，就可以解决这个性能问题，那么这个性能问题就可以通过测试人员的调优解决。需要把该修改同步到生成服务器中进行修改。</p>
+<p id="passage-775140391a00">如果通过修改系统配置文件，就可以解决这个性能问题，那么这个性能问题就可以通过测试人员的调优解决。需要把该修改同步到生产服务器中进行修改。</p>
 <h2 id="连接池"><a class="headerlink" href="#连接池" title="连接池"></a>连接池</h2><h3 id="tomcat"><a class="headerlink" href="#tomcat" title="tomcat"></a>tomcat</h3><p id="passage-f9a0d6546b8d"><code>Content.xml</code>文件有连接池的配置，默认为200</p>
 <h3 id="数据库"><a class="headerlink" href="#数据库" title="数据库"></a>数据库</h3><p id="passage-28ba7df63a00">mysql的配置文件<code>/etc/my.cnf</code>默认连接池大小是151约等于最大打开文件数据/5 ：1024/5</p>
 <h3 id="nginx"><a class="headerlink" href="#nginx" title="nginx"></a>nginx</h3><p id="passage-e562ca81221e">一般不会有问题</p>

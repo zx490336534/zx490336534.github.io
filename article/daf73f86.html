@@ -55,7 +55,7 @@
       </div>
     </header>
     <div class="wrap article-layout with-outline">
-      <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E6%9C%BA%E6%A2%B0%E7%A3%81%E7%9B%98%E3%80%8CHHD%E3%80%8D">机械磁盘「HHD」</a></li><li><a href="#%E5%9B%BA%E6%80%81%E7%A3%81%E7%9B%98%E3%80%8CSSD%E3%80%8D">固态磁盘「SSD」</a></li><li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BB%A3%E7%A0%81%E5%8F%AF%E4%BB%A5%E8%BF%90%E8%A1%8C%E5%9C%A8%E4%B8%8D%E5%90%8C%E7%9A%84%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B8%AD">为什么代码可以运行在不同的操作系统中</a></li><li><a href="#Linux%E4%B8%AD%EF%BC%8C%E4%B8%80%E5%88%87%E9%83%BD%E6%98%AF%E6%96%87%E4%BB%B6">Linux中，一切都是文件</a></li><li><a href="#%E7%A3%81%E7%9B%98%E5%86%85%E9%83%A8">磁盘内部</a></li><li><a href="#%E7%A3%81%E7%9B%98%E5%88%86%E5%8C%BA">磁盘分区</a></li><li><a href="#%E7%A3%81%E7%9B%98%E9%98%B5%E5%88%97RAID">磁盘阵列RAID</a></li><li><a href="#%E8%99%9A%E6%8B%9F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F">虚拟文件系统</a></li><li><a href="#%E6%96%87%E4%BB%B6IO">文件IO</a></li><li><a href="#iostat">iostat</a></li><li><a href="#%E7%A3%81%E7%9B%98%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87">磁盘性能指标</a></li><li><a href="#%E4%BD%BF%E7%94%A8%E7%8E%87">使用率</a></li><li><a href="#%E9%A5%B1%E5%92%8C%E5%BA%A6">饱和度</a></li><li><a href="#IOPS">IOPS</a></li><li><a href="#%E5%90%9E%E5%90%90%E9%87%8F">吞吐量</a></li><li><a href="#%E5%93%8D%E5%BA%94%E6%97%B6%E9%97%B4">响应时间</a></li><li><a href="#%E5%AE%9E%E6%88%98">实战</a></li><li><a href="#%E6%B8%85%E7%90%86%E7%BC%93%E5%AD%98">清理缓存</a></li><li><a href="#%E6%B5%8B%E8%AF%95%E7%A3%81%E7%9B%98%E3%80%8C%E5%86%99%E3%80%8D%E8%83%BD%E5%8A%9B">测试磁盘「写」能力</a></li><li><a href="#%E8%A7%82%E5%AF%9F">观察</a></li><li><a href="#%E6%B5%8B%E8%AF%95%E7%A3%81%E7%9B%98%E3%80%8C%E8%AF%BB%E3%80%8D%E8%83%BD%E5%8A%9B">测试磁盘「读」能力</a></li><li><a href="#%E8%A7%82%E5%AF%9F-1">观察</a></li><li><a href="#%E5%B0%8F%E7%BB%93">小结</a></li><li><a href="#%E6%B5%8B%E8%AF%95%E5%86%85%E5%AD%98%E7%9A%84%E9%80%9F%E5%BA%A6">测试内存的速度</a></li><li><a href="#%E7%A3%81%E7%9B%98%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96">磁盘性能优化</a></li></ol></details></aside>
+      <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E6%9C%BA%E6%A2%B0%E7%A3%81%E7%9B%98%E3%80%8CHHD%E3%80%8D">机械硬盘「HDD」</a></li><li><a href="#%E5%9B%BA%E6%80%81%E7%A3%81%E7%9B%98%E3%80%8CSSD%E3%80%8D">固态磁盘「SSD」</a></li><li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BB%A3%E7%A0%81%E5%8F%AF%E4%BB%A5%E8%BF%90%E8%A1%8C%E5%9C%A8%E4%B8%8D%E5%90%8C%E7%9A%84%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E4%B8%AD">为什么代码可以运行在不同的操作系统中</a></li><li><a href="#Linux%E4%B8%AD%EF%BC%8C%E4%B8%80%E5%88%87%E9%83%BD%E6%98%AF%E6%96%87%E4%BB%B6">Linux中，一切都是文件</a></li><li><a href="#%E7%A3%81%E7%9B%98%E5%86%85%E9%83%A8">磁盘内部</a></li><li><a href="#%E7%A3%81%E7%9B%98%E5%88%86%E5%8C%BA">磁盘分区</a></li><li><a href="#%E7%A3%81%E7%9B%98%E9%98%B5%E5%88%97RAID">磁盘阵列RAID</a></li><li><a href="#%E8%99%9A%E6%8B%9F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F">虚拟文件系统</a></li><li><a href="#%E6%96%87%E4%BB%B6IO">文件IO</a></li><li><a href="#iostat">iostat</a></li><li><a href="#%E7%A3%81%E7%9B%98%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87">磁盘性能指标</a></li><li><a href="#%E4%BD%BF%E7%94%A8%E7%8E%87">使用率</a></li><li><a href="#%E9%A5%B1%E5%92%8C%E5%BA%A6">饱和度</a></li><li><a href="#IOPS">IOPS</a></li><li><a href="#%E5%90%9E%E5%90%90%E9%87%8F">吞吐量</a></li><li><a href="#%E5%93%8D%E5%BA%94%E6%97%B6%E9%97%B4">响应时间</a></li><li><a href="#%E5%AE%9E%E6%88%98">实战</a></li><li><a href="#%E6%B8%85%E7%90%86%E7%BC%93%E5%AD%98">清理缓存</a></li><li><a href="#%E6%B5%8B%E8%AF%95%E7%A3%81%E7%9B%98%E3%80%8C%E5%86%99%E3%80%8D%E8%83%BD%E5%8A%9B">测试磁盘「写」能力</a></li><li><a href="#%E8%A7%82%E5%AF%9F">观察</a></li><li><a href="#%E6%B5%8B%E8%AF%95%E7%A3%81%E7%9B%98%E3%80%8C%E8%AF%BB%E3%80%8D%E8%83%BD%E5%8A%9B">测试磁盘「读」能力</a></li><li><a href="#%E8%A7%82%E5%AF%9F-1">观察</a></li><li><a href="#%E5%B0%8F%E7%BB%93">小结</a></li><li><a href="#%E6%B5%8B%E8%AF%95%E5%86%85%E5%AD%98%E7%9A%84%E9%80%9F%E5%BA%A6">测试内存的速度</a></li><li><a href="#%E7%A3%81%E7%9B%98%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96">磁盘性能优化</a></li></ol></details></aside>
       <div class="article-main">
         <aside class="reading-guide" data-reading-kind="excerpt" aria-labelledby="reading-guide-title"><h2 id="reading-guide-title">本文速读</h2><blockquote>在 写 磁盘数据时， cache会变大 ，在 读 磁盘数据时，buffer会变大。 <cite><a href="#%E5%B0%8F%E7%BB%93">查看原文段落</a></cite></blockquote><nav aria-label="可核对的原文段落"><ul><li><a href="#%E6%B5%8B%E8%AF%95%E7%A3%81%E7%9B%98%E3%80%8C%E5%86%99%E3%80%8D%E8%83%BD%E5%8A%9B">测试磁盘「写」能力</a></li><li><a href="#%E6%B5%8B%E8%AF%95%E7%A3%81%E7%9B%98%E3%80%8C%E8%AF%BB%E3%80%8D%E8%83%BD%E5%8A%9B">测试磁盘「读」能力</a></li><li><a href="#%E6%B5%8B%E8%AF%95%E5%86%85%E5%AD%98%E7%9A%84%E9%80%9F%E5%BA%A6">测试内存的速度</a></li></ul></nav><p class="reading-scope"><strong>主题：</strong><a href="/categories/testing/performance/monitoring/">系统与性能监控</a></p></aside>
         <div class="post-body" id="article-text"><span id="28-磁盘知识"></span><blockquote id="passage-6bb87db64412">
@@ -64,9 +64,9 @@
 <p id="passage-3a86491683c7">存储设备，系统中容量最大的存储设备</p>
 <p id="passage-2d18a508e652">存储数据之前，要先进行格式化</p>
 <p id="passage-71410fe942ed">linux：ext4</p>
-<p id="passage-92fb8b850faa">windwos：FAT32、NTFS</p>
+<p id="passage-92fb8b850faa">Windows：FAT32、NTFS</p>
 <p id="passage-6e2653e53c00">在读写数据时，数据与磁盘间有个磁盘缓存（内存的一部分）</p>
-<h2 id="机械磁盘「HHD」"><a class="headerlink" href="#机械磁盘「HHD」" title="机械磁盘「HHD」"></a>机械磁盘「HHD」</h2><p id="passage-ae84c13b10cd">由盘片，磁头组成，数据存在盘片的环形磁道上，读写时，磁头移动，定位到数据的磁道，进行数据读写</p>
+<h2 id="机械磁盘「HHD」"><a class="headerlink" href="#机械磁盘「HHD」" title="机械磁盘「HHD」"></a>机械硬盘「HDD」</h2><p id="passage-ae84c13b10cd">由盘片，磁头组成，数据存在盘片的环形磁道上，读写时，磁头移动，定位到数据的磁道，进行数据读写</p>
 <h2 id="固态磁盘「SSD」"><a class="headerlink" href="#固态磁盘「SSD」" title="固态磁盘「SSD」"></a>固态磁盘「SSD」</h2><p id="passage-cf6882c7ff1f">由固态电子元器件组成，不需要磁头寻址，所以不管是连续IO还是随机IO，都比机械盘快</p>
 <span id="more"></span>
 <h2 id="为什么代码可以运行在不同的操作系统中"><a class="headerlink" href="#为什么代码可以运行在不同的操作系统中" title="为什么代码可以运行在不同的操作系统中"></a>为什么代码可以运行在不同的操作系统中</h2><p><img alt="不同系统的读写" decoding="async" height="466" loading="lazy" src="/images/blog-media/12d8425db154501bb511.webp" width="846"/></p>
@@ -74,7 +74,7 @@
 <p id="passage-775d570256de">内存文件系统：基于内存的文件系统 <code>/proc/sys</code></p>
 <p id="passage-db9b527d8887">网络文件系统：用来访问其他计算机数据的文件系统 <code>nfs</code> ,<code>smb</code></p>
 <h2 id="磁盘内部"><a class="headerlink" href="#磁盘内部" title="磁盘内部"></a>磁盘内部</h2><p id="passage-033044a30b42">扇区sector：磁盘组成的最小单位「512B」，磁盘磁道中一个弧段</p>
-<p id="passage-dc2834388db1">块Block：操作系统与磁盘数据交换的最小单位，快=2^n*扇区</p>
+<p id="passage-dc2834388db1">块Block：操作系统与磁盘数据交换的最小单位，块大小 = 2^n × 扇区大小</p>
 <ul>
 <li id="passage-e0ce681dc4e9">linux：类似Ext4文件系统，就是磁盘分块</li>
 <li id="passage-6d1d5b8fb89b">windows：类似NTFS文件系统，也就是块，只是被叫做「簇」</li>
@@ -109,10 +109,10 @@
 <li id="passage-ad7f9885f84a">由多块独立的磁盘组成一个容量巨大的磁盘组，利用磁盘提供数据所产生的加成效果提升整个磁盘系统的效能。利用这个技术，把数据切割成多段，分别存在不同磁盘上</li>
 <li id="passage-2a2428493c55">RAID0:数据分片存在2块磁盘，读写速度提升2倍，主要用于SWAP\TMP，但是数据不冗余，数据恢复难</li>
 <li id="passage-6d01fa7e472a">RAID1:相同数据冗余存入2块磁盘，写速度不变，读速度提升2倍，数据冗余1份，主要用于数据备份，但磁盘利用率低</li>
-<li id="passage-36c7ea1c544b">RAID5:数据分片和校验码混合存储3份，读写速度提升2倍，主要在要求告诉时用，可以用于数据还原</li>
+<li id="passage-36c7ea1c544b">RAID5:数据分片和校验码混合存储3份，读写速度提升2倍，主要在要求高速时用，可以用于数据还原</li>
 <li id="passage-d5cfbc1f7c99">RAID10:2块磁盘1组先做RAID1，多组RAID1，再做RAID0，读写速度N「组数」倍</li>
 </ul>
-<h2 id="虚拟文件系统"><a class="headerlink" href="#虚拟文件系统" title="虚拟文件系统"></a>虚拟文件系统</h2><p id="passage-dee67d35574e">Virtual File System简称VFS。是Linux内核的子系统之一，它为用户程序提供文件和文件操作系统的统一接口，屏蔽不同文件系统的差异和操作细节。节奏VFS可以直接使用open()，read()，write()这样的系统调用操作文件，而无需考虑具体的文化系统和实际的存储介质</p>
+<h2 id="虚拟文件系统"><a class="headerlink" href="#虚拟文件系统" title="虚拟文件系统"></a>虚拟文件系统</h2><p id="passage-dee67d35574e">Virtual File System简称VFS。是Linux内核的子系统之一，它为用户程序提供文件和文件操作系统的统一接口，屏蔽不同文件系统的差异和操作细节。借助 VFS，可以直接使用open()，read()，write()这样的系统调用操作文件，而无需考虑具体的文件系统和实际的存储介质</p>
 <p id="passage-9e689d6fdb80">通过VFS系统，Linux提供了通用的系统调用，可以跨越不同文件系统和介质之间执行，极大简化了用户访问不同文件系统的过程。另一方面，新的文件系统，新类型的存储介质，可以无须编译的情况下，动态加载到Linux中</p>
 <h2 id="文件IO"><a class="headerlink" href="#文件IO" title="文件IO"></a>文件IO</h2><p id="passage-b8b452086917">文件操作：先open，再read或write，最后close</p>
 <p id="passage-eb3c825330bd">读写的不同：</p>
@@ -173,7 +173,7 @@
 <li id="passage-1340ff90c09e-2">if输入文件(in file)</li>
 <li id="passage-1288a8d08c79-2">of输出文件(out file)</li>
 <li id="passage-94dfea0f7acd">/dev/vda1 磁盘第1个物理分区，读取这个磁盘文件，会有IO</li>
-<li id="passage-79ea6043aedb">/dev/null 一个伪设置，回收站，是个无底洞，可以无限放暑假</li>
+<li id="passage-79ea6043aedb">/dev/null 一个伪设备，写入其中的数据会被丢弃</li>
 <li id="passage-b5110e05a472-2">bs=20MB count=100 块文件20MB，执行100次</li>
 </ul>
 <h3 id="观察-1"><a class="headerlink" href="#观察-1" title="观察"></a>观察</h3><p id="passage-f70f1fd57003">使用<code>vmstat 1</code>：free变小，空闲内存变小；buffer明显变大，cache数据没有明显变化，bi也有明显的数据</p>

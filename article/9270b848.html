@@ -85,7 +85,7 @@
 <li id="passage-72b0bec164ef">overlay</li>
 </ul>
 <p id="passage-f224e5f87ff5">不同网络进行通信</p>
-<p id="passage-93ffb91cad15">与一同容器共享网络<code>--net=container:容器名</code></p>
+<p id="passage-93ffb91cad15">与另一个容器共享网络<code>--net=container:容器名</code></p>
 <h3 id="查看docker网络列表"><a class="headerlink" href="#查看docker网络列表" title="查看docker网络列表"></a>查看docker网络列表</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/></pre></td><td class="code"><pre id="passage-6b4e1d25fb40"><span class="line"><span class="meta">$</span><span class="bash"> docker network ls</span></span><br/><span class="line"></span><br/><span class="line">NETWORK ID          NAME                DRIVER              SCOPE</span><br/><span class="line">df9d31e0e839        bridge              bridge              local</span><br/><span class="line">b58ef02d2c13        host                host                local</span><br/><span class="line">544544bfb357        none                null                local</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="网络列表" decoding="async" height="210" loading="lazy" src="/images/blog-media/e8bb25c2dabf0cc2c9d4.webp" width="1080"/></p>
 <h4 id="创建一个网络"><a class="headerlink" href="#创建一个网络" title="创建一个网络"></a>创建一个网络</h4><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-db0e93403c78"><span class="line"><span class="meta">$</span><span class="bash"> docker network create my_net</span></span><br/></pre></td></tr></tbody></table></figure>
@@ -182,8 +182,8 @@
 </ul>
 <blockquote id="passage-c374bc80d1c6">
 <p id="passage-c735e204d05d">CMD[“p1”,”p2”]</p>
-<p id="passage-5182484022d9">如果ENTRYPOINT使用shell格式，CMO会被忽略</p>
-<p id="passage-c83d7b93293f">如果ENTRYPOINT使用exec格式，CMO会和它进行组合</p>
+<p id="passage-5182484022d9">如果ENTRYPOINT使用shell格式，CMD 会被忽略</p>
+<p id="passage-c83d7b93293f">如果ENTRYPOINT使用exec格式，CMD 会和它进行组合</p>
 </blockquote>
 <p id="passage-c94c9edb40cc">ENTRYPOINT </p>
 <ul>
@@ -202,7 +202,7 @@
 <p id="passage-d69003e33323">CMD和ENTRYPOINT一起使用的时候，</p>
 <ul>
 <li id="passage-38a6321b9258">不入参为ENTRYPOINT+CMD</li>
-<li id="passage-34e486595844">入参为为ENTRYPOINT+参数</li>
+<li id="passage-34e486595844">传参时为 ENTRYPOINT + 参数</li>
 </ul></div><section class="article-video" aria-labelledby="article-video-title">
           <header class="article-video-header">
             <h2 id="article-video-title">本文视频讲解</h2>

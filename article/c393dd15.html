@@ -74,7 +74,7 @@
 <figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre id="passage-754ec2b564e9"><span class="line"><span class="keyword">def</span> x = <span class="string">"abc"</span></span><br/><span class="line"><span class="keyword">def</span> y = <span class="number">1</span></span><br/></pre></td></tr></tbody></table></figure>
 <ul>
 <li id="passage-208f3e471cb1">Groovy语句最后的分号不是必须的</li>
-<li id="passage-9e0d8e97fe36">方法调用可以参略括号</li>
+<li id="passage-9e0d8e97fe36">方法调用可以省略括号</li>
 <li id="passage-5113032852cc">支持命名参数</li>
 </ul>
 <figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/></pre></td><td class="code"><pre id="passage-af574bea93d8"><span class="line"><span class="keyword">def</span> func(String a, String b){</span><br/><span class="line">   <span class="keyword">return</span> a + <span class="string">" "</span> + b</span><br/><span class="line">}</span><br/><span class="line"><span class="comment">// 调用</span></span><br/><span class="line">func b = <span class="string">"Lee"</span>, a = <span class="string">"Bruce"</span></span><br/></pre></td></tr></tbody></table></figure>
@@ -112,9 +112,9 @@
 <figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/></pre></td><td class="code"><pre id="passage-f95f0aa97615"><span class="line">pipeline {</span><br/><span class="line">   agent any</span><br/><span class="line">   stages {</span><br/><span class="line">      stage(<span class="string">'build'</span>){</span><br/><span class="line">         steps{</span><br/><span class="line">            echo <span class="string">"hello world"</span></span><br/><span class="line">         }</span><br/><span class="line">      }</span><br/><span class="line">   }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
 <ul>
 <li id="passage-41042298b11e">pipeline:整条流水线</li>
-<li id="passage-7e53db508461">stages:流水线可以有多个stages，每个stages至少包含一个stage</li>
+<li id="passage-7e53db508461">stages:stages 包含一个或多个 stage</li>
 <li id="passage-8cab8c12e367">stage:阶段，每个阶段都必须有名称，例如<code>build</code></li>
-<li id="passage-b1a028a2b7b5">steps:具体步骤，ech就是一个步骤。<strong>在一个stage中有且只有一个steps</strong></li>
+<li id="passage-b1a028a2b7b5">steps:具体步骤，echo 就是一个步骤。<strong>在一个stage中有且只有一个steps</strong></li>
 <li id="passage-ee629c05562c">agent:执行位置，在某个（物理机，虚拟机，Docker）环境中执行</li>
 </ul>
 <h4 id="步骤"><a class="headerlink" href="#步骤" title="步骤"></a>步骤</h4><p id="passage-645d5ffd4112">类似于<code>echo</code>,<code>sh</code>等步骤，Jenkins有很多插件可以通过一定的修改来当作步骤使用</p>
@@ -127,7 +127,7 @@
 <ul>
 <li id="passage-061ce66e1d07">always：完成后就执行</li>
 <li id="passage-6bba327f773f">changed：完成状态与上一次不一致执行</li>
-<li id="passage-8177c6fe5e28">fixed：失败或不稳定执行</li>
+<li id="passage-8177c6fe5e28">fixed：上次失败或不稳定、本次成功时执行</li>
 <li id="passage-6b77644feb23">regression：上一次成功，这一次失败/不稳定/中止（aborted）时执行</li>
 <li id="passage-067f47b9cb51">aborted：中止（aborted）时执行</li>
 <li id="passage-c20a047eb8e0">failure：失败时执行</li>
@@ -137,7 +137,7 @@
 </ul>
 <figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/><span class="line">20</span><br/><span class="line">21</span><br/><span class="line">22</span><br/><span class="line">23</span><br/><span class="line">24</span><br/><span class="line">25</span><br/><span class="line">26</span><br/></pre></td><td class="code"><pre id="passage-885281aa6302"><span class="line">pipeline{</span><br/><span class="line">   agent any</span><br/><span class="line">   stages{</span><br/><span class="line">      stage(<span class="string">'build'</span>){</span><br/><span class="line">         steps{</span><br/><span class="line">            echo <span class="string">"build stage"</span></span><br/><span class="line">         }</span><br/><span class="line">         post{</span><br/><span class="line">            always{</span><br/><span class="line">               echo <span class="string">"stage post alwasy"</span></span><br/><span class="line">            }</span><br/><span class="line">         }</span><br/><span class="line">      }</span><br/><span class="line">   }</span><br/><span class="line">   post{</span><br/><span class="line">      changed{</span><br/><span class="line">         echo <span class="string">"pipeline post changed"</span></span><br/><span class="line">      }</span><br/><span class="line">      always{</span><br/><span class="line">         echo <span class="string">"pipeline post alwasy"</span></span><br/><span class="line">      }</span><br/><span class="line">      success{</span><br/><span class="line">         echo <span class="string">"pipeline post success"</span></span><br/><span class="line">      }</span><br/><span class="line">   }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
 <h4 id="支持的命令"><a class="headerlink" href="#支持的命令" title="支持的命令"></a>支持的命令</h4><ul>
-<li id="passage-b852e0a15826"><p id="passage-f89c4883b0ac">Environment：用于设置环境变量，可定义在stage或pipeline部分</p>
+<li id="passage-b852e0a15826"><p id="passage-f89c4883b0ac">environment：用于设置环境变量，可定义在stage或pipeline部分</p>
 </li>
 <li id="passage-2333eb113eda"><p id="passage-c60d8e21fabf">tools：自动下载安装指定的工具，并将其加入PATH变量中，可定义在stage或pipeline部分</p>
 </li>

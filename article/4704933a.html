@@ -83,7 +83,7 @@
 <p id="passage-107c8c1dcbb3">比如要对<code>9acd7c5f1267c8003d550b49483282168a0ce1a7</code>这个提交创建一个标签：</p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-d80666651bd3"><span class="line">git tag -a v1.2 9acd7c5f1267c8003d550b49483282168a0ce1a7</span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="image-20190402225027079" decoding="async" height="517" loading="lazy" src="/images/blog-media/208415e05b3dbc1cd3d7.webp" width="1080"/></p>
-<h3 id="推送标签"><a class="headerlink" href="#推送标签" title="推送标签"></a>推送标签</h3><p id="passage-a0285ac732fe">我们在本地仓库的全部操作，不进行推送的话，远端都无法接受的变更。</p>
+<h3 id="推送标签"><a class="headerlink" href="#推送标签" title="推送标签"></a>推送标签</h3><p id="passage-a0285ac732fe">我们在本地仓库的全部操作，不进行推送的话，远端都无法收到这些变更。</p>
 <p id="passage-88318f4f8970">所以我们如果要让其他人也能看到这个标签信息的话，就需要进行推送</p>
 <p id="passage-8217e3580945"><code>git push origin &lt;tagname&gt;</code></p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-fcab2c9318e7"><span class="line">git push origin v1.0</span><br/></pre></td></tr></tbody></table></figure>
@@ -108,7 +108,7 @@
 <p><img alt="删除结果" decoding="async" height="412" loading="lazy" src="/images/blog-media/aa33957c065caeed3fca.webp" width="1080"/></p>
 <h3 id="检出标签"><a class="headerlink" href="#检出标签" title="检出标签"></a>检出标签</h3><p id="passage-53a560fb10a8">创建标签的意义，很大程度就是这个标签所在的内容会被用到。既然要被使用，就需要进行检出.</p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-04b03e6c944b"><span class="line">git checkout &lt;tagname&gt;</span><br/></pre></td></tr></tbody></table></figure>
-<p id="passage-8782eb64c222">虽然我们如愿的检出了标签的内容，但是这个时候是处于一个游离的状态，我们当前的修改提交都会丢失掉。如果需要保留，请注意创建一个分支后提交保留。</p>
+<p id="passage-8782eb64c222">虽然我们如愿的检出了标签的内容，但是这个时候是处于一个游离的状态，新提交不会自动归属于任何分支。如果需要保留，请创建一个分支指向这些提交。</p>
 <p><img alt="检出" decoding="async" height="414" loading="lazy" src="/images/blog-media/618259033d1b62e8861b.webp" width="1080"/></p>
 <h2 id="Git别名"><a class="headerlink" href="#Git别名" title="Git别名"></a>Git别名</h2><p id="passage-fa5c66540db0">和Linux操作中类似，Git也支持将命令定义为一个别名</p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre id="passage-34bc1750412f"><span class="line">git config --global alias.co checkout</span><br/><span class="line">git config --global alias.br branch</span><br/><span class="line">git config --global alias.ci commit</span><br/><span class="line">git config --global alias.st status</span><br/></pre></td></tr></tbody></table></figure>

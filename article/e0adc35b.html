@@ -81,7 +81,7 @@
 <li id="passage-6e2f7d14f407"><code>static_host</code>:</li>
 <li id="passage-31856c0ab8a1"><code>host_matching</code>:服务器匹配</li>
 <li id="passage-dc55dcc8f2f4"><code>subdomain_matching</code>:子域名</li>
-<li id="passage-fe7b1bd10326"><code>template_folder</code>:模版文件 文件夹</li>
+<li id="passage-fe7b1bd10326"><code>template_folder</code>:模板文件 文件夹</li>
 <li id="passage-9cf76ade16d0"><code>instance_path</code>:app的路径</li>
 <li id="passage-64f4d8656a8d"><code>instance_relative_config</code>:相对设置</li>
 <li id="passage-b3b7351b84b5"><code>root_path</code>:根目录</li>
@@ -110,12 +110,12 @@
 </ul>
 <h2 id="if-name-quot-main-quot-的作用"><a class="headerlink" href="#if-name-quot-main-quot-的作用" title='if __name__ == "__main__"的作用'></a><code>if __name__ == "__main__"</code>的作用</h2><ol>
 <li id="passage-379608eb63fc">该脚本运行时运行</li>
-<li id="passage-313e82d34935">flask生成环境中不会使用<code>run</code></li>
+<li id="passage-313e82d34935">Flask 生产环境中不会使用<code>run</code></li>
 <li id="passage-271bc257e2ca">用<code>uwsgi</code>+<code>nginx</code></li>
 </ol>
 <ul>
 <li id="passage-7326a30893c4">其他情况下，如果通过模块导入，不是执行脚本，则main不会运行</li>
-<li id="passage-1441bec1f57b">生成环境使用<code>nginx</code>+<code>gunicorn/uwsgi</code>这样的组合</li>
+<li id="passage-1441bec1f57b">生产环境使用<code>nginx</code>+<code>gunicorn/uwsgi</code>这样的组合</li>
 </ul>
 <h3 id="使用命令行方式运行"><a class="headerlink" href="#使用命令行方式运行" title="使用命令行方式运行"></a>使用命令行方式运行</h3><p id="passage-ce69956b0423">查看帮助</p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/><span class="line">20</span><br/><span class="line">21</span><br/><span class="line">22</span><br/></pre></td><td class="code"><pre id="passage-e53691c7bc98"><span class="line"><span class="meta">$</span><span class="bash"> flask --<span class="built_in">help</span></span></span><br/><span class="line">Usage: flask [OPTIONS] COMMAND [ARGS]...</span><br/><span class="line"></span><br/><span class="line">A general utility script for Flask applications.</span><br/><span class="line"></span><br/><span class="line">Provides commands from Flask, extensions, and the application. Loads the</span><br/><span class="line">application defined in the FLASK_APP environment variable, or from a</span><br/><span class="line">wsgi.py file. Setting the FLASK_ENV environment variable to 'development'</span><br/><span class="line">will enable debug mode.</span><br/><span class="line"></span><br/><span class="line"><span class="meta">  $</span><span class="bash"> <span class="built_in">export</span> FLASK_APP=hello.py</span></span><br/><span class="line"><span class="meta">  $</span><span class="bash"> <span class="built_in">export</span> FLASK_ENV=development</span></span><br/><span class="line"><span class="meta">  $</span><span class="bash"> flask run</span></span><br/><span class="line"></span><br/><span class="line">Options:</span><br/><span class="line">--version  Show the flask version</span><br/><span class="line">--help     Show this message and exit.</span><br/><span class="line"></span><br/><span class="line">Commands:</span><br/><span class="line">routes  Show the routes for the app.</span><br/><span class="line">run     Run a development server.</span><br/><span class="line">shell   Run a shell in the app context.</span><br/></pre></td></tr></tbody></table></figure>

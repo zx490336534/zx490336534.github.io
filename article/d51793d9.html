@@ -61,9 +61,9 @@
         <div class="post-body" id="article-text"><span id="18-读取数据库数据进行性能测试"></span><h2 id="用同一个token做性能测试，和1000个token随机取一个做性能测试，对服务器性能指标一样吗？"><a class="headerlink" href="#用同一个token做性能测试，和1000个token随机取一个做性能测试，对服务器性能指标一样吗？" title="用同一个token做性能测试，和1000个token随机取一个做性能测试，对服务器性能指标一样吗？"></a>用同一个token做性能测试，和1000个token随机取一个做性能测试，对服务器性能指标一样吗？</h2><h3 id="系统是否允许一个账号被同时登录多次？"><a class="headerlink" href="#系统是否允许一个账号被同时登录多次？" title="系统是否允许一个账号被同时登录多次？"></a>系统是否允许一个账号被同时登录多次？</h3><p id="passage-37ff291624b8">如果有互踢功能，那是不能使用同一个账号</p>
 <h3 id="有没有缓存机制（数据库缓存）"><a class="headerlink" href="#有没有缓存机制（数据库缓存）" title="有没有缓存机制（数据库缓存）"></a>有没有缓存机制（数据库缓存）</h3><p id="passage-0d87fdb63af9">如果有，不能使用同一个账号</p>
 <h3 id="造多个账号进行性能测试"><a class="headerlink" href="#造多个账号进行性能测试" title="造多个账号进行性能测试"></a>造多个账号进行性能测试</h3><ol>
-<li id="passage-812eb41fd1d5">尽可能的在运行过程中，造足够量的账号</li>
+<li id="passage-812eb41fd1d5">尽可能在运行过程中，造足够量的账号</li>
 <li id="passage-538133a80a47">如果只有固定的一些账号可用时，做这种性能测试时，要记得带上「退出登录」接口</li>
-<li id="passage-3b91afa77517">如果只有固定的一些账号可用时，不关心登录接口的信息，可用不用退出</li>
+<li id="passage-3b91afa77517">如果只有固定的一些账号可用时，不关心登录接口的信息，可以不用退出</li>
 </ol>
 <span id="more"></span>
 <h2 id="直接使用数据库中数据进行性能测试"><a class="headerlink" href="#直接使用数据库中数据进行性能测试" title="直接使用数据库中数据进行性能测试"></a>直接使用数据库中数据进行性能测试</h2><h3 id="数据连接"><a class="headerlink" href="#数据连接" title="数据连接"></a>数据连接</h3><p><img alt="数据连接" decoding="async" height="960" loading="lazy" src="/images/blog-media/f51095839e7043d9d9a0.webp" width="1080"/></p>
@@ -87,7 +87,7 @@
 <p id="passage-a63e2b9d4949">监控被测服务器的软件、硬件资源，收集这些资源的使用情况的数据，用于后续的性能分析</p>
 </blockquote>
 <h3 id="ServerAgent-监控硬件"><a class="headerlink" href="#ServerAgent-监控硬件" title="ServerAgent 监控硬件"></a>ServerAgent 监控硬件</h3><ul>
-<li id="passage-bfc4b1f19e10"><p id="passage-d2bab9bbc640">可用于监控Linux和Winodws</p>
+<li id="passage-bfc4b1f19e10"><p id="passage-d2bab9bbc640">可用于监控Linux和Windows</p>
 </li>
 <li id="passage-f8ddeabcae40"><p id="passage-cb12546b9f97">可以和Jmeter直接集成</p>
 </li>
@@ -104,7 +104,7 @@
 <h4 id="jmeter与该监控集成"><a class="headerlink" href="#jmeter与该监控集成" title="jmeter与该监控集成"></a>jmeter与该监控集成</h4><p id="passage-a7e0d6932ad6">jmeter监听器&gt;jp@gc - PerfMon Metrics Collector「需要安装第三方插件 jpgc」</p>
 <p><img alt="监听器" decoding="async" height="960" loading="lazy" src="/images/blog-media/e82350b1725c2335651e.webp" width="1080"/></p>
 <h4 id="实际工作中可能遇到的问题"><a class="headerlink" href="#实际工作中可能遇到的问题" title="实际工作中可能遇到的问题"></a>实际工作中可能遇到的问题</h4><ol>
-<li id="passage-01dbbde16b14">被测服务器数云服务器，云服务器会禁用4444端口</li>
+<li id="passage-01dbbde16b14">被测服务器是云服务器，云服务器会禁用4444端口</li>
 </ol>
 <blockquote id="passage-03f5517b197d">
 <p id="passage-082289ff0fe3">关闭UDP端口，开启TCP端口为5279</p>

@@ -55,7 +55,7 @@
       </div>
     </header>
     <div class="wrap article-layout with-outline">
-      <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E6%97%B6%E9%97%B4%E8%A7%A6%E5%8F%91">时间触发</a></li><li><a href="#%E5%AE%9A%E6%97%B6%E6%89%A7%E8%A1%8C%EF%BC%9Acron">定时执行：cron</a></li><li><a href="#%E8%BD%AE%E8%AF%A2%E4%BB%A3%E7%A0%81%E4%BB%93%E5%BA%93%EF%BC%9ApollSCM">轮询代码仓库：pollSCM</a></li><li><a href="#%E4%BA%8B%E4%BB%B6%E8%A7%A6%E5%8F%91">事件触发</a></li><li><a href="#%E7%94%B1%E4%B8%8A%E6%B8%B8%E4%BB%BB%E5%8A%A1%E5%87%BA%E5%8F%91%EF%BC%9Aupstream">由上游任务出发：upstream</a></li><li><a href="#Gitlab%E9%80%9A%E7%9F%A5%E8%A7%A6%E5%8F%91">Gitlab通知触发</a></li><li><a href="#%E5%B0%86%E6%9E%84%E5%BB%BA%E4%BF%A1%E6%81%AF%E6%8E%A8%E9%80%81%E5%88%B0GitLab">将构建信息推送到GitLab</a></li><li><a href="#%E5%85%B6%E4%BB%96%E7%B3%BB%E7%BB%9F%E8%A7%A6%E5%8F%91Webhook">其他系统触发Webhook</a></li></ol></details></aside>
+      <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E6%97%B6%E9%97%B4%E8%A7%A6%E5%8F%91">时间触发</a></li><li><a href="#%E5%AE%9A%E6%97%B6%E6%89%A7%E8%A1%8C%EF%BC%9Acron">定时执行：cron</a></li><li><a href="#%E8%BD%AE%E8%AF%A2%E4%BB%A3%E7%A0%81%E4%BB%93%E5%BA%93%EF%BC%9ApollSCM">轮询代码仓库：pollSCM</a></li><li><a href="#%E4%BA%8B%E4%BB%B6%E8%A7%A6%E5%8F%91">事件触发</a></li><li><a href="#%E7%94%B1%E4%B8%8A%E6%B8%B8%E4%BB%BB%E5%8A%A1%E5%87%BA%E5%8F%91%EF%BC%9Aupstream">由上游任务触发：upstream</a></li><li><a href="#Gitlab%E9%80%9A%E7%9F%A5%E8%A7%A6%E5%8F%91">Gitlab通知触发</a></li><li><a href="#%E5%B0%86%E6%9E%84%E5%BB%BA%E4%BF%A1%E6%81%AF%E6%8E%A8%E9%80%81%E5%88%B0GitLab">将构建信息推送到GitLab</a></li><li><a href="#%E5%85%B6%E4%BB%96%E7%B3%BB%E7%BB%9F%E8%A7%A6%E5%8F%91Webhook">其他系统触发Webhook</a></li></ol></details></aside>
       <div class="article-main">
         <aside class="reading-guide" data-reading-kind="sections" aria-labelledby="reading-guide-title"><h2 id="reading-guide-title">本文速读</h2><nav aria-label="可核对的原文段落"><ul><li><a href="#%E6%97%B6%E9%97%B4%E8%A7%A6%E5%8F%91">时间触发</a></li><li><a href="#%E5%AE%9A%E6%97%B6%E6%89%A7%E8%A1%8C%EF%BC%9Acron">定时执行：cron</a></li><li><a href="#%E4%BA%8B%E4%BB%B6%E8%A7%A6%E5%8F%91">事件触发</a></li></ul></nav><p class="reading-scope"><strong>主题：</strong><a href="/categories/engineering/ci/">持续集成</a></p></aside>
         <div class="post-body" id="article-text"><span id="Jenkins-七"></span><p id="passage-aa1c9d0d4dbd">触发流水线执行可以分为：</p>
@@ -104,19 +104,19 @@
 <li id="passage-c432401c8af0">其他job触发</li>
 <li id="passage-4e61df0d3efd">HTTP API Webhook触发</li>
 </ul>
-<h3 id="由上游任务出发：upstream"><a class="headerlink" href="#由上游任务出发：upstream" title="由上游任务出发：upstream"></a>由上游任务出发：upstream</h3><p id="passage-8b2522a066c2">当B任务的执行依赖A任务的执行结果，A就是B的上游任务。</p>
+<h3 id="由上游任务出发：upstream"><a class="headerlink" href="#由上游任务出发：upstream" title="由上游任务触发：upstream"></a>由上游任务触发：upstream</h3><p id="passage-8b2522a066c2">当B任务的执行依赖A任务的执行结果，A就是B的上游任务。</p>
 <figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre id="passage-57829746d9a2"><span class="line">triggers {</span><br/><span class="line">   upstream(<span class="attr">upstreamProjects:</span> <span class="string">'job1,job2'</span>,<span class="attr">threshold:</span>hudson.model.Result.SUCCESS)</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
 <ul>
 <li id="passage-0fb55e4b1442">job1和job2是任务名</li>
 <li id="passage-bbbe107c4725">threshold判断上游任务是什么状态的时候触发</li>
-<li id="passage-b6e53c2a3647">hudson.model.Result包含了<code>ABORTED</code>，<code>FAILURE</code>，<code>SUCCESS</code>，<code>UNSTSBLE</code>，<code>NOT_BUILT</code></li>
+<li id="passage-b6e53c2a3647">hudson.model.Result包含了<code>ABORTED</code>，<code>FAILURE</code>，<code>SUCCESS</code>，<code>UNSTABLE</code>，<code>NOT_BUILT</code></li>
 </ul>
 <p id="passage-58a360c5ec52">其中它们分别表示：</p>
 <ul>
 <li id="passage-fa7f199a0dae">ABORTED：任务被手动中止</li>
 <li id="passage-e9ff90c5f4cd">FAILURE：构建失败</li>
 <li id="passage-eb508bf5dd57">SUCCESS：构建成功</li>
-<li id="passage-37e9db3c8ef1">UNSTSBLE：存在一些错误，但不至于构建失败</li>
+<li id="passage-37e9db3c8ef1">UNSTABLE：存在一些错误，但不至于构建失败</li>
 <li id="passage-ae5b306579be">NOT_BUILT：在多阶段构建时，前面阶段的问题导致后面阶段无法执行</li>
 </ul>
 <h3 id="Gitlab通知触发"><a class="headerlink" href="#Gitlab通知触发" title="Gitlab通知触发"></a>Gitlab通知触发</h3><ol>
@@ -143,7 +143,7 @@
 <p><img alt="生成Secret toekn" decoding="async" height="688" loading="lazy" src="/images/blog-media/4a26082fbc7e2e6a67f4.webp" width="1080"/></p>
 <p><img alt="配置Gitlab" decoding="async" height="688" loading="lazy" src="/images/blog-media/4a82813a23d48a7e9edd.webp" width="1080"/></p>
 <p id="passage-2a68e76baeca">额，到这里遇到一个比较尴尬的问题。我的gitlab服务器在公网，Jenkins服务器在局域网内</p>
-<p id="passage-17fd638c88f8">如果，如果成功了的话就可以在下方<code>Project services</code>处看到新增的<code>Webhooks</code></p>
+<p id="passage-17fd638c88f8">如果成功就可以在下方<code>Project services</code>处看到新增的<code>Webhooks</code></p>
 <h4 id="Jenkinsfile中编写Gitlab-trigger"><a class="headerlink" href="#Jenkinsfile中编写Gitlab-trigger" title="Jenkinsfile中编写Gitlab trigger"></a>Jenkinsfile中编写Gitlab trigger</h4><figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/></pre></td><td class="code"><pre id="passage-a2c0675eb6fe"><span class="line">pipeline {</span><br/><span class="line">    agent any</span><br/><span class="line">    triggers {</span><br/><span class="line">        gitlab(<span class="attr">triggerOnPush:</span> <span class="literal">true</span>, </span><br/><span class="line">               <span class="symbol">triggerOnMergeRequest:</span> <span class="literal">true</span>,</span><br/><span class="line">               <span class="symbol">branchFilterType:</span> <span class="string">'All'</span>,</span><br/><span class="line">               <span class="symbol">secretToken:</span> <span class="string">'c342352fc4cf45e01c0f783a7fdf38b7'</span>)</span><br/><span class="line">    }</span><br/><span class="line">    stages {</span><br/><span class="line">        stage(<span class="string">'build'</span>) {</span><br/><span class="line">            steps {</span><br/><span class="line">                echo <span class="string">"Hello wolrd"</span></span><br/><span class="line">            }</span><br/><span class="line">        }</span><br/><span class="line">    }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
 <ul>
 <li id="passage-cb0ab64dee97">triggerOnPush：当Gitlab触发push事件，是否执行构建</li>

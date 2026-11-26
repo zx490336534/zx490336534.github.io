@@ -67,7 +67,7 @@
 </blockquote>
 <p id="passage-11b74ac65792">影响CPU性能的物理因素：主频、架构、核</p>
 <h4 id="架构"><a class="headerlink" href="#架构" title="架构"></a>架构</h4><ul>
-<li id="passage-b2ca9c5ba1fc">Inter(x86)</li>
+<li id="passage-b2ca9c5ba1fc">Intel（x86）</li>
 <li id="passage-8c8e8868d6be">AMD(x86)</li>
 <li id="passage-ef4642b311a5">IBM(PowerPC)</li>
 <li id="passage-8a6c976f2e77">ARM</li>
@@ -79,7 +79,7 @@
 <h4 id="运算器"><a class="headerlink" href="#运算器" title="运算器"></a>运算器</h4><p id="passage-39188254c932">运算</p>
 <h4 id="控制器"><a class="headerlink" href="#控制器" title="控制器"></a>控制器</h4><p id="passage-c6b919dc31c8">把内存的指令、数据读入寄存器，控制计算机</p>
 <h4 id="寄存器"><a class="headerlink" href="#寄存器" title="寄存器"></a>寄存器</h4><p id="passage-775d239346c3">暂存指针、数据、地址</p>
-<p id="passage-71509c5babbb">CPU的几级缓存，就是寄存器</p>
+<p id="passage-71509c5babbb">CPU 的多级缓存与寄存器是不同的存储结构</p>
 <h4 id="时钟"><a class="headerlink" href="#时钟" title="时钟"></a>时钟</h4><p id="passage-adbfd4c45153">计时</p>
 <p id="passage-52d62e3e74ec">在CPU中进行计算时，都会分配一个时间片段</p>
 <ul>
@@ -106,8 +106,8 @@
 <p><img alt="字段含义" decoding="async" height="297" loading="lazy" src="/images/blog-media/47d00e5842c33302f22f.webp" width="628"/></p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre id="passage-11a24325428a"><span class="line">cat /proc/cpuinfo 内存中记录的cpu信息</span><br/><span class="line">cat /proc/cpuinfo | grep "physical id"|sort |uniq |wc -l 查看物理cpu数量</span><br/><span class="line">cat /proc/cpuinfo | grep "cpu cores"|uniq 查看CPU的core数「核数」</span><br/><span class="line">cat /proc/cpuinfo | grep "processor"|wc -l 查看逻辑CPU数量</span><br/></pre></td></tr></tbody></table></figure>
 <h2 id="监控cpu"><a class="headerlink" href="#监控cpu" title="监控cpu"></a>监控cpu</h2><h3 id="load-average值-和CPU使用率之间的关系"><a class="headerlink" href="#load-average值-和CPU使用率之间的关系" title="load average值 和CPU使用率之间的关系"></a>load average值 和CPU使用率之间的关系</h3><p id="passage-a198f95c11cf">现在的linux服务器中 load average 不等于 CPU使用率</p>
-<p id="passage-c7f8c9ddeed3">load average是系统的整体负载体现，它包括 CPU负载+Disk负载+网络负载+外设负载</p>
-<p id="passage-84a53e64db77">load average = cpuload + ioload</p>
+<p id="passage-c7f8c9ddeed3">Linux 的 load average 统计可运行任务和处于不可中断睡眠状态的任务数，等待磁盘 I/O 是后一种情况的常见例子</p>
+<p id="passage-84a53e64db77">它分别按 1、5、15 分钟给出平均负载，不是 CPU、磁盘、网络利用率相加</p>
 <p id="passage-04d82f86a044">CPU的使用：用户进程使用时间us、系统内核运行时间sy、空闲时间idle、管理被抢占时间st</p>
 <p id="passage-90247f3bca4e">繁忙：us + sy + st + ni + hi + si = CPU使用率的时间（除以总时间）</p>
 <p id="passage-72442b398338">空闲：idle + wa</p>
@@ -147,20 +147,20 @@
 <ol>
 <li id="passage-8ce136abd42f"><p id="passage-fa1baa048b9a">同进程中线程上下文切换：进程资源共享，切换线程私有资源</p>
 </li>
-<li id="passage-aff8bb53a053"><p id="passage-418823b378e8">不通进程中线程上下文切换=切换进程</p>
+<li id="passage-aff8bb53a053"><p id="passage-418823b378e8">不同进程之间的线程上下文切换=切换进程</p>
 </li>
 </ol>
 <h2 id="CPU性能分析"><a class="headerlink" href="#CPU性能分析" title="CPU性能分析"></a>CPU性能分析</h2><h3 id="load-高-amp-amp-CPU高"><a class="headerlink" href="#load-高-amp-amp-CPU高" title="load 高&amp;&amp; CPU高"></a>load 高&amp;&amp; CPU高</h3><p><img alt="top" decoding="async" height="200" loading="lazy" src="/images/blog-media/78c3af1043d30c326f6c.webp" width="804"/></p>
 <h4 id="情况1"><a class="headerlink" href="#情况1" title="情况1"></a>情况1</h4><p id="passage-72279a41a532">sy系统态高：排查CPU上下文切换</p>
 <ol>
-<li id="passage-83754a2d99d1">如果「非资源上下文切换」多，说明CPU不够用，进程时间片到，被迫切换</li>
+<li id="passage-83754a2d99d1">如果「非自愿上下文切换」多，说明CPU不够用，进程时间片到，被迫切换</li>
 <li id="passage-ee3c7e6da5dd">如果「自愿上下文切换」多，说明计算用的资源不够用，可能存在I/O、内存瓶颈</li>
 </ol>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/></pre></td><td class="code"><pre id="passage-deeb795068ba"><span class="line">root@zx:~# vmstat 1</span><br/><span class="line">procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----</span><br/><span class="line"> r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st</span><br/><span class="line"> 0  0      0 142112 170316 3332688    0    0     0     5    1    2  1  1 99  0  0</span><br/><span class="line"> 0  0      0 141844 170316 3332728    0    0     0     0  877 1585  1  1 98  0  0</span><br/></pre></td></tr></tbody></table></figure>
 <p id="passage-6746b17a5606">如果<code>cs</code>比较高，说明可能存在上下文切换问题</p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/><span class="line">11</span><br/><span class="line">12</span><br/><span class="line">13</span><br/><span class="line">14</span><br/><span class="line">15</span><br/><span class="line">16</span><br/><span class="line">17</span><br/><span class="line">18</span><br/><span class="line">19</span><br/></pre></td><td class="code"><pre id="passage-2a935609619e"><span class="line">root@zx:~# pidstat -u -w 1 </span><br/><span class="line">Linux 5.4.0-54-generic (zx)     06/03/2021      _x86_64_        (2 CPU)</span><br/><span class="line"></span><br/><span class="line">08:45:08 PM   UID       PID    %usr %system  %guest   %wait    %CPU   CPU  Command</span><br/><span class="line">08:45:09 PM     0      6095    0.99    0.00    0.00    0.00    0.99     1  dockerd</span><br/><span class="line">08:45:09 PM     0     10684    0.99    0.00    0.00    0.00    0.99     1  containerd-shim</span><br/><span class="line">08:45:09 PM     0     10776    0.99    0.99    0.00    0.00    1.98     1  gunicorn</span><br/><span class="line">08:45:09 PM     0    479183    0.00    1.98    0.00    0.00    1.98     1  AliYunDun</span><br/><span class="line">08:45:09 PM     0    503082    0.00    0.99    0.00    0.00    0.99     0  kworker/0:1-events</span><br/><span class="line"></span><br/><span class="line">08:45:08 PM   UID       PID   cswch/s nvcswch/s  Command</span><br/><span class="line">08:45:09 PM     0        11     40.59      0.00  rcu_sched</span><br/><span class="line">08:45:09 PM     0     10708      1.98      0.99  supervisord</span><br/><span class="line">08:45:09 PM     0     10775      0.99      0.00  gunicorn</span><br/><span class="line">08:45:09 PM     0    479183     10.89      0.00  AliYunDun</span><br/><span class="line">08:45:09 PM     0    496341      3.96      0.00  kworker/1:1-events</span><br/><span class="line">08:45:09 PM     0    502548     12.87      0.00  kworker/u4:2-events_power_efficient</span><br/><span class="line">08:45:09 PM     0    503082      6.93      0.00  kworker/0:1-events</span><br/><span class="line">08:45:09 PM     0    503173      0.99      0.00  pidstat</span><br/></pre></td></tr></tbody></table></figure>
 <p id="passage-0f7afde116b2"><code>cswch/s</code> :自愿上下文</p>
-<p id="passage-aa7fa7b7ce9d"><code> nvcswch/s</code>:非资源上下文</p>
+<p id="passage-aa7fa7b7ce9d"><code> nvcswch/s</code>：非自愿上下文切换</p>
 <h4 id="情况2"><a class="headerlink" href="#情况2" title="情况2"></a>情况2</h4><p id="passage-6d3488c791e3">si软中断高：CPU抢资源，资源不够用 I/O问题</p>
 <ol>
 <li id="passage-895701d085ce"><p id="passage-95e5dd4dc599">sys高 + si 高 = 内存或者网络I/O问题</p>
@@ -211,12 +211,12 @@
 <li id="passage-fb354e4a209d">top：load值一直在增加，而且增长的非常大</li>
 <li id="passage-e8dc9968c486">top：CPU的us + sy 约等于100% us较低、sy较高</li>
 <li id="passage-39043378eb29">vmstat：procs的r就绪队列长度，正在运行和等待的CPU进程数很大</li>
-<li id="passage-7de29d649920">vmsta：system的in「每秒中断数」和cs「上下文切换数」都很大</li>
+<li id="passage-7de29d649920">vmstat：system的in「每秒中断数」和cs「上下文切换数」都很大</li>
 <li id="passage-4b1c6d411adc">vmstat：free变小、buff基本不变、cache变大</li>
 </ol>
 <ul>
 <li id="passage-71ca96b5ba39">free：内存空闲空间，内存消耗增大</li>
-<li id="passage-0d0c36e8ee7f">buffer：buffer数磁盘虚拟出来的，用于内存从磁盘读取数据时使用</li>
+<li id="passage-0d0c36e8ee7f">buffer：内存中为块设备 I/O 分配的缓冲区，用于内存从磁盘读取数据时使用</li>
 <li id="passage-22c5a5f923e2">cache：cache是内存虚拟出来，用于cpu与内存速度匹配</li>
 </ul>
 <ol start="6">

@@ -80,7 +80,7 @@
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre id="passage-b04bb3e02c94"><span class="line"><span class="meta">$</span><span class="bash"> git ls-remote &lt;remote_name&gt;</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git remote show &lt;remote_name&gt;</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="查看远端分支信息" decoding="async" height="382" loading="lazy" src="/images/blog-media/933e2d830423a0457408.webp" width="1080"/></p>
 <p><img alt="远程分支更多信息" decoding="async" height="742" loading="lazy" src="/images/blog-media/debefef8d51c63983296.webp" width="1080"/></p>
-<p id="passage-06b623cc4484">一般当多人协作的时候，总是会出现先后修改的问题。当别人对改分支进行修改之后，远端的分支就会前进，而你本地不会实时的获取到这个改变。</p>
+<p id="passage-06b623cc4484">一般当多人协作的时候，总是会出现先后修改的问题。当别人对该分支进行修改之后，远端的分支就会前进，而你本地不会实时的获取到这个改变。</p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-538213f7bb94"><span class="line"><span class="meta">$</span><span class="bash"> git fetch origin <span class="comment">#更新本地数据库，移动origin/master指针指向新的位置</span></span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="同步远程仓库，更新本地仓库信息" decoding="async" height="790" loading="lazy" src="/images/blog-media/f1ef2d872c8dc111ba86.webp" width="1080"/></p>
 <h3 id="推送"><a class="headerlink" href="#推送" title="推送"></a>推送</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre id="passage-d91e8fd36f97"><span class="line"><span class="meta">$</span><span class="bash"> git push &lt;remote_name&gt; &lt;branch&gt; <span class="comment">#推送branch分支到远端的branch分支</span></span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git push &lt;remote_name&gt; &lt;branch&gt;&lt;remote_branch&gt; <span class="comment">#推送branch分支到远端的remote_branch分支</span></span></span><br/></pre></td></tr></tbody></table></figure>
@@ -107,7 +107,7 @@
 <p id="passage-34aada82bdf4">其次，<code>Git</code>提供了强壮的分支和合并模型。不像<code>SVN</code>，<code>Git</code>的分支设计成可以做为一种用来在仓库之间集成代码和分享修改的『失败安全』的机制。</p>
 <p><img alt="git-workflow-svn-push-local" decoding="async" height="307" loading="lazy" src="/images/blog-media/fbcfbeda9ebc89ff54cd.webp" width="236"/></p>
 <p><img alt="git-workflow-svn" decoding="async" height="393" loading="lazy" src="/images/blog-media/f3505a3107d2517909eb.webp" width="614"/></p>
-<h3 id="功能分支工作流"><a class="headerlink" href="#功能分支工作流" title="功能分支工作流"></a>功能分支工作流</h3><p id="passage-1d8f419d4095">功能分支工作流以集中式工作流为基础，不同的是为各个新功能分配一个专门的分支来开发。这样可以在把新功能集成到正式项目前，用<code>Pull Requests</code>/<code>Merage Requests</code>的方式讨论变更。</p>
+<h3 id="功能分支工作流"><a class="headerlink" href="#功能分支工作流" title="功能分支工作流"></a>功能分支工作流</h3><p id="passage-1d8f419d4095">功能分支工作流以集中式工作流为基础，不同的是为各个新功能分配一个专门的分支来开发。这样可以在把新功能集成到正式项目前，用<code>Pull Requests</code>/<code>Merge Requests</code>的方式讨论变更。</p>
 <p id="passage-bf137d6b2b7f">功能分支工作流背后的核心思路是所有的功能开发应该在一个专门的分支，而不是在<code>master</code>分支上。 这个隔离可以方便多个开发者在各自的功能上开发而不会弄乱主干代码。 另外，也保证了<code>master</code>分支的代码一定不会是有问题的，极大有利于集成环境。</p>
 <p id="passage-2580edfe2679">功能开发隔离也让<code>pull requests</code>成为可能， <code>pull requests</code>工作流能为每个分支发起一个讨论，在分支合入正式项目之前，给其它开发者有表示赞同的机会。 另外，如果你在功能开发中有问题卡住了，可以开一个<code>pull requests</code>来向同学们征求建议。 这些做法的重点就是，<code>pull requests</code>让团队成员之间互相评论工作变成非常方便！</p>
 <p id="passage-99b60d2b226a"><code>Code Review</code>是<code>Pull Requests</code>的一个主要的收益，但<code>Pull Requests</code>实际上用作讨论代码的常用手段。 你可以把<code>Pull Requests</code>作为专门给某个分支的讨论。这意味着可以在更早的开发过程中就可以进行<code>Code Review</code>。 比如，一个开发者开发功能需要帮助时，要做的就是发起一个<code>Pull Request</code>，相关的人就会自动收到通知，在相关的提交旁边能看到需要帮助解决的问题。</p>
@@ -124,7 +124,7 @@
 <li id="passage-6d69630d1b1d">master:存储了正式发布的历史</li>
 <li id="passage-fdb0d3e083ba">develop:功能的集成分支</li>
 </ul>
-<p id="passage-dbf137a9dfe1">每个新功能位于一个自己的分支，这样可以<code>push</code>。 但功能分支不是从<code>master</code>分支上拉出新分支，而是使用<code>develop</code>分支作为父分支。当新功能完成时，<code>develop</code>分支。 新功能提交应该从不直接与<code>master</code>分支交互。</p>
+<p id="passage-dbf137a9dfe1">每个新功能位于一个自己的分支，这样可以<code>push</code>。 但功能分支不是从<code>master</code>分支上拉出新分支，而是使用<code>develop</code>分支作为父分支。当新功能完成时，合并到<code>develop</code>分支。 新功能提交应该从不直接与<code>master</code>分支交互。</p>
 <p><img alt="main-branches" decoding="async" height="804" loading="lazy" src="/images/blog-media/f3222a21526fffded31b.webp" width="534"/></p>
 <h3 id="Supporting-branches"><a class="headerlink" href="#Supporting-branches" title="Supporting branches"></a>Supporting branches</h3><ul>
 <li id="passage-9568b6c991aa">Feature：功能分支</li>
@@ -146,7 +146,7 @@
 <p id="passage-f475cbd2e5e8">维护分支或说是热修复（<code>hotfix</code>）分支用于生成快速给产品发布版本（<code>production releases</code>）打补丁，这是唯一可以直接从<code>master</code>分支<code>fork</code>出来的分支。 修复完成，修改应该马上合并回<code>master</code>分支和<code>develop</code>分支（当前的发布分支），<code>master</code>分支应该用新的版本号打好<code>Tag</code>。</p>
 </blockquote>
 <p><img alt="hotfix-branches" decoding="async" height="852" loading="lazy" src="/images/blog-media/2a000f3d1b6705de26fe.webp" width="632"/></p>
-<p id="passage-21f9e8f43079">和特性分支差不多，不在赘述</p>
+<p id="passage-21f9e8f43079">和特性分支差不多，不再赘述</p>
 <p id="passage-aacaf5db855d">最终的结果：</p>
 <p><img alt="gitflow" decoding="async" height="1431" loading="lazy" src="/images/blog-media/49aefbbd2e4fd07f19a2.webp" width="1080"/></p>
 <p><img alt="gitflow" decoding="async" height="825" loading="lazy" src="/images/blog-media/a30fd0ea3c39009edf8b.webp" width="1080"/></p>

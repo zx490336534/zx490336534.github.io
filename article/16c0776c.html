@@ -76,9 +76,9 @@
 <li id="passage-f03f3d605ca0"><code>NF</code>当前行字段数</li>
 <li id="passage-d6c717adc695"><code>NR</code>当前行号，从1开始</li>
 <li id="passage-a2a87cfff6af"><code>FS</code>输入字段分割符，默认为空格或tab键</li>
-<li id="passage-fb8b6b34e159"><code>RS</code>输入行分割符，默认为回车符</li>
-<li id="passage-ed37c1541a28"><code>OFS</code>输入字段分割符，默认为空格</li>
-<li id="passage-beacd6c5d1c6"><code>ORS</code>输入行分割符，默认为回车符</li>
+<li id="passage-fb8b6b34e159"><code>RS</code>：输入记录分隔符，默认是换行符</li>
+<li id="passage-ed37c1541a28"><code>OFS</code>：输出字段分隔符，默认是空格</li>
+<li id="passage-beacd6c5d1c6"><code>ORS</code>：输出记录分隔符，默认是换行符</li>
 </ul>
 <hr/>
 <p id="passage-217842a04c90"><strong>输出以<code>:</code>分割的最后一列内容</strong></p>
@@ -98,10 +98,10 @@
 <p><img alt="awk1" decoding="async" height="376" loading="lazy" src="/images/blog-media/a3bf7896876af020a55b.webp" width="1080"/></p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-4c3efaad7e9f"><span class="line"><span class="meta">$</span><span class="bash"> awk <span class="string">'BEGIN{FS=":"}/^games/,/^new/{printf "%-20s\t%-20s\n" , $1,$NF}'</span> passwd</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="awk2" decoding="async" height="146" loading="lazy" src="/images/blog-media/2638913bf25b2ee89d3a.webp" width="1080"/></p>
-<p id="passage-6d2ce99ca44a"><strong>格式化输出以s开头的行好和第一列内容</strong></p>
+<p id="passage-6d2ce99ca44a"><strong>格式化输出以s开头的行号和第一列内容</strong></p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-82c75894d05d"><span class="line"><span class="meta">$</span><span class="bash"> awk <span class="string">'BEGIN{FS=":"}/^s/{printf "%d\t%-10s\n" , NR,$1}'</span> passwd</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="awk3" decoding="async" height="219" loading="lazy" src="/images/blog-media/89cc96c78efd67991721.webp" width="1080"/></p>
-<p id="passage-577c1018ae2d"><strong>格式化输出第三例大于100的内容</strong></p>
+<p id="passage-577c1018ae2d"><strong>格式化输出第三列大于 100的内容</strong></p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-f2eebde7c221"><span class="line"><span class="meta">$</span><span class="bash"> awk -F <span class="string">":"</span> <span class="string">'$3 &gt; 100 {printf "%-10s\t%-10s\n",$1,$(NF-1)}'</span> passwd</span> </span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="awk4" decoding="async" height="361" loading="lazy" src="/images/blog-media/008b62f346569a9569d1.webp" width="1080"/></p>
 <p id="passage-64061157d65d"><strong>添加头部和尾部</strong></p>

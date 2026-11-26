@@ -76,7 +76,7 @@
 <li id="passage-1396bcb2804d">bin：启动、关闭tomcat的文件。startup、shutdown为启动文件，catalina文件为配置文件</li>
 <li id="passage-27b7ad710c62">conf：配置文件。server.xml为最重要的配置文件</li>
 <li id="passage-f56d8bd61022">logs：项目运行时，默认日志路径。在没有修改默认日志路径时，运行日志记录在该路径下</li>
-<li id="passage-e37b3c33bb45">webapps：项目包防止路径。把wat包，放在这个路径下，启动tomcat会自动解压</li>
+<li id="passage-e37b3c33bb45">webapps：项目包存放路径。把 WAR 包，放在这个路径下，启动tomcat会自动解压</li>
 </ul>
 <h3 id="catalina-bat「Windows」、catalina-sh「Linux」"><a class="headerlink" href="#catalina-bat「Windows」、catalina-sh「Linux」" title="catalina.bat「Windows」、catalina.sh「Linux」"></a>catalina.bat「Windows」、catalina.sh「Linux」</h3><p id="passage-74da049e2226">在执行startup文件启动tomcat时，会去执行catalina文件</p>
 <h4 id="catalina文件中，-设置堆栈信息"><a class="headerlink" href="#catalina文件中，-设置堆栈信息" title="catalina文件中， 设置堆栈信息"></a>catalina文件中， 设置堆栈信息</h4><figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-d819912b1ace"><span class="line">JAVA_OPTS=<span class="string">"-server -Xms256m -Xmx512m -Xss256k -XX:PermSize=128m"</span></span><br/></pre></td></tr></tbody></table></figure>
@@ -95,7 +95,7 @@
 <ul>
 <li id="passage-4aa033b2aad4">设置并行收集器：</li>
 </ul>
-<p id="passage-32b358324434">-XX:ParallelGCThreads=n：设置并行收集器收时使用的CPU数，并行收集线程数。</p>
+<p id="passage-32b358324434">-XX:ParallelGCThreads=n：设置并行收集时使用的CPU数，并行收集线程数。</p>
 <p id="passage-8c8a493557d0">-XX:MaxGCPauseMillis=n：设置并行收集最大暂停时间</p>
 <p id="passage-4f72918ff7ac">-XX:GCTimeRatio=n：设置垃圾回收时间占程序运行时间的百分比</p>
 <ul>
@@ -103,7 +103,7 @@
 </ul>
 <p id="passage-f2dc0ab0c367">-XX:+CMSIncrementalMode：设置为增量模式。适用于单CPU情况</p>
 <p id="passage-90ab67ea8716">-XX:ParallelGCThreads=n：设置并发收集器年轻代收集方式为并行收集时，使用的CPU数，并行收集线程数</p>
-<p id="passage-6b3d7d6b2d79"><strong>写GC日志，是要消耗IO的，所以在生成环境，一般不配置这个</strong></p>
+<p id="passage-6b3d7d6b2d79"><strong>写GC日志，是要消耗IO的，所以在生产环境，一般不配置这个</strong></p>
 <h3 id="conf-server-xml"><a class="headerlink" href="#conf-server-xml" title="conf/server.xml"></a>conf/server.xml</h3><p id="passage-3f11b53edffc">Tomcat中最顶层的是server，代表整个服务器，一个server可以包含至少一个service，每个service可以包含多个connector和一个container。Connector用于处理连接相关的事情，并提供Socket与Request和Response相关的转化；Container用于封装和管理Servlet，以及具体Request请求；多个connector就可以配置多种类型连接，如http、https</p>
 <h4 id="不同的protocol"><a class="headerlink" href="#不同的protocol" title="不同的protocol"></a>不同的protocol</h4><p id="passage-ad3856f82b08">Connector在处理HTTP请求时，会使用不同的protocol，典型的有：</p>
 <ul>
@@ -113,7 +113,7 @@
 </ul>
 <p id="passage-ae35191cbca2">Protocol默认是HTTP/1.1，不同版本，会自动选择上面的模式（APR模式需要有相应的包才会自动选择）</p>
 <h4 id="Connector重要参数"><a class="headerlink" href="#Connector重要参数" title="Connector重要参数"></a>Connector重要参数</h4><ul>
-<li id="passage-0bb36df6e393">connectionsTimeout：连接超时时间，单位毫秒</li>
+<li id="passage-0bb36df6e393">connectionTimeout：连接超时时间，单位毫秒</li>
 <li id="passage-92b3f301e602">acceptCount：能接收的队列长度，队列满了，再有连接就会拒绝，默认100</li>
 <li id="passage-73cb8f88e43b">maxConnections：任意时刻能接受和处理的最大连接数。达到最大值，就会阻塞accept连接。如果设置为-1，则连接数不受限制</li>
 <li id="passage-575c541334c8">maxThreads：请求处理线程的最大数量。默认为200</li>
@@ -131,9 +131,9 @@
 </li>
 <li id="passage-d69c0ac7f63d"><p id="passage-e71283341cfd">minSpareThreads：线程池中保存的最小线程数，也是线程每次增加的最小值，默认25</p>
 </li>
-<li id="passage-59d1dcae9296"><p id="passage-3144597f0cb0">connectionTimrout：连接超时时间，单位毫秒</p>
+<li id="passage-59d1dcae9296"><p id="passage-3144597f0cb0">connectionTimeout：连接超时时间，单位毫秒</p>
 </li>
-<li id="passage-36231f2a7107"><p id="passage-55ec6c42388f">accepCount：最大可接受的排队数量</p>
+<li id="passage-36231f2a7107"><p id="passage-55ec6c42388f">acceptCount：最大可接受的排队数量</p>
 </li>
 <li id="passage-6923cd3d2e5d"><p id="passage-282ccb274754">maxSpareThreads：一旦创建的线程数量超过这个数值，Tomcat就会关闭不活动的线程</p>
 </li>
@@ -189,13 +189,13 @@
 <ul>
 <li id="passage-d1d31c467464">结构化方式存储数据库</li>
 <li id="passage-79b0922be7d5">标准的结构化查询语句「SQL」标准的增删改查</li>
-<li id="passage-d500837aa30f">事物性，寻找ACID规则「原子性、一致性、隔离性、持久性」</li>
+<li id="passage-d500837aa30f">事务性，遵循 ACID 规则「原子性、一致性、隔离性、持久性」</li>
 </ul>
 <p id="passage-1c22df31357c">sql有四种</p>
 <ul>
 <li id="passage-4904668ee2fb">DCL数据库控制语言「Data Control Language」用来确认或取消数据库用户和角色权限变更</li>
 <li id="passage-0a5ce706d231">DDL数据库定义语言「Data Definition Language」用来创建或删除数据库以及表</li>
-<li id="passage-43387af9c305">DML数据库操作语言「Data Mainpulation Language」用来变更表数据记录</li>
+<li id="passage-43387af9c305">DML数据库操作语言「Data Manipulation Language」用来变更表数据记录</li>
 <li id="passage-945961c0dfd0">DQL数据库查询语言「Data Query Language」用来查询表中的记录</li>
 </ul>
 <h4 id="非关系型数据库NoSQL「Not-only-SQL」"><a class="headerlink" href="#非关系型数据库NoSQL「Not-only-SQL」" title="非关系型数据库NoSQL「Not only SQL」"></a>非关系型数据库NoSQL「Not only SQL」</h4><h3 id="选择数据库需要注意"><a class="headerlink" href="#选择数据库需要注意" title="选择数据库需要注意"></a>选择数据库需要注意</h3><ul>
@@ -221,12 +221,12 @@
 <li id="passage-f7c5504c7387">配置表，一般在项目启动的时候，读取一次，在项目运行过程中，一般都不会去修改</li>
 <li id="passage-4616cb15c008">用户信息表：在项目启动时，不会去读取，但是在项目运行过程中，随时都有可能修改</li>
 </ul>
-<p id="passage-a1efccb27b15">所以，它们的使用场景不一样，创建表时会选择不同的搜索引擎</p>
-<p id="passage-05853b550345">配置表一般选用<code>MyISM</code>存储引擎</p>
+<p id="passage-a1efccb27b15">所以，它们的使用场景不一样，创建表时会选择不同的存储引擎</p>
+<p id="passage-05853b550345">配置表一般选用 <code>MyISAM</code> 存储引擎</p>
 <p id="passage-3e2c4e4a88d0">用户信息表一般选用<code>InnoDB</code></p>
 <p id="passage-3cb71aec160f">mysql数据库5.5版本及以前</p>
 <ul>
-<li id="passage-ec0d8fffc3a0">默认存储引擎为<code>MyISM</code></li>
+<li id="passage-ec0d8fffc3a0">默认存储引擎为 <code>MyISAM</code></li>
 <li id="passage-c985f421787a">追求存储数据的速度，存储数据不准</li>
 <li id="passage-1d76076848a1">锁，表锁，会锁定整张表</li>
 <li id="passage-e8e203f8077b">索引：B树索引</li>

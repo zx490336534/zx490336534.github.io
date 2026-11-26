@@ -55,10 +55,10 @@
       </div>
     </header>
     <div class="wrap article-layout with-outline">
-      <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E7%94%A8%E6%88%B7%E6%A8%A1%E5%9D%97">用户模块</a></li><li><a href="#Json-Web-Token%E8%AE%A4%E8%AF%81">Json Web Token认证</a></li><li><a href="#JWT%EF%BC%88Json-Web-Token%EF%BC%89">JWT（Json Web Token）</a></li><li><a href="#%E5%AE%89%E8%A3%85djangorestframework-jwt">安装djangorestframework-jwt</a></li><li><a href="#%E4%BD%BF%E7%94%A8">使用</a></li><li><a href="#%E6%B7%BB%E5%8A%A0%E8%B7%AF%E7%94%B1">添加路由</a></li><li><a href="#%E4%BD%BF%E7%94%A8httpie%E5%8F%91%E8%B5%B7%E5%8C%85%E5%90%ABtoken%E7%9A%84%E5%86%85%E5%AE%B9">使用httpie发起包含token的内容</a></li><li><a href="#%E4%BF%AE%E6%94%B9%E8%BD%BD%E8%8D%B7">修改载荷</a></li><li><a href="#Django%E8%87%AA%E5%B8%A6%E7%9A%84%E7%94%A8%E6%88%B7%E6%A8%A1%E5%9E%8B">Django自带的用户模型</a></li><li><a href="#%E6%B3%A8%E5%86%8C">注册</a></li></ol></details></aside>
+      <aside class="outline"><details open><summary><span class="outline-label">本文目录</span><span class="outline-rail-icon" aria-hidden="true"></span><span class="outline-rail-label">目录</span></summary><ol><li><a href="#%E7%94%A8%E6%88%B7%E6%A8%A1%E5%9D%97">用户模块</a></li><li><a href="#Json-Web-Token%E8%AE%A4%E8%AF%81">JSON Web Token 认证</a></li><li><a href="#JWT%EF%BC%88Json-Web-Token%EF%BC%89">JWT（JSON Web Token）</a></li><li><a href="#%E5%AE%89%E8%A3%85djangorestframework-jwt">安装djangorestframework-jwt</a></li><li><a href="#%E4%BD%BF%E7%94%A8">使用</a></li><li><a href="#%E6%B7%BB%E5%8A%A0%E8%B7%AF%E7%94%B1">添加路由</a></li><li><a href="#%E4%BD%BF%E7%94%A8httpie%E5%8F%91%E8%B5%B7%E5%8C%85%E5%90%ABtoken%E7%9A%84%E5%86%85%E5%AE%B9">使用httpie发起包含token的内容</a></li><li><a href="#%E4%BF%AE%E6%94%B9%E8%BD%BD%E8%8D%B7">修改载荷</a></li><li><a href="#Django%E8%87%AA%E5%B8%A6%E7%9A%84%E7%94%A8%E6%88%B7%E6%A8%A1%E5%9E%8B">Django自带的用户模型</a></li><li><a href="#%E6%B3%A8%E5%86%8C">注册</a></li></ol></details></aside>
       <div class="article-main">
-        <aside class="reading-guide" data-reading-kind="sections" aria-labelledby="reading-guide-title"><h2 id="reading-guide-title">本文速读</h2><nav aria-label="可核对的原文段落"><ul><li><a href="#%E7%94%A8%E6%88%B7%E6%A8%A1%E5%9D%97">用户模块</a></li><li><a href="#Json-Web-Token%E8%AE%A4%E8%AF%81">Json Web Token认证</a></li><li><a href="#Session%E8%AE%A4%E8%AF%81">Session认证</a></li></ul></nav><p class="reading-scope"><strong>主题：</strong><a href="/categories/development/backend/python-web/">Python Web</a></p></aside>
-        <div class="post-body" id="article-text"><span id="测试开发进阶-三十一"></span><h2 id="用户模块"><a class="headerlink" href="#用户模块" title="用户模块"></a>用户模块</h2><h3 id="Json-Web-Token认证"><a class="headerlink" href="#Json-Web-Token认证" title="Json Web Token认证"></a>Json Web Token认证</h3><p id="passage-94fc826cb3df">最常见的认证机制</p>
+        <aside class="reading-guide" data-reading-kind="sections" aria-labelledby="reading-guide-title"><h2 id="reading-guide-title">本文速读</h2><nav aria-label="可核对的原文段落"><ul><li><a href="#%E7%94%A8%E6%88%B7%E6%A8%A1%E5%9D%97">用户模块</a></li><li><a href="#Session%E8%AE%A4%E8%AF%81">Session认证</a></li><li><a href="#Token%E8%AE%A4%E8%AF%81">Token认证</a></li></ul></nav><p class="reading-scope"><strong>主题：</strong><a href="/categories/development/backend/python-web/">Python Web</a></p></aside>
+        <div class="post-body" id="article-text"><span id="测试开发进阶-三十一"></span><h2 id="用户模块"><a class="headerlink" href="#用户模块" title="用户模块"></a>用户模块</h2><h3 id="Json-Web-Token认证"><a class="headerlink" href="#Json-Web-Token认证" title="JSON Web Token 认证"></a>JSON Web Token 认证</h3><p id="passage-94fc826cb3df">最常见的认证机制</p>
 <ul>
 <li id="passage-6177368e807b">Session认证</li>
 <li id="passage-d5d4bf19aabc">Token认证<span id="more"></span>
@@ -71,24 +71,24 @@
 <p id="passage-3e62f81877b9">跨语言，跨平台</p>
 <p id="passage-634c453d3e25">扩展性强</p>
 <p id="passage-07d89c45e036">鉴权性能高</p>
-<h3 id="JWT（Json-Web-Token）"><a class="headerlink" href="#JWT（Json-Web-Token）" title="JWT（Json Web Token）"></a>JWT（Json Web Token）</h3><p id="passage-4e732c0eee21">由三部分组成</p>
+<h3 id="JWT（Json-Web-Token）"><a class="headerlink" href="#JWT（Json-Web-Token）" title="JWT（JSON Web Token）"></a>JWT（JSON Web Token）</h3><p id="passage-4e732c0eee21">本文使用的签名 JWT 由三部分组成</p>
 <ul>
 <li id="passage-db6fe316465f">header</li>
 </ul>
 <p id="passage-d501ed738b4a">声明类型</p>
-<p id="passage-facb55dbba23">声明加密算法</p>
-<p id="passage-3ee68bd46d59">base64加密，可以解密</p>
+<p id="passage-facb55dbba23">声明签名或消息认证算法</p>
+<p id="passage-3ee68bd46d59">使用 Base64url 编码，不会加密</p>
 <ul>
-<li id="passage-d9ead676c130">playload</li>
+<li id="passage-d9ead676c130">payload</li>
 </ul>
 <p id="passage-695507340fbf">存放过期时间，签发用户等</p>
 <p id="passage-caaf1c9d30b6">可以添加用户的非敏感信息</p>
-<p id="passage-3ee68bd46d59-2">base64加密，可以解密</p>
+<p id="passage-3ee68bd46d59-2">使用 Base64url 编码，不会加密</p>
 <ul>
 <li id="passage-4689f25ce2e4">signature</li>
 </ul>
-<p id="passage-4e732c0eee21-2">由三部分组成</p>
-<p id="passage-d594adb222ef">使用base64加密之后的header + . + 使用base64加密之后的playload + 使用HS256算法加密，同时secret加盐处理</p>
+<p id="passage-4e732c0eee21-2">用于验证前两部分是否被修改</p>
+<p id="passage-d594adb222ef">示例使用的 HS256 是 HMAC-SHA-256，用于校验完整性，不会加密 header 或 payload。</p>
 <h3 id="安装djangorestframework-jwt"><a class="headerlink" href="#安装djangorestframework-jwt" title="安装djangorestframework-jwt"></a>安装djangorestframework-jwt</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-c0de84245eb2"><span class="line"><span class="meta">$</span><span class="bash"> pip install djangorestframework-jwt</span></span><br/></pre></td></tr></tbody></table></figure>
 <h3 id="使用"><a class="headerlink" href="#使用" title="使用"></a>使用</h3><p id="passage-340aa525932c">在<code>setting.py</code>中添加</p>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/></pre></td><td class="code"><pre id="passage-fed2e876b656"><span class="line">REST_FRAMEWORK = {</span><br/><span class="line">    <span class="string">'DEFAULT_AUTHENTICATION_CLASSES'</span>: [</span><br/><span class="line">        <span class="comment"># 使用JWT Token认证</span></span><br/><span class="line">        <span class="string">'rest_framework_jwt.authentication.JSONWebTokenAuthentication'</span>,</span><br/><span class="line">        <span class="comment"># Basic类型的认证（账号和密码）</span></span><br/><span class="line">        <span class="string">'rest_framework.authentication.SessionAuthentication'</span>,</span><br/><span class="line">        <span class="comment"># Session会话认证</span></span><br/><span class="line">        <span class="string">'rest_framework.authentication.BasicAuthentication'</span>,</span><br/><span class="line">    ],</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>

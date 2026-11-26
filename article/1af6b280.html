@@ -65,10 +65,10 @@
 <ol>
 <li id="passage-e78119332fa0">每个应用下的数据库模型类，需要在当前应用下的models.py文件中定义</li>
 <li id="passage-bcaf75268dc8">一个数据库模型类相当于一个数据表(Table)</li>
-<li id="passage-79838aabc419">一个数据库模型类需要基础Model或者其子类</li>
+<li id="passage-79838aabc419">一个数据库模型类需要继承 Model 或其子类</li>
 <li id="passage-a87d2c353c87">定义的一个类属性，就相当于数据库表中的一个字段(<code>first_name</code>,<code>last_name</code>)</li>
 <li id="passage-6f555d9e2b0d">默认会创建一个自动递增的id主键</li>
-<li id="passage-73812fbfba45">默认创建的数据库名为：应用名小写_数据库模型类小写</li>
+<li id="passage-73812fbfba45">默认创建的数据表名为：应用名小写_数据库模型类小写</li>
 </ol>
 </blockquote>
 <span id="more"></span>
@@ -128,7 +128,7 @@
 <p id="passage-2ac55947d535">查看数据表</p>
 <p><img alt="数据表" decoding="async" height="688" loading="lazy" src="/images/blog-media/b7f03b3eb7fd9a82ede5.webp" width="1080"/></p>
 <img alt="显示" decoding="async" height="792" loading="lazy" src="/images/blog-media/41abbfe11569e63a06b7.webp" style="zoom:50%;" width="790"/>
-<p id="passage-dbb4337c4a59">为了让他显示的更人性化在<code>projects.models.Projects</code>中添加：</p>
+<p id="passage-dbb4337c4a59">为了让它显示得更人性化在<code>projects.models.Projects</code>中添加：</p>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre id="passage-d6f5ac593eb8"><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__str__</span>(<span class="params">self</span>):</span></span><br/><span class="line">    <span class="keyword">return</span> self.name</span><br/></pre></td></tr></tbody></table></figure>
 <img alt="显示" decoding="async" height="1000" loading="lazy" src="/images/blog-media/bf94329164221a5091e8.webp" style="zoom:50%;" width="926"/>
 <h4 id="修改展示的部分"><a class="headerlink" href="#修改展示的部分" title="修改展示的部分"></a>修改展示的部分</h4><ul>
@@ -141,7 +141,7 @@
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-c6f102ebfe0d"><span class="line"><span class="meta">$</span><span class="bash"> startapp interfaces</span></span><br/></pre></td></tr></tbody></table></figure>
 <h3 id="注册子应用"><a class="headerlink" href="#注册子应用" title="注册子应用"></a>注册子应用</h3><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/><span class="line">9</span><br/><span class="line">10</span><br/></pre></td><td class="code"><pre id="passage-05114a94405c"><span class="line">INSTALLED_APPS = [</span><br/><span class="line">    <span class="string">'django.contrib.admin'</span>,</span><br/><span class="line">    <span class="string">'django.contrib.auth'</span>,</span><br/><span class="line">    <span class="string">'django.contrib.contenttypes'</span>,</span><br/><span class="line">    <span class="string">'django.contrib.sessions'</span>,</span><br/><span class="line">    <span class="string">'django.contrib.messages'</span>,</span><br/><span class="line">    <span class="string">'django.contrib.staticfiles'</span>,</span><br/><span class="line">    <span class="string">'projects.apps.ProjectsConfig'</span>,</span><br/><span class="line">    <span class="string">'interfaces.apps.InterfacesConfig'</span>,</span><br/><span class="line">]</span><br/></pre></td></tr></tbody></table></figure>
 <p id="passage-9f0e514328c3">在<code>interfaces/models.py</code>中编写</p>
-<p id="passage-4768951312b9">**一个项目中有多个接口 那么需要在「多」的一侧创建外键 **</p>
+<p id="passage-4768951312b9"><strong>一个项目有多个接口，需要在「多」的一侧创建外键。</strong></p>
 <p id="passage-ebb8ae42b47d"><strong>项目表为父表「一」，接口表为「多」子表</strong></p>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/></pre></td><td class="code"><pre id="passage-4dcb1ee17290"><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Interfaces</span>(<span class="params">models.Model</span>):</span></span><br/><span class="line">    name = models.CharField(verbose_name=<span class="string">'项目名称'</span>, max_length=<span class="number">200</span>, unique=<span class="literal">True</span>, help_text=<span class="string">'项目名称'</span>)</span><br/><span class="line">    tester = models.CharField(verbose_name=<span class="string">'测试人员'</span>, max_length=<span class="number">50</span>, help_text=<span class="string">'测试人员'</span>)</span><br/><span class="line">    desc = models.TextField(verbose_name=<span class="string">'简要描述'</span>, help_text=<span class="string">'简要描述'</span>, blank=<span class="literal">True</span>, default=<span class="string">''</span>, null=<span class="literal">True</span>)</span><br/><span class="line">    project = models.ForeignKey(<span class="string">'projects.Projects'</span>, on_delete=models.CASCADE, verbose_name=<span class="string">'所属项目'</span>, help_text=<span class="string">'所属项目'</span>)</span><br/><span class="line"></span><br/><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>():</span></span><br/><span class="line">        verbose_name = <span class="string">'a'</span></span><br/></pre></td></tr></tbody></table></figure>
 <p id="passage-e164fdf19b2b">对于：</p>

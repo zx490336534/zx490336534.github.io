@@ -68,7 +68,7 @@
 <figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre id="passage-5bbb1a8d7475"><span class="line">dir(<span class="string">'/tmp'</span>){</span><br/><span class="line">   deleteDir()</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure></li>
 <li id="passage-348825d8977e"><p id="passage-b6ae87276814">fileExists：判断文件是否存在，结果返回布尔值</p>
 </li>
-<li id="passage-6a12d41c26cf"><p id="passage-296cee72956d">isUnix：判断是非为UNIX系统，如果是则返回true</p>
+<li id="passage-6a12d41c26cf"><p id="passage-296cee72956d">isUnix：判断是否为 Unix 类系统，如果是则返回 true</p>
 </li>
 <li id="passage-c87914c1b335"><p id="passage-c7eb9ce4e347">pwd：返回当前所在目录</p>
 </li>
@@ -197,7 +197,7 @@
 </li>
 <li id="passage-1d62f6f16f34"><p id="passage-9059038cbd74">encoding：脚本执行后输出日志的编码，默认为系统编码</p>
 </li>
-<li id="passage-21c10d76109a"><p id="passage-89623ed8012e">returnStatus：布尔类型，默认返回状态码，如果是非零则流水线执行失败。设置为true后，无论什么状态码，流水线执行都不受影响</p>
+<li id="passage-21c10d76109a"><p id="passage-89623ed8012e">returnStatus：布尔类型。默认情况下，非零退出码使该步骤抛出异常；设置为 true 后，步骤返回退出码，由流水线自行判断</p>
 </li>
 <li id="passage-c1618f47bf5f"><p id="passage-39df3ed29626">returnStdout：布尔类型，如果为true，任务的标准输出将作为步骤的返回值，而不是打印到构建日志中（如果有错误，则依旧会打印到日志中）</p>
 <p id="passage-b459f89ad0ca"> ⚠️returnStatus和returnStdout同时使用，只有returnStatus生效</p>
@@ -248,7 +248,7 @@
 <li id="passage-5b9a7d9e3e68"><p id="passage-daaf5b61c35a">retry：重复执行块</p>
 <figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/></pre></td><td class="code"><pre id="passage-ce3591ee911f"><span class="line">steps {</span><br/><span class="line">   retry(<span class="number">20</span>){</span><br/><span class="line">      script{</span><br/><span class="line">         sh <span class="attr">script:</span> <span class="string">'curl http://exmple'</span>,<span class="keyword">return</span> <span class="attr">Status:</span> <span class="literal">true</span></span><br/><span class="line">      }</span><br/><span class="line">   }</span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
 <p id="passage-92a42ce64e48"> ⚠️如果某次retry抛出异常，只中止当次，不会中止整个retry的执行</p>
-<p id="passage-e35fda4715a7"> 在执行retry的过程中，用户是无法中止流水线的</p>
+<p id="passage-e35fda4715a7"> 用户手动中止不会被 retry 捕获并重试</p>
 </li>
 <li id="passage-70275498788a"><p id="passage-df8bec2d9ae7">sleep：休眠一段时间</p>
 <ul>

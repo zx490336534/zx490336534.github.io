@@ -74,11 +74,11 @@
 <p><img alt="配置" decoding="async" height="235" loading="lazy" src="/images/blog-media/bb21a4928f6c6878fc22.webp" width="907"/></p>
 <ol>
 <li id="passage-ed549ad380e3">This group will start 「100」 threads：将启动100个线程数</li>
-<li id="passage-b961809145ef">First，wair for 「0」 seconds： 首先等待0秒</li>
+<li id="passage-b961809145ef">First，wait for 「0」 seconds： 首先等待0秒</li>
 <li id="passage-0f6879de7bb4">Then start 「0」threads：然后 启动0个用户</li>
-<li id="passage-ce35b47793d6">Next，add「10」 threads every 「30」seconds，using ramp-up 「5」 seconds：每5秒钟，增加10个线程数，然后运行30秒</li>
+<li id="passage-ce35b47793d6">Next，add「10」 threads every 「30」seconds，using ramp-up 「5」 seconds：每 30 秒增加 10 个线程，每批线程在 5 秒内启动</li>
 <li id="passage-1ff6d45ee782">Then hold load for 「60」seconds：然后持续运行60秒</li>
-<li id="passage-9bfcdd51424a">Finally，stop「5」threads every 「1」 seconds：最后，没1秒停止5个线程数</li>
+<li id="passage-9bfcdd51424a">Finally，stop「5」threads every 「1」 seconds：最后，每 1 秒停止 5 个线程</li>
 </ol>
 <p><img alt="图讲解" decoding="async" height="1024" loading="lazy" src="/images/blog-media/83a7ef65149d0461c077.webp" width="1046"/></p>
 <p id="passage-5a270cc5f581"><strong>缓起步，快结束</strong></p>
@@ -102,14 +102,14 @@
 <p><img alt="监听器" decoding="async" height="465" loading="lazy" src="/images/blog-media/c65f9122d03537205b78.webp" width="335"/></p>
 <ul>
 <li id="passage-9410848fa96c">Active Threads Over Time：随着时间变化的活跃线程数</li>
-<li id="passage-a399f9404596">PerfMon Metrics Collecotr：性能监控器</li>
+<li id="passage-a399f9404596">PerfMon Metrics Collector：性能监控器</li>
 <li id="passage-5623271ee622">Response Times Over Time：随着时间变化的响应时间</li>
 <li id="passage-7c071fd4b41f">Transactions per Second：TPS</li>
 </ul>
 <p><img alt="线程组" decoding="async" height="181" loading="lazy" src="/images/blog-media/55470dfac5623162339a.webp" width="324"/></p>
 <h4 id="Active-Threads-Over-Time"><a class="headerlink" href="#Active-Threads-Over-Time" title="Active Threads Over Time"></a>Active Threads Over Time</h4><p><img alt="Active Threads Over Time" decoding="async" height="451" loading="lazy" src="/images/blog-media/f3d4278282f59b667cfb.webp" width="1080"/></p>
 <h4 id="Response-Times-Over-Time"><a class="headerlink" href="#Response-Times-Over-Time" title="Response Times Over Time"></a>Response Times Over Time</h4><p><img alt="Response Times Over Time" decoding="async" height="543" loading="lazy" src="/images/blog-media/817ffb0685068e55df9e.webp" width="1080"/></p>
-<h4 id="Transactions-per-Second"><a class="headerlink" href="#Transactions-per-Second" title="Transactions per Second]"></a>Transactions per Second]</h4><p><img alt="Transactions per Second" decoding="async" height="553" loading="lazy" src="/images/blog-media/970d6add63e2ed250e12.webp" width="1080"/></p>
+<h4 id="Transactions-per-Second"><a class="headerlink" href="#Transactions-per-Second" title="Transactions per Second]"></a>Transactions per Second</h4><p><img alt="Transactions per Second" decoding="async" height="553" loading="lazy" src="/images/blog-media/970d6add63e2ed250e12.webp" width="1080"/></p>
 <ol>
 <li id="passage-3b720cdc3179"><p id="passage-b8f951d02831">是否有报错</p>
 </li>
@@ -120,7 +120,7 @@
 </ol>
 <p id="passage-341d2bcbe660">响应时间+活跃线程数=&gt;不同线程数时的平均响应时间</p>
 <p id="passage-488c638f48ea">活跃线程数+TPS=&gt;不同线程数的平均tps</p>
-<p id="passage-a5688288f08e">注意：一般不会在一个线程组下挂载多个接口，因为 监听器图标中，会把所有接口数据合并在一个图标中，数据太多，不利于分析</p>
+<p id="passage-a5688288f08e">注意：一般不会在一个线程组下挂载多个接口，因为 监听器图表中，会把所有接口数据合并在一个图表中，数据太多，不利于分析</p>
 <p><img alt="多个接口" decoding="async" height="635" loading="lazy" src="/images/blog-media/7cf360dab926a8f5f5f8.webp" width="1080"/></p>
 <h2 id="压力测试场景"><a class="headerlink" href="#压力测试场景" title="压力测试场景"></a>压力测试场景</h2><ul>
 <li id="passage-7030bfb9de51">持续运行比较长时间，看服务器的稳定性</li>
@@ -132,7 +132,7 @@
 <p id="passage-af9a124684d1">需求：有一个页面，需要做性能测试。看能否支持一秒钟5000人访问</p>
 </blockquote>
 <p id="passage-f89c25a923bb">相当于：1秒钟要处理500人的请求事务=&gt;500tps</p>
-<p id="passage-b2e1b3cb9908">一般的公司，接口tps范围数50～200</p>
+<p id="passage-b2e1b3cb9908">一般的公司，接口 TPS 范围为50～200</p>
 <p id="passage-61c9613297f1">添加一个「bzm - Arrivals Thread Group」</p>
 <p><img alt="bzm - Arrivals Thread Group" decoding="async" height="635" loading="lazy" src="/images/blog-media/65c72e31eaa89407771c.webp" width="1080"/></p></div>
         <aside class="source-panel" aria-labelledby="article-sources-title"><h2 id="article-sources-title">来源与参考</h2><ul><li><a class="source-link" href="https://mp.weixin.qq.com/s/OpUuNAJY7NouToGxY4IHow">查看微信公众号原文 ↗</a></li></ul></aside>

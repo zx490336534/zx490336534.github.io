@@ -59,10 +59,10 @@
       <div class="article-main">
         <aside class="reading-guide" data-reading-kind="sections" aria-labelledby="reading-guide-title"><h2 id="reading-guide-title">本文速读</h2><nav aria-label="可核对的原文段落"><ul><li><a href="#%E8%BF%87%E6%BB%A4%E6%9D%A1%E4%BB%B6">过滤条件</a></li><li><a href="#%E5%B8%B8%E8%A7%81%E8%AF%B7%E6%B1%82%E5%90%AB%E4%B9%89">常见请求含义</a></li><li><a href="#%E6%8E%A5%E5%8F%A3%E8%AE%BE%E8%AE%A1">接口设计</a></li></ul></nav><p class="reading-scope"><strong>主题：</strong><a href="/categories/development/backend/data/">数据与接口</a></p></aside>
         <div class="post-body" id="article-text"><span id="测试开发进阶-二十四"></span><p id="passage-435a065421fd">欢迎关注我的公众号「测试游记」</p>
-<h2 id="REST-API"><a class="headerlink" href="#REST-API" title="REST API"></a>REST API</h2><p id="passage-8154b4136c32">官方文档：<a href="https://restfulapi.net/" rel="noopener" target="_blank">https://restfulapi.net/</a></p>
+<h2 id="REST-API"><a class="headerlink" href="#REST-API" title="REST API"></a>REST API</h2><p id="passage-8154b4136c32">参考资料：<a href="https://restfulapi.net/" rel="noopener" target="_blank">https://restfulapi.net/</a></p>
 <p id="passage-bcdc6f95875a">一种开发理念「是设计风格 而不是标准」</p>
 <blockquote id="passage-bd47b91dfb3f">
-<p id="passage-7d8fe122ed38">REST is acronym for <strong>RE</strong>presentational <strong>S</strong>tate <strong>T</strong>ransfer.</p>
+<p id="passage-7d8fe122ed38">REST is an acronym for <strong>RE</strong>presentational <strong>S</strong>tate <strong>T</strong>ransfer.</p>
 </blockquote>
 <span id="more"></span>
 <p id="passage-5ff9627ff132">每一个URL代表一种「<strong>资源</strong>」</p>
@@ -123,7 +123,7 @@
 <li id="passage-8dff99a639b6">DELETE(DELETE):从服务器删除资源</li>
 <li id="passage-197d7c46f886">PATCH(UPDATE WHERE):在服务器部分更新资源(客户端提供改变的属性)</li>
 <li id="passage-7b784cabfcef">HEAD:获取资源的元数据</li>
-<li id="passage-96d4b1902002">OPTIONS:获取关于资源的哪些属性是客户端可以改变的信息</li>
+<li id="passage-96d4b1902002">OPTIONS：查询目标资源支持的通信选项，如允许的 HTTP 方法</li>
 </ul>
 <h4 id="状态码"><a class="headerlink" href="#状态码" title="状态码"></a>状态码</h4><ul>
 <li id="passage-939dce304d3c">200:OK</li>
@@ -132,7 +132,7 @@
 <ul>
 <li id="passage-99f87941ea81">201:CREATED</li>
 </ul>
-<p id="passage-d24d55ca11b3">「POST/PUT/PATCH」用户新建或修改数据成功</p>
+<p id="passage-d24d55ca11b3">成功创建了一个或多个新资源</p>
 <ul>
 <li id="passage-9853cd462f58">204:NO CONTENT</li>
 </ul>
@@ -144,11 +144,11 @@
 <ul>
 <li id="passage-cf334f8e9efa">401:Unauthorized</li>
 </ul>
-<p id="passage-a74999178d6d">「*」用户没有权限（令牌，用户名，密码错误）</p>
+<p id="passage-a74999178d6d">请求缺少有效的身份认证凭据</p>
 <ul>
 <li id="passage-4e0f5e00dd12">403:Forbidden</li>
 </ul>
-<p id="passage-fb9d80cbd677">「*」表示用户得到授权（与401错误相对），但是访问是被禁止的</p>
+<p id="passage-fb9d80cbd677">服务器理解请求，但拒绝处理，例如当前身份没有权限</p>
 <ul>
 <li id="passage-648cc1dbb2aa">404:NOT FOUND</li>
 </ul>
@@ -252,7 +252,7 @@
 <li id="passage-2bdca365d32a">改</li>
 </ul>
 <blockquote id="passage-4cbde44906df">
-<p id="passage-ae55a5c2a473">判断要修改的数据是否存在 -&gt; 校验请求参数 -&gt; 反序列化 -&gt; 保存数据 -&gt; 将保存的数据序列号并返回</p>
+<p id="passage-ae55a5c2a473">判断要修改的数据是否存在 -&gt; 校验请求参数 -&gt; 反序列化 -&gt; 保存数据 -&gt; 将保存的数据序列化并返回</p>
 </blockquote>
 <ul>
 <li id="passage-3f7fec5aee94">查</li>
