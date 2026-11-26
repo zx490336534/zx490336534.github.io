@@ -69,7 +69,7 @@
 <p id="passage-2eda674cc60f">从C2创建C3提交</p>
 <p id="passage-caadf420040d">将experiment分支合入master，master前进至C5</p>
 <p><img alt="merge" decoding="async" height="402" loading="lazy" src="/images/blog-media/245820c4d4e0487a71a0.webp" width="1080"/></p>
-<h3 id="rebase"><a class="headerlink" href="#rebase" title="rebase"></a>rebase</h3><p id="passage-c5d149c45eb8">将上例中的C4的修改直接基于C3进行提交。</p>
+<h3 id="rebase"><a class="headerlink" href="#rebase" title="rebase"></a>rebase</h3><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="同一组改动在旧基底和新基底上分别呈现，末端节点外观不同" decoding="async" height="591" loading="lazy" src="/images/article-figures/68ff4278-rebase-new-base-new-commits.webp" width="1050"/><figcaption>变基把选中的改动重新应用到新基底上。重放时产生的新提交和原提交不是同一个对象。</figcaption></figure><p id="passage-c5d149c45eb8">将上例中的C4的修改直接基于C3进行提交。</p>
 <p id="passage-b98a562e9891">相当于提取在 C4 中引入的补丁和修改，然后在 C3 的基础上应用一次。</p>
 <p id="passage-283d5cd5dfc8">也就是<code>将C4中的修改变基到C3上</code></p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre id="passage-94573321c5d9"><span class="line"><span class="meta">$</span><span class="bash"> git checkout experiment</span> </span><br/><span class="line"><span class="meta">$</span><span class="bash"> git rebase master</span></span><br/></pre></td></tr></tbody></table></figure>
@@ -86,7 +86,7 @@
 <p id="passage-257f3916c925">整合server变更</p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/></pre></td><td class="code"><pre id="passage-fab90caf9216"><span class="line"><span class="meta">#</span><span class="bash"> git rebase [basebranch] [topicbranch]</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git rebase master server</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> git checkout master</span> </span><br/><span class="line"><span class="meta">$</span><span class="bash"> git merge server</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="将 server 中的修改变基到 master 上" decoding="async" height="177" loading="lazy" src="/images/blog-media/e303be874348b00129ce.webp" width="1080"/></p>
-<h2 id="变基风险"><a class="headerlink" href="#变基风险" title="变基风险"></a>变基风险</h2><p id="passage-d902aa0ed96e">注意⚠️：<strong>不要对在你的仓库外有副本的分支执行变基。</strong></p>
+<h2 id="变基风险"><a class="headerlink" href="#变基风险" title="变基风险"></a>变基风险</h2><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="两张工作台共享一段提交记录，其中一张另有一段不同序列" decoding="async" height="591" loading="lazy" src="/images/article-figures/68ff4278-shared-history-may-diverge.webp" width="1050"/><figcaption>如果别人已基于旧提交继续工作，改变共享历史会让双方看到不同的提交链。先确认历史是否已被别人使用。</figcaption></figure><p id="passage-d902aa0ed96e">注意⚠️：<strong>不要对在你的仓库外有副本的分支执行变基。</strong></p>
 <p id="passage-7d319961445c">变基操作的实质是<code>丢弃一些现有的提交,然后相应地新建一些内容一样但实际上不同的提交</code>。</p>
 <p id="passage-2d6be3b2bda4">如果有人拉取了一个分支并在此基础上进行开发，但是该分支被你执行了变更。</p>
 <p id="passage-31e70c167c74">那么当那个人提交的时候就需要处理<code>额外的合并工作</code>（将相同的内容又合并一次，并生成了一个新的提交）。</p>

@@ -48,7 +48,7 @@
         <h1 class="post-title" data-topic-title="Docker 入门：用镜像和容器运行 Python 程序">Python 测试开发进阶 · 第 43 篇｜Docker 入门：用镜像和容器运行 Python 程序</h1>
         <div class="entry-meta"><span class="post-author"><a href="/about/" rel="author">听白</a></span><time itemprop="datePublished" datetime="2019-12-03T17:51:39+08:00">2019-12-03</time>
           <span class="post-category" hidden><a href="/categories/Python%E6%B5%8B%E8%AF%95%E5%BC%80%E5%8F%91%E8%BF%9B%E9%98%B6/">Python测试开发进阶</a></span>
-          <span class="read-time">约 1 分钟</span>
+          <span class="read-time">约 2 分钟</span>
           <span class="public-counter" data-public-count="reads" data-article-path="/article/68335747.html" hidden><span>累计阅读</span> <strong></strong></span>
           <a href="#comments" data-jump-comments>评论</a><a class="series-progress" href="/series/python-test-development/#chapter-43">Python 测试开发进阶 · 第 43/48 篇</a></div>
         <nav class="article-path" aria-label="文章分类"><a href="/categories/">分类</a> <span aria-hidden="true">/</span> <a href="/categories/engineering/">工程工具</a> <span aria-hidden="true">/</span> <a href="/categories/engineering/systems/">系统与调试工具</a></nav>
@@ -65,7 +65,7 @@
 <p id="passage-85b3726bf929">运行</p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-9e596a49a3bf"><span class="line"><span class="meta">$</span><span class="bash"> docker run -it --name mypy --rm -v <span class="variable">$PWD</span>:/app -w /app python:alpine python test.py</span></span><br/></pre></td></tr></tbody></table></figure>
 <p><img alt="运行" decoding="async" height="533" loading="lazy" src="/images/blog-media/c63e8c77cf6b1c772f4b.webp" width="1080"/></p>
-<h2 id="镜像-amp-容器"><a class="headerlink" href="#镜像-amp-容器" title="镜像&amp;容器"></a>镜像&amp;容器</h2><h3 id="镜像"><a class="headerlink" href="#镜像" title="镜像"></a>镜像</h3><ul>
+<h2 id="镜像-amp-容器"><a class="headerlink" href="#镜像-amp-容器" title="镜像&amp;容器"></a>镜像&amp;容器</h2><h3 id="镜像"><a class="headerlink" href="#镜像" title="镜像"></a>镜像</h3><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="左侧一个带蓝边的模板分出两个运行实例，下面的实例多了一面红旗。" decoding="async" height="456" loading="lazy" src="/images/article-figures/68335747-docker-one-image-many-running-instances.webp" width="1400"/><figcaption>镜像是启动容器的模板。同一镜像可以启动多个容器；给某个容器增加运行时状态，不会因此改写原镜像。</figcaption></figure><ul>
 <li id="passage-1aaee6a7d567">Docker Hub查找现有镜像</li>
 </ul>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-589a14ef48c9"><span class="line"><span class="meta">$</span><span class="bash"> docker search xxx</span></span><br/></pre></td></tr></tbody></table></figure>
@@ -87,7 +87,7 @@
 <li id="passage-b10892972694">删除镜像</li>
 </ul>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre id="passage-5c131958122a"><span class="line"><span class="meta">$</span><span class="bash"> docker rmi xxx</span></span><br/><span class="line"><span class="meta">$</span><span class="bash"> docker image rm xxx</span></span><br/></pre></td></tr></tbody></table></figure>
-<h3 id="容器"><a class="headerlink" href="#容器" title="容器"></a>容器</h3><ul>
+<h3 id="容器"><a class="headerlink" href="#容器" title="容器"></a>容器</h3><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="两个透明容器共用下面的蓝色底板，各自有带不同色点的写入层。" decoding="async" height="403" loading="lazy" src="/images/article-figures/68335747-docker-shared-readonly-base-separate-writable-layer.webp" width="1400"/><figcaption>两个容器可以共用只读镜像层，但各自的容器写入层是分开的。没有额外共享配置时，在一个容器里写入的数据不会自动出现于另一个容器。</figcaption></figure><ul>
 <li id="passage-54aa5bf2efb4">查看正在运行的容器</li>
 </ul>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-8fb4e9012355"><span class="line"><span class="meta">$</span><span class="bash"> docker ps</span></span><br/></pre></td></tr></tbody></table></figure>

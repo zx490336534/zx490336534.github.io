@@ -96,7 +96,7 @@
 </ul>
 <p id="passage-42e6ad0670fc">视图集</p>
 <blockquote id="passage-b28a666d00d6">
-<p id="passage-9f9acd08d9b2">action和请求方法的映射</p>
+<p id="passage-9f9acd08d9b2">action和请求方法的映射</p><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="三条进入的轨道分别穿过中央映射板，再抵达右边同一外壳中的三个动作位。" decoding="async" height="734" loading="lazy" src="/images/article-figures/4b692fc9-viewset-routing-to-named-actions.webp" width="1100"/><figcaption>路由负责把请求方法和路径映射到动作，视图集负责实现 list、retrieve 等动作。把映射和实现分开看，更容易定位请求最后进了哪个方法。</figcaption></figure>
 </blockquote>
 <ul>
 <li id="passage-f2da6bdbb914">ViewSet</li>
@@ -120,7 +120,7 @@
 <p id="passage-3eefa4c5b826">可以使用action装饰器来声明自定义的动作</p>
 <p id="passage-26dc30c5dd1a">默认情况下，实例方法名就是动作名</p>
 <p id="passage-c2b70e6c666c"><code>methods</code>参数用于指定该动作支持的请求方法，默认为get</p>
-<p id="passage-99906439b310"><code>detail</code>用于指定该动作要处理的是否为详情资源对象「url是否需要传递pk值」</p>
+<p id="passage-99906439b310"><code>detail</code>用于指定该动作要处理的是否为详情资源对象「url是否需要传递pk值」</p><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="左边展示整本册子里的三张卡片，右边的选择器只框出其中一张。" decoding="async" height="734" loading="lazy" src="/images/article-figures/4b692fc9-viewset-collection-versus-detail-action.webp" width="1100"/><figcaption>集合动作处理整组资源，不需要先指出其中某一条；详情动作针对指定资源，路径需要带上该资源的标识。DRF 的 detail 参数区分这两种范围。</figcaption></figure>
 <p id="passage-e799b0db6fa6">在<code>url.py</code>中添加</p>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre id="passage-4f1e9eccf935"><span class="line">path(<span class="string">'project/names/'</span>, views.ProjectsViewSet.as_view({</span><br/><span class="line">    <span class="string">'get'</span>, <span class="string">'names'</span></span><br/><span class="line">}))</span><br/></pre></td></tr></tbody></table></figure>
 <p id="passage-55a1cced5797">新增序列化器</p>
