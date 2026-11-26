@@ -92,7 +92,9 @@ def article_metadata(post, site):
         article["image"] = site + post.display_cover
     crumbs = [("分类", "/categories/")]
     if post.topic:
-        crumbs += [(t.name, t.url) for t in post.topic.trail()]
+        sections = post.topic.trail()
+        article["articleSection"] = [t.name for t in sections]
+        crumbs += [(t.name, t.url) for t in sections]
     crumbs.append((post.display_title, post.path))
     breadcrumb = {
         "@type": "BreadcrumbList",

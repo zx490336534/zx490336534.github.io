@@ -19,6 +19,7 @@ from bs4 import BeautifulSoup
 import nh3
 
 import blog_discovery as discovery
+import blog_geo as geo
 import blog_portfolio as portfolio
 
 from blog_series import article_navigation, cards as series_cards, catalog_page, chapter_title, load_series, position_link, series_page
@@ -626,7 +627,7 @@ def article(post, older, newer, series_position=None):
     <div class="wrap article-layout{' with-outline' if outline else ''}">
       {outline}
       <div class="article-main">
-        {discovery.evidence_card(post)}
+        {discovery.evidence_card(post) or geo.card(post)}
         <div class="post-body" id="article-text">{post.body}</div>{article_video(post)}{watch_link}
         {source}
         <div class="post-tags" aria-label="文章标签">{tags}</div>

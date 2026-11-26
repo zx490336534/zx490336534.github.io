@@ -4,6 +4,7 @@
 # ///
 """Verify the generated discovery contract and optionally compare protected content."""
 import argparse
+from collections import Counter
 import json
 from pathlib import Path
 import subprocess
@@ -12,6 +13,7 @@ import xml.etree.ElementTree as ET
 
 from bs4 import BeautifulSoup
 from blog_discovery import EVIDENCE, WATCH, watch_path
+from blog_geo import HARD_RISK, SENSITIVE_LINE, compact, fragments, safe
 from blog_portfolio import dimensions
 
 SITE = "https://www.zhongxin.website"
@@ -52,6 +54,7 @@ def main():
         canonicals = markup.select('link[rel=canonical]')
         assert len(canonicals) == 1 and canonicals[0]["href"] == SITE + path, path
 
+    guide_counts = Counter()
     for article in articles:
         path = "/article/" + article.name
         markup = page(path)
@@ -59,14 +62,44 @@ def main():
         assert [v["@type"] for v in data] == ["BlogPosting", "BreadcrumbList"], path
         headline = markup.select_one("h1.post-title").get_text(strip=True)
         assert data[0]["headline"] == headline and data[0]["author"]["name"] == markup.select_one(".post-author").get_text(strip=True)
+        assert data[0].get("articleSection") == [a.get_text(strip=True) for a in markup.select(".article-path a")][1:], path
         card = markup.select_one(".article-main > .editorial-evidence")
         assert bool(card) == (article.stem in EVIDENCE), path
         if card:
             assert len(card.select("dd")) == 3 and not markup.select_one(".post-body .editorial-evidence"), path
+        guide = markup.select_one(".article-main > .reading-guide")
+        assert bool(guide) != bool(card), path
+        guide_counts[guide["data-reading-kind"] if guide else "original-editorial"] += 1
+        original_body = markup.select_one(".post-body")
+        if guide:
+            assert guide.find_next_sibling() == original_body and guide.select_one("h2"), path
+            assert not guide.select("script, code, pre, img, iframe"), path
+            kind = guide["data-reading-kind"]
+            for entry in guide.select('a[href^="#"]'):
+                fragment = unquote(entry["href"][1:])
+                assert fragment == "article-text" or original_body.find(id=fragment), (path, fragment)
+            for entry in guide.select('nav a[href]'):
+                fragment = unquote(entry["href"][1:])
+                assert compact(original_body.find(id=fragment).get_text(" ", strip=True)) == entry.get_text(strip=True), path
+                if kind != "editorial":
+                    assert not SENSITIVE_LINE.search(fragment) and not HARD_RISK.search(fragment), path
+                    assert safe(entry.get_text(strip=True), 3, 58, min_han=2), path
+            if kind == "excerpt":
+                quote = guide.select_one("blockquote")
+                attribution = quote.select_one("cite")
+                key = unquote(attribution.a["href"][1:])
+                text = compact(" ".join(part for part in quote.find_all(string=True, recursive=False)))
+                assert safe(text, 30, 112) and not HARD_RISK.search(text), path
+                assert any(key == anchor and any(text in p for p in paragraphs)
+                           for anchor, _, _, paragraphs in fragments(original_body)), path
+            if kind == "restricted":
+                assert not guide.select("blockquote, nav") and [a["href"] for a in guide.select("a")] == ["#article-text"], path
         if args.baseline:
             previous = old_page(args.baseline, path)
             assert previous.select_one(".post-body").decode_contents() == markup.select_one(".post-body").decode_contents(), path
             assert str(previous.select_one(".article-video")) == str(markup.select_one(".article-video")), path
+            for selector in (".article-cover", "a.source-link", 'meta[property="og:image"]'):
+                assert str(previous.select_one(selector)) == str(markup.select_one(selector)), (path, selector)
 
     for slug in WATCH:
         markup = page(watch_path(slug))
@@ -182,6 +215,8 @@ def main():
             if path.startswith("/images/article-covers/"):
                 assert dimensions(path, ROOT)[0] == int(width[:-1])
     print(f"OK: {len(expected)} Xiaoxiao library entries; 25-series navigation; exact archive alias consolidation; footer contacts.")
+    assert sum(guide_counts.values()) == len(articles)
+    print("OK: cited article reading leads: " + ", ".join(f"{k}={v}" for k, v in sorted(guide_counts.items())))
     print(f"OK: {len(paths)} canonical sitemap routes; {len(articles)} articles; 5 evidence cards; 3 complete watch transcripts.")
 
 
