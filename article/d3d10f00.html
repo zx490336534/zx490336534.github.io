@@ -62,7 +62,7 @@
 <ul>
 <li id="passage-6177368e807b">Session认证</li>
 <li id="passage-d5d4bf19aabc">Token认证<span id="more"></span>
-<h4 id="Session认证"><a class="headerlink" href="#Session认证" title="Session认证"></a>Session认证</h4></li>
+<h4 id="Session认证"><a class="headerlink" href="#Session认证" title="Session认证"></a>Session认证</h4><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="空白浏览器界面与服务器侧记录柜分开放置" decoding="async" height="591" loading="lazy" src="/images/article-figures/d3d10f00-server-side-session-location.webp" width="1050"/><figcaption>以服务端会话为例，会话内容保存在服务端，和浏览器显示的界面是两回事。</figcaption></figure></li>
 </ul>
 <p id="passage-3e5842f312f5">保持在服务端，增加服务器开销</p>
 <p id="passage-58644db0129a">分布式架构中，难以维持Session会话同步</p>
@@ -104,7 +104,7 @@
 <p><img alt="获取到token" decoding="async" height="688" loading="lazy" src="/images/blog-media/3bd4f04613d07f42ddbf.webp" width="1080"/></p>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/><span class="line">4</span><br/><span class="line">5</span><br/><span class="line">6</span><br/><span class="line">7</span><br/><span class="line">8</span><br/></pre></td><td class="code"><pre id="passage-06b212ff7369"><span class="line">HTTP <span class="number">200</span> OK</span><br/><span class="line">Allow: POST, OPTIONS</span><br/><span class="line">Content-Type: application/json</span><br/><span class="line">Vary: Accept</span><br/><span class="line"></span><br/><span class="line">{</span><br/><span class="line">    <span class="string">"token"</span>: <span class="string">"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6Inpob25neGluIiwiZXhwIjoxNTcyMzA5MzQ2LCJlbWFpbCI6IjQ5MDMzNjUzNEBxcS5jb20ifQ.ZDEeBAgSuPyvh1KBnF1sSY9w22guSRHXm8sbgqEWusg"</span></span><br/><span class="line">}</span><br/></pre></td></tr></tbody></table></figure>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/><span class="line">3</span><br/></pre></td><td class="code"><pre id="passage-e53b0604a08e"><span class="line"><span class="keyword">import</span> base64</span><br/><span class="line">base64.b64decode(<span class="string">'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9'</span>)</span><br/><span class="line"><span class="comment"># b'{"typ":"JWT","alg":"HS256"}'</span></span><br/></pre></td></tr></tbody></table></figure>
-<p id="passage-df79195efa9e">认证过期时间</p>
+<p id="passage-df79195efa9e">认证过期时间</p><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="一条虚构状态轴用颜色区分有效区和到期后的状态" decoding="async" height="591" loading="lazy" src="/images/article-figures/d3d10f00-current-state-before-after-expiry.webp" width="1050"/><figcaption>有效期限定了状态可以持续多久。测试可以分别检查到期前与到期后的反馈，不必使用真实数据。</figcaption></figure>
 <p id="passage-320dd568e1d1"><code>./site-packages/rest_framework_jwt/settings.py</code></p>
 <p id="passage-137aad1dbdd7">第40行</p>
 <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-2d8537ca4542"><span class="line"><span class="string">'JWT_EXPIRATION_DELTA'</span>: datetime.timedelta(seconds=<span class="number">300</span>),</span><br/></pre></td></tr></tbody></table></figure>
