@@ -67,7 +67,7 @@
 <p id="passage-92fb8b850faa">Windows：FAT32、NTFS</p>
 <p id="passage-6e2653e53c00">在读写数据时，数据与磁盘间有个磁盘缓存（内存的一部分）</p>
 <h2 id="机械磁盘「HHD」"><a class="headerlink" href="#机械磁盘「HHD」" title="机械磁盘「HHD」"></a>机械硬盘「HDD」</h2><p id="passage-ae84c13b10cd">由盘片，磁头组成，数据存在盘片的环形磁道上，读写时，磁头移动，定位到数据的磁道，进行数据读写</p>
-<h2 id="固态磁盘「SSD」"><a class="headerlink" href="#固态磁盘「SSD」" title="固态磁盘「SSD」"></a>固态磁盘「SSD」</h2><p id="passage-cf6882c7ff1f">由固态电子元器件组成，不需要磁头寻址，所以不管是连续IO还是随机IO，都比机械盘快</p>
+<h2 id="固态磁盘「SSD」"><a class="headerlink" href="#固态磁盘「SSD」" title="固态磁盘「SSD」"></a>固态磁盘「SSD」</h2><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="左侧机械硬盘由有同心圆的盘片与摆臂组成，右侧固态硬盘是一块装有芯片的电路板。" decoding="async" height="443" loading="lazy" src="/images/article-figures/daf73f86-disk-platter-versus-flash.webp" width="1400"/><figcaption>机械盘要让磁头移动到目标磁道；固态盘用闪存芯片保存数据，没有机械寻道这一步。这也是两者处理随机读写时的重要区别。</figcaption></figure><p id="passage-cf6882c7ff1f">由固态电子元器件组成，不需要磁头寻址，所以不管是连续IO还是随机IO，都比机械盘快</p>
 <span id="more"></span>
 <h2 id="为什么代码可以运行在不同的操作系统中"><a class="headerlink" href="#为什么代码可以运行在不同的操作系统中" title="为什么代码可以运行在不同的操作系统中"></a>为什么代码可以运行在不同的操作系统中</h2><p><img alt="不同系统的读写" decoding="async" height="466" loading="lazy" src="/images/blog-media/12d8425db154501bb511.webp" width="846"/></p>
 <h2 id="Linux中，一切都是文件"><a class="headerlink" href="#Linux中，一切都是文件" title="Linux中，一切都是文件"></a>Linux中，一切都是文件</h2><p id="passage-283f704237ca">磁盘文件系统：ext4、xfs、nfs</p>
@@ -148,7 +148,7 @@
 <h2 id="磁盘性能指标"><a class="headerlink" href="#磁盘性能指标" title="磁盘性能指标"></a>磁盘性能指标</h2><h3 id="使用率"><a class="headerlink" href="#使用率" title="使用率"></a>使用率</h3><p id="passage-102b535122c3">指磁盘处理IO的时间百分比</p>
 <h3 id="饱和度"><a class="headerlink" href="#饱和度" title="饱和度"></a>饱和度</h3><p id="passage-41dc7c27132b">磁盘处理IO的繁忙程度</p>
 <h3 id="IOPS"><a class="headerlink" href="#IOPS" title="IOPS"></a>IOPS</h3><p id="passage-3fe94f0382d8">input\output per second 每秒的IO请求</p>
-<h3 id="吞吐量"><a class="headerlink" href="#吞吐量" title="吞吐量"></a>吞吐量</h3><p id="passage-c5b451d74e20">每秒的IO请求大小</p>
+<h3 id="吞吐量"><a class="headerlink" href="#吞吐量" title="吞吐量"></a>吞吐量</h3><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="同样时间内，两边各通过四个信封，右边每个信封里还装着更厚的一叠纸。" decoding="async" height="398" loading="lazy" src="/images/article-figures/daf73f86-disk-iops-versus-bytes-per-second.webp" width="1400"/><figcaption>IOPS 数的是每秒完成几次 I/O，吞吐量数的是每秒传输多少数据。相同时间做完同样次数的 I/O，如果每次传输更多数据，IOPS 不变，吞吐量会更高。</figcaption></figure><p id="passage-c5b451d74e20">每秒的IO请求大小</p>
 <h3 id="响应时间"><a class="headerlink" href="#响应时间" title="响应时间"></a>响应时间</h3><p id="passage-6bb90fd71bc3">指IO请求从发送到收到响应的时间间隔</p>
 <h2 id="实战"><a class="headerlink" href="#实战" title="实战"></a>实战</h2><h3 id="清理缓存"><a class="headerlink" href="#清理缓存" title="清理缓存"></a>清理缓存</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/></pre></td><td class="code"><pre id="passage-12338a1f0dc3"><span class="line">echo 3 &gt; /proc/sys/vm/drop_caches</span><br/></pre></td></tr></tbody></table></figure>
 <ul>

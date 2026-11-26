@@ -129,7 +129,7 @@
 </ul>
 <h3 id="找出「基准测试」"><a class="headerlink" href="#找出「基准测试」" title="找出「基准测试」"></a>找出「基准测试」</h3><p id="passage-b027baec6f64">在完全没有性能指标可以做参考时，通过性能测试得到性能指标值</p>
 <h3 id="验证"><a class="headerlink" href="#验证" title="验证"></a>验证</h3><p id="passage-694ca0082c71">在接口升级之后，对接口再次进行性能测试，对比基准测试结果</p>
-<h2 id="压测-负载测试-性能测试-最大并发用户数下的性能指标"><a class="headerlink" href="#压测-负载测试-性能测试-最大并发用户数下的性能指标" title="压测=负载测试+性能测试=最大并发用户数下的性能指标"></a>压测=负载测试+性能测试=最大并发用户数下的性能指标</h2><h3 id="负载测试：逐步增加"><a class="headerlink" href="#负载测试：逐步增加" title="负载测试：逐步增加"></a>负载测试：逐步增加</h3><p id="passage-acf3ab2512dd">逐步增加：逐步增加同时请求的数量，来观察系统能承受的<strong>最大负载区间</strong></p>
+<h2 id="压测-负载测试-性能测试-最大并发用户数下的性能指标"><a class="headerlink" href="#压测-负载测试-性能测试-最大并发用户数下的性能指标" title="压测=负载测试+性能测试=最大并发用户数下的性能指标"></a>压测=负载测试+性能测试=最大并发用户数下的性能指标</h2><h3 id="负载测试：逐步增加"><a class="headerlink" href="#负载测试：逐步增加" title="负载测试：逐步增加"></a>负载测试：逐步增加</h3><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="左侧用重量不同的小托盘表现负载变化，右侧用一块很大的重物表现异常压力下的反应。" decoding="async" height="420" loading="lazy" src="/images/article-figures/cbb71895-perf-concepts-load-vs-stress.webp" width="1400"/><figcaption>负载测试问的是：负载变化时，系统表现怎么变？压力测试问的是：到了异常吃紧的状态，系统会怎样失效，能不能恢复？</figcaption></figure><p id="passage-acf3ab2512dd">逐步增加：逐步增加同时请求的数量，来观察系统能承受的<strong>最大负载区间</strong></p>
 <p id="passage-85e335437b2b">在逐步增加后 会得到一个<code>拐点</code>的区间</p>
 <hr/>
 <p id="passage-052b4a197986">问：一个系统完全没有做过性能测试，如何找出最大并发用户数</p>
@@ -142,7 +142,7 @@
 <p id="passage-c1b78d56e335">当服务器出现不稳定情况宕机，我们就要进行压力测试了</p>
 <h3 id="可靠性测试"><a class="headerlink" href="#可靠性测试" title="可靠性测试"></a>可靠性测试</h3><p id="passage-17229d48e74d">在给定一定的业务压力下，持续运行一段时间，查看系统是否稳定</p>
 <p id="passage-9025fab885ba">关键词：是否<code>稳定</code>，一定业务压力</p>
-<h3 id="容量测试"><a class="headerlink" href="#容量测试" title="容量测试"></a>容量测试</h3><p id="passage-4d4151bd54aa">在一定的软、硬件条件下，在数据库不同数量级数据量的情况时，对系统中读/写比进行测试，从而获得不同数据量级下的性能指标值。</p>
+<h3 id="容量测试"><a class="headerlink" href="#容量测试" title="容量测试"></a>容量测试</h3><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="左侧时钟后是一排稳定重复的状态，右侧展示容纳不同数量数据块的三种容器。" decoding="async" height="419" loading="lazy" src="/images/article-figures/cbb71895-perf-concepts-reliability-vs-capacity.webp" width="1400"/><figcaption>可靠性测试关注给定条件下能否持续稳定运行，看的重点是时间；本篇的容量测试侧重比较数据规模不同的时候，系统表现有什么变化。</figcaption></figure><p id="passage-4d4151bd54aa">在一定的软、硬件条件下，在数据库不同数量级数据量的情况时，对系统中读/写比进行测试，从而获得不同数据量级下的性能指标值。</p>
 <ul>
 <li id="passage-32fd13472966">要与生产的数据库的数量级别保持一致</li>
 <li id="passage-2761e2e62a1b">如果产品没有上线，看数据库是什么数据库来评定量级。一般mysql为100w级</li>

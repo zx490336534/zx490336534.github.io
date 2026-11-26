@@ -61,13 +61,13 @@
         <div class="post-body" id="article-text"><h1 id="Flask-从wsgi开始-一"><a class="headerlink" href="#Flask-从wsgi开始-一" title="Flask(从wsgi开始 一)"></a>Flask(从wsgi开始 一)</h1><blockquote id="passage-3df5ee4dcf78">
 <p id="passage-74a7ccdd65c2">运行Flask=开启一个服务</p>
 </blockquote>
-<h2 id="web应用处理请求的具体流程"><a class="headerlink" href="#web应用处理请求的具体流程" title="web应用处理请求的具体流程"></a>web应用处理请求的具体流程</h2><ol>
+<h2 id="web应用处理请求的具体流程"><a class="headerlink" href="#web应用处理请求的具体流程" title="web应用处理请求的具体流程"></a>web应用处理请求的具体流程</h2><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="浏览器、Web 服务器和 Python 应用之间的请求与响应往返" decoding="async" height="591" loading="lazy" src="/images/article-figures/d044d6a3-wsgi-request-response.webp" width="1050"/><figcaption>浏览器与 Web 服务器交换 HTTP 请求和响应；WSGI 约定的是 Web 服务器和 Python 应用之间如何交接。</figcaption></figure><ol>
 <li id="passage-22a20fac7dff">用户操作浏览器发送请求；</li>
 <li id="passage-b4a438e9538b">请求转发至对应的web服务器</li>
 <li id="passage-4076360bbf1b">web服务器将请求转交给web应用程序，web应用程序处理请求</li>
 <li id="passage-612fe650ed2a">web应用将请求结果返回给web服务器，由web服务器返回用户响应结果</li>
 <li id="passage-6fb8e195b124">浏览器收到响应，向用户展示<span id="more"></span>
-<h2 id="一个wsgi服务"><a class="headerlink" href="#一个wsgi服务" title="一个wsgi服务"></a>一个<code>wsgi</code>服务</h2></li>
+<h2 id="一个wsgi服务"><a class="headerlink" href="#一个wsgi服务" title="一个wsgi服务"></a>一个<code>wsgi</code>服务</h2><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="两个不同的服务器装置可分别连接同一个 Python 应用模型" decoding="async" height="591" loading="lazy" src="/images/article-figures/d044d6a3-wsgi-boundary-portability.webp" width="1050"/><figcaption>WSGI 统一了服务器侧和应用侧的接口。只要双方遵循约定，同一个应用可接入不同的 WSGI 服务器。</figcaption></figure></li>
 </ol>
 <blockquote id="passage-ca0c0740dc3e">
 <p id="passage-cc50ef5794dc">全称Python Web Server Gateway Interface，指定了web服务器和Python web应用或web框架之间的标准接口，以提高web应用在一系列web服务器间的移植性。 具体可查看 <a href="https://link.zhihu.com/?target=https://www.python.org/dev/peps/pep-0333/">官方文档</a>:<a href="https://www.python.org/dev/peps/pep-0333/" rel="noopener" target="_blank">https://www.python.org/dev/peps/pep-0333/</a></p>
