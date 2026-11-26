@@ -72,7 +72,7 @@
 </ul>
 <p id="passage-6e7941d625d1">一个请求：源地址:源端口 –&gt; 网卡 –&gt; 互联网(局域网) –&gt; 目标服务器网卡 –&gt; 目标服务器内部</p>
 <span id="more"></span>
-<h3 id="源端口"><a class="headerlink" href="#源端口" title="源端口"></a>源端口</h3><ul>
+<h3 id="源端口"><a class="headerlink" href="#源端口" title="源端口"></a>源端口</h3><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="一对蓝色和琥珀色的接头，从彼此分开到接合，再回到两边分开的状态。" decoding="async" height="734" loading="lazy" src="/images/article-figures/91eff690-toy-connection-open-active-closed-lifecycle.webp" width="1100"/><figcaption>端口使用跟随连接的生命周期，不是每次应用层操作都重新分配一个。连接建立后可在同一连接上继续传输，关闭后由系统处理后续回收。</figcaption></figure><ul>
 <li id="passage-99f99184aca2">端口编号为 0 至 65535，共 65536 个编号</li>
 <li id="passage-353099ac36c9">0～1023公认端口，服务器使用端口，被作为特殊服务所定义</li>
 <li id="passage-41328f0a6db7">1024～49151注册端口，自己定义的一个服务端口</li>
@@ -134,7 +134,7 @@
 <li id="passage-aef4f5763631">第3列：目前限制值(unlimited=不限制)</li>
 </ul>
 <p id="passage-178b9bfaebb7">可以通过<code>ulimit 参数 限制值</code> 临时修改限制值</p>
-<h2 id="查看某个进程允许打开的最大文件数"><a class="headerlink" href="#查看某个进程允许打开的最大文件数" title="查看某个进程允许打开的最大文件数"></a>查看某个进程允许打开的最大文件数</h2><p id="passage-ee1ee2f50365"><code>cat /proc/PID/limits</code></p>
+<h2 id="查看某个进程允许打开的最大文件数"><a class="headerlink" href="#查看某个进程允许打开的最大文件数" title="查看某个进程允许打开的最大文件数"></a>查看某个进程允许打开的最大文件数</h2><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="宽柜的一只托盘已经装满，旁边的托盘和整个柜子里仍留有空位。" decoding="async" height="734" loading="lazy" src="/images/article-figures/91eff690-per-process-budget-versus-system-wide-capacity.webp" width="1100"/><figcaption>系统还有空余，不代表每个进程都没到上限。排查资源错误时，要区分该进程允许打开的数量与整个系统的资源余量。</figcaption></figure><p id="passage-ee1ee2f50365"><code>cat /proc/PID/limits</code></p>
 <p id="passage-dff7a284f818">查看系统运行打开的最大文件数量：<code>cat /proc/sys/fs/file-max</code></p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br/><span class="line">2</span><br/></pre></td><td class="code"><pre id="passage-ea639db966b9"><span class="line">root@zx:~# cat /proc/sys/fs/file-max</span><br/><span class="line">9223372036854775807</span><br/></pre></td></tr></tbody></table></figure>
 <h2 id="查看某个进程当前已经打开的文件总数"><a class="headerlink" href="#查看某个进程当前已经打开的文件总数" title="查看某个进程当前已经打开的文件总数"></a>查看某个进程当前已经打开的文件总数</h2><p id="passage-4ee2952bcab9"><code>lsof -p PID|wc -l</code></p>

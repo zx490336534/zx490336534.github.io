@@ -65,7 +65,7 @@
 <li id="passage-f84b907c2f39">持久化：把数据存储在磁盘上</li>
 <li id="passage-50f94c914d1c">内存中的数据的特点：一旦断电，数据就会丢失</li>
 </ul>
-<p id="passage-4582624c24f5">使用redis做缓存数据库，可以把数据存在内存中，加快我们读取数据的速度，同时，它可以定时去同步数据到磁盘，进行<strong>内存数据持久化</strong>。它还有个重大优势：缓存数据库之间可以自动同步</p>
+<p id="passage-4582624c24f5">使用redis做缓存数据库，可以把数据存在内存中，加快我们读取数据的速度，同时，它可以定时去同步数据到磁盘，进行<strong>内存数据持久化</strong>。它还有个重大优势：缓存数据库之间可以自动同步</p><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="手从前方的青色浅盘取出金色圆片，后面的深色资料柜仍关着。" decoding="async" height="734" loading="lazy" src="/images/article-figures/664114f3-read-valid-cached-copy-without-source-lookup.webp" width="1100"/><figcaption>缓存命中是指能直接使用缓存里仍有效的值，不必为这次读取再查原始存储。图中浅盘是缓存，后面的资料柜是原始记录。</figcaption></figure>
 <p id="passage-981fc2bba4a7">功能强大，但是比较复杂，所以在使用过程中也存在一定的问题。</p>
 <p id="passage-c2344c508ade">性能测试人员需要了解redis的使用，原理，存在的问题，发现问题，如何给出调优建议。</p>
 <span id="more"></span>
@@ -112,7 +112,7 @@
 <p><img alt="命令" decoding="async" height="313" loading="lazy" src="/images/blog-media/299f0aa8e36246159f78.webp" width="1080"/></p>
 <h2 id="redis穿透、雪崩、击穿"><a class="headerlink" href="#redis穿透、雪崩、击穿" title="redis穿透、雪崩、击穿"></a>redis穿透、雪崩、击穿</h2><h3 id="穿透"><a class="headerlink" href="#穿透" title="穿透"></a>穿透</h3><p id="passage-8e8ec2d98c29">key查不到（例如 id为负数），去存储层数据库中获取，失去了缓存意义</p>
 <p id="passage-a499b60b6855">解决办法：程序层做逻辑检查</p>
-<h3 id="雪崩"><a class="headerlink" href="#雪崩" title="雪崩"></a>雪崩</h3><p id="passage-8232cd1e0340">redis缓存数据库中大量的key在同一时间失效，请求这些key获取不到数据，从而去获取更底层的DB数据库</p>
+<h3 id="雪崩"><a class="headerlink" href="#雪崩" title="雪崩"></a>雪崩</h3><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="第一格浅盘里有金色块和沙漏，第二格浅盘空了，但两格后方的资料柜都没变。" decoding="async" height="734" loading="lazy" src="/images/article-figures/664114f3-one-cached-copy-expiry-does-not-remove-original.webp" width="1100"/><figcaption>先看最简单的情况：一份缓存副本过期，只表示缓存里读不到这份副本。独立的原始记录是否存在，要到原始存储中确认。</figcaption></figure><p id="passage-8232cd1e0340">redis缓存数据库中大量的key在同一时间失效，请求这些key获取不到数据，从而去获取更底层的DB数据库</p>
 <p id="passage-f03c0024d092">解决办法：设置key失效时间随机</p>
 <h3 id="击穿"><a class="headerlink" href="#击穿" title="击穿"></a>击穿</h3><p id="passage-2a83ccc5109c">持续长时间大并发请求某一个热点key，在key失效的瞬间，就突破了缓存</p></div><section class="article-video" aria-labelledby="article-video-title">
           <header class="article-video-header">
