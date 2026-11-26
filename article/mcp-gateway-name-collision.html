@@ -84,7 +84,7 @@
 </tr>
 </tbody>
 </table></div>
-<p id="passage-881367dfa0f3">收到 <code>tools/call</code> 后，用请求携带的公开名查显式路由。如果在多个会话里直接找第一个叫 <code>search</code> 的工具，注册顺序变化就会改变调用结果。</p>
+<p id="passage-881367dfa0f3">收到 <code>tools/call</code> 后，用请求携带的公开名查显式路由。如果在多个会话里直接找第一个叫 <code>search</code> 的工具，注册顺序变化就会改变调用结果。</p><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="两行的三角和圆形后端顺序互换，两次圆形请求仍然都指向圆形后端。" decoding="async" height="700" loading="lazy" src="/images/article-figures/mcp-gateway-name-collision-routing-invariant-to-registration-order.webp" width="1050"/><figcaption>交换两个模拟后端的注册顺序后，同一公开名还应命中同一后端。这能检验网关是不是在按显式映射查找，而不是取列表里第一个同名工具。</figcaption></figure>
 <figure class="article-figure article-figure--edited"><a href="/images/article-figures/mcp-gateway-name-collision.webp" title="查看原图"><img alt="网关将两个唯一公开名称映射到不同后端各自的 search" decoding="async" height="480" loading="lazy" src="/images/article-figures/mcp-gateway-name-collision.webp" width="1200"/></a><figcaption id="passage-69ac09a711c1">查路由用公开名，调用后端时换回各自的原名。</figcaption></figure>
 <p id="passage-4966d094b454">前缀用服务标识，配置加载时检查最终名称是否冲突。维护显式映射也便于调整命名规则。旧客户端确实依赖短名时，只给归属明确的调用留兼容入口。两个后端都叫 <code>search</code> 时，让含义不清的短名报错。</p>
 <span id="分组能缩小模型的选择范围"></span>
@@ -108,7 +108,7 @@
 <p id="passage-0e2333f51dc5">上游可以用 stdio 或 Streamable HTTP。只要路由表同样能找到正确会话，换传输方式时，公开工具名与输入 Schema 可以保持一致。会话如果带有用户身份，连接复用也要受这个身份约束。</p>
 <p id="passage-f367c411fe20">网关找不到公开名、连接断了、后端工具执行失败，分别记录。收到正常协议响应且工具返回执行错误，就把工具错误给调用方。三类都变成空列表，调用方会以为真的没有搜索结果。</p>
 <figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/mcp-gateway-name-collision-detail.webp" title="查看原图"><img alt="分别区分网关拒绝、连接或请求超时，以及后端工具自身执行失败。" decoding="async" height="609" loading="lazy" src="/images/article-figures/mcp-gateway-name-collision-detail.webp" width="900"/></a><figcaption id="passage-0222303fce36">返回具体错误类别，调用方就能找到相应的排查入口。</figcaption></figure>
-<p id="passage-e761eb5a944b">后端改工具定义或网关改权限时，更新后的工具列表和路由应来自同一份配置。如果配置支持动态加载，可以先建好一份完整的表，再把列表和调用查询一起指向新版本。这样一轮更新不会暂时暴露只有名字、没有目标的工具。发布前我会刷新一次列表，再拿新参数调用一个更新过的工具，确认请求确实到了预期的会话。工具数量继续增加时，再考虑用语义检索缩小模型看到的候选。结果该发给哪个后端，继续用显式路由确定。</p>
+<p id="passage-e761eb5a944b">后端改工具定义或网关改权限时，更新后的工具列表和路由应来自同一份配置。如果配置支持动态加载，可以先建好一份完整的表，再把列表和调用查询一起指向新版本。这样一轮更新不会暂时暴露只有名字、没有目标的工具。发布前我会刷新一次列表，再拿新参数调用一个更新过的工具，确认请求确实到了预期的会话。工具数量继续增加时，再考虑用语义检索缩小模型看到的候选。结果该发给哪个后端，继续用显式路由确定。</p><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="工具目录和路由图各自两两夹在同一版本的框里，版本切换时整框一起换。" decoding="async" height="700" loading="lazy" src="/images/article-figures/mcp-gateway-name-collision-publish-list-and-routing-together.webp" width="1050"/><figcaption>更新时让工具列表和调用路由同时切到同一个配置版本，避免客户端看得到新名字，网关却还找不到对应的去处。</figcaption></figure>
 <h2 id="参考">参考</h2>
 <ul>
 <li id="passage-8653d219229e"><a href="https://modelcontextprotocol.io/specification/latest/server/tools">MCP 工具协议与错误处理</a></li>

@@ -149,9 +149,9 @@ providers:
 <p id="passage-0d5b9f806677">没有过滤时，两条用例、两份 Prompt、两个 Provider，每组跑三次，一共 24 个评测单元。每个单元背后可能调用多个模型，评分也可能产生新请求。先跑一组，确认被测服务和模型命中，再展开全部组合。</p>
 <figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/promptfoo-agent-regression-detail.webp" title="查看原图"><img alt="两条用例乘两份 Prompt、两个 Provider、每组运行三次，得到 24 个评测单元。" decoding="async" height="690" loading="lazy" src="/images/article-figures/promptfoo-agent-regression-detail.webp" width="900"/></a><figcaption id="passage-320b9fb26e9b">图中 24 个是评测单元。实际网络请求另行计数。</figcaption></figure>
 <h2 id="哪些失败应该拦住发布">发布报告要能区分业务错误和运行错误</h2>
-<p id="passage-16b560d394c2">状态、金额和必填字段有明确规则，可以直接判。文案是否容易理解，可以另做评价，先拿人工确认的正反样本校准。两种结果分别记录，业务状态写错时，文案得分再高也不能放行。</p>
+<p id="passage-16b560d394c2">状态、金额和必填字段有明确规则，可以直接判。文案是否容易理解，可以另做评价，先拿人工确认的正反样本校准。两种结果分别记录，业务状态写错时，文案得分再高也不能放行。</p><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="文案评价通过，但错误业务状态仍然挡住发布" decoding="async" height="591" loading="lazy" src="/images/article-figures/promptfoo-agent-regression-clarity-does-not-pass-invalid-state.webp" width="1050"/><figcaption>文案清楚和业务状态正确是两个不同的评价。状态写错时，文案得分再高也不能放行。</figcaption></figure>
 <p id="passage-807598d95450">固定样本的结果也能拿来查断言本身。带 <code>assetId</code> 的样本仍是合法 JSON，要看第二条业务断言有没有变红。直接返回中文短句时，结构断言就会失败。区分这两个输出，下一次加字段时才知道该改结构还是业务规则。</p>
-<p id="passage-8091e7c144ea">结果报超时或鉴权失败，先查运行条件。服务正常响应却给出错误状态，才进入产品回归。打开 <code>results.json</code> 的逐条结果，比只看通过率更容易判断该查哪一边。</p>
+<p id="passage-8091e7c144ea">结果报超时或鉴权失败，先查运行条件。服务正常响应却给出错误状态，才进入产品回归。打开 <code>results.json</code> 的逐条结果，比只看通过率更容易判断该查哪一边。</p><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="一张卡表示服务未正常响应，另一张卡表示响应中的业务状态错误" decoding="async" height="591" loading="lazy" src="/images/article-figures/promptfoo-agent-regression-execution-error-vs-product-failure.webp" width="1050"/><figcaption>超时先查测试运行条件；服务已返回结果却给错状态，再去查产品逻辑。两类失败应在报告里分开。</figcaption></figure>
 <p id="passage-804c54dd70f3">首次接入 CI，我会让模拟服务只破坏一个已知条件，确认断言变红、CI 也能拿到失败退出码。验证部署时再检查缓存选项和被测版本，避免把旧结果当成这次服务的表现。</p>
 <h2 id="参考">参考</h2>
 <ul>

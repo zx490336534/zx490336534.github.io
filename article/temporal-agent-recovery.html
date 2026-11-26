@@ -64,7 +64,7 @@
 <p id="passage-87c983b0b6ee">Workflow 描述步骤，Temporal Service 保存历史，Worker 拉取任务运行代码。模型调用、数据库写入这些外部动作放进 Activity。Worker 接到 Workflow 任务后，可以用记录重建编排状态。遇到已经记录完成的 Activity，就用历史中的结果继续。</p>
 <figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/temporal-agent-recovery-scene.webp" title="查看原图"><img alt="旧 Worker 停止后，新 Worker 从保存的事件历史恢复流程。" decoding="async" height="854" loading="lazy" src="/images/article-figures/temporal-agent-recovery-scene.webp" width="1280"/></a><figcaption id="passage-4326456b9c25">教学示意。新 Worker 根据已保存的工作历史继续推进。</figcaption></figure>
 <p id="passage-47ef1b605e34">同一份历史需要产生一致的编排决策。时间和定时等待可以用 SDK 的机制，外部网络读取放进 Activity。如果直接在 Workflow 里查网络状态，重放时可能走到另一条分支。</p>
-<p id="passage-1d03f75d8dd8">调整正在运行的编排前，可以拿已有历史做 replay 验证。添加步骤或调整顺序导致旧历史不兼容时，给旧流程保留能接手的版本。</p>
+<p id="passage-1d03f75d8dd8">调整正在运行的编排前，可以拿已有历史做 replay 验证。添加步骤或调整顺序导致旧历史不兼容时，给旧流程保留能接手的版本。</p><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="同一份历史分别与两份编排模板比对，其中一份的槽位错开" decoding="async" height="591" loading="lazy" src="/images/article-figures/temporal-agent-recovery-replay-before-upgrading.webp" width="1050"/><figcaption>改动正在运行的 Workflow 前，先用旧历史验证新版本能否重放。若不兼容，保留能接手旧流程的版本。</figcaption></figure>
 <span id="先看外部动作成功-回执还没写进去的情况"></span>
 <h2 id="存储已经成功-完成记录还有可能丢">数据写进去了，成功回执还没回来</h2>
 <p id="passage-333a717561e6">外部事务已经提交，Worker 还没有向 Temporal 报告完成。这一段发生失败时，历史里看不到成功结果，服务会按重试策略再调一次 Activity。存储端已经写过什么，要从业务记录判断。</p>
@@ -126,7 +126,7 @@ SELECT asset FROM assets WHERE operation = ?;
 <p id="passage-6844daaddfdd">实际系统还要区分用户修改输入后重新提交的合法请求。这样的请求要用新的操作键。支付或发信如果由外部服务处理，先确认它能否接收幂等键。拿不到回执时也可以先查单和对账。超时只能说明这边没有及时拿到结果。</p>
 <span id="恢复到哪里-取决于步骤怎么拆"></span>
 <h2 id="重试粒度写进流程-故障时才看得出来">按可确认的结果来拆重试</h2>
-<p id="passage-45775055ade0">模型生成、存产物、更新状态全写在一个 Activity 里，最后一步失败，前面的调用也可能重来。单独拆的条件可以很具体。中间结果能单独查到，重做成本较高，或者两步需要不同的重试规则。步骤越细，需维护的超时、错误处理、日志和兼容性也越多。</p>
+<p id="passage-45775055ade0">模型生成、存产物、更新状态全写在一个 Activity 里，最后一步失败，前面的调用也可能重来。单独拆的条件可以很具体。中间结果能单独查到，重做成本较高，或者两步需要不同的重试规则。步骤越细，需维护的超时、错误处理、日志和兼容性也越多。</p><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="已确认的产物留在完成区，只有右侧未完成的步骤进入重试" decoding="async" height="591" loading="lazy" src="/images/article-figures/temporal-agent-recovery-retry-only-unfinished-step.webp" width="1050"/><figcaption>中间产物能独立确认时，可把它和后续步骤拆开，避免最后一步失败后重新生成已经完成的产物。</figcaption></figure>
 <p id="passage-d418a5783e2c">单次超时限制一次执行多久，总时限覆盖排队和多轮重试。长操作支持 heartbeat 时，可以报告进度并提前发现停滞。参数错误或明确的业务拒绝适合直接结束。网络故障和服务暂不可用才考虑有上限的重试。取消时还要约定已发出的任务怎么停，迟到的产物谁处理。</p>
 <h2 id="为什么我会先测一次提交后报错">先跑一次外部提交后的故障</h2>
 <p id="passage-e87f6f854784">单个短任务已经有可追溯的业务状态和恢复手段，引入 Temporal 未必划算。任务需要跨重启、中间等回调或人工确认，团队经常手补状态时，再拿实际故障比较恢复成本。</p>

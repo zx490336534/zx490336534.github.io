@@ -102,7 +102,7 @@ cards = page.get_by_role('list', name='已保存卡片')
 expect(cards.get_by_text('回归卡片', exact=True)).to_be_visible()
 </code></pre>
 </details>
-<p id="passage-41a9a334deff">演示页刷新时会重新向服务端取数据，关闭了缓存，也没有用浏览器本地存储恢复卡片。真实应用如果会先读缓存，可以换一个浏览器上下文重新登录，或直接查服务端详情。列表里可能有同名记录时，按本次保存的 ID 查。</p>
+<p id="passage-41a9a334deff">演示页刷新时会重新向服务端取数据，关闭了缓存，也没有用浏览器本地存储恢复卡片。真实应用如果会先读缓存，可以换一个浏览器上下文重新登录，或直接查服务端详情。列表里可能有同名记录时，按本次保存的 ID 查。</p><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="两条外观相同的卡片用三角和六角标识区分，回读定位到六角卡片" decoding="async" height="591" loading="lazy" src="/images/article-figures/agent-ui-testing-read-back-by-unique-id.webp" width="1050"/><figcaption>列表里可能有同名记录。用这次保存返回的 ID 回读，而不是只检查有没有一张同名卡片。</figcaption></figure>
 <figure class="article-figure article-figure--edited"><a href="/images/article-figures/agent-ui-testing.webp" title="查看原图"><img alt="从放置卡片到刷新回读的三个检查点" decoding="async" height="480" loading="lazy" src="/images/article-figures/agent-ui-testing.webp" width="1200"/></a><figcaption id="passage-e0a20bac95db">先查这次请求，再从服务端回读保存的卡片。</figcaption></figure>
 <span id="视觉操作可以单独交给模型"></span>
 <h2 id="AI-放在哪一步-决定失败时能看到什么">普通控件用脚本，视觉模型补定位</h2>
@@ -138,7 +138,7 @@ expect(cards.get_by_text('回归卡片', exact=True)).to_be_visible()
 <span id="修测试的时候留住失败条件"></span>
 <h2 id="修脚本之前-先保住它抓过的错误">测试修完，还要能抓住原来的错</h2>
 <p id="passage-f39d3e7ef83e">按钮改名可以改定位器。刷新后卡片没了，就去查保存请求、任务状态和读取接口。如果把回读断言改成检查成功提示，上面那个故障版本就会通过。</p>
-<p id="passage-06c6d0d0c913">异步保存收到 202 通常只说明请求已受理。先等本次任务到明确终态，再按它返回的 ID 回读产物。失败报告留三个值就有用得多：本次操作的 ID、最后查到的任务状态，以及失败的那一步。</p>
+<p id="passage-06c6d0d0c913">异步保存收到 202 通常只说明请求已受理。先等本次任务到明确终态，再按它返回的 ID 回读产物。失败报告留三个值就有用得多：本次操作的 ID、最后查到的任务状态，以及失败的那一步。</p><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="虚构保存任务经历已受理、等待和产物可读三个阶段" decoding="async" height="591" loading="lazy" src="/images/article-figures/agent-ui-testing-accepted-is-not-finished.webp" width="1050"/><figcaption>收到已受理响应不代表产物已经保存。先等本次任务到明确终态，再按它返回的 ID 回读。</figcaption></figure>
 <p id="passage-c4e4ea3d183b">回读失败时，按失败点留证据。POST 没发出来，先查页面操作。已经提交但任务没到终态，留住任务编号和最后一次查询结果。任务成功后读不到对应记录，再查写入和读取的对象是否一致。</p>
 <p id="passage-96966899c6c7">挂发布门禁前，我会再跑一次故意跳过写入的版本。它能亮出成功提示，测试仍会在回读处失败，这条回归才守住了用户真正依赖的行为。</p>
 <h2 id="参考">参考</h2>

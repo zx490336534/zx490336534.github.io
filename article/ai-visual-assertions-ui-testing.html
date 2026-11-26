@@ -68,7 +68,7 @@
 <p id="passage-731611e4da27">脚本等画布进入可截图状态，再截取内容区。<strong>报告里保留实际送给模型的那张图。</strong> 回看失败时，读者需要知道模型看到了什么，还要能在图上找到它说的那个位置。</p>
 <figure class="article-figure article-figure--supplement"><img alt="青色边框只框住画布，导航栏和侧栏在框外，画布内有黑色遮挡" decoding="async" height="675" loading="lazy" src="/images/blog-media/ai-visual-assertions-ui-testing-illustration.webp" width="1200"/><figcaption id="passage-c975ff3b2dd2">AI 生成示意。青色框圈出待检查的画布，顶部导航和侧栏留在框外。</figcaption></figure>
 <h2 id="让脚本读到判断还能查它的依据">让脚本读到判断，还能查它的依据</h2>
-<p id="passage-065db5da7786">我会让模型只返回三个字段。<code>verdict</code> 是判断，<code>evidence</code> 写图里实际可见的内容，<code>region</code> 说明画面位置。下面是合成图对应的示例，展示输出格式。</p>
+<p id="passage-065db5da7786">我会让模型只返回三个字段。<code>verdict</code> 是判断，<code>evidence</code> 写图里实际可见的内容，<code>region</code> 说明画面位置。下面是合成图对应的示例，展示输出格式。</p><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="放大镜指向合成画面的遮挡，旁边分别用图标表示判断、依据和位置" decoding="async" height="591" loading="lazy" src="/images/article-figures/ai-visual-assertions-ui-testing-verdict-evidence-region.webp" width="1050"/><figcaption>可复核的视觉判断不只说通过或失败，还要写出看到了什么、发生在截图的哪个位置。</figcaption></figure>
 <pre class="json" id="passage-3e32cbd8d6d0"><code class="language-json">{
   "verdict": "fail",
   "evidence": "黑色矩形盖住了原本应该可见的图形",
@@ -101,7 +101,7 @@
 </tr>
 </tbody>
 </table></div>
-<p id="passage-b8944e07e18d">如果画面还在加载，就先查截图时机。此时模型可能看到占位区域，格式再规整的回答也不能用于判断最终画面。</p>
+<p id="passage-b8944e07e18d">如果画面还在加载，就先查截图时机。此时模型可能看到占位区域，格式再规整的回答也不能用于判断最终画面。</p><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="同一虚构画布在加载时呈现占位条，渲染完成后才显示内容" decoding="async" height="591" loading="lazy" src="/images/article-figures/ai-visual-assertions-ui-testing-placeholder-vs-rendered-capture.webp" width="1050"/><figcaption>如果模型看到的是加载占位图，先修正截图时机。格式正确的判定也不能代替对最终画面的检查。</figcaption></figure>
 <h2 id="先把正常图和异常图一起跑一遍">先把正常图和异常图一起跑一遍</h2>
 <p id="passage-da40bd595417">元素是否出现、文字、可读取的颜色值和尺寸，能从页面直接判断的部分继续交给原来的自动化脚本。视觉断言集中在脚本难以表达的画面组合，比如一块遮挡盖住了该显示的组件。</p>
 <p id="passage-7a95270cc778">接入后先拿人工标过的正常暗色图和遮挡图做对照，分别看误报、漏报和无法判断的情况。当前示例能说明检查方式和结果怎么回到报告里。实际项目要不要把这项结果用于发布判定，先看这批真实样本的复核结果。</p></div><section class="article-video" aria-labelledby="article-video-title">

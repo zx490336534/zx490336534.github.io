@@ -68,7 +68,7 @@
 <pre class="article-code" id="passage-7ceefd438906"><code class="language-bash">pi --tools read,grep,find,ls
 </code></pre>
 <p id="passage-79a482e55e12">当前文档还列了 <code>pi mcp</code> 和扩展工具。接入这些能力以后，模型实际看见的工具会受到项目配置影响。讨论「Pi 有几个工具」时，我会先确认在说默认集合还是已经配置好的环境。</p>
-<p id="passage-650640f4ef03">我会把只读探索和实际修改分成两次运行。先确认能读到入口文件、构建命令和验收要求，再开放需要的写入工具。做到能解释改哪些文件和如何验证，就可以结束第一轮。</p>
+<p id="passage-650640f4ef03">我会把只读探索和实际修改分成两次运行。先确认能读到入口文件、构建命令和验收要求，再开放需要的写入工具。做到能解释改哪些文件和如何验证，就可以结束第一轮。</p><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="放大镜和铅笔分在两个工作托盘里，手只取了代表查看的放大镜。" decoding="async" height="700" loading="lazy" src="/images/article-figures/pi-agent-four-tools-read-only-discovery-before-write-access.webp" width="1050"/><figcaption>只为理解模块时，先限制在读取和搜索；等确认要改哪里、怎么验收，再决定是否开放写入。工具列表限制不等于运行环境隔离。</figcaption></figure>
 <p id="passage-eddd789c3c20">开放 <code>bash</code> 时，命令能碰到哪些目录和网络资源取决于 Pi 进程的权限。工具列表可以收窄模型的动作，文件和网络隔离还要在运行环境里做。</p>
 <span id="要扩展时-先看缺的是哪一种能力"></span>
 <h2 id="把一次工具调用拆开看">一次调用从模型走到扩展，再返回给模型</h2>
@@ -83,7 +83,7 @@
 <figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/pi-agent-four-tools-scene.webp" title="查看原图"><img alt="对话可以在两条分支间切换，磁盘上的工作文件仍独立保留。" decoding="async" height="854" loading="lazy" src="/images/article-figures/pi-agent-four-tools-scene.webp" width="1280"/></a><figcaption id="passage-8d70365dea69">教学示意。会话能切换分支，改过的工作文件要单独处理。</figcaption></figure>
 <h2 id="团队要补的东西-可以从一次真实任务里找">用一条真实任务决定要加什么</h2>
 <p id="passage-04da7f5aa34e">仓库说明适合写构建和验收步骤，Skill 适合约定处理某类任务的方法，扩展适合在工具执行前后加检查。主分支发布需要的签核和权限，放在独立流程里执行。</p>
-<p id="passage-83241a48cf03">我会先用一个有失败用例的修复试跑。看它是否读到项目说明，第一次失败后用了哪条证据，以及最终报告能不能回到具体运行。缺上下文就补项目入口。要是只跑了局部测试却报整体验收，就先补验收范围和证据规则。</p>
+<p id="passage-83241a48cf03">我会先用一个有失败用例的修复试跑。看它是否读到项目说明，第一次失败后用了哪条证据，以及最终报告能不能回到具体运行。缺上下文就补项目入口。要是只跑了局部测试却报整体验收，就先补验收范围和证据规则。</p><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="多张灰色待测卡围着唯一被选中打勾的花朵卡，右侧的报告也只记下花朵卡。" decoding="async" height="700" loading="lazy" src="/images/article-figures/pi-agent-four-tools-report-only-local-test-scope.webp" width="1050"/><figcaption>只验证了一个用例或文件，就在报告里写清这个范围，附上能回查的运行依据，不把局部通过写成整体验收。</figcaption></figure>
 <h2 id="参考">参考</h2>
 <ul>
 <li id="passage-0d83e7312973"><a href="https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/cli.md#tools">Pi CLI 工具配置</a></li>

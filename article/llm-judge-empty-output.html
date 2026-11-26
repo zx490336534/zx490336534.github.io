@@ -95,7 +95,7 @@
 </table></div>
 <figure class="article-figure article-figure--edited"><a href="/images/article-figures/llm-judge-empty-output.webp" title="查看原图"><img alt="四条空输出四次一致，四条有输出两次一致，汇总六次一致" decoding="async" height="480" loading="lazy" src="/images/article-figures/llm-judge-empty-output.webp" width="1200"/></a><figcaption id="passage-7e04181f441a">构造数据，混合一致率的分母同时包括两组样本。</figcaption></figure>
 <p id="passage-23bbe1378ec9">再加八条两边都判失败的空输出，总体变成 <code>14/16</code>，即 87.5%。有产物的四条仍是 <code>2/4</code>。裁判在这一组的表现没变，样本里容易判断的部分增多了。</p>
-<p id="passage-138ce447be48">任务已经结束，用户还拿不到产物，这次要记为产出失败。我会先约定空字符串、任务未结束、只有标题、无效附件怎么归类。规则能稳定识别的空输出单列，有产物的部分再做质量判断。分组标准先写好，评测开始后才能比较不同版本。</p>
+<p id="passage-138ce447be48">任务已经结束，用户还拿不到产物，这次要记为产出失败。我会先约定空字符串、任务未结束、只有标题、无效附件怎么归类。规则能稳定识别的空输出单列，有产物的部分再做质量判断。分组标准先写好，评测开始后才能比较不同版本。</p><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="空输出的文件夹归入上方记录盒，带作品的文件夹被分到下方的质量检查台。" decoding="async" height="700" loading="lazy" src="/images/article-figures/llm-judge-empty-output-gate-quality-evaluation-by-artifact.webp" width="1050"/><figcaption>先判断产物是否交付。任务结束但没有有效产物，单独记作交付失败，不混进有产物的质量评测；未结束的任务也按事先约定单列。</figcaption></figure>
 <h2 id="汇总相关性高-也可能总选错同题结果">相关性 0.92，同题却一次都没选对</h2>
 <p id="passage-bf151b5562a4">如果线上要做的是从同一张图的两个生成结果里选一个，可以再看下面的例子。人的评分与模型的评分都给第三张图整体打得更高，但在每一张图内部，双方对两个候选的顺序相反。</p>
 <div aria-labelledby="article-table-2" class="table-scroll article-evidence" id="passage-87080514c68f" role="region" tabindex="0"><table><caption id="article-table-2">三个输入各自的 A、B 候选评分</caption>
@@ -141,7 +141,7 @@ print(round(correlation(human, judge), 2))  # 0.92
 <h2 id="校准时-让模型回答准备替人做的判断">校准时就问模型上线那道题</h2>
 <p id="passage-ef3637d1f19c">如果裁判准备辅助发布，我会先挑有产物而且质量接近的候选，让人工按同一份标准独立标注。再核对模型和人的分歧，保留每条判断的输入、裁判版本和证据。只存最后一个分数，下次改提示词很难定位进步发生在哪里。</p>
 <figure class="article-figure article-figure--supplement article-figure--edited"><a href="/images/article-figures/llm-judge-empty-output-scene.webp" title="查看原图"><img alt="相比不同输入间明显的差异，用放大镜查看同一输入下两个相似候选。" decoding="async" height="854" loading="lazy" src="/images/article-figures/llm-judge-empty-output-scene.webp" width="1280"/></a><figcaption id="passage-b1993d3f8f73">教学示意。校准时让人工和模型在同一输入的相近候选中选。</figcaption></figure>
-<p id="passage-ac507b041a48">发布门禁还要单独数误报和漏报。人工认为应拦截，模型却放行，是漏报。人工认为可以通过，模型却拦了，是误报。每组样本少时，直接写清分子和分母。四条里一致三条，跟十二条里一致九条都能写成 75%，可用来做决定的证据量不同。</p>
+<p id="passage-ac507b041a48">发布门禁还要单独数误报和漏报。人工认为应拦截，模型却放行，是漏报。人工认为可以通过，模型却拦了，是误报。每组样本少时，直接写清分子和分母。四条里一致三条，跟十二条里一致九条都能写成 75%，可用来做决定的证据量不同。</p><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="上排是人工判断，下排是模型动作：左列人拦截而模型放行，右列人放行而模型拦截。" decoding="async" height="700" loading="lazy" src="/images/article-figures/llm-judge-empty-output-release-gate-false-positive-negative.webp" width="1050"/><figcaption>漏报是该拦却放行，误报是本可通过却拦下。两类会带来不同后果，报告里分开统计，并保留各自的分母。</figcaption></figure>
 <p id="passage-d616248bc646">我的报告会留三组数。终态后无产物的样本数，能产出时的人工一致数，以及同题候选中选对的组数。各组都保留分母，需要拦截的案例另外列出误报和漏报。</p>
 <p id="passage-92c2e1889de4">打开评测报告，我会先找同题排序的结果，再翻一组人工和模型明确分歧的样本。要不要让模型替人做选择，先看它能不能处理这一组。</p></div><section class="article-video" aria-labelledby="article-video-title">
           <header class="article-video-header">
