@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import vm from 'node:vm';
+import fs from 'node:fs';
+const source=fs.readFileSync(new URL('./index.html',import.meta.url),'utf8');
+const scripts=[...source.matchAll(/<script>([\s\S]*?)<\/script>/g)];
+assert.equal(scripts.length,1);
+const box={children:[],append(child){this.children.push(child)}},btn={textContent:source.match(/<button>(.*?)<\/button>/)[1]},tally={},count={},route={textContent:source.match(/<p id="route">(.*?)<\/p>/)[1]};
+const targets={'#entries':box,button:btn,'#tally':tally,'#count':count};
+vm.runInNewContext(scripts[0][1],{document:{querySelector:s=>targets[s],createElement:t=>(assert.equal(t,'li'),{})}},{timeout:1000,codeGeneration:{strings:false,wasm:false}});
+assert.equal(route.textContent,'湖边散步');assert.equal(btn.textContent,'收藏');assert.equal(box.children.length,0);assert.equal(typeof btn.onclick,'function');btn.onclick();assert.equal(btn.textContent,'已收藏');btn.onclick();assert.equal(btn.textContent,'已收藏');
+assert.equal(box.children.length,1);assert.equal(box.children[0].textContent,'湖边散步');assert.equal(tally.textContent,'实际点击：2 次');assert.equal(count.textContent,1);
+console.log('本机 Node DOM 仿真：详情标题「湖边散步」，初始按钮「收藏」，初始清单为空。第一次与第二次调用原始点击函数后，按钮均显示「已收藏」。最终计数 1，唯一条目为「湖边散步」。未启动浏览器。');
