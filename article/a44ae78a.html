@@ -61,7 +61,7 @@
         <div class="post-body" id="article-text"><span id="6-手写Jmeter与录制"></span><h2 id="元件作用域"><a class="headerlink" href="#元件作用域" title="元件作用域"></a>元件作用域</h2><h3 id="「取样器」"><a class="headerlink" href="#「取样器」" title="「取样器」"></a>「取样器」</h3><p id="passage-89668e3ff61b">作用：只作用于自身</p>
 <p id="passage-8959b9dc1cdd">作用域：无作用域</p>
 <span id="more"></span>
-<h3 id="「逻辑控制器」"><a class="headerlink" href="#「逻辑控制器」" title="「逻辑控制器」"></a>「逻辑控制器」</h3><p id="passage-29739b531ed6">作用：控制子节点</p>
+<h3 id="「逻辑控制器」"><a class="headerlink" href="#「逻辑控制器」" title="「逻辑控制器」"></a>「逻辑控制器」</h3><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="两只托盘里都有青色和琥珀色块，带规则标记的亮框只圈住其中一盘。" decoding="async" height="734" loading="lazy" src="/images/article-figures/a44ae78a-nested-component-scope-stays-within-branch.webp" width="1100"/><figcaption>看测试计划时，先找控制器管的是哪一组子节点。规则框内的步骤会受它影响，旁边另一组不会仅因为摆在同一层就被它控制。</figcaption></figure><p id="passage-29739b531ed6">作用：控制子节点</p>
 <p id="passage-34825eed29ae">作用域：作用于子节点</p>
 <h3 id="「前置处理器」"><a class="headerlink" href="#「前置处理器」" title="「前置处理器」"></a>「前置处理器」</h3><p id="passage-0004a96f3932">作用：在取样器执行前执行</p>
 <p id="passage-26a1163ecef3">作用域：影响所有取样器</p>
@@ -76,7 +76,7 @@
 <h3 id="「监听器」"><a class="headerlink" href="#「监听器」" title="「监听器」"></a>「监听器」</h3><p id="passage-1657e50fabca">作用：收集取样器执行数据</p>
 <p id="passage-8ab2d1b79fe6">作用域：同级</p>
 <h2 id="取样器执行顺序"><a class="headerlink" href="#取样器执行顺序" title="取样器执行顺序"></a>取样器执行顺序</h2><p id="passage-ba18e151f561">在没有<strong>逻辑控制器</strong>控制时，执行顺序为「从上往下」</p>
-<p id="passage-fb0d4d71c47e"><strong>查看结果树</strong>中显示的顺序是根据「收到响应的时间先后」排序的</p>
+<p id="passage-fb0d4d71c47e"><strong>查看结果树</strong>中显示的顺序是根据「收到响应的时间先后」排序的</p><figure class="article-figure article-figure--supplement" data-editorial-illustration="concept"><img alt="上排按圆、方、三角摆放，下排按方、圆、三角摆放，旁边有一只表盘。" decoding="async" height="734" loading="lazy" src="/images/article-figures/a44ae78a-definition-order-versus-observation-order.webp" width="1100"/><figcaption>计划中的排列顺序和报告里的记录顺序是两回事。静态报告按观测时间展示时，不应仅凭行的位置推断各步骤是如何安排的。</figcaption></figure>
 <h2 id="狭义并发与广义并发"><a class="headerlink" href="#狭义并发与广义并发" title="狭义并发与广义并发"></a>狭义并发与广义并发</h2><p id="passage-1f3d088edf79">一般情况下，不会加集合点，不加集合点，是广义并发，请求量相对更大，更能体现服务器的性能</p>
 <p id="passage-3f8f340a1e51">狭义的并发：需要加上集合点，总请求量会被强制降低，服务器的性能结果就不一定准确       </p>
 <h2 id="手写脚本"><a class="headerlink" href="#手写脚本" title="手写脚本"></a>手写脚本</h2><h3 id="HTTP请求默认值"><a class="headerlink" href="#HTTP请求默认值" title="HTTP请求默认值"></a>HTTP请求默认值</h3><p id="passage-a8bfd44936ab">写一次「服务器名称或IP」，其他HTTP取样器可以不用填写</p>
