@@ -162,13 +162,13 @@ def main():
         for key, value in expected_share.items():
             matches = profile.select(f'head meta[property="{key}"]')
             assert len(matches) == 1 and matches[0]["content"] == value, key
-    demo_prefix = "/videos/portfolio/ai-test-cases-demo-v4"
+    demo_prefix = "/videos/portfolio/ai-test-cases-demo-v5"
     demo_files = [demo_prefix + suffix for suffix in (".mp4", ".webp", ".zh-CN.vtt")]
     demo_exists = all(target(path).is_file() and target(path).stat().st_size for path in demo_files)
     demo = profile.select_one("#ai-test-cases figure.work-demo")
     assert bool(demo) == demo_exists
     if demo:
-        assert demo.select_one("figcaption").get_text(strip=True) == "完整演示｜Web 工作区与 Codex 插件：生成、增删改、执行与回写"
+        assert demo.select_one("figcaption").get_text(strip=True) == "完整演示｜Codex 对话与脑图：生成、增删改、执行和证据"
         media = demo.select_one("video")
         assert (media["width"], media["height"], media["preload"], media["poster"]) == ("1440", "900", "none", demo_files[1])
         assert "controls" in media.attrs and "playsinline" in media.attrs and "autoplay" not in media.attrs
@@ -177,7 +177,7 @@ def main():
         assert captions["src"] == demo_files[2] and captions["srclang"] == "zh-CN" and "default" not in captions.attrs
         assert target(demo_files[2]).read_text().startswith("WEBVTT")
         demo_text = demo.get_text(" ", strip=True)
-        for proof in ("1:09｜对话增删改", "P1 改为 P0", "2:49｜核对导出", "删除项不再出现", "3:20｜Codex 插件", "4:23｜实际执行", "4:36｜回看证据", "固定对话复现"):
+        for proof in ("1:09｜对话增删改", "P1 改为 P0", "2:49｜核对导出", "删除项不再出现", "3:20｜Codex 插件", "4:20｜实际执行", "4:31｜回看证据", "真实会话摘录"):
             assert proof in demo_text, proof
         assert demo.select_one("a[download]")["href"] == demo_files[0]
         sample = demo_prefix + "-sample.csv"

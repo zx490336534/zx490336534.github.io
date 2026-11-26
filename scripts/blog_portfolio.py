@@ -42,7 +42,7 @@ def home_work():
             f'<ul>{links}</ul></section>')
 
 
-DEMO_PREFIX = "/videos/portfolio/ai-test-cases-demo-v4"
+DEMO_PREFIX = "/videos/portfolio/ai-test-cases-demo-v5"
 DEMO_PATHS = tuple(DEMO_PREFIX + suffix for suffix in (".mp4", ".webp", ".zh-CN.vtt"))
 
 
@@ -56,13 +56,13 @@ def work_demo(root):
                    if (root / sample.lstrip("/")).is_file() else "")
     return (
         '<figure class="work-demo" aria-labelledby="ai-test-cases-demo-caption">'
-        '<figcaption id="ai-test-cases-demo-caption">完整演示｜Web 工作区与 Codex 插件：生成、增删改、执行与回写</figcaption>'
+        '<figcaption id="ai-test-cases-demo-caption">完整演示｜Codex 对话与脑图：生成、增删改、执行和证据</figcaption>'
         f'<video controls playsinline preload="none" width="1440" height="900" poster="{poster}" '
         'aria-labelledby="ai-test-cases-demo-caption">'
         f'<source src="{src}" type="video/mp4">'
         f'<track kind="captions" src="{track}" srclang="zh-CN" label="简体中文">'
         '</video><p><strong>1:09｜对话增删改。</strong> 在同一个聊天框新增「重复提交」用例，把它从 P1 改为 P0 并补上预期结果，再删除另一条用例。'
-        '<br><strong>2:49｜核对导出。</strong> CSV 和 XMind 都保留了新增和修改，删除项不再出现。<br><strong>3:20｜Codex 插件。</strong> 同一工作区生成、增删改；勾选一条，在本机测试页执行，再回写结果。<br><strong>4:23｜实际执行。</strong> 连续点两次收藏，清单只保留一条。<br><strong>4:36｜回看证据。</strong> 插件保存本次结果和执行时的用例版本。</p><p class="work-demo-note">虚构需求。Web 章节使用本地模拟模型；插件章节左侧为固定对话复现，右侧是真实插件，本机执行不访问外部系统。</p>'
+        '<br><strong>2:49｜核对导出。</strong> CSV 和 XMind 都保留了新增和修改，删除项不再出现。<br><strong>3:20｜Codex 插件。</strong> 左侧对话与右侧脑图一起展示：生成、增删改，查看每次保存的版本。<br><strong>4:20｜实际执行。</strong> 只执行一条 P0；浏览器启动失败，照实记录为阻塞。<br><strong>4:31｜回看证据。</strong> 保留原批次；另一次在本机 Node 模拟 DOM 复测通过，不是浏览器测试通过。</p><p class="work-demo-note">虚构需求。Web 章节使用本地模拟模型；插件章节左侧为真实会话摘录，右侧为插件工作区快照；非 Codex 客户端截屏。</p>'
         f'<p><a href="{src}" download>下载 MP4</a>{sample_link}</p></figure>'
     )
 
