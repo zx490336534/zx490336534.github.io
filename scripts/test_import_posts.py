@@ -41,6 +41,16 @@ class ImportPostsTest(unittest.TestCase):
                 [post] = self.run_import([self.item(body=body, description=raw)])
                 self.assertEqual(post.description, expected)
 
+    def test_imported_bullet_markers_preserve_nested_content(self):
+        body = ('<ul class="list-paddingleft-1"><li id="first"><span>•&nbsp;</span><b>重点</b></li>'
+                '<li><code>• 示例</code></li></ul><p>• 正文符号</p>')
+        [post] = self.run_import([self.item(body=body)])
+        self.assertIn('id="first"', post.body)
+        self.assertIn("<b>重点</b>", post.body)
+        self.assertIn("<code>• 示例</code>", post.body)
+        self.assertIn("<p>• 正文符号</p>", post.body)
+        self.assertEqual(post.body.count("•"), 2)
+
     def test_known_source_allows_reimport_and_preserves_metadata_and_anchors(self):
         for old, new in [
             ("/First", "/First?scene=1#wechat_redirect"),

@@ -28,7 +28,7 @@ jobs:
         run: uv run scripts/build_blog.py
       - name: Verify generated pages
         run: uv run scripts/verify_blog_discovery.py
-      - name: Verify reader and quiz interactions in Chrome
+      - name: Verify blog and mobile interactions in Chrome
         run: |
           npm install --prefix "$RUNNER_TEMP/blog-checks" --no-audit --no-fund --no-save playwright-core@1.65.1
           export NODE_PATH="$RUNNER_TEMP/blog-checks/node_modules"
@@ -39,6 +39,10 @@ jobs:
           curl --fail --silent --retry 5 --retry-connrefused "$base_url/" -o /dev/null
           node scripts/verify-reader-interactions.cjs "$base_url"
           node teaching-aihom/tests/verify-quizzes.cjs "$base_url"
+          node scripts/verify-mobile-reading.cjs "$base_url"
+          node scripts/verify-mobile-navigation.cjs "$base_url"
+          node scripts/verify-mobile-drafts.cjs "$base_url"
+          node scripts/verify-course-appearance.cjs "$base_url"
       - name: Check for unpublished generated changes
         run: |
           changes=$(git status --porcelain=v1 --untracked-files=all)

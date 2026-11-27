@@ -1,0 +1,134 @@
+diff --git a/src/app/page.tsx b/src/app/page.tsx
+index ab8e9b7..b23887d 100644
+--- a/src/app/page.tsx
++++ b/src/app/page.tsx
+@@ -35,6 +35,7 @@ import { useCaseWorkspace } from '@/components/workspace/use-case-workspace';
+ import { SessionHistory } from '@/components/workspace/session-history';
+ import { WorkspacePanels, WorkspaceViews, useCompactWorkspace, type WorkspaceView } from '@/components/workspace/workspace-panels';
+ import { sessionRequest } from '@/components/workspace/session-client';
++import { readComposerDraft, writeComposerDraft } from '@/components/workspace/composer-draft';
+ import { useSessionSave } from '@/components/workspace/use-session-save';
+ import { standalone } from '@/lib/client/runtime';
+ import { normalizeMindMap } from '@/lib/agent/mindMap';
+@@ -121,6 +122,7 @@ export default function Page() {
+   async function removeSession(id: string, active: boolean) {
+     const query = active ? new URLSearchParams({ selectNext: '1' }) : undefined;
+     const result = await sessionRequest<RemovedWorkspace>(id, { method: 'DELETE' }, query);
++    writeComposerDraft(id, '');
+     setHistory(result.sessions);
+     if (result.nextSession) select(result.nextSession);
+   }
+@@ -181,7 +183,13 @@ function Workspace({
+   const title = history.find(({ id }) => id === session.id)?.title ?? session.title;
+   const [switching, setSwitching] = useState(false);
+   const [selection, setSelection] = useState<string | null>(null);
+-  const [input, setInput] = useState('');
++  const [draft, setDraft] = useState(() => readComposerDraft(session.id));
++  const draftRevision = useRef(0);
++  const input = draft.text;
++  function setInput(text: string) {
++    draftRevision.current++;
++    setDraft(writeComposerDraft(session.id, text));
++  }
+   const [scalePercent, setScalePercent] = useState(100);
+   const [isFullscreen, setIsFullscreen] = useState(false);
+   const compact = useCompactWorkspace();
+@@ -294,11 +302,15 @@ function Workspace({
+     selectView(next);
+   }
+
+-  function sendMessage() {
++  async function sendMessage() {
+     if (!canSend) return;
+     followLatestRef.current = true;
+-    void workspace.send(input.trim(), selection ?? undefined);
+-    setInput('');
++    const revision = draftRevision.current;
++    const sent = await workspace.send(input.trim(), selection ?? undefined);
++    if (!sent) return;
++    // Keep the draft recoverable until the conversation survives a reload as well.
++    const saved = await persistence.flush(sent);
++    if (saved && revision === draftRevision.current) setInput('');
+   }
+
+   const suggestions = !loadingChat && !input.trim() ? (
+@@ -557,6 +569,9 @@ function Workspace({
+                     ) : <p role="status" className="mt-2 text-[11px] text-slate-500">
+                       {persistence.status === 'saving' ? '正在保存会话…' : '会话已保存'}
+                     </p>}
++                    {input && <p role="status" className="mt-1 text-[11px] text-slate-500">
++                      {draft.stored ? '未发送草稿已保存在本标签页' : '草稿仅保留在当前页面，刷新后可能丢失'}
++                    </p>}
+                     {warning && <p role="status" className="mt-2 text-xs text-amber-800">{warning}</p>}
+                     {error && <p role="alert" className="mt-2 text-xs text-red-600">{error}</p>}
+                     {!loadingChat && workspace.retry && (
+diff --git a/src/components/workspace/composer-draft.ts b/src/components/workspace/composer-draft.ts
+new file mode 100644
+index 0000000..04e340e
+--- /dev/null
++++ b/src/components/workspace/composer-draft.ts
+@@ -0,0 +1,24 @@
++// Match the upstream standalone tool's per-tab, per-session draft keys.
++const prefix = 'next-ai-test-cases:composer:';
++const memoryDrafts = new Map<string, string>();
++
++export function readComposerDraft(id: string) {
++  if (memoryDrafts.has(id)) return { text: memoryDrafts.get(id)!, stored: false };
++  try {
++    return { text: sessionStorage.getItem(prefix + id) ?? '', stored: true };
++  } catch {
++    return { text: '', stored: false };
++  }
++}
++
++export function writeComposerDraft(id: string, text: string) {
++  try {
++    if (text) sessionStorage.setItem(prefix + id, text);
++    else sessionStorage.removeItem(prefix + id);
++    memoryDrafts.delete(id);
++    return { text, stored: true };
++  } catch {
++    memoryDrafts.set(id, text);
++    return { text, stored: false };
++  }
++}
+diff --git a/src/components/workspace/use-case-workspace.ts b/src/components/workspace/use-case-workspace.ts
+index 7978298..23c41a3 100644
+--- a/src/components/workspace/use-case-workspace.ts
++++ b/src/components/workspace/use-case-workspace.ts
+@@ -9,10 +9,10 @@ import type { Extensions } from '@/lib/agent/extensionContracts';
+ import { normalizeMindMap, readMindMap, toCsv } from '@/lib/agent/mindMap';
+ import type { ModelSettings } from '@/lib/agent/modelConfig';
+ import type { MindMapNode } from '@/lib/agent/types';
+-import type { SavedWorkspace } from '@/lib/workspaces/types';
++import type { SavedWorkspace, WorkspaceSnapshot } from '@/lib/workspaces/types';
+
+ type Pending = { retry: RetryRequest; extensions: Extensions; errors: string[] };
+-type Run = { incomplete?: ConversationMessage; staleReply?: ConversationMessage; staleEdit?: boolean; startedAt: number; extensions: Extensions; atRevision: number; requirement: string; previous?: Pending; pending: Pending | null };
++type Run = { delivered?: WorkspaceSnapshot; incomplete?: ConversationMessage; staleReply?: ConversationMessage; staleEdit?: boolean; startedAt: number; extensions: Extensions; atRevision: number; requirement: string; previous?: Pending; pending: Pending | null };
+
+ function download(blob: Blob, name: string) {
+   const link = document.createElement('a');
+@@ -71,9 +71,13 @@ export function useCaseWorkspace(
+       try { message = JSON.parse(message).error ?? message; } catch { /* Transport errors are plain text. */ }
+       setError(message);
+     },
+-    onFinish({ message, isAbort, isError, isDisconnect }) {
++    onFinish({ message, messages, isAbort, isError, isDisconnect, finishReason }) {
+       const run = active.current;
+       if (!run) return;
++      if (finishReason === 'stop' && !isAbort && !isError && !isDisconnect
++        && !run.staleEdit && !run.pending?.retry.plan.failedIds.length) {
++        run.delivered = { messages, mindMap: mapRef.current };
++      }
+       if (run.staleEdit) run.staleReply = message;
+       if (message.metadata?.execution || !(isAbort || isError || isDisconnect)) return;
+       run.incomplete = message;
+@@ -161,6 +165,7 @@ export function useCaseWorkspace(
+       active.current = null;
+       setMode(null);
+     }
++    return run.delivered;
+   }
+
+   function exportCsv() {

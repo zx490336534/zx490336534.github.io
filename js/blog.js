@@ -77,8 +77,23 @@ function enableScrollNavigation() {
 
 enableScrollNavigation();
 
-if (matchMedia('(max-width: 760px)').matches) {
-  document.querySelector('.outline details')?.removeAttribute('open');
+const compactLayout = matchMedia('(max-width: 760px)');
+const outline = document.querySelector('.outline details');
+if (outline) {
+  if (compactLayout.matches) outline.open = false;
+  compactLayout.addEventListener('change', event => { outline.open = !event.matches; });
+  outline.addEventListener('click', event => {
+    if (compactLayout.matches && event.target.closest('a[href^="#"]') &&
+        !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) outline.open = false;
+  });
+  outline.addEventListener('keydown', event => {
+    if (compactLayout.matches && outline.open && event.key === 'Escape') {
+      outline.open = false;
+      outline.querySelector('summary').focus({preventScroll: true});
+    }
+  });
+}
+if (compactLayout.matches) {
   document.querySelector('.catalog-menu[data-compact]')?.removeAttribute('open');
 }
 
@@ -239,7 +254,9 @@ if (library) {
   const more = library.querySelector('details');
   const tags = [...library.querySelectorAll('.taxonomy li')];
   input.closest('label').hidden = false;
-  input.addEventListener('input', () => {
+  let filteredValue = '';
+  function filterTags() {
+    filteredValue = input.value;
     const term = normalize(input.value.trim());
     let count = 0;
     let expand = false;
@@ -249,8 +266,16 @@ if (library) {
       if (matched) count += 1;
       if (matched && more?.contains(tag)) expand = true;
     }
-    if (more) more.open = Boolean(term && expand);
+    if (more) {
+      more.hidden = Boolean(term && !expand);
+      more.open = Boolean(term && expand);
+    }
     counter.textContent = term ? '找到 ' + count + ' 个标签' : '';
+  }
+  input.addEventListener('input', filterTags);
+  window.addEventListener('pageshow', () => {
+    // History traversal may restore the search field after pageshow without firing input.
+    requestAnimationFrame(() => { if (input.value !== filteredValue) filterTags(); });
   });
 }
 

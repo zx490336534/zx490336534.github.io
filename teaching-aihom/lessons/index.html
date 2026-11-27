@@ -45,6 +45,8 @@
 <link rel="stylesheet" href="/css/entry-nav.css">
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
   <link rel="stylesheet" href="../course-layout.css">
+  <link id="course-dark-theme" rel="stylesheet" href="/css/course-dark.css" media="screen and (prefers-color-scheme: dark)">
+  <script src="/js/appearance.js"></script>
 </head>
 <body>
 <nav class="site-return" aria-label="站点导航"><a href="/">测试游记</a><a href="/lab/">工具与课程 <span aria-hidden="true">↗</span></a></nav>
@@ -185,7 +187,8 @@
   const input = document.getElementById('filter');
   const map = document.getElementById('learning-map');
   const toolbar = document.querySelector('.toolbar');
-  document.querySelectorAll('.jump a[href^="#"]').forEach(link => {
+  const stageLinks = document.querySelectorAll('.jump a[href^="#"]');
+  stageLinks.forEach(link => {
     link.addEventListener('click', event => {
       const target = document.querySelector(link.getAttribute('href'));
       if (!target) return;
@@ -196,7 +199,7 @@
       history.replaceState(null, '', link.getAttribute('href'));
     });
   });
-  input.addEventListener('input', () => {
+  function filterLessons() {
     const q = input.value.trim().toLowerCase();
     let visible = 0;
     map.querySelectorAll('.lesson-list li').forEach(li => {
@@ -206,10 +209,16 @@
     });
     map.querySelector('.empty').style.display = visible ? 'none' : 'block';
     map.querySelectorAll('.stage').forEach(stage => {
-      const hasVisible = [...stage.querySelectorAll('li')].some(li => !li.classList.contains('hidden'));
-      stage.classList.toggle('hidden', !hasVisible);
+      stage.classList.toggle('hidden', !stage.querySelector('li:not(.hidden)'));
     });
-  });
+    stageLinks.forEach(link => {
+      const stage = document.getElementById(link.hash.slice(1));
+      link.classList.toggle('hidden', !stage || stage.classList.contains('hidden'));
+    });
+    toolbar.querySelector('.jump').classList.toggle('hidden', !visible);
+  }
+  input.addEventListener('input', filterLessons);
+  window.addEventListener('pageshow', () => requestAnimationFrame(filterLessons));
 </script>
 </body>
 </html>

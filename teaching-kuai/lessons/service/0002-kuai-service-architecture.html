@@ -69,6 +69,8 @@ function checkAnswer(qId, correct, el){
 </script>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
   <link rel="stylesheet" href="../../course-layout.css">
+  <link id="course-dark-theme" rel="stylesheet" href="/css/course-dark.css" media="screen and (prefers-color-scheme: dark)">
+  <script src="/js/appearance.js"></script>
 </head>
 <body>
 <div class="container">
@@ -133,7 +135,7 @@ function checkAnswer(qId, correct, el){
   &nbsp;&nbsp;<span class="arrow">├→</span> <span class="cls">PromptService</span><span class="arrow">.</span><span class="method">createPrompt(request, currentUser)</span><br>
   &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; 构建 Prompt 实体，设置创建人/时间<br>
   &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp;<br>
-  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; <span class="arrow">├→</span> <span class="cls">PromptMapper</span><span class="arrow">.</span><span class="method">insert(prompt)</span> <span style="color:#16a34a">// MySQL 插入</span><br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; <span class="arrow">├→</span> <span class="cls">PromptMapper</span><span class="arrow">.</span><span class="method">insert(prompt)</span> <span style="color:var(--success,#16a34a)">// MySQL 插入</span><br>
   &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; <span class="arrow">└→</span> 返回 Prompt 对象（含自增 ID）<br>
   &nbsp;&nbsp;<span class="arrow">│</span><br>
   &nbsp;&nbsp;<span class="arrow">└→</span> Result.ok({id, title, version}) → HTTP 200
@@ -171,7 +173,7 @@ function checkAnswer(qId, correct, el){
   &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="arrow">│</span>&nbsp;&nbsp; <span class="cls">ApplicationInfoMapper</span><span class="arrow">.</span><span class="method">findByAppId()</span><br>
   &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="arrow">│</span>&nbsp;&nbsp; <span class="cls">EvaluationResultMapper</span><span class="arrow">.</span><span class="method">selectManualSatisfaction...()</span><br>
   &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="arrow">│</span>&nbsp;&nbsp; buildLLMEvaluationPrompt() → 构建评估 Prompt<br>
-  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="arrow">│</span>&nbsp;&nbsp; <span class="cls">ChatService</span><span class="arrow">.</span><span class="method">chat()</span> <span style="color:#7c3aed">// 调用 FastGPT API</span><br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="arrow">│</span>&nbsp;&nbsp; <span class="cls">ChatService</span><span class="arrow">.</span><span class="method">chat()</span> <span style="color:var(--purple,#7c3aed)">// 调用 FastGPT API</span><br>
   &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="arrow">│</span>&nbsp;&nbsp; parseScoreFromResponse() → 解析分数<br>
   &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="arrow">│</span>&nbsp;&nbsp; <span class="cls">LlmEvaluationRecordMapper</span><span class="arrow">.</span><span class="method">insert()</span><br>
   &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span class="arrow">└→</span> <span class="cls">SharedAppService</span><span class="arrow">.</span><span class="method">saveOrUpdateEvaluationResult()</span><br>
@@ -205,10 +207,10 @@ function checkAnswer(qId, correct, el){
   &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; <span class="arrow">│</span>&nbsp;&nbsp; <span class="cls">NewRobotMapper</span><span class="arrow">.</span><span class="method">list(robot)</span> → MySQL 查询<br>
   &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; <span class="arrow">│</span>&nbsp;&nbsp; 回退: TxBotUtil.getDefaultFastToken()<br>
   &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; <span class="arrow">│</span><br>
-  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; <span class="arrow">├→</span> <span class="cls">ChatService</span><span class="arrow">.</span><span class="method">chat(chatIns)</span> <span style="color:#7c3aed">// 调用 FastGPT</span><br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; <span class="arrow">├→</span> <span class="cls">ChatService</span><span class="arrow">.</span><span class="method">chat(chatIns)</span> <span style="color:var(--purple,#7c3aed)">// 调用 FastGPT</span><br>
   &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; <span class="arrow">│</span>&nbsp;&nbsp; HTTP POST → fastqa-new.example.com<br>
   &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; <span class="arrow">│</span><br>
-  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; <span class="arrow">└→</span> <span class="cls">WeChatSendService</span><span class="arrow">.</span><span class="method">sendMessage()</span> <span style="color:#7c3aed">// 回复企微</span><br>
+  &nbsp;&nbsp;<span class="arrow">│</span>&nbsp;&nbsp; <span class="arrow">└→</span> <span class="cls">WeChatSendService</span><span class="arrow">.</span><span class="method">sendMessage()</span> <span style="color:var(--purple,#7c3aed)">// 回复企微</span><br>
   &nbsp;&nbsp;<span class="arrow">│</span><br>
   &nbsp;&nbsp;<span class="arrow">└→</span> void（异步，无需返回值）
 </div>

@@ -101,6 +101,13 @@ IMPORTED_TERMINAL_CHROME = frozenset({
 
 
 def prepare_body(body, title):
+    # Imported WeChat lists sometimes include a printed marker next to the native one.
+    for item in body.select("ul.list-paddingleft-1 > li"):
+        first = item.find(string=lambda text: text.strip())
+        if first and first.find_parent("li") is item and not first.find_parent(["pre", "code"]):
+            content = re.sub(r"^\s*•(?:\s+|$)", "", first, count=1)
+            if content != first:
+                first.replace_with(content)
     for block in body.select("pre"):
         repair_python_spaces(block)
     for image in body.select("pre img[src]"):
@@ -275,7 +282,7 @@ def analytics_script():
             f'data-website-id="{UMAMI_WEBSITE_ID}" defer></script>')
 
 
-def add_analytics_to_resources():
+def update_resource_head_tags():
     readers = [
         ROOT / "tools/test-cases/index.html",
         *(ROOT / "teaching-aihom").rglob("*.html"),
@@ -289,6 +296,11 @@ def add_analytics_to_resources():
             updated, count = re.subn(r"</head>", "  " + analytics_script() + "\n</head>", page, count=1, flags=re.I)
             if count != 1:
                 raise ValueError(f"缺少页面头部 {file.relative_to(ROOT)}")
+        if file.relative_to(ROOT).parts[0].startswith("teaching-") and 'id="course-dark-theme"' not in updated:
+            theme = ('  <link id="course-dark-theme" rel="stylesheet" href="/css/course-dark.css" '
+                     'media="screen and (prefers-color-scheme: dark)">\n'
+                     '  <script src="/js/appearance.js"></script>\n')
+            updated = re.sub(r"</head>", theme + "</head>", updated, count=1, flags=re.I)
         if updated != page:
             file.write_text(updated)
 
@@ -979,7 +991,7 @@ def main():
                '<div class="profile-links"><a href="/archives/">浏览文章归档 ↗</a><a href="/">返回首页 ↗</a>'
                '<button type="button" data-open-search>搜索文章</button></div></section>')
     write("/404.html", shell("找不到页面", "/404.html", missing, noindex=True))
-    add_analytics_to_resources()
+    update_resource_head_tags()
     tool = ROOT / "tools/test-cases/index.html"
     original_tool = tool.read_text()
     # Replace only our own metadata block when the standalone tool is rebuilt.

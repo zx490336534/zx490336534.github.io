@@ -1,0 +1,98 @@
+/* Loaded for the blog's dark appearance, or by the OS media query in system mode. */
+:root {
+  color-scheme: dark;
+  --bg: #172329;
+  --surface: #1d2a30;
+  --text: #f1f4ef;
+  --muted: #b5c4c8;
+  --text-secondary: var(--muted);
+  --border: #42535d;
+  --accent: #f1c38b;
+  --accent-2: var(--accent);
+  --accent-light: #3b3227;
+  --accent-soft: var(--accent-light);
+  --soft: var(--accent-light);
+  --code-bg: #111e24;
+  --code: var(--code-bg);
+  --code-text: #e6eeee;
+  --blue: #9bcaed;
+  --info: var(--blue);
+  --info-light: #213747;
+  --course-info-border: #46657b;
+  --purple: #d7bdf5;
+  --green: #a0dfb8;
+  --ok: var(--green);
+  --success: var(--green);
+  --success-light: #233d32;
+  --warm: var(--accent);
+  --warn: var(--accent);
+  --warning: var(--accent);
+  --warning-light: var(--accent-light);
+  --red: #ffb5ab;
+  --bad: var(--red);
+  --tag-java: #79491d;
+  --tag-spring: #296144;
+  --tag-ai: #295575;
+}
+
+html body { background: var(--bg); color: var(--text); }
+:root :is(.card, .step, table, .toolbar, .checklist, .flow-row, .learning-map-quick-nav, .nav, input, select) {
+  background-color: var(--surface);
+  color: var(--text);
+  border-color: var(--border);
+}
+:root :is(th, .quiz-q label:hover, .lesson-list a:hover) { background-color: #293b44; color: var(--text); }
+:root :is(h3, .nav a, .nav-links a, .nav-title, .lead) { color: var(--text); }
+:root :is(.jump a, .nav a.primary, .nav-links a.primary, .quiz-btn, .show-btn, .show-answers, .step-num, .flow-num, .method-badge.put), :root ol.steps > li::before {
+  background-color: #785027;
+  color: #fff5e8;
+}
+:root :is(.jump a.secondary, .nav a.map, .nav-links a.map) { background-color: var(--info-light); color: var(--info); }
+:root :is(.quiz, .quiz-section, .warn, .warn-box, .card.warn, .card.warning, .card.soft, .callout, .tag.deep, .repo.fe, .tag.fe, .repo.svc, .tag.svc) {
+  background-color: var(--warning-light);
+  color: var(--text);
+  border-color: #776044;
+}
+:root :is(.quiz-title, .call-chain .cls, .warn .card-label) { color: var(--warning); }
+:root :is(.ask-agent, .info-box, .info, .ref-card.featured, .repo.py, .tag.py, .tag.overview, .tag.code, .flow-step.mysql, .diagram .box.model) {
+  background-color: var(--info-light);
+  color: var(--blue);
+  border-color: #46657b;
+}
+:root :is(.success, .success-box, .win, .tip, .tag.dev, .tag.ui, .flow-step.mongo, .diagram .box.chain) {
+  background-color: var(--success-light);
+  color: var(--green);
+  border-color: #456b55;
+}
+:root :is(.tag.arch, .tag.special, .tag.concept, .card.purple, .repo.cross, .flow-step.ext, .diagram .box.agent) {
+  background-color: #383047;
+  color: var(--purple);
+}
+:root :is(.diagram .box.prompt, .diagram .box.tool, .tag.api) { background-color: var(--accent-light); color: var(--accent); }
+:root :is(.callout.warning, .error-box, .status-badge.failed) { background-color: #472c2b; color: var(--bad); }
+:root :is(.ask-agent strong, .info-box h3, .card.info .card-label, .call-chain .method, .prereq-title, .prereq a) { color: var(--info); }
+:root .call-chain .arrow { color: var(--muted); }
+:root .method-badge.get { background-color: var(--tag-spring); }
+:root :is(.win .card-label, .success-box h3) { color: var(--success); }
+:root :is(.quiz-answer, .quiz .answer, .status-badge.success) { background-color: var(--success-light); color: var(--green); }
+:root .quiz-options :is(.correct, .wrong), :root .quiz-opt:is(.correct, .wrong),
+:root .quiz-q .answer:is(.correct, .wrong), :root .quiz .options :is(.correct, .wrong) {
+  background-color: var(--success-light) !important;
+  color: var(--green);
+}
+:root .quiz-options .wrong, :root .quiz-opt.wrong, :root .quiz-q .answer.wrong, :root .quiz .options .wrong {
+  background-color: #472c2b !important;
+  color: var(--bad);
+}
+/* Older lessons set the result palette inline when the reader chooses an answer. */
+:root .quiz:has(.quiz-options .correct) .quiz-feedback, :root .quiz-q .answer.show {
+  background-color: var(--success-light) !important;
+  color: var(--green) !important;
+}
+:root .quiz:has(.quiz-options .wrong) .quiz-feedback, :root .quiz-q .answer.show.wrong {
+  background-color: #472c2b !important;
+  color: var(--bad) !important;
+}
+:root pre { background: var(--code-bg); color: var(--code-text); }
+:root code { background-color: var(--code-bg); color: var(--code-text); }
+:root pre :is(.comment, .c, .com) { color: var(--muted); }
