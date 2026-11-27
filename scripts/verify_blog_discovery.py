@@ -13,7 +13,7 @@ import xml.etree.ElementTree as ET
 
 from bs4 import BeautifulSoup
 from blog_discovery import EVIDENCE, WATCH, caption_cues, watch_path
-from blog_geo import HARD_RISK, SENSITIVE_LINE, compact, fragments, safe
+from blog_geo import HARD_RISK, SENSITIVE_LINE, SENSITIVE_TOPIC, compact, fragments, safe
 from blog_portfolio import dimensions
 
 SITE = "https://www.zhongxin.website"
@@ -84,7 +84,33 @@ def main():
         canonicals = markup.select('link[rel=canonical]')
         assert len(canonicals) == 1 and canonicals[0]["href"] == SITE + path, path
 
+    published_categories = {}
+    catalog = json.loads((ROOT / "scripts/topic_catalog.json").read_text())
+    members = defaultdict(set)
+    for slug, (key, *_) in catalog["posts"].items():
+        path = f"/article/{slug}.html"
+        if path not in paths:
+            continue
+        parts = key.split("/")
+        for i in range(len(parts)):
+            members["/".join(parts[:i + 1])].add(path)
+    for key, (label, description) in catalog["topics"].items():
+        category = f"/categories/{key}/"
+        document = page(category)
+        assert document.h1.get_text(strip=True) == label, category
+        assert document.select_one('meta[name="description"]')["content"] == description, category
+        collection = json.loads(document.select_one('script[type="application/ld+json"]').string)["@graph"][0]
+        assert (collection["@type"], collection["url"], collection["description"]) == ("CollectionPage", SITE + category, description), category
+        if category in paths:
+            group = frozenset(members[key])
+            assert len(group) >= 4 and group not in published_categories, category
+            assert not document.select_one('meta[name="robots"][content*="noindex"]'), category
+            assert {link["href"] for link in document.select(".catalog-results .row-title")} == group, category
+            published_categories[group] = category
+    assert set(published_categories) == {frozenset(group) for group in members.values() if len(group) >= 4}
+    assert {p for p in paths if p.startswith("/categories/")} == {"/categories/", *published_categories.values()}
     guide_counts = Counter()
+    recommendations = {}
     calendar = defaultdict(lambda: defaultdict(list))
     for article in articles:
         path = "/article/" + article.name
@@ -104,6 +130,17 @@ def main():
         assert bool(guide) != bool(card), path
         guide_counts[guide["data-reading-kind"] if guide else "original-editorial"] += 1
         original_body = markup.select_one(".post-body")
+        next_reads = markup.select_one(".article-main > .read-next")
+        if next_reads:
+            assert not SENSITIVE_TOPIC.search(headline) and not SENSITIVE_LINE.search(headline), path
+            assert not HARD_RISK.search(original_body.get_text(" ", strip=True)), path
+            assert next_reads.select_one(".read-next-topic")["href"] == markup.select(".article-path a")[-1]["href"], path
+            links = [a["href"] for a in next_reads.select("li a")]
+            assert len(links) <= 3 and len(links) == len(set(links)) and path not in links, path
+            assert set(links).isdisjoint(a["href"] for a in markup.select(".article-main .related a")), path
+            recommendations[path] = links
+        elif guide and guide["data-reading-kind"] == "restricted":
+            assert not markup.select_one(".read-next"), path
         for demo in original_body.select("video.inline-demo"):
             clip, poster = target(demo["src"]), target(demo["poster"])
             assert clip.suffix == ".mp4" and poster == clip.with_suffix(".webp"), path
@@ -149,6 +186,11 @@ def main():
             for selector in (".article-cover", "a.source-link", 'meta[property="og:image"]'):
                 assert str(previous.select_one(selector)) == str(markup.select_one(selector)), (path, selector)
 
+    for source, readings in recommendations.items():
+        assert all(target in recommendations for target in readings), source
+    assert "/article/kitaru-agent-replay-regression.html" in recommendations["/article/promptfoo-agent-regression.html"]
+    assert "/article/temporal-agent-recovery.html" in recommendations["/article/agent-ui-testing.html"]
+    print(f"OK: {len(published_categories)} distinct category landing pages; {len(recommendations)} next-read sections, {sum(map(len, recommendations.values()))} topical links.")
     for slug in WATCH:
         markup = page(watch_path(slug))
         source_url = markup.select_one("video source")["src"]

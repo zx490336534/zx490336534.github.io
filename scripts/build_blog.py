@@ -21,6 +21,7 @@ import nh3
 import blog_discovery as discovery
 import blog_geo as geo
 import blog_portfolio as portfolio
+import blog_read_next as read_next
 import blog_video_series as video_series
 from blog_code import repair_python_spaces
 from build_public_courses import build_courses
@@ -300,6 +301,7 @@ def update_resource_head_tags():
 
 def shell(title, path, content, description=DESCRIPTION, extra_head="", *, canonical_path=None, noindex=False):
     is_article = path.startswith("/article/")
+    style_version = "topic-discovery-20261127" if is_article else "code-fold-20261126"
     title_tag = discovery.HOME_TITLE if path == "/" else f"{title} · {NAME}"
     nav = [
         ("首页", "/"), ("归档", "/archives/"), ("分类", "/categories/"),
@@ -340,7 +342,7 @@ def shell(title, path, content, description=DESCRIPTION, extra_head="", *, canon
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
   <link rel="icon" href="/images/avatar.jpeg">
   <script src="/js/appearance.js"></script>
-  <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
+  <link rel="stylesheet" href="/css/blog.css?v={style_version}">
   <script src="/js/blog.js?v=code-fold-20261126" defer></script>
   {analytics_script()}{counts}
   {extra_head}
@@ -633,7 +635,7 @@ def article_video(post):
         </section>"""
 
 
-def article(post, older, newer, series_position=None):
+def article(post, older, newer, series_position=None, follow_up=None):
     toc = "".join(f'<li><a href="#{quote(anchor, safe="")}">{html(label)}</a></li>' for anchor, label in post.toc)
     outline = (
         '<aside class="outline"><details open><summary>'
@@ -705,6 +707,7 @@ def article(post, older, newer, series_position=None):
         <div class="post-tags" aria-label="文章标签">{tags}</div>
         <div class="legacy-tags" hidden>{original_tags}</div>
         {related}
+        {read_next.render(follow_up)}
         {comments}
       </div>
     </div>
@@ -789,7 +792,9 @@ def category_indexes(posts, catalog):
         key=lambda item: (-item[2], item[0]),
     )
     for node in catalog.walk():
-        write(node.url, shell(node.name, node.url, browser_page(catalog, node, post_rows, history)))
+        summary, metadata = discovery.category_metadata(node, SITE)
+        write(node.url, shell(node.name, node.url, browser_page(catalog, node, post_rows, history),
+                              summary, metadata, noindex=not node.members or node.key == "unclassified"))
 
 
 def tag_indexes(posts):
@@ -835,7 +840,8 @@ def archive(posts):
     content = (f'<section class="listing archive"><header class="page-heading"><div><h1>文章归档</h1>'
                f'<p>{len(posts)} 篇文章</p></div><a href="/categories/">按分类浏览 ↗</a></header>'
                f'<nav class="archive-nav" aria-label="按年份浏览">{years}</nav>{entries}</section>')
-    write("/archives/", shell("文章归档", "/archives/", content))
+    write("/archives/", shell("文章归档", "/archives/", content,
+                             "按年份和月份查看测试游记的技术文章，回看自动化测试、AI 工程和开发实践。"))
     archives_dir = ROOT / "archives"
     for file in archives_dir.glob("[0-9][0-9][0-9][0-9]/index.html"):
         by_year.setdefault(file.parent.name, [])
@@ -940,10 +946,11 @@ def main():
             series_content += discovery.series_evidence()
         summary, markup = portfolio.series_metadata(record, SITE)
         write(record.url, shell(record.title, record.url, series_content, summary, markup))
+    follow_ups = read_next.build(posts, positions)
     for i, post in enumerate(posts):
         older = posts[i + 1] if i + 1 < len(posts) else None
         newer = posts[i - 1] if i else None
-        write(post.path, article(post, older, newer, positions.get(post.path)))
+        write(post.path, article(post, older, newer, positions.get(post.path), follow_ups.get(post.path)))
     indexes(posts, catalog)
     for post in posts:
         if Path(post.path).stem in discovery.WATCH:
@@ -955,13 +962,14 @@ def main():
     for playlist in playlists:
         content, description, markup = video_series.player(playlist, SITE)
         write(playlist.path, shell(playlist.title + "｜视频系列", playlist.path, content, description, markup))
-    write("/sitemap.xml", discovery.sitemap(posts, series, SITE))
+    write("/sitemap.xml", discovery.sitemap(posts, series, SITE, catalog))
     lab = (
         '<section class="listing resource-library"><header class="page-heading">'
         '<div><h1>工具与课程</h1><p>打开在线工具，或按学习地图循序阅读。</p></div>'
         '</header>' + resource_cards() + '</section>'
     )
-    write("/lab/", shell("工具与课程", "/lab/", lab))
+    write("/lab/", shell("工具与课程", "/lab/", lab,
+                         "使用测试用例生成与脑图编辑工具、需求共审演示，或按学习地图阅读 AI 应用全栈与测试评测课程。"))
     about = BeautifulSoup((ROOT / "about/index.html").read_text(), "lxml").select_one(".post-body")
     assert about is not None
     about_body = about.decode_contents().strip()

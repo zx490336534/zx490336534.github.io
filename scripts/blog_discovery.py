@@ -229,10 +229,34 @@ def video_watch(post, root, site):
     return path, body, description, head
 
 
-def sitemap(posts, series, site):
+def category_metadata(topic, site):
+    url = site + topic.url
+    description = topic.description or "按测试与质量、AI 工程、开发技术、工程工具和写作复盘浏览测试游记。"
+    return description, json_ld({
+        "@type": "CollectionPage", "name": topic.name, "url": url,
+        "description": description, "inLanguage": "zh-CN",
+    })
+
+
+def sitemap_topics(catalog):
+    # Prefer the deepest editorial landing page when a parent and child list
+    # exactly the same articles. Keep every URL working and crawlable.
+    chosen = {}
+    for topic in catalog.walk():
+        if not topic.key or topic.key == "unclassified" or len(topic.members) < 4:
+            continue
+        members = frozenset(post.path for post in topic.members)
+        current = chosen.get(members)
+        if current is None or len(topic.trail()) > len(current.trail()):
+            chosen[members] = topic
+    return {topic.url for topic in chosen.values()}
+
+
+def sitemap(posts, series, site, catalog):
     paths = {
         "/", "/archives/", "/series/", "/categories/", "/about/", "/lab/", "/videos/", TOOL_PATH, "/tools/spec-collab/",
         *(p.path for p in posts), *(s.url for s in series), *(watch_path(slug) for slug in WATCH),
+        *sitemap_topics(catalog),
     }
     video_ns = "http://www.google.com/schemas/sitemap-video/1.1"
     ET.register_namespace("video", video_ns)
