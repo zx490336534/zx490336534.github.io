@@ -1,0 +1,37 @@
+name: Verify blog
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: "0.13.5"
+          enable-cache: false
+      - name: Run regression tests
+        run: uv run --with-requirements scripts/build_blog.py python -m unittest discover -s scripts -p 'test_*.py'
+      - name: Rebuild the blog
+        run: uv run scripts/build_blog.py
+      - name: Verify generated pages
+        run: uv run scripts/verify_blog_discovery.py
+      - name: Check for unpublished generated changes
+        run: |
+          changes=$(git status --porcelain=v1 --untracked-files=all)
+          if [[ -n "$changes" ]]; then
+            printf '%s\n' "$changes"
+            exit 1
+          fi

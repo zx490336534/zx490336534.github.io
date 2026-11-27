@@ -12,7 +12,7 @@ from html import escape, unescape
 import json
 from pathlib import Path
 import re
-from urllib.parse import quote, unquote, urlsplit
+from urllib.parse import parse_qs, quote, unquote, urlsplit
 import xml.etree.ElementTree as ET
 
 from bs4 import BeautifulSoup
@@ -135,6 +135,16 @@ def prepare_body(body, title):
         wrapper = body.new_tag("div", attrs={"class": "table-scroll", "tabindex": "0", "role": "region", "aria-label": "数据表格"})
         table.wrap(wrapper)
     for image in body.find_all("img", src=True):
+        gif = re.fullmatch(r"/images/blog-media/([a-f0-9]+)\.gif", image["src"])
+        if gif:
+            media = f"/videos/blog-media/{gif[1]}"
+            if all((ROOT / (media[1:] + ext)).is_file() for ext in (".mp4", ".webp")):
+                attrs = {key: image[key] for key in ("id", "width", "height") if key in image.attrs}
+                attrs.update({"class": "inline-demo", "src": media + ".mp4", "poster": media + ".webp",
+                              "aria-label": image.get("alt") or "正文操作演示", "controls": "", "playsinline": "",
+                              "preload": "none", "loading": "lazy"})
+                image.replace_with(body.new_tag("video", attrs=attrs))
+                continue
         image["loading"] = "lazy"
         image["decoding"] = "async"
         image.attrs.setdefault("alt", "")
@@ -173,30 +183,57 @@ def read_post(path):
     )
 
 
+def wechat_source_identity(url):
+    source = urlsplit(url)
+    if source.scheme != "https" or source.netloc != "mp.weixin.qq.com":
+        return None
+    if re.fullmatch(r"/s/[A-Za-z0-9_-]+/?", source.path):
+        return ("short", source.path.rstrip("/"))
+    if source.path.rstrip("/") != "/s" or not source.query:
+        return None
+    query = parse_qs(source.query, keep_blank_values=True)
+    fields = (query.get("__biz", []), query.get("mid", []) + query.get("appmsgid", []),
+              query.get("idx", []) + query.get("itemidx", []))
+    if all(len(values) == 1 and values[0] for values in fields):
+        return ("message", *(values[0] for values in fields))
+    # Some shared links use an opaque query. Only the identical query proves a match.
+    return ("opaque", source.query)
+
+
 def import_posts(path, posts):
     existing = {post.path: post for post in posts}
+    seen = set()
     for item in json.loads(path.read_text()):
         route = item['path']
         if not re.fullmatch(r"/article/[a-z0-9-]+\.html", route):
             raise ValueError(f"不支持的文章地址 {route}")
-        source = urlsplit(item["source"])
-        if source.scheme != "https" or source.netloc != "mp.weixin.qq.com" or not source.path.startswith("/s"):
+        if route in seen:
+            raise ValueError(f"同一批导入中出现重复文章地址 {route}")
+        seen.add(route)
+        source = wechat_source_identity(item["source"])
+        if source is None:
             raise ValueError(f"无效的公众号原文地址 {route}")
+        published = item['published']
+        date.fromisoformat(published[:10])
+        previous = existing.get(route)
+        if previous:
+            if previous.source:
+                if wechat_source_identity(previous.source) != source:
+                    raise ValueError(f"无法确认与已有公众号原文相同，请核对原文地址 {route}")
+            elif compact(previous.title) != compact(item['title']) or previous.day != published[:10]:
+                raise ValueError(f"已有文章未绑定原文，首次关联需匹配原稿标题和发布日期 {route}")
         clean = nh3.clean(item["body"], tags=ALLOWED_TAGS, attributes=ALLOWED_ATTRIBUTES,
                           url_schemes={"https", "http", "mailto"}, clean_content_tags={"script", "style", "iframe", "object", "noscript"})
         document = BeautifulSoup(clean, "lxml")
         if not document.body or not document.body.get_text(strip=True):
             raise ValueError(f"公众号正文为空 {route}")
         body = document.body
-        previous = existing.get(route)
         title = previous.title if previous else item['title']
         toc = prepare_body(body, title)
         search_text = compact(body.get_text(" ", strip=True))
         cover = item.get("cover", "")
         if cover and not re.fullmatch(r"/images/blog-media/[a-f0-9]+\.(?:webp|gif|png|svg)", cover):
             raise ValueError(f"无效的本地封面 {route}")
-        published = item['published']
-        date.fromisoformat(published[:10])
         if previous:
             # Keep historical fragment links even if the restored edition used different headings.
             restored_ids = {node['id'] for node in body.find_all(id=True)}

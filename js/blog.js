@@ -129,11 +129,21 @@ function snippet(post, words, rank) {
   return (start ? '…' : '') + post.text.slice(start, start + 115) + (start + 115 < post.text.length ? '…' : '');
 }
 
+const moreResults = document.createElement('button');
+moreResults.type = 'button';
+moreResults.id = 'search-more';
+moreResults.textContent = '加载更多文章';
+moreResults.setAttribute('aria-controls', results.id);
+moreResults.hidden = true;
+results.after(moreResults);
+
 let version = 0;
 async function showResults() {
   const current = ++version;
   const query = normalize(search.value.trim());
   results.replaceChildren();
+  moreResults.hidden = true;
+  moreResults.onclick = null;
   status.textContent = query ? '正在搜索…' : '';
   if (!query) return;
 
@@ -150,8 +160,13 @@ async function showResults() {
   const matches = posts.map(post => ({post, rank:score(post, query, words)}))
     .filter(match => match.rank)
     .sort((a, b) => b.rank - a.rank);
-  status.textContent = matches.length ? '找到 ' + matches.length + ' 篇文章' : '没有找到相关文章';
-  for (const {post, rank} of matches.slice(0, 20)) {
+  moreResults.onclick = () => appendResultPage(matches, words);
+  appendResultPage(matches, words);
+}
+
+function appendResultPage(matches, words) {
+  const start = results.childElementCount;
+  for (const {post, rank} of matches.slice(start, start + 20)) {
     const item = document.createElement('li');
     const link = document.createElement('a');
     link.href = post.path;
@@ -170,7 +185,11 @@ async function showResults() {
     if (post.cover?.startsWith('/images/')) {
       const picture = document.createElement('img');
       picture.className = 'post-thumbnail';
-      picture.src = post.cover;
+      const thumbnail = post.cover.replace(/^\/images\/article-covers\//, '/images/cover-variants/384/');
+      if (thumbnail !== post.cover) {
+        picture.addEventListener('error', () => { picture.src = post.cover; }, {once: true});
+      }
+      picture.src = thumbnail;
       picture.alt = '';
       picture.width = 180;
       picture.height = 90;
@@ -183,6 +202,10 @@ async function showResults() {
     item.append(link);
     results.append(item);
   }
+  const shown = results.childElementCount;
+  status.textContent = shown ? `已展示 ${shown} / ${matches.length} 篇文章` : '没有找到相关文章';
+  moreResults.hidden = shown >= matches.length;
+  if (start < shown && start > 0) results.children[start].querySelector('a').focus();
 }
 search.addEventListener('keydown', event => {
   if (event.key !== 'Escape' || event.isComposing || !search.value) return;

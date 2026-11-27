@@ -71,6 +71,11 @@ def main():
         assert bool(guide) != bool(card), path
         guide_counts[guide["data-reading-kind"] if guide else "original-editorial"] += 1
         original_body = markup.select_one(".post-body")
+        for demo in original_body.select("video.inline-demo"):
+            clip, poster = target(demo["src"]), target(demo["poster"])
+            assert clip.suffix == ".mp4" and poster == clip.with_suffix(".webp"), path
+            assert clip.is_file() and poster.is_file(), (path, clip, poster)
+            assert demo.has_attr("controls") and demo["preload"] == "none" and not demo.has_attr("autoplay"), path
         if guide:
             assert guide.find_next_sibling() == original_body and guide.select_one("h2"), path
             assert not guide.select("script, code, pre, img, iframe"), path

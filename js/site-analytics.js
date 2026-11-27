@@ -43,7 +43,10 @@
     if (destination.startsWith('/tags/')) return 'tag_click';
     if (destination.startsWith('/tools/test-cases/')) return 'tool_entry_click';
     if (destination.startsWith('/teaching-aihom/') || destination.startsWith('/teaching-kuai/')) return 'course_link_click';
-    if (['/', '/lab/', '/archives/', '/about/', '/atom.xml'].includes(destination)) return 'navigation_click';
+    if (['/', '/lab/', '/about/', '/videos/', '/atom.xml'].includes(destination) || destination.startsWith('/archives/') ||
+        destination.startsWith('/videos/watch/') || /^\/page\/\d+\/$/.test(destination)) {
+      return 'navigation_click';
+    }
     return '';
   }
 
@@ -59,7 +62,7 @@
     }
     if (!siteHosts.has(url.hostname)) return;
     const destination = pagePath(url.pathname);
-    if (destination === path) return;
+    if (destination === path || destination === pagePath(location.pathname)) return;
     const name = clickName(link, destination);
     if (name) track(name, destination);
   }
