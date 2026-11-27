@@ -230,7 +230,7 @@ def video_watch(post, root, site):
 
 def sitemap(posts, series, site):
     paths = {
-        "/", "/archives/", "/series/", "/categories/", "/about/", "/lab/", "/videos/", TOOL_PATH,
+        "/", "/archives/", "/series/", "/categories/", "/about/", "/lab/", "/videos/", TOOL_PATH, "/tools/spec-collab/",
         *(p.path for p in posts), *(s.url for s in series), *(watch_path(slug) for slug in WATCH),
     }
     video_ns = "http://www.google.com/schemas/sitemap-video/1.1"

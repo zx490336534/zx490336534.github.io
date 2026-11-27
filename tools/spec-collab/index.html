@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="体验 Spec Collab 的需求审核、版本确认失效与 Ready Spec 导出。">
+  <link rel="canonical" href="https://www.zhongxin.website/tools/spec-collab/">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+  <title>Spec Collab 互动演示</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172b27;
+      --muted: #4b635b;
+      --rule: #cfdad1;
+      --paper: #fcfdf9;
+      --accent: #185b47;
+      color: var(--ink);
+      background: #edf1e9;
+      font: 100% / 1.65 "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    a { color: var(--accent); text-underline-offset: .2em; }
+    button, input, select { font: inherit; }
+    button, input, select { min-height: 2.65rem; padding: .35rem .7rem; border: 1px solid var(--rule); border-radius: .35rem; color: inherit; background: white; }
+    button:not(:disabled), summary { cursor: pointer; }
+    button:not(:disabled):hover { border-color: var(--accent); }
+    button:disabled, fieldset:disabled input { color: var(--muted); background: #eef2ed; }
+    button.primary:not(:disabled) { background: var(--accent); border-color: var(--accent); color: white; }
+    :focus-visible { outline: 3px solid #216d87; outline-offset: 3px; }
+    .wrap { width: min(72rem, calc(100% - 2rem)); margin: 0 auto; }
+    header { padding: 1.2rem 0 1.4rem; border-top: .35rem solid var(--accent); }
+    nav { display: flex; flex-wrap: wrap; gap: .35rem 1.3rem; margin-bottom: 1.8rem; font-size: .9rem; }
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.16; letter-spacing: -.035em; font-weight: 720; }
+    header p { margin-top: .8rem; color: var(--muted); }
+    .workspace { display: grid; grid-template-columns: minmax(0, 1.04fr) minmax(0, 1fr); align-items: start; gap: 1rem; padding-bottom: 2rem; }
+    .sheet { min-width: 0; background: var(--paper); border: 1px solid var(--rule); border-radius: .7rem; overflow-wrap: anywhere; }
+    .sheet-top { display: flex; justify-content: space-between; align-items: center; gap: .4rem 1rem; flex-wrap: wrap; padding: .9rem 1.15rem; border-bottom: 1px solid var(--rule); }
+    .sheet h2 { font-size: 1.12rem; }
+    .sheet h3 { font-size: 1rem; margin-bottom: .4rem; }
+    .sheet-body { padding: 1rem 1.15rem; }
+    .version { padding: .18rem .5rem; background: #e8f1e9; border-radius: .25rem; color: var(--accent); font-size: .87rem; }
+    .version + .version { margin-left: .3rem; }
+    .document { margin: 0; padding: .9rem 1.15rem; white-space: pre-wrap; font: inherit; line-height: 1.8; }
+    .step + .step { margin-top: .9rem; padding-top: .85rem; border-top: 1px solid var(--rule); }
+    .step p, .note { color: var(--muted); font-size: .9rem; }
+    details { margin: .45rem 0 .65rem; }
+    summary { color: var(--accent); font-weight: 650; padding: .2rem 0; }
+    .diff { list-style: none; padding: 0; margin: .4rem 0; font-size: .87rem; }
+    .diff li { padding: .4rem .55rem; border-radius: .2rem; }
+    .diff .removed { background: #f8e7e3; color: #6c3029; }
+    .diff .added { background: #e6f1e6; color: #234e38; }
+    .actions { display: flex; flex-wrap: wrap; align-items: center; gap: .45rem .65rem; margin-top: .55rem; }
+    .signers { display: grid; grid-template-columns: 1fr 1fr; gap: .45rem; margin: .55rem 0; }
+    .signers div { display: grid; gap: .15rem; padding: .4rem .55rem; border: 1px solid var(--rule); border-radius: .35rem; }
+    .signers dd { margin: 0; font-size: .85rem; color: #804e28; }
+    .signers dd[data-confirmed="true"] { color: var(--accent); }
+    fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
+    #duration { width: 5rem; }
+    #result { grid-column: 1 / -1; min-height: 1.5em; margin: 0; padding: .6rem .9rem; border-left: 3px solid var(--accent); background: #e1ebe0; }
+    @media (max-width: 48rem) {
+      .workspace { grid-template-columns: 1fr; }
+      .wrap { width: min(calc(100% - 1.25rem), 42rem); }
+      nav { margin-bottom: 1.25rem; }
+    }
+    @media (max-width: 26rem) {
+      .sheet-top, .sheet-body, .document { padding-inline: .8rem; }
+      .actions button { white-space: normal; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <nav aria-label="相关页面">
+        <a href="https://www.zhongxin.website/lab/">← 测试游记 · 工具与课程</a>
+        <a href="https://github.com/zx490336534/dsh-spec-collab#readme">源码与插件安装 ↗</a>
+      </nav>
+      <h1>Spec Collab 需求共审</h1>
+      <p>用一份虚构报表需求，体验审核建议、版本确认和 Ready Spec 导出。审核为预设结果，刷新会重置进度。</p>
+    </div>
+  </header>
+
+  <main class="wrap workspace">
+    <p id="result" role="status"></p>
+    <section class="sheet" aria-labelledby="spec-heading">
+      <div class="sheet-top">
+        <h2 id="spec-heading">报表导出结果保留多久</h2>
+        <div><span id="version" class="version"></span><span id="stage" class="version"></span></div>
+      </div>
+      <pre id="spec" class="document"></pre>
+    </section>
+
+    <section class="sheet" aria-labelledby="review-heading">
+      <div class="sheet-top">
+        <h2 id="review-heading">协作工作台</h2>
+        <button type="button" id="reset">重置演示</button>
+      </div>
+      <div class="sheet-body">
+        <section class="step" aria-labelledby="question-heading">
+          <h3 id="question-heading">审核建议</h3>
+          <details id="suggestion">
+            <summary id="suggestion-toggle">报表过期后，下载应该怎样处理？</summary>
+            <p>建议保留 24 小时，并向用户说明如何再次导出。</p>
+            <ul class="diff" id="diff" aria-label="验收标准差异"></ul>
+            <button class="primary" type="button" id="apply" disabled>采纳候选修改</button>
+          </details>
+        </section>
+
+        <section class="step" aria-labelledby="approval-heading">
+          <h3 id="approval-heading">确认当前版本</h3>
+          <div class="actions">
+            <button type="button" id="precheck" disabled>运行预设研发预审</button>
+            <p id="precheck-state"></p>
+          </div>
+          <dl class="signers">
+            <div><dt>产品</dt><dd id="status-product"></dd></div>
+            <div><dt>研发</dt><dd id="status-engineering"></dd></div>
+          </dl>
+          <div class="actions">
+            <label for="role">当前角色</label>
+            <select id="role" disabled><option value="product">产品</option><option value="engineering">研发</option></select>
+            <button type="button" id="confirm" disabled>确认当前版本</button>
+          </div>
+        </section>
+
+        <section class="step" aria-labelledby="edit-heading">
+          <h3 id="edit-heading">修改验收标准</h3>
+          <p>试试在双方确认后把 24 小时改成 48 小时。</p>
+          <form id="edit">
+            <fieldset class="actions" id="adjustment" disabled>
+              <label for="duration">保留时长（小时）</label>
+              <input id="duration" type="number" min="1" max="168" step="1" value="24" required>
+              <button type="submit" id="save" disabled>保存新版本</button>
+            </fieldset>
+          </form>
+        </section>
+
+        <section class="step" aria-labelledby="download-heading">
+          <h3 id="download-heading">交付</h3>
+          <p>当前版本通过预审且收到双方确认后，就可以下载。</p>
+          <div class="actions"><button class="primary" type="button" id="download" disabled>下载 Ready Spec</button></div>
+        </section>
+      </div>
+    </section>
+    <noscript>请启用 JavaScript 以体验互动演示。</noscript>
+  </main>
+  <script>(function(){function e(e=globalThis.crypto){if(typeof e?.randomUUID==`function`)return e.randomUUID();let t=new Uint8Array(16);if(typeof e?.getRandomValues==`function`)e.getRandomValues(t);else for(let e=0;e<t.length;e+=1)t[e]=Math.floor(Math.random()*256);t[6]=t[6]&15|64,t[8]=t[8]&63|128;let n=[...t].map(e=>e.toString(16).padStart(2,`0`));return`${n.slice(0,4).join(``)}-${n.slice(4,6).join(``)}-${n.slice(6,8).join(``)}-${n.slice(8,10).join(``)}-${n.slice(10).join(``)}`}function t(e,t){return e.aiRuns.some(n=>n.commit===e.currentCommit&&n.kind===t&&n.status===`completed`)}function n(e,t){return e.confirmations.filter(n=>n.commit===e.currentCommit&&n.role===t&&n.scope===`version`&&n.status===`active`&&n.participant.kind===`human`&&n.participant.role===t)}function r(e,t){return n(e,t).length>0}function i(e,n){let i=e.aiRuns.slice().reverse().find(t=>t.commit===e.currentCommit&&(t.status===`queued`||t.status===`running`)),a=t(e,`engineering-precheck`),o=e.patches.filter(t=>t.baseCommit===e.currentCommit&&t.status===`pending`),s=n.filter(e=>!e.passed),c=r(e,`product`),l=r(e,`engineering`);return{activeRun:i,engineeringReviewed:a,pendingPatches:o,failedChecks:s,productConfirmed:c,engineeringConfirmed:l,error:e.stage===`joint-review`?e.workspaceId?.trim()?i?`current version review is still running`:a?o.length>0?`current version has pending patches`:s.length>0?`readiness gate is not satisfied`:!c||!l?`current version needs product and engineering confirmation`:void 0:`engineering precheck is required for the current version`:`review workspace is required`:`readiness gate is not satisfied`}}function a(e,t){e.stage!==t&&(e.stage=t,e.stageCycle+=1)}function o(e){let t=new Map,n=``;for(let r of e.split(`
+`))/^##\s+/.test(r)?(n=r.replace(/^##\s+/,``).trim(),t.set(n,``)):n&&t.set(n,`${t.get(n)??``}\n${r}`);return t}let s=/待澄清|待补充|TODO/i;function c(e){let t=``,n=e.replace(/<!--.*?-->/gs,``).split(/\r?\n/).map(e=>{let n=/^ {0,3}(`{3,}|~{3,})(.*)$/.exec(e);return t?(n?.[1]?.startsWith(t)&&!n[2]?.trim()&&(t=``),``):n?(t=n[1],``):e}).join(`
+`),r=new Map;for(let e of n.matchAll(/\*\*(AC-[A-Za-z0-9-]+)(?:[ \t]+[^*\n]+)?\*\*[ \t]*[：:][ \t]*(.+)/g)){let t=e[2].trim();r.set(e[1],{text:t,complete:!!t&&!s.test(t)})}let i,a=e=>{if(!i)return;let t=n.slice(i.start,e).trim(),a=`${i.title}\n${t}`,o=!s.test(a)&&t.split(`
+`).some(l);r.set(i.id,{text:a,complete:o}),i=void 0};for(let e of n.matchAll(/^ {0,3}(#{1,6})[ \t]+(.+)$/gm)){let t=e[1].length,n=e[2].trim(),r=t>1?/^(?:\*\*)?(AC-[A-Za-z0-9-]+)(?=[\s*：:]|$)/.exec(n)?.[1]:void 0;i&&(r||t<=i.level)&&a(e.index),r&&(i={id:r,level:t,title:n,start:e.index+e[0].length})}return a(n.length),r}function l(e){let t=e.trim();if(!t||/^#+[ \t]|^[:|\s-]+$/.test(t))return!1;if(!t.includes(`|`))return!0;let n=t.replace(/^\||\|$/g,``).split(/(?<!\\)\|/).map(e=>e.trim());return n.length>=3&&n.every(Boolean)&&n.join(`|`)!==`前提|操作|预期结果`}function u(e,t){let n=o(e),r=o(t),i=new Set([...n.keys(),...r.keys()]),a=c(e),s=c(t),l=new Set([...a.keys(),...s.keys()]);return{sections:[...i].filter(e=>n.get(e)!==r.get(e)),acceptanceIds:[...l].filter(e=>a.get(e)?.text!==s.get(e)?.text)}}function d(e,t){return e.some(e=>t.includes(e))}function f(e){return e.replace(/[`*_>#\[\]()~-]/g,``).replace(/\s+/g,``).toLocaleLowerCase()}function p(e,t){let n=f(t.quote);if(!n)return!1;let r=o(e),i=t.heading?.trim()?[r.get(t.heading.trim())??``]:[e],a=f(`${t.prefix??``}${t.quote}${t.suffix??``}`);return i.some(e=>{let t=f(e);return t.includes(a)||t.includes(n)})}function m(e,t,n,r,i){for(let i of e.confirmations)i.status===`active`&&(i.scope===`version`||i.scope===`section`&&i.scopeId!==void 0&&t.includes(i.scopeId)||i.scope===`acceptance-criterion`&&i.scopeId!==void 0&&n.includes(i.scopeId))&&(i.status=`invalidated`,e.actionItems.push({id:r(),requirementId:e.id,sourceType:`confirmation`,sourceId:i.id,type:`reconfirm`,assigneeRole:i.role,blocking:!0,status:`pending`,dueStage:e.stage,createdAt:Date.now(),updatedAt:Date.now()}));e.reviewItems.filter(e=>e.status===`resolved`&&(d(e.affectedSections,t)||d(e.affectedAcceptanceIds,n))).forEach(e=>{e.status=`invalidated`,e.updatedAt=Date.now()}),e.decisions.filter(e=>e.status===`active`&&(d(e.affectedSections,t)||d(e.affectedAcceptanceIds,n))).forEach(e=>{e.status=`invalidated`}),i!==void 0&&e.decisions.filter(e=>e.status===`active`&&e.sourceAnchors?.some(e=>!p(i,e))).forEach(e=>{e.status=`invalidated`})}function h(e,t){let n=o(e),r=c(e),i=r.size>0&&[...r.values()].every(e=>e.complete),a=e=>{let t=n.get(e)?.replace(/<!--.*?-->/gs,``).trim()??``;return t.length>=12&&!/待澄清|待补充|TODO/i.test(t)},s=t.reviewItems.filter(e=>e.commit===t.currentCommit&&e.severity===`blocking`&&![`resolved`,`non-blocking-verify`].includes(e.status)).map(e=>e.statement);return[{key:`goal`,passed:a(`目标与用户结果`),reasons:a(`目标与用户结果`)?[]:[`缺少可观察的目标与用户结果`]},{key:`acceptance`,passed:i,reasons:i?[]:r.size===0?[`缺少稳定 AC ID 与可判定结果`]:[`验收标准缺少场景或仍含占位内容`]},{key:`scope`,passed:a(`范围与非范围`),reasons:a(`范围与非范围`)?[]:[`范围与非范围不完整`]},{key:`semantics`,passed:a(`业务术语与规则`),reasons:a(`业务术语与规则`)?[]:[`关键术语和规则不完整`]},{key:`evidence`,passed:t.sources.every(e=>e.accessStatus!==`missing`)&&s.length===0,reasons:[...t.sources.filter(e=>e.accessStatus===`missing`).map(e=>`来源不可访问：${e.label}`),...s]},{key:`test-constraints`,passed:a(`测试约束`),reasons:a(`测试约束`)?[]:[`测试环境、账号、权限或 fixture 约束不完整`]}]}function g(e,t,n,r,i){let o=u(t,n.markdown);e.currentCommit=n.commit,e.updatedAt=r,delete e.readyPackage,e.stage===`ready`&&a(e,`joint-review`);for(let t of e.patches)t.status===`pending`&&(t.status=`stale`,_(e,`patch`,t.id,`invalidated`,r));m(e,o.sections,o.acceptanceIds,i,n.markdown)}function _(e,t,n,r,i){for(let a of e.actionItems)a.sourceType===t&&a.sourceId===n&&a.status===`pending`&&(a.status=r,a.updatedAt=i)}function v(e,t){let r=t=>[...new Set(n(e,t).map(e=>e.participant.nickname))].join(`、`),i=e.reviewItems.filter(e=>e.status===`non-blocking-verify`),a={available:`可查阅`,unverified:`待核对`,missing:`待补充`};return[`# 就绪需求：${e.title}`,``,`## 版本信息`,``,`- 需求编号：${e.id}`,`- 文档版本：${e.currentCommit}`,`- 产品确认：${r(`product`)}`,`- 研发确认：${r(`engineering`)}`,``,t,``,`## 已确认决策`,...e.decisions.filter(e=>e.status===`active`).map(e=>`- ${e.question}：${e.decision}（原因：${e.rationale}）`),``,`## 参考资料`,...e.sources.map(e=>`- [${a[e.accessStatus]}] ${e.label}${e.stableId?`：${e.stableId}`:``}${e.version?`（版本：${e.version}）`:``}`),``,`## 待确认问题`,...i.map(e=>`- ${e.question}；负责人：${e.ownerParticipantId??(e.ownerRole===`product`?`产品`:`研发`)}；影响：${e.impact}`),``].join(`
+`)}function y(e,t,n=`原版本`,r=`新版本`){let i=b(e.split(`
+`),t.split(`
+`)),a=0,o=0,s=i.map(e=>(e.type!==`added`&&(a+=1),e.type!==`removed`&&(o+=1),{type:e.type,...e.type===`added`?{}:{oldLine:a},...e.type===`removed`?{}:{newLine:o},text:e.text})),c=s.flatMap((e,t)=>e.type===`context`?[]:[t]);if(c.length===0)return{baseLabel:n,headLabel:r,added:0,removed:0,hunks:[]};let l=[];for(let e of c){let t=Math.max(0,e-3),n=Math.min(s.length-1,e+3),r=l.at(-1);r!==void 0&&t<=r.end+1?r.end=Math.max(r.end,n):l.push({start:t,end:n})}return{baseLabel:n,headLabel:r,added:s.filter(e=>e.type===`added`).length,removed:s.filter(e=>e.type===`removed`).length,hunks:l.map((e,t)=>{let n=s.slice(e.start,e.end+1),r=t===0?s.slice(0,e.start):[],i=s.slice(e.end+1,l[t+1]?.start??s.length);return{id:`hunk-${t+1}`,oldStart:n.find(e=>e.oldLine!==void 0)?.oldLine??0,newStart:n.find(e=>e.newLine!==void 0)?.newLine??0,lines:n,collapsedBefore:r.length,collapsedAfter:i.length,collapsedBeforeLines:r,collapsedAfterLines:i}})}}function b(e,t){let n=[],r=new Map([[1,0]]);for(let i=0;i<=e.length+t.length;i+=1){n.push(new Map(r));let a=new Map;for(let o=-i;o<=i;o+=2){let s=o===-i||o!==i&&(r.get(o-1)??-1)<(r.get(o+1)??-1)?r.get(o+1)??0:(r.get(o-1)??0)+1,c=s-o;for(;s<e.length&&c<t.length&&e[s]===t[c];)s+=1,c+=1;if(a.set(o,s),s>=e.length&&c>=t.length)return x(n,e,t)}r=a}return[]}function x(e,t,n){let r=t.length,i=n.length,a=[];for(let o=e.length-1;o>=0;--o){let s=e[o],c=r-i,l=c===-o||c!==o&&(s.get(c-1)??-1)<(s.get(c+1)??-1)?c+1:c-1,u=s.get(l)??0,d=u-l;for(;r>u&&i>d;)a.push({type:`context`,text:t[r-1]}),--r,--i;if(o===0)break;r===u?(a.push({type:`added`,text:n[i-1]}),--i):(a.push({type:`removed`,text:t[r-1]}),--r)}return a.reverse()}let S={product:{participantId:`demo-product`,role:`product`,nickname:`演示产品`,kind:`human`},engineering:{participantId:`demo-engineering`,role:`engineering`,nickname:`演示研发`,kind:`human`}},C=[`product`,`engineering`];function w(e){return`## 目标与用户结果
+用户离开报表页后，仍可在导出记录中找到最近生成的报表。
+
+## 范围与非范围
+支持本人下载已生成的报表。分享与批量导出不在此次范围。
+
+## 业务术语与规则
+报表生成完成时开始计时。下载权限限定为发起导出的账号。
+
+## 验收标准
+- **AC-01**：${e===void 0?`保留时长待澄清。`:`生成完成后保留 ${e} 小时，超时后拒绝下载，并提示用户重新导出。`}
+
+## 测试约束
+使用固定时钟和两个虚构账号验证到期边界及下载权限。`}let T=e=>document.getElementById(e),E=T(`apply`),D=T(`precheck`),O=T(`confirm`),k=T(`download`),A=T(`save`),j=T(`duration`),M=T(`role`),N,P,F,I;function L(){let e=Date.now();N={id:`DEMO-001`,title:`报表导出结果保留多久`,currentCommit:`演示-v1`,stage:`product-review`,stageCycle:0,workspaceId:`demo-report`,createdAt:e,updatedAt:e,sources:[],reviewItems:[],comments:[],patches:[],decisions:[],confirmations:[],actionItems:[],aiRuns:[],aiConversations:[]},P=void 0,F=1,I=`product`,M.value=I,j.value=`24`,T(`suggestion`).open=!1}function R(t){F+=1,g(N,w(P),{commit:`演示-v${F}`,markdown:w(t)},Date.now(),e),P=t,j.value=String(t)}function z(e){let t=i(N,h(w(P),N)),n=r(N,I);T(`version`).textContent=N.currentCommit,T(`spec`).textContent=w(P),T(`stage`).textContent=N.stage===`ready`?`Ready`:P===void 0?`产品初审`:`产研共审`;for(let e of C){let t=r(N,e),n=N.confirmations.some(t=>t.role===e&&t.status===`invalidated`),i=T(`status-${e}`);i.textContent=t?`已确认当前版本`:n?`旧确认已失效`:`待确认`,i.dataset.confirmed=String(t)}let a=t.engineeringReviewed;T(`precheck-state`).textContent=a?`当前版本预审已通过`:`当前版本待预审`,E.disabled=P!==void 0,D.disabled=P===void 0||a,M.disabled=P===void 0,O.disabled=!a||n,T(`adjustment`).disabled=P===void 0,A.disabled=!j.validity.valid||j.valueAsNumber===P,k.disabled=N.stage!==`ready`&&t.error!==void 0,e!==void 0&&(T(`result`).textContent=e)}let B=y(w(),w(24)),V=T(`diff`);for(let e of B.hunks.flatMap(e=>e.lines).filter(e=>e.type!==`context`)){let t=document.createElement(`li`);t.className=e.type,t.textContent=`${e.type===`added`?`新增`:`移除`}　${e.text.replaceAll(`**`,``).replace(/^- /,``)}`,V.append(t)}E.addEventListener(`click`,()=>{R(24),a(N,`joint-review`),z(`已采纳建议并保存演示-v2。可以开始研发预审。`),D.focus()}),D.addEventListener(`click`,()=>{let t=Date.now();N.aiRuns.push({id:e(),requirementId:N.id,commit:N.currentCommit,kind:`engineering-precheck`,status:`completed`,requestedBy:S.engineering,createdAt:t,updatedAt:t}),z(`预设研发预审已通过。请分别以产品和研发身份确认当前版本。`),M.focus()}),M.addEventListener(`change`,()=>{I=M.value===`engineering`?`engineering`:`product`,z()}),O.addEventListener(`click`,()=>{let t=S[I];N.confirmations.push({id:e(),requirementId:N.id,commit:N.currentCommit,role:I,participant:t,scope:`version`,status:`active`,createdAt:Date.now()}),z(`${t.nickname}已确认${N.currentCommit}。`),k.disabled?M.focus():k.focus()}),j.addEventListener(`input`,()=>{A.disabled=!j.validity.valid||j.valueAsNumber===P}),T(`edit`).addEventListener(`submit`,e=>{if(e.preventDefault(),A.disabled)return;let t=N.confirmations.some(e=>e.status===`active`);R(j.valueAsNumber),z(`已保存${N.currentCommit}。${t?`旧确认已失效。`:``}请重新运行预审。`),D.focus()}),k.addEventListener(`click`,()=>{let e=w(P);if(N.stage!==`ready`&&i(N,h(e,N)).error)return;a(N,`ready`);let t=v(N,e),n=URL.createObjectURL(new Blob([`> Spec Collab 单文件演示 · 虚构需求、预设审核结果及模拟确认\n\n${t}`],{type:`text/markdown;charset=utf-8`})),r=document.createElement(`a`);r.href=n,r.download=`DEMO-001-v${F}-ready-spec.md`,document.body.append(r),r.click(),r.remove(),window.setTimeout(()=>URL.revokeObjectURL(n),1e3),z(`${N.currentCommit} 已通过 Ready 检查并开始下载。`)}),T(`reset`).addEventListener(`click`,()=>{L(),z(`演示已重置。`),T(`suggestion-toggle`).focus()}),L(),z(`先展开审核问题，查看并采纳候选修改。`)})();</script>
+</body>
+</html>

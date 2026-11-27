@@ -458,6 +458,7 @@ def set_display_covers(posts):
 
 RESOURCES = [
     ("在线工具", "测试用例脑图生成器", "把需求整理成测试点和用例，在脑图里查看和编辑。", f"{SITE}/tools/test-cases/"),
+    ("互动演示", "Spec Collab 需求共审", "采纳候选修改，体验改版后确认失效，再导出 Ready Spec。", "/tools/spec-collab/"),
     ("课程地图", "AI 应用全栈实战", "用虚构布局项目串起前后端、Agent、流式状态与故障恢复。", "/teaching-aihom/lessons/index.html"),
     ("课程地图", "AI 测试平台与评测实战", "从调度执行到 Agent 生成用例、工具轨迹评测与回归。", "/teaching-kuai/lessons/index.html"),
 ]
