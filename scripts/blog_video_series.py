@@ -126,7 +126,7 @@ def library(posts, playlists, memberships, site):
                 <span class="vc-card-meta">{total(item.seconds)} <span aria-hidden="true">↗</span></span></span>
               </a></article>""")
         sections.append(f'<section class="vc-shelf" id="video-section-{key}" aria-labelledby="vc-section-title-{key}">'
-                        f'<h2 id="vc-section-title-{key}">{h(label)} <small>{len(items):02d}</small></h2>'
+                        f'<h2 id="vc-section-title-{key}">{h(label)}</h2>'
                         f'<div class="vc-grid">{"".join(cards)}</div></section>')
     rows = []
     other_memberships = defaultdict(list)
@@ -146,21 +146,20 @@ def library(posts, playlists, memberships, site):
     transcripts = "".join(f'<li><a href="{fallback(post)}">{h(post.title)}</a></li>'
                           for post in posts if published(post) and Path(post.path).stem in WATCH)
     return f"""<section class="vc-library" data-video-library>
-      <header class="vc-title"><div><p class="vc-eyebrow">测试游记 · 视频</p><h1>视频系列</h1></div>
-        <p>{len(series)} 个专题系列 <span>／</span> {len(memberships)} 支中文讲解<br>从第一集开始，播完自动接下一集。</p></header>
+      <header class="vc-title"><h1>视频系列</h1></header>
       <section class="vc-hero" aria-label="推荐系列">
-        <div class="vc-hero-copy"><p class="vc-eyebrow">推荐系列 <span aria-hidden="true">·</span> 01</p>
+        <div class="vc-hero-copy"><p class="vc-eyebrow">推荐系列</p>
           <h2>{h(hero.title)}</h2><p>{h(hero.description)}</p>
           <div class="vc-hero-meta">{len(hero.episodes)} 集 <span>·</span> {total(hero.seconds)} <span>·</span> 简体中文字幕</div>
           <a class="vc-start" href="{hero.path}">{PLAY_ICON} 从第 1 集开始</a></div>
         <a class="vc-hero-art" href="{hero.path}" aria-label="打开{h(hero.title)}">
-          {image(first, hero=True)}<span>课堂预览 <span aria-hidden="true">↗</span></span></a></section>
+          {image(first, hero=True)}</a></section>
       <div class="vc-library-tools"><nav aria-label="视频主题">{"".join(nav)}</nav>
         <search class="vc-filter" aria-label="筛选视频" hidden><label class="visually-hidden" for="video-query">按片名或系列筛选视频</label>
         <div><input type="search" id="video-query" autocomplete="off" placeholder="搜索片名或系列"><button type="button" hidden>清空</button></div>
         <p role="status" aria-live="polite"></p></search></div>
       <div class="vc-shelves">{"".join(sections)}</div>
-      <details class="vc-index"><summary>浏览全部 {len(memberships)} 支视频</summary>
+      <details class="vc-index"><summary>浏览全部视频</summary>
         <ul>{"".join(rows)}</ul></details>
       <section class="vc-standalone" aria-labelledby="vc-transcript"><h2 id="vc-transcript">带分章文字稿的独立视频</h2>
         <ul>{transcripts}</ul></section>
