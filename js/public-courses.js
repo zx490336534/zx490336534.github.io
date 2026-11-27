@@ -78,6 +78,20 @@
       document.querySelector('#complete-status').textContent = saved ? '本设备进度已更新。' : '浏览器不允许保存，刷新后不会保留。';
     });
   }
+  const copy = root.querySelector('[data-copy-example]');
+  if (copy && navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+    copy.hidden = false;
+    copy.addEventListener('click', async () => {
+      const block = copy.closest('.snippet');
+      const status = block.querySelector('[role=status]');
+      try {
+        await navigator.clipboard.writeText(block.querySelector('pre code').textContent);
+        status.textContent = '已复制';
+      } catch {
+        status.textContent = '复制未成功，请手动选中代码。';
+      }
+    });
+  }
   const quiz = document.querySelector('.course-quiz');
   if (quiz) {
     quiz.hidden = false;

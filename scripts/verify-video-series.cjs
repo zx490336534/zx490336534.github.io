@@ -38,6 +38,16 @@ async function main() {
       return new URL(location.href).searchParams.get('episode') === second && v === window.seriesPlayer && v.readyState >= 2;
     }, second);
     assert.equal(await desktop.locator('[data-player-article]').getAttribute('href'), await entries.nth(1).getAttribute('data-article'));
+    const original = desktop.locator('[data-player-article]');
+    assert.equal(await original.getAttribute('target'), '_blank');
+    assert.equal(await original.getAttribute('rel'), 'noopener');
+    assert.equal(await desktop.getByText('打开原文播放器', { exact: false }).count(), 0);
+    const articleLink = await original.getAttribute('href');
+    const [openedArticle] = await Promise.all([desktop.waitForEvent('popup'), original.click()]);
+    await openedArticle.waitForURL(new URL(articleLink, base).href);
+    assert.ok(new URL(desktop.url()).pathname.startsWith('/videos/series/'));
+    await openedArticle.close();
+
     const secondSource = new URL(await entries.nth(1).getAttribute('data-src')).pathname;
     assert.ok(requested.includes(secondSource), 'must actually load the selected file');
     // An actual 1.25s native MP4 ends, yielding the next video on the same element.

@@ -2,6 +2,7 @@
 from html import escape
 from pathlib import Path
 from course_curriculum import AI, QA, TERMS
+from course_code_walkthroughs import AI_DEPTH, QA_DEPTH
 
 ROOT = Path(__file__).resolve().parents[1]
 COURSES = (
@@ -10,16 +11,22 @@ COURSES = (
     ("teaching-kuai", "AI 测试平台与评测实战", "从批量测试出发，走到 Agent 用例生成与可复现评测。",
      "用虚构的 CaseLab 拆开调度、执行、看板与评分。适合测试开发，也适合想把 AI 评测做成工程能力的人。", QA),
 )
+DEEP = {"teaching-aihom": AI_DEPTH, "teaching-kuai": QA_DEPTH}
+LABS = {
+    "teaching-aihom": ("roomlab.py", "RoomLab", "RoomLab: all regression checks passed."),
+    "teaching-kuai": ("caselab.py", "CaseLab", "CaseLab: all regression checks passed."),
+}
+DEEP_MIN = (13, 15, 17, 17, 16, 16, 16, 25)
 STAGES = (
     ("foundation", "01 · 先跑通", "先认清链路、角色和状态，不急着接真实模型。", 0, 2),
     ("engineering", "02 · 拆开关键机制", "把最容易藏问题的边界拿出来单独验证。", 2, 6),
     ("practice", "03 · 验证与交付", "练习定位失败，最后交付可复现的实战报告。", 6, 8),
 )
 
-def page(shell, slug, title, description, path, body, label, current):
+def page(shell, slug, title, description, path, body, current):
     course_path = f"/{slug}/lessons/{path}"
-    extra_head = ('<link rel="stylesheet" href="/css/public-courses.css">\n  '
-                  '<script src="/js/public-courses.js" defer></script>')
+    extra_head = ('<link rel="stylesheet" href="/css/public-courses.css?v=code-practice-1">\n  '
+                  '<script src="/js/public-courses.js?v=code-practice-1" defer></script>')
     content = (f'<div class="public-course" data-course="{slug}" data-current="{current}">'
                f'{body}</div>')
     return shell(title, course_path, content, description, extra_head)
@@ -32,14 +39,16 @@ def breadcrumbs(label=None):
     return f'<div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span>{part}</div>'
 
 def course_map(shell, slug, label, intro, audience, lessons):
-    total = sum(m[2] for m in lessons)
+    total = sum(m[2] for m in lessons) + sum(DEEP_MIN)
+    hours, minutes = divmod(total, 60)
+    duration = f"{hours} 小时 {minutes} 分钟" if minutes else f"{hours} 小时"
     stage_html = []
     for stage, title, subtitle, start, stop in STAGES:
         cards = ''
         for i, item in enumerate(lessons[start:stop], start + 1):
             key, name, mins, goal, *_ = item
             cards += f"""<li class="lesson-tile" data-lesson="{key}">
-  <a href="{lesson_href(item)}"><span class="lesson-num">{i:03}</span><span class="lesson-text"><strong>{escape(name)}</strong><span>{escape(goal)}</span></span><span class="lesson-end"><span>{mins} 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
+  <a href="{lesson_href(item)}"><span class="lesson-num">{i:03}</span><span class="lesson-text"><strong>{escape(name)}</strong><span>{escape(goal)}</span></span><span class="lesson-end"><span>{mins + DEEP_MIN[i-1]} 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
 </li>"""
         stage_html.append(f'<section class="stage" id="stage-{stage}"><h2>{title}</h2><p>{subtitle}</p><ol class="lesson-list">{cards}</ol></section>')
     jumps = "".join(f'<a href="#stage-{stage}">{title.split(" · ")[-1]}</a>' for stage, title, *_ in STAGES)
@@ -48,14 +57,58 @@ def course_map(shell, slug, label, intro, audience, lessons):
     <section class="hero">
       <div class="hero-copy"><p class="eyebrow">公开学习地图 / 项目驱动</p><h1>{escape(label)}</h1>
       <p class="lead">{escape(intro)}</p><p>{escape(audience)}</p>
-      <p class="stats"><span>{len(lessons)} 节</span><span>约 {total} 分钟</span></p>
+      <p class="stats"><span>{len(lessons)} 节</span><span>约 {duration}</span></p>
       <div class="actions"><a class="button primary" id="resume" href="{lesson_href(lessons[0])}">从第 1 课开始</a><a class="button" href="{lesson_href(lessons[-1])}">直接看实战</a></div></div>
-      <aside class="learning-note"><p class="eyebrow">怎么学</p><h2>每节先解决一个问题</h2><ol><li>读一个场景，跟着走一遍。</li><li>做自测，核对判断依据。</li><li>用小练习写下可观察的结果。</li></ol><p id="progress-text" hidden></p></aside>
+      <aside class="learning-note"><p class="eyebrow">怎么学</p><h2>每一节，分两遍读</h2><ol><li><strong>第一遍跑通：</strong>从一个场景出发，画出正常调用链。</li><li><strong>第二遍读代码：</strong>顺着输入、分支和状态查到结果，用失败用例验证。</li><li><strong>最后做实战：</strong>跑示例项目，对照测试断言。</li></ol><p id="progress-text" hidden></p></aside>
     </section>
     <div class="course-tools"><div id="filter-controls" hidden><label for="filter">筛选课程</label><div class="search-row"><input type="search" id="filter" placeholder="如：恢复、评测、003"><button type="button" id="clear-filter">清空</button></div><p class="sr-only" id="filter-status" role="status"></p></div><nav class="jump" aria-label="课程阶段">{jumps}</nav></div>
     <div class="map">{''.join(stage_html)}<div class="empty" hidden><h2>没有找到相符课程</h2><p>试试更短的关键词，或者清空筛选看完整路线。</p></div></div>
     <aside class="related"><span>继续拓展</span><a href="/{other[0]}/lessons/index.html">{escape(other[1])} →</a></aside>"""
-    return page(shell, slug, label, intro, "index.html", body, label, "")
+    return page(shell, slug, label, intro, "index.html", body, "")
+
+def code_walkthrough(slug, key):
+    question, flow, walkthrough, language, code, failures, assertions, recap = DEEP[slug][key]
+    code_label, run_hint = {
+        "javascript": ("JavaScript", "可复制到 lesson.cjs，再运行 node lesson.cjs。"),
+        "python": ("Python", "可复制到 lesson.py，再运行 python3 lesson.py。"),
+        "typescript": ("TypeScript", "阅读函数输入、状态变化和末尾的断言。"),
+        "sql": ("SQL", "对照逻辑和约束阅读，表结构以示例为准。"),
+        "java": ("Java", "对照函数的输入、异常分支和末尾的断言。"),
+    }.get(language.lower(), (language, "对照调用链阅读示例。"))
+    flows = "".join(f'<li>{escape(step)}</li>' for step in flow)
+    explanations = "".join(f'<div><h3>{escape(title)}</h3><p>{escape(text)}</p></div>' for title, text in walkthrough)
+    cases = "".join(
+        f'<div class="failure-card"><dt>{escape(name)}</dt><dd><strong>怎么触发：</strong>{escape(trigger)}</dd>'
+        f'<dd><strong>怎么判断：</strong>{escape(expected)}</dd></div>'
+        for name, trigger, expected in failures
+    )
+    checks = "".join(f'<li>{escape(check)}</li>' for check in assertions)
+    return f"""<section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">{escape(question)}</p>
+          <h3>调用链</h3><ol class="course-flow">{flows}</ol>
+          <details class="snippet" open><summary>{escape(code_label)} 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>{escape(run_hint)}</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>{escape(code)}</code></pre>
+          </details>
+          <div class="code-notes">{explanations}</div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards">{cases}</dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions">{checks}</ul>
+          <p class="course-term"><strong>这一课带走：</strong>{escape(recap)}</p>
+        </section>"""
+
+
+def reference_project(slug):
+    filename, name, expected = LABS[slug]
+    return f"""<aside class="reference-project">
+      <h3>可运行练习：{name}</h3>
+      <p>把示例保存到一个目录，在那个目录执行这行命令。先跑通，再删改一条保护规则，看哪项断言失败。</p>
+      <p><a class="button primary" href="../examples/{filename}" download>下载 {filename}</a></p>
+      <pre><code>python3 {filename}</code></pre>
+      <p>全部检查通过时，会输出 <code>{expected}</code></p>
+    </aside>"""
+
 
 def lesson_page(shell, slug, label, lessons, i):
     key, title, mins, goal, scene, steps, sample, exercise, question, options, answer, reason = lessons[i]
@@ -65,6 +118,7 @@ def lesson_page(shell, slug, label, lessons, i):
         f'<label><input type="radio" name="check" value="{idx}" required> {escape(option)}</label>'
         for idx, option in enumerate(options))
     term, meaning = TERMS[slug][key]
+    advanced = code_walkthrough(slug, key)
     previous = lessons[i-1] if i else None
     following = lessons[i+1] if i+1 < len(lessons) else None
     prev_html = f'<a href="{lesson_href(previous)}" rel="prev">← {escape(previous[1])}</a>' if previous else '<span></span>'
@@ -81,14 +135,17 @@ def lesson_page(shell, slug, label, lessons, i):
       <p>这是浏览器里的合成数据演示，不连外部服务。</p>
       <div class="actions"><button type="button" data-run="normal">运行基线</button><button type="button" data-run="fault">注入故障</button></div>
       <pre><output aria-live="polite">选择一个场景开始。</output></pre></aside>""" if demo else ""
+    project = reference_project(slug) if key == "capstone" else ""
+    intro_lab, exercise_lab = (lab, "") if i == 0 else ("", lab)
     body = f"""{breadcrumbs(label)}
-    <header class="lesson-head"><p class="eyebrow">第 {i+1:02} / {len(lessons):02} 课 · {mins} 分钟</p><h1>{escape(title)}</h1><p class="lead">{escape(goal)}</p></header>
+    <header class="lesson-head"><p class="eyebrow">第 {i+1:02} / {len(lessons):02} 课 · 约 {mins + DEEP_MIN[i]} 分钟</p><h1>{escape(title)}</h1><p class="lead">{escape(goal)}</p></header>
     <div class="reading">
-      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
       <article class="lesson-content">
         <section id="scene"><h2>先看场景</h2><p>{escape(scene)}</p><p class="course-term"><strong>{escape(term)}：</strong>{escape(meaning)}</p></section>
-        <section id="walkthrough"><h2>走一遍</h2><ol class="steps">{step_html}</ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>{escape(sample)}</code></pre></details></section>
-        <section id="exercise"><h2>动手练习</h2><p>{escape(exercise)}</p>{lab}</section>
+        <section id="walkthrough"><h2>走一遍</h2><ol class="steps">{step_html}</ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>{escape(sample)}</code></pre></details>{intro_lab}</section>
+        {advanced}
+        <section id="exercise"><h2>动手练习</h2><p>{escape(exercise)}</p>{exercise_lab}{project}</section>
         <section id="check"><h2>自测</h2>
           <form class="course-quiz" data-answer="{answer}" data-right="答对了。{escape(reason, quote=True)}" data-wrong="{rejected}{escape(reason, quote=True)}" hidden>
             <fieldset><legend>{escape(question)}</legend>{option_html}</fieldset>
@@ -100,7 +157,7 @@ def lesson_page(shell, slug, label, lessons, i):
       </article>
     </div>
     <nav class="pagination" aria-label="课程分页">{prev_html}<a href="index.html">学习地图</a>{next_html}</nav>"""
-    return page(shell, slug, title, goal, lesson_href(lessons[i]), body, label, key)
+    return page(shell, slug, title, goal, lesson_href(lessons[i]), body, key)
 
 def build_courses(shell):
     # Only generated public materials are written; the private projects are not build inputs.

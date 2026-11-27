@@ -16,8 +16,8 @@
   <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
   <script src="/js/blog.js?v=code-fold-20261126" defer></script>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
-  <link rel="stylesheet" href="/css/public-courses.css">
-  <script src="/js/public-courses.js" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=code-practice-1">
+  <script src="/js/public-courses.js?v=code-practice-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -37,13 +37,57 @@
     </div>
   </header>
   <main id="main" class="wrap"><div class="public-course" data-course="teaching-kuai" data-current="schedule"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 测试平台与评测实战</a></div>
-    <header class="lesson-head"><p class="eyebrow">第 02 / 08 课 · 13 分钟</p><h1>队列、调度与重复执行</h1><p class="lead">区分按时投递、实际开始、写入结果三件事。</p></header>
+    <header class="lesson-head"><p class="eyebrow">第 02 / 08 课 · 约 28 分钟</p><h1>队列、调度与重复执行</h1><p class="lead">区分按时投递、实际开始、写入结果三件事。</p></header>
     <div class="reading">
-      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
       <article class="lesson-content">
         <section id="scene"><h2>先看场景</h2><p>定时回归重复投递很常见，偶尔还会晚到。一次批次标识应该固定，重试也需要定义是补未结束项还是创建新批次。</p><p class="course-term"><strong>触发窗口：</strong>计划里原定的一轮，比如某天上午九点。消息迟到十分钟，仍是那一轮。</p></section>
         <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>用计划和触发窗口区分不同批次。</li><li>重复消息只允许恢复原来的批次，不产生第二条运行。</li><li>取消不是瞬间完成：已经在跑的项要确认终止，没有开始的项不能再派发。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>batchKey = scheduleId + &quot;:&quot; + scheduledWindow
 run = findOrCreate(batchKey)</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">九点的回归任务因为网络抖动，九点十七分又收到触发消息。怎样知道它是补送，不是新的一批？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>用计划编号和消息携带的原定 UTC 时间拼出键。</li><li>用唯一约束决定新建还是忽略重复投递。</li><li>取消时停止领取新的项目，等正在执行的项目确认。</li><li>历史批次不复活；下一个窗口可以新建。</li></ol>
+          <details class="snippet" open><summary>Python 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.py，再运行 python3 lesson.py。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>import sqlite3
+
+db = sqlite3.connect(&quot;:memory:&quot;)
+db.execute(&quot;&quot;&quot;CREATE TABLE batches (
+  plan TEXT, slot TEXT, state TEXT NOT NULL,
+  PRIMARY KEY(plan, slot)
+)&quot;&quot;&quot;)
+
+def create(plan, slot):
+    with db:
+        db.execute(&quot;&quot;&quot;INSERT INTO batches VALUES (?, ?, &#x27;queued&#x27;)
+          ON CONFLICT(plan, slot) DO NOTHING&quot;&quot;&quot;, (plan, slot))
+
+def cancel(plan, slot):
+    with db:
+        db.execute(&quot;&quot;&quot;UPDATE batches SET state = CASE
+          WHEN state = &#x27;queued&#x27; THEN &#x27;cancelled&#x27;
+          ELSE &#x27;cancelling&#x27; END
+          WHERE plan = ? AND slot = ?
+          AND state IN (&#x27;queued&#x27;, &#x27;running&#x27;)&quot;&quot;&quot;, (plan, slot))
+
+slot = &quot;2030-01-01T01:00:00Z&quot;
+create(&quot;booking&quot;, slot)
+create(&quot;booking&quot;, slot)
+assert db.execute(&quot;SELECT count(*) FROM batches&quot;).fetchone() == (1,)
+cancel(&quot;booking&quot;, slot)
+create(&quot;booking&quot;, slot)
+assert db.execute(&quot;SELECT state FROM batches&quot;).fetchone() == (&quot;cancelled&quot;,)
+create(&quot;booking&quot;, &quot;2030-01-02T01:00:00Z&quot;)
+assert db.execute(&quot;SELECT count(*) FROM batches&quot;).fetchone() == (2,)
+</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>原定时间不是收件时间</h3><p>约定上游已换算好可信的原定 UTC 时间。迟到消息仍使用原窗口。如果接受本地时间，调度层要明确处理夏令时跳过和重复时刻。两个计划触发在同一时刻，也不能混成一批。</p></div><div><h3>把防重放在持久化边界</h3><p>SQLite 的复合主键配合 ON CONFLICT，使两个写入争同一个键时由存储决定。如果应用先查再插而没有唯一约束，并发进程仍能各自看到不存在。若还需异步通知执行器，考虑同事务发件箱或可靠扫描，否则可能写入了却没有启动。</p></div><div><h3>取消意图与停止确认分开</h3><p>queued 可以直接取消，running 先变 cancelling。领任务的边界也要验证状态，不要只在 UI 中隐藏按钮。示例演示发出取消意图，未实现执行器的抢占和终止确认。系统故障重试可以留在同一批增加尝试号，一次从头重跑则显式生成新运行编号。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>迟到重投</dt><dd><strong>怎么触发：</strong>调度器两次发送同一计划与窗口。</dd><dd><strong>怎么判断：</strong>只创建一批，终态不回退。</dd></div><div class="failure-card"><dt>运行中取消</dt><dd><strong>怎么触发：</strong>将状态推进 running 再取消。</dd><dd><strong>怎么判断：</strong>得到 cancelling，实际停止前不显示 cancelled。</dd></div><div class="failure-card"><dt>跨窗口执行</dt><dd><strong>怎么触发：</strong>同一计划换第二天的窗口再发。</dd><dd><strong>怎么判断：</strong>创建新批次，不覆盖前一天。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>同窗口的不同计划不互相排斥。</li><li>未开始的批次可取消；运行中的先进入 cancelling。</li><li>重复取消结果相同。</li><li>并发集成测试用两个连接争同一个唯一键。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>确认处理的是哪一批之后，下一课确保看板显示的也是你现在所选的那一批。</p>
+        </section>
         <section id="exercise"><h2>动手练习</h2><p>把同一触发消息发两次，再模拟一次晚到。确认后台只有一个对应批次。</p></section>
         <section id="check"><h2>自测</h2>
           <form class="course-quiz" data-answer="1" data-right="答对了。收到的时间不同不等于这是不同批次。" data-wrong="这个选项不成立。再想想：收到的时间不同不等于这是不同批次。" hidden>

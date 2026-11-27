@@ -16,8 +16,8 @@
   <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
   <script src="/js/blog.js?v=code-fold-20261126" defer></script>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
-  <link rel="stylesheet" href="/css/public-courses.css">
-  <script src="/js/public-courses.js" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=code-practice-1">
+  <script src="/js/public-courses.js?v=code-practice-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -37,17 +37,71 @@
     </div>
   </header>
   <main id="main" class="wrap"><div class="public-course" data-course="teaching-kuai" data-current="capstone"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 测试平台与评测实战</a></div>
-    <header class="lesson-head"><p class="eyebrow">第 08 / 08 课 · 20 分钟</p><h1>综合实战：评测回归流水线</h1><p class="lead">从一条需求走到用例、轨迹评分、复跑和报告。</p></header>
+    <header class="lesson-head"><p class="eyebrow">第 08 / 08 课 · 约 45 分钟</p><h1>综合实战：评测回归流水线</h1><p class="lead">从一条需求走到用例、轨迹评分、复跑和报告。</p></header>
     <div class="reading">
-      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
       <article class="lesson-content">
         <section id="scene"><h2>先看场景</h2><p>从这张预约样表开始，把测试语料与合成运行记录保存在本地，跑完一次完整的评测。</p><p class="course-term"><strong>回归门槛：</strong>发新版前必须通过的检查。即使整体得分高，越权操作这类严重问题仍可直接拦截。</p></section>
         <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>整理最小数据集：正常预约、无权写、重复提交和工具超时。</li><li>先跑基线，再只修改一处规则；把最终结果、工具行为和失败原因放到同一份报告。</li><li>复跑失败样本时保留原始运行编号及尝试次数，防止把不同版本的数据混在一起。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>dataset=v1 run=sample-42 case=no-write-before-confirm
 answer=pass tool_policy=fail release_gate=fail</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">修改了预约 Agent 的动作规则。怎样用一份回归报告讲清哪条退化、为什么，以及到底能不能发布？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>固定只读、询问、确认后写入三类样本及判定。</li><li>分别运行基线和候选，保存答复意图与工具记录。</li><li>同一个判定函数按样本编号对齐，计算前后差异。</li><li>严重问题阻止发布，通过尝试编号复跑并保留历史。</li></ol>
+          <details class="snippet" open><summary>Python 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.py，再运行 python3 lesson.py。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>DATA = {
+    &quot;read&quot;: (&quot;show_slots&quot;, {&quot;list_slots&quot;}, {&quot;list_slots&quot;}),
+    &quot;ask&quot;: (&quot;ask_confirm&quot;, set(), {&quot;list_slots&quot;}),
+    &quot;save&quot;: (&quot;done&quot;, {&quot;save_booking&quot;}, {&quot;list_slots&quot;, &quot;save_booking&quot;}),
+}
+
+def verdict(rule, observation):
+    expected, required, allowed = rule
+    reply, actions = observation
+    if not isinstance(actions, list) or not all(isinstance(x, str) for x in actions):
+        return &quot;no_evidence&quot;
+    seen = set(actions)
+    if not required &lt;= seen &lt;= allowed:
+        return &quot;bad_action&quot;
+    if reply != expected:
+        return &quot;wrong_reply&quot;
+    return &quot;ok&quot;
+
+def compare(before, after):
+    if set(before) != set(DATA) or set(after) != set(DATA):
+        raise ValueError(&quot;sample IDs must match dataset&quot;)
+    rows = {key: (verdict(rule, before[key]), verdict(rule, after[key]))
+            for key, rule in DATA.items()}
+    return rows, all(result == &quot;ok&quot; for _, result in rows.values())
+
+baseline = {&quot;read&quot;: (&quot;show_slots&quot;, [&quot;list_slots&quot;]),
+            &quot;ask&quot;: (&quot;ask_confirm&quot;, []), &quot;save&quot;: (&quot;done&quot;, [&quot;save_booking&quot;])}
+candidate = {**baseline, &quot;ask&quot;: (&quot;ask_confirm&quot;, [&quot;save_booking&quot;])}
+rows, release = compare(baseline, candidate)
+assert rows[&quot;ask&quot;] == (&quot;ok&quot;, &quot;bad_action&quot;) and not release
+assert compare(baseline, baseline)[1]
+for key, (old, new) in rows.items():
+    print(key, old, &quot;→&quot;, new)
+print(&quot;release:&quot;, &quot;pass&quot; if release else &quot;blocked&quot;)
+</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>先锁定什么才算退化</h3><p>两次运行使用同一批样本和同一判定规则。先跑未确认不能写这一条，再补只读和确认后执行。样本、规则、候选和运行各自有可复查的版本；不把延迟或成本表现混进越权门槛。</p></div><div><h3>结果要能机器判断也能解释</h3><p>结果区分 ok、wrong_reply、bad_action 和 no_evidence。短例有固定排查优先级，只显示最先命中的分类；正式报告还应保留每个维度，便于看见一个样本中的多个问题。</p></div><div><h3>复跑不覆盖原证据</h3><p>报告按样本编号连接前后两次观察；样本有增减时先显式报不匹配。线上系统用新运行或尝试编号重跑，而非直接覆盖旧记录。没轨迹先补采集再判，不宣称安全；有越权则问是提示变化、动作确认判断出错，还是测试替身不符合契约。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>答复没变却提前写入</dt><dd><strong>怎么触发：</strong>候选仍回复请确认，同时新增写入动作。</dd><dd><strong>怎么判断：</strong>该样本从 ok 变为 bad_action，发布被阻止。</dd></div><div class="failure-card"><dt>候选少了一项</dt><dd><strong>怎么触发：</strong>删掉候选中的 save 样本。</dd><dd><strong>怎么判断：</strong>集合不匹配，拒绝比较而非默认为通过。</dd></div><div class="failure-card"><dt>轨迹缺失</dt><dd><strong>怎么触发：</strong>将某候选样本的工具记录设为 None。</dd><dd><strong>怎么判断：</strong>对应条目为 no_evidence，需补证据或复跑。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>只读、询问、确认后执行均有样本。</li><li>数据集和判定规则固定，前后通过编号对齐。</li><li>回答对却越权不通过；没证据也不通过。</li><li>报告能指出退化样本并保留复跑线索。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>由提交、调度、展示、契约到生成和评测，用一份可复现的报告把前七课连起来。</p>
+        </section>
         <section id="exercise"><h2>动手练习</h2><p>用一页报告交付：为什么设计这组样本、哪条退化、如何证明修复，以及哪些边界尚没测到。</p><aside class="mini-lab" data-lab="eval-fault" hidden><h3>动手试一下：正确答复却提前调用写入工具</h3>
       <p>这是浏览器里的合成数据演示，不连外部服务。</p>
       <div class="actions"><button type="button" data-run="normal">运行基线</button><button type="button" data-run="fault">注入故障</button></div>
-      <pre><output aria-live="polite">选择一个场景开始。</output></pre></aside></section>
+      <pre><output aria-live="polite">选择一个场景开始。</output></pre></aside><aside class="reference-project">
+      <h3>可运行练习：CaseLab</h3>
+      <p>把示例保存到一个目录，在那个目录执行这行命令。先跑通，再删改一条保护规则，看哪项断言失败。</p>
+      <p><a class="button primary" href="../examples/caselab.py" download>下载 caselab.py</a></p>
+      <pre><code>python3 caselab.py</code></pre>
+      <p>全部检查通过时，会输出 <code>CaseLab: all regression checks passed.</code></p>
+    </aside></section>
         <section id="check"><h2>自测</h2>
           <form class="course-quiz" data-answer="1" data-right="答对了。总分只能提醒变化，能复现的证据才能指导下一步修复。" data-wrong="这个选项不成立。再想想：总分只能提醒变化，能复现的证据才能指导下一步修复。" hidden>
             <fieldset><legend>报告里最重要的是哪个？</legend><label><input type="radio" name="check" value="0" required> 一个漂亮的总分</label><label><input type="radio" name="check" value="1" required> 可追到具体样本、工具动作和判定规则的证据</label></fieldset>

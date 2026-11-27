@@ -16,8 +16,8 @@
   <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
   <script src="/js/blog.js?v=code-fold-20261126" defer></script>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
-  <link rel="stylesheet" href="/css/public-courses.css">
-  <script src="/js/public-courses.js" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=code-practice-1">
+  <script src="/js/public-courses.js?v=code-practice-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -37,12 +37,53 @@
     </div>
   </header>
   <main id="main" class="wrap"><div class="public-course" data-course="teaching-aihom" data-current="tool"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 应用全栈实战</a></div>
-    <header class="lesson-head"><p class="eyebrow">第 05 / 08 课 · 11 分钟</p><h1>工具与 MCP：从发现到审批</h1><p class="lead">区分工具可见、可调用和被允许写入三件事。</p></header>
+    <header class="lesson-head"><p class="eyebrow">第 05 / 08 课 · 约 27 分钟</p><h1>工具与 MCP：从发现到审批</h1><p class="lead">区分工具可见、可调用和被允许写入三件事。</p></header>
     <div class="reading">
-      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
       <article class="lesson-content">
         <section id="scene"><h2>先看场景</h2><p>假设 Agent 能读取房间约束和写入草稿。模型只负责提出动作，应用必须验证动作能否执行。MCP 是工具交互的一种标准接口，不代替业务权限检查。</p><p class="course-term"><strong>MCP：</strong>让应用用统一方式发现和调用工具的协议。能看到一个工具，不等于有权执行它。</p></section>
         <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>明确工具的输入输出、错误类型和结果上限。</li><li>查询类工具可按只读范围执行；写入的范围和确认由应用核对。</li><li>把工具响应当成数据，不把返回文本里的命令当成授权。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>{&quot;tool&quot;:&quot;read_room_rules&quot;,&quot;arguments&quot;:{&quot;room&quot;:&quot;sample-a&quot;}}</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">Agent 看到了「保存草案」工具，也传了形状正确的参数，为什么还不一定能执行？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>可用工具约定名称、入参类型和结果。</li><li>模型提出工具请求，而应用从自己的可信状态读取授权。</li><li>应用校验访问范围、参数、草案版本和确认。</li><li>工具返回结构化数据；旁白不作为新的用户授权。</li></ol>
+          <details class="snippet" open><summary>Python 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.py，再运行 python3 lesson.py。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>def dispatch(name, args, *, current_room, accepted, calls):
+    if name not in {&quot;read_rules&quot;, &quot;publish_draft&quot;}:
+        return &quot;unknown-tool&quot;
+    if not isinstance(args, dict):
+        return &quot;invalid-arguments&quot;
+    if not isinstance(args.get(&quot;room&quot;), str):
+        return &quot;invalid-arguments&quot;
+    if args[&quot;room&quot;] != current_room:
+        return &quot;out-of-scope&quot;
+    if name == &quot;read_rules&quot;:
+        calls.append((&quot;read&quot;, current_room))
+        return {&quot;min_width&quot;: 1}
+
+    draft, revision = args.get(&quot;draft&quot;), args.get(&quot;revision&quot;)
+    if not isinstance(draft, str) or type(revision) is not int:
+        return &quot;invalid-arguments&quot;
+    if accepted != (current_room, draft, revision):
+        return &quot;needs-confirmation&quot;
+    calls.append((&quot;publish&quot;, current_room, draft, revision))
+    return &quot;published&quot;
+
+calls = []
+args = {&quot;room&quot;: &quot;room-A&quot;, &quot;draft&quot;: &quot;sample&quot;, &quot;revision&quot;: 4}
+assert dispatch(&quot;publish_draft&quot;, args, current_room=&quot;room-A&quot;, accepted=None, calls=calls) == &quot;needs-confirmation&quot;
+assert not calls
+assert dispatch(&quot;publish_draft&quot;, args, current_room=&quot;room-A&quot;, accepted=(&quot;room-A&quot;, &quot;sample&quot;, 3), calls=calls) == &quot;needs-confirmation&quot;
+assert dispatch(&quot;publish_draft&quot;, args, current_room=&quot;room-A&quot;, accepted=(&quot;room-A&quot;, &quot;sample&quot;, 4), calls=calls) == &quot;published&quot;
+assert len(calls) == 1</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>这是应用边界，不是协议实现</h3><p>工具协议解决发现和调用，调用前的资源身份与用户许可是应用职责。示例调用的是普通函数，用这一层模拟协议客户端发出调用前应该做的判断，不涉及外部服务配置。</p></div><div><h3>每次审批要绑定到要写的内容</h3><p>用 room、draft、revision 绑定确认。课例用元组表示三者一致；真实应用还要绑定发起者、允许的动作及确认有效期。处理重复写入依旧依赖上一节的幂等持久化，不由确认元组替代。</p></div><div><h3>错误分得开，评测才能写得准</h3><p>未知工具、参数不合法、范围错误、缺少确认产生不同结果。模型输出可能提出新的范围，也可能把工具文本当指令。dispatch 只允许预先定义的行为，不把模型文本中的判断当作可执行规则。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>模型自行声称已确认</dt><dd><strong>怎么触发：</strong>参数齐全，但应用记录中没有确认。</dd><dd><strong>怎么判断：</strong>返回 needs-confirmation，写工具调用次数为 0。</dd></div><div class="failure-card"><dt>确认后草案变化</dt><dd><strong>怎么触发：</strong>用户批准版本 3，模型提交版本 4。</dd><dd><strong>怎么判断：</strong>继续要求确认，不放行新版草案。</dd></div><div class="failure-card"><dt>读取别的房间</dt><dd><strong>怎么触发：</strong>让读取工具携带和当前房间不相等的编号。</dd><dd><strong>怎么判断：</strong>返回范围错误，即使是只读工具也不能越过资源权限。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>工具未知时不发送请求。</li><li>版本不匹配时没有副作用。</li><li>严格匹配已确认动作后，只记录一次写调用。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>工具在清单上不等于行动被允许；权限、参数与确认要在调用处落实。</p>
+        </section>
         <section id="exercise"><h2>动手练习</h2><p>用两个模拟工具分别返回合法规则与越权建议，检查写操作在未确认时不会触发。</p></section>
         <section id="check"><h2>自测</h2>
           <form class="course-quiz" data-answer="0" data-right="答对了。工具调用和权限验证必须分开，模型文本不能充当授权。" data-wrong="这个选项不成立。再想想：工具调用和权限验证必须分开，模型文本不能充当授权。" hidden>

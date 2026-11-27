@@ -7,8 +7,8 @@ from pathlib import Path
 from blog_discovery import WATCH, json_ld, watch_path
 from blog_series import CATALOG_SECTIONS
 
-HEAD = ('<link rel="stylesheet" href="/css/video-series.css?v=1">\n'
-        '<script src="/js/video-series.js?v=1" defer></script>')
+HEAD = ('<link rel="stylesheet" href="/css/video-series.css?v=2">\n'
+        '<script src="/js/video-series.js?v=2" defer></script>')
 
 
 @dataclass
@@ -171,6 +171,7 @@ def player(playlist, site):
     first = episodes[0]
     title = first.title
     media = first.video
+    first_transcript = f'href="{h(fallback(first))}"' if Path(first.path).stem in WATCH else "hidden"
     groups = []
     i = 0
     for label, members in playlist.groups:
@@ -202,8 +203,8 @@ def player(playlist, site):
           </video></div>
           <div class="vp-caption"><p class="vc-eyebrow" data-position>正在观看 · 第 1 / {len(episodes)} 集</p>
             <h2 id="vp-now">{h(title)}</h2>
-            <div class="vp-source"><a href="{h(first.path)}" data-player-article>读图文原文 ↗</a>
-            <a href="{fallback(first)}" data-player-transcript>{'分章文字稿 ↗' if Path(first.path).stem in WATCH else '打开原文播放器 ↗'}</a></div></div>
+            <div class="vp-source"><a href="{h(first.path)}" data-player-article target="_blank" rel="noopener">读图文原文 ↗</a>
+            <a {first_transcript} data-player-transcript target="_blank" rel="noopener">分章文字稿 ↗</a></div></div>
           <div class="vp-controls" data-controls hidden><label><input type="checkbox" checked data-autonext> 自动连播</label>
             <div><button type="button" data-previous disabled>上一集</button><button type="button" data-next>下一集</button></div></div>
           <p class="vp-status"><span data-player-status role="status"></span><button type="button" data-retry hidden>点击播放</button></p>

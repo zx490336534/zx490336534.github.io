@@ -16,8 +16,8 @@
   <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
   <script src="/js/blog.js?v=code-fold-20261126" defer></script>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
-  <link rel="stylesheet" href="/css/public-courses.css">
-  <script src="/js/public-courses.js" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=code-practice-1">
+  <script src="/js/public-courses.js?v=code-practice-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -37,12 +37,56 @@
     </div>
   </header>
   <main id="main" class="wrap"><div class="public-course" data-course="teaching-aihom" data-current="views"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 应用全栈实战</a></div>
-    <header class="lesson-head"><p class="eyebrow">第 06 / 08 课 · 12 分钟</p><h1>二维和三维怎么共用一份状态</h1><p class="lead">理解坐标、选择状态与版本在不同视图之间如何同步。</p></header>
+    <header class="lesson-head"><p class="eyebrow">第 06 / 08 课 · 约 28 分钟</p><h1>二维和三维怎么共用一份状态</h1><p class="lead">理解坐标、选择状态与版本在不同视图之间如何同步。</p></header>
     <div class="reading">
-      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
       <article class="lesson-content">
         <section id="scene"><h2>先看场景</h2><p>RoomLab 的二维图和三维预览看的是同一批矩形家具。尺寸与位置属于领域模型，缩放或相机角度只属于各自视图。</p><p class="course-term"><strong>领域模型：</strong>家具在哪里、尺寸是多少。这些事实和你用哪种角度看它无关。</p></section>
         <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>给对象稳定 ID；选中时跨视图共享 ID，不共享像素坐标。</li><li>统一领域单位，视图层做坐标转换。</li><li>先校验模型版本再派生场景；只在结果有效时替换旧场景。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>{&quot;revision&quot;:3,&quot;items&quot;:[{&quot;id&quot;:&quot;chair-a&quot;,&quot;x&quot;:1.2,&quot;y&quot;:2.1,&quot;width&quot;:0.5}]}</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">二维图点中椅子，再旋转三维相机，哪一份数据应该变、哪一份绝不能变？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>领域状态用同一单位储存家具与稳定编号。</li><li>二维图用像素比例投影，三维视图用空间轴投影。</li><li>两张视图把选中状态映射到相同家具编号。</li><li>相机、缩放等各自保存在视图状态，重画不修改领域布局。</li></ol>
+          <details class="snippet" open><summary>JavaScript 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.cjs，再运行 node lesson.cjs。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>const assert = require(&#x27;node:assert/strict&#x27;);
+const layout = Object.freeze({
+  revision: 3,
+  items: Object.freeze([Object.freeze({ id: &#x27;chair-A&#x27;, x: 1.2, y: 2.1 })])
+});
+
+function plan(model, scale, selected) {
+  return model.items.map(item =&gt; ({
+    id: item.id,
+    point: [Math.round(item.x * scale), Math.round(item.y * scale)],
+    selected: item.id === selected
+  }));
+}
+
+function scene(model, camera, selected) {
+  return {
+    revision: model.revision,
+    camera: { ...camera },
+    objects: model.items.map(item =&gt; ({
+      id: item.id, xyz: [item.x, 0, item.y], selected: item.id === selected
+    }))
+  };
+}
+
+const viewing = plan(layout, 100, &#x27;chair-A&#x27;);
+assert.deepEqual(viewing[0].point, [120, 210]);
+const rotating = scene(layout, { angle: 75 }, &#x27;chair-A&#x27;);
+assert.equal(rotating.objects[0].selected, true);
+assert.deepEqual(rotating.objects[0].xyz, [1.2, 0, 2.1]);
+assert.deepEqual(plan(layout, 100, &#x27;chair-A&#x27;), viewing);
+assert.equal(layout.revision, 3);</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>一份领域布局，两份派生结果</h3><p>领域里的 x、y 统一以米表示。二维 px = x × scale；这个示例规定三维把地面 y 放到 z 轴，把高度放到 y 轴。别隐去具体假设，混用比例或轴向会让联动在同样数据下出现偏移。</p></div><div><h3>对象身份不要依赖列表位置</h3><p>两张视图的排序可能不同，甚至有对象被裁剪。选择使用 chair-A 这种稳定标识；投影只根据 ID 涂高亮。全量布局发布后，若所选家具已不存在，交给选择层清掉有效选中，不要让列表中下一项自动继承。</p></div><div><h3>两个层次的版本</h3><p>布局版本来自领域，镜头角度来自当前视图。旋转相机后重建三维投影输入，检查二维输出与领域布局不受影响。若真正的渲染器异步初始化，应为投影作业记住布局版本；画面提交时丢掉旧作业结果。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>尺度混用</dt><dd><strong>怎么触发：</strong>把米直接当像素绘图，再用每米 100 像素对照。</dd><dd><strong>怎么判断：</strong>椅子二维坐标应是 (120, 210)，模型仍是 (1.2, 2.1)。</dd></div><div class="failure-card"><dt>相机移动误改家具</dt><dd><strong>怎么触发：</strong>旋转三维相机，再捕获二维投影和领域版本。</dd><dd><strong>怎么判断：</strong>家具坐标与二维投影不变。</dd></div><div class="failure-card"><dt>列表位置不一致</dt><dd><strong>怎么触发：</strong>调换家具显示顺序后点选椅子。</dd><dd><strong>怎么判断：</strong>两张图仍按 ID 高亮椅子，不会高亮列表里相同下标的另一物件。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>两边的选中项标识相等，但二维点与三维点各遵守自己的投影。</li><li>镜头变化不使领域版本增加。</li><li>输入布局可冻结且不抛错，防止投影偷偷改领域对象。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>四个字记住：共享模型。坐标投影和镜头状态留在视图层。</p>
+        </section>
         <section id="exercise"><h2>动手练习</h2><p>在二维图选中椅子后，再拖动三维相机。确认选中对象不变、相机移动不会改变业务坐标。</p></section>
         <section id="check"><h2>自测</h2>
           <form class="course-quiz" data-answer="1" data-right="答对了。相机角度与家具坐标属于不同层，混用会让另一个视图也意外变化。" data-wrong="这个选项不成立。再想想：相机角度与家具坐标属于不同层，混用会让另一个视图也意外变化。" hidden>

@@ -16,8 +16,8 @@
   <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
   <script src="/js/blog.js?v=code-fold-20261126" defer></script>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
-  <link rel="stylesheet" href="/css/public-courses.css">
-  <script src="/js/public-courses.js" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=code-practice-1">
+  <script src="/js/public-courses.js?v=code-practice-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -37,12 +37,60 @@
     </div>
   </header>
   <main id="main" class="wrap"><div class="public-course" data-course="teaching-kuai" data-current="generate"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 测试平台与评测实战</a></div>
-    <header class="lesson-head"><p class="eyebrow">第 05 / 08 课 · 14 分钟</p><h1>Agent 生成用例：生成、审查、执行分开</h1><p class="lead">把生成的用例看成候选，不把它当成执行证据。</p></header>
+    <header class="lesson-head"><p class="eyebrow">第 05 / 08 课 · 约 30 分钟</p><h1>Agent 生成用例：生成、审查、执行分开</h1><p class="lead">把生成的用例看成候选，不把它当成执行证据。</p></header>
     <div class="reading">
-      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
       <article class="lesson-content">
         <section id="scene"><h2>先看场景</h2><p>输入是一条虚构预约规则，模型输出供审查的用例草稿。草稿通过结构验证且人工批准之后，才可以送进测试执行器。</p><p class="course-term"><strong>候选用例：</strong>它是还没执行的草稿。像检查清单上的一行，写得好不等于已经做过。</p></section>
         <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>每条用例都要包含前置条件、动作、预期观察点。</li><li>补用例前先按需求条目和状态区间看覆盖缺口，别用总条数代替覆盖。</li><li>草稿、审批与执行使用不同状态；不能伪造执行记录。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>{&quot;case&quot;:&quot;重复提交&quot;,&quot;given&quot;:&quot;预约已确认&quot;,&quot;when&quot;:&quot;重新提交同一请求&quot;,&quot;then&quot;:&quot;仍只有一条有效预约&quot;}</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">Agent 写了八条预约用例，其中两条都只说「检查是否成功」。哪条能运行？编辑后，旧审批还算数吗？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>把预约规则编号化，候选用例引用已知规则。</li><li>检查结构与可观察期望，再从规则表找覆盖缺口。</li><li>人工审批绑定草稿版本；任何编辑会使旧审批失效。</li><li>执行使用已确认的用例快照，运行结果另存。</li></ol>
+          <details class="snippet" open><summary>Python 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.py，再运行 python3 lesson.py。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>from copy import deepcopy
+
+RULES = {&quot;R1&quot;, &quot;R2&quot;, &quot;R3&quot;}
+draft = {&quot;revision&quot;: 0, &quot;approved&quot;: None, &quot;cases&quot;: []}
+
+def edit(cases):
+    for case in cases:
+        if case[&quot;rule&quot;] not in RULES:
+            raise ValueError(&quot;unknown rule&quot;)
+        if any(not case[field].strip()
+               for field in (&quot;given&quot;, &quot;when&quot;, &quot;then&quot;)):
+            raise ValueError(&quot;missing case detail&quot;)
+    draft[&quot;revision&quot;] += 1
+    draft[&quot;cases&quot;] = deepcopy(cases)
+    draft[&quot;approved&quot;] = None
+
+def approve(revision):
+    if revision != draft[&quot;revision&quot;] or not draft[&quot;cases&quot;]:
+        raise ValueError(&quot;stale or empty draft&quot;)
+    draft[&quot;approved&quot;] = revision
+
+def snapshot():
+    if draft[&quot;approved&quot;] != draft[&quot;revision&quot;]:
+        raise ValueError(&quot;approval required&quot;)
+    return draft[&quot;revision&quot;], deepcopy(draft[&quot;cases&quot;])
+
+case = {&quot;rule&quot;: &quot;R2&quot;, &quot;given&quot;: &quot;已有预约&quot;, &quot;when&quot;: &quot;重交同一请求&quot;,
+        &quot;then&quot;: &quot;仍只有一条有效预约&quot;}
+edit([case])
+approve(1)
+old = snapshot()
+edit([{**case, &quot;then&quot;: &quot;预约编号也保持不变&quot;}])
+assert draft[&quot;approved&quot;] is None and old[0] == 1
+assert old[1][0][&quot;then&quot;] == &quot;仍只有一条有效预约&quot;
+</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>让期望可观察</h3><p>模型输出先当候选。每条至少写前置、动作、期望；例如重复提交后有效预约仍为一条，可以数。一句「正常处理」不能判断结果。结构校验只是第一层，还要读业务语义，核对几个不同措辞的用例是不是同一个场景。</p></div><div><h3>审批针对一份版本</h3><p>approve 记录当下 revision，edit 增加版本并清空确认。迟到审批不能盖章给新文本。实际存储应把版本检查和写入合并成原子提交；只禁用页面按钮挡不住延迟请求。</p></div><div><h3>不要让草稿改变历史</h3><p>启动运行时复制已确认版本，后续改草稿不会影响正在跑和已经完成的记录。结果报告保留用例版本和执行证据，不能用生成输出中的状态字段冒充测试通过。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>过时审批</dt><dd><strong>怎么触发：</strong>第一版审批请求到达时，第二版已保存。</dd><dd><strong>怎么判断：</strong>拒绝旧审批；第二版仍待审。</dd></div><div class="failure-card"><dt>错误制造通过证据</dt><dd><strong>怎么触发：</strong>模型输出额外字段 passed: true。</dd><dd><strong>怎么判断：</strong>执行结果只来自执行记录；公开记录应在边界白名单转换。</dd></div><div class="failure-card"><dt>预期模糊</dt><dd><strong>怎么触发：</strong>候选缺期望，或写成含义重复的两个句子。</dd><dd><strong>怎么判断：</strong>缺字段校验失败；语义重复在审核阶段发现。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>未知需求编号拒绝，未覆盖需求不能计入覆盖。</li><li>未审批或版本不一致不能启动。</li><li>新编辑不改变老执行快照。</li><li>草稿生成、通过审批和执行通过是三件事。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>下一课测试 Agent 本身：对答复和真实工具轨迹分别打分。</p>
+        </section>
         <section id="exercise"><h2>动手练习</h2><p>为预约生成正常、边界与冲突用例各一条。删除一条模糊用例，记录为什么删。</p></section>
         <section id="check"><h2>自测</h2>
           <form class="course-quiz" data-answer="0" data-right="答对了。预期写在草稿里，实际结果得由执行器观察并记录。" data-wrong="这个选项不成立。再想想：预期写在草稿里，实际结果得由执行器观察并记录。" hidden>

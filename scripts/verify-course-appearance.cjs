@@ -8,6 +8,11 @@ async function main() {
     const page = await browser.newPage({ viewport: { width: 375, height: 844 }, isMobile: true, hasTouch: true });
     await page.route('**/*', route => new URL(route.request().url()).origin === base.origin
       ? route.continue() : route.abort());
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, 'clipboard', {
+        configurable: true, value: { writeText: async text => { window.__lessonClipboard = text; } }
+      });
+    });
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
     const background = () => page.locator('body').evaluate(body => getComputedStyle(body).backgroundColor);
@@ -54,8 +59,16 @@ async function main() {
         await choices.nth(answer).check();
         await quiz.locator('button').tap();
         assert.equal(await quiz.locator('[role=status]').getAttribute('data-state'), 'correct');
-        const snippet = page.locator('.snippet');
+        const deep = page.locator('#code-walkthrough');
+        assert.ok(await deep.isVisible());
+        assert.ok(await deep.locator('.course-flow li').count() >= 3);
+        assert.ok(await page.locator('#failure-cases .failure-card').count() >= 2);
+        const snippet = deep.locator('.snippet');
         assert.equal(await snippet.evaluate(el => el.open), true);
+        if (link === links[0]) {
+          await snippet.locator('[data-copy-example]').tap();
+          assert.equal(await page.evaluate(() => window.__lessonClipboard), await snippet.locator('pre code').textContent());
+        }
         await snippet.locator('summary').tap();
         assert.equal(await snippet.evaluate(el => el.open), false);
       }
@@ -63,6 +76,7 @@ async function main() {
       assert.ok((await page.locator('output').innerText()).includes(capNormal));
       await page.locator('[data-run=fault]').tap();
       assert.ok((await page.locator('output').innerText()).includes(capFault));
+      assert.ok(await page.locator('.reference-project a[download]').isVisible());
 
       await goto(prefix + intro + '.html');
       await page.locator('#complete-lesson').tap();

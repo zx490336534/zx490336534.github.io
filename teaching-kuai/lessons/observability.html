@@ -16,8 +16,8 @@
   <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
   <script src="/js/blog.js?v=code-fold-20261126" defer></script>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
-  <link rel="stylesheet" href="/css/public-courses.css">
-  <script src="/js/public-courses.js" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=code-practice-1">
+  <script src="/js/public-courses.js?v=code-practice-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -37,13 +37,51 @@
     </div>
   </header>
   <main id="main" class="wrap"><div class="public-course" data-course="teaching-kuai" data-current="observability"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 测试平台与评测实战</a></div>
-    <header class="lesson-head"><p class="eyebrow">第 07 / 08 课 · 12 分钟</p><h1>监控：区分评测退化与平台故障</h1><p class="lead">看三组指标判断先排模型、框架还是执行环境。</p></header>
+    <header class="lesson-head"><p class="eyebrow">第 07 / 08 课 · 约 28 分钟</p><h1>监控：区分评测退化与平台故障</h1><p class="lead">看三组指标判断先排模型、框架还是执行环境。</p></header>
     <div class="reading">
-      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
       <article class="lesson-content">
         <section id="scene"><h2>先看场景</h2><p>一个回归任务变慢，可能是排队，不一定是模型慢。把排队、执行、评测耗时分开记录，同时观察样本消费到哪一步。</p><p class="course-term"><strong>排队耗时：</strong>从进入队列到开始处理的等待时间。它变长，不等于模型同一次调用变慢。</p></section>
         <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>关联运行、用例和尝试编号，不把完整业务输入写进日志。</li><li>统计断言失败、系统故障、未执行三类，再决定先排哪层。</li><li>对同一数据集比较版本结果；不能把两次不同样本的通过率当作模型涨跌。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>queue_ms | execution_ms | evaluation_ms
 assertion_failed | infrastructure_error | skipped</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">一批评测总耗时涨了，模型推理耗时没涨。应该先排哪一层？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>按运行、用例和尝试三个编号关联单次测量。</li><li>分别捕捉排队、执行和评分的边界时刻。</li><li>区分业务断言失败、基础设施问题、跳过与未知。</li><li>找最先异常的边界，再跑同一批样本做对照。</li></ol>
+          <details class="snippet" open><summary>Python 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.py，再运行 python3 lesson.py。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>def span(start, end):
+    if start is None or end is None or end &lt; start:
+        return None
+    return end - start
+
+def timing(event):
+    return {
+        &quot;queue&quot;: span(event.get(&quot;queued&quot;), event.get(&quot;started&quot;)),
+        &quot;execute&quot;: span(event.get(&quot;started&quot;), event.get(&quot;executed&quot;)),
+        &quot;grade&quot;: span(event.get(&quot;executed&quot;), event.get(&quot;graded&quot;)),
+    }
+
+def sample(delay):
+    # 由同一个受控时钟生成，单位是毫秒
+    return {&quot;run&quot;: &quot;demo-1&quot;, &quot;case&quot;: &quot;repeat&quot;, &quot;attempt&quot;: 1,
+            &quot;queued&quot;: 0, &quot;started&quot;: delay,
+            &quot;executed&quot;: delay + 20, &quot;graded&quot;: delay + 22}
+
+normal = timing(sample(5))
+slow = timing(sample(80))
+assert normal == {&quot;queue&quot;: 5, &quot;execute&quot;: 20, &quot;grade&quot;: 2}
+assert slow == {&quot;queue&quot;: 80, &quot;execute&quot;: 20, &quot;grade&quot;: 2}
+assert timing({&quot;queued&quot;: 3, &quot;started&quot;: 2})[&quot;queue&quot;] is None
+assert timing({&quot;queued&quot;: 0, &quot;started&quot;: 2, &quot;executed&quot;: 8})[&quot;grade&quot;] is None
+</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>先拆时钟再找归因</h3><p>入队到开始是排队，开始到得到执行输出是执行，评分另记。例子简化成执行结束即开始评分；异步评分另需记录等待。分布式实现不要直接减两台未对齐的机器时钟，可由同一组件或统一跨度测量。</p></div><div><h3>缺测不填零</h3><p>边界丢失或时间倒退返回 None，不能把没有证据变成没有耗时。汇总时保留缺测个数，避免漏报导致延迟看起来反而下降。尝试号用来区分第一次执行环境失败与后来正常执行发现断言失败。</p></div><div><h3>高延迟先找变化的那一段</h3><p>示例里只把等待拉长，排队以外的两个跨度不变。真实报表按同类样本、同成功条件比较分位数和缺失率。运行、用例等高基数字段放日志或追踪用于关联，不用作指标标签，不把预约原文记录到日志。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>评分未结束</dt><dd><strong>怎么触发：</strong>去掉 graded，但保留 executed。</dd><dd><strong>怎么判断：</strong>评分时长未知，执行耗时仍可用。</dd></div><div class="failure-card"><dt>队列变慢</dt><dd><strong>怎么触发：</strong>把从 started 起的时刻整体后移。</dd><dd><strong>怎么判断：</strong>仅排队跨度增长，先检查积压和容量。</dd></div><div class="failure-card"><dt>同用例重跑</dt><dd><strong>怎么触发：</strong>尝试 1 与尝试 2 分别报设施错误与通过。</dd><dd><strong>怎么判断：</strong>保留两个事实，汇总时使用明确的取值规则。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>三段独立记录，不能以总耗时冒充模型耗时。</li><li>缺测和时钟倒退得到未知，并专门计数。</li><li>日志可按尝试定位，也不记录原始预约内容。</li><li>基础设施错误和业务断言失败分别统计。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>最后把数据集、归因、版本对照与发布门槛整合成一份能复跑的报告。</p>
+        </section>
         <section id="exercise"><h2>动手练习</h2><p>设计一个看板：排队时长、模型耗时、评测失败数各一个指标，并为每个异常写一个排查动作。</p></section>
         <section id="check"><h2>自测</h2>
           <form class="course-quiz" data-answer="0" data-right="答对了。这条证据先指向执行前的排队阶段，不支持提示词故障。" data-wrong="这个选项不成立。再想想：这条证据先指向执行前的排队阶段，不支持提示词故障。" hidden>

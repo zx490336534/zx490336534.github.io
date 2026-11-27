@@ -90,7 +90,7 @@
       if (requested !== playRequest || error.name === 'AbortError') return;
       updateCaption(error.name === 'NotAllowedError'
         ? '已切到下一集，浏览器需要你点一下才能继续播放。'
-        : '此视频暂时无法播放，可重试或打开原文播放器。', true);
+        : '此视频暂时无法播放，请重试。', true);
     });
   }
   function pick(index, play, historyMode) {
@@ -102,9 +102,10 @@
     currentName.textContent = data.title;
     currentPosition.textContent = '正在观看 · 第 ' + (index + 1) + ' / ' + entries.length + ' 集';
     link.href = data.article;
-    transcript.href = data.fallback;
-    transcript.textContent = new URL(data.fallback).pathname.startsWith('/videos/watch/')
-      ? '分章文字稿 ↗' : '打开原文播放器 ↗';
+    const hasTranscript = new URL(data.fallback).pathname.startsWith('/videos/watch/');
+    if (hasTranscript) transcript.href = data.fallback;
+    else transcript.removeAttribute('href');
+    transcript.hidden = !hasTranscript;
     previous.disabled = index < 1;
     next.disabled = index + 1 >= entries.length;
     if (index !== current) {
@@ -162,7 +163,7 @@
       updateCaption('本集已播放完毕。');
     }
   });
-  source.addEventListener('error', () => updateCaption('此视频暂时无法播放，可重试或打开原文播放器。', true));
+  source.addEventListener('error', () => updateCaption('此视频暂时无法播放，请重试。', true));
   controls.hidden = false;
   pick(episodeFromLocation(), false, '');
 })();

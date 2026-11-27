@@ -16,8 +16,8 @@
   <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
   <script src="/js/blog.js?v=code-fold-20261126" defer></script>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
-  <link rel="stylesheet" href="/css/public-courses.css">
-  <script src="/js/public-courses.js" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=code-practice-1">
+  <script src="/js/public-courses.js?v=code-practice-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -37,16 +37,55 @@
     </div>
   </header>
   <main id="main" class="wrap"><div class="public-course" data-course="teaching-aihom" data-current="request"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 应用全栈实战</a></div>
-    <header class="lesson-head"><p class="eyebrow">第 01 / 08 课 · 8 分钟</p><h1>一次交互如何走完整条链路</h1><p class="lead">从用户点击「生成布局」开始，找到浏览器、服务端和渲染器各自负责什么。</p></header>
+    <header class="lesson-head"><p class="eyebrow">第 01 / 08 课 · 约 21 分钟</p><h1>一次交互如何走完整条链路</h1><p class="lead">从用户点击「生成布局」开始，找到浏览器、服务端和渲染器各自负责什么。</p></header>
     <div class="reading">
-      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
       <article class="lesson-content">
         <section id="scene"><h2>先看场景</h2><p>在虚构的 RoomLab 中，浏览器先提交一个布局请求，服务端立刻返回任务编号。收到结果后，浏览器先更新模型，再让二维平面图和三维预览从同一份模型取数据。</p><p class="course-term"><strong>回执：</strong>像点完外卖拿到订单号。订单号说明已受理，不说明饭已经送到。</p></section>
-        <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>在接口层确认请求被接受，不把「已接收」当成「已完成」。</li><li>拿到任务编号后，用它串起状态事件和最终结果。</li><li>两个视图不互相传草稿，都只读同一个已确认版本。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>{&quot;id&quot;:&quot;demo-123&quot;,&quot;status&quot;:&quot;accepted&quot;}</code></pre></details></section>
-        <section id="exercise"><h2>动手练习</h2><p>画一条四步时序：用户提交 → 服务确认 → 后台完成 → 两个视图更新。</p><aside class="mini-lab" data-lab="layout-start" hidden><h3>动手试一下：从提交到预览</h3>
+        <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>在接口层确认请求被接受，不把「已接收」当成「已完成」。</li><li>拿到任务编号后，用它串起状态事件和最终结果。</li><li>两个视图不互相传草稿，都只读同一个已确认版本。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>{&quot;id&quot;:&quot;demo-123&quot;,&quot;status&quot;:&quot;accepted&quot;}</code></pre></details><aside class="mini-lab" data-lab="layout-start" hidden><h3>动手试一下：从提交到预览</h3>
       <p>这是浏览器里的合成数据演示，不连外部服务。</p>
       <div class="actions"><button type="button" data-run="normal">运行基线</button><button type="button" data-run="fault">注入故障</button></div>
       <pre><output aria-live="polite">选择一个场景开始。</output></pre></aside></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">点一次「生成布局」，为什么页面先出现排队提示，而不是立刻画出新布局？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>页面把此次点击标成一个独立操作，同时保留当前布局。</li><li>服务确认收单，返回可查询的任务编号；此时没有新布局可显示。</li><li>页面接收结果时核对任务编号与当前操作。</li><li>结果通过检查后，二维和三维从同一个新版本更新。</li></ol>
+          <details class="snippet" open><summary>JavaScript 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.cjs，再运行 node lesson.cjs。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>const assert = require(&#x27;node:assert/strict&#x27;);
+const initial = { click: 0, pending: null, state: &#x27;idle&#x27;, revision: 2 };
+const send = (s) =&gt; ({ ...s, click: s.click + 1, pending: null, state: &#x27;sending&#x27; });
+
+function accept(s, click, id) {
+  if (s.click !== click || s.state !== &#x27;sending&#x27;) return s;
+  return { ...s, pending: id, state: &#x27;queued&#x27; };
+}
+
+function finish(s, result) {
+  if (s.state !== &#x27;queued&#x27; || result.id !== s.pending) return s;
+  if (!result.ok || !Number.isInteger(result.revision) || result.revision &lt;= s.revision) {
+    return { ...s, state: &#x27;failed&#x27;, pending: null };
+  }
+  return { ...s, pending: null, state: &#x27;ready&#x27;, revision: result.revision };
+}
+
+const a = send(initial);
+const b = send(a);
+assert.equal(accept(b, a.click, &#x27;old&#x27;).pending, null);
+const queued = accept(b, b.click, &#x27;sample-2&#x27;);
+assert.equal(queued.revision, 2);
+assert.equal(finish(queued, { id: &#x27;old&#x27;, ok: true, revision: 9 }), queued);
+assert.equal(finish(queued, { id: &#x27;sample-2&#x27;, ok: false }).revision, 2);
+const ready = finish(queued, { id: &#x27;sample-2&#x27;, ok: true, revision: 3 });
+assert.equal(ready.revision, 3);</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>先看 UI 里两样东西：任务和布局</h3><p>任务表示这次生成做到哪一步，布局表示用户此刻正在看的图。示例用 pending 记录任务编号，revision 记录布局版本。只要服务还没产生可用结果，即使任务已排队，也不该把版本 2 清成空白。</p></div><div><h3>收单与完成更新不同字段</h3><p>accept 先判断响应是不是当前点击。如果响应属于较早的点击，不更新 pending。应用在发请求前先递增 click，把点击编号保存到请求的回调中。这个编号用于本页防止旧回调覆盖，不是后台任务编号。</p></div><div><h3>按身份和结果类型决定是否发布</h3><p>finish 只接收当前任务的结果；失败时只更新任务状态，成功且版本不倒退时同时更新布局版本。示例的 revision 只表示同一房间里的版本，真实应用还应校验当前房间，切图前也应校验结果结构。页面在实际提交前可用订阅后的快照覆盖可能过早到达的通知。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>旧回执迟到</dt><dd><strong>怎么触发：</strong>先发 A 再发 B，最后收到 A 的回执。</dd><dd><strong>怎么判断：</strong>页面继续等待或展示 B，A 不能改当前任务。</dd></div><div class="failure-card"><dt>新任务失败</dt><dd><strong>怎么触发：</strong>后台回失败，或者回传无法使用的版本。</dd><dd><strong>怎么判断：</strong>任务进入失败，但两张视图仍显示版本 2。</dd></div><div class="failure-card"><dt>完成消息先于订阅</dt><dd><strong>怎么触发：</strong>模拟切换网络，接收回执之后才接上消息。</dd><dd><strong>怎么判断：</strong>订阅后以同任务快照补齐进度，不假设当前仍在排队。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>收到回执以后，版本仍是 2。</li><li>旧任务报告更大的版本，也不能更新当前运行。</li><li>失败不抹掉已确认布局，成功才切到版本 3。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>先认清是哪个请求、哪个任务，再问有无足够信息替换布局。</p>
+        </section>
+        <section id="exercise"><h2>动手练习</h2><p>画一条四步时序：用户提交 → 服务确认 → 后台完成 → 两个视图更新。</p></section>
         <section id="check"><h2>自测</h2>
           <form class="course-quiz" data-answer="1" data-right="答对了。接收回执只证明服务确认收到任务，不代表任务成功，也不代表结果可渲染。" data-wrong="这个选项不成立。再想想：接收回执只证明服务确认收到任务，不代表任务成功，也不代表结果可渲染。" hidden>
             <fieldset><legend>什么时候可以把页面状态切成已完成？</legend><label><input type="radio" name="check" value="0" required> 收到任务编号时</label><label><input type="radio" name="check" value="1" required> 收到并校验同一任务的完成事件时</label></fieldset>

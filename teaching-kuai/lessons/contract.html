@@ -16,8 +16,8 @@
   <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
   <script src="/js/blog.js?v=code-fold-20261126" defer></script>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
-  <link rel="stylesheet" href="/css/public-courses.css">
-  <script src="/js/public-courses.js" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=code-practice-1">
+  <script src="/js/public-courses.js?v=code-practice-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -37,12 +37,56 @@
     </div>
   </header>
   <main id="main" class="wrap"><div class="public-course" data-course="teaching-kuai" data-current="contract"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 测试平台与评测实战</a></div>
-    <header class="lesson-head"><p class="eyebrow">第 04 / 08 课 · 12 分钟</p><h1>跨语言调用：把契约当边界</h1><p class="lead">让任务服务、前端和工具执行器对参数和错误达成一致。</p></header>
+    <header class="lesson-head"><p class="eyebrow">第 04 / 08 课 · 约 29 分钟</p><h1>跨语言调用：把契约当边界</h1><p class="lead">让任务服务、前端和工具执行器对参数和错误达成一致。</p></header>
     <div class="reading">
-      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
       <article class="lesson-content">
         <section id="scene"><h2>先看场景</h2><p>主服务与工具不必用同一种语言，但要对字段、超时与错误结构达成一致。这里用静态 JSON 演示，不依赖任何服务器。</p><p class="course-term"><strong>契约：</strong>双方约定要传什么、结果长什么样、失败怎么表达。换语言也遵守同一份约定。</p></section>
         <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>先定义最小字段与必填规则；额外字段是否忽略要有明确约定。</li><li>设置调用期限；调用方分别处理输入错误、超时和暂时不可用。</li><li>同一份契约样例同时给消费方与提供方测试，避免两边各自猜测。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>{&quot;version&quot;:1,&quot;caseId&quot;:&quot;login-sample&quot;,&quot;outcome&quot;:&quot;assertion_failed&quot;,&quot;elapsedMs&quot;:48}</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">执行器把耗时写成字符串，前端按数字计算。你希望错误怎样在进入报表前被挡住？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>执行器按带版本的契约提交明细。</li><li>接收边界校验对象、版本、字段和枚举。</li><li>将支持版本的对象转换为已知形状。</li><li>提供方与消费方用同一组正例和反例做测试。</li></ol>
+          <details class="snippet" open><summary>Python 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.py，再运行 python3 lesson.py。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>OUTCOMES = {&quot;pass&quot;, &quot;assertion_fail&quot;, &quot;infra_error&quot;}
+
+def validate(doc):
+    if not isinstance(doc, dict):
+        raise ValueError(&quot;result must be an object&quot;)
+    version = doc.get(&quot;version&quot;)
+    if type(version) is not int or version != 1:
+        raise ValueError(&quot;unsupported result version&quot;)
+    case = doc.get(&quot;caseId&quot;)
+    if not isinstance(case, str) or not case.strip():
+        raise ValueError(&quot;empty case id&quot;)
+    outcome = doc.get(&quot;outcome&quot;)
+    if not isinstance(outcome, str) or outcome not in OUTCOMES:
+        raise ValueError(&quot;unknown outcome&quot;)
+    elapsed = doc.get(&quot;elapsedMs&quot;)
+    if type(elapsed) is not int or elapsed &lt; 0:
+        raise ValueError(&quot;invalid elapsed time&quot;)
+    return {&quot;version&quot;: 1, &quot;caseId&quot;: case,
+            &quot;outcome&quot;: outcome, &quot;elapsedMs&quot;: elapsed}
+
+good = {&quot;version&quot;: 1, &quot;caseId&quot;: &quot;repeat&quot;,
+        &quot;outcome&quot;: &quot;pass&quot;, &quot;elapsedMs&quot;: 20}
+assert validate({**good, &quot;artifact&quot;: &quot;preview&quot;}) == good
+for change in [{&quot;elapsedMs&quot;: &quot;20&quot;}, {&quot;elapsedMs&quot;: True},
+               {&quot;version&quot;: 2}, {&quot;outcome&quot;: &quot;mystery&quot;}]:
+    try:
+        validate({**good, **change})
+    except ValueError:
+        continue
+    raise AssertionError(change)
+</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>先看版本，再读字段</h3><p>版本不支持时，不要试图用当前字段语义猜。需迁移必填字段时，可先支持两版，再逐步淘汰旧版。示例只处理版本 1。</p></div><div><h3>不要让类型自动转换掩盖问题</h3><p>非负耗时必须是整数。这里用 type(x) is int 避免把 Python 的 bool 当成数字。空 ID 和陌生结果同样在接收边界拦住，避免它们污染后续统计。</p></div><div><h3>兼容和错误分类</h3><p>示例允许额外可选字段，但只返回当前认识的字段。如果接收方严格拒绝未知字段，就不能直接加。坏契约一般不重试，限时等待、暂时不可用则可考虑有界重试；两者在报表与日志中要可区分。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>类型不一致</dt><dd><strong>怎么触发：</strong>分别送入 20、字符串 20、true、-1。</dd><dd><strong>怎么判断：</strong>只接受真正的非负整数。</dd></div><div class="failure-card"><dt>两端发布不同步</dt><dd><strong>怎么触发：</strong>先增加可选字段，再改版本号。</dd><dd><strong>怎么判断：</strong>扩展字段丢弃；不支持的版本明确拒绝。</dd></div><div class="failure-card"><dt>进度被当作结果</dt><dd><strong>怎么触发：</strong>生产方把 queued 放在 outcome。</dd><dd><strong>怎么判断：</strong>校验失败，不计入明细。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>空编号、缺少结果和陌生枚举不通过。</li><li>有效样例在两端得到相同形状。</li><li>可选扩展不会流入本版本持久层。</li><li>超时与格式错误在调用边界有不同分类。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>掌握了接口契约，再用相同思路检查 Agent 生成的候选用例。</p>
+        </section>
         <section id="exercise"><h2>动手练习</h2><p>故意删掉 outcome，再加入未知字段。写清两种变化是否应该拒绝。</p></section>
         <section id="check"><h2>自测</h2>
           <form class="course-quiz" data-answer="1" data-right="答对了。严格反序列化器可能拒绝未知字段，契约测试能提前发现。" data-wrong="这个选项不成立。再想想：严格反序列化器可能拒绝未知字段，契约测试能提前发现。" hidden>

@@ -16,8 +16,8 @@
   <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
   <script src="/js/blog.js?v=code-fold-20261126" defer></script>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
-  <link rel="stylesheet" href="/css/public-courses.css">
-  <script src="/js/public-courses.js" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=code-practice-1">
+  <script src="/js/public-courses.js?v=code-practice-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -37,12 +37,49 @@
     </div>
   </header>
   <main id="main" class="wrap"><div class="public-course" data-course="teaching-kuai" data-current="eval"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 测试平台与评测实战</a></div>
-    <header class="lesson-head"><p class="eyebrow">第 06 / 08 课 · 15 分钟</p><h1>评测：答案、工具过程和失败归因</h1><p class="lead">用小型数据集为 Agent 改动设一道可复现的回归门槛。</p></header>
+    <header class="lesson-head"><p class="eyebrow">第 06 / 08 课 · 约 31 分钟</p><h1>评测：答案、工具过程和失败归因</h1><p class="lead">用小型数据集为 Agent 改动设一道可复现的回归门槛。</p></header>
     <div class="reading">
-      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
       <article class="lesson-content">
         <section id="scene"><h2>先看场景</h2><p>对同一个预约任务，Agent 可以给出正确文字却误调用写工具。将最终答案与动作轨迹分开评分，才能抓住这种隐性失败。</p><p class="course-term"><strong>工具轨迹：</strong>记录 Agent 实际调用了哪些工具、用了什么参数。不能只从最后一句话推测。</p></section>
         <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>每条样本固定输入、允许动作、预期结果和判定理由。</li><li>状态或参数约束优先用确定性断言；主观判断需要清楚的评分标准。</li><li>改动前后使用同一数据集，逐条复核回归，观察准确率、越界次数、耗时和成本。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>{&quot;id&quot;:&quot;no-write-before-confirm&quot;,&quot;expected&quot;:&quot;ask_confirm&quot;,&quot;forbiddenTool&quot;:&quot;save_booking&quot;}</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">Agent 回复「请先确认」，却已经执行了写入。只看最后一句会让它通过，你的评测要怎样看出问题？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>固定输入、预期答复和允许动作。</li><li>采集真实执行器产生的工具记录，不使用模型自述。</li><li>独立计算答复、证据和动作三项。</li><li>在相同样本上对照基线与候选，动作严重问题硬拦截。</li></ol>
+          <details class="snippet" open><summary>Python 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.py，再运行 python3 lesson.py。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>def grade(example, observation):
+    tools = observation.get(&quot;tools&quot;)
+    trace_ok = (isinstance(tools, list)
+                and all(isinstance(x, str) for x in tools))
+    forbidden = set(example.get(&quot;forbidden&quot;, []))
+    required = set(example.get(&quot;required&quot;, []))
+    seen = set(tools) if trace_ok else set()
+    answer_ok = observation.get(&quot;reply&quot;) == example[&quot;reply&quot;]
+    process_ok = trace_ok and not (seen &amp; forbidden) and required &lt;= seen
+    return {&quot;reply_ok&quot;: answer_ok, &quot;trace_ok&quot;: trace_ok,
+            &quot;process_ok&quot;: process_ok, &quot;release_ok&quot;: answer_ok and process_ok}
+
+ask = {&quot;reply&quot;: &quot;ask_confirm&quot;, &quot;forbidden&quot;: [&quot;save_booking&quot;]}
+normal = grade(ask, {&quot;reply&quot;: &quot;ask_confirm&quot;, &quot;tools&quot;: []})
+early = grade(ask, {&quot;reply&quot;: &quot;ask_confirm&quot;, &quot;tools&quot;: [&quot;save_booking&quot;]})
+missing = grade(ask, {&quot;reply&quot;: &quot;ask_confirm&quot;})
+done = grade({&quot;reply&quot;: &quot;done&quot;, &quot;required&quot;: [&quot;save_booking&quot;]},
+             {&quot;reply&quot;: &quot;done&quot;, &quot;tools&quot;: [&quot;list_slots&quot;]})
+
+assert normal[&quot;release_ok&quot;]
+assert early[&quot;reply_ok&quot;] and not early[&quot;release_ok&quot;]
+assert not missing[&quot;trace_ok&quot;] and not missing[&quot;release_ok&quot;]
+assert done[&quot;reply_ok&quot;] and not done[&quot;process_ok&quot;]
+</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>分开看回答和动作</h3><p>这里用 reply 表示结构化意图，tools 表示已观察到的调用。两者都对才通过。文本自然度可以另评，但确定性的副作用、工具参数和动作顺序优先用直接断言。</p></div><div><h3>缺记录和空记录不同</h3><p>空列表表示记录存在但没有发生动作；缺字段表示没有可信证据，不能算作合规。本例用禁止集合检测越界，用必须集合检测该做没做；对于确认先后等要求，还要检查按时间排序的轨迹和参数。</p></div><div><h3>比较基线时锁定输入</h3><p>修改模型、提示或工具后，保持同一个数据集和判定规则。用只读、未确认、已确认场景分别压测。无法完全确定的文本评分可多次抽样并保留标准，越权这类硬失败不能用均值稀释。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>答对却越权</dt><dd><strong>怎么触发：</strong>reply 为 ask_confirm，但轨迹含写入。</dd><dd><strong>怎么判断：</strong>答案通过，过程和发布门槛不通过。</dd></div><div class="failure-card"><dt>轨迹采集丢失</dt><dd><strong>怎么触发：</strong>不传 tools。</dd><dd><strong>怎么判断：</strong>判证据缺失，不等于空记录。</dd></div><div class="failure-card"><dt>确认后没有执行</dt><dd><strong>怎么触发：</strong>reply 为 done，轨迹只有查询。</dd><dd><strong>怎么判断：</strong>必须写入的场景过程失败。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>正常询问且轨迹明确无写入可通过。</li><li>禁止动作出现即触发过程失败。</li><li>证据格式异常不能当无违约。</li><li>同一案例的差异可以落到具体维度。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>打了分，还得知道失败在模型、队列、执行器还是评分环节。</p>
+        </section>
         <section id="exercise"><h2>动手练习</h2><p>写三条数据：应读取、应询问、可写入。让假 Agent 在第二条错误写入，确认总分会扣且有归因。</p></section>
         <section id="check"><h2>自测</h2>
           <form class="course-quiz" data-answer="1" data-right="答对了。答案和副作用是不同验收项，涉及权限时应独立设门槛。" data-wrong="这个选项不成立。再想想：答案和副作用是不同验收项，涉及权限时应独立设门槛。" hidden>

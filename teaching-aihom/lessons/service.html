@@ -16,8 +16,8 @@
   <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
   <script src="/js/blog.js?v=code-fold-20261126" defer></script>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
-  <link rel="stylesheet" href="/css/public-courses.css">
-  <script src="/js/public-courses.js" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=code-practice-1">
+  <script src="/js/public-courses.js?v=code-practice-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -37,14 +37,58 @@
     </div>
   </header>
   <main id="main" class="wrap"><div class="public-course" data-course="teaching-aihom" data-current="service"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 应用全栈实战</a></div>
-    <header class="lesson-head"><p class="eyebrow">第 02 / 08 课 · 10 分钟</p><h1>拆开接口、业务规则和外部模型</h1><p class="lead">先跑通一个可测的后端切片，再接入真实模型。</p></header>
+    <header class="lesson-head"><p class="eyebrow">第 02 / 08 课 · 约 25 分钟</p><h1>拆开接口、业务规则和外部模型</h1><p class="lead">先跑通一个可测的后端切片，再接入真实模型。</p></header>
     <div class="reading">
-      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
       <article class="lesson-content">
         <section id="scene"><h2>先看场景</h2><p>把生成请求拆成参数校验、任务编排和模型适配。下一步只用一个假模型，就能复现超时并观察任务状态。</p><p class="course-term"><strong>适配器：</strong>业务说「给我一个草案」，适配器负责翻译成某个模型听得懂的请求。换模型时，不用重写业务规则。</p></section>
         <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>接口负责输入合法性和可读的错误结构。</li><li>应用服务定义状态流转；不依赖浏览器事件名。</li><li>模型是可替换的端口。测试可以返回固定结果或故意抛出超时。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>interface LayoutModel {
   propose(input: RoomInput): Promise&lt;LayoutDraft&gt;;
 }</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">把模型从成功换成超时，能不能只改一行测试输入就验证整个后端分支？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>接口先校验房间尺寸，把请求转成明确输入。</li><li>应用函数向一个可替换的生成器请求草案。</li><li>规则函数检查草案坐标，决定能否接纳。</li><li>只有通过检查的结果才获得新版本。</li></ol>
+          <details class="snippet" open><summary>Python 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.py，再运行 python3 lesson.py。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>def propose_revision(room_width, old, generate):
+    if type(room_width) is not int or room_width &lt;= 0:
+        return (&quot;invalid-input&quot;, old)
+    try:
+        draft = generate(room_width)
+    except TimeoutError:
+        return (&quot;retryable-timeout&quot;, old)
+
+    if not isinstance(draft, dict):
+        return (&quot;invalid-draft&quot;, old)
+    left, width = draft.get(&quot;left&quot;), draft.get(&quot;width&quot;)
+    valid = (
+        type(left) is int and type(width) is int
+        and left &gt;= 0 and width &gt; 0 and left + width &lt;= room_width
+    )
+    if not valid:
+        return (&quot;invalid-draft&quot;, old)
+    return (&quot;accepted&quot;, {
+        &quot;revision&quot;: old[&quot;revision&quot;] + 1,
+        &quot;shape&quot;: {&quot;left&quot;: left, &quot;width&quot;: width},
+    })
+
+base = {&quot;revision&quot;: 2, &quot;shape&quot;: {&quot;left&quot;: 0, &quot;width&quot;: 1}}
+
+def timeout(_):
+    raise TimeoutError()
+
+assert propose_revision(5, base, timeout) == (&quot;retryable-timeout&quot;, base)
+assert propose_revision(5, base, lambda _: {&quot;left&quot;: 4, &quot;width&quot;: 2})[1] is base
+assert propose_revision(5, base, lambda _: {&quot;left&quot;: 4, &quot;width&quot;: 1})[1][&quot;revision&quot;] == 3
+assert propose_revision(0, base, lambda _: 1 / 0)[0] == &quot;invalid-input&quot; </code></pre>
+          </details>
+          <div class="code-notes"><div><h3>三层职责对应三种错误</h3><p>输入不合法应在模型调用前结束；模型超时说明生成尚无结果，不表示房间本身不合法；草案越界说明模型返回了结果但结果不可采纳。把三个类别都叫「生成失败」会让 UI 和测试没法判断如何恢复。</p></div><div><h3>用函数参数接住变化</h3><p>generate 可以是模型适配器，也可以是返回固定结果的测试函数。规则层不依赖它内部使用哪种技术，适配层应把上游异常翻译成应用已知的错误。这个例子只捕获 TimeoutError；未预期的程序错误不伪装成超时。</p></div><div><h3>定一个很小的可验证契约</h3><p>示例把房间当作一条长度线，只检查一件家具的左边与右边是否在界内，以便单独验证单位和边界。多件家具的重叠、碰撞与旋转应有单独的规则和用例，不宜在这里假定已验证。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>非法输入</dt><dd><strong>怎么触发：</strong>把房间宽度设为 0，生成器故意一调用就报错。</dd><dd><strong>怎么判断：</strong>不会调用生成器，返回可识别的输入错误。</dd></div><div class="failure-card"><dt>超时</dt><dd><strong>怎么触发：</strong>注入主动抛出 TimeoutError 的生成器。</dd><dd><strong>怎么判断：</strong>能区分超时和草案非法，两者都不发布新版本。</dd></div><div class="failure-card"><dt>越一格</dt><dd><strong>怎么触发：</strong>宽 5，左坐标 4，分别用宽 1 与宽 2。</dd><dd><strong>怎么判断：</strong>恰好贴边通过，越过一格失败。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>同一份旧布局在失败路径不被修改。</li><li>非法请求不调用模型适配器。</li><li>只有合法草案出现在下一版本，且边界值等于房间宽度可接受。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>应用定义错误和发布规则，适配器只负责把模型输入输出接进来。</p>
+        </section>
         <section id="exercise"><h2>动手练习</h2><p>写一个总是超时的假模型，确认任务进入失败状态，而且原有布局不被替换。</p></section>
         <section id="check"><h2>自测</h2>
           <form class="course-quiz" data-answer="0" data-right="答对了。稳定的超时替身能把网络不确定性去掉，且不需要改 UI 的生产逻辑。" data-wrong="这个选项不成立。再想想：稳定的超时替身能把网络不确定性去掉，且不需要改 UI 的生产逻辑。" hidden>

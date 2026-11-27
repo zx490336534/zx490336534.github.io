@@ -16,8 +16,8 @@
   <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
   <script src="/js/blog.js?v=code-fold-20261126" defer></script>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
-  <link rel="stylesheet" href="/css/public-courses.css">
-  <script src="/js/public-courses.js" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=code-practice-1">
+  <script src="/js/public-courses.js?v=code-practice-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -37,14 +37,53 @@
     </div>
   </header>
   <main id="main" class="wrap"><div class="public-course" data-course="teaching-aihom" data-current="stream"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 应用全栈实战</a></div>
-    <header class="lesson-head"><p class="eyebrow">第 03 / 08 课 · 12 分钟</p><h1>流式事件：断线、乱序与旧响应</h1><p class="lead">给每个事件一个版本，用断线与乱序测试验证恢复。</p></header>
+    <header class="lesson-head"><p class="eyebrow">第 03 / 08 课 · 约 29 分钟</p><h1>流式事件：断线、乱序与旧响应</h1><p class="lead">给每个事件一个版本，用断线与乱序测试验证恢复。</p></header>
     <div class="reading">
-      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
       <article class="lesson-content">
         <section id="scene"><h2>先看场景</h2><p>同一个页面可能有两次生成请求，第一条比第二条更晚完成。只看消息到达时间，会出现旧布局覆盖新布局。</p><p class="course-term"><strong>快照：</strong>此刻的完整状态。错过了中间几条消息时，重读一次当前状态比猜测之前发生了什么更稳妥。</p></section>
         <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>用任务 ID 判断结果属于哪次运行，事件序号只在同一次运行里比较。</li><li>事件出现缺口时，向服务端重新读快照，而不是猜漏过了什么。</li><li>开始新任务后忽略旧任务消息；终态事件重复到达不得重复执行副作用。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>if (e.taskId !== current.taskId || e.seq &lt;= current.seq) return;
 if (e.seq &gt; current.seq + 1) return reloadSnapshot();
 applyEvent(e);</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">生成进度先到 1，再到 3，重连时又收到 2。应该接受哪条？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>服务为任务里的状态事件标上局部序号。</li><li>客户端先排除其他任务、重复或落后的序号。</li><li>遇到缺口时暂停消化新事件，启动一次快照读取。</li><li>只接收当前任务且不倒退的快照；若快照未覆盖缺口，继续补查。</li></ol>
+          <details class="snippet" open><summary>JavaScript 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.cjs，再运行 node lesson.cjs。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>const assert = require(&#x27;node:assert/strict&#x27;);
+const start = { run: &#x27;room-run-A&#x27;, seq: 1, phase: &#x27;generating&#x27;, want: 1 };
+const syncing = (s) =&gt; s.want &gt; s.seq;
+
+function receive(s, event) {
+  if (event.run !== s.run || event.seq &lt;= s.seq) return s;
+  if (syncing(s) || event.seq !== s.seq + 1) {
+    return { ...s, want: Math.max(s.want, event.seq) };
+  }
+  return { ...s, seq: event.seq, want: event.seq, phase: event.phase };
+}
+
+function snapshot(s, state) {
+  if (state.run !== s.run || state.seq &lt; s.seq) return s;
+  return { ...s, ...state, want: Math.max(state.seq, s.want) };
+}
+
+const gap = receive(start, { run: start.run, seq: 3, phase: &#x27;ready&#x27; });
+assert.equal(gap.phase, &#x27;generating&#x27;);
+assert.equal(syncing(gap), true);
+const partial = snapshot(gap, { run: start.run, seq: 2, phase: &#x27;validating&#x27; });
+assert.equal(syncing(partial), true);
+const fixed = snapshot(partial, { run: start.run, seq: 3, phase: &#x27;ready&#x27; });
+assert.equal(syncing(fixed), false);
+assert.equal(receive(fixed, { run: start.run, seq: 3, phase: &#x27;ready&#x27; }), fixed);
+assert.equal(snapshot(fixed, { run: &#x27;other&#x27;, seq: 99, phase: &#x27;failed&#x27; }), fixed);</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>任务编号与版本是两道阀门</h3><p>A 的第 8 条和 B 的第 2 条不属于同一把尺子。代码先比较 run 再比较 seq。否则一个以前的任务只要序号足够大，就能覆盖最新任务。</p></div><div><h3>补查目标记录已看见的最高事件</h3><p>本例选择不缓存所有事件，而只保存 want。看到第 3 条就记住要补到至少 3；期间如果见到第 5 条，恢复要求推到至少 5。由服务端快照重建状态，而不是把第 3 条的状态字段猜成完整状态。</p></div><div><h3>快照也可能迟到</h3><p>收快照时不仅校验任务身份，还比较快照序号。快照给的是全量，所以 seq 足够且数据契约满足时可直接替换；不够时维持 syncing。显示层在应用事件前也要检查负载结构。应用层要单飞、退避和设上限，不在每条重复通知上新开请求。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>缺号</dt><dd><strong>怎么触发：</strong>当前为 1，直接收到 3，并暂时只读到序号 2 的快照。</dd><dd><strong>怎么判断：</strong>先更新到快照 2，但仍需要再获取一次，不能宣布补齐。</dd></div><div class="failure-card"><dt>重复终态</dt><dd><strong>怎么触发：</strong>快照已经在 3，再收到两条 3。</dd><dd><strong>怎么判断：</strong>状态不变；原先的发布动作不触发第二次。</dd></div><div class="failure-card"><dt>连接切换</dt><dd><strong>怎么触发：</strong>切到新任务后，旧任务的快照或事件才到。</dd><dd><strong>怎么判断：</strong>都不能覆盖新任务。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>序号 1 跳到 3 时，业务结果不直接变为 ready。</li><li>快照 2 仍未达到追赶目标，快照 3 能恢复。</li><li>回放重复终态或旧任务快照，结果保持不变。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>推送改善反应速度；序号和快照决定断线后能否回到正确结果。</p>
+        </section>
         <section id="exercise"><h2>动手练习</h2><p>造出序号 1、3、2、3，验证重新读取快照后没有倒退；再让旧任务晚到一次。</p></section>
         <section id="check"><h2>自测</h2>
           <form class="course-quiz" data-answer="1" data-right="答对了。不同任务的序号没有可比性，先判断归属。" data-wrong="这个选项不成立。再想想：不同任务的序号没有可比性，先判断归属。" hidden>

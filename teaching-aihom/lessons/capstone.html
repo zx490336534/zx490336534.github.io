@@ -16,8 +16,8 @@
   <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
   <script src="/js/blog.js?v=code-fold-20261126" defer></script>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
-  <link rel="stylesheet" href="/css/public-courses.css">
-  <script src="/js/public-courses.js" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=code-practice-1">
+  <script src="/js/public-courses.js?v=code-practice-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -37,18 +37,63 @@
     </div>
   </header>
   <main id="main" class="wrap"><div class="public-course" data-course="teaching-aihom" data-current="capstone"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 应用全栈实战</a></div>
-    <header class="lesson-head"><p class="eyebrow">第 08 / 08 课 · 20 分钟</p><h1>综合实战：布局生成到故障恢复</h1><p class="lead">用一个完整流程串起前面七节，并得到可复述的验收结果。</p></header>
+    <header class="lesson-head"><p class="eyebrow">第 08 / 08 课 · 约 45 分钟</p><h1>综合实战：布局生成到故障恢复</h1><p class="lead">用一个完整流程串起前面七节，并得到可复述的验收结果。</p></header>
     <div class="reading">
-      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
       <article class="lesson-content">
         <section id="scene"><h2>先看场景</h2><p>从一个房间、两件虚构家具和一个假模型开始。每次只改变一个故障条件，再比较任务状态与两种视图。</p><p class="course-term"><strong>验收证据：</strong>别人按你的步骤能复现，并且能看到预期结果；不是一句「我这边没问题」。</p></section>
         <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>正常路径：提交请求 → 看见任务状态 → 两个视图显示同一个版本。</li><li>恢复路径：连接中断后读取快照，重复完成事件不产生额外版本。</li><li>失败路径：假模型返回越界家具，校验失败后仍可查看旧布局。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>Given revision = 2
 When the new draft is invalid
 Then the preview still shows revision = 2</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">改完生成链路，如何用一组别人可复跑的断言，证明两个视图一致且失败不会丢旧数据？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>建一个房间和已有版本 2，准备能切换的假生成器。</li><li>用独立任务编号保留每次调用的受理和完成证据。</li><li>用成功、坏草案、迟到事件、重复终态逐个破坏分支。</li><li>按任务状态、存储版本、二维与三维结果核对验收。</li></ol>
+          <details class="snippet" open><summary>Python 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.py，再运行 python3 lesson.py。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>def view_state(revision):
+    return {&quot;plan&quot;: revision, &quot;preview&quot;: revision}
+
+def accept_terminal(state, event):
+    if event[&quot;run&quot;] != state[&quot;run&quot;] or event[&quot;seq&quot;] &lt;= state[&quot;seq&quot;]:
+        return state
+    if event[&quot;seq&quot;] != state[&quot;seq&quot;] + 1:
+        return {**state, &quot;status&quot;: &quot;snapshot-required&quot;}
+    if not event[&quot;valid&quot;]:
+        return {**state, &quot;seq&quot;: event[&quot;seq&quot;], &quot;status&quot;: &quot;failed&quot;}
+    if event[&quot;revision&quot;] &lt;= state[&quot;views&quot;][&quot;plan&quot;]:
+        return {**state, &quot;seq&quot;: event[&quot;seq&quot;], &quot;status&quot;: &quot;failed&quot;}
+    return {
+        **state, &quot;seq&quot;: event[&quot;seq&quot;], &quot;status&quot;: &quot;ready&quot;,
+        &quot;views&quot;: view_state(event[&quot;revision&quot;]), &quot;visible_updates&quot;: state[&quot;visible_updates&quot;] + 1,
+    }
+
+before = {&quot;run&quot;: &quot;B&quot;, &quot;seq&quot;: 1, &quot;status&quot;: &quot;generating&quot;,
+          &quot;views&quot;: view_state(2), &quot;visible_updates&quot;: 0}
+ok = {&quot;run&quot;: &quot;B&quot;, &quot;seq&quot;: 2, &quot;valid&quot;: True, &quot;revision&quot;: 3}
+ready = accept_terminal(before, ok)
+assert ready[&quot;views&quot;] == {&quot;plan&quot;: 3, &quot;preview&quot;: 3}
+assert accept_terminal(ready, ok)[&quot;visible_updates&quot;] == 1
+assert accept_terminal(before, {**ok, &quot;run&quot;: &quot;A&quot;}) == before
+assert accept_terminal(before, {**ok, &quot;seq&quot;: 3})[&quot;status&quot;] == &quot;snapshot-required&quot;
+assert accept_terminal(before, {**ok, &quot;valid&quot;: False})[&quot;views&quot;] == view_state(2)</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>先写验收表，再连细节</h3><p>挑最有价值的观测点：页面当前任务、已展示版号、两张视图各自看到的版号、真正提交次数。只检查「出现绿色成功提示」会漏掉视图不同步或重复写入。</p></div><div><h3>围绕可控输入做单变量对照</h3><p>先用一条成功事件将版本从 2 切到 3。坏草案的场景只改变有效性，迟到的场景只换身份，重复终态只再次发送同一事件。一次改变越少，失败更容易定位。示例收端把版本号当作两个视图的共同输入锚点；实际测试还要分别从两张视图读取输出。</p></div><div><h3>对照工程保证，不混同运行证据</h3><p>回放两遍同一事件证明这个接收函数不会重复发布；不能据此宣称数据库跨进程不会重复。断线恢复应另测从旧快照启动、补查成功、旧事件重放三步；写后失联要跑状态图课的同键恢复。把各自验证过的层和未验证的边界记到结果。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>任务串线</dt><dd><strong>怎么触发：</strong>当前运行 B，旧运行 A 先完成。</dd><dd><strong>怎么判断：</strong>两张视图都不更新，当前任务仍是 B。</dd></div><div class="failure-card"><dt>合法事件重放</dt><dd><strong>怎么触发：</strong>连续送两遍同一个 B 的终态事件。</dd><dd><strong>怎么判断：</strong>两张图一起切到 3，显示更新只发生一次。</dd></div><div class="failure-card"><dt>结果不合规</dt><dd><strong>怎么触发：</strong>用 B 的正确序号，但把草案标记为坏。</dd><dd><strong>怎么判断：</strong>显示失败，两个视图都保持 2。</dd></div><div class="failure-card"><dt>重连消息缺口</dt><dd><strong>怎么触发：</strong>跳过第 2 条，直接接到 3。</dd><dd><strong>怎么判断：</strong>触发补查而不切图，补到同任务最新快照才能恢复。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>同一次成功更新使 plan 与 preview 同时是 3。</li><li>重复与串线不产生额外显示更新；上一版仍可查看。</li><li>失败和补查是不同状态；两者都不能偷换成成功。</li><li>验收报告区分显示更新次数与真正存储提交次数。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>交付一张故障说明表：怎么触发、看到什么、验证了哪一层、还有哪一层未验证。</p>
+        </section>
         <section id="exercise"><h2>动手练习</h2><p>输出一张四列表格：场景、触发方式、预期状态、如何证明。至少包含成功、乱序、重复提交和校验失败。</p><aside class="mini-lab" data-lab="layout-fault" hidden><h3>动手试一下：收到旧任务的完成事件</h3>
       <p>这是浏览器里的合成数据演示，不连外部服务。</p>
       <div class="actions"><button type="button" data-run="normal">运行基线</button><button type="button" data-run="fault">注入故障</button></div>
-      <pre><output aria-live="polite">选择一个场景开始。</output></pre></aside></section>
+      <pre><output aria-live="polite">选择一个场景开始。</output></pre></aside><aside class="reference-project">
+      <h3>可运行练习：RoomLab</h3>
+      <p>把示例保存到一个目录，在那个目录执行这行命令。先跑通，再删改一条保护规则，看哪项断言失败。</p>
+      <p><a class="button primary" href="../examples/roomlab.py" download>下载 roomlab.py</a></p>
+      <pre><code>python3 roomlab.py</code></pre>
+      <p>全部检查通过时，会输出 <code>RoomLab: all regression checks passed.</code></p>
+    </aside></section>
         <section id="check"><h2>自测</h2>
           <form class="course-quiz" data-answer="1" data-right="答对了。验收不是只看 UI 顺利跑完，还要能证明失败时数据没有悄悄损坏。" data-wrong="这个选项不成立。再想想：验收不是只看 UI 顺利跑完，还要能证明失败时数据没有悄悄损坏。" hidden>
             <fieldset><legend>最能说明流程可靠的是？</legend><label><input type="radio" name="check" value="0" required> 只演示一次成功</label><label><input type="radio" name="check" value="1" required> 成功与失败都有可复现的输入、观察点和判定</label></fieldset>

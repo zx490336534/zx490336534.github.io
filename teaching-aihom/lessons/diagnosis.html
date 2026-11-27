@@ -16,8 +16,8 @@
   <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
   <script src="/js/blog.js?v=code-fold-20261126" defer></script>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
-  <link rel="stylesheet" href="/css/public-courses.css">
-  <script src="/js/public-courses.js" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=code-practice-1">
+  <script src="/js/public-courses.js?v=code-practice-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -37,12 +37,47 @@
     </div>
   </header>
   <main id="main" class="wrap"><div class="public-course" data-course="teaching-aihom" data-current="diagnosis"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 应用全栈实战</a></div>
-    <header class="lesson-head"><p class="eyebrow">第 07 / 08 课 · 12 分钟</p><h1>按一次运行排查前端到模型的故障</h1><p class="lead">把一条反馈定位为连接、编排、生成或渲染问题。</p></header>
+    <header class="lesson-head"><p class="eyebrow">第 07 / 08 课 · 约 28 分钟</p><h1>按一次运行排查前端到模型的故障</h1><p class="lead">把一条反馈定位为连接、编排、生成或渲染问题。</p></header>
     <div class="reading">
-      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
       <article class="lesson-content">
         <section id="scene"><h2>先看场景</h2><p>若用户看到「已完成」却没有布局，先验证完成事件的归属和结果结构，再看派生视图。不要先从任意一条报错猜原因。</p><p class="course-term"><strong>关联 ID：</strong>像快递单号。同一任务经过多个系统时，用一个编号把零散记录拼起来。</p></section>
         <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>给单次运行赋关联 ID，在边界记录阶段、结果和耗时。</li><li>样例日志不记录完整输入、认证信息或用户原文。</li><li>依次验证接口回执、状态转换、结果契约和渲染错误，找到第一个出错的边界。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>run=demo-123 phase=validate outcome=invalid_geometry elapsed_ms=18</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">反馈说「生成成功但没有图」。你能用记录证明哪一步最先失败吗？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>用同一个运行编号串起浏览器、服务与渲染。</li><li>逐步核对已受理、已生成、已校验、已发布、已显示。</li><li>有显式失败时指向失败阶段；缺记录时标记缺少证据。</li><li>用同一个样例单独复现这一层，再核对上游确实成功。</li></ol>
+          <details class="snippet" open><summary>Python 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.py，再运行 python3 lesson.py。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>STAGES = (&quot;accept&quot;, &quot;generate&quot;, &quot;validate&quot;, &quot;publish&quot;, &quot;render&quot;)
+
+def first_problem(events, run):
+    matching = [e for e in events if e[0] == run]
+    latest = {
+        phase: outcome
+        for _, _, phase, outcome in sorted(matching, key=lambda e: e[1])
+    }
+    for phase in STAGES:
+        outcome = latest.get(phase)
+        if outcome is None:
+            return (phase, &quot;missing&quot;)
+        if outcome != &quot;ok&quot;:
+            return (phase, outcome)
+    return (None, &quot;ok&quot;)
+
+good = [(&quot;R1&quot;, n, p, &quot;ok&quot;) for n, p in enumerate(STAGES)]
+assert first_problem(good[::-1], &quot;R1&quot;) == (None, &quot;ok&quot;)
+render_error = good[:-1] + [(&quot;R1&quot;, 4, &quot;render&quot;, &quot;renderer-error&quot;)]
+assert first_problem(render_error, &quot;R1&quot;) == (&quot;render&quot;, &quot;renderer-error&quot;)
+no_publish = good[:3] + good[4:] + [(&quot;R2&quot;, 3, &quot;publish&quot;, &quot;ok&quot;)]
+assert first_problem(no_publish, &quot;R1&quot;) == (&quot;publish&quot;, &quot;missing&quot;)</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>先确定用户所说完成是哪一层</h3><p>服务可能完成了生成和校验，却没把结果送到当前页面；也可能服务已经发布、是渲染失败。示例按阶段检查，不把后台一个 OK 当作端到端成功。</p></div><div><h3>先按运行分组，再按序号</h3><p>日志到达顺序不一定是发生顺序。这个示例假定教学记录提供统一、可比的顺序号，仅凭跨进程的本地时钟不能重建同样排序。真实链路可使用串联追踪 span 或分别核对各边界断言。</p></div><div><h3>把缺记录与已经失败区分开</h3><p>本例遇缺失阶段返回 missing，不因此断言它失败了。关注结构化状态与耗时；避免把整段输入或返还内容复制到日志。重复上报会覆盖阶段摘要，所以本例用最新一条；研究重试时应保留 attempt，避免用成功的第二次掩盖第一次异常。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>渲染器失败</dt><dd><strong>怎么触发：</strong>上游记录齐全且成功，渲染记录为 renderer-error。</dd><dd><strong>怎么判断：</strong>首个故障定位到 render，不能归因给模型。</dd></div><div class="failure-card"><dt>发布证据缺失</dt><dd><strong>怎么触发：</strong>删掉当前运行的发布记录，另一个运行恰好有同阶段成功。</dd><dd><strong>怎么判断：</strong>依然返回当前发布证据缺失，不借用其他运行。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>乱序收集不改变按运行与阶段得出的判断。</li><li>缺证据时返回 missing 而不是臆造失败原因。</li><li>其他运行的同名阶段不能用来补当前链路。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>好排查不是收集更多文本，而是在正确的那次运行上找到第一处不满足契约的边界。</p>
+        </section>
         <section id="exercise"><h2>动手练习</h2><p>分别模拟参数非法、模型超时、渲染失败。每次只用状态和日志说清出错边界。</p></section>
         <section id="check"><h2>自测</h2>
           <form class="course-quiz" data-answer="0" data-right="答对了。全量请求可能有个人字段或密钥；排查更依赖可串起边界的结构化事件。" data-wrong="这个选项不成立。再想想：全量请求可能有个人字段或密钥；排查更依赖可串起边界的结构化事件。" hidden>

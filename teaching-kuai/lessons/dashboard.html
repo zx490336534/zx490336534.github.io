@@ -16,8 +16,8 @@
   <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
   <script src="/js/blog.js?v=code-fold-20261126" defer></script>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
-  <link rel="stylesheet" href="/css/public-courses.css">
-  <script src="/js/public-courses.js" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=code-practice-1">
+  <script src="/js/public-courses.js?v=code-practice-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -37,13 +37,66 @@
     </div>
   </header>
   <main id="main" class="wrap"><div class="public-course" data-course="teaching-kuai" data-current="dashboard"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 测试平台与评测实战</a></div>
-    <header class="lesson-head"><p class="eyebrow">第 03 / 08 课 · 11 分钟</p><h1>任务看板：更新、恢复和分页</h1><p class="lead">让用户知道运行在等什么，并能在刷新后找到原进度。</p></header>
+    <header class="lesson-head"><p class="eyebrow">第 03 / 08 课 · 约 28 分钟</p><h1>任务看板：更新、恢复和分页</h1><p class="lead">让用户知道运行在等什么，并能在刷新后找到原进度。</p></header>
     <div class="reading">
-      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
       <article class="lesson-content">
         <section id="scene"><h2>先看场景</h2><p>CaseLab 的列表用分页接口拿到运行摘要，详情再订阅状态变化。浏览器刷新后以服务端快照为准，过滤条件由 URL 恢复。</p><p class="course-term"><strong>快照：</strong>刷新后重新拿到的当前状态，不要求浏览器记住所有历史更新。</p></section>
         <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>保留可链接的运行 ID，筛选和分页条件可通过查询参数复现。</li><li>不同筛选条件的旧请求不覆盖新列表，可使用取消信号或请求版本。</li><li>让空数据、加载失败、排队中和已完成有各自的视觉反馈。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>loading → empty | ready | error
 ready + selectedRun → fetchSnapshot(selectedRun)</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">先点「进行中」，立刻切到「失败」。第二个请求先回来，旧的晚回来。怎样防止旧结果覆盖新选择？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>切筛选时重置游标并启动新一代请求。</li><li>取消上代传输，同时保留代数判断。</li><li>只让当前代读回的成功或失败改变页面。</li><li>详情刷新按运行编号读快照；分页只使用当前查询的游标。</li></ol>
+          <details class="snippet" open><summary>TypeScript 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>阅读函数输入、状态变化和末尾的断言。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>type Result = { rows: string[]; next?: string };
+type Load = (filter: string, signal: AbortSignal) =&gt; Promise&lt;Result&gt;;
+type State = { kind: &quot;loading&quot; | &quot;ready&quot; | &quot;empty&quot; | &quot;error&quot;;
+  rows?: string[]; next?: string };
+
+function createList(load: Load, render: (s: State) =&gt; void) {
+  let generation = 0;
+  let request: AbortController | undefined;
+  return async (filter: string) =&gt; {
+    const current = ++generation;
+    request?.abort();
+    request = new AbortController();
+    render({ kind: &quot;loading&quot; });
+    try {
+      const result = await load(filter, request.signal);
+      if (current !== generation) return;
+      render({ kind: result.rows.length ? &quot;ready&quot; : &quot;empty&quot;,
+        rows: result.rows, next: result.next });
+    } catch {
+      if (current === generation) render({ kind: &quot;error&quot; });
+    }
+  };
+}
+
+const seen: State[] = [];
+const resolve: Record&lt;string, (r: Result) =&gt; void&gt; = {};
+const search = createList(
+  filter =&gt; new Promise(done =&gt; { resolve[filter] = done; }),
+  state =&gt; seen.push(state),
+);
+async function exercise() {
+  const old = search(&quot;running&quot;), current = search(&quot;failed&quot;);
+  resolve.failed({ rows: [&quot;demo-failed&quot;] });
+  await current;
+  resolve.running({ rows: [&quot;demo-running&quot;] });
+  await old;
+  if (seen.at(-1)?.rows?.[0] !== &quot;demo-failed&quot;) throw Error(&quot;stale update&quot;);
+}
+void exercise();
+</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>代数是逻辑边界</h3><p>每发一次列表请求，generation 就递增。回包时只允许当前代数修改界面。这里刻意让加载器忽略取消信号，来证明正确性不靠网络层一定能中止。</p></div><div><h3>成功和失败都要拦旧请求</h3><p>AbortController 能省资源，不能判断请求是否仍属于当前筛选。示例在响应和异常路径都检查代数。零行是 empty，连接失败是 error；如果保留旧行作为占位，应明确标注新筛选还在加载。</p></div><div><h3>分页与详情分别处理</h3><p>详情刷新按运行编号读快照，事件更新可与服务端修订号对上。列表游标绑定筛选与排序，切换时丢弃旧游标；排序值相同时追加唯一字段作稳定排序，避免相邻两页重复或缺项。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>请求乱序</dt><dd><strong>怎么触发：</strong>让 failed 先返回，再完成旧的 running。</dd><dd><strong>怎么判断：</strong>最后一帧仍是 failed。</dd></div><div class="failure-card"><dt>旧请求报错</dt><dd><strong>怎么触发：</strong>新请求成功后，旧请求再 reject。</dd><dd><strong>怎么判断：</strong>不清空新数据、不展示旧错误。</dd></div><div class="failure-card"><dt>旧游标</dt><dd><strong>怎么触发：</strong>使用上一筛选的 next 拉新筛选第二页。</dd><dd><strong>怎么判断：</strong>前端切筛选清掉游标，后端拒绝不匹配的游标。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>最新请求零行时显示 empty，失败时显示 error。</li><li>旧响应和旧异常都不能改变当前值。</li><li>详情刷新后仍查相同运行编号。</li><li>切换筛选总从第一页开始。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>有了编号和状态，下一课让前端、任务服务与执行器用同一份 JSON 契约沟通。</p>
+        </section>
         <section id="exercise"><h2>动手练习</h2><p>快速先筛「进行中」再筛「失败」，让前一个请求晚返回，确认屏幕仍显示当前条件。</p></section>
         <section id="check"><h2>自测</h2>
           <form class="course-quiz" data-answer="0" data-right="答对了。刷新可能错过中间事件，快照能恢复可信的当前状态。" data-wrong="这个选项不成立。再想想：刷新可能错过中间事件，快照能恢复可信的当前状态。" hidden>
