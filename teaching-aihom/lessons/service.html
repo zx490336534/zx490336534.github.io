@@ -41,7 +41,7 @@
     <div class="reading">
       <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
       <article class="lesson-content">
-        <section id="scene"><h2>先看场景</h2><p>把生成请求拆成参数校验、任务编排和模型适配。模型超时可以在测试里复现，而不需要框架、真实账号或网络环境。</p><p class="course-term"><strong>适配器：</strong>业务说「给我一个草案」，适配器负责翻译成某个模型听得懂的请求。换模型时，不用重写业务规则。</p></section>
+        <section id="scene"><h2>先看场景</h2><p>把生成请求拆成参数校验、任务编排和模型适配。下一步只用一个假模型，就能复现超时并观察任务状态。</p><p class="course-term"><strong>适配器：</strong>业务说「给我一个草案」，适配器负责翻译成某个模型听得懂的请求。换模型时，不用重写业务规则。</p></section>
         <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>接口负责输入合法性和可读的错误结构。</li><li>应用服务定义状态流转；不依赖浏览器事件名。</li><li>模型是可替换的端口。测试可以返回固定结果或故意抛出超时。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>interface LayoutModel {
   propose(input: RoomInput): Promise&lt;LayoutDraft&gt;;
 }</code></pre></details></section>
@@ -56,7 +56,7 @@
         <div class="completion"><button type="button" id="complete-lesson" aria-pressed="false" hidden>标记为已学</button><p role="status" id="complete-status"></p></div>
       </article>
     </div>
-    <nav class="pagination" aria-label="课程分页"><a href="request.html" rel="prev">← 一次交互如何走完整条链路</a><a href="index.html">学习地图</a><a href="stream.html" rel="next">流式事件：断线、乱序与旧响应 →</a></nav><p class="course-disclaimer">公开练习 · 完全虚构的案例与数据，无需访问公司系统。</p></div></main>
+    <nav class="pagination" aria-label="课程分页"><a href="request.html" rel="prev">← 一次交互如何走完整条链路</a><a href="index.html">学习地图</a><a href="stream.html" rel="next">流式事件：断线、乱序与旧响应 →</a></nav></div></main>
   <footer class="wrap footer">
     <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
     <nav aria-label="页脚导航">

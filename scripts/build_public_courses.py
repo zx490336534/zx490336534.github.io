@@ -21,7 +21,7 @@ def page(shell, slug, title, description, path, body, label, current):
     extra_head = ('<link rel="stylesheet" href="/css/public-courses.css">\n  '
                   '<script src="/js/public-courses.js" defer></script>')
     content = (f'<div class="public-course" data-course="{slug}" data-current="{current}">'
-               f'{body}<p class="course-disclaimer">公开练习 · 完全虚构的案例与数据，无需访问公司系统。</p></div>')
+               f'{body}</div>')
     return shell(title, course_path, content, description, extra_head)
 
 def lesson_href(item):
@@ -48,7 +48,7 @@ def course_map(shell, slug, label, intro, audience, lessons):
     <section class="hero">
       <div class="hero-copy"><p class="eyebrow">公开学习地图 / 项目驱动</p><h1>{escape(label)}</h1>
       <p class="lead">{escape(intro)}</p><p>{escape(audience)}</p>
-      <p class="stats"><span>{len(lessons)} 节</span><span>约 {total} 分钟</span><span>无需账号或公司环境</span></p>
+      <p class="stats"><span>{len(lessons)} 节</span><span>约 {total} 分钟</span></p>
       <div class="actions"><a class="button primary" id="resume" href="{lesson_href(lessons[0])}">从第 1 课开始</a><a class="button" href="{lesson_href(lessons[-1])}">直接看实战</a></div></div>
       <aside class="learning-note"><p class="eyebrow">怎么学</p><h2>每节先解决一个问题</h2><ol><li>读一个场景，跟着走一遍。</li><li>做自测，核对判断依据。</li><li>用小练习写下可观察的结果。</li></ol><p id="progress-text" hidden></p></aside>
     </section>

@@ -38,7 +38,8 @@ class PublicCoursesTest(unittest.TestCase):
                     self.assertEqual(soup.select_one(".masthead nav [aria-current]")["href"], "/lab/")
                     self.assertEqual(soup.select_one('link[rel="canonical"]')["href"], f"https://www.zhongxin.website/{slug}/{path}")
                     self.assertEqual(len(soup.select('script[id="site-analytics"]')), 1)
-                    self.assertTrue(soup.select_one(".public-course .course-disclaimer"))
+                    self.assertTrue(soup.select_one(".public-course"))
+                    self.assertNotRegex(soup.get_text(), r"无需账号|公司环境|无需访问公司|真实账号")
                     for node in soup.select("[href], [src]"):
                         link = urlsplit(node.get("href") or node.get("src"))
                         if link.scheme == "mailto":
