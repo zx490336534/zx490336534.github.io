@@ -191,10 +191,11 @@ def video_watch(post, root, site):
         time = f"{seconds//60}:{seconds%60:02}"
         nav.append(f'<li><a href="?t={seconds}" data-watch-offset="{seconds}">{time} {escape(label)}</a> '
                    f'<a href="#chapter-{i}" aria-label="阅读{escape(label)}的文字稿">文字稿</a></li>')
-        clip = {"@type": "Clip", "name": label, "startOffset": seconds, "url": f"{site}{path}?t={seconds}"}
-        if i < len(chapters):
-            clip["endOffset"] = chapters[i][0]
-        clips.append(clip)
+        end = chapters[i][0] if i < len(chapters) else media["duration"]
+        if not seconds < end <= media["duration"]:
+            raise ValueError(f"观看页章节时间范围非法：{post.path} {seconds}–{end}")
+        clips.append({"@type": "Clip", "name": label, "startOffset": seconds,
+                      "endOffset": end, "url": f"{site}{path}?t={seconds}"})
         paragraphs = "".join(f"<p>{escape(line)}</p>" for line in lines)
         sections.append(f'<section id="chapter-{i}"><h3>{time} {escape(label)}</h3>{paragraphs}</section>')
     video = {

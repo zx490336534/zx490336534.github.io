@@ -282,7 +282,14 @@ def main():
         watch = page(watch_path(slug))
         v = json.loads(watch.select_one('script[type="application/ld+json"]').string)["@graph"][0]
         assert {a["href"] for a in watch.select("[data-watch-offset]")} == {c["url"].removeprefix(SITE + watch_path(slug)) for c in v["hasPart"]}
-        assert len(v["hasPart"]) == 5 and len({c["startOffset"] for c in v["hasPart"]}) == 5
+        clips = v["hasPart"]
+        assert len(clips) == 5 and len({c["startOffset"] for c in clips}) == 5
+        total = expected[f"/article/{slug}.html"]["duration"]
+        assert v["duration"] == f"PT{total}S"
+        assert clips[0]["startOffset"] == 0
+        for index, clip in enumerate(clips):
+            right = clips[index + 1]["startOffset"] if index + 1 < len(clips) else total
+            assert clip["startOffset"] < clip["endOffset"] == right <= total, (slug, clip)
         assert watch.select_one('meta[property="og:image"]')["content"] == v["thumbnailUrl"][0]
     verify_calendar_archive(calendar)
     verify_legacy_tag_pages()
