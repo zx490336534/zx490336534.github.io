@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>工具与 MCP：从发现到审批 · 测试游记</title>
+  <meta name="description" content="区分工具可见、可调用和被允许写入三件事。">
+  <meta property="og:title" content="工具与 MCP：从发现到审批 · 测试游记">
+  <meta property="og:description" content="区分工具可见、可调用和被允许写入三件事。">
+  <meta property="og:url" content="https://www.zhongxin.website/teaching-aihom/lessons/tool.html">
+  <link rel="canonical" href="https://www.zhongxin.website/teaching-aihom/lessons/tool.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
+  <script src="/js/blog.js?v=code-fold-20261126" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css">
+  <script src="/js/public-courses.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记</a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/">视频</a><a href="/lab/" aria-current="location">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="wrap"><div class="public-course" data-course="teaching-aihom" data-current="tool"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 应用全栈实战</a></div>
+    <header class="lesson-head"><p class="eyebrow">第 05 / 08 课 · 11 分钟</p><h1>工具与 MCP：从发现到审批</h1><p class="lead">区分工具可见、可调用和被允许写入三件事。</p></header>
+    <div class="reading">
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <article class="lesson-content">
+        <section id="scene"><h2>先看场景</h2><p>假设 Agent 能读取房间约束和写入草稿。模型只负责提出动作，应用必须验证动作能否执行。MCP 是工具交互的一种标准接口，不代替业务权限检查。</p><p class="course-term"><strong>MCP：</strong>让应用用统一方式发现和调用工具的协议。能看到一个工具，不等于有权执行它。</p></section>
+        <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>明确工具的输入输出、错误类型和结果上限。</li><li>查询类工具可按只读范围执行；写入的范围和确认由应用核对。</li><li>把工具响应当成数据，不把返回文本里的命令当成授权。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>{&quot;tool&quot;:&quot;read_room_rules&quot;,&quot;arguments&quot;:{&quot;room&quot;:&quot;sample-a&quot;}}</code></pre></details></section>
+        <section id="exercise"><h2>动手练习</h2><p>用两个模拟工具分别返回合法规则与越权建议，检查写操作在未确认时不会触发。</p></section>
+        <section id="check"><h2>自测</h2>
+          <form class="course-quiz" data-answer="0" data-right="答对了。工具调用和权限验证必须分开，模型文本不能充当授权。" data-wrong="这个选项不成立。再想想：工具调用和权限验证必须分开，模型文本不能充当授权。" hidden>
+            <fieldset><legend>模型说用户已经确认，应用能直接写入吗？</legend><label><input type="radio" name="check" value="0" required> 不能，以应用掌握的真实确认状态为准</label><label><input type="radio" name="check" value="1" required> 能，模型已经替用户表态</label></fieldset>
+            <button type="submit">核对答案</button><p role="status" class="quiz-result"></p>
+          </form>
+          <noscript><p>模型说用户已经确认，应用能直接写入吗？</p><details><summary>查看答案</summary><p>不能，以应用掌握的真实确认状态为准。工具调用和权限验证必须分开，模型文本不能充当授权。</p></details></noscript>
+        </section>
+        <div class="completion"><button type="button" id="complete-lesson" aria-pressed="false" hidden>标记为已学</button><p role="status" id="complete-status"></p></div>
+      </article>
+    </div>
+    <nav class="pagination" aria-label="课程分页"><a href="agent.html" rel="prev">← Agent 状态图：可恢复不等于可重试</a><a href="index.html">学习地图</a><a href="views.html" rel="next">二维和三维怎么共用一份状态 →</a></nav><p class="course-disclaimer">公开练习 · 完全虚构的案例与数据，无需访问公司系统。</p></div></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

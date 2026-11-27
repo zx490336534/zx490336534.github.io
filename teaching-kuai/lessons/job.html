@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>一次回归如何从提交跑到结果 · 测试游记</title>
+  <meta name="description" content="先看清浏览器、任务服务和执行器三个角色。">
+  <meta property="og:title" content="一次回归如何从提交跑到结果 · 测试游记">
+  <meta property="og:description" content="先看清浏览器、任务服务和执行器三个角色。">
+  <meta property="og:url" content="https://www.zhongxin.website/teaching-kuai/lessons/job.html">
+  <link rel="canonical" href="https://www.zhongxin.website/teaching-kuai/lessons/job.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
+  <script src="/js/blog.js?v=code-fold-20261126" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css">
+  <script src="/js/public-courses.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记</a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/">视频</a><a href="/lab/" aria-current="location">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="wrap"><div class="public-course" data-course="teaching-kuai" data-current="job"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 测试平台与评测实战</a></div>
+    <header class="lesson-head"><p class="eyebrow">第 01 / 08 课 · 8 分钟</p><h1>一次回归如何从提交跑到结果</h1><p class="lead">先看清浏览器、任务服务和执行器三个角色。</p></header>
+    <div class="reading">
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <article class="lesson-content">
+        <section id="scene"><h2>先看场景</h2><p>虚构的 CaseLab 接收一批测试用例。浏览器创建运行，任务服务管理状态，执行器回传单条结果。最后由聚合层按明确规则给出结果。</p><p class="course-term"><strong>执行异常：</strong>例如浏览器没启动，测试压根没走到检查点；与业务返回了错误结果不同。</p></section>
+        <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>创建请求返回运行 ID，而不是等待所有用例跑完。</li><li>不要把执行错误当断言失败；两者对应不同的修复方向。</li><li>任务终态要能解释每个用例的结果，包括跳过和未执行。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>{&quot;run&quot;:&quot;sample-42&quot;,&quot;state&quot;:&quot;queued&quot;,&quot;total&quot;:3}</code></pre></details></section>
+        <section id="exercise"><h2>动手练习</h2><p>用三条用例模拟通过、断言失败、执行器异常，给每条用例和整批运行画状态表。</p><aside class="mini-lab" data-lab="test-start" hidden><h3>动手试一下：从提交到回归结果</h3>
+      <p>这是浏览器里的合成数据演示，不连外部服务。</p>
+      <div class="actions"><button type="button" data-run="normal">运行基线</button><button type="button" data-run="fault">注入故障</button></div>
+      <pre><output aria-live="polite">选择一个场景开始。</output></pre></aside></section>
+        <section id="check"><h2>自测</h2>
+          <form class="course-quiz" data-answer="0" data-right="答对了。创建成功与执行成功是两个不同的事实。" data-wrong="这个选项不成立。再想想：创建成功与执行成功是两个不同的事实。" hidden>
+            <fieldset><legend>接口已接收任务，表示测试通过了吗？</legend><label><input type="radio" name="check" value="0" required> 不，只表示任务已被接收</label><label><input type="radio" name="check" value="1" required> 通过了，后台细节可以忽略</label></fieldset>
+            <button type="submit">核对答案</button><p role="status" class="quiz-result"></p>
+          </form>
+          <noscript><p>接口已接收任务，表示测试通过了吗？</p><details><summary>查看答案</summary><p>不，只表示任务已被接收。创建成功与执行成功是两个不同的事实。</p></details></noscript>
+        </section>
+        <div class="completion"><button type="button" id="complete-lesson" aria-pressed="false" hidden>标记为已学</button><p role="status" id="complete-status"></p></div>
+      </article>
+    </div>
+    <nav class="pagination" aria-label="课程分页"><span></span><a href="index.html">学习地图</a><a href="schedule.html" rel="next">队列、调度与重复执行 →</a></nav><p class="course-disclaimer">公开练习 · 完全虚构的案例与数据，无需访问公司系统。</p></div></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

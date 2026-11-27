@@ -5,46 +5,94 @@ async function main() {
   const base = new URL(process.argv[2]);
   const browser = await chromium.launch({ channel: 'chrome' });
   try {
-    const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+    const page = await browser.newPage({ viewport: { width: 375, height: 844 }, isMobile: true, hasTouch: true });
     await page.route('**/*', route => new URL(route.request().url()).origin === base.origin
       ? route.continue() : route.abort());
+    const errors = [];
+    page.on('pageerror', error => errors.push(error.message));
     const background = () => page.locator('body').evaluate(body => getComputedStyle(body).backgroundColor);
-    const goto = path => page.goto(new URL(path, base).href);
+    const goto = async path => assert.equal((await page.goto(new URL(path, base).href)).status(), 200, path);
+    const overflow = () => page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
     await page.emulateMedia({ colorScheme: 'light' });
     await goto('/lab/');
     await page.locator('#site-appearance').selectOption('dark');
     const dark = await background();
-    await page.locator('main a[href="/teaching-aihom/lessons/index.html"]').tap();
-    assert.equal(await background(), dark, 'The AIHom map must inherit the blog preference');
-    for (const path of ['/teaching-aihom/lessons/aihom/0060-cross-repo-integration.html',
-                        '/teaching-kuai/lessons/index.html', '/teaching-kuai/lessons/front/0005-kuai-front-overview.html']) {
-      await goto(path);
-      assert.equal(await background(), dark, path);
-      if (path.includes('0060-')) {
-        const answer = page.locator('#quiz1 .quiz-options button').first();
-        await answer.tap();
-        const result = page.locator('#quiz1 .quiz-feedback');
-        assert.ok(await result.isVisible());
-        await page.waitForFunction(() => {
-          const button = document.querySelector('#quiz1 button.wrong');
-          const feedback = document.querySelector('#quiz1 .quiz-feedback');
-          return button && getComputedStyle(button).backgroundColor === getComputedStyle(feedback).backgroundColor;
-        });
+    for (const [course, intro, normal, fault, capNormal, capFault] of [
+      ['aihom', 'request', '更新为版本 3', '保留旧布局', '版本 4', '版本 3'],
+      ['kuai', 'job', '3 条通过', '1 条执行异常', '发布门槛：通过', '发布门槛：拦截'],
+    ]) {
+      await goto('/lab/');
+      const prefix = '/teaching-' + course + '/lessons/';
+      await Promise.all([page.waitForURL(new URL(prefix + 'index.html', base).href),
+        page.locator('main a[href="' + prefix + 'index.html"]').tap()]);
+      assert.equal(await background(), dark, 'The course shares the exact blog palette');
+      assert.equal(await page.locator('.masthead nav a[aria-current]').getAttribute('href'), '/lab/');
+      assert.equal(await overflow(), false, prefix);
+      const links = await page.locator('.lesson-tile a').evaluateAll(items => items.map(item => item.href));
+      assert.equal(links.length, 8);
+      await page.locator('#filter').fill('nonsense-not-a-course');
+      assert.equal(await page.locator('.stage:visible').count(), 0);
+      await page.locator('#clear-filter').tap();
+      assert.equal(await page.locator('.stage:visible').count(), 3);
+      await Promise.all([page.waitForURL(new URL(prefix + intro + '.html', base).href),
+        page.locator('#resume').tap()]);
+      await page.locator('[data-run=normal]').tap();
+      assert.ok((await page.locator('output').innerText()).includes(normal));
+      await page.locator('[data-run=fault]').tap();
+      assert.ok((await page.locator('output').innerText()).includes(fault));
+
+      for (const link of links) {
+        await goto(link);
+        assert.equal(await background(), dark, link);
+        assert.equal(await overflow(), false, link);
+        const quiz = page.locator('.course-quiz');
+        const answer = Number(await quiz.getAttribute('data-answer'));
+        const choices = quiz.locator('input[type=radio]');
+        await choices.nth(1 - answer).check();
+        await quiz.locator('button').tap();
+        assert.equal(await quiz.locator('[role=status]').getAttribute('data-state'), 'wrong');
+        await choices.nth(answer).check();
+        await quiz.locator('button').tap();
+        assert.equal(await quiz.locator('[role=status]').getAttribute('data-state'), 'correct');
+        const snippet = page.locator('.snippet');
+        assert.equal(await snippet.evaluate(el => el.open), true);
+        await snippet.locator('summary').tap();
+        assert.equal(await snippet.evaluate(el => el.open), false);
       }
+      await page.locator('[data-run=normal]').tap();
+      assert.ok((await page.locator('output').innerText()).includes(capNormal));
+      await page.locator('[data-run=fault]').tap();
+      assert.ok((await page.locator('output').innerText()).includes(capFault));
+
+      await goto(prefix + intro + '.html');
+      await page.locator('#complete-lesson').tap();
+      await page.reload();
+      assert.equal(await page.locator('#complete-lesson').getAttribute('aria-pressed'), 'true');
+      await goto(prefix + 'index.html');
+      assert.equal(await page.locator('.lesson-state').first().innerText(), '已学');
+      assert.ok((await page.locator('#progress-text').innerText()).endsWith('1 / 8'));
+      assert.equal(await page.locator('#resume').innerText(), '继续学习');
     }
     await page.emulateMedia({ colorScheme: 'dark' });
-    await goto('/lab/');
     await page.locator('#site-appearance').selectOption('light');
-    await page.locator('main a[href="/teaching-kuai/lessons/index.html"]').tap();
     const light = await background();
     assert.notEqual(light, dark, 'Explicit light takes precedence over a dark OS');
-    await goto('/lab/');
     await page.locator('#site-appearance').selectOption('system');
-    await page.locator('main a[href="/teaching-kuai/lessons/index.html"]').tap();
     assert.equal(await background(), dark);
     await page.emulateMedia({ colorScheme: 'light' });
     await page.waitForFunction(expected => getComputedStyle(document.body).backgroundColor === expected, light);
-    console.log('Both course maps and lessons inherit the blog appearance; system changes apply in place.');
+    assert.deepEqual(errors, []);
+
+    const desktop = await browser.newPage({ viewport: { width: 1440, height: 900 }, javaScriptEnabled: false });
+    for (const path of ['/teaching-aihom/lessons/index.html', '/teaching-kuai/lessons/index.html']) {
+      await desktop.goto(new URL(path, base).href);
+      assert.equal(await desktop.locator('.lesson-tile a:visible').count(), 8);
+      await desktop.locator('.lesson-tile a').first().click();
+      assert.ok(await desktop.locator('article #scene').isVisible());
+      assert.ok(await desktop.locator('noscript details').isVisible());
+      assert.equal(await desktop.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+    }
+    console.log('Public courses: shared shell and theme; all 16 mobile lessons; four simulations; searchable maps, persistent progress, folded code and no-JS reading.');
   } finally {
     await browser.close();
   }

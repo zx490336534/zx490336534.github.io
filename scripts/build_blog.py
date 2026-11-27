@@ -22,6 +22,7 @@ import blog_discovery as discovery
 import blog_geo as geo
 import blog_portfolio as portfolio
 from blog_code import repair_python_spaces
+from build_public_courses import build_courses
 
 from blog_series import article_navigation, cards as series_cards, catalog_page, chapter_title, load_series, position_link, series_page
 from blog_topics import Topic, browser_page, links as taxonomy_links, read_catalog, topic_trail
@@ -283,11 +284,7 @@ def analytics_script():
 
 
 def update_resource_head_tags():
-    readers = [
-        ROOT / "tools/test-cases/index.html",
-        *(ROOT / "teaching-aihom").rglob("*.html"),
-        *(ROOT / "teaching-kuai").rglob("*.html"),
-    ]
+    readers = [ROOT / "tools/test-cases/index.html"]
     for file in readers:
         page = file.read_text()
         if 'id="site-analytics"' in page:
@@ -296,11 +293,6 @@ def update_resource_head_tags():
             updated, count = re.subn(r"</head>", "  " + analytics_script() + "\n</head>", page, count=1, flags=re.I)
             if count != 1:
                 raise ValueError(f"缺少页面头部 {file.relative_to(ROOT)}")
-        if file.relative_to(ROOT).parts[0].startswith("teaching-") and 'id="course-dark-theme"' not in updated:
-            theme = ('  <link id="course-dark-theme" rel="stylesheet" href="/css/course-dark.css" '
-                     'media="screen and (prefers-color-scheme: dark)">\n'
-                     '  <script src="/js/appearance.js"></script>\n')
-            updated = re.sub(r"</head>", theme + "</head>", updated, count=1, flags=re.I)
         if updated != page:
             file.write_text(updated)
 
@@ -315,7 +307,7 @@ def shell(title, path, content, description=DESCRIPTION, extra_head="", *, canon
     links = []
     for label, url in nav:
         current = ' aria-current="page"' if url == path else ""
-        if not current and url != "/" and (path.startswith(url) or (path.startswith("/article/") and url == "/archives/")):
+        if not current and url != "/" and (path.startswith(url) or (path.startswith("/article/") and url == "/archives/") or (path.startswith(("/teaching-aihom/", "/teaching-kuai/")) and url == "/lab/")):
             current = ' aria-current="location"'
         links.append(f'<a href="{url}"{current}>{label}</a>')
     links_html = "".join(links)
@@ -465,8 +457,8 @@ def set_display_covers(posts):
 
 RESOURCES = [
     ("在线工具", "测试用例脑图生成器", "把需求整理成测试点和用例，在脑图里查看和编辑。", f"{SITE}/tools/test-cases/"),
-    ("课程地图", "AIHom 全栈学习地图", "按模块了解前端、后端、Agent 和布局链路。", "/teaching-aihom/lessons/index.html"),
-    ("课程地图", "Kuai 测试平台学习地图", "从三仓基础读到测试平台的核心功能和实战。", "/teaching-kuai/lessons/index.html"),
+    ("课程地图", "AI 应用全栈实战", "用虚构布局项目串起前后端、Agent、流式状态与故障恢复。", "/teaching-aihom/lessons/index.html"),
+    ("课程地图", "AI 测试平台与评测实战", "从调度执行到 Agent 生成用例、工具轨迹评测与回归。", "/teaching-kuai/lessons/index.html"),
 ]
 
 
@@ -988,9 +980,10 @@ def main():
     )
     write("/about/", shell("听白的公开作品", "/about/", profile, portfolio.PROFILE_SUMMARY, portfolio.profile_metadata(SITE, ROOT)))
     missing = ('<section class="listing missing-page"><header class="page-heading"><h1>找不到页面</h1></header>'
-               '<div class="profile-links"><a href="/archives/">浏览文章归档 ↗</a><a href="/">返回首页 ↗</a>'
+               '<div class="profile-links"><a href="/archives/">浏览文章归档 ↗</a><a href="/lab/">工具与新版课程 ↗</a><a href="/">返回首页 ↗</a>'
                '<button type="button" data-open-search>搜索文章</button></div></section>')
     write("/404.html", shell("找不到页面", "/404.html", missing, noindex=True))
+    build_courses(shell)
     update_resource_head_tags()
     tool = ROOT / "tools/test-cases/index.html"
     original_tool = tool.read_text()
