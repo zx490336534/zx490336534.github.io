@@ -104,7 +104,17 @@ function normalize(text) {
 
 function openSearch() {
   if (!dialog.open) dialog.showModal();
+  sizeSearchViewport();
+  search.focus();
+  search.select();
 }
+
+function sizeSearchViewport() {
+  if (dialog.open && window.visualViewport) {
+    dialog.style.setProperty('--search-viewport', window.visualViewport.height + 'px');
+  }
+}
+window.visualViewport?.addEventListener('resize', sizeSearchViewport);
 
 document.querySelectorAll('[data-open-search]').forEach(button => button.addEventListener('click', openSearch));
 document.addEventListener('keydown', event => {
@@ -205,7 +215,13 @@ function appendResultPage(matches, words) {
   const shown = results.childElementCount;
   status.textContent = shown ? `已展示 ${shown} / ${matches.length} 篇文章` : '没有找到相关文章';
   moreResults.hidden = shown >= matches.length;
-  if (start < shown && start > 0) results.children[start].querySelector('a').focus();
+  if (start === 0) {
+    results.scrollTop = 0;
+  } else if (start < shown) {
+    const next = results.children[start].querySelector('a');
+    next.focus({preventScroll: true});
+    next.scrollIntoView({block: 'start', inline: 'nearest'});
+  }
 }
 search.addEventListener('keydown', event => {
   if (event.key !== 'Escape' || event.isComposing || !search.value) return;

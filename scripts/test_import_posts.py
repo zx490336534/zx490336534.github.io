@@ -32,6 +32,15 @@ class ImportPostsTest(unittest.TestCase):
             with self.subTest(suffix=suffix), self.assertRaisesRegex(ValueError, "重复文章地址"):
                 self.run_import([self.item(), self.item(source=self.base + suffix)])
 
+    def test_summary_line_breaks_and_literal_code_escapes(self):
+        for body, raw, expected in [
+            ("<p>甲</p><p>乙</p>", r"甲\x0d\x0a乙", "甲 乙"),
+            (r"<code>\x0a</code>", r"换行符 \x0a", r"换行符 \x0a"),
+        ]:
+            with self.subTest(raw=raw):
+                [post] = self.run_import([self.item(body=body, description=raw)])
+                self.assertEqual(post.description, expected)
+
     def test_known_source_allows_reimport_and_preserves_metadata_and_anchors(self):
         for old, new in [
             ("/First", "/First?scene=1#wechat_redirect"),

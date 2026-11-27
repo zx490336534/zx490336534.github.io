@@ -56,6 +56,11 @@ def compact(text):
     return " ".join(text.split())
 
 
+def wechat_summary(description, body_text):
+    # Page metadata can spell out line breaks. Preserve escapes used in the article itself.
+    return re.sub(r"(?:\\x0[ad])+", lambda m: m[0] if m[0] in body_text else " ", description, flags=re.I)
+
+
 @dataclass
 class Post:
     path: str
@@ -168,17 +173,21 @@ def read_post(path):
     # Published articles are also build inputs. Read the topic before adding the series prefix again.
     title = title.get("data-topic-title") or title.get_text(strip=True)
     toc = prepare_body(body, title)
-    summary = compact(description.get("content", "") if description else "")
+    body_text = compact(body.get_text(" ", strip=True))
+    summary = description.get("content", "") if description else ""
+    if source and urlsplit(source["href"]).hostname == "mp.weixin.qq.com":
+        summary = wechat_summary(summary, body_text)
+    summary = compact(summary)
     if summary.startswith(title + " "):
         summary = summary[len(title):].strip()
     return Post(
         "/" + path.relative_to(ROOT).as_posix(), title, published["datetime"],
         body.decode_contents().strip(),
-        summary or compact(body.get_text(" ", strip=True))[:150],
+        summary or body_text[:150],
         [(a.get_text(strip=True), normalized_path(a["href"])) for a in page.select(".post-category a[href]")],
         [(a.get_text(strip=True).removeprefix("#").strip(), normalized_path(a["href"])) for a in (tag_metadata.select("a[href]") if tag_metadata else [])],
         source["href"] if source else "", cover["content"] if cover else "", toc,
-        compact(body.get_text(" ", strip=True)), bool(page.select_one("#disqus_thread")),
+        body_text, bool(page.select_one("#disqus_thread")),
         author.get_text(strip=True) if author else "听白",
     )
 
@@ -231,6 +240,7 @@ def import_posts(path, posts):
         title = previous.title if previous else item['title']
         toc = prepare_body(body, title)
         search_text = compact(body.get_text(" ", strip=True))
+        description = wechat_summary(item["description"], search_text) if item.get("description") else search_text
         cover = item.get("cover", "")
         if cover and not re.fullmatch(r"/images/blog-media/[a-f0-9]+\.(?:webp|gif|png|svg)", cover):
             raise ValueError(f"无效的本地封面 {route}")
@@ -249,7 +259,7 @@ def import_posts(path, posts):
                     body.insert(0, alias)
         existing[route] = Post(
             route, title, previous.published if previous else published,
-            body.decode_contents().strip(), (item.get('description') or search_text)[:170],
+            body.decode_contents().strip(), description[:170],
             previous.categories if previous else [("公众号", "/categories/%E5%85%AC%E4%BC%97%E5%8F%B7/")],
             previous.tags if previous else [], item['source'], cover, toc, search_text,
             previous.legacy_comments if previous else False, item.get("author") or "听白",
@@ -456,7 +466,7 @@ def resource_cards():
 def home_story(post, picture, lead=False):
     heading = "h2" if lead else "h3"
     priority = 'fetchpriority="high"' if lead else 'loading="lazy"'
-    sizes = ("(max-width: 760px) 96vw, (max-width: 1160px) 57vw, 680px" if lead
+    sizes = ("(max-width: 760px) calc(100vw - 2rem), (max-width: 1256px) 52vw, 624px" if lead
              else "(max-width: 760px) 94vw, (max-width: 1160px) 29vw, 345px")
     attrs = portfolio.cover_attributes(picture, ROOT, sizes) if picture else ""
     image = (
@@ -465,7 +475,9 @@ def home_story(post, picture, lead=False):
     )
     meta = post.topic.trail()[0].name if post.topic and post.topic.trail() else ""
     label = f'<span>{html(meta)}</span>' if meta else ""
-    action = '<span class="front-read">阅读全文 <span aria-hidden="true">↗</span></span>' if lead else ""
+    if lead:
+        label = '<strong class="front-latest">最新文章</strong>' + label
+    action = '<span class="front-read">阅读全文 <span aria-hidden="true">→</span></span>' if lead else ""
     layout = "front-lead" if lead else "front-card"
     with_picture = " with-picture" if picture else ""
     return f'''<article class="{layout}">
@@ -528,16 +540,11 @@ def home(posts, catalog, series):
     recent = [post for post in posts[1:] if post.path not in featured][:7]
     content = f'''
   {discovery.home_intro()}
-  {portfolio.home_work()}
   <section class="publication-feature" aria-label="最新文章">
     {home_story(feature, feature.display_cover, lead=True)}
   </section>
-  <div class="publication-actions">
-    <a class="solid-link" href="/categories/">浏览分类 <span aria-hidden="true">↗</span></a>
-    <a href="/videos/">视频讲解目录 <span aria-hidden="true">↗</span></a>
-    <a href="/lab/">工具与课程 <span aria-hidden="true">↗</span></a>
-  </div>
-  <nav class="publication-topics" aria-label="主要分类">{paths}</nav>
+  {portfolio.home_work()}
+  <nav class="publication-topics" aria-label="主要分类">{paths}<a class="topics-index" href="/categories/">全部分类 →</a></nav>
   {popular_section(posts)}
   {routes}
   {illustrated}
@@ -654,11 +661,9 @@ def article(post, older, newer, series_position=None):
     cover_image = ""
     if post.display_cover:
         cover_meta += f'\n<meta property="og:image" content="{html(SITE + post.display_cover)}">'
-        cover_art = html(f'url("{quote(post.display_cover, safe="/%")}")')
-        image_dimensions = portfolio.cover_dimensions(post.display_cover, ROOT)
+        cover_attrs = portfolio.cover_attributes(post.display_cover, ROOT, "(max-width: 760px) clamp(4.8rem, 24vw, 8rem), min(30vw, 22rem)")
         cover_image = (
-            f'<figure class="article-cover" style="--cover-art:{cover_art}">'
-            f'<img src="{html(post.display_cover)}" alt=""{image_dimensions} fetchpriority="high" decoding="async"></figure>'
+            f'<figure class="article-cover"><img src="{html(post.display_cover)}" alt=""{cover_attrs} decoding="async"></figure>'
         )
     stem = Path(post.path).stem
     watch_link = (f'<p class="watch-link"><a href="{discovery.watch_path(stem)}">打开独立观看页和文字稿 →</a></p>'

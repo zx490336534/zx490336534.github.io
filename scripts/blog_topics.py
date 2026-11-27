@@ -143,7 +143,6 @@ def browser_page(root, current, post_rows, historical):
             for name, url, amount in historical
         )
         original = f'<details class="catalog-history"><summary>原有专栏与来源</summary><ul>{old_links}</ul></details>'
-    compact = ' data-compact="true"' if not is_root else ''
     return f'''
 <section class="catalog">
   <header class="catalog-heading">
@@ -158,7 +157,7 @@ def browser_page(root, current, post_rows, historical):
   </header>
   <div class="catalog-layout">
     <aside class="catalog-sidebar">
-      <details class="catalog-menu" open{compact}>
+      <details class="catalog-menu" open data-compact="true">
         <summary>分类目录</summary>
         <nav aria-label="文章分类目录"><ul><li>{root_link}</li>{tree}</ul></nav>
       </details>

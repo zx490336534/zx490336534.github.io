@@ -108,9 +108,9 @@ def article_metadata(post, site):
 
 def home_intro():
     return f"""<section class="publication-intro" aria-labelledby="publication-title">
-      <h1 id="publication-title">测试游记：AI Agent 评测与测试开发实践</h1>
+      <h1 id="publication-title">AI Agent 评测与测试开发实践</h1>
       <p>我是听白，关注 AI 应用开发、Agent 评测与研发效能。这里有开源工具、可复跑案例和工程设计笔记。</p>
-      <a href="/series/agent-development/">浏览 Agent 开发与评测专题 →</a> · <a href="/about/">关于听白</a>
+      <div class="intro-links"><a href="/series/agent-development/">Agent 开发与评测专题 →</a><a href="/about/">关于听白</a></div>
     </section>"""
 
 

@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <title>微信小程序自动化 · 第 01 篇｜安装 pytest-mini 并运行微信小程序用例 · 测试游记</title>
-  <meta name="description" content="pytest-mini:微信小程序自动化测试pytest插件/工具\x0d\x0a基于MiniTest进行pytest改造使用">
+  <meta name="description" content="pytest-mini:微信小程序自动化测试pytest插件/工具 基于MiniTest进行pytest改造使用">
   <meta property="og:title" content="微信小程序自动化 · 第 01 篇｜安装 pytest-mini 并运行微信小程序用例 · 测试游记">
-  <meta property="og:description" content="pytest-mini:微信小程序自动化测试pytest插件/工具\x0d\x0a基于MiniTest进行pytest改造使用">
+  <meta property="og:description" content="pytest-mini:微信小程序自动化测试pytest插件/工具 基于MiniTest进行pytest改造使用">
   <meta property="og:url" content="https://www.zhongxin.website/article/wechat-4ed524b18de79d.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/wechat-4ed524b18de79d.html">
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
@@ -21,7 +21,7 @@
 <meta property="og:image" content="https://www.zhongxin.website/images/article-covers/wechat-4ed524b18de79d.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/wechat-4ed524b18de79d.html">
 <script src="/js/comments.js?v=4" defer></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"微信小程序自动化 · 第 01 篇｜安装 pytest-mini 并运行微信小程序用例","description":"pytest-mini:微信小程序自动化测试pytest插件/工具\\x0d\\x0a基于MiniTest进行pytest改造使用","inLanguage":"zh-CN","url":"https://www.zhongxin.website/article/wechat-4ed524b18de79d.html","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.zhongxin.website/article/wechat-4ed524b18de79d.html"},"author":{"@type":"Person","name":"zx钟"},"datePublished":"2023-02-04T15:34:22+08:00","image":"https://www.zhongxin.website/images/article-covers/wechat-4ed524b18de79d.webp","articleSection":["测试与质量","自动化测试","移动端与小程序"]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"分类","item":"https://www.zhongxin.website/categories/"},{"@type":"ListItem","position":2,"name":"测试与质量","item":"https://www.zhongxin.website/categories/testing/"},{"@type":"ListItem","position":3,"name":"自动化测试","item":"https://www.zhongxin.website/categories/testing/automation/"},{"@type":"ListItem","position":4,"name":"移动端与小程序","item":"https://www.zhongxin.website/categories/testing/automation/mobile/"},{"@type":"ListItem","position":5,"name":"微信小程序自动化 · 第 01 篇｜安装 pytest-mini 并运行微信小程序用例","item":"https://www.zhongxin.website/article/wechat-4ed524b18de79d.html"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"微信小程序自动化 · 第 01 篇｜安装 pytest-mini 并运行微信小程序用例","description":"pytest-mini:微信小程序自动化测试pytest插件/工具 基于MiniTest进行pytest改造使用","inLanguage":"zh-CN","url":"https://www.zhongxin.website/article/wechat-4ed524b18de79d.html","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.zhongxin.website/article/wechat-4ed524b18de79d.html"},"author":{"@type":"Person","name":"zx钟"},"datePublished":"2023-02-04T15:34:22+08:00","image":"https://www.zhongxin.website/images/article-covers/wechat-4ed524b18de79d.webp","articleSection":["测试与质量","自动化测试","移动端与小程序"]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"分类","item":"https://www.zhongxin.website/categories/"},{"@type":"ListItem","position":2,"name":"测试与质量","item":"https://www.zhongxin.website/categories/testing/"},{"@type":"ListItem","position":3,"name":"自动化测试","item":"https://www.zhongxin.website/categories/testing/automation/"},{"@type":"ListItem","position":4,"name":"移动端与小程序","item":"https://www.zhongxin.website/categories/testing/automation/mobile/"},{"@type":"ListItem","position":5,"name":"微信小程序自动化 · 第 01 篇｜安装 pytest-mini 并运行微信小程序用例","item":"https://www.zhongxin.website/article/wechat-4ed524b18de79d.html"}]}]}</script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -43,7 +43,7 @@
   <main id="main">
   <article class="article">
     <header class="article-header">
-      <figure class="article-cover" style="--cover-art:url(&quot;/images/article-covers/wechat-4ed524b18de79d.webp&quot;)"><img src="/images/article-covers/wechat-4ed524b18de79d.webp" alt="" width="1440" height="668" fetchpriority="high" decoding="async"></figure>
+      <figure class="article-cover"><img src="/images/article-covers/wechat-4ed524b18de79d.webp" alt="" width="1440" height="668" srcset="/images/cover-variants/384/wechat-4ed524b18de79d.webp 384w, /images/cover-variants/768/wechat-4ed524b18de79d.webp 768w, /images/article-covers/wechat-4ed524b18de79d.webp 1440w" sizes="(max-width: 760px) clamp(4.8rem, 24vw, 8rem), min(30vw, 22rem)" decoding="async"></figure>
       <div class="wrap article-heading">
         <h1 class="post-title" data-topic-title="安装 pytest-mini 并运行微信小程序用例">微信小程序自动化 · 第 01 篇｜安装 pytest-mini 并运行微信小程序用例</h1>
         <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2023-02-04T15:34:22+08:00">2023-02-04</time>

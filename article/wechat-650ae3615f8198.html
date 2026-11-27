@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <title>《流畅的 Python》笔记 · 第 06 篇｜用一等函数实现策略模式 · 测试游记</title>
-  <meta name="description" content="对接口编程，而不是对实现编程。\x0a优先使用对象组合，而不是类继承。">
+  <meta name="description" content="对接口编程，而不是对实现编程。 优先使用对象组合，而不是类继承。">
   <meta property="og:title" content="《流畅的 Python》笔记 · 第 06 篇｜用一等函数实现策略模式 · 测试游记">
-  <meta property="og:description" content="对接口编程，而不是对实现编程。\x0a优先使用对象组合，而不是类继承。">
+  <meta property="og:description" content="对接口编程，而不是对实现编程。 优先使用对象组合，而不是类继承。">
   <meta property="og:url" content="https://www.zhongxin.website/article/wechat-650ae3615f8198.html">
   <link rel="canonical" href="https://www.zhongxin.website/article/wechat-650ae3615f8198.html">
   <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
@@ -21,7 +21,7 @@
 <meta property="og:image" content="https://www.zhongxin.website/images/article-covers/wechat-650ae3615f8198.webp">
 <meta name="giscus:backlink" content="https://www.zhongxin.website/article/wechat-650ae3615f8198.html">
 <script src="/js/comments.js?v=4" defer></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"《流畅的 Python》笔记 · 第 06 篇｜用一等函数实现策略模式","description":"对接口编程，而不是对实现编程。\\x0a优先使用对象组合，而不是类继承。","inLanguage":"zh-CN","url":"https://www.zhongxin.website/article/wechat-650ae3615f8198.html","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.zhongxin.website/article/wechat-650ae3615f8198.html"},"author":{"@type":"Person","name":"zx钟"},"datePublished":"2020-12-16T21:46:00+08:00","image":"https://www.zhongxin.website/images/article-covers/wechat-650ae3615f8198.webp","articleSection":["开发技术","Python 编程"]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"分类","item":"https://www.zhongxin.website/categories/"},{"@type":"ListItem","position":2,"name":"开发技术","item":"https://www.zhongxin.website/categories/development/"},{"@type":"ListItem","position":3,"name":"Python 编程","item":"https://www.zhongxin.website/categories/development/python/"},{"@type":"ListItem","position":4,"name":"《流畅的 Python》笔记 · 第 06 篇｜用一等函数实现策略模式","item":"https://www.zhongxin.website/article/wechat-650ae3615f8198.html"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BlogPosting","headline":"《流畅的 Python》笔记 · 第 06 篇｜用一等函数实现策略模式","description":"对接口编程，而不是对实现编程。 优先使用对象组合，而不是类继承。","inLanguage":"zh-CN","url":"https://www.zhongxin.website/article/wechat-650ae3615f8198.html","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.zhongxin.website/article/wechat-650ae3615f8198.html"},"author":{"@type":"Person","name":"zx钟"},"datePublished":"2020-12-16T21:46:00+08:00","image":"https://www.zhongxin.website/images/article-covers/wechat-650ae3615f8198.webp","articleSection":["开发技术","Python 编程"]},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"分类","item":"https://www.zhongxin.website/categories/"},{"@type":"ListItem","position":2,"name":"开发技术","item":"https://www.zhongxin.website/categories/development/"},{"@type":"ListItem","position":3,"name":"Python 编程","item":"https://www.zhongxin.website/categories/development/python/"},{"@type":"ListItem","position":4,"name":"《流畅的 Python》笔记 · 第 06 篇｜用一等函数实现策略模式","item":"https://www.zhongxin.website/article/wechat-650ae3615f8198.html"}]}]}</script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -43,7 +43,7 @@
   <main id="main">
   <article class="article">
     <header class="article-header">
-      <figure class="article-cover" style="--cover-art:url(&quot;/images/article-covers/wechat-650ae3615f8198.webp&quot;)"><img src="/images/article-covers/wechat-650ae3615f8198.webp" alt="" width="1440" height="668" fetchpriority="high" decoding="async"></figure>
+      <figure class="article-cover"><img src="/images/article-covers/wechat-650ae3615f8198.webp" alt="" width="1440" height="668" srcset="/images/cover-variants/384/wechat-650ae3615f8198.webp 384w, /images/cover-variants/768/wechat-650ae3615f8198.webp 768w, /images/article-covers/wechat-650ae3615f8198.webp 1440w" sizes="(max-width: 760px) clamp(4.8rem, 24vw, 8rem), min(30vw, 22rem)" decoding="async"></figure>
       <div class="wrap article-heading">
         <h1 class="post-title" data-topic-title="用一等函数实现策略模式">《流畅的 Python》笔记 · 第 06 篇｜用一等函数实现策略模式</h1>
         <div class="entry-meta"><span class="post-author">zx钟</span><time itemprop="datePublished" datetime="2020-12-16T21:46:00+08:00">2020-12-16</time>
