@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>测试分层：用最短的路径发现缺陷 · 测试游记</title>
+  <meta name="description" content="对同一个预约问题，分别设计单元、契约和端到端测试。">
+  <meta property="og:title" content="测试分层：用最短的路径发现缺陷 · 测试游记">
+  <meta property="og:description" content="对同一个预约问题，分别设计单元、契约和端到端测试。">
+  <meta property="og:url" content="https://www.zhongxin.website/teaching-kuai/lessons/test-layers.html">
+  <link rel="canonical" href="https://www.zhongxin.website/teaching-kuai/lessons/test-layers.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
+  <script src="/js/blog.js?v=code-fold-20261126" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=extended-path-1">
+  <script src="/js/public-courses.js?v=extended-path-1" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记</a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/">视频</a><a href="/lab/" aria-current="location">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="wrap"><div class="public-course" data-course="teaching-kuai" data-current="test-layers"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 测试平台与评测实战</a></div>
+    <header class="lesson-head"><p class="eyebrow"><a href="index.html#stage-foundation">读懂一次测试运行</a> · 第 02 课 · 约 36 分钟</p><h1>测试分层：用最短的路径发现缺陷</h1><p class="lead">对同一个预约问题，分别设计单元、契约和端到端测试。</p></header>
+    <div class="reading">
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <article class="lesson-content">
+        <section id="scene"><h2>先看场景</h2><p>13:00 的预约接受了长度为零的区间；改完校验后，页面还必须显示可理解的失败原因。</p><p class="course-term"><strong>测试分层：</strong>把规则本身、跨边界约定和用户可见流程各自验证，不要求每个场景都穿完整链路。</p></section>
+        <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>调用规则函数验证零长度与相邻区间。</li><li>从入口读标准错误形状，不检查内部类名。</li><li>运行一个从点击到界面反馈的流程。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>def valid(start, end):</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">预约规则和页面提示同时变化时，测试该放在哪几层？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>调用规则函数验证零长度与相邻区间。</li><li>从入口读标准错误形状，不检查内部类名。</li><li>运行一个从点击到界面反馈的流程。</li><li>为变化最大、最难定位的那层保留证据。</li></ol>
+          <details class="snippet" open><summary>Python 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.py，再运行 python3 lesson.py。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>def valid(start, end):
+    return 0 &lt;= start &lt; end &lt;= 24
+
+def route(start, end):
+    if not valid(start, end):
+        return 422, {&quot;code&quot;: &quot;BAD_INTERVAL&quot;}
+    return 201, {&quot;id&quot;: &quot;demo-booking&quot;}
+
+def click_submit(start, end):
+    status, body = route(start, end)
+    messages = {&quot;BAD_INTERVAL&quot;: &quot;结束时间须晚于开始&quot;}
+    return &quot;预约成功&quot; if status == 201 else messages[body[&quot;code&quot;]]
+
+# 单元：把相等边界钉住
+assert not valid(13, 13)
+assert valid(13, 14)
+assert not valid(23, 25)
+
+# 契约：不关心页面长什么样
+assert route(13, 13) == (422, {&quot;code&quot;: &quot;BAD_INTERVAL&quot;})
+
+# 内存 E2E：保留用户可见的成功和失败各一条
+assert click_submit(13, 13) == &quot;结束时间须晚于开始&quot;
+assert click_submit(13, 14) == &quot;预约成功&quot;
+</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>单元测试是用来穷举变化的</h3><p>时间区间、默认值和布尔条件由纯函数判定，覆盖相等、相邻、跨分界这几种情况。规则模型不应该关心按钮布局或 HTTP 状态，可用直接参数快速定位回归。</p></div><div><h3>契约是跨边界的最小共同语言</h3><p>入口把拒绝映射为稳定的 code。端到端不适合替代结构校验：界面可能恰好用兜底提示，掩盖协议字段已经漂移。测试不要断言整段错误文案，那属于展示层。</p></div><div><h3>这里的 E2E 是内存全流程</h3><p>示例点按钮模拟页面消费入口响应，未启动浏览器。真实 E2E 至少增加一个浏览器脚本，验证点击、提交、状态更新和提示展示，避免把代理函数冒充浏览器证据。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>零长度被接纳</dt><dd><strong>怎么触发：</strong>把 start &lt; end 改为 start &lt;= end。</dd><dd><strong>怎么判断：</strong>边界单元断言失败，随后入口和展示断言也暴露影响。</dd></div><div class="failure-card"><dt>契约漂移</dt><dd><strong>怎么触发：</strong>把错误字段从 code 改为 reason，保持值不变。</dd><dd><strong>怎么判断：</strong>契约先失败，界面也无法映射错误；修边界不是改业务规则。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>合法半开区间可提交。</li><li>规则相等边界被拒绝。</li><li>协议错误有机器可读码。</li><li>用户能看见友好提示。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>原则不是一味减少端到端，而是在最小可诊断的边界验证规则，再用关键路径保护整合结果。</p>
+        </section>
+        <section id="exercise"><h2>动手练习</h2><p>运行代码里的断言，然后只改一个输入，复现「零长度被接纳」。先写预期再运行。</p></section>
+        <section id="check"><h2>自测</h2>
+          <form class="course-quiz" data-answer="0" data-right="答对了。原则不是一味减少端到端，而是在最小可诊断的边界验证规则，再用关键路径保护整合结果。" data-wrong="这个选项不成立。再想想：原则不是一味减少端到端，而是在最小可诊断的边界验证规则，再用关键路径保护整合结果。" hidden>
+            <fieldset><legend>预约规则和页面提示同时变化时，测试该放在哪几层？</legend><label><input type="radio" name="check" value="0" required> 用单元测试钉边界，契约钉错误字段，端到端只保留关键可见路径</label><label><input type="radio" name="check" value="1" required> 给每个时间输入都配一条端到端测试</label></fieldset>
+            <button type="submit">核对答案</button><p role="status" class="quiz-result"></p>
+          </form>
+          <noscript><p>预约规则和页面提示同时变化时，测试该放在哪几层？</p><details><summary>查看答案</summary><p>用单元测试钉边界，契约钉错误字段，端到端只保留关键可见路径。原则不是一味减少端到端，而是在最小可诊断的边界验证规则，再用关键路径保护整合结果。</p></details></noscript>
+        </section>
+        <div class="completion"><button type="button" id="complete-lesson" aria-pressed="false" hidden>标记为已学</button><p role="status" id="complete-status"></p></div>
+      </article>
+    </div>
+    <nav class="pagination" aria-label="课程分页"><a href="job.html" rel="prev">← 一次回归如何从提交跑到结果</a><a href="index.html">学习地图</a><a href="test-boundaries.html" rel="next">边界值与不变量：从几个例子扩展到一类输入 →</a></nav></div></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

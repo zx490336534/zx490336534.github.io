@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>读懂一次生成请求的 HTTP 与 JSON · 测试游记</title>
+  <meta name="description" content="从请求方法、响应码、响应体三个位置判断下一步。">
+  <meta property="og:title" content="读懂一次生成请求的 HTTP 与 JSON · 测试游记">
+  <meta property="og:description" content="从请求方法、响应码、响应体三个位置判断下一步。">
+  <meta property="og:url" content="https://www.zhongxin.website/teaching-aihom/lessons/http-payload.html">
+  <link rel="canonical" href="https://www.zhongxin.website/teaching-aihom/lessons/http-payload.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
+  <script src="/js/blog.js?v=code-fold-20261126" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=extended-path-1">
+  <script src="/js/public-courses.js?v=extended-path-1" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记</a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/">视频</a><a href="/lab/" aria-current="location">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="wrap"><div class="public-course" data-course="teaching-aihom" data-current="http-payload"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 应用全栈实战</a></div>
+    <header class="lesson-head"><p class="eyebrow"><a href="index.html#stage-foundation">跑通前后端</a> · 第 02 课 · 约 30 分钟</p><h1>读懂一次生成请求的 HTTP 与 JSON</h1><p class="lead">从请求方法、响应码、响应体三个位置判断下一步。</p></header>
+    <div class="reading">
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <article class="lesson-content">
+        <section id="scene"><h2>先看场景</h2><p>RoomLab 提交布局生成。你在浏览器的网络面板看到 202，但返回体可能因为中间层故障而不完整。</p><p class="course-term"><strong>响应契约：</strong>除了状态码，还规定必要的字段和字段类型。</p></section>
+        <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>先辨认发出的是创建任务，不是读布局。</li><li>分开读 HTTP 状态和 JSON 字段。</li><li>接受以后用任务编号追踪进展。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>import json</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">怎样从网络面板判断服务器真的受理了本次操作？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>找创建任务的请求。</li><li>核对状态码。</li><li>读取媒介类型、JSON 与任务身份。</li><li>把可追踪回执交给 UI。</li></ol>
+          <details class="snippet" open><summary>Python 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.py，再运行 python3 lesson.py。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>import json
+
+def receipt(status, media_type, body):
+    if status == 422:
+        return (&quot;fix-input&quot;, None)
+    if status != 202:
+        return (&quot;unexpected-status&quot;, None)
+    if media_type.split(&quot;;&quot;)[0].strip().lower() != &quot;application/json&quot;:
+        return (&quot;bad-media-type&quot;, None)
+    try:
+        payload = json.loads(body)
+    except json.JSONDecodeError:
+        return (&quot;bad-json&quot;, None)
+    if not isinstance(payload, dict):
+        return (&quot;bad-receipt&quot;, None)
+    task = payload.get(&quot;task&quot;)
+    if not isinstance(task, str) or not task.strip():
+        return (&quot;bad-receipt&quot;, None)
+    return (&quot;wait&quot;, task)
+
+assert receipt(202, &quot;application/json; charset=utf-8&quot;, &#x27;{&quot;task&quot;:&quot;R2&quot;}&#x27;) == (&quot;wait&quot;, &quot;R2&quot;)
+assert receipt(202, &quot;application/json&quot;, &#x27;{}&#x27;) == (&quot;bad-receipt&quot;, None)
+assert receipt(202, &quot;text/html&quot;, &#x27;&lt;p&gt;Oops&lt;/p&gt;&#x27;)[0] == &quot;bad-media-type&quot;
+assert receipt(422, &quot;application/json&quot;, &#x27;{}&#x27;)[0] == &quot;fix-input&quot;</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>202 表示接受而非完成</h3><p>创建任务受到接受后通常还有排队、执行与校验。浏览器保留上一个布局，不把 202 当成可渲染结果。</p></div><div><h3>格式正确也可能不符合契约</h3><p>从 body 解出对象仍要检查任务编号是否为非空文本。一个成功码配上代理返回的 HTML 不能拿去订阅任务。</p></div><div><h3>拒绝输入和协议故障分开</h3><p>422 指向输入，格式错误指向响应链路；它们需要不同的提示。时间敏感的服务规范应另行注明。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>状态码看着正常</dt><dd><strong>怎么触发：</strong>202 但缺失 task。</dd><dd><strong>怎么判断：</strong>不订阅、不显示已排队。</dd></div><div class="failure-card"><dt>返回 HTML</dt><dd><strong>怎么触发：</strong>媒体类型为 text/html。</dd><dd><strong>怎么判断：</strong>提示回执异常，别重误判成输入错。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>202 有效回执进入等待，不进入完成。</li><li>缺身份和媒体类型异常能区分。</li><li>422 显示修正输入的提示。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>请求状态回答是否受理；回执身份让你知道在等哪一次。</p>
+        </section>
+        <section id="exercise"><h2>动手练习</h2><p>对照 202 有编号、202 无编号和 422 三条记录，写下每条下一步。</p></section>
+        <section id="check"><h2>自测</h2>
+          <form class="course-quiz" data-answer="1" data-right="答对了。页面无法关联后续结果。" data-wrong="这个选项不成立。再想想：页面无法关联后续结果。" hidden>
+            <fieldset><legend>202 响应里没有任务编号，可以显示排队成功吗？</legend><label><input type="radio" name="check" value="0" required> 可以，只看状态码</label><label><input type="radio" name="check" value="1" required> 不行，回执契约不完整</label></fieldset>
+            <button type="submit">核对答案</button><p role="status" class="quiz-result"></p>
+          </form>
+          <noscript><p>202 响应里没有任务编号，可以显示排队成功吗？</p><details><summary>查看答案</summary><p>不行，回执契约不完整。页面无法关联后续结果。</p></details></noscript>
+        </section>
+        <div class="completion"><button type="button" id="complete-lesson" aria-pressed="false" hidden>标记为已学</button><p role="status" id="complete-status"></p></div>
+      </article>
+    </div>
+    <nav class="pagination" aria-label="课程分页"><a href="request.html" rel="prev">← 一次交互如何走完整条链路</a><a href="index.html">学习地图</a><a href="abort.html" rel="next">取消请求与防止旧结果覆盖 →</a></nav></div></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

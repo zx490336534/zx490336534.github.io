@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>页面状态：别让加载、空结果与失败互相冒充 · 测试游记</title>
+  <meta name="description" content="区分首次加载、刷新旧结果、成功但为空，以及失败后的重试入口。">
+  <meta property="og:title" content="页面状态：别让加载、空结果与失败互相冒充 · 测试游记">
+  <meta property="og:description" content="区分首次加载、刷新旧结果、成功但为空，以及失败后的重试入口。">
+  <meta property="og:url" content="https://www.zhongxin.website/teaching-aihom/lessons/ui-state.html">
+  <link rel="canonical" href="https://www.zhongxin.website/teaching-aihom/lessons/ui-state.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
+  <script src="/js/blog.js?v=code-fold-20261126" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=extended-path-1">
+  <script src="/js/public-courses.js?v=extended-path-1" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记</a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/">视频</a><a href="/lab/" aria-current="location">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="wrap"><div class="public-course" data-course="teaching-aihom" data-current="ui-state"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 应用全栈实战</a></div>
+    <header class="lesson-head"><p class="eyebrow"><a href="index.html#stage-foundation">跑通前后端</a> · 第 05 课 · 约 26 分钟</p><h1>页面状态：别让加载、空结果与失败互相冒充</h1><p class="lead">区分首次加载、刷新旧结果、成功但为空，以及失败后的重试入口。</p></header>
+    <div class="reading">
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <article class="lesson-content">
+        <section id="scene"><h2>先看场景</h2><p>RoomLab 第一次打开还没有布局；后来用户刷新的是已经存在的布局。两次请求都可能失败，但第一次需要一个明确的恢复入口，第二次则应该保留当前场景。</p><p class="course-term"><strong>派生界面：</strong>用已知状态决定界面显示什么，不让各组件自己猜测加载或失败。</p></section>
+        <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>把请求状态和当前可用布局分别存储。</li><li>先判断是否有已确认结果，再决定失败后画哪一种界面。</li><li>只有当前请求成功才替换页面数据，迟到的请求不能盖过它。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>{&quot;phase&quot;:&quot;error&quot;,&quot;lastGood&quot;:{&quot;revision&quot;:4,&quot;items&quot;:[]}}</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">同样是请求失败，为什么首页和已有布局的页面应该表现不同？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>入口接收请求标识和当前 UI 状态。</li><li>提交后进入加载，并保留 lastGood。</li><li>只让同一个请求的结果更新状态。</li><li>渲染函数根据阶段和已知布局选择初始提示、空状态、故障提示或画布。</li></ol>
+          <details class="snippet" open><summary>JavaScript 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.cjs，再运行 node lesson.cjs。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>const assert = require(&#x27;node:assert/strict&#x27;);
+const idle = { id: 0, phase: &#x27;idle&#x27;, lastGood: null };
+
+function start(s) {
+  return { ...s, id: s.id + 1, phase: &#x27;loading&#x27; };
+}
+
+function finish(s, id, result) {
+  if (id !== s.id || s.phase !== &#x27;loading&#x27;) return s;
+  if (!result.ok) return { ...s, phase: &#x27;error&#x27; };
+  return { ...s, phase: &#x27;success&#x27;, lastGood: result.layout };
+}
+
+function describe(s) {
+  if (s.phase === &#x27;error&#x27;) return s.lastGood ? &#x27;旧布局 + 重试&#x27; : &#x27;错误 + 重试&#x27;;
+  if (s.phase === &#x27;loading&#x27;) return s.lastGood ? &#x27;旧布局 + 刷新中&#x27; : &#x27;首次加载中&#x27;;
+  if (s.phase === &#x27;success&#x27;) return s.lastGood.items.length ? &#x27;画布&#x27; : &#x27;布局为空&#x27;;
+  return &#x27;开始生成&#x27;;
+}
+
+const first = start(idle);
+assert.equal(describe(finish(first, first.id, { ok: false })), &#x27;错误 + 重试&#x27;);
+const empty = { ok: true, layout: { revision: 4, items: [] } };
+const success = finish(first, first.id, empty);
+assert.equal(describe(success), &#x27;布局为空&#x27;);
+const refresh = start(success);
+assert.equal(describe(refresh), &#x27;旧布局 + 刷新中&#x27;);
+assert.equal(describe(finish(refresh, refresh.id, { ok: false })), &#x27;旧布局 + 重试&#x27;);
+assert.equal(finish(refresh, first.id, empty), refresh);</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>让失败和空状态彻底分开</h3><p>空意味着成功得到一份空结果；失败意味着不知道新结果。代码让它们走不同分支，界面不再用同一个布尔值概括整个状态。</p></div><div><h3>用中央派生函数避免双视图互相打架</h3><p>describe 只读取状态，无副作用；二维与三维都使用同一份数据。一般可以从这里再派生按钮文字和 aria-live 的短状态，而不是在两个组件里各自维护请求阶段。</p></div><div><h3>用请求标识守住竞态边界</h3><p>快速连续点击时只接收当前请求。旧结果被丢弃时返回原状态对象，让调用者可以判断是否需要更新，避免把晚到的成功覆盖更新的失败或合法空结果。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>失败时误显示为空</dt><dd><strong>怎么触发：</strong>在首次加载和刷新时各注入一次失败。</dd><dd><strong>怎么判断：</strong>前者给恢复入口，后者保留已知布局；两者都不等于成功为空。</dd></div><div class="failure-card"><dt>旧请求掩盖新请求</dt><dd><strong>怎么触发：</strong>刷新中重新发起一次请求，再回传第一次的完成事件。</dd><dd><strong>怎么判断：</strong>当前请求和界面保持不变。</dd></div><div class="failure-card"><dt>组件各自保留过期副本</dt><dd><strong>怎么触发：</strong>让二维图和三维预览都读取同一快照，再把阶段切成刷新失败。</dd><dd><strong>怎么判断：</strong>两侧显示同一版本；提示文字从共享阶段生成。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>首次失败和成功为空有不同的可见文案。</li><li>刷新失败不清除 lastGood。</li><li>旧请求晚到不能改 id、phase 或当前布局。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>把请求阶段和有效数据分开建模，故障提示才能与画布并存。</p>
+        </section>
+        <section id="exercise"><h2>动手练习</h2><p>按首次进入、首次失败、刷新失败、成功但为空四种状态，给两种视图各写一个可观察断言。</p></section>
+        <section id="check"><h2>自测</h2>
+          <form class="course-quiz" data-answer="0" data-right="答对了。请求失败只说明没有拿到新结果。已确认的上个结果仍然可以展示。" data-wrong="这个选项不成立。再想想：请求失败只说明没有拿到新结果。已确认的上个结果仍然可以展示。" hidden>
+            <fieldset><legend>刷新已有布局失败时，应该清空界面让用户重新开始吗？</legend><label><input type="radio" name="check" value="0" required> 保留已确认布局，说明刷新失败并提供重试</label><label><input type="radio" name="check" value="1" required> 清空界面并显示没有布局</label></fieldset>
+            <button type="submit">核对答案</button><p role="status" class="quiz-result"></p>
+          </form>
+          <noscript><p>刷新已有布局失败时，应该清空界面让用户重新开始吗？</p><details><summary>查看答案</summary><p>保留已确认布局，说明刷新失败并提供重试。请求失败只说明没有拿到新结果。已确认的上个结果仍然可以展示。</p></details></noscript>
+        </section>
+        <div class="completion"><button type="button" id="complete-lesson" aria-pressed="false" hidden>标记为已学</button><p role="status" id="complete-status"></p></div>
+      </article>
+    </div>
+    <nav class="pagination" aria-label="课程分页"><a href="runtime-contract.html" rel="prev">← 类型声明不够：校验网络里的 unknown</a><a href="index.html">学习地图</a><a href="service.html" rel="next">拆开接口、业务规则和外部模型 →</a></nav></div></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

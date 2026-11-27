@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>给每个任务一份独立而可重现的上下文 · 测试游记</title>
+  <meta name="description" content="防止并行任务把不同房间的规则拼到同一次模型调用。">
+  <meta property="og:title" content="给每个任务一份独立而可重现的上下文 · 测试游记">
+  <meta property="og:description" content="防止并行任务把不同房间的规则拼到同一次模型调用。">
+  <meta property="og:url" content="https://www.zhongxin.website/teaching-aihom/lessons/context-isolation.html">
+  <link rel="canonical" href="https://www.zhongxin.website/teaching-aihom/lessons/context-isolation.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
+  <script src="/js/blog.js?v=code-fold-20261126" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=extended-path-1">
+  <script src="/js/public-courses.js?v=extended-path-1" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记</a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/">视频</a><a href="/lab/" aria-current="location">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="wrap"><div class="public-course" data-course="teaching-aihom" data-current="context-isolation"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 应用全栈实战</a></div>
+    <header class="lesson-head"><p class="eyebrow"><a href="index.html#stage-engineering">拆分服务与模型</a> · 第 08 课 · 约 36 分钟</p><h1>给每个任务一份独立而可重现的上下文</h1><p class="lead">防止并行任务把不同房间的规则拼到同一次模型调用。</p></header>
+    <div class="reading">
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <article class="lesson-content">
+        <section id="scene"><h2>先看场景</h2><p>旧任务的模型请求被延迟，用户已经切到另一个房间。若生成时去读界面当前选项，可能组合出错误的输入。</p><p class="course-term"><strong>快照：</strong>将容易随页面操作变化的生成输入固定在本次操作中。</p></section>
+        <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>生成时冻结输入快照。</li><li>将房间身份放入缓存键。</li><li>只选择本房间的资料。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>from dataclasses import dataclass</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">同时生成两个房间时，如何防止模型读到串线的规则？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>从当前选择构建不可变请求。</li><li>读对应版本规则与允许的资料。</li><li>用快照计算稳定标识。</li><li>把标识用于调试、恢复和缓存。</li></ol>
+          <details class="snippet" open><summary>Python 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.py，再运行 python3 lesson.py。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class Context:
+    room: str
+    rules_rev: int
+    width: int
+    docs: tuple[str, ...]
+
+def freeze(selected, notes):
+    permitted = tuple(sorted({
+        n[&quot;id&quot;] for n in notes if n[&quot;room&quot;] == selected[&quot;room&quot;]
+    })[:2])
+    return Context(selected[&quot;room&quot;], selected[&quot;rules_rev&quot;], selected[&quot;width&quot;], permitted)
+
+a = {&quot;room&quot;: &quot;A&quot;, &quot;rules_rev&quot;: 1, &quot;width&quot;: 4}
+notes = [{&quot;room&quot;: &quot;A&quot;, &quot;id&quot;: &quot;furniture&quot;}, {&quot;room&quot;: &quot;B&quot;, &quot;id&quot;: &quot;desk&quot;}]
+snapshot = freeze(a, notes)
+a[&quot;width&quot;] = 6
+assert snapshot.width == 4
+assert snapshot.docs == (&quot;furniture&quot;,)
+assert freeze(a, notes) != snapshot
+assert freeze({**a, &quot;room&quot;: &quot;B&quot;}, notes).docs == (&quot;desk&quot;,)</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>延迟读取是隐藏变量</h3><p>工作者不能在看来应该读取输入时去访问可变的当前房间。冻结规则数值、约束版本与文档 ID，可以让重试的语义不变。</p></div><div><h3>限制资料进入模型上下文</h3><p>在拼接前过滤所属房间，按确定顺序排序并限制数量。示例仅保留标识；检索后还需要重新校验权限与事实。</p></div><div><h3>缓存身份与执行身份不同</h3><p>执行 ID 用来追踪一次调用，缓存键代表什么输入可以共享结果。生产应纳入模型、提示版本和访问作用域等影响结果的维度。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>旧请求晚执行</dt><dd><strong>怎么触发：</strong>冻结后修改宽度。</dd><dd><strong>怎么判断：</strong>旧请求输入仍是原尺寸。</dd></div><div class="failure-card"><dt>同用户跨房间并行</dt><dd><strong>怎么触发：</strong>A 和 B 的资料均存在。</dd><dd><strong>怎么判断：</strong>A 只引用 A 的资料。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>输入切换不修改已排队上下文。</li><li>快照标识区分不同规则和房间。</li><li>跨房间资料在拼装前被排除。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>把上下文当作正式输入固定下来，而不是运行中随手读取的页面状态。</p>
+        </section>
+        <section id="exercise"><h2>动手练习</h2><p>先冻结 A 的上下文，再编辑 A、切到 B，检查旧执行身份与新版输入。</p></section>
+        <section id="check"><h2>自测</h2>
+          <form class="course-quiz" data-answer="1" data-right="答对了。同一用户也可并行生成不同房间。" data-wrong="这个选项不成立。再想想：同一用户也可并行生成不同房间。" hidden>
+            <fieldset><legend>上下文缓存只按用户编号区分够吗？</legend><label><input type="radio" name="check" value="0" required> 够</label><label><input type="radio" name="check" value="1" required> 不够，应绑定房间与规则版本等输入</label></fieldset>
+            <button type="submit">核对答案</button><p role="status" class="quiz-result"></p>
+          </form>
+          <noscript><p>上下文缓存只按用户编号区分够吗？</p><details><summary>查看答案</summary><p>不够，应绑定房间与规则版本等输入。同一用户也可并行生成不同房间。</p></details></noscript>
+        </section>
+        <div class="completion"><button type="button" id="complete-lesson" aria-pressed="false" hidden>标记为已学</button><p role="status" id="complete-status"></p></div>
+      </article>
+    </div>
+    <nav class="pagination" aria-label="课程分页"><a href="structured-output.html" rel="prev">← 让模型输出可验证的布局草案</a><a href="index.html">学习地图</a><a href="retrieval-grounding.html" rel="next">检索增强：让布局建议有证据可核对 →</a></nav></div></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

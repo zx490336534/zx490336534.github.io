@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>把一次失败变成可汇总的运行指标 · 测试游记</title>
+  <meta name="description" content="用低基数维度统计失败，明白日志与指标各该记录什么。">
+  <meta property="og:title" content="把一次失败变成可汇总的运行指标 · 测试游记">
+  <meta property="og:description" content="用低基数维度统计失败，明白日志与指标各该记录什么。">
+  <meta property="og:url" content="https://www.zhongxin.website/teaching-aihom/lessons/trace-metrics.html">
+  <link rel="canonical" href="https://www.zhongxin.website/teaching-aihom/lessons/trace-metrics.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
+  <script src="/js/blog.js?v=code-fold-20261126" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=extended-path-1">
+  <script src="/js/public-courses.js?v=extended-path-1" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记</a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/">视频</a><a href="/lab/" aria-current="location">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="wrap"><div class="public-course" data-course="teaching-aihom" data-current="trace-metrics"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 应用全栈实战</a></div>
+    <header class="lesson-head"><p class="eyebrow"><a href="index.html#stage-quality">测试、观测与评测</a> · 第 20 课 · 约 35 分钟</p><h1>把一次失败变成可汇总的运行指标</h1><p class="lead">用低基数维度统计失败，明白日志与指标各该记录什么。</p></header>
+    <div class="reading">
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <article class="lesson-content">
+        <section id="scene"><h2>先看场景</h2><p>偶发生成失败每天几十条。团队既想知道失败都发生在哪一层，又想点开一次具体运行复盘。</p><p class="course-term"><strong>基数：</strong>同一标签能出现多少不同取值。</p></section>
+        <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>先定义允许的阶段和结果。</li><li>每次尝试保留关联标识。</li><li>汇总时只按阶段和结果聚合。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>from collections import Counter</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">怎样让看板稳定，具体错误又可追溯？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>写结构化阶段事件。</li><li>按尝试身份消除重复。</li><li>只用有限标签创建指标。</li><li>具体运行用追踪记录查询。</li></ol>
+          <details class="snippet" open><summary>Python 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.py，再运行 python3 lesson.py。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>from collections import Counter
+ALLOWED_PHASES = {&quot;generate&quot;, &quot;validate&quot;, &quot;publish&quot;}
+ALLOWED_OUTCOMES = {&quot;ok&quot;, &quot;timeout&quot;, &quot;invalid&quot;}
+
+def summarize(events):
+    totals, seen = Counter(), set()
+    for run, attempt, phase, outcome in events:
+        if phase not in ALLOWED_PHASES or outcome not in ALLOWED_OUTCOMES:
+            continue
+        identity = (run, attempt, phase)
+        if identity in seen:
+            continue
+        seen.add(identity)
+        totals[(phase, outcome)] += 1
+    return totals
+
+slow = (&quot;run-1&quot;, 1, &quot;generate&quot;, &quot;timeout&quot;)
+done = (&quot;run-1&quot;, 2, &quot;generate&quot;, &quot;ok&quot;)
+wrong = (&quot;run-2&quot;, 1, &quot;user-chosen-label&quot;, &quot;ok&quot;)
+totals = summarize([slow, slow, done, wrong])
+assert totals[(&quot;generate&quot;, &quot;timeout&quot;)] == 1
+assert totals[(&quot;generate&quot;, &quot;ok&quot;)] == 1
+assert len(totals) == 2</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>日志与指标的查询目标不同</h3><p>排查一次运行需要关联编号；找全体趋势需要阶段、结果和固定时间范围。把两种目标塞一个维度，既难查又昂贵。</p></div><div><h3>先确定统计单位</h3><p>示例统计一次尝试的一条完成事件，不以每次重传为新执行。同一任务重跑第二次会增加尝试计数。若产品关注用户最终体验，可以另做按运行计数。</p></div><div><h3>未识别分类不任其增长</h3><p>未知阶段或结果枚举拒收；维护监控时应记录单独的事件格式错误指标。避免动态错误文本变成标签。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>重复投递</dt><dd><strong>怎么触发：</strong>同一次尝试上报两遍。</dd><dd><strong>怎么判断：</strong>超时计数仍是一。</dd></div><div class="failure-card"><dt>动态错误标签</dt><dd><strong>怎么触发：</strong>阶段字段给自由文本。</dd><dd><strong>怎么判断：</strong>不创建新指标序列。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>每个指标键只含有限枚举。</li><li>同次尝试重复上报不增加计数。</li><li>重跑成功与初次超时都可识别。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>用指标找整体问题，再用关联信息查个案，不让一个维度承担两种目标。</p>
+        </section>
+        <section id="exercise"><h2>动手练习</h2><p>把同一条终态重复上报，再将两次不同 attempt 送入指标。</p></section>
+        <section id="check"><h2>自测</h2>
+          <form class="course-quiz" data-answer="0" data-right="答对了。高基数标签会使监控成本上升。" data-wrong="这个选项不成立。再想想：高基数标签会使监控成本上升。" hidden>
+            <fieldset><legend>把运行编号作为指标标签有什么风险？</legend><label><input type="radio" name="check" value="0" required> 时序数跟着运行数增长</label><label><input type="radio" name="check" value="1" required> 可以让看板计算更快</label></fieldset>
+            <button type="submit">核对答案</button><p role="status" class="quiz-result"></p>
+          </form>
+          <noscript><p>把运行编号作为指标标签有什么风险？</p><details><summary>查看答案</summary><p>时序数跟着运行数增长。高基数标签会使监控成本上升。</p></details></noscript>
+        </section>
+        <div class="completion"><button type="button" id="complete-lesson" aria-pressed="false" hidden>标记为已学</button><p role="status" id="complete-status"></p></div>
+      </article>
+    </div>
+    <nav class="pagination" aria-label="课程分页"><a href="diagnosis.html" rel="prev">← 按一次运行排查前端到模型的故障</a><a href="index.html">学习地图</a><a href="latency-budget.html" rel="next">区分等待、模型慢和渲染慢 →</a></nav></div></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

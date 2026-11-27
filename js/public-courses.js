@@ -21,16 +21,19 @@
     document.querySelector('#filter-controls').hidden = false;
     const stages = [...document.querySelectorAll('.map .stage')];
     const jumps = [...document.querySelectorAll('.jump a')];
+    const normalize = value => value.normalize('NFKC').toLocaleLowerCase().trim();
+    const searchable = tiles.map(tile => [tile, normalize(tile.textContent + ' ' + tile.dataset.keywords)]);
     const refresh = () => {
-      const query = input.value.trim().toLocaleLowerCase();
-      for (const tile of tiles) tile.hidden = !tile.textContent.toLocaleLowerCase().includes(query);
+      const parts = normalize(input.value).split(/\s+/u).filter(Boolean);
+      for (const [tile, text] of searchable) tile.hidden = !parts.every(part => text.includes(part));
       for (const stage of stages) stage.hidden = !stage.querySelector('.lesson-tile:not([hidden])');
       for (const jump of jumps) jump.hidden = document.getElementById(jump.hash.slice(1)).hidden;
       const visible = tiles.filter(tile => !tile.hidden).length;
       document.querySelector('.map .empty').hidden = Boolean(visible);
       document.querySelector('#filter-status').textContent = '显示 ' + visible + ' 节课';
     };
-    input.addEventListener('input', refresh);
+    input.addEventListener('input', event => { if (!event.isComposing) refresh(); });
+    input.addEventListener('compositionend', refresh);
     document.querySelector('#clear-filter').addEventListener('click', () => {
       input.value = ''; refresh(); input.focus();
     });

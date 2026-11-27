@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>类型声明不够：校验网络里的 unknown · 测试游记</title>
+  <meta name="description" content="在边界验证布局数据，再把它交给业务代码。">
+  <meta property="og:title" content="类型声明不够：校验网络里的 unknown · 测试游记">
+  <meta property="og:description" content="在边界验证布局数据，再把它交给业务代码。">
+  <meta property="og:url" content="https://www.zhongxin.website/teaching-aihom/lessons/runtime-contract.html">
+  <link rel="canonical" href="https://www.zhongxin.website/teaching-aihom/lessons/runtime-contract.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
+  <script src="/js/blog.js?v=code-fold-20261126" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=extended-path-1">
+  <script src="/js/public-courses.js?v=extended-path-1" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记</a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/">视频</a><a href="/lab/" aria-current="location">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="wrap"><div class="public-course" data-course="teaching-aihom" data-current="runtime-contract"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 应用全栈实战</a></div>
+    <header class="lesson-head"><p class="eyebrow"><a href="index.html#stage-foundation">跑通前后端</a> · 第 04 课 · 约 32 分钟</p><h1>类型声明不够：校验网络里的 unknown</h1><p class="lead">在边界验证布局数据，再把它交给业务代码。</p></header>
+    <div class="reading">
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <article class="lesson-content">
+        <section id="scene"><h2>先看场景</h2><p>接口曾返回数字 revision，偶尔也返回字符串。二维画法接受了，三维走另一条分支，页面显示不一致。</p><p class="course-term"><strong>unknown：</strong>类型安全的边界输入；缩小类型之前不使用它的属性。</p></section>
+        <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>把网络解析结果当未知。</li><li>检查根对象、数组和每一项。</li><li>只把规范化的结果交给投影。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>const assert = require(&quot;node:assert/strict&quot;);</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">类型系统能保证这台服务返回的 JSON 与声明完全一致吗？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>接收外部数据。</li><li>检查每个必要字段与取值。</li><li>按错误路径返回诊断。</li><li>成功后复制成内部形状。</li></ol>
+          <details class="snippet" open><summary>JavaScript 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.cjs，再运行 node lesson.cjs。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>const assert = require(&quot;node:assert/strict&quot;);
+const bad = path =&gt; ({ ok: false, path });
+function readLayout(raw) {
+  if (!raw || typeof raw !== &quot;object&quot;) return bad(&quot;$&quot;);
+  if (!Number.isSafeInteger(raw.revision) || raw.revision &lt;= 0) return bad(&quot;revision&quot;);
+  if (!Array.isArray(raw.items)) return bad(&quot;items&quot;);
+  const used = new Set();
+  const items = [];
+  for (const [i, item] of raw.items.entries()) {
+    if (!item || typeof item.id !== &quot;string&quot; || !item.id.trim() || used.has(item.id)) {
+      return bad(`items[${i}].id`);
+    }
+    if (typeof item.x !== &quot;number&quot; || !Number.isFinite(item.x)) return bad(`items[${i}].x`);
+    used.add(item.id);
+    items.push({ id: item.id, x: item.x });
+  }
+  return { ok: true, value: { revision: raw.revision, items } };
+}
+const chair = { id: &quot;chair&quot;, x: 1 };
+assert.equal(readLayout({ revision: &quot;3&quot;, items: [] }).path, &quot;revision&quot;);
+assert.equal(readLayout({ revision: 3, items: [chair, chair] }).path, &quot;items[1].id&quot;);
+assert.equal(readLayout({ revision: 3, items: [{ ...chair, x: NaN }] }).path, &quot;items[0].x&quot;);
+assert.deepEqual(readLayout({ revision: 3, items: [chair] }).value, { revision: 3, items: [chair] });</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>编译期与运行时分工</h3><p>TypeScript 的类型断言只影响静态检查，不会修正外部字节。示例用 JavaScript 运行时检查演示同一个边界。</p></div><div><h3>别默认自动修复</h3><p>把字符串坐标强制转数字可能掩盖上游变更。需要兼容时应定义版本或明确转换规则，而不是让不同调用者自行猜。</p></div><div><h3>错误路径比整段响应有用</h3><p>端上提示出错字段位置，测试就能区分非法序号、异常数组和重复标识。生成后的几何约束仍应由规范验证。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>字符串版号</dt><dd><strong>怎么触发：</strong>传入 &quot;3&quot; 代替 3。</dd><dd><strong>怎么判断：</strong>返回 revision 路径。</dd></div><div class="failure-card"><dt>两物件同 ID</dt><dd><strong>怎么触发：</strong>同一数组加入两个 chair。</dd><dd><strong>怎么判断：</strong>第二项失败，不让联动身份发生歧义。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>合法输入生成可消费的布局模型。</li><li>重复标识导致明确的断言。</li><li>非法值不被隐式修正。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>把不可靠的数据拦在两张图之前。</p>
+        </section>
+        <section id="exercise"><h2>动手练习</h2><p>分别在 revision、x、id 注入异常，从报错路径定位是哪个字段。</p></section>
+        <section id="check"><h2>自测</h2>
+          <form class="course-quiz" data-answer="1" data-right="答对了。可解析的 JSON 未承诺业务字段。" data-wrong="这个选项不成立。再想想：可解析的 JSON 未承诺业务字段。" hidden>
+            <fieldset><legend>JSON.parse 成功后可以直接当成布局吗？</legend><label><input type="radio" name="check" value="0" required> 可以</label><label><input type="radio" name="check" value="1" required> 还要校验结构</label></fieldset>
+            <button type="submit">核对答案</button><p role="status" class="quiz-result"></p>
+          </form>
+          <noscript><p>JSON.parse 成功后可以直接当成布局吗？</p><details><summary>查看答案</summary><p>还要校验结构。可解析的 JSON 未承诺业务字段。</p></details></noscript>
+        </section>
+        <div class="completion"><button type="button" id="complete-lesson" aria-pressed="false" hidden>标记为已学</button><p role="status" id="complete-status"></p></div>
+      </article>
+    </div>
+    <nav class="pagination" aria-label="课程分页"><a href="abort.html" rel="prev">← 取消请求与防止旧结果覆盖</a><a href="index.html">学习地图</a><a href="ui-state.html" rel="next">页面状态：别让加载、空结果与失败互相冒充 →</a></nav></div></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

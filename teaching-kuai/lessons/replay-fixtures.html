@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>测试夹具：把时间、随机数和依赖固定下来 · 测试游记</title>
+  <meta name="description" content="为限时预约构造可重复的输入和外部响应。">
+  <meta property="og:title" content="测试夹具：把时间、随机数和依赖固定下来 · 测试游记">
+  <meta property="og:description" content="为限时预约构造可重复的输入和外部响应。">
+  <meta property="og:url" content="https://www.zhongxin.website/teaching-kuai/lessons/replay-fixtures.html">
+  <link rel="canonical" href="https://www.zhongxin.website/teaching-kuai/lessons/replay-fixtures.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
+  <script src="/js/blog.js?v=code-fold-20261126" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=extended-path-1">
+  <script src="/js/public-courses.js?v=extended-path-1" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记</a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/">视频</a><a href="/lab/" aria-current="location">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="wrap"><div class="public-course" data-course="teaching-kuai" data-current="replay-fixtures"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 测试平台与评测实战</a></div>
+    <header class="lesson-head"><p class="eyebrow"><a href="index.html#stage-foundation">读懂一次测试运行</a> · 第 04 课 · 约 37 分钟</p><h1>测试夹具：把时间、随机数和依赖固定下来</h1><p class="lead">为限时预约构造可重复的输入和外部响应。</p></header>
+    <div class="reading">
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <article class="lesson-content">
+        <section id="scene"><h2>先看场景</h2><p>某条临近过期的用例只有夜间偶尔失败；另一个开发者本地完全复现不出。</p><p class="course-term"><strong>测试夹具：</strong>把某个测试场景的初始状态、依赖输入和结束清理清楚地封装起来。</p></section>
+        <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>列出不受业务控制的时间、随机数与第三方结果。</li><li>把时间和响应通过接口传入纯逻辑。</li><li>记录请求形状并严格匹配重放的下一步。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>from collections import deque</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">怎样稳定复现恰好在过期边界的失败？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>列出不受业务控制的时间、随机数与第三方结果。</li><li>把时间和响应通过接口传入纯逻辑。</li><li>记录请求形状并严格匹配重放的下一步。</li><li>固定时钟只用于测试，生产的时区和响应改变另测。</li></ol>
+          <details class="snippet" open><summary>Python 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.py，再运行 python3 lesson.py。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>from collections import deque
+
+def replay(records):
+    pending = deque(records)
+    def lookup(slot):
+        if not pending:
+            raise AssertionError(&quot;unexpected extra call&quot;)
+        requested, seats = pending.popleft()
+        assert slot == requested
+        return seats
+    return lookup, pending
+
+def may_book(now, expires, lookup):
+    if now &gt;= expires:
+        return False
+    return lookup(&quot;slot-b&quot;) &gt; 0
+
+lookup, pending = replay([(&quot;slot-b&quot;, 1)])
+assert may_book(119, 120, lookup)
+assert not pending
+
+lookup, pending = replay([])
+assert not may_book(120, 120, lookup)
+assert not pending
+</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>边界直接驱动</h3><p>把当前时间变成参数，写出 expires-1 与 expires 两个场景。不需要 sleep。示例中到期时间点本身视为无效，和 UI 显示精度无关。</p></div><div><h3>重放不等于允许任何调用</h3><p>重放器验证调用槽位、次数和顺序。缺记录时不返回假成功；调用结束后也检查没有剩余响应。这能抓住多做一次、少做一次或换错参数。</p></div><div><h3>合成数据不带历史包袱</h3><p>夹具每次从干净状态构造，不用共享可变列表。若要检查真实适配器格式，可运行合约烟测，但不要指望内存重放覆盖网络异常或时区转换。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>边界错一秒</dt><dd><strong>怎么触发：</strong>把到期判断改成 now &gt; expires。</dd><dd><strong>怎么判断：</strong>恰好到期会意外查座位，重放器拒绝额外调用。</dd></div><div class="failure-card"><dt>参数串了</dt><dd><strong>怎么触发：</strong>把查询换成 slot-x。</dd><dd><strong>怎么判断：</strong>记录中的下一步与请求不匹配，测试失败。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>同一夹具反复重放得到相同结果。</li><li>运行时钟和测试时钟使用同一个业务入口。</li><li>过期时不发外部请求。</li><li>夹具使用后检查无未消费记录。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>稳定复现比盲目重跑更有价值。固定外部变量，也要检查实际依赖调用是否仍符合约定。</p>
+        </section>
+        <section id="exercise"><h2>动手练习</h2><p>运行代码里的断言，然后只改一个输入，复现「边界错一秒」。先写预期再运行。</p></section>
+        <section id="check"><h2>自测</h2>
+          <form class="course-quiz" data-answer="1" data-right="答对了。稳定复现比盲目重跑更有价值。固定外部变量，也要检查实际依赖调用是否仍符合约定。" data-wrong="这个选项不成立。再想想：稳定复现比盲目重跑更有价值。固定外部变量，也要检查实际依赖调用是否仍符合约定。" hidden>
+            <fieldset><legend>怎样稳定复现恰好在过期边界的失败？</legend><label><input type="radio" name="check" value="0" required> 让测试每晚固定时刻才跑</label><label><input type="radio" name="check" value="1" required> 传入假时钟和固定依赖，重放时同时核对调用请求</label></fieldset>
+            <button type="submit">核对答案</button><p role="status" class="quiz-result"></p>
+          </form>
+          <noscript><p>怎样稳定复现恰好在过期边界的失败？</p><details><summary>查看答案</summary><p>传入假时钟和固定依赖，重放时同时核对调用请求。稳定复现比盲目重跑更有价值。固定外部变量，也要检查实际依赖调用是否仍符合约定。</p></details></noscript>
+        </section>
+        <div class="completion"><button type="button" id="complete-lesson" aria-pressed="false" hidden>标记为已学</button><p role="status" id="complete-status"></p></div>
+      </article>
+    </div>
+    <nav class="pagination" aria-label="课程分页"><a href="test-boundaries.html" rel="prev">← 边界值与不变量：从几个例子扩展到一类输入</a><a href="index.html">学习地图</a><a href="parallel-fixtures.html" rel="next">并行用例的数据隔离：谁创建，谁清理 →</a></nav></div></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

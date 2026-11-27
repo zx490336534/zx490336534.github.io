@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>检索增强：让布局建议有证据可核对 · 测试游记</title>
+  <meta name="description" content="让模型引用真正用到的约束，并对过期或不相干的规则选择不下结论。">
+  <meta property="og:title" content="检索增强：让布局建议有证据可核对 · 测试游记">
+  <meta property="og:description" content="让模型引用真正用到的约束，并对过期或不相干的规则选择不下结论。">
+  <meta property="og:url" content="https://www.zhongxin.website/teaching-aihom/lessons/retrieval-grounding.html">
+  <link rel="canonical" href="https://www.zhongxin.website/teaching-aihom/lessons/retrieval-grounding.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
+  <script src="/js/blog.js?v=code-fold-20261126" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=extended-path-1">
+  <script src="/js/public-courses.js?v=extended-path-1" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记</a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/">视频</a><a href="/lab/" aria-current="location">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="wrap"><div class="public-course" data-course="teaching-aihom" data-current="retrieval-grounding"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 应用全栈实战</a></div>
+    <header class="lesson-head"><p class="eyebrow"><a href="index.html#stage-engineering">拆分服务与模型</a> · 第 09 课 · 约 26 分钟</p><h1>检索增强：让布局建议有证据可核对</h1><p class="lead">让模型引用真正用到的约束，并对过期或不相干的规则选择不下结论。</p></header>
+    <div class="reading">
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <article class="lesson-content">
+        <section id="scene"><h2>先看场景</h2><p>RoomLab 要给小会议室选择桌子。检索结果有不同房型的规则，还混着一份已经被替换的说明。一条相似文本不等于可以直接用于当前项目。</p><p class="course-term"><strong>证据约束：</strong>建议的值必须能由本次检索范围内的有效条目支撑。</p></section>
+        <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>按房型和生效版本过滤，再把有限的相关条目交给模型。</li><li>模型输出建议和值以及证据编号，不直接返回已批准状态。</li><li>提交前核对编号、值和当前规则版本；证据不足就暂缓结论。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>{&quot;roomType&quot;:&quot;meeting&quot;,&quot;revision&quot;:3,&quot;evidence&quot;:[&quot;rule-clearance&quot;]}</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">模型答得很像真的，也附了规则编号。怎么知道它真的用了这份规则？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>先用结构化条件过滤房型和版本。</li><li>对候选词作简单匹配，少量返回并保留来源编号。</li><li>读模型给出的建议及引用，判断引用是否来自本次候选。</li><li>核对规则值是否支持建议，无法证明时要求更多信息。</li></ol>
+          <details class="snippet" open><summary>Python 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.py，再运行 python3 lesson.py。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>RULES = (
+    {&#x27;id&#x27;: &#x27;old&#x27;, &#x27;kind&#x27;: &#x27;meeting&#x27;, &#x27;rev&#x27;: 2, &#x27;tag&#x27;: &#x27;desk&#x27;, &#x27;width&#x27;: 90},
+    {&#x27;id&#x27;: &#x27;other&#x27;, &#x27;kind&#x27;: &#x27;storage&#x27;, &#x27;rev&#x27;: 3, &#x27;tag&#x27;: &#x27;desk&#x27;, &#x27;width&#x27;: 130},
+    {&#x27;id&#x27;: &#x27;rule-clearance&#x27;, &#x27;kind&#x27;: &#x27;meeting&#x27;, &#x27;rev&#x27;: 3, &#x27;tag&#x27;: &#x27;desk&#x27;, &#x27;width&#x27;: 110},
+)
+
+def retrieve(kind, rev, tag):
+    return [r for r in RULES if (r[&#x27;kind&#x27;], r[&#x27;rev&#x27;], r[&#x27;tag&#x27;]) == (kind, rev, tag)]
+
+def audit(candidate, evidence):
+    sources = {r[&#x27;id&#x27;]: r for r in evidence}
+    rule = sources.get(candidate.get(&#x27;evidence&#x27;))
+    if rule is None:
+        return &#x27;need-evidence&#x27;
+    if candidate.get(&#x27;width&#x27;) != rule[&#x27;width&#x27;]:
+        return &#x27;value-mismatch&#x27;
+    return &#x27;supported&#x27;
+
+evidence = retrieve(&#x27;meeting&#x27;, 3, &#x27;desk&#x27;)
+assert [r[&#x27;id&#x27;] for r in evidence] == [&#x27;rule-clearance&#x27;]
+assert audit({&#x27;evidence&#x27;: &#x27;old&#x27;, &#x27;width&#x27;: 90}, evidence) == &#x27;need-evidence&#x27;
+assert audit({&#x27;evidence&#x27;: &#x27;other&#x27;, &#x27;width&#x27;: 130}, evidence) == &#x27;need-evidence&#x27;
+assert audit({&#x27;evidence&#x27;: &#x27;rule-clearance&#x27;, &#x27;width&#x27;: 100}, evidence) == &#x27;value-mismatch&#x27;
+assert audit({&#x27;evidence&#x27;: &#x27;rule-clearance&#x27;, &#x27;width&#x27;: 110}, evidence) == &#x27;supported&#x27;
+assert audit({&#x27;evidence&#x27;: &#x27;rule-clearance&#x27;, &#x27;width&#x27;: 110}, []) == &#x27;need-evidence&#x27;</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>先过滤，后排序</h3><p>本例按房型与当前版本硬过滤，再做关键字匹配。真实检索可以用检索器得分排顺序，但分数不应跨越适用范围；旧规则更像用户问法也不能拿来批准方案。</p></div><div><h3>命中引用不等于支持结论</h3><p>验证先确认来源在当前候选列表，再比较其确定性值。这里用可直接比较的宽度作为示例。开放式文本建议需要额外的人审、更细的事实检查或明确回退。</p></div><div><h3>缺失证据的结果要有清楚状态</h3><p>need-evidence 和 value-mismatch 区分没找到依据与有依据却支持不了这个值。业务层可给不同提示，但两种都不应自动发布建议。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>跨房型引用</dt><dd><strong>怎么触发：</strong>把储物间规则的编号写进会议室建议。</dd><dd><strong>怎么判断：</strong>引用不在当前候选集中，结果为 need-evidence。</dd></div><div class="failure-card"><dt>正确引用、错误结论</dt><dd><strong>怎么触发：</strong>保留正确规则编号，但把建议宽度改成另一个数字。</dd><dd><strong>怎么判断：</strong>结果为 value-mismatch，不自动提交。</dd></div><div class="failure-card"><dt>没有可用资料</dt><dd><strong>怎么触发：</strong>让检索列表为空。</dd><dd><strong>怎么判断：</strong>报告证据不足，而不是改变规则优先级凑一个结果。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>旧版本和另一房型的检索结果被剔除。</li><li>错误数值即使有真实编号也不通过。</li><li>只有当前范围内且能核对的结论被标为 supported。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>检索提供候选；应用要核对范围、有效期和证据能否支持结论。</p>
+        </section>
+        <section id="exercise"><h2>动手练习</h2><p>故意在样本里插入旧版约束、另一房型约束和不存在的引用编号，记录每种为何不应通过。</p></section>
+        <section id="check"><h2>自测</h2>
+          <form class="course-quiz" data-answer="1" data-right="答对了。引用编号只能证明条目存在，不能证明它适用、当前有效或支持结论。" data-wrong="这个选项不成立。再想想：引用编号只能证明条目存在，不能证明它适用、当前有效或支持结论。" hidden>
+            <fieldset><legend>模型引用了一条确实存在、但已经失效的规则，可以照样提交吗？</legend><label><input type="radio" name="check" value="0" required> 不用，只要编号存在就算有来源</label><label><input type="radio" name="check" value="1" required> 不能，要核对这条规则是否对当前任务有效</label></fieldset>
+            <button type="submit">核对答案</button><p role="status" class="quiz-result"></p>
+          </form>
+          <noscript><p>模型引用了一条确实存在、但已经失效的规则，可以照样提交吗？</p><details><summary>查看答案</summary><p>不能，要核对这条规则是否对当前任务有效。引用编号只能证明条目存在，不能证明它适用、当前有效或支持结论。</p></details></noscript>
+        </section>
+        <div class="completion"><button type="button" id="complete-lesson" aria-pressed="false" hidden>标记为已学</button><p role="status" id="complete-status"></p></div>
+      </article>
+    </div>
+    <nav class="pagination" aria-label="课程分页"><a href="context-isolation.html" rel="prev">← 给每个任务一份独立而可重现的上下文</a><a href="index.html">学习地图</a><a href="stream-protocol.html" rel="next">区分流字节、消息帧与业务事件 →</a></nav></div></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

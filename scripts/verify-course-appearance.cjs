@@ -22,6 +22,7 @@ async function main() {
     await goto('/lab/');
     await page.locator('#site-appearance').selectOption('dark');
     const dark = await background();
+    let checkedLessons = 0;
     for (const [course, intro, normal, fault, capNormal, capFault] of [
       ['aihom', 'request', '更新为版本 3', '保留旧布局', '版本 4', '版本 3'],
       ['kuai', 'job', '3 条通过', '1 条执行异常', '发布门槛：通过', '发布门槛：拦截'],
@@ -34,11 +35,14 @@ async function main() {
       assert.equal(await page.locator('.masthead nav a[aria-current]').getAttribute('href'), '/lab/');
       assert.equal(await overflow(), false, prefix);
       const links = await page.locator('.lesson-tile a').evaluateAll(items => items.map(item => item.href));
-      assert.equal(links.length, 8);
+      assert.ok(links.length > 8);
+      checkedLessons += links.length;
+      const stages = await page.locator(".stage:visible").count();
+      assert.ok(stages > 3);
       await page.locator('#filter').fill('nonsense-not-a-course');
       assert.equal(await page.locator('.stage:visible').count(), 0);
       await page.locator('#clear-filter').tap();
-      assert.equal(await page.locator('.stage:visible').count(), 3);
+      assert.equal(await page.locator('.stage:visible').count(), stages);
       await Promise.all([page.waitForURL(new URL(prefix + intro + '.html', base).href),
         page.locator('#resume').tap()]);
       await page.locator('[data-run=normal]').tap();
@@ -72,6 +76,7 @@ async function main() {
         await snippet.locator('summary').tap();
         assert.equal(await snippet.evaluate(el => el.open), false);
       }
+      await goto(prefix + 'capstone.html');
       await page.locator('[data-run=normal]').tap();
       assert.ok((await page.locator('output').innerText()).includes(capNormal));
       await page.locator('[data-run=fault]').tap();
@@ -84,8 +89,16 @@ async function main() {
       assert.equal(await page.locator('#complete-lesson').getAttribute('aria-pressed'), 'true');
       await goto(prefix + 'index.html');
       assert.equal(await page.locator('.lesson-state').first().innerText(), '已学');
-      assert.ok((await page.locator('#progress-text').innerText()).endsWith('1 / 8'));
+      assert.ok((await page.locator('#progress-text').innerText()).endsWith('1 / ' + links.length));
       assert.equal(await page.locator('#resume').innerText(), '继续学习');
+      // Reproduce a previously saved record from before the course expanded.
+      const oldKeys = course === 'aihom' ? ['service', 'stream'] : ['contract', 'dashboard'];
+      await page.evaluate(([id, done, last]) => {
+        localStorage.setItem('public-course-v1-teaching-' + id, JSON.stringify({ done: [done], last }));
+      }, [course, ...oldKeys]);
+      await page.reload();
+      assert.equal(await page.locator(`[data-lesson="${oldKeys[0]}"] .lesson-state`).innerText(), '已学');
+      assert.equal(await page.locator('#resume').getAttribute('href'), oldKeys[1] + '.html');
     }
     await page.emulateMedia({ colorScheme: 'dark' });
     await page.locator('#site-appearance').selectOption('light');
@@ -100,13 +113,13 @@ async function main() {
     const desktop = await browser.newPage({ viewport: { width: 1440, height: 900 }, javaScriptEnabled: false });
     for (const path of ['/teaching-aihom/lessons/index.html', '/teaching-kuai/lessons/index.html']) {
       await desktop.goto(new URL(path, base).href);
-      assert.equal(await desktop.locator('.lesson-tile a:visible').count(), 8);
+      assert.ok(await desktop.locator('.lesson-tile a:visible').count() > 8);
       await desktop.locator('.lesson-tile a').first().click();
       assert.ok(await desktop.locator('article #scene').isVisible());
       assert.ok(await desktop.locator('noscript details').isVisible());
       assert.equal(await desktop.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
     }
-    console.log('Public courses: shared shell and theme; all 16 mobile lessons; four simulations; searchable maps, persistent progress, folded code and no-JS reading.');
+    console.log(`Public courses: ${checkedLessons} mobile lessons, shared theme, simulations, maps, progress, folded code and no-JS reading.`);
   } finally {
     await browser.close();
   }

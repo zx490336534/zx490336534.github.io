@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>评测数据集：版本、切分与泄漏检查 · 测试游记</title>
+  <meta name="description" content="构建不可混淆的训练、开发和盲测样本集。">
+  <meta property="og:title" content="评测数据集：版本、切分与泄漏检查 · 测试游记">
+  <meta property="og:description" content="构建不可混淆的训练、开发和盲测样本集。">
+  <meta property="og:url" content="https://www.zhongxin.website/teaching-kuai/lessons/dataset-versioning.html">
+  <link rel="canonical" href="https://www.zhongxin.website/teaching-kuai/lessons/dataset-versioning.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
+  <script src="/js/blog.js?v=code-fold-20261126" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=extended-path-1">
+  <script src="/js/public-courses.js?v=extended-path-1" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记</a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/">视频</a><a href="/lab/" aria-current="location">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="wrap"><div class="public-course" data-course="teaching-kuai" data-current="dataset-versioning"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 测试平台与评测实战</a></div>
+    <header class="lesson-head"><p class="eyebrow"><a href="index.html#stage-evaluation">评测答案与工具过程</a> · 第 16 课 · 约 40 分钟</p><h1>评测数据集：版本、切分与泄漏检查</h1><p class="lead">构建不可混淆的训练、开发和盲测样本集。</p></header>
+    <div class="reading">
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <article class="lesson-content">
+        <section id="scene"><h2>先看场景</h2><p>同一预约规则有几个改写版本。如果把改写随机分到不同集合，开发阶段会提前看见盲测内容。</p><p class="course-term"><strong>按组切分：</strong>把同一来源及其改写看作一个组，在组层面分配到集合，而不是对每行独立随机分配。</p></section>
+        <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>给样本分配固定 ID 与来源组。</li><li>对整个来源组做开发与留出切分。</li><li>为规范化内容生成清单指纹并保存。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>from hashlib import sha256</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">相同规则的改写文本不完全一样，可以分到开发和盲测两边吗？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>给样本分配固定 ID 与来源组。</li><li>对整个来源组做开发与留出切分。</li><li>为规范化内容生成清单指纹并保存。</li><li>比较两次结果前同时检查样本、评分规则与切分。</li></ol>
+          <details class="snippet" open><summary>Python 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.py，再运行 python3 lesson.py。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>from hashlib import sha256
+import json
+
+def fingerprint(samples):
+    ids, split_by_group = set(), {}
+    for sample in samples:
+        key, group, split = (sample[&quot;id&quot;], sample[&quot;group&quot;], sample[&quot;split&quot;])
+        if key in ids:
+            raise ValueError(&quot;duplicate sample ID&quot;)
+        if split not in {&quot;train&quot;, &quot;dev&quot;, &quot;holdout&quot;}:
+            raise ValueError(&quot;unknown split&quot;)
+        if split_by_group.setdefault(group, split) != split:
+            raise ValueError(&quot;group leakage&quot;)
+        ids.add(key)
+    data = sorted(samples, key=lambda row: row[&quot;id&quot;])
+    encoded = json.dumps(data, ensure_ascii=False, sort_keys=True,
+                         separators=(&quot;,&quot;, &quot;:&quot;)).encode(&quot;utf-8&quot;)
+    return sha256(encoded).hexdigest()
+
+rows = [
+    {&quot;id&quot;: &quot;q1&quot;, &quot;group&quot;: &quot;queue&quot;, &quot;split&quot;: &quot;dev&quot;, &quot;expect&quot;: &quot;wait&quot;},
+    {&quot;id&quot;: &quot;q2&quot;, &quot;group&quot;: &quot;queue&quot;, &quot;split&quot;: &quot;dev&quot;, &quot;expect&quot;: &quot;wait&quot;},
+    {&quot;id&quot;: &quot;s1&quot;, &quot;group&quot;: &quot;slot&quot;, &quot;split&quot;: &quot;holdout&quot;, &quot;expect&quot;: &quot;read&quot;},
+]
+assert fingerprint(rows) == fingerprint(list(reversed(rows)))
+assert fingerprint(rows) != fingerprint([*rows[:2], {**rows[2], &quot;expect&quot;: &quot;deny&quot;}])
+</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>先定义来源组</h3><p>完全相同的文本去重还不够：同一个工单的对话变体、同一预约约束的改写都可能泄漏。示例要求同一 group 只能有一个 split；组的由来要能解释，真实数据还需近似重复检查。</p></div><div><h3>规范化指纹是复核入口</h3><p>排序按样本 ID，序列化稳定后再做哈希。调整行顺序不改变标识；改预期、规则来源或 split 会改变。在报告中再保存评分规范标识、运行配置和评估集用途，指纹本身不保证标签正确。</p></div><div><h3>盲测结果只用于少数决策</h3><p>开发可以看开发子集的逐项错误；留出用作阶段性复核，不要边试提示词边逐题看盲测分。如果频繁查看留出分，逐渐会把它优化成开发集，应另建新的独立留出。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>变体跨切分</dt><dd><strong>怎么触发：</strong>把 q2 调到 holdout。</dd><dd><strong>怎么判断：</strong>同源组跨集合被拒绝。</dd></div><div class="failure-card"><dt>重复编号</dt><dd><strong>怎么触发：</strong>追加另一条 id=q1 的记录。</dd><dd><strong>怎么判断：</strong>拒绝数据，不让结果字典悄悄覆盖。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>同组不跨集合。</li><li>只重排记录不会改变指纹。</li><li>修改预期会改变指纹。</li><li>用不同数据或不同规则的成绩不得直接归因模型。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>数据集版本要能证明究竟评了什么，切分要保护你还没看过的检验题。</p>
+        </section>
+        <section id="exercise"><h2>动手练习</h2><p>运行代码里的断言，然后只改一个输入，复现「变体跨切分」。先写预期再运行。</p></section>
+        <section id="check"><h2>自测</h2>
+          <form class="course-quiz" data-answer="1" data-right="答对了。数据集版本要能证明究竟评了什么，切分要保护你还没看过的检验题。" data-wrong="这个选项不成立。再想想：数据集版本要能证明究竟评了什么，切分要保护你还没看过的检验题。" hidden>
+            <fieldset><legend>相同规则的改写文本不完全一样，可以分到开发和盲测两边吗？</legend><label><input type="radio" name="check" value="0" required> 只比较文本是否逐字相同</label><label><input type="radio" name="check" value="1" required> 相同来源放同一集合，并锁定数据和规则版本</label></fieldset>
+            <button type="submit">核对答案</button><p role="status" class="quiz-result"></p>
+          </form>
+          <noscript><p>相同规则的改写文本不完全一样，可以分到开发和盲测两边吗？</p><details><summary>查看答案</summary><p>相同来源放同一集合，并锁定数据和规则版本。数据集版本要能证明究竟评了什么，切分要保护你还没看过的检验题。</p></details></noscript>
+        </section>
+        <div class="completion"><button type="button" id="complete-lesson" aria-pressed="false" hidden>标记为已学</button><p role="status" id="complete-status"></p></div>
+      </article>
+    </div>
+    <nav class="pagination" aria-label="课程分页"><a href="eval.html" rel="prev">← 评测：答案、工具过程和失败归因</a><a href="index.html">学习地图</a><a href="rubrics.html" rel="next">评分标准与人工校准：从主观意见变成可复核证据 →</a></nav></div></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

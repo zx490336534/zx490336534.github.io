@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>让模型输出可验证的布局草案 · 测试游记</title>
+  <meta name="description" content="分开文本解析、结构校验、领域校验与修复。">
+  <meta property="og:title" content="让模型输出可验证的布局草案 · 测试游记">
+  <meta property="og:description" content="分开文本解析、结构校验、领域校验与修复。">
+  <meta property="og:url" content="https://www.zhongxin.website/teaching-aihom/lessons/structured-output.html">
+  <link rel="canonical" href="https://www.zhongxin.website/teaching-aihom/lessons/structured-output.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
+  <script src="/js/blog.js?v=code-fold-20261126" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=extended-path-1">
+  <script src="/js/public-courses.js?v=extended-path-1" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记</a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/">视频</a><a href="/lab/" aria-current="location">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="wrap"><div class="public-course" data-course="teaching-aihom" data-current="structured-output"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 应用全栈实战</a></div>
+    <header class="lesson-head"><p class="eyebrow"><a href="index.html#stage-engineering">拆分服务与模型</a> · 第 07 课 · 约 36 分钟</p><h1>让模型输出可验证的布局草案</h1><p class="lead">分开文本解析、结构校验、领域校验与修复。</p></header>
+    <div class="reading">
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <article class="lesson-content">
+        <section id="scene"><h2>先看场景</h2><p>模型给出像 JSON 的结果，但有多余字段、断掉的输出或越界家具。应用要说明是哪一层失败。</p><p class="course-term"><strong>结构化输出：</strong>让结果满足预先规定的字段、类型和分支。</p></section>
+        <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>保留可解析的结构。</li><li>仅接纳定义好的字段。</li><li>领域规则最后判断能否落图。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>import json</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">怎样把内容不对与格式不对分别复现？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>抓取完成的候选。</li><li>解析成对象。</li><li>验证字段与业务边界。</li><li>按类别决定修复或放弃。</li></ol>
+          <details class="snippet" open><summary>Python 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.py，再运行 python3 lesson.py。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>import json
+
+def extract(text, room_width):
+    try:
+        value = json.loads(text)
+    except json.JSONDecodeError:
+        return &quot;parse-error&quot;, None
+    if not isinstance(value, dict) or set(value) != {&quot;left&quot;, &quot;width&quot;}:
+        return &quot;invalid-shape&quot;, None
+    left, width = value[&quot;left&quot;], value[&quot;width&quot;]
+    if type(left) is not int or type(width) is not int:
+        return &quot;invalid-shape&quot;, None
+    if left &lt; 0 or width &lt;= 0 or left + width &gt; room_width:
+        return &quot;out-of-bounds&quot;, None
+    return &quot;candidate&quot;, (left, width)
+
+assert extract(&#x27;{&quot;left&quot;:&#x27;, 4) == (&quot;parse-error&quot;, None)
+assert extract(&#x27;{&quot;left&quot;:true,&quot;width&quot;:1}&#x27;, 4) == (&quot;invalid-shape&quot;, None)
+assert extract(&#x27;{&quot;left&quot;:3,&quot;width&quot;:2}&#x27;, 4) == (&quot;out-of-bounds&quot;, None)
+assert extract(&#x27;{&quot;left&quot;:3,&quot;width&quot;:1}&#x27;, 4) == (&quot;candidate&quot;, (3, 1))</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>提示词是合作，不是校验</h3><p>即便模型受结构约束，调用也可能被截断或返回拒绝。适配器只在得到完整候选后向下交付。</p></div><div><h3>字段齐全不能证明布局正确</h3><p>left 和 width 均为整数却依旧可能超出房间。示例将 parse、invalid-shape 和 out-of-bounds 分开。</p></div><div><h3>修复有限次并保留边界</h3><p>只把字段级失败反馈给模型。修复不能放宽边界；再次返回坏结果时终止，不能替换已经展示的布局。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>生成被截断</dt><dd><strong>怎么触发：</strong>候选只写完一半。</dd><dd><strong>怎么判断：</strong>返回解析错误，不进入写工具。</dd></div><div class="failure-card"><dt>合法结构但坐标超线</dt><dd><strong>怎么触发：</strong>left=3、width=2 而房间宽 4。</dd><dd><strong>怎么判断：</strong>判定领域错误，不把失败归给解析器。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>解析与规则有不同错误码。</li><li>布尔值不会误当整数坐标。</li><li>几何约束通过也只代表得到候选，并未保存。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>模型产出只是候选，能否发布由应用的验证与决策共同决定。</p>
+        </section>
+        <section id="exercise"><h2>动手练习</h2><p>用同一房间送入坏 JSON、错字段名与非法坐标。</p></section>
+        <section id="check"><h2>自测</h2>
+          <form class="course-quiz" data-answer="1" data-right="答对了。坐标和审阅属于业务契约。" data-wrong="这个选项不成立。再想想：坐标和审阅属于业务契约。" hidden>
+            <fieldset><legend>模型遵守 JSON Schema 就可以直接发布吗？</legend><label><input type="radio" name="check" value="0" required> 可以</label><label><input type="radio" name="check" value="1" required> 还需业务校验和发布审批</label></fieldset>
+            <button type="submit">核对答案</button><p role="status" class="quiz-result"></p>
+          </form>
+          <noscript><p>模型遵守 JSON Schema 就可以直接发布吗？</p><details><summary>查看答案</summary><p>还需业务校验和发布审批。坐标和审阅属于业务契约。</p></details></noscript>
+        </section>
+        <div class="completion"><button type="button" id="complete-lesson" aria-pressed="false" hidden>标记为已学</button><p role="status" id="complete-status"></p></div>
+      </article>
+    </div>
+    <nav class="pagination" aria-label="课程分页"><a href="service.html" rel="prev">← 拆开接口、业务规则和外部模型</a><a href="index.html">学习地图</a><a href="context-isolation.html" rel="next">给每个任务一份独立而可重现的上下文 →</a></nav></div></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

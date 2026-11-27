@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>毕业项目：预约候选发布与故障演练 · 测试游记</title>
+  <meta name="description" content="将数据检查、规则判定、重放和报告合成可交付的一次演练。">
+  <meta property="og:title" content="毕业项目：预约候选发布与故障演练 · 测试游记">
+  <meta property="og:description" content="将数据检查、规则判定、重放和报告合成可交付的一次演练。">
+  <meta property="og:url" content="https://www.zhongxin.website/teaching-kuai/lessons/graduation.html">
+  <link rel="canonical" href="https://www.zhongxin.website/teaching-kuai/lessons/graduation.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
+  <script src="/js/blog.js?v=code-fold-20261126" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=extended-path-1">
+  <script src="/js/public-courses.js?v=extended-path-1" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记</a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/">视频</a><a href="/lab/" aria-current="location">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="wrap"><div class="public-course" data-course="teaching-kuai" data-current="graduation"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 测试平台与评测实战</a></div>
+    <header class="lesson-head"><p class="eyebrow"><a href="index.html#stage-practice">端到端实战</a> · 第 24 课 · 约 54 分钟</p><h1>毕业项目：预约候选发布与故障演练</h1><p class="lead">将数据检查、规则判定、重放和报告合成可交付的一次演练。</p></header>
+    <div class="reading">
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <article class="lesson-content">
+        <section id="scene"><h2>先看场景</h2><p>团队要把预约助手从只读扩展为确认后可写。你需要用新旧版本对照，覆盖误写、缺记录和重试。</p><p class="course-term"><strong>最小验收集：</strong>覆盖必须保护的关键路径和高影响失败的有限集合，用来交付可复跑的首轮质量证据。</p></section>
+        <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>设计只读、等待确认、确认成功、写入回执丢失与缺轨迹五种样本。</li><li>分别运行基线、候选，收集答复、轨迹与独立状态。</li><li>验证每个问题被正确分类；报告能够指向样本。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>EXPECT = {</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">怎样让评审独立验证这次修复，而不需要相信我们的口头说明？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>设计只读、等待确认、确认成功、写入回执丢失与缺轨迹五种样本。</li><li>分别运行基线、候选，收集答复、轨迹与独立状态。</li><li>验证每个问题被正确分类；报告能够指向样本。</li><li>修复后重跑原样本；状态允许缺证据复核。</li></ol>
+          <details class="snippet" open><summary>Python 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.py，再运行 python3 lesson.py。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>EXPECT = {
+    &quot;read&quot;: (&quot;show&quot;, 0, 0),
+    &quot;ask&quot;: (&quot;confirm&quot;, 0, 0),
+    &quot;approved&quot;: (&quot;done&quot;, 1, 1),
+    &quot;lost_reply&quot;: (&quot;done&quot;, 2, 1),
+    &quot;trace_required&quot;: (&quot;confirm&quot;, 0, 0),
+}
+
+def review(observed):
+    rows = {}
+    for name, expected in EXPECT.items():
+        actual = observed.get(name)
+        if actual is None or actual[1] is None or actual[2] is None:
+            rows[name] = &quot;needs_evidence&quot;
+        elif actual != expected:
+            rows[name] = &quot;blocked&quot;
+        else:
+            rows[name] = &quot;pass&quot;
+    release = (&quot;blocked&quot; if &quot;blocked&quot; in rows.values() else
+               &quot;review&quot; if &quot;needs_evidence&quot; in rows.values() else &quot;pass&quot;)
+    return release, rows
+
+baseline = dict(EXPECT)
+candidate = {**baseline, &quot;ask&quot;: (&quot;confirm&quot;, 1, 1),
+             &quot;trace_required&quot;: (&quot;confirm&quot;, None, 0)}
+release, report = review(candidate)
+assert release == &quot;blocked&quot; and report[&quot;ask&quot;] == &quot;blocked&quot;
+assert report[&quot;trace_required&quot;] == &quot;needs_evidence&quot;
+assert report[&quot;lost_reply&quot;] == &quot;pass&quot;
+assert review({**baseline, &quot;trace_required&quot;: None})[0] == &quot;review&quot;
+assert review(baseline)[0] == &quot;pass&quot;
+</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>把前几课的约束放在一个用例里</h3><p>定义输入与状态期望，执行端独立采集动作和存储行数。确认后写入回执丢失时，可能看到两次发送但最终只一行：说明重试不是第二次逻辑操作。没有轨迹则不能证明没多写。</p></div><div><h3>最小项目能复跑，不只演示</h3><p>下面把五个样本的观察值写成固定输入来验证发布脚本；这是报告层的工作示例。真实交付另外接一个本地保存适配器与假时钟，跑真实领取、恢复、重试，直接采集这几条观察。</p></div><div><h3>交付物的几个边界</h3><p>给评审一条命令、样本清单、基线和候选版本、故障开关、预期报告，并注明缺证据、拦截和放行各自含义。修复后新建候选记录复跑；不能覆盖最初的失败报告。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>正在确认却写了一次</dt><dd><strong>怎么触发：</strong>候选在 ask 场景报告实际写入一行。</dd><dd><strong>怎么判断：</strong>定位 ask，明确阻断。</dd></div><div class="failure-card"><dt>补了一条正确动作却漏采轨迹</dt><dd><strong>怎么触发：</strong>撤掉 trace_required 的轨迹证据。</dd><dd><strong>怎么判断：</strong>结果仍需复核，不能宣布修复。</dd></div><div class="failure-card"><dt>丢回执后的错误重试</dt><dd><strong>怎么触发：</strong>把 lost_reply 最终记录数改为 2。</dd><dd><strong>怎么判断：</strong>请求重试次数正确仍然阻断，查幂等边界。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>可以复跑最小样本和故障变体。</li><li>真实副作用行数独立检查。</li><li>操作违规高于其他绿灯。</li><li>修复前后按同一数据集和规则比较并保留两份报告。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>毕业验收是可复跑、有信号、有边界的证据，不是任选一套框架或展示一次绿灯。</p>
+        </section>
+        <section id="exercise"><h2>动手练习</h2><p>运行代码里的断言，然后只改一个输入，复现「正在确认却写了一次」。先写预期再运行。</p></section>
+        <section id="check"><h2>自测</h2>
+          <form class="course-quiz" data-answer="1" data-right="答对了。毕业验收是可复跑、有信号、有边界的证据，不是任选一套框架或展示一次绿灯。" data-wrong="这个选项不成立。再想想：毕业验收是可复跑、有信号、有边界的证据，不是任选一套框架或展示一次绿灯。" hidden>
+            <fieldset><legend>怎样让评审独立验证这次修复，而不需要相信我们的口头说明？</legend><label><input type="radio" name="check" value="0" required> 只录一个正常流程视频后宣称发布没问题</label><label><input type="radio" name="check" value="1" required> 锁定数据集，强制记录副作用，并将故障输入和处置绑定到同一运行</label></fieldset>
+            <button type="submit">核对答案</button><p role="status" class="quiz-result"></p>
+          </form>
+          <noscript><p>怎样让评审独立验证这次修复，而不需要相信我们的口头说明？</p><details><summary>查看答案</summary><p>锁定数据集，强制记录副作用，并将故障输入和处置绑定到同一运行。毕业验收是可复跑、有信号、有边界的证据，不是任选一套框架或展示一次绿灯。</p></details></noscript>
+        </section>
+        <div class="completion"><button type="button" id="complete-lesson" aria-pressed="false" hidden>标记为已学</button><p role="status" id="complete-status"></p></div>
+      </article>
+    </div>
+    <nav class="pagination" aria-label="课程分页"><a href="capstone.html" rel="prev">← 综合实战：评测回归流水线</a><a href="index.html">学习地图</a><a href="index.html">完成后回到地图 →</a></nav></div></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>偶发失败：用证据决定修测试还是修产品 · 测试游记</title>
+  <meta name="description" content="保留首次结果，区分偶发、稳定回归和环境中断。">
+  <meta property="og:title" content="偶发失败：用证据决定修测试还是修产品 · 测试游记">
+  <meta property="og:description" content="保留首次结果，区分偶发、稳定回归和环境中断。">
+  <meta property="og:url" content="https://www.zhongxin.website/teaching-kuai/lessons/flaky-tests.html">
+  <link rel="canonical" href="https://www.zhongxin.website/teaching-kuai/lessons/flaky-tests.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
+  <script src="/js/blog.js?v=code-fold-20261126" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=extended-path-1">
+  <script src="/js/public-courses.js?v=extended-path-1" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记</a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/">视频</a><a href="/lab/" aria-current="location">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="wrap"><div class="public-course" data-course="teaching-kuai" data-current="flaky-tests"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 测试平台与评测实战</a></div>
+    <header class="lesson-head"><p class="eyebrow"><a href="index.html#stage-regression">设计高信号回归</a> · 第 13 课 · 约 36 分钟</p><h1>偶发失败：用证据决定修测试还是修产品</h1><p class="lead">保留首次结果，区分偶发、稳定回归和环境中断。</p></header>
+    <div class="reading">
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <article class="lesson-content">
+        <section id="scene"><h2>先看场景</h2><p>一条预约测试跑五次结果红绿交替；团队之前总在重跑变绿后直接放行。</p><p class="course-term"><strong>偶发失败：</strong>在版本和已知输入一致时，同一断言有时通过，有时失败。不要还没核对运行条件就先贴上这个标签。</p></section>
+        <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>冻结代码版本、数据与已知环境条件。</li><li>在有限次数内复跑并记录每次分类。</li><li>用第一次失败证据检查异步时序和隔离。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>def classify(attempts):</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">失败用例重跑变绿，就能说本次没有回归吗？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>冻结代码版本、数据与已知环境条件。</li><li>在有限次数内复跑并记录每次分类。</li><li>用第一次失败证据检查异步时序和隔离。</li><li>隔离仅降噪，给负责人和退出标准。</li></ol>
+          <details class="snippet" open><summary>Python 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.py，再运行 python3 lesson.py。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>def classify(attempts):
+    valid = [case for case in attempts if case != &quot;infra_error&quot;]
+    if not valid:
+        return &quot;no_evidence&quot;
+    if len(set(valid)) &gt; 1:
+        return &quot;flaky&quot;
+    if &quot;infra_error&quot; in attempts:
+        return &quot;incomplete&quot;
+    return &quot;stable_&quot; + valid[0]
+
+def report(attempts):
+    return {
+        &quot;first&quot;: attempts[0] if attempts else &quot;missing&quot;,
+        &quot;category&quot;: classify(attempts),
+        &quot;all_attempts&quot;: tuple(attempts),
+    }
+
+result = report([&quot;fail&quot;, &quot;pass&quot;, &quot;pass&quot;])
+assert result[&quot;first&quot;] == &quot;fail&quot; and result[&quot;category&quot;] == &quot;flaky&quot;
+assert report([&quot;fail&quot;, &quot;fail&quot;])[&quot;category&quot;] == &quot;stable_fail&quot;
+assert report([&quot;infra_error&quot;, &quot;pass&quot;])[&quot;category&quot;] == &quot;incomplete&quot;
+assert report([&quot;infra_error&quot;])[&quot;category&quot;] == &quot;no_evidence&quot;
+</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>重跑不能覆盖原始事实</h3><p>保存第一次与后续尝试；同一用例同版本只在指定条件下比较。稳定失败是明确的回归候选，红绿交替才提示时序、共享状态或真实竞争。</p></div><div><h3>环境错误有自己的一类</h3><p>环境中断可能导致有效样本不足，不能把它混进通过率，也不能计作断言失败。若有效断言相互矛盾但出现环境噪声，可以同时标记 flaky 和环境告警；这里分类为主因。</p></div><div><h3>隔离应短时且有出口</h3><p>隔离记录负责人、复现步骤、截止日期和解除阈值。真实处理要看失败前的状态快照，优先用条件等待代替固定 sleep，或消除复用数据带来的污染。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>绿色覆盖首次失败</dt><dd><strong>怎么触发：</strong>输入 fail、pass、pass。</dd><dd><strong>怎么判断：</strong>保留 first=fail，分类 flaky。</dd></div><div class="failure-card"><dt>执行器连续故障</dt><dd><strong>怎么触发：</strong>没有任何业务断言完成。</dd><dd><strong>怎么判断：</strong>标为无有效证据，不算已通过。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>首次与每次尝试都可追溯。</li><li>单次环境故障不会冒充产品回归。</li><li>稳定失败保留阻断策略。</li><li>隔离有明确恢复标准。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>可疑的通过也要有证据。不要让最后一次跑绿替代对首次失败原因的排查。</p>
+        </section>
+        <section id="exercise"><h2>动手练习</h2><p>运行代码里的断言，然后只改一个输入，复现「绿色覆盖首次失败」。先写预期再运行。</p></section>
+        <section id="check"><h2>自测</h2>
+          <form class="course-quiz" data-answer="0" data-right="答对了。可疑的通过也要有证据。不要让最后一次跑绿替代对首次失败原因的排查。" data-wrong="这个选项不成立。再想想：可疑的通过也要有证据。不要让最后一次跑绿替代对首次失败原因的排查。" hidden>
+            <fieldset><legend>失败用例重跑变绿，就能说本次没有回归吗？</legend><label><input type="radio" name="check" value="0" required> 锁定版本和输入、保留首次结果与每次证据，再分类排查</label><label><input type="radio" name="check" value="1" required> 只记录最后一次绿色结果</label></fieldset>
+            <button type="submit">核对答案</button><p role="status" class="quiz-result"></p>
+          </form>
+          <noscript><p>失败用例重跑变绿，就能说本次没有回归吗？</p><details><summary>查看答案</summary><p>锁定版本和输入、保留首次结果与每次证据，再分类排查。可疑的通过也要有证据。不要让最后一次跑绿替代对首次失败原因的排查。</p></details></noscript>
+        </section>
+        <div class="completion"><button type="button" id="complete-lesson" aria-pressed="false" hidden>标记为已学</button><p role="status" id="complete-status"></p></div>
+      </article>
+    </div>
+    <nav class="pagination" aria-label="课程分页"><a href="test-selection.html" rel="prev">← 测试选择与覆盖：改了什么，最少要重跑什么</a><a href="index.html">学习地图</a><a href="generate.html" rel="next">Agent 生成用例：生成、审查、执行分开 →</a></nav></div></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

@@ -7,8 +7,7 @@ import unittest
 from urllib.parse import unquote, urlsplit
 
 from bs4 import BeautifulSoup
-from build_public_courses import COURSES, DEEP, LABS
-from course_curriculum import TERMS
+from build_public_courses import COURSES, DEEP, LABS, STAGES, TERMS
 
 ROOT = Path(__file__).resolve().parents[1]
 FORBIDDEN = re.compile(r"""(?ix)
@@ -31,6 +30,7 @@ class PublicCoursesTest(unittest.TestCase):
                 self.assertEqual(files, expected | {f"examples/{LABS[slug][0]}"}, "Course roots should contain only the public export")
                 self.assertEqual(set(TERMS[slug]), {lesson[0] for lesson in lessons})
                 self.assertEqual(set(DEEP[slug]), {lesson[0] for lesson in lessons})
+                sequence = [item[0] + ".html" for item in lessons]
                 for path in expected:
                     f = ROOT / slug / path
                     raw = f.read_text(encoding="utf-8")
@@ -43,12 +43,28 @@ class PublicCoursesTest(unittest.TestCase):
                     self.assertEqual(len(soup.select('script[id="site-analytics"]')), 1)
                     self.assertTrue(soup.select_one(".public-course"))
                     self.assertNotRegex(soup.get_text(), r"无需账号|公司环境|无需访问公司|真实账号")
-                    if path != "lessons/index.html":
+                    if path == "lessons/index.html":
+                        self.assertEqual(
+                            [tile["data-lesson"] for tile in soup.select(".lesson-tile")],
+                            [lesson[0] for lesson in lessons],
+                        )
+                        self.assertEqual(
+                            [stage["id"] for stage in soup.select(".map .stage")],
+                            ["stage-" + stage_id for stage_id, *_ in STAGES[slug]],
+                        )
+                        self.assertGreater(len(lessons), 8)
+                    else:
                         self.assertGreaterEqual(len(soup.select(".course-flow li")), 3)
                         self.assertGreaterEqual(len(soup.select(".code-notes > div")), 3)
                         self.assertGreaterEqual(len(soup.select(".failure-card")), 2)
                         self.assertGreaterEqual(len(soup.select(".course-assertions li")), 3)
                         self.assertGreaterEqual(len(soup.select_one("#code-walkthrough pre code").get_text().splitlines()), 15)
+                        position = sequence.index(f.name)
+                        previous = soup.select_one('.pagination [rel="prev"]')
+                        following = soup.select_one('.pagination [rel="next"]')
+                        self.assertEqual(previous["href"] if previous else None, sequence[position - 1] if position else None)
+                        self.assertEqual(following["href"] if following else None,
+                                         sequence[position + 1] if position + 1 < len(sequence) else None)
                     for node in soup.select("[href], [src]"):
                         link = urlsplit(node.get("href") or node.get("src"))
                         if link.scheme == "mailto":
@@ -65,7 +81,7 @@ class PublicCoursesTest(unittest.TestCase):
                             self.assertIsNotNone(soup.find(id=link.fragment), f"Missing anchor in {f.name}")
 
     def test_public_sources_are_clean(self):
-        for rel in ("scripts/course_curriculum.py", "scripts/course_code_walkthroughs.py", "scripts/build_public_courses.py", "js/public-courses.js"):
+        for rel in ("scripts/course_curriculum.py", "scripts/course_code_walkthroughs.py", "scripts/course_roomlab_extension.py", "scripts/course_caselab_extension.py", "scripts/course_learning_paths.py", "scripts/course_extra_workshops.py", "scripts/build_public_courses.py", "js/public-courses.js"):
             self.assertIsNone(FORBIDDEN.search((ROOT / rel).read_text(encoding="utf-8")), rel)
 
     def test_reference_projects(self):

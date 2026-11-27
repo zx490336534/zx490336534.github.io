@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>执行器重试：有预算、有分类、有幂等 · 测试游记</title>
+  <meta name="description" content="为暂时性失败设计有上限的重试，保留第一次的错误证据。">
+  <meta property="og:title" content="执行器重试：有预算、有分类、有幂等 · 测试游记">
+  <meta property="og:description" content="为暂时性失败设计有上限的重试，保留第一次的错误证据。">
+  <meta property="og:url" content="https://www.zhongxin.website/teaching-kuai/lessons/worker-retries.html">
+  <link rel="canonical" href="https://www.zhongxin.website/teaching-kuai/lessons/worker-retries.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
+  <script src="/js/blog.js?v=code-fold-20261126" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=extended-path-1">
+  <script src="/js/public-courses.js?v=extended-path-1" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记</a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/">视频</a><a href="/lab/" aria-current="location">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="wrap"><div class="public-course" data-course="teaching-kuai" data-current="worker-retries"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 测试平台与评测实战</a></div>
+    <header class="lesson-head"><p class="eyebrow"><a href="index.html#stage-engineering">构建稳定的执行系统</a> · 第 09 课 · 约 41 分钟</p><h1>执行器重试：有预算、有分类、有幂等</h1><p class="lead">为暂时性失败设计有上限的重试，保留第一次的错误证据。</p></header>
+    <div class="reading">
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <article class="lesson-content">
+        <section id="scene"><h2>先看场景</h2><p>写预约时，服务端成功保存但响应丢了；执行器重试如果用新编号，就会多写一条。</p><p class="course-term"><strong>幂等键：</strong>重试仍携带同一个逻辑操作标识；接收方把同一标识与请求内容绑定，只承认一次副作用。</p></section>
+        <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>先划分终态错误和暂时错误。</li><li>给请求分配稳定的逻辑标识。</li><li>预算内按计划等待后再尝试，并保留失败分类。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>class Transient(Exception):</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">写成功但响应丢失，执行器应该怎样恢复？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>先划分终态错误和暂时错误。</li><li>给请求分配稳定的逻辑标识。</li><li>预算内按计划等待后再尝试，并保留失败分类。</li><li>服务确认重复写只是取回旧结果。</li></ol>
+          <details class="snippet" open><summary>Python 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.py，再运行 python3 lesson.py。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>class Transient(Exception):
+    pass
+
+saved, attempts, delays = {}, [], []
+
+def write(key, value):
+    attempts.append(key)
+    if key in saved:
+        if saved[key] != value:
+            raise ValueError(&quot;idempotency conflict&quot;)
+        return saved[key]
+    saved[key] = value
+    raise Transient(&quot;response lost after commit&quot;)
+
+def run(key, value, max_attempts=3):
+    for i in range(max_attempts):
+        try:
+            return write(key, value)
+        except Transient:
+            if i + 1 == max_attempts:
+                raise
+            delays.append(2 ** i)
+    raise ValueError(&quot;empty retry budget&quot;)
+
+assert run(&quot;demo-key&quot;, &quot;slot-1&quot;) == &quot;slot-1&quot;
+assert len(saved) == 1
+assert attempts == [&quot;demo-key&quot;, &quot;demo-key&quot;]
+assert delays == [1]
+</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>把失败细分成可重试和不可重试</h3><p>输入验证不该重试，网络超时可重试但不表示未发生写入。有限次数以包含首次调用的总尝试数表示；示例显式记录等待预算但不实际睡眠。</p></div><div><h3>谁来保证不重写</h3><p>执行器传 stable-key，接收服务要持久化键与请求内容，拒绝同键不同内容。内存 dict 只说明行为，真实实现要用可靠存储和事务保护目标操作与幂等记录。</p></div><div><h3>预算、分类与抖动</h3><p>生产中也设总截止时间，叠加退避和少量随机抖动，避免多个执行器同步施压。把预算耗尽硬失败和业务拒绝分别计入报告；不要因为最终成功而抹掉第一次响应丢失。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>提交成功却无回执</dt><dd><strong>怎么触发：</strong>首次保存后抛暂时错误。</dd><dd><strong>怎么判断：</strong>第二次返回同一结果，不新增预约。</dd></div><div class="failure-card"><dt>同键不同载荷</dt><dd><strong>怎么触发：</strong>把预约槽位改掉但使用原键。</dd><dd><strong>怎么判断：</strong>拒绝并停止重试；原值仍在。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>暂时错误不等于没有副作用。</li><li>同键同载荷得到同一结果。</li><li>预算设为一时不发第二次请求。</li><li>逻辑操作重复提交不会多一条记录。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>重试只是重新尝试拿到结果；把潜在副作用和状态冲突当成一等问题处理。</p>
+        </section>
+        <section id="exercise"><h2>动手练习</h2><p>运行代码里的断言，然后只改一个输入，复现「提交成功却无回执」。先写预期再运行。</p></section>
+        <section id="check"><h2>自测</h2>
+          <form class="course-quiz" data-answer="0" data-right="答对了。重试只是重新尝试拿到结果；把潜在副作用和状态冲突当成一等问题处理。" data-wrong="这个选项不成立。再想想：重试只是重新尝试拿到结果；把潜在副作用和状态冲突当成一等问题处理。" hidden>
+            <fieldset><legend>写成功但响应丢失，执行器应该怎样恢复？</legend><label><input type="radio" name="check" value="0" required> 暂时故障才重试；每次使用相同键并限制预算</label><label><input type="radio" name="check" value="1" required> 任何错误都立即无限重试</label></fieldset>
+            <button type="submit">核对答案</button><p role="status" class="quiz-result"></p>
+          </form>
+          <noscript><p>写成功但响应丢失，执行器应该怎样恢复？</p><details><summary>查看答案</summary><p>暂时故障才重试；每次使用相同键并限制预算。重试只是重新尝试拿到结果；把潜在副作用和状态冲突当成一等问题处理。</p></details></noscript>
+        </section>
+        <div class="completion"><button type="button" id="complete-lesson" aria-pressed="false" hidden>标记为已学</button><p role="status" id="complete-status"></p></div>
+      </article>
+    </div>
+    <nav class="pagination" aria-label="课程分页"><a href="schedule.html" rel="prev">← 队列、调度与重复执行</a><a href="index.html">学习地图</a><a href="worker-leases.html" rel="next">租约与围栏号：让接手者成为唯一写者 →</a></nav></div></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>用固定样本验证模型改变后有没有退化 · 测试游记</title>
+  <meta name="description" content="把几何硬约束和偏好评分分开，保留失败个案。">
+  <meta property="og:title" content="用固定样本验证模型改变后有没有退化 · 测试游记">
+  <meta property="og:description" content="把几何硬约束和偏好评分分开，保留失败个案。">
+  <meta property="og:url" content="https://www.zhongxin.website/teaching-aihom/lessons/layout-eval.html">
+  <link rel="canonical" href="https://www.zhongxin.website/teaching-aihom/lessons/layout-eval.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
+  <script src="/js/blog.js?v=code-fold-20261126" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=extended-path-1">
+  <script src="/js/public-courses.js?v=extended-path-1" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记</a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/">视频</a><a href="/lab/" aria-current="location">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="wrap"><div class="public-course" data-course="teaching-aihom" data-current="layout-eval"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 应用全栈实战</a></div>
+    <header class="lesson-head"><p class="eyebrow"><a href="index.html#stage-quality">测试、观测与评测</a> · 第 22 课 · 约 39 分钟</p><h1>用固定样本验证模型改变后有没有退化</h1><p class="lead">把几何硬约束和偏好评分分开，保留失败个案。</p></header>
+    <div class="reading">
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <article class="lesson-content">
+        <section id="scene"><h2>先看场景</h2><p>换模型后，更多方案看起来漂亮，却有小房间交付越界。单一平均分可能隐藏这类退化。</p><p class="course-term"><strong>回归语料：</strong>每次用相同输入和判分规则重复运行的一组样本。</p></section>
+        <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>冻结同一组房间样本。</li><li>先判硬性规则。</li><li>再比较通过项的偏好分。</li><li>逐样本列出新失败。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>rooms = {&quot;narrow&quot;: 3, &quot;wide&quot;: 8, &quot;corner&quot;: 4}</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">怎样核实模型表现真的变好了，而非只是更适合挑出来的样本？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>固定样本和判分规则。</li><li>区分硬失败与偏好分。</li><li>比较同 ID 的两次结果。</li><li>保存新增失败的复现输入。</li></ol>
+          <details class="snippet" open><summary>Python 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.py，再运行 python3 lesson.py。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>rooms = {&quot;narrow&quot;: 3, &quot;wide&quot;: 8, &quot;corner&quot;: 4}
+baseline = {&quot;narrow&quot;: (1, 1, 3), &quot;wide&quot;: (2, 2, 4), &quot;corner&quot;: (0, 2, 4)}
+changed = {&quot;narrow&quot;: (2, 2, 5), &quot;wide&quot;: (1, 2, 5), &quot;corner&quot;: (0, 2, 4)}
+
+def score(outputs):
+    result = {}
+    for name, limit in rooms.items():
+        x, size, preference = outputs[name]
+        safe = x &gt;= 0 and size &gt; 0 and x + size &lt;= limit
+        result[name] = preference if safe else None
+    return result
+
+old, new = score(baseline), score(changed)
+regressions = [key for key in old if old[key] is not None and new[key] is None]
+paired = [key for key in rooms if old[key] is not None and new[key] is not None]
+delta = sum(new[key] - old[key] for key in paired) / len(paired)
+
+assert regressions == [&quot;narrow&quot;]
+assert paired == [&quot;wide&quot;, &quot;corner&quot;]
+assert delta == 0.5
+assert new[&quot;narrow&quot;] is None</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>规则优先且失败保留</h3><p>若输出侵占房间边界，再高的偏好分也无意义。示例先保留新增失败列表，再对双方都通过的项目比较得分。</p></div><div><h3>不能把筛掉的失败样本算成进步</h3><p>仅比较两个模型的通过项平均分可能比较的是不同样本。共同通过的样本适合成对比较；同时报告各模型通过集合。</p></div><div><h3>波动与版本</h3><p>真实模型可能随机。要保存基线系统参数、评分规则版本，并为高波动样本增加重复次数。本例只展示确定性判分与比较。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>增加越界但偏好更高</dt><dd><strong>怎么触发：</strong>狭长房间改用更宽家具。</dd><dd><strong>怎么判断：</strong>定位到 narrow，不能因共同样本软分增加就整体发布。</dd></div><div class="failure-card"><dt>比较集合错误</dt><dd><strong>怎么触发：</strong>只算各自通过项的均值。</dd><dd><strong>怎么判断：</strong>识别两个均值没有按同样输入比较；改看配对差。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>硬失败与偏好均值分开呈现。</li><li>新增越界由样本 ID 定位。</li><li>成功配对不吸收任何失败样本。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>先守住布局可用，再比较主观偏好，出问题就能复现。</p>
+        </section>
+        <section id="exercise"><h2>动手练习</h2><p>给不同模型输出相同四个样本，调高一项软偏好但引入一个越界。</p></section>
+        <section id="check"><h2>自测</h2>
+          <form class="course-quiz" data-answer="0" data-right="答对了。硬约束退化不能被软分抵消。" data-wrong="这个选项不成立。再想想：硬约束退化不能被软分抵消。" hidden>
+            <fieldset><legend>平均偏好更高，能覆盖新增越界吗？</legend><label><input type="radio" name="check" value="0" required> 不能</label><label><input type="radio" name="check" value="1" required> 能</label></fieldset>
+            <button type="submit">核对答案</button><p role="status" class="quiz-result"></p>
+          </form>
+          <noscript><p>平均偏好更高，能覆盖新增越界吗？</p><details><summary>查看答案</summary><p>不能。硬约束退化不能被软分抵消。</p></details></noscript>
+        </section>
+        <div class="completion"><button type="button" id="complete-lesson" aria-pressed="false" hidden>标记为已学</button><p role="status" id="complete-status"></p></div>
+      </article>
+    </div>
+    <nav class="pagination" aria-label="课程分页"><a href="latency-budget.html" rel="prev">← 区分等待、模型慢和渲染慢</a><a href="index.html">学习地图</a><a href="capstone.html" rel="next">综合实战：布局生成到故障恢复 →</a></nav></div></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>边界值与不变量：从几个例子扩展到一类输入 · 测试游记</title>
+  <meta name="description" content="用明确的输入边界和业务不变量解释为什么增加某条用例。">
+  <meta property="og:title" content="边界值与不变量：从几个例子扩展到一类输入 · 测试游记">
+  <meta property="og:description" content="用明确的输入边界和业务不变量解释为什么增加某条用例。">
+  <meta property="og:url" content="https://www.zhongxin.website/teaching-kuai/lessons/test-boundaries.html">
+  <link rel="canonical" href="https://www.zhongxin.website/teaching-kuai/lessons/test-boundaries.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
+  <script src="/js/blog.js?v=code-fold-20261126" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=extended-path-1">
+  <script src="/js/public-courses.js?v=extended-path-1" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记</a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/">视频</a><a href="/lab/" aria-current="location">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="wrap"><div class="public-course" data-course="teaching-kuai" data-current="test-boundaries"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 测试平台与评测实战</a></div>
+    <header class="lesson-head"><p class="eyebrow"><a href="index.html#stage-foundation">读懂一次测试运行</a> · 第 03 课 · 约 25 分钟</p><h1>边界值与不变量：从几个例子扩展到一类输入</h1><p class="lead">用明确的输入边界和业务不变量解释为什么增加某条用例。</p></header>
+    <div class="reading">
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <article class="lesson-content">
+        <section id="scene"><h2>先看场景</h2><p>CaseLab 要验证每个团队最多能预约几次。两个常规输入跑通不能说明边界正确，也不能说明排序变化时结果一致。</p><p class="course-term"><strong>不变量：</strong>一类输入变化前后必须保持的行为，例如改变记录顺序不能改变计数。</p></section>
+        <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>从规则提取最小值、最大值和两侧一格。</li><li>写出跨多组数据都应该成立的关系，例如调换无关记录顺序不该改变数量。</li><li>用循环枚举小范围输入，失败时报告实际输入而不只告诉你断言失败。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>capacity = 3
+assert ok(2) and ok(3) and not ok(4)</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">样例全过了，怎么找到写错一个比较符号或重复计数这类问题？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>写下预约数量的类型与区间。</li><li>枚举上限附近的合法和非法输入。</li><li>复制并重排记录，核对数量一致性。</li><li>对去重键重复的记录，验证统计幂等并记录反例。</li></ol>
+          <details class="snippet" open><summary>Python 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.py，再运行 python3 lesson.py。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>from itertools import permutations
+
+def accepts(value, limit):
+    return type(value) is int and 0 &lt;= value &lt;= limit
+
+def booked_count(rows):
+    return len({row[&#x27;id&#x27;] for row in rows if row[&#x27;status&#x27;] == &#x27;confirmed&#x27;})
+
+for limit in range(1, 6):
+    pairs = [(0, True), (limit - 1, True), (limit, True), (limit + 1, False), (-1, False)]
+    for value, expected in pairs:
+        assert accepts(value, limit) == expected, (value, limit)
+assert not accepts(True, 3)
+
+base = [
+    {&#x27;id&#x27;: &#x27;a&#x27;, &#x27;status&#x27;: &#x27;confirmed&#x27;},
+    {&#x27;id&#x27;: &#x27;b&#x27;, &#x27;status&#x27;: &#x27;cancelled&#x27;},
+    {&#x27;id&#x27;: &#x27;c&#x27;, &#x27;status&#x27;: &#x27;confirmed&#x27;},
+]
+assert booked_count(base) == 2
+for shuffled in permutations(base):
+    assert booked_count(shuffled) == booked_count(base)
+assert booked_count(base + base) == booked_count(base)
+assert booked_count([base[1]]) == 0</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>用边界对照比较符号</h3><p>accepts 同时检查类型和开闭区间。Python 中 bool 是 int 子类，这里用 type(value) is int，避免 True 被当成次数。写出输入约束比只给几个测试数字更有意义。</p></div><div><h3>用关系断言扩展用例，而不是复制同一个期望值</h3><p>换序与重复写入是一类变换。若业务按唯一预约编号计数，打乱顺序不能改变数量，重复发送同一批记录也不能让数量翻倍。</p></div><div><h3>用最小反例定位出错规则</h3><p>带着输入值写断言信息；当一批断言失败时，先用最小的失败值单跑。真实生成式测试可扩展范围并收缩反例；这里的确定性枚举用于先建立判断。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>上限错误</dt><dd><strong>怎么触发：</strong>将 &lt;= 改成 &lt; 或把边界对比写反。</dd><dd><strong>怎么判断：</strong>上限那一个输入失败，明确指出受影响限制值。</dd></div><div class="failure-card"><dt>真假值混进整数</dt><dd><strong>怎么触发：</strong>把 True 作为预约数量传入。</dd><dd><strong>怎么判断：</strong>它返回 False，不被解释为 1。</dd></div><div class="failure-card"><dt>重复记录抬高统计</dt><dd><strong>怎么触发：</strong>把同一批、同一预约编号的记录重复输入。</dd><dd><strong>怎么判断：</strong>唯一有效预约的总数保持不变。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>闭区间端点可用，端点外不可用。</li><li>类型错误与数值错误都能触发失败。</li><li>换序和同编号重复写入不改变计数。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>边界断言找比较符号错误，不变量断言找一整类数据变化下的错误。</p>
+        </section>
+        <section id="exercise"><h2>动手练习</h2><p>把示例里的 &lt;= 改成 &lt;，确认哪条断言报错；再补一个独立检查，防止负数被接受。</p></section>
+        <section id="check"><h2>自测</h2>
+          <form class="course-quiz" data-answer="0" data-right="答对了。边界两侧能揭露开闭区间写反，负数则检查输入校验。" data-wrong="这个选项不成立。再想想：边界两侧能揭露开闭区间写反，负数则检查输入校验。" hidden>
+            <fieldset><legend>测试预约上限为 3，最值得先覆盖哪一组？</legend><label><input type="radio" name="check" value="0" required> 2、3、4，另外检查无效的负数</label><label><input type="radio" name="check" value="1" required> 只测 1、2 和 100</label></fieldset>
+            <button type="submit">核对答案</button><p role="status" class="quiz-result"></p>
+          </form>
+          <noscript><p>测试预约上限为 3，最值得先覆盖哪一组？</p><details><summary>查看答案</summary><p>2、3、4，另外检查无效的负数。边界两侧能揭露开闭区间写反，负数则检查输入校验。</p></details></noscript>
+        </section>
+        <div class="completion"><button type="button" id="complete-lesson" aria-pressed="false" hidden>标记为已学</button><p role="status" id="complete-status"></p></div>
+      </article>
+    </div>
+    <nav class="pagination" aria-label="课程分页"><a href="test-layers.html" rel="prev">← 测试分层：用最短的路径发现缺陷</a><a href="index.html">学习地图</a><a href="replay-fixtures.html" rel="next">测试夹具：把时间、随机数和依赖固定下来 →</a></nav></div></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

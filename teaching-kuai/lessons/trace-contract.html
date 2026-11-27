@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>工具轨迹断言：检查参数、顺序与最终副作用 · 测试游记</title>
+  <meta name="description" content="让工具调用与业务状态都成为可验证的证据。">
+  <meta property="og:title" content="工具轨迹断言：检查参数、顺序与最终副作用 · 测试游记">
+  <meta property="og:description" content="让工具调用与业务状态都成为可验证的证据。">
+  <meta property="og:url" content="https://www.zhongxin.website/teaching-kuai/lessons/trace-contract.html">
+  <link rel="canonical" href="https://www.zhongxin.website/teaching-kuai/lessons/trace-contract.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
+  <script src="/js/blog.js?v=code-fold-20261126" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=extended-path-1">
+  <script src="/js/public-courses.js?v=extended-path-1" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记</a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/">视频</a><a href="/lab/" aria-current="location">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="wrap"><div class="public-course" data-course="teaching-kuai" data-current="trace-contract"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 测试平台与评测实战</a></div>
+    <header class="lesson-head"><p class="eyebrow"><a href="index.html#stage-evaluation">评测答案与工具过程</a> · 第 19 课 · 约 42 分钟</p><h1>工具轨迹断言：检查参数、顺序与最终副作用</h1><p class="lead">让工具调用与业务状态都成为可验证的证据。</p></header>
+    <div class="reading">
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <article class="lesson-content">
+        <section id="scene"><h2>先看场景</h2><p>Agent 告诉用户「预约了 A」，工具日志里确实出现写入，但参数是 B，而且同一写调用发生了两次。</p><p class="course-term"><strong>轨迹契约：</strong>事前约定本场景可以发生哪些动作、携带什么参数、出现什么顺序以及应留下什么状态。</p></section>
+        <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>捕捉确认、工具调用与响应序列。</li><li>用状态机检查确认在前、写入在后，并匹配槽位。</li><li>从独立存储读最终状态与条数。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>def check(events, final_rows, expected):</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">回复说对、工具名也对，为什么还能判失败？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>捕捉确认、工具调用与响应序列。</li><li>用状态机检查确认在前、写入在后，并匹配槽位。</li><li>从独立存储读最终状态与条数。</li><li>保留首次越界的事件号和前后状态差。</li></ol>
+          <details class="snippet" open><summary>Python 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.py，再运行 python3 lesson.py。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>def check(events, final_rows, expected):
+    confirmed, writes = False, 0
+    for index, (kind, slot) in enumerate(events):
+        if kind == &quot;confirm&quot;:
+            confirmed = slot == expected
+        elif kind == &quot;save&quot;:
+            writes += 1
+            if not confirmed or slot != expected or writes &gt; 1:
+                return (&quot;invalid_write&quot;, index)
+        elif kind != &quot;check&quot;:
+            return (&quot;unknown_action&quot;, index)
+    if writes != 1:
+        return (&quot;missing_write&quot;, None)
+    if final_rows != [expected]:
+        return (&quot;unexpected_state&quot;, None)
+    return (&quot;ok&quot;, None)
+
+normal = [(&quot;check&quot;, &quot;A&quot;), (&quot;confirm&quot;, &quot;A&quot;), (&quot;save&quot;, &quot;A&quot;)]
+assert check(normal, [&quot;A&quot;], &quot;A&quot;) == (&quot;ok&quot;, None)
+assert check(normal[:2] + [(&quot;save&quot;, &quot;B&quot;)], [&quot;B&quot;], &quot;A&quot;) == (&quot;invalid_write&quot;, 2)
+assert check(normal + [(&quot;save&quot;, &quot;A&quot;)], [&quot;A&quot;, &quot;A&quot;], &quot;A&quot;) == (&quot;invalid_write&quot;, 3)
+assert check(normal, [], &quot;A&quot;) == (&quot;unexpected_state&quot;, None)
+</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>事件里记录最小必要字段</h3><p>对教学预约，记录动作类型与合成槽位就够用。顺序来自同一运行的可信有序记录；真实分布式追踪若顺序不确定，应记录因果关系和缺失状态，不能只按未同步时钟硬排。</p></div><div><h3>正确顺序不等于正确载荷</h3><p>示例要求确认 A 且接下来写 A，错槽位无法通过。同类型动作重复也会失败。真实系统中相同幂等键的网络重试可能允许，轨迹契约应区分一次业务操作与多次传输。</p></div><div><h3>状态从另一处读</h3><p>工具说写入成功不等于确实保存，也不保证只保存一次。单独观察持久状态最可靠；例子把最终行列表作为独立输入，要求新出现的预约恰好是预期一条。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>写错槽位</dt><dd><strong>怎么触发：</strong>确认 A 后提交 save B。</dd><dd><strong>怎么判断：</strong>报告定位触发点，不把工具名正确算作通过。</dd></div><div class="failure-card"><dt>虚假成功</dt><dd><strong>怎么触发：</strong>工具报告写成功但状态读不到结果。</dd><dd><strong>怎么判断：</strong>错误归类为状态不符，不只归给文案。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>未确认就写被拦。</li><li>确认与写入的槽位相同。</li><li>重复写入检测。</li><li>工具回显和持久状态分别核对。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>给每一段证据一个独立观察点。名字、参数、顺序和结果必须分别检查。</p>
+        </section>
+        <section id="exercise"><h2>动手练习</h2><p>运行代码里的断言，然后只改一个输入，复现「写错槽位」。先写预期再运行。</p></section>
+        <section id="check"><h2>自测</h2>
+          <form class="course-quiz" data-answer="0" data-right="答对了。给每一段证据一个独立观察点。名字、参数、顺序和结果必须分别检查。" data-wrong="这个选项不成立。再想想：给每一段证据一个独立观察点。名字、参数、顺序和结果必须分别检查。" hidden>
+            <fieldset><legend>回复说对、工具名也对，为什么还能判失败？</legend><label><input type="radio" name="check" value="0" required> 同时看正确确认、写入参数、重试行为与最终状态</label><label><input type="radio" name="check" value="1" required> 只要工具名在轨迹里出现一次就判通过</label></fieldset>
+            <button type="submit">核对答案</button><p role="status" class="quiz-result"></p>
+          </form>
+          <noscript><p>回复说对、工具名也对，为什么还能判失败？</p><details><summary>查看答案</summary><p>同时看正确确认、写入参数、重试行为与最终状态。给每一段证据一个独立观察点。名字、参数、顺序和结果必须分别检查。</p></details></noscript>
+        </section>
+        <div class="completion"><button type="button" id="complete-lesson" aria-pressed="false" hidden>标记为已学</button><p role="status" id="complete-status"></p></div>
+      </article>
+    </div>
+    <nav class="pagination" aria-label="课程分页"><a href="model-grader.html" rel="prev">← 模型判分器：长度偏见、顺序偏见与盲测</a><a href="index.html">学习地图</a><a href="observability.html" rel="next">监控：区分评测退化与平台故障 →</a></nav></div></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

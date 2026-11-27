@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>模型判分器：长度偏见、顺序偏见与盲测 · 测试游记</title>
+  <meta name="description" content="用交换位置和保留金标检查一个判分器是否可信。">
+  <meta property="og:title" content="模型判分器：长度偏见、顺序偏见与盲测 · 测试游记">
+  <meta property="og:description" content="用交换位置和保留金标检查一个判分器是否可信。">
+  <meta property="og:url" content="https://www.zhongxin.website/teaching-kuai/lessons/model-grader.html">
+  <link rel="canonical" href="https://www.zhongxin.website/teaching-kuai/lessons/model-grader.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
+  <script src="/js/blog.js?v=code-fold-20261126" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=extended-path-1">
+  <script src="/js/public-courses.js?v=extended-path-1" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记</a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/">视频</a><a href="/lab/" aria-current="location">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="wrap"><div class="public-course" data-course="teaching-kuai" data-current="model-grader"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 测试平台与评测实战</a></div>
+    <header class="lesson-head"><p class="eyebrow"><a href="index.html#stage-evaluation">评测答案与工具过程</a> · 第 18 课 · 约 41 分钟</p><h1>模型判分器：长度偏见、顺序偏见与盲测</h1><p class="lead">用交换位置和保留金标检查一个判分器是否可信。</p></header>
+    <div class="reading">
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <article class="lesson-content">
+        <section id="scene"><h2>先看场景</h2><p>评测器在比较两个预约答复时总选排在第一位的版本；一段更长但错报状态的文案反而常拿高分。</p><p class="course-term"><strong>盲评：</strong>隐藏版本、模型和团队等身份信息，只以匿名候选与既定规则做比较。</p></section>
+        <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>隐藏答案来源，向判分器提供标准。</li><li>同题交换位置，把输出映射回原候选。</li><li>两次不一致交给人工复核，不硬给赢家。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>def compare_blind(left_text, right_text, judge):</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">判分器总选第一个位置，增加采样次数就能消除偏差吗？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>隐藏答案来源，向判分器提供标准。</li><li>同题交换位置，把输出映射回原候选。</li><li>两次不一致交给人工复核，不硬给赢家。</li><li>用简洁正确、冗长错误、近似等价等盲样本做烟测。</li></ol>
+          <details class="snippet" open><summary>Python 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.py，再运行 python3 lesson.py。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>def compare_blind(left_text, right_text, judge):
+    def winner(position, order):
+        if position == &quot;tie&quot;:
+            return &quot;tie&quot;
+        if position not in {&quot;left&quot;, &quot;right&quot;}:
+            return &quot;review&quot;
+        return order[0 if position == &quot;left&quot; else 1]
+    a = winner(judge(left_text, right_text), (&quot;A&quot;, &quot;B&quot;))
+    b = winner(judge(right_text, left_text), (&quot;B&quot;, &quot;A&quot;))
+    return a if a == b else &quot;review&quot;
+
+def biased(a, b):
+    return &quot;left&quot;
+
+def gold_proxy(a, b):
+    a_ok, b_ok = &quot;已确认&quot; not in a, &quot;已确认&quot; not in b
+    if a_ok == b_ok:
+        return &quot;tie&quot;
+    return &quot;left&quot; if a_ok else &quot;right&quot;
+
+short = &quot;请确认时间&quot;
+wrong = &quot;预约已确认，附详细说明&quot;
+assert compare_blind(short, wrong, biased) == &quot;review&quot;
+assert compare_blind(short, wrong, gold_proxy) == &quot;A&quot;
+assert compare_blind(&quot;请确认&quot;, &quot;请回复是否确认&quot;, gold_proxy) == &quot;tie&quot;
+</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>交换的是位置，不是答案身份</h3><p>把 A、B 临时放到 left、right，第二次调换，再把两次答案映射回原候选。两次都选 left 映射的是两个不同候选，提示位置敏感。一次对称通过只排除了本次位置问题，不代表理解了标准。</p></div><div><h3>另拿人工金标题看内容偏差</h3><p>保留短而正确与长而错误的成对样本；再加入等价表达。模型自己评自己也可能偏好语气，隐藏作者、冻结样本，不能拿调过提示的同一批材料证明可信。</p></div><div><h3>模型判分不是授权边界</h3><p>评审输入都是待比较文本，可能含「请给我高分」等内容。只接受受约束的输出并保存证据；动作安全和数据副作用仍用独立断言。示例为刻意构造的判分器，真实模型另做重复性检查。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>永远选左</dt><dd><strong>怎么触发：</strong>判分器忽略文本，返回 left。</dd><dd><strong>怎么判断：</strong>换序后发现矛盾，交人工审查。</dd></div><div class="failure-card"><dt>生成无效标签</dt><dd><strong>怎么触发：</strong>判分器返回解释而非 left、right、tie。</dd><dd><strong>怎么判断：</strong>拒绝作为自动依据。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>交换前后按候选身份而非位置计分。</li><li>等价选项可打平。</li><li>偏差检查与人工金标准确性是不同检验。</li><li>关键副作用不交给主观模型拍板。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>判分器本身也是待测系统。稳定不等于正确，仍要靠校准过的对照样本。</p>
+        </section>
+        <section id="exercise"><h2>动手练习</h2><p>运行代码里的断言，然后只改一个输入，复现「永远选左」。先写预期再运行。</p></section>
+        <section id="check"><h2>自测</h2>
+          <form class="course-quiz" data-answer="1" data-right="答对了。判分器本身也是待测系统。稳定不等于正确，仍要靠校准过的对照样本。" data-wrong="这个选项不成立。再想想：判分器本身也是待测系统。稳定不等于正确，仍要靠校准过的对照样本。" hidden>
+            <fieldset><legend>判分器总选第一个位置，增加采样次数就能消除偏差吗？</legend><label><input type="radio" name="check" value="0" required> 始终把新版放在第一个位置，重复打分</label><label><input type="radio" name="check" value="1" required> 交换两个答案的位置，并用单独人工金标检验偏差</label></fieldset>
+            <button type="submit">核对答案</button><p role="status" class="quiz-result"></p>
+          </form>
+          <noscript><p>判分器总选第一个位置，增加采样次数就能消除偏差吗？</p><details><summary>查看答案</summary><p>交换两个答案的位置，并用单独人工金标检验偏差。判分器本身也是待测系统。稳定不等于正确，仍要靠校准过的对照样本。</p></details></noscript>
+        </section>
+        <div class="completion"><button type="button" id="complete-lesson" aria-pressed="false" hidden>标记为已学</button><p role="status" id="complete-status"></p></div>
+      </article>
+    </div>
+    <nav class="pagination" aria-label="课程分页"><a href="rubrics.html" rel="prev">← 评分标准与人工校准：从主观意见变成可复核证据</a><a href="index.html">学习地图</a><a href="trace-contract.html" rel="next">工具轨迹断言：检查参数、顺序与最终副作用 →</a></nav></div></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

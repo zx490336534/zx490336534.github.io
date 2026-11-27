@@ -16,8 +16,8 @@
   <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
   <script src="/js/blog.js?v=code-fold-20261126" defer></script>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
-  <link rel="stylesheet" href="/css/public-courses.css?v=code-practice-1">
-  <script src="/js/public-courses.js?v=code-practice-1" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=extended-path-1">
+  <script src="/js/public-courses.js?v=extended-path-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -40,27 +40,58 @@
     <section class="hero">
       <div class="hero-copy"><p class="eyebrow">公开学习地图 / 项目驱动</p><h1>AI 测试平台与评测实战</h1>
       <p class="lead">从批量测试出发，走到 Agent 用例生成与可复现评测。</p><p>用虚构的 CaseLab 拆开调度、执行、看板与评分。适合测试开发，也适合想把 AI 评测做成工程能力的人。</p>
-      <p class="stats"><span>8 节</span><span>约 4 小时</span></p>
-      <div class="actions"><a class="button primary" id="resume" href="job.html">从第 1 课开始</a><a class="button" href="capstone.html">直接看实战</a></div></div>
+      <div class="actions"><a class="button primary" id="resume" href="job.html">从第 1 课开始</a><a class="button" href="#stage-practice">直接看实战</a></div></div>
       <aside class="learning-note"><p class="eyebrow">怎么学</p><h2>每一节，分两遍读</h2><ol><li><strong>第一遍跑通：</strong>从一个场景出发，画出正常调用链。</li><li><strong>第二遍读代码：</strong>顺着输入、分支和状态查到结果，用失败用例验证。</li><li><strong>最后做实战：</strong>跑示例项目，对照测试断言。</li></ol><p id="progress-text" hidden></p></aside>
     </section>
-    <div class="course-tools"><div id="filter-controls" hidden><label for="filter">筛选课程</label><div class="search-row"><input type="search" id="filter" placeholder="如：恢复、评测、003"><button type="button" id="clear-filter">清空</button></div><p class="sr-only" id="filter-status" role="status"></p></div><nav class="jump" aria-label="课程阶段"><a href="#stage-foundation">先跑通</a><a href="#stage-engineering">拆开关键机制</a><a href="#stage-practice">验证与交付</a></nav></div>
-    <div class="map"><section class="stage" id="stage-foundation"><h2>01 · 先跑通</h2><p>先认清链路、角色和状态，不急着接真实模型。</p><ol class="lesson-list"><li class="lesson-tile" data-lesson="job">
+    <div class="course-tools"><div id="filter-controls" hidden><label for="filter">筛选课程</label><div class="search-row"><input type="search" id="filter" placeholder="如：恢复、评测、003"><button type="button" id="clear-filter">清空</button></div><p class="sr-only" id="filter-status" role="status"></p></div><nav class="jump" aria-label="课程阶段"><a href="#stage-foundation">读懂一次测试运行</a><a href="#stage-engineering">构建稳定的执行系统</a><a href="#stage-regression">设计高信号回归</a><a href="#stage-evaluation">评测答案与工具过程</a><a href="#stage-release">建立可信发布门槛</a><a href="#stage-practice">端到端实战</a></nav></div>
+    <div class="map"><section class="stage" id="stage-foundation"><p class="stage-index">阶段 01</p><h2>读懂一次测试运行</h2><p>先区分测试层次、数据、接口契约和看板。产出：能复现同一失败的一份运行记录。</p><ol class="lesson-list"><li class="lesson-tile" data-lesson="job" data-keywords="执行异常">
   <a href="job.html"><span class="lesson-num">001</span><span class="lesson-text"><strong>一次回归如何从提交跑到结果</strong><span>先看清浏览器、任务服务和执行器三个角色。</span></span><span class="lesson-end"><span>21 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
-</li><li class="lesson-tile" data-lesson="schedule">
-  <a href="schedule.html"><span class="lesson-num">002</span><span class="lesson-text"><strong>队列、调度与重复执行</strong><span>区分按时投递、实际开始、写入结果三件事。</span></span><span class="lesson-end"><span>28 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
-</li></ol></section><section class="stage" id="stage-engineering"><h2>02 · 拆开关键机制</h2><p>把最容易藏问题的边界拿出来单独验证。</p><ol class="lesson-list"><li class="lesson-tile" data-lesson="dashboard">
-  <a href="dashboard.html"><span class="lesson-num">003</span><span class="lesson-text"><strong>任务看板：更新、恢复和分页</strong><span>让用户知道运行在等什么，并能在刷新后找到原进度。</span></span><span class="lesson-end"><span>28 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
-</li><li class="lesson-tile" data-lesson="contract">
-  <a href="contract.html"><span class="lesson-num">004</span><span class="lesson-text"><strong>跨语言调用：把契约当边界</strong><span>让任务服务、前端和工具执行器对参数和错误达成一致。</span></span><span class="lesson-end"><span>29 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
-</li><li class="lesson-tile" data-lesson="generate">
-  <a href="generate.html"><span class="lesson-num">005</span><span class="lesson-text"><strong>Agent 生成用例：生成、审查、执行分开</strong><span>把生成的用例看成候选，不把它当成执行证据。</span></span><span class="lesson-end"><span>30 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
-</li><li class="lesson-tile" data-lesson="eval">
-  <a href="eval.html"><span class="lesson-num">006</span><span class="lesson-text"><strong>评测：答案、工具过程和失败归因</strong><span>用小型数据集为 Agent 改动设一道可复现的回归门槛。</span></span><span class="lesson-end"><span>31 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
-</li></ol></section><section class="stage" id="stage-practice"><h2>03 · 验证与交付</h2><p>练习定位失败，最后交付可复现的实战报告。</p><ol class="lesson-list"><li class="lesson-tile" data-lesson="observability">
-  <a href="observability.html"><span class="lesson-num">007</span><span class="lesson-text"><strong>监控：区分评测退化与平台故障</strong><span>看三组指标判断先排模型、框架还是执行环境。</span></span><span class="lesson-end"><span>28 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
-</li><li class="lesson-tile" data-lesson="capstone">
-  <a href="capstone.html"><span class="lesson-num">008</span><span class="lesson-text"><strong>综合实战：评测回归流水线</strong><span>从一条需求走到用例、轨迹评分、复跑和报告。</span></span><span class="lesson-end"><span>45 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
+</li><li class="lesson-tile" data-lesson="test-layers" data-keywords="测试分层">
+  <a href="test-layers.html"><span class="lesson-num">002</span><span class="lesson-text"><strong>测试分层：用最短的路径发现缺陷</strong><span>对同一个预约问题，分别设计单元、契约和端到端测试。</span></span><span class="lesson-end"><span>36 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
+</li><li class="lesson-tile" data-lesson="test-boundaries" data-keywords="不变量">
+  <a href="test-boundaries.html"><span class="lesson-num">003</span><span class="lesson-text"><strong>边界值与不变量：从几个例子扩展到一类输入</strong><span>用明确的输入边界和业务不变量解释为什么增加某条用例。</span></span><span class="lesson-end"><span>25 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
+</li><li class="lesson-tile" data-lesson="replay-fixtures" data-keywords="测试夹具">
+  <a href="replay-fixtures.html"><span class="lesson-num">004</span><span class="lesson-text"><strong>测试夹具：把时间、随机数和依赖固定下来</strong><span>为限时预约构造可重复的输入和外部响应。</span></span><span class="lesson-end"><span>37 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
+</li><li class="lesson-tile" data-lesson="parallel-fixtures" data-keywords="用例夹具">
+  <a href="parallel-fixtures.html"><span class="lesson-num">005</span><span class="lesson-text"><strong>并行用例的数据隔离：谁创建，谁清理</strong><span>让同一条用例开多个执行器时，不争抢数据，也不清掉别人的结果。</span></span><span class="lesson-end"><span>26 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
+</li><li class="lesson-tile" data-lesson="contract" data-keywords="契约">
+  <a href="contract.html"><span class="lesson-num">006</span><span class="lesson-text"><strong>跨语言调用：把契约当边界</strong><span>让任务服务、前端和工具执行器对参数和错误达成一致。</span></span><span class="lesson-end"><span>29 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
+</li><li class="lesson-tile" data-lesson="dashboard" data-keywords="快照">
+  <a href="dashboard.html"><span class="lesson-num">007</span><span class="lesson-text"><strong>任务看板：更新、恢复和分页</strong><span>让用户知道运行在等什么，并能在刷新后找到原进度。</span></span><span class="lesson-end"><span>28 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
+</li></ol></section><section class="stage" id="stage-engineering"><p class="stage-index">阶段 02</p><h2>构建稳定的执行系统</h2><p>用重试、租约和取消应对任务争抢和执行失败。产出：任务调度状态图和故障边界测试。</p><ol class="lesson-list"><li class="lesson-tile" data-lesson="schedule" data-keywords="触发窗口">
+  <a href="schedule.html"><span class="lesson-num">008</span><span class="lesson-text"><strong>队列、调度与重复执行</strong><span>区分按时投递、实际开始、写入结果三件事。</span></span><span class="lesson-end"><span>28 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
+</li><li class="lesson-tile" data-lesson="worker-retries" data-keywords="幂等键">
+  <a href="worker-retries.html"><span class="lesson-num">009</span><span class="lesson-text"><strong>执行器重试：有预算、有分类、有幂等</strong><span>为暂时性失败设计有上限的重试，保留第一次的错误证据。</span></span><span class="lesson-end"><span>41 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
+</li><li class="lesson-tile" data-lesson="worker-leases" data-keywords="围栏号">
+  <a href="worker-leases.html"><span class="lesson-num">010</span><span class="lesson-text"><strong>租约与围栏号：让接手者成为唯一写者</strong><span>阻止失效执行器提交迟到的结果。</span></span><span class="lesson-end"><span>39 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
+</li><li class="lesson-tile" data-lesson="worker-cancel" data-keywords="协作取消">
+  <a href="worker-cancel.html"><span class="lesson-num">011</span><span class="lesson-text"><strong>取消不是关进程：如何表示已经开始的工作</strong><span>让取消请求停住后续工作，又不误报已经发生的结果。</span></span><span class="lesson-end"><span>36 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
+</li></ol></section><section class="stage" id="stage-regression"><p class="stage-index">阶段 03</p><h2>设计高信号回归</h2><p>让回归选对用例、定位偶发失败，再把生成结果送回可审查的测试流程。产出：带选择理由的回归用例。</p><ol class="lesson-list"><li class="lesson-tile" data-lesson="test-selection" data-keywords="变更影响图">
+  <a href="test-selection.html"><span class="lesson-num">012</span><span class="lesson-text"><strong>测试选择与覆盖：改了什么，最少要重跑什么</strong><span>按影响边界构建用例选择器，未知改动默认扩大范围。</span></span><span class="lesson-end"><span>36 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
+</li><li class="lesson-tile" data-lesson="flaky-tests" data-keywords="偶发失败">
+  <a href="flaky-tests.html"><span class="lesson-num">013</span><span class="lesson-text"><strong>偶发失败：用证据决定修测试还是修产品</strong><span>保留首次结果，区分偶发、稳定回归和环境中断。</span></span><span class="lesson-end"><span>36 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
+</li><li class="lesson-tile" data-lesson="generate" data-keywords="候选用例">
+  <a href="generate.html"><span class="lesson-num">014</span><span class="lesson-text"><strong>Agent 生成用例：生成、审查、执行分开</strong><span>把生成的用例看成候选，不把它当成执行证据。</span></span><span class="lesson-end"><span>30 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
+</li></ol></section><section class="stage" id="stage-evaluation"><p class="stage-index">阶段 04</p><h2>评测答案与工具过程</h2><p>用固定的数据版本、公平的评分和可核对的动作轨迹度量 Agent。产出：能解释每次扣分的评测报告。</p><ol class="lesson-list"><li class="lesson-tile" data-lesson="eval" data-keywords="工具轨迹">
+  <a href="eval.html"><span class="lesson-num">015</span><span class="lesson-text"><strong>评测：答案、工具过程和失败归因</strong><span>用小型数据集为 Agent 改动设一道可复现的回归门槛。</span></span><span class="lesson-end"><span>31 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
+</li><li class="lesson-tile" data-lesson="dataset-versioning" data-keywords="按组切分">
+  <a href="dataset-versioning.html"><span class="lesson-num">016</span><span class="lesson-text"><strong>评测数据集：版本、切分与泄漏检查</strong><span>构建不可混淆的训练、开发和盲测样本集。</span></span><span class="lesson-end"><span>40 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
+</li><li class="lesson-tile" data-lesson="rubrics" data-keywords="评分锚点">
+  <a href="rubrics.html"><span class="lesson-num">017</span><span class="lesson-text"><strong>评分标准与人工校准：从主观意见变成可复核证据</strong><span>把清晰、正确与关键风险拆成维度，通过双人盲评调整标准。</span></span><span class="lesson-end"><span>40 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
+</li><li class="lesson-tile" data-lesson="model-grader" data-keywords="盲评">
+  <a href="model-grader.html"><span class="lesson-num">018</span><span class="lesson-text"><strong>模型判分器：长度偏见、顺序偏见与盲测</strong><span>用交换位置和保留金标检查一个判分器是否可信。</span></span><span class="lesson-end"><span>41 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
+</li><li class="lesson-tile" data-lesson="trace-contract" data-keywords="轨迹契约">
+  <a href="trace-contract.html"><span class="lesson-num">019</span><span class="lesson-text"><strong>工具轨迹断言：检查参数、顺序与最终副作用</strong><span>让工具调用与业务状态都成为可验证的证据。</span></span><span class="lesson-end"><span>42 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
+</li></ol></section><section class="stage" id="stage-release"><p class="stage-index">阶段 05</p><h2>建立可信发布门槛</h2><p>把监控、统计不确定性和报告证据合起来，学习怎么作出上线或暂停的决定。</p><ol class="lesson-list"><li class="lesson-tile" data-lesson="observability" data-keywords="排队耗时">
+  <a href="observability.html"><span class="lesson-num">020</span><span class="lesson-text"><strong>监控：区分评测退化与平台故障</strong><span>看三组指标判断先排模型、框架还是执行环境。</span></span><span class="lesson-end"><span>28 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
+</li><li class="lesson-tile" data-lesson="gate-statistics" data-keywords="置信区间">
+  <a href="gate-statistics.html"><span class="lesson-num">021</span><span class="lesson-text"><strong>发布门槛：硬失败、样本量和统计不确定性</strong><span>把严重规则违规、样本不足和一般质量下降分成不同发布结果。</span></span><span class="lesson-end"><span>43 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
+</li><li class="lesson-tile" data-lesson="evidence-report" data-keywords="证据引用">
+  <a href="evidence-report.html"><span class="lesson-num">022</span><span class="lesson-text"><strong>回归报告：把失败链接到可复跑证据</strong><span>将前后对照变成可以分诊和重跑的动态清单。</span></span><span class="lesson-end"><span>38 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
+</li></ol></section><section class="stage" id="stage-practice"><p class="stage-index">阶段 06</p><h2>端到端实战</h2><p>给同一候选版本跑完整回归，用可追溯证据说明是否发布，并留下复跑步骤。</p><ol class="lesson-list"><li class="lesson-tile" data-lesson="capstone" data-keywords="回归门槛">
+  <a href="capstone.html"><span class="lesson-num">023</span><span class="lesson-text"><strong>综合实战：评测回归流水线</strong><span>从一条需求走到用例、轨迹评分、复跑和报告。</span></span><span class="lesson-end"><span>45 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
+</li><li class="lesson-tile" data-lesson="graduation" data-keywords="最小验收集">
+  <a href="graduation.html"><span class="lesson-num">024</span><span class="lesson-text"><strong>毕业项目：预约候选发布与故障演练</strong><span>将数据检查、规则判定、重放和报告合成可交付的一次演练。</span></span><span class="lesson-end"><span>54 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
 </li></ol></section><div class="empty" hidden><h2>没有找到相符课程</h2><p>试试更短的关键词，或者清空筛选看完整路线。</p></div></div>
     <aside class="related"><span>继续拓展</span><a href="/teaching-aihom/lessons/index.html">AI 应用全栈实战 →</a></aside></div></main>
   <footer class="wrap footer">

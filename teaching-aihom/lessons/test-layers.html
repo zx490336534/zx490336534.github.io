@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>一条布局需求如何拆成三层测试 · 测试游记</title>
+  <meta name="description" content="区分组件输入、接口契约与集成链路，让失败定位到具体边界。">
+  <meta property="og:title" content="一条布局需求如何拆成三层测试 · 测试游记">
+  <meta property="og:description" content="区分组件输入、接口契约与集成链路，让失败定位到具体边界。">
+  <meta property="og:url" content="https://www.zhongxin.website/teaching-aihom/lessons/test-layers.html">
+  <link rel="canonical" href="https://www.zhongxin.website/teaching-aihom/lessons/test-layers.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
+  <script src="/js/blog.js?v=code-fold-20261126" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=extended-path-1">
+  <script src="/js/public-courses.js?v=extended-path-1" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记</a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/">视频</a><a href="/lab/" aria-current="location">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="wrap"><div class="public-course" data-course="teaching-aihom" data-current="test-layers"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 应用全栈实战</a></div>
+    <header class="lesson-head"><p class="eyebrow"><a href="index.html#stage-quality">测试、观测与评测</a> · 第 18 课 · 约 36 分钟</p><h1>一条布局需求如何拆成三层测试</h1><p class="lead">区分组件输入、接口契约与集成链路，让失败定位到具体边界。</p></header>
+    <div class="reading">
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <article class="lesson-content">
+        <section id="scene"><h2>先看场景</h2><p>要测试「超时保留旧布局」。只写一条端到端会发现退化，却未必知道坏在 UI 状态、回执格式还是保存。</p><p class="course-term"><strong>契约测试：</strong>约束输入、输出及错误形状，保证两端对同一边界有相同理解。</p></section>
+        <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>把规则拆成三个可观测边界。</li><li>每层注入能控制的故障。</li><li>底层过了以后用一条窄集成覆盖链路。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>def view(response, old_revision):</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">失败时怎样一眼看出是前端逻辑、响应形状还是接线问题？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>纯 UI 接受各状态。</li><li>接口返回约定字段。</li><li>组合调用保留旧布局。</li><li>用错误路径定位负责层。</li></ol>
+          <details class="snippet" open><summary>Python 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.py，再运行 python3 lesson.py。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>def view(response, old_revision):
+    if response[&quot;kind&quot;] == &quot;ready&quot;:
+        return response[&quot;revision&quot;], &quot;none&quot;
+    action = &quot;retry&quot; if response[&quot;retryable&quot;] else &quot;edit&quot;
+    return old_revision, action
+
+def api(input_width, generate):
+    if input_width &lt;= 0:
+        return {&quot;kind&quot;: &quot;failed&quot;, &quot;retryable&quot;: False}
+    try:
+        return {&quot;kind&quot;: &quot;ready&quot;, &quot;revision&quot;: generate()}
+    except TimeoutError:
+        return {&quot;kind&quot;: &quot;failed&quot;, &quot;retryable&quot;: True}
+
+def slow():
+    raise TimeoutError()
+
+# Component-level state contract
+assert view({&quot;kind&quot;: &quot;failed&quot;, &quot;retryable&quot;: True}, 2) == (2, &quot;retry&quot;)
+# Interface shape contract
+assert api(3, slow) == {&quot;kind&quot;: &quot;failed&quot;, &quot;retryable&quot;: True}
+assert api(0, lambda: 1 / 0) == {&quot;kind&quot;: &quot;failed&quot;, &quot;retryable&quot;: False}
+# Integration of these two boundaries
+assert view(api(3, slow), 2) == (2, &quot;retry&quot;)
+assert view(api(3, lambda: 3), 2) == (3, &quot;none&quot;)</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>小测试不是假装整条链跑过</h3><p>view 接收失败只展示旧布局和重试动作。它能快速覆盖状态分支，但不证明服务实际会返回这个状态。</p></div><div><h3>契约保护跨层语义</h3><p>api 必须区分 retryable 与 invalid。单独断言结构能抓到字段名改动，即使 UI 的旧测试替身仍然通过。</p></div><div><h3>窄集成只盯实际连接</h3><p>通过把 api 的真实输出交给 view 拼起这一段。仍未涉及浏览器渲染、网络抖动或持久化，真实系统应明确未覆盖范围。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>接口错误分类改坏</dt><dd><strong>怎么触发：</strong>超时返回 retryable=False。</dd><dd><strong>怎么判断：</strong>契约测试指出错误，集成也不该再显示重试。</dd></div><div class="failure-card"><dt>视图映射改坏</dt><dd><strong>怎么触发：</strong>失败路径把旧版清空。</dd><dd><strong>怎么判断：</strong>不需要启动服务，组件断言直接失败。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>小测试分别只验证一个责任。</li><li>假模型超时能跑到重试 UI。</li><li>成功控制组更新版本，证明不是一律保留旧图。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>失败层知道在哪里，修复就不必靠猜。</p>
+        </section>
+        <section id="exercise"><h2>动手练习</h2><p>故意把错误码改成其他值，看最先能指出原因的测试是哪条。</p></section>
+        <section id="check"><h2>自测</h2>
+          <form class="course-quiz" data-answer="1" data-right="答对了。大测试只保留少数关键跨边界行为。" data-wrong="这个选项不成立。再想想：大测试只保留少数关键跨边界行为。" hidden>
+            <fieldset><legend>每一种输入组合都该用端到端测试吗？</legend><label><input type="radio" name="check" value="0" required> 应该</label><label><input type="radio" name="check" value="1" required> 边界值优先让快速小测试覆盖</label></fieldset>
+            <button type="submit">核对答案</button><p role="status" class="quiz-result"></p>
+          </form>
+          <noscript><p>每一种输入组合都该用端到端测试吗？</p><details><summary>查看答案</summary><p>边界值优先让快速小测试覆盖。大测试只保留少数关键跨边界行为。</p></details></noscript>
+        </section>
+        <div class="completion"><button type="button" id="complete-lesson" aria-pressed="false" hidden>标记为已学</button><p role="status" id="complete-status"></p></div>
+      </article>
+    </div>
+    <nav class="pagination" aria-label="课程分页"><a href="views.html" rel="prev">← 二维和三维怎么共用一份状态</a><a href="index.html">学习地图</a><a href="diagnosis.html" rel="next">按一次运行排查前端到模型的故障 →</a></nav></div></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

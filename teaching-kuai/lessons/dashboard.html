@@ -16,8 +16,8 @@
   <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
   <script src="/js/blog.js?v=code-fold-20261126" defer></script>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
-  <link rel="stylesheet" href="/css/public-courses.css?v=code-practice-1">
-  <script src="/js/public-courses.js?v=code-practice-1" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=extended-path-1">
+  <script src="/js/public-courses.js?v=extended-path-1" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">跳到正文</a>
@@ -37,7 +37,7 @@
     </div>
   </header>
   <main id="main" class="wrap"><div class="public-course" data-course="teaching-kuai" data-current="dashboard"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 测试平台与评测实战</a></div>
-    <header class="lesson-head"><p class="eyebrow">第 03 / 08 课 · 约 28 分钟</p><h1>任务看板：更新、恢复和分页</h1><p class="lead">让用户知道运行在等什么，并能在刷新后找到原进度。</p></header>
+    <header class="lesson-head"><p class="eyebrow"><a href="index.html#stage-foundation">读懂一次测试运行</a> · 第 07 课 · 约 28 分钟</p><h1>任务看板：更新、恢复和分页</h1><p class="lead">让用户知道运行在等什么，并能在刷新后找到原进度。</p></header>
     <div class="reading">
       <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
       <article class="lesson-content">
@@ -48,7 +48,7 @@ ready + selectedRun → fetchSnapshot(selectedRun)</code></pre></details></secti
           <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">先点「进行中」，立刻切到「失败」。第二个请求先回来，旧的晚回来。怎样防止旧结果覆盖新选择？</p>
           <h3>调用链</h3><ol class="course-flow"><li>切筛选时重置游标并启动新一代请求。</li><li>取消上代传输，同时保留代数判断。</li><li>只让当前代读回的成功或失败改变页面。</li><li>详情刷新按运行编号读快照；分页只使用当前查询的游标。</li></ol>
           <details class="snippet" open><summary>TypeScript 示例 <span>可折叠</span></summary>
-            <div class="course-code-tools"><p>阅读函数输入、状态变化和末尾的断言。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <div class="course-code-tools"><p>可复制到 lesson.ts，再用 Node.js 24 运行 node lesson.ts。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
             <pre><code>type Result = { rows: string[]; next?: string };
 type Load = (filter: string, signal: AbortSignal) =&gt; Promise&lt;Result&gt;;
 type State = { kind: &quot;loading&quot; | &quot;ready&quot; | &quot;empty&quot; | &quot;error&quot;;
@@ -108,7 +108,7 @@ void exercise();
         <div class="completion"><button type="button" id="complete-lesson" aria-pressed="false" hidden>标记为已学</button><p role="status" id="complete-status"></p></div>
       </article>
     </div>
-    <nav class="pagination" aria-label="课程分页"><a href="schedule.html" rel="prev">← 队列、调度与重复执行</a><a href="index.html">学习地图</a><a href="contract.html" rel="next">跨语言调用：把契约当边界 →</a></nav></div></main>
+    <nav class="pagination" aria-label="课程分页"><a href="contract.html" rel="prev">← 跨语言调用：把契约当边界</a><a href="index.html">学习地图</a><a href="schedule.html" rel="next">队列、调度与重复执行 →</a></nav></div></main>
   <footer class="wrap footer">
     <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
     <nav aria-label="页脚导航">

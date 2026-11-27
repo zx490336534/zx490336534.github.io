@@ -1,32 +1,63 @@
 """Render the two public learning maps and all their lessons deterministically."""
 from html import escape
 from pathlib import Path
-from course_curriculum import AI, QA, TERMS
+from course_curriculum import AI, QA, TERMS as CORE_TERMS
 from course_code_walkthroughs import AI_DEPTH, QA_DEPTH
+from course_roomlab_extension import ROOMLAB_EXTRA
+from course_caselab_extension import CASELAB_EXTRA
+from course_learning_paths import PATHS
+from course_extra_workshops import ROOM_WORKSHOPS, CASE_WORKSHOPS
 
 ROOT = Path(__file__).resolve().parents[1]
-COURSES = (
+CORE_COURSES = (
     ("teaching-aihom", "AI 应用全栈实战", "从一次布局生成，学会前后端联调与 Agent 故障恢复。",
      "用虚构的 RoomLab 串起界面、任务服务、Agent 和二维／三维视图。适合想从测试进入 AI 应用开发的人。", AI),
     ("teaching-kuai", "AI 测试平台与评测实战", "从批量测试出发，走到 Agent 用例生成与可复现评测。",
      "用虚构的 CaseLab 拆开调度、执行、看板与评分。适合测试开发，也适合想把 AI 评测做成工程能力的人。", QA),
 )
-DEEP = {"teaching-aihom": AI_DEPTH, "teaching-kuai": QA_DEPTH}
+EXTRAS = {
+    "teaching-aihom": ROOMLAB_EXTRA | ROOM_WORKSHOPS,
+    "teaching-kuai": CASELAB_EXTRA | CASE_WORKSHOPS,
+}
+_DEEP_CORE = {"teaching-aihom": AI_DEPTH, "teaching-kuai": QA_DEPTH}
+_DEEP_MIN_CORE = (13, 15, 17, 17, 16, 16, 16, 25)
 LABS = {
     "teaching-aihom": ("roomlab.py", "RoomLab", "RoomLab: all regression checks passed."),
     "teaching-kuai": ("caselab.py", "CaseLab", "CaseLab: all regression checks passed."),
 }
-DEEP_MIN = (13, 15, 17, 17, 16, 16, 16, 25)
-STAGES = (
-    ("foundation", "01 · 先跑通", "先认清链路、角色和状态，不急着接真实模型。", 0, 2),
-    ("engineering", "02 · 拆开关键机制", "把最容易藏问题的边界拿出来单独验证。", 2, 6),
-    ("practice", "03 · 验证与交付", "练习定位失败，最后交付可复现的实战报告。", 6, 8),
-)
+COURSES = []
+TERMS, DEEP, DURATION, STAGES = {}, {}, {}, {}
+
+
+def assemble_course(slug, core, stages, extra):
+    original = {record[0]: record for record in core}
+    overlap = set(original) & set(extra)
+    if overlap:
+        raise ValueError(f"Existing lesson keys cannot be reused: {sorted(overlap)}")
+    index = original | {key: data[0] for key, data in extra.items()}
+    ordered = [key for _, _, _, keys in stages for key in keys]
+    if len(ordered) != len(index) or set(ordered) != set(index):
+        raise ValueError(f"Invalid stage plan for {slug}; missing {set(index) - set(ordered)}, unknown {set(ordered) - set(index)}")
+    if any(index[key][0] != key for key in ordered):
+        raise ValueError(f"Mismatched lesson route for {slug}")
+    return [index[key] for key in ordered]
+
+
+for slug, label, intro, audience, core in CORE_COURSES:
+    extra = EXTRAS[slug]
+    STAGES[slug] = PATHS[slug]
+    lessons = assemble_course(slug, core, STAGES[slug], extra)
+    COURSES.append((slug, label, intro, audience, lessons))
+    TERMS[slug] = CORE_TERMS[slug] | {key: data[1] for key, data in extra.items()}
+    DEEP[slug] = _DEEP_CORE[slug] | {key: data[2] for key, data in extra.items()}
+    core_deep = dict(zip((record[0] for record in core), _DEEP_MIN_CORE))
+    DURATION[slug] = {record[0]: record[2] + core_deep.get(record[0], 14) for record in lessons}
+
 
 def page(shell, slug, title, description, path, body, current):
     course_path = f"/{slug}/lessons/{path}"
-    extra_head = ('<link rel="stylesheet" href="/css/public-courses.css?v=code-practice-1">\n  '
-                  '<script src="/js/public-courses.js?v=code-practice-1" defer></script>')
+    extra_head = ('<link rel="stylesheet" href="/css/public-courses.css?v=extended-path-1">\n  '
+                  '<script src="/js/public-courses.js?v=extended-path-1" defer></script>')
     content = (f'<div class="public-course" data-course="{slug}" data-current="{current}">'
                f'{body}</div>')
     return shell(title, course_path, content, description, extra_head)
@@ -39,26 +70,25 @@ def breadcrumbs(label=None):
     return f'<div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span>{part}</div>'
 
 def course_map(shell, slug, label, intro, audience, lessons):
-    total = sum(m[2] for m in lessons) + sum(DEEP_MIN)
-    hours, minutes = divmod(total, 60)
-    duration = f"{hours} 小时 {minutes} 分钟" if minutes else f"{hours} 小时"
+    index = {item[0]: (i, item) for i, item in enumerate(lessons, 1)}
     stage_html = []
-    for stage, title, subtitle, start, stop in STAGES:
+    for number, (stage, title, subtitle, keys) in enumerate(STAGES[slug], 1):
         cards = ''
-        for i, item in enumerate(lessons[start:stop], start + 1):
-            key, name, mins, goal, *_ = item
-            cards += f"""<li class="lesson-tile" data-lesson="{key}">
-  <a href="{lesson_href(item)}"><span class="lesson-num">{i:03}</span><span class="lesson-text"><strong>{escape(name)}</strong><span>{escape(goal)}</span></span><span class="lesson-end"><span>{mins + DEEP_MIN[i-1]} 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
+        for key in keys:
+            i, item = index[key]
+            _, name, _, goal, *_ = item
+            term = TERMS[slug][key][0]
+            cards += f"""<li class="lesson-tile" data-lesson="{key}" data-keywords="{escape(term, quote=True)}">
+  <a href="{lesson_href(item)}"><span class="lesson-num">{i:03}</span><span class="lesson-text"><strong>{escape(name)}</strong><span>{escape(goal)}</span></span><span class="lesson-end"><span>{DURATION[slug][key]} 分钟</span><span class="lesson-state"></span><span aria-hidden="true">↗</span></span></a>
 </li>"""
-        stage_html.append(f'<section class="stage" id="stage-{stage}"><h2>{title}</h2><p>{subtitle}</p><ol class="lesson-list">{cards}</ol></section>')
-    jumps = "".join(f'<a href="#stage-{stage}">{title.split(" · ")[-1]}</a>' for stage, title, *_ in STAGES)
+        stage_html.append(f'<section class="stage" id="stage-{stage}"><p class="stage-index">阶段 {number:02}</p><h2>{escape(title)}</h2><p>{escape(subtitle)}</p><ol class="lesson-list">{cards}</ol></section>')
+    jumps = "".join(f'<a href="#stage-{stage}">{escape(title)}</a>' for stage, title, *_ in STAGES[slug])
     other = next((s, name) for s, name, *_ in COURSES if s != slug)
     body = f"""{breadcrumbs()}
     <section class="hero">
       <div class="hero-copy"><p class="eyebrow">公开学习地图 / 项目驱动</p><h1>{escape(label)}</h1>
       <p class="lead">{escape(intro)}</p><p>{escape(audience)}</p>
-      <p class="stats"><span>{len(lessons)} 节</span><span>约 {duration}</span></p>
-      <div class="actions"><a class="button primary" id="resume" href="{lesson_href(lessons[0])}">从第 1 课开始</a><a class="button" href="{lesson_href(lessons[-1])}">直接看实战</a></div></div>
+      <div class="actions"><a class="button primary" id="resume" href="{lesson_href(lessons[0])}">从第 1 课开始</a><a class="button" href="#stage-practice">直接看实战</a></div></div>
       <aside class="learning-note"><p class="eyebrow">怎么学</p><h2>每一节，分两遍读</h2><ol><li><strong>第一遍跑通：</strong>从一个场景出发，画出正常调用链。</li><li><strong>第二遍读代码：</strong>顺着输入、分支和状态查到结果，用失败用例验证。</li><li><strong>最后做实战：</strong>跑示例项目，对照测试断言。</li></ol><p id="progress-text" hidden></p></aside>
     </section>
     <div class="course-tools"><div id="filter-controls" hidden><label for="filter">筛选课程</label><div class="search-row"><input type="search" id="filter" placeholder="如：恢复、评测、003"><button type="button" id="clear-filter">清空</button></div><p class="sr-only" id="filter-status" role="status"></p></div><nav class="jump" aria-label="课程阶段">{jumps}</nav></div>
@@ -71,7 +101,7 @@ def code_walkthrough(slug, key):
     code_label, run_hint = {
         "javascript": ("JavaScript", "可复制到 lesson.cjs，再运行 node lesson.cjs。"),
         "python": ("Python", "可复制到 lesson.py，再运行 python3 lesson.py。"),
-        "typescript": ("TypeScript", "阅读函数输入、状态变化和末尾的断言。"),
+        "typescript": ("TypeScript", "可复制到 lesson.ts，再用 Node.js 24 运行 node lesson.ts。"),
         "sql": ("SQL", "对照逻辑和约束阅读，表结构以示例为准。"),
         "java": ("Java", "对照函数的输入、异常分支和末尾的断言。"),
     }.get(language.lower(), (language, "对照调用链阅读示例。"))
@@ -136,9 +166,10 @@ def lesson_page(shell, slug, label, lessons, i):
       <div class="actions"><button type="button" data-run="normal">运行基线</button><button type="button" data-run="fault">注入故障</button></div>
       <pre><output aria-live="polite">选择一个场景开始。</output></pre></aside>""" if demo else ""
     project = reference_project(slug) if key == "capstone" else ""
+    stage = next((stage_id, title) for stage_id, title, _, keys in STAGES[slug] if key in keys)
     intro_lab, exercise_lab = (lab, "") if i == 0 else ("", lab)
     body = f"""{breadcrumbs(label)}
-    <header class="lesson-head"><p class="eyebrow">第 {i+1:02} / {len(lessons):02} 课 · 约 {mins + DEEP_MIN[i]} 分钟</p><h1>{escape(title)}</h1><p class="lead">{escape(goal)}</p></header>
+    <header class="lesson-head"><p class="eyebrow"><a href="index.html#stage-{stage[0]}">{escape(stage[1])}</a> · 第 {i+1:02} 课 · 约 {DURATION[slug][key]} 分钟</p><h1>{escape(title)}</h1><p class="lead">{escape(goal)}</p></header>
     <div class="reading">
       <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
       <article class="lesson-content">

@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>区分流字节、消息帧与业务事件 · 测试游记</title>
+  <meta name="description" content="看清为什么数据一次读到了也不等于事件完整。">
+  <meta property="og:title" content="区分流字节、消息帧与业务事件 · 测试游记">
+  <meta property="og:description" content="看清为什么数据一次读到了也不等于事件完整。">
+  <meta property="og:url" content="https://www.zhongxin.website/teaching-aihom/lessons/stream-protocol.html">
+  <link rel="canonical" href="https://www.zhongxin.website/teaching-aihom/lessons/stream-protocol.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
+  <script src="/js/blog.js?v=code-fold-20261126" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=extended-path-1">
+  <script src="/js/public-courses.js?v=extended-path-1" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记</a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/">视频</a><a href="/lab/" aria-current="location">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="wrap"><div class="public-course" data-course="teaching-aihom" data-current="stream-protocol"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 应用全栈实战</a></div>
+    <header class="lesson-head"><p class="eyebrow"><a href="index.html#stage-events">还原流式与工具调用</a> · 第 10 课 · 约 38 分钟</p><h1>区分流字节、消息帧与业务事件</h1><p class="lead">看清为什么数据一次读到了也不等于事件完整。</p></header>
+    <div class="reading">
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <article class="lesson-content">
+        <section id="scene"><h2>先看场景</h2><p>RoomLab 的流在本地总是一次读完整行，稍慢的网络上却会在两个字符之间切分消息。</p><p class="course-term"><strong>分帧：</strong>从连续字节中识别出每条完整消息的边界。</p></section>
+        <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>用增量解码得到字符。</li><li>按协议边界拼完整帧。</li><li>只交付已经解析并校验的业务事件。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>import codecs, json</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">一个汉字分在两个传输块里时，为什么不能把每块直接转 JSON？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>收到字节片段。</li><li>UTF-8 增量解码。</li><li>按换行找完整记录。</li><li>解析后把事件交给状态更新。</li></ol>
+          <details class="snippet" open><summary>Python 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.py，再运行 python3 lesson.py。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>import codecs, json
+
+def frames(chunks, limit=120):
+    decoder = codecs.getincrementaldecoder(&quot;utf-8&quot;)()
+    pending = &quot;&quot;
+    for chunk in chunks:
+        pending += decoder.decode(chunk)
+        while &quot;\n&quot; in pending:
+            line, pending = pending.split(&quot;\n&quot;, 1)
+            if len(line) &gt; limit:
+                raise ValueError(&quot;frame too long&quot;)
+            if line.strip():
+                yield json.loads(line)
+        if len(pending) &gt; limit:
+            raise ValueError(&quot;frame too long&quot;)
+    pending += decoder.decode(b&quot;&quot;, final=True)
+    if pending:
+        raise ValueError(&quot;stream ended mid-frame&quot;)
+
+data = &#x27;{&quot;seq&quot;:1,&quot;phase&quot;:&quot;准备&quot;}\n{&quot;seq&quot;:2,&quot;phase&quot;:&quot;完成&quot;}\n&#x27;.encode()
+assert [x[&quot;seq&quot;] for x in frames([data])] == [1, 2]
+assert list(frames([data[i:i+1] for i in range(len(data))])) == list(frames([data]))
+try:
+    list(frames([b&#x27;{&quot;seq&quot;:3}&#x27;]))
+    raise AssertionError(&quot;expected truncation&quot;)
+except ValueError as exc:
+    assert &quot;mid-frame&quot; in str(exc)</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>这里只讲 NDJSON</h3><p>每条 JSON 一行并以换行结束；这不是 SSE 解析器。SSE 按空行结束事件，还支持多行 data 与重连标识。</p></div><div><h3>字节和字符是不同层</h3><p>增量解码器保存未完成的多字节字符；缓冲区保存未完成的消息。超长帧需要限制，免得坏流占满内存。</p></div><div><h3>断开时不要推测</h3><p>尾部无分隔符就不是完整帧。按上一课的状态快照恢复，而不是拿残句猜完成。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>UTF-8 拆开</dt><dd><strong>怎么触发：</strong>把字节逐个喂入。</dd><dd><strong>怎么判断：</strong>获得跟完整输入相同的两个事件。</dd></div><div class="failure-card"><dt>流无分隔符断开</dt><dd><strong>怎么触发：</strong>移除最后的换行。</dd><dd><strong>怎么判断：</strong>报告半帧，不能制造完成事件。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>任意切片不改变解码结果。</li><li>连续两帧不会合并成一条记录。</li><li>截断需走恢复，不将半帧当终态。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>先把传输数据恢复成合法消息，再用业务状态规则消费它。</p>
+        </section>
+        <section id="exercise"><h2>动手练习</h2><p>把同一个示例流切成 1 字节一段，比较与一次读完的结果。</p></section>
+        <section id="check"><h2>自测</h2>
+          <form class="course-quiz" data-answer="0" data-right="答对了。传输切片与应用分帧是两个层次。" data-wrong="这个选项不成立。再想想：传输切片与应用分帧是两个层次。" hidden>
+            <fieldset><legend>一次网络 read 等于一次业务消息吗？</legend><label><input type="radio" name="check" value="0" required> 不等于</label><label><input type="radio" name="check" value="1" required> 等于</label></fieldset>
+            <button type="submit">核对答案</button><p role="status" class="quiz-result"></p>
+          </form>
+          <noscript><p>一次网络 read 等于一次业务消息吗？</p><details><summary>查看答案</summary><p>不等于。传输切片与应用分帧是两个层次。</p></details></noscript>
+        </section>
+        <div class="completion"><button type="button" id="complete-lesson" aria-pressed="false" hidden>标记为已学</button><p role="status" id="complete-status"></p></div>
+      </article>
+    </div>
+    <nav class="pagination" aria-label="课程分页"><a href="retrieval-grounding.html" rel="prev">← 检索增强：让布局建议有证据可核对</a><a href="index.html">学习地图</a><a href="stream.html" rel="next">流式事件：断线、乱序与旧响应 →</a></nav></div></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>

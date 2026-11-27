@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>并行用例的数据隔离：谁创建，谁清理 · 测试游记</title>
+  <meta name="description" content="让同一条用例开多个执行器时，不争抢数据，也不清掉别人的结果。">
+  <meta property="og:title" content="并行用例的数据隔离：谁创建，谁清理 · 测试游记">
+  <meta property="og:description" content="让同一条用例开多个执行器时，不争抢数据，也不清掉别人的结果。">
+  <meta property="og:url" content="https://www.zhongxin.website/teaching-kuai/lessons/parallel-fixtures.html">
+  <link rel="canonical" href="https://www.zhongxin.website/teaching-kuai/lessons/parallel-fixtures.html">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
+  <script src="/js/blog.js?v=code-fold-20261126" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="/css/public-courses.css?v=extended-path-1">
+  <script src="/js/public-courses.js?v=extended-path-1" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记</a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/">视频</a><a href="/lab/" aria-current="location">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="wrap"><div class="public-course" data-course="teaching-kuai" data-current="parallel-fixtures"><div class="breadcrumbs"><a href="/lab/">工具与课程</a><span aria-hidden="true">/</span><a href="index.html">AI 测试平台与评测实战</a></div>
+    <header class="lesson-head"><p class="eyebrow"><a href="index.html#stage-foundation">读懂一次测试运行</a> · 第 05 课 · 约 26 分钟</p><h1>并行用例的数据隔离：谁创建，谁清理</h1><p class="lead">让同一条用例开多个执行器时，不争抢数据，也不清掉别人的结果。</p></header>
+    <div class="reading">
+      <nav class="reading-toc" aria-label="本课目录"><a href="#scene">先看场景</a><a href="#walkthrough">走一遍</a><a href="#code-walkthrough">读代码</a><a href="#failure-cases">复现失败</a><a href="#exercise">动手练习</a><a href="#check">自测</a></nav>
+      <article class="lesson-content">
+        <section id="scene"><h2>先看场景</h2><p>两条用例都要创建一个名为 review 的临时预约。串行时各自通过，跑到同一批次里却相互覆盖，一个执行器清理时还影响另一个。</p><p class="course-term"><strong>用例夹具：</strong>测试开始时准备数据、结束后清理数据的一段可复用逻辑。</p></section>
+        <section id="walkthrough"><h2>走一遍</h2><ol class="steps"><li>给每次测试调用生成独立作用域，而不是拿用例名称做全局唯一键。</li><li>在创建时保存真正拿到的资源标识。</li><li>正常结束和断言异常都走清理；清理只能删除自己创建的标识。</li></ol><details class="snippet" open><summary>合成示例 <span>可折叠</span></summary><pre><code>namespace = (run_id, worker_id, case_attempt_id)</code></pre></details></section>
+        <section id="code-walkthrough" class="code-walkthrough">
+          <p class="eyebrow">第二遍 · 把代码读懂</p><h2>代码拆解</h2><p class="code-question">串行回归都过了，一并行就偶尔找不到数据，应该先查哪里？</p>
+          <h3>调用链</h3><ol class="course-flow"><li>在每个执行尝试生成作用域，并在夹具中保存。</li><li>写入时绑定资源和作用域，读取也使用同一组键。</li><li>并行执行相同显示名的用例，验证彼此不可见或不互相覆盖。</li><li>在异常路径同样释放本次资源，核对另一个用例的记录仍存在。</li></ol>
+          <details class="snippet" open><summary>Python 示例 <span>可折叠</span></summary>
+            <div class="course-code-tools"><p>可复制到 lesson.py，再运行 python3 lesson.py。</p><button type="button" data-copy-example hidden>复制代码</button><span role="status"></span></div>
+            <pre><code>from contextlib import contextmanager
+
+rows = {}
+
+@contextmanager
+def booking(scope, display_name):
+    resource = (*scope, display_name)
+    if resource in rows:
+        raise ValueError(&#x27;fixture_collision&#x27;)
+    rows[resource] = {&#x27;status&#x27;: &#x27;reserved&#x27;}
+    try:
+        yield resource
+    finally:
+        rows.pop(resource, None)
+
+with booking((&#x27;run-1&#x27;, &#x27;worker-A&#x27;, &#x27;attempt-1&#x27;), &#x27;review&#x27;) as a:
+    try:
+        with booking((&#x27;run-1&#x27;, &#x27;worker-B&#x27;, &#x27;attempt-1&#x27;), &#x27;review&#x27;) as b:
+            assert a != b and len(rows) == 2
+            raise RuntimeError(&#x27;intentional test failure&#x27;)
+    except RuntimeError:
+        assert a in rows and b not in rows
+    with booking((&#x27;run-1&#x27;, &#x27;worker-B&#x27;, &#x27;attempt-2&#x27;), &#x27;review&#x27;) as retry:
+        assert retry != b and a in rows
+    assert a in rows
+assert not rows</code></pre>
+          </details>
+          <div class="code-notes"><div><h3>名称和所有权分开</h3><p>名称为人服务，并不适合做清理条件。资源标识至少包含运行、执行器和尝试；演示以元组表示隔离。相同用例重试需要新尝试身份，避免旧清理动作影响新运行。</p></div><div><h3>清理绑定主流程退出</h3><p>contextmanager 的 finally 段即使断言失败也会执行。真实进程被杀时 finally 不保证运行，因此需要按创建范围、租约或过期策略定期对账，而非直接全库删同名记录。</p></div><div><h3>把隔离验证成契约</h3><p>用嵌套调用模拟两个生命周期交错：当 B 出错退出时 A 尚在运行。断言清理只影响 B；不必等待真实线程竞速，仍可稳定捕捉共享命名空间错误。</p></div></div>
+        </section>
+        <section id="failure-cases" class="code-walkthrough">
+          <h2>复现失败</h2><dl class="failure-cards"><div class="failure-card"><dt>多个用例放进同一个作用域</dt><dd><strong>怎么触发：</strong>把作用域简化为 display_name，把同名运行嵌套。</dd><dd><strong>怎么判断：</strong>第二个创建发生冲突；夹具应该隔离而不是覆盖。</dd></div><div class="failure-card"><dt>清理按名称</dt><dd><strong>怎么触发：</strong>在 B 退出时删除所有名为 review 的行。</dd><dd><strong>怎么判断：</strong>A 的记录应该仍在，断言会暴露越界清理。</dd></div><div class="failure-card"><dt>重试复用身份</dt><dd><strong>怎么触发：</strong>给第二次尝试继续使用 attempt-1。</dd><dd><strong>怎么判断：</strong>新旧操作无法区分；验收要求重试身份不同。</dd></div></dl>
+          <h3>写下这些测试断言</h3><ul class="course-assertions"><li>同时运行的两条用例可以使用同一个显示名。</li><li>抛错后及时清理本次资源，其他用例保持可运行。</li><li>重试使用新身份；全部退出后没有临时记录。</li></ul>
+          <p class="course-term"><strong>这一课带走：</strong>先定义资源属于哪次执行，再让创建、读取、清理都遵守同一个范围。</p>
+        </section>
+        <section id="exercise"><h2>动手练习</h2><p>写一个用例故意抛错，再和另一条模拟用例交错运行；检查出错后的清理没有破坏其他会话。</p></section>
+        <section id="check"><h2>自测</h2>
+          <form class="course-quiz" data-answer="1" data-right="答对了。仅按显示名称会误删并发执行创建的同名资源。" data-wrong="这个选项不成立。再想想：仅按显示名称会误删并发执行创建的同名资源。" hidden>
+            <fieldset><legend>测试失败后的清理该按什么删除数据？</legend><label><input type="radio" name="check" value="0" required> 删除全部名为 review 的记录</label><label><input type="radio" name="check" value="1" required> 按本次实际创建的资源标识，且限定本次作用域</label></fieldset>
+            <button type="submit">核对答案</button><p role="status" class="quiz-result"></p>
+          </form>
+          <noscript><p>测试失败后的清理该按什么删除数据？</p><details><summary>查看答案</summary><p>按本次实际创建的资源标识，且限定本次作用域。仅按显示名称会误删并发执行创建的同名资源。</p></details></noscript>
+        </section>
+        <div class="completion"><button type="button" id="complete-lesson" aria-pressed="false" hidden>标记为已学</button><p role="status" id="complete-status"></p></div>
+      </article>
+    </div>
+    <nav class="pagination" aria-label="课程分页"><a href="replay-fixtures.html" rel="prev">← 测试夹具：把时间、随机数和依赖固定下来</a><a href="index.html">学习地图</a><a href="contract.html" rel="next">跨语言调用：把契约当边界 →</a></nav></div></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>
