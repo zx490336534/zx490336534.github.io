@@ -222,6 +222,9 @@ def video_library(posts, series, positions, site):
     return (
         '<section class="listing video-library"><header class="page-heading"><div><h1>视频讲解目录</h1>'
         f'<p>{escape(description)} · {len(published)} 支</p></div><a href="/series/">从系列开始 ↗</a></header>'
+        '<search class="video-filter" aria-label="筛选视频" hidden><label for="video-query">按片名或系列筛选视频</label>'
+        '<div><input type="search" id="video-query" autocomplete="off"><button type="button" hidden>清空筛选</button></div>'
+        '<p role="status"></p></search>'
         f'<section class="video-shelf"><h2>独立观看页与文字稿</h2><ul>{featured}</ul></section>'
         f'<nav class="series-stage-links" aria-label="跳到视频系列或主题">{nav}</nav>'
         + "".join(blocks) + "</section>", description, data

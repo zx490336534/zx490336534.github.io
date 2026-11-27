@@ -152,7 +152,7 @@
     color: var(--accent);
   }
   .quiz-options { list-style: none; }
-  .quiz-options li {
+  .quiz-options button {
     padding: 0.5rem 0.75rem;
     margin: 0.35rem 0;
     border-radius: 6px;
@@ -160,9 +160,9 @@
     transition: background 0.15s;
     border: 1px solid transparent;
   }
-  .quiz-options li:hover { background: #fde68a33; border-color: #fbbf24; }
-  .quiz-options li.correct { background: #dcfce7; border-color: #16a34a; }
-  .quiz-options li.wrong { background: #fee2e2; border-color: #ef4444; }
+  .quiz-options button:hover { background: #fde68a33; border-color: #fbbf24; }
+  .quiz-options button.correct { background: #dcfce7; border-color: #16a34a; }
+  .quiz-options button.wrong { background: #fee2e2; border-color: #ef4444; }
   .quiz-feedback {
     margin-top: 0.75rem;
     padding: 0.75rem;
@@ -477,36 +477,36 @@ graph.addConditionalEdge(
 <h2>6. 自检 Quiz</h2>
 
 <div class="quiz" id="quiz1">
-  <div class="quiz-title">Q1: StateGraph 编译（compile）后得到的 CompiledGraph 有什么特性？</div>
-  <ul class="quiz-options" data-correct="2">
-    <li onclick="checkQuiz('quiz1', 0)">A. 可以继续添加新节点和新边</li>
-    <li onclick="checkQuiz('quiz1', 1)">B. 每次执行前需要重新编译</li>
-    <li onclick="checkQuiz('quiz1', 2)">C. 不可变，且注册了检查点和拓扑验证</li>
-    <li onclick="checkQuiz('quiz1', 3)">D. 只能用 invoke() 执行，不能用 stream()</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz1-title">Q1: StateGraph 编译（compile）后得到的 CompiledGraph 有什么特性？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz1-title" data-correct="2">
+    <button type="button" onclick="checkQuiz('quiz1', 0)">A. 可以继续添加新节点和新边</button>
+    <button type="button" onclick="checkQuiz('quiz1', 1)">B. 每次执行前需要重新编译</button>
+    <button type="button" onclick="checkQuiz('quiz1', 2)">C. 不可变，且注册了检查点和拓扑验证</button>
+    <button type="button" onclick="checkQuiz('quiz1', 3)">D. 只能用 invoke() 执行，不能用 stream()</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <div class="quiz" id="quiz2">
-  <div class="quiz-title">Q2: 在 stream() 执行过程中，检查点（Checkpoint）在什么时候保存？</div>
-  <ul class="quiz-options" data-correct="1">
-    <li onclick="checkQuiz('quiz2', 0)">A. 只在图执行开始和结束时保存</li>
-    <li onclick="checkQuiz('quiz2', 1)">B. 每个节点执行完后自动保存</li>
-    <li onclick="checkQuiz('quiz2', 2)">C. 只在发生异常时保存</li>
-    <li onclick="checkQuiz('quiz2', 3)">D. 由开发者手动调用保存</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz2-title">Q2: 在 stream() 执行过程中，检查点（Checkpoint）在什么时候保存？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz2-title" data-correct="1">
+    <button type="button" onclick="checkQuiz('quiz2', 0)">A. 只在图执行开始和结束时保存</button>
+    <button type="button" onclick="checkQuiz('quiz2', 1)">B. 每个节点执行完后自动保存</button>
+    <button type="button" onclick="checkQuiz('quiz2', 2)">C. 只在发生异常时保存</button>
+    <button type="button" onclick="checkQuiz('quiz2', 3)">D. 由开发者手动调用保存</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <div class="quiz" id="quiz3">
-  <div class="quiz-title">Q3: 条件边（Conditional Edge）由哪两部分组成？</div>
-  <ul class="quiz-options" data-correct="2">
-    <li onclick="checkQuiz('quiz3', 0)">A. 源节点和目标节点</li>
-    <li onclick="checkQuiz('quiz3', 1)">B. 状态类型和 Reducer 函数</li>
-    <li onclick="checkQuiz('quiz3', 2)">C. 路由函数和路由表</li>
-    <li onclick="checkQuiz('quiz3', 3)">D. 检查点 ID 和会话 ID</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz3-title">Q3: 条件边（Conditional Edge）由哪两部分组成？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz3-title" data-correct="2">
+    <button type="button" onclick="checkQuiz('quiz3', 0)">A. 源节点和目标节点</button>
+    <button type="button" onclick="checkQuiz('quiz3', 1)">B. 状态类型和 Reducer 函数</button>
+    <button type="button" onclick="checkQuiz('quiz3', 2)">C. 路由函数和路由表</button>
+    <button type="button" onclick="checkQuiz('quiz3', 3)">D. 检查点 ID 和会话 ID</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <!-- ==================== Next ==================== -->
@@ -519,11 +519,12 @@ function checkQuiz(quizId, selected) {
   const quiz = document.getElementById(quizId);
   const options = quiz.querySelector('.quiz-options');
   const correct = parseInt(options.dataset.correct);
-  const items = options.querySelectorAll('li');
+  const items = options.querySelectorAll('button');
   const feedback = quiz.querySelector('.quiz-feedback');
 
   items.forEach((item, i) => {
     item.onclick = null;
+    item.setAttribute('aria-disabled', 'true');
     if (i === correct) item.classList.add('correct');
     if (i === selected && i !== correct) item.classList.add('wrong');
   });

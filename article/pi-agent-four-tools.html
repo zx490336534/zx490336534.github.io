@@ -98,7 +98,7 @@
             <track kind="captions" srclang="zh" label="简体中文" src="/videos/article-captions/pi-agent-four-tools-xiaoxiao.vtt">
             此浏览器无法内嵌播放，可以打开下方链接。
           </video>
-          <p class="article-video-download"><a href="https://github.com/zx490336534/zx490336534.github.io/releases/download/article-videos-20261125/pi-agent-four-tools-xiaoxiao.mp4">打开或下载 MP4 ↗</a></p>
+          <p class="article-video-download"><a href="https://github.com/zx490336534/zx490336534.github.io/releases/download/article-videos-20261125/pi-agent-four-tools-xiaoxiao.mp4">打开或下载 MP4 ↗</a></p><details class="video-transcript"><summary>阅读视频文字稿</summary><p>文章拿一次失败单测来说明，编码工具不一定要很多。</p><p>先用命令看到失败，再读实现和用例，修改最小范围，必要时加一个新的用例文件。</p><p>最后回到同一个测试重新运行。</p><p>四种动作能串起这个过程，但测试确实通过与助手说修好了，不是同一件事。</p><p>Pi 默认开放四类工具，但配置可以替换这批工具，也能接入扩展。</p><p>只想读懂一段代码时，没必要同时允许写文件和执行命令。</p><p>限制模型可选的工具是一层，进程到底能接触哪些文件和网络则是另一层。</p><p>别把工具列表当成一个能自动隔离整个系统的安全边界。</p><p>模型提出调用以后，运行时执行它，再把结果加入上下文。</p><p>扩展可以在执行前做额外检查，也可以在执行后整理结果。</p><p>如果需要证明自己完成验证，要留下实际退出状态、产物位置和范围。</p><p>模型拿到摘要方便继续，但摘要不该替代能回看的原始证据。</p><p>假如工具 A 要写一份配置，而工具 B 需要读取它，这两步就有顺序依赖。</p><p>即使前置检查按顺序进行，也不等于实际执行已经结束。</p><p>如果让两步进入同一次并发调用，工具 B 可能读到旧文件，或者什么也没读到。</p><p>把依赖拆成两次，等 A 的结果回来，再执行 B。</p><p>切换会话分支以后，聊天可以从更早的位置继续，但磁盘上的文件不会自动变回当时的样子。</p><p>要比两个实现，最好隔离工作区，或者先留下可恢复的检查点。</p><p>最后回到最初失败的测试，确认哪次修改和哪条结果对应。</p><p>能把这条链解释清楚，比再加十个工具更有用。</p></details>
         </section>
         <aside class="source-panel" aria-labelledby="article-sources-title"><h2 id="article-sources-title">来源与参考</h2><ul><li><a href="#%E5%8F%82%E8%80%83">参考（本文）</a></li></ul></aside>
         <div class="post-tags" aria-label="文章标签"><a href="/tags/Pi/">Pi</a><a href="/tags/Coding-Agent/">Coding Agent</a><a href="/tags/Harness/">Harness</a></div>

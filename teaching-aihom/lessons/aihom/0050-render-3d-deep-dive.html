@@ -151,7 +151,7 @@
     color: var(--accent);
   }
   .quiz-options { list-style: none; }
-  .quiz-options li {
+  .quiz-options button {
     padding: 0.5rem 0.75rem;
     margin: 0.35rem 0;
     border-radius: 6px;
@@ -159,9 +159,9 @@
     transition: background 0.15s;
     border: 1px solid transparent;
   }
-  .quiz-options li:hover { background: #fde68a33; border-color: #fbbf24; }
-  .quiz-options li.correct { background: #dcfce7; border-color: #16a34a; }
-  .quiz-options li.wrong { background: #fee2e2; border-color: #ef4444; }
+  .quiz-options button:hover { background: #fde68a33; border-color: #fbbf24; }
+  .quiz-options button.correct { background: #dcfce7; border-color: #16a34a; }
+  .quiz-options button.wrong { background: #fee2e2; border-color: #ef4444; }
   .quiz-feedback {
     margin-top: 0.75rem;
     padding: 0.75rem;
@@ -433,36 +433,36 @@ utils/iframeHelper/*
 <h2>9. 自检 Quiz</h2>
 
 <div class="quiz" id="quiz1">
-  <div class="quiz-title">Q1: OfflineRenderStateManager 初始化时，模板配置加载失败会怎样？</div>
-  <ul class="quiz-options" data-correct="2">
-    <li onclick="checkQuiz('quiz1', 0)">A. 页面白屏报错</li>
-    <li onclick="checkQuiz('quiz1', 1)">B. 跳过模板，不加载任何配置</li>
-    <li onclick="checkQuiz('quiz1', 2)">C. 静默回退到 DEFAULT_TEMPLATE_CONFIG.backgroundConfigData</li>
-    <li onclick="checkQuiz('quiz1', 3)">D. 弹窗提示用户手动重试</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz1-title">Q1: OfflineRenderStateManager 初始化时，模板配置加载失败会怎样？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz1-title" data-correct="2">
+    <button type="button" onclick="checkQuiz('quiz1', 0)">A. 页面白屏报错</button>
+    <button type="button" onclick="checkQuiz('quiz1', 1)">B. 跳过模板，不加载任何配置</button>
+    <button type="button" onclick="checkQuiz('quiz1', 2)">C. 静默回退到 DEFAULT_TEMPLATE_CONFIG.backgroundConfigData</button>
+    <button type="button" onclick="checkQuiz('quiz1', 3)">D. 弹窗提示用户手动重试</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <div class="quiz" id="quiz2">
-  <div class="quiz-title">Q2: 渲染任务提交后的轮询策略是什么？</div>
-  <ul class="quiz-options" data-correct="1">
-    <li onclick="checkQuiz('quiz2', 0)">A. 每 1 秒轮询一次，最长 5 分钟</li>
-    <li onclick="checkQuiz('quiz2', 1)">B. 每 6 秒轮询一次，最长 10 分钟</li>
-    <li onclick="checkQuiz('quiz2', 2)">C. 每 10 秒轮询一次，最长 15 分钟</li>
-    <li onclick="checkQuiz('quiz2', 3)">D. 每 30 秒轮询一次，最长 30 分钟</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz2-title">Q2: 渲染任务提交后的轮询策略是什么？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz2-title" data-correct="1">
+    <button type="button" onclick="checkQuiz('quiz2', 0)">A. 每 1 秒轮询一次，最长 5 分钟</button>
+    <button type="button" onclick="checkQuiz('quiz2', 1)">B. 每 6 秒轮询一次，最长 10 分钟</button>
+    <button type="button" onclick="checkQuiz('quiz2', 2)">C. 每 10 秒轮询一次，最长 15 分钟</button>
+    <button type="button" onclick="checkQuiz('quiz2', 3)">D. 每 30 秒轮询一次，最长 30 分钟</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <div class="quiz" id="quiz3">
-  <div class="quiz-title">Q3: 房间自动出图时，没有智能视角的情况下系统会怎么做？</div>
-  <ul class="quiz-options" data-correct="2">
-    <li onclick="checkQuiz('quiz3', 0)">A. 跳过该房间，不生成图片</li>
-    <li onclick="checkQuiz('quiz3', 1)">B. 使用默认的全局视角</li>
-    <li onclick="checkQuiz('quiz3', 2)">C. 调用 renderRoomCenterView() 用房间中心和当前相机方向计算视角</li>
-    <li onclick="checkQuiz('quiz3', 3)">D. 随机生成一个相机位置</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz3-title">Q3: 房间自动出图时，没有智能视角的情况下系统会怎么做？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz3-title" data-correct="2">
+    <button type="button" onclick="checkQuiz('quiz3', 0)">A. 跳过该房间，不生成图片</button>
+    <button type="button" onclick="checkQuiz('quiz3', 1)">B. 使用默认的全局视角</button>
+    <button type="button" onclick="checkQuiz('quiz3', 2)">C. 调用 renderRoomCenterView() 用房间中心和当前相机方向计算视角</button>
+    <button type="button" onclick="checkQuiz('quiz3', 3)">D. 随机生成一个相机位置</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <!-- ==================== Next ==================== -->
@@ -482,11 +482,12 @@ function checkQuiz(quizId, selected) {
   const quiz = document.getElementById(quizId);
   const options = quiz.querySelector('.quiz-options');
   const correct = parseInt(options.dataset.correct);
-  const items = options.querySelectorAll('li');
+  const items = options.querySelectorAll('button');
   const feedback = quiz.querySelector('.quiz-feedback');
 
   items.forEach((item, i) => {
     item.onclick = null;
+    item.setAttribute('aria-disabled', 'true');
     if (i === correct) item.classList.add('correct');
     if (i === selected && i !== correct) item.classList.add('wrong');
   });

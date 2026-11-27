@@ -27,9 +27,9 @@
   th{font-weight:500;color:var(--text-secondary);font-size:.82rem;text-transform:uppercase;letter-spacing:.04em}
   .quiz{background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0}
   .quiz-title{font-weight:700;margin-bottom:.75rem;color:var(--accent)}
-  .quiz-options{list-style:none}.quiz-options li{padding:.5rem .75rem;margin:.35rem 0;border-radius:6px;cursor:pointer;transition:background .15s;border:1px solid transparent}
-  .quiz-options li:hover{background:#fde68a33;border-color:#fbbf24}
-  .quiz-options li.correct{background:#dcfce7;border-color:#16a34a}.quiz-options li.wrong{background:#fee2e2;border-color:#ef4444}
+  .quiz-options{list-style:none}.quiz-options button{padding:.5rem .75rem;margin:.35rem 0;border-radius:6px;cursor:pointer;transition:background .15s;border:1px solid transparent}
+  .quiz-options button:hover{background:#fde68a33;border-color:#fbbf24}
+  .quiz-options button.correct{background:#dcfce7;border-color:#16a34a}.quiz-options button.wrong{background:#fee2e2;border-color:#ef4444}
   .quiz-feedback{margin-top:.75rem;padding:.75rem;border-radius:6px;display:none;font-size:.9rem}
   .flow{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin:1rem 0;font-size:.9rem}
   .flow-step{background:var(--surface);border:1px solid var(--border);padding:.4rem .8rem;border-radius:6px;white-space:nowrap}
@@ -146,43 +146,43 @@ src/pages/coohom-tool-bim-ai-home-render-3d/
 <h2>6. 自检 Quiz</h2>
 
 <div class="quiz" id="quiz1">
-  <div class="quiz-title">Q1: 离线渲染任务的轮询间隔是？</div>
-  <ul class="quiz-options" data-correct="1">
-    <li onclick="checkQuiz('quiz1',0)">A. 1 秒</li>
-    <li onclick="checkQuiz('quiz1',1)">B. 6 秒</li>
-    <li onclick="checkQuiz('quiz1',2)">C. 30 秒</li>
-    <li onclick="checkQuiz('quiz1',3)">D. 60 秒</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz1-title">Q1: 离线渲染任务的轮询间隔是？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz1-title" data-correct="1">
+    <button type="button" onclick="checkQuiz('quiz1',0)">A. 1 秒</button>
+    <button type="button" onclick="checkQuiz('quiz1',1)">B. 6 秒</button>
+    <button type="button" onclick="checkQuiz('quiz1',2)">C. 30 秒</button>
+    <button type="button" onclick="checkQuiz('quiz1',3)">D. 60 秒</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <div class="quiz" id="quiz2">
-  <div class="quiz-title">Q2: 模板灯光/背景配置缓存失败时会？</div>
-  <ul class="quiz-options" data-correct="2">
-    <li onclick="checkQuiz('quiz2',0)">A. 报错阻断页面</li>
-    <li onclick="checkQuiz('quiz2',1)">B. 重试 3 次后阻断</li>
-    <li onclick="checkQuiz('quiz2',2)">C. 回退到默认配置</li>
-    <li onclick="checkQuiz('quiz2',3)">D. 忽略该模板</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz2-title">Q2: 模板灯光/背景配置缓存失败时会？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz2-title" data-correct="2">
+    <button type="button" onclick="checkQuiz('quiz2',0)">A. 报错阻断页面</button>
+    <button type="button" onclick="checkQuiz('quiz2',1)">B. 重试 3 次后阻断</button>
+    <button type="button" onclick="checkQuiz('quiz2',2)">C. 回退到默认配置</button>
+    <button type="button" onclick="checkQuiz('quiz2',3)">D. 忽略该模板</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <div class="quiz" id="quiz3">
-  <div class="quiz-title">Q3: render-3d 的 3D 图形引擎是？</div>
-  <ul class="quiz-options" data-correct="0">
-    <li onclick="checkQuiz('quiz3',0)">A. @qunhe/egs (WebGL)</li>
-    <li onclick="checkQuiz('quiz3',1)">B. Three.js</li>
-    <li onclick="checkQuiz('quiz3',2)">C. Babylon.js</li>
-    <li onclick="checkQuiz('quiz3',3)">D. PixiJS</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz3-title">Q3: render-3d 的 3D 图形引擎是？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz3-title" data-correct="0">
+    <button type="button" onclick="checkQuiz('quiz3',0)">A. @qunhe/egs (WebGL)</button>
+    <button type="button" onclick="checkQuiz('quiz3',1)">B. Three.js</button>
+    <button type="button" onclick="checkQuiz('quiz3',2)">C. Babylon.js</button>
+    <button type="button" onclick="checkQuiz('quiz3',3)">D. PixiJS</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 
 </div>
 </div>
 <script>
-function checkQuiz(q,s){const o=document.getElementById(q).querySelector('.quiz-options'),c=parseInt(o.dataset.correct),i=o.querySelectorAll('li'),f=document.getElementById(q).querySelector('.quiz-feedback');i.forEach((x,n)=>{x.onclick=null;if(n===c)x.classList.add('correct');if(n===s&&n!==c)x.classList.add('wrong')});const fb={q1:{c:'✓ 对！渲染任务以 6 秒一次、最长 10 分钟的策略轮询 SnapshotTaskStatus。',w:'✗ 是 6 秒。渲染任务进入 renderTasks 后，以 6 秒一次轮询状态。'},q2:{c:'✓ 对！fetchAndCacheObsConfig 初始化失败时回退到 DEFAULT_TEMPLATE_CONFIG.backgroundConfigData。',w:'✗ 是回退到默认配置。不会阻断页面，但渲染风格会悄悄回到默认值。'},q3:{c:'✓ 对！render-3d 使用 @qunhe/egs 作为 WebGL 图形引擎。',w:'✗ 是 @qunhe/egs。这是群核自研的 WebGL 图形引擎。'}};f.style.display='block';f.textContent=s===c?fb[q].c:fb[q].w;f.style.background=s===c?'#dcfce7':'#fee2e2'}
+function checkQuiz(q,s){const o=document.getElementById(q).querySelector('.quiz-options'),c=parseInt(o.dataset.correct),i=o.querySelectorAll('button'),f=document.getElementById(q).querySelector('.quiz-feedback');i.forEach((x,n)=>{x.onclick=null;x.setAttribute('aria-disabled', 'true');if(n===c)x.classList.add('correct');if(n===s&&n!==c)x.classList.add('wrong')});const fb={quiz1:{c:'✓ 对！渲染任务以 6 秒一次、最长 10 分钟的策略轮询 SnapshotTaskStatus。',w:'✗ 是 6 秒。渲染任务进入 renderTasks 后，以 6 秒一次轮询状态。'},quiz2:{c:'✓ 对！fetchAndCacheObsConfig 初始化失败时回退到 DEFAULT_TEMPLATE_CONFIG.backgroundConfigData。',w:'✗ 是回退到默认配置。不会阻断页面，但渲染风格会悄悄回到默认值。'},quiz3:{c:'✓ 对！render-3d 使用 @qunhe/egs 作为 WebGL 图形引擎。',w:'✗ 是 @qunhe/egs。这是群核自研的 WebGL 图形引擎。'}};f.style.display='block';f.textContent=s===c?fb[q].c:fb[q].w;f.style.background=s===c?'#dcfce7':'#fee2e2'}
 </script>
 <nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 045</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0044-viewer-2d-overview.html">上一课：044 viewer-2d 项目全景</a><a class="primary" href="0046-ai-native-deep-dive.html">下一课：046 ai-native-service 深度追踪</a></div></nav>
 </body>

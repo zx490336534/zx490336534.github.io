@@ -4,7 +4,7 @@
 # ///
 """Verify the generated discovery contract and optionally compare protected content."""
 import argparse
-from collections import Counter
+from collections import Counter, defaultdict
 import json
 from pathlib import Path
 import subprocess
@@ -12,7 +12,7 @@ from urllib.parse import unquote, urlsplit
 import xml.etree.ElementTree as ET
 
 from bs4 import BeautifulSoup
-from blog_discovery import EVIDENCE, WATCH, watch_path
+from blog_discovery import EVIDENCE, WATCH, caption_cues, watch_path
 from blog_geo import HARD_RISK, SENSITIVE_LINE, compact, fragments, safe
 from blog_portfolio import dimensions
 
@@ -36,6 +36,36 @@ def old_page(commit, p):
     return BeautifulSoup(raw, "lxml")
 
 
+def verify_calendar_archive(calendar):
+    for year, months in calendar.items():
+        year_url = f"/archives/{year}/"
+        year_page = page(year_url)
+        links = year_page.select('nav[aria-label="按月份浏览"] a')
+        expected_links = [(f"{year_url}{month}/", f"{len(months[month])} 篇") for month in sorted(months, reverse=True)]
+        assert [(link["href"], link.small.get_text(strip=True)) for link in links] == expected_links, year_url
+        year_articles = []
+        for month in sorted(months, reverse=True):
+            month_url = f"{year_url}{month}/"
+            month_page = page(month_url)
+            expected = [path for _, path in sorted(months[month], reverse=True)]
+            assert [a["href"] for a in month_page.select(".post-list .row-title")] == expected, month_url
+            assert month_page.select_one(f'main a[href="{year_url}"]'), month_url
+            year_articles.extend(expected)
+        assert [a["href"] for a in year_page.select(".post-list .row-title")] == year_articles, year_url
+
+
+def verify_legacy_tag_pages():
+    for file in (ROOT / "tags").glob("*/page/*/index.html"):
+        parent = file.parents[2]
+        index = BeautifulSoup((parent / "index.html").read_text(), "lxml")
+        archived = BeautifulSoup(file.read_text(), "lxml")
+        back = archived.select_one("main .listing > p a")
+        assert back and target(back["href"]) == parent / "index.html", file
+        tag = index.h1.get_text(strip=True)
+        count = len(index.select(".post-list .row-title"))
+        assert back.get_text(strip=True) == f"查看「{tag}」标签当前收录的 {count} 篇文章", file
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--baseline", help="Git revision used to verify article body and video preservation")
@@ -55,9 +85,12 @@ def main():
         assert len(canonicals) == 1 and canonicals[0]["href"] == SITE + path, path
 
     guide_counts = Counter()
+    calendar = defaultdict(lambda: defaultdict(list))
     for article in articles:
         path = "/article/" + article.name
         markup = page(path)
+        published = markup.select_one('time[itemprop~="datePublished"]')["datetime"]
+        calendar[published[:4]][published[5:7]].append((published, path))
         data = json.loads(markup.select_one('script[type="application/ld+json"]').string)["@graph"]
         assert [v["@type"] for v in data] == ["BlogPosting", "BreadcrumbList"], path
         headline = markup.select_one("h1.post-title").get_text(strip=True)
@@ -99,9 +132,19 @@ def main():
                            for anchor, _, _, paragraphs in fragments(original_body)), path
             if kind == "restricted":
                 assert not guide.select("blockquote, nav") and [a["href"] for a in guide.select("a")] == ["#article-text"], path
+        track = markup.select_one(".article-video video track")
+        transcripts = markup.select(".article-video > details.video-transcript")
+        assert len(transcripts) == int(track is not None), path
+        if track:
+            assert transcripts[0].summary and not transcripts[0].has_attr("open"), path
+            assert [p.get_text() for p in transcripts[0].select("p")] == [
+                text for _, text in caption_cues(target(track["src"]))
+            ], path
         if args.baseline:
             previous = old_page(args.baseline, path)
             assert previous.select_one(".post-body").decode_contents() == markup.select_one(".post-body").decode_contents(), path
+            for panel in [*previous.select(".article-video > .video-transcript"), *transcripts]:
+                panel.decompose()
             assert str(previous.select_one(".article-video")) == str(markup.select_one(".article-video")), path
             for selector in (".article-cover", "a.source-link", 'meta[property="og:image"]'):
                 assert str(previous.select_one(selector)) == str(markup.select_one(selector)), (path, selector)
@@ -115,7 +158,7 @@ def main():
         sitemap_entry = next(entry for entry in sitemap.findall("map:url", NS) if entry.findtext("map:loc", namespaces=NS) == SITE + watch_path(slug))
         assert sitemap_entry.findtext("video:video/video:publication_date", namespaces=NS) == data["uploadDate"]
         assert sitemap_entry.findtext("video:video/video:content_loc", namespaces=NS) == source_url
-        cues = [line for line in target(cap).read_text().splitlines() if line and " --> " not in line and line != "WEBVTT"]
+        cues = [text for _, text in caption_cues(target(cap))]
         assert [p.get_text(strip=True) for p in markup.select(".watch-transcript section p")] == cues, slug
         art = page(f"/article/{slug}.html")
         assert art.select_one(".article-video video source")["src"] == source_url
@@ -209,6 +252,8 @@ def main():
         assert {a["href"] for a in watch.select("[data-watch-offset]")} == {c["url"].removeprefix(SITE + watch_path(slug)) for c in v["hasPart"]}
         assert len(v["hasPart"]) == 5 and len({c["startOffset"] for c in v["hasPart"]}) == 5
         assert watch.select_one('meta[property="og:image"]')["content"] == v["thumbnailUrl"][0]
+    verify_calendar_archive(calendar)
+    verify_legacy_tag_pages()
     for i in range(2, (len(articles) + 9)//10 + 1):
         alias, primary = page(f"/page/{i}/"), page(f"/archives/page/{i}/")
         assert alias.select_one('link[rel=canonical]')["href"] == SITE + f"/archives/page/{i}/"

@@ -21,6 +21,7 @@ import nh3
 import blog_discovery as discovery
 import blog_geo as geo
 import blog_portfolio as portfolio
+from blog_code import repair_python_spaces
 
 from blog_series import article_navigation, cards as series_cards, catalog_page, chapter_title, load_series, position_link, series_page
 from blog_topics import Topic, browser_page, links as taxonomy_links, read_catalog, topic_trail
@@ -100,6 +101,8 @@ IMPORTED_TERMINAL_CHROME = frozenset({
 
 
 def prepare_body(body, title):
+    for block in body.select("pre"):
+        repair_python_spaces(block)
     for image in body.select("pre img[src]"):
         if urlsplit(image["src"]).path not in IMPORTED_TERMINAL_CHROME:
             continue
@@ -605,8 +608,12 @@ def article_video(post):
     entry = post.video
     src = html(entry["src"])
     poster = html(entry.get("poster", post.display_cover))
-    track = (f'<track kind="captions" srclang="zh" label="简体中文" src="{html(entry["captions"])}">'
-             if entry.get("captions") else "")
+    track = transcript = ""
+    if entry.get("captions"):
+        track = f'<track kind="captions" srclang="zh" label="简体中文" src="{html(entry["captions"])}">'
+        cues = discovery.caption_cues(ROOT / entry["captions"].lstrip("/"))
+        paragraphs = "".join(f"<p>{html(text)}</p>" for _, text in cues)
+        transcript = f'<details class="video-transcript"><summary>阅读视频文字稿</summary>{paragraphs}</details>'
     return f"""<section class="article-video" aria-labelledby="article-video-title">
           <header class="article-video-header">
             <h2 id="article-video-title">本文视频讲解</h2>
@@ -616,7 +623,7 @@ def article_video(post):
             {track}
             此浏览器无法内嵌播放，可以打开下方链接。
           </video>
-          <p class="article-video-download"><a href="{src}">打开或下载 MP4 ↗</a></p>
+          <p class="article-video-download"><a href="{src}">打开或下载 MP4 ↗</a></p>{transcript}
         </section>"""
 
 
@@ -757,9 +764,15 @@ def taxonomy_listings(groups, historical=None):
         for file in (ROOT / unquote(url).lstrip("/")).glob("page/*/index.html"):
             page = int(file.parent.name)
             path = path_for(file)
-            paged_members = historical.get(url, (name, members))[1] if historical else members
+            if historical is None:
+                paged_members = members
+                intro = f'<p><a href="{html(url)}">查看此主题的全部文章</a></p>'
+            else:
+                paged_members = historical.get(url, (name, members))[1]
+                intro = (f'<p>历史标签归档 · 第 {page} 页 · <a href="{html(url)}">'
+                         f'查看「{html(name)}」标签当前收录的 {len(members)} 篇文章</a></p>')
             write(path, listing(name, path, paged_members[10 * (page - 1):10 * page],
-                                intro=f'<p><a href="{html(url)}">查看此主题的全部文章</a></p>'))
+                                intro=intro))
 
 
 def category_indexes(posts, catalog):
@@ -792,6 +805,17 @@ def tag_indexes(posts):
     write("/tags/", shell("标签", "/tags/", body))
 
 
+def archive_period(path, title, members, intro):
+    write(path, listing(title, path, members, intro=intro, noindex=not members))
+    # Keep previously published paginated addresses and their ten-article slices.
+    for file in (ROOT / path.lstrip("/")).glob("page/*/index.html"):
+        number = int(file.parent.name)
+        start = 10 * (number - 1)
+        back = f'<p><a href="{path}">查看{title}</a></p>'
+        page = path_for(file)
+        write(page, listing(f"{title} · 第 {number} 页", page, members[start:start + 10], intro=back))
+
+
 def archive(posts):
     by_year = defaultdict(list)
     for post in posts:
@@ -806,22 +830,26 @@ def archive(posts):
                f'<p>{len(posts)} 篇文章</p></div><a href="/categories/">按分类浏览 ↗</a></header>'
                f'<nav class="archive-nav" aria-label="按年份浏览">{years}</nav>{entries}</section>')
     write("/archives/", shell("文章归档", "/archives/", content))
+    archives_dir = ROOT / "archives"
+    for file in archives_dir.glob("[0-9][0-9][0-9][0-9]/index.html"):
+        by_year.setdefault(file.parent.name, [])
     for year, members in by_year.items():
         path = f"/archives/{year}/"
-        write(path, listing(f"{year} 年文章", path, members))
-    for file in (ROOT / "archives").glob("[0-9][0-9][0-9][0-9]/**/index.html"):
-        segments = file.relative_to(ROOT / "archives").parts[:-1]
-        year = segments[0]
-        if len(segments) == 1:
-            continue
-        month = segments[1] if segments[1].isdigit() else ''
-        match = year + (f"-{month}" if month else '')
-        members = [post for post in by_year[year] if post.day.startswith(match)]
-        if "page" in segments:
-            start = 10 * (int(segments[-1]) - 1)
-            members = members[start:start + 10]
-        path = path_for(file)
-        write(path, listing(f"{year} 年" + (f" {int(month)} 月" if month else "") + "文章", path, members))
+        by_month = defaultdict(list)
+        for post in members:
+            by_month[post.day[5:7]].append(post)
+        links = "".join(f'<a href="{path}{month}/">{int(month)} 月<small>{len(month_posts)} 篇</small></a>'
+                        for month, month_posts in by_month.items())
+        month_nav = (f'<nav class="archive-nav" aria-label="按月份浏览">{links}</nav>' if links else
+                     '<p>此年份暂无文章。<a href="/archives/">查看文章归档</a></p>')
+        archive_period(path, f"{year} 年文章", members, month_nav)
+        # Keep old bookmarks usable even after the last post moves to another month.
+        for file in (archives_dir / year).glob("[0-9][0-9]/index.html"):
+            by_month.setdefault(file.parent.name, [])
+        for month, month_posts in by_month.items():
+            back = f'<a href="{path}">查看 {year} 年全部文章</a>'
+            intro = f'<p>{back}</p>' if month_posts else f'<p>此月份暂无文章。{back}</p>'
+            archive_period(f"{path}{month}/", f"{year} 年 {int(month)} 月文章", month_posts, intro)
 
 
 def indexes(posts, catalog):

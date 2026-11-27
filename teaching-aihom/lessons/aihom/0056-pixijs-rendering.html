@@ -151,7 +151,7 @@
     color: var(--accent);
   }
   .quiz-options { list-style: none; }
-  .quiz-options li {
+  .quiz-options button {
     padding: 0.5rem 0.75rem;
     margin: 0.35rem 0;
     border-radius: 6px;
@@ -159,9 +159,9 @@
     transition: background 0.15s;
     border: 1px solid transparent;
   }
-  .quiz-options li:hover { background: #fde68a33; border-color: #fbbf24; }
-  .quiz-options li.correct { background: #dcfce7; border-color: #16a34a; }
-  .quiz-options li.wrong { background: #fee2e2; border-color: #ef4444; }
+  .quiz-options button:hover { background: #fde68a33; border-color: #fbbf24; }
+  .quiz-options button.correct { background: #dcfce7; border-color: #16a34a; }
+  .quiz-options button.wrong { background: #fee2e2; border-color: #ef4444; }
   .quiz-feedback {
     margin-top: 0.75rem;
     padding: 0.75rem;
@@ -428,49 +428,50 @@ room.endFill();
 <h2>Quiz</h2>
 
 <div class="quiz" id="q1">
-  <div class="quiz-title">Q1: PixiJS 中，用来绘制矩形、线段等程序化矢量图形的显示对象是？</div>
-  <ul class="quiz-options">
-    <li data-correct="false" onclick="checkQuiz(1, this)">A. Container</li>
-    <li data-correct="false" onclick="checkQuiz(1, this)">B. Sprite</li>
-    <li data-correct="true" onclick="checkQuiz(1, this)">C. Graphics</li>
-    <li data-correct="false" onclick="checkQuiz(1, this)">D. Text</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="q1-title">Q1: PixiJS 中，用来绘制矩形、线段等程序化矢量图形的显示对象是？</div>
+  <div class="quiz-options" role="group" aria-labelledby="q1-title">
+    <button type="button" data-correct="false" onclick="checkQuiz(1, this)">A. Container</button>
+    <button type="button" data-correct="false" onclick="checkQuiz(1, this)">B. Sprite</button>
+    <button type="button" data-correct="true" onclick="checkQuiz(1, this)">C. Graphics</button>
+    <button type="button" data-correct="false" onclick="checkQuiz(1, this)">D. Text</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <div class="quiz" id="q2">
-  <div class="quiz-title">Q2: 在 viewer-2d 中，Scene2D 初始化时注册视图和系统的入口文件是？</div>
-  <ul class="quiz-options">
-    <li data-correct="false" onclick="checkQuiz(2, this)">A. src/app/App.tsx</li>
-    <li data-correct="true" onclick="checkQuiz(2, this)">B. src/app/Scene2D/DfScene2d.tsx</li>
-    <li data-correct="false" onclick="checkQuiz(2, this)">C. src/app/state.ts</li>
-    <li data-correct="false" onclick="checkQuiz(2, this)">D. src/StateManager/index.ts</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="q2-title">Q2: 在 viewer-2d 中，Scene2D 初始化时注册视图和系统的入口文件是？</div>
+  <div class="quiz-options" role="group" aria-labelledby="q2-title">
+    <button type="button" data-correct="false" onclick="checkQuiz(2, this)">A. src/app/App.tsx</button>
+    <button type="button" data-correct="true" onclick="checkQuiz(2, this)">B. src/app/Scene2D/DfScene2d.tsx</button>
+    <button type="button" data-correct="false" onclick="checkQuiz(2, this)">C. src/app/state.ts</button>
+    <button type="button" data-correct="false" onclick="checkQuiz(2, this)">D. src/StateManager/index.ts</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <div class="quiz" id="q3">
-  <div class="quiz-title">Q3: 以下哪种做法<strong>不属于</strong> PixiJS 场景的性能优化手段？</div>
-  <ul class="quiz-options">
-    <li data-correct="false" onclick="checkQuiz(3, this)">A. 使用 cacheAsBitmap 缓存静态矢量图形</li>
-    <li data-correct="false" onclick="checkQuiz(3, this)">B. 将视口外的图元设置 visible = false</li>
-    <li data-correct="true" onclick="checkQuiz(3, this)">C. 在每帧都全量重建所有 Graphics 对象</li>
-    <li data-correct="false" onclick="checkQuiz(3, this)">D. 使用 hitArea 自定义碰撞区域</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="q3-title">Q3: 以下哪种做法<strong>不属于</strong> PixiJS 场景的性能优化手段？</div>
+  <div class="quiz-options" role="group" aria-labelledby="q3-title">
+    <button type="button" data-correct="false" onclick="checkQuiz(3, this)">A. 使用 cacheAsBitmap 缓存静态矢量图形</button>
+    <button type="button" data-correct="false" onclick="checkQuiz(3, this)">B. 将视口外的图元设置 visible = false</button>
+    <button type="button" data-correct="true" onclick="checkQuiz(3, this)">C. 在每帧都全量重建所有 Graphics 对象</button>
+    <button type="button" data-correct="false" onclick="checkQuiz(3, this)">D. 使用 hitArea 自定义碰撞区域</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 </div>
 
 <script>
 function checkQuiz(qNum, el) {
   const quiz = document.getElementById('q' + qNum);
-  const options = quiz.querySelectorAll('.quiz-options li');
+  const options = quiz.querySelectorAll('.quiz-options button');
   const feedback = quiz.querySelector('.quiz-feedback');
   const alreadyAnswered = quiz.querySelector('.correct, .wrong');
   if (alreadyAnswered) return;
 
   const isCorrect = el.dataset.correct === 'true';
   options.forEach(opt => {
+    opt.setAttribute('aria-disabled', 'true');
     if (opt.dataset.correct === 'true') opt.classList.add('correct');
     else opt.classList.add('wrong');
   });

@@ -151,7 +151,7 @@
     color: var(--accent);
   }
   .quiz-options { list-style: none; }
-  .quiz-options li {
+  .quiz-options button {
     padding: 0.5rem 0.75rem;
     margin: 0.35rem 0;
     border-radius: 6px;
@@ -159,9 +159,9 @@
     transition: background 0.15s;
     border: 1px solid transparent;
   }
-  .quiz-options li:hover { background: #fde68a33; border-color: #fbbf24; }
-  .quiz-options li.correct { background: #dcfce7; border-color: #16a34a; }
-  .quiz-options li.wrong { background: #fee2e2; border-color: #ef4444; }
+  .quiz-options button:hover { background: #fde68a33; border-color: #fbbf24; }
+  .quiz-options button.correct { background: #dcfce7; border-color: #16a34a; }
+  .quiz-options button.wrong { background: #fee2e2; border-color: #ef4444; }
   .quiz-feedback {
     margin-top: 0.75rem;
     padding: 0.75rem;
@@ -408,46 +408,47 @@
 <h2>Quiz</h2>
 
 <div class="quiz" id="quiz1">
-  <div class="quiz-title">Q1: 新增实体类型的正确步骤是什么？</div>
-  <ul class="quiz-options">
-    <li onclick="checkQuiz(1, this, false)">A. 直接在 Entities/ 下创建文件，不需要其他步骤</li>
-    <li onclick="checkQuiz(1, this, true)">B. 创建实体类 → 实现 Drawable → 注册到 onInit → 连接数据源 → 手动验证</li>
-    <li onclick="checkQuiz(1, this, false)">C. 只需要在 DfScene2d.tsx 中添加一行注册代码</li>
-    <li onclick="checkQuiz(1, this, false)">D. 创建实体类后自动注册到场景</li>
-  </ul>
-  <div class="quiz-feedback" id="quiz1-feedback"></div>
+  <div class="quiz-title" id="quiz1-title">Q1: 新增实体类型的正确步骤是什么？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz1-title">
+    <button type="button" onclick="checkQuiz(1, this, false)">A. 直接在 Entities/ 下创建文件，不需要其他步骤</button>
+    <button type="button" onclick="checkQuiz(1, this, true)">B. 创建实体类 → 实现 Drawable → 注册到 onInit → 连接数据源 → 手动验证</button>
+    <button type="button" onclick="checkQuiz(1, this, false)">C. 只需要在 DfScene2d.tsx 中添加一行注册代码</button>
+    <button type="button" onclick="checkQuiz(1, this, false)">D. 创建实体类后自动注册到场景</button>
+  </div>
+  <div class="quiz-feedback" role="status" id="quiz1-feedback"></div>
 </div>
 
 <div class="quiz" id="quiz2">
-  <div class="quiz-title">Q2: Playwright 测试的基准域名和启动方式是什么？</div>
-  <ul class="quiz-options">
-    <li onclick="checkQuiz(2, this, false)">A. localhost:3000，通过 Playwright 自动启动</li>
-    <li onclick="checkQuiz(2, this, false)">B. localhost:7000，通过 playwright/scripts/dev-server.cjs 启动</li>
-    <li onclick="checkQuiz(2, this, true)">C. https://localhost:7000，需先手动运行 yarn dev 启动</li>
-    <li onclick="checkQuiz(2, this, false)">D. localhost:8080，通过 webpack-dev-server 启动</li>
-  </ul>
-  <div class="quiz-feedback" id="quiz2-feedback"></div>
+  <div class="quiz-title" id="quiz2-title">Q2: Playwright 测试的基准域名和启动方式是什么？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz2-title">
+    <button type="button" onclick="checkQuiz(2, this, false)">A. localhost:3000，通过 Playwright 自动启动</button>
+    <button type="button" onclick="checkQuiz(2, this, false)">B. localhost:7000，通过 playwright/scripts/dev-server.cjs 启动</button>
+    <button type="button" onclick="checkQuiz(2, this, true)">C. https://localhost:7000，需先手动运行 yarn dev 启动</button>
+    <button type="button" onclick="checkQuiz(2, this, false)">D. localhost:8080，通过 webpack-dev-server 启动</button>
+  </div>
+  <div class="quiz-feedback" role="status" id="quiz2-feedback"></div>
 </div>
 
 <div class="quiz" id="quiz3">
-  <div class="quiz-title">Q3: 以下哪项操作是 viewer-2d 编码规范明确禁止的？</div>
-  <ul class="quiz-options">
-    <li onclick="checkQuiz(3, this, false)">A. 使用 enum 定义常量类型</li>
-    <li onclick="checkQuiz(3, this, false)">B. 使用 import type 导入类型</li>
-    <li onclick="checkQuiz(3, this, true)">C. 在 finally 块中使用 return 语句</li>
-    <li onclick="checkQuiz(3, this, false)">D. 使用路径别名 @/* 导入模块</li>
-  </ul>
-  <div class="quiz-feedback" id="quiz3-feedback"></div>
+  <div class="quiz-title" id="quiz3-title">Q3: 以下哪项操作是 viewer-2d 编码规范明确禁止的？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz3-title">
+    <button type="button" onclick="checkQuiz(3, this, false)">A. 使用 enum 定义常量类型</button>
+    <button type="button" onclick="checkQuiz(3, this, false)">B. 使用 import type 导入类型</button>
+    <button type="button" onclick="checkQuiz(3, this, true)">C. 在 finally 块中使用 return 语句</button>
+    <button type="button" onclick="checkQuiz(3, this, false)">D. 使用路径别名 @/* 导入模块</button>
+  </div>
+  <div class="quiz-feedback" role="status" id="quiz3-feedback"></div>
 </div>
 </div>
 
 <script>
 function checkQuiz(q, el, correct) {
   var quiz = document.getElementById('quiz' + q);
-  var options = quiz.querySelectorAll('.quiz-options li');
+  var options = quiz.querySelectorAll('.quiz-options button');
   var feedback = document.getElementById('quiz' + q + '-feedback');
   for (var i = 0; i < options.length; i++) {
     options[i].onclick = null;
+    options[i].setAttribute('aria-disabled', 'true');
     if (options[i] !== el) options[i].style.opacity = '0.5';
   }
   if (correct) {

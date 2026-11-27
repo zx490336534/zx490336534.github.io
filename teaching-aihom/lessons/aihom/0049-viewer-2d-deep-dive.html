@@ -151,7 +151,7 @@
     color: var(--accent);
   }
   .quiz-options { list-style: none; }
-  .quiz-options li {
+  .quiz-options button {
     padding: 0.5rem 0.75rem;
     margin: 0.35rem 0;
     border-radius: 6px;
@@ -159,9 +159,9 @@
     transition: background 0.15s;
     border: 1px solid transparent;
   }
-  .quiz-options li:hover { background: #fde68a33; border-color: #fbbf24; }
-  .quiz-options li.correct { background: #dcfce7; border-color: #16a34a; }
-  .quiz-options li.wrong { background: #fee2e2; border-color: #ef4444; }
+  .quiz-options button:hover { background: #fde68a33; border-color: #fbbf24; }
+  .quiz-options button.correct { background: #dcfce7; border-color: #16a34a; }
+  .quiz-options button.wrong { background: #fee2e2; border-color: #ef4444; }
   .quiz-feedback {
     margin-top: 0.75rem;
     padding: 0.75rem;
@@ -406,46 +406,47 @@
 <h2>Quiz</h2>
 
 <div class="quiz" id="quiz1">
-  <div class="quiz-title">Q1: DfScene2d.tsx 的 onInit 方法主要完成哪些工作？</div>
-  <ul class="quiz-options">
-    <li onclick="checkQuiz(1, this, false)">A. 仅创建 Scene2D 实例并挂载 DOM</li>
-    <li onclick="checkQuiz(1, this, true)">B. 创建实例、注册视图、注册系统、注册推理能力、激活场景</li>
-    <li onclick="checkQuiz(1, this, false)">C. 仅注册视图和系统，实例创建由外部完成</li>
-    <li onclick="checkQuiz(1, this, false)">D. 仅初始化 RootStateManager</li>
-  </ul>
-  <div class="quiz-feedback" id="quiz1-feedback"></div>
+  <div class="quiz-title" id="quiz1-title">Q1: DfScene2d.tsx 的 onInit 方法主要完成哪些工作？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz1-title">
+    <button type="button" onclick="checkQuiz(1, this, false)">A. 仅创建 Scene2D 实例并挂载 DOM</button>
+    <button type="button" onclick="checkQuiz(1, this, true)">B. 创建实例、注册视图、注册系统、注册推理能力、激活场景</button>
+    <button type="button" onclick="checkQuiz(1, this, false)">C. 仅注册视图和系统，实例创建由外部完成</button>
+    <button type="button" onclick="checkQuiz(1, this, false)">D. 仅初始化 RootStateManager</button>
+  </div>
+  <div class="quiz-feedback" role="status" id="quiz1-feedback"></div>
 </div>
 
 <div class="quiz" id="quiz2">
-  <div class="quiz-title">Q2: RootStateManager 组合了哪些子状态？</div>
-  <ul class="quiz-options">
-    <li onclick="checkQuiz(2, this, false)">A. 仅 scene2D 和 layout</li>
-    <li onclick="checkQuiz(2, this, false)">B. scene2D、selectedControl、layout</li>
-    <li onclick="checkQuiz(2, this, true)">C. scene2D、selectedControl、layout、outside、leftPanel</li>
-    <li onclick="checkQuiz(2, this, false)">D. scene2D、outside、leftPanel</li>
-  </ul>
-  <div class="quiz-feedback" id="quiz2-feedback"></div>
+  <div class="quiz-title" id="quiz2-title">Q2: RootStateManager 组合了哪些子状态？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz2-title">
+    <button type="button" onclick="checkQuiz(2, this, false)">A. 仅 scene2D 和 layout</button>
+    <button type="button" onclick="checkQuiz(2, this, false)">B. scene2D、selectedControl、layout</button>
+    <button type="button" onclick="checkQuiz(2, this, true)">C. scene2D、selectedControl、layout、outside、leftPanel</button>
+    <button type="button" onclick="checkQuiz(2, this, false)">D. scene2D、outside、leftPanel</button>
+  </div>
+  <div class="quiz-feedback" role="status" id="quiz2-feedback"></div>
 </div>
 
 <div class="quiz" id="quiz3">
-  <div class="quiz-title">Q3: 以下哪项改动不属于 viewer-2d 的高风险改动？</div>
-  <ul class="quiz-options">
-    <li onclick="checkQuiz(3, this, false)">A. 修改 DfScene2d.tsx 中系统注册顺序</li>
-    <li onclick="checkQuiz(3, this, false)">B. 修改外部同步逻辑（房间信息、预览图）</li>
-    <li onclick="checkQuiz(3, this, true)">C. 修改纯展示层的 CSS 样式</li>
-    <li onclick="checkQuiz(3, this, false)">D. 修改实体类与 Drawable 的绑定关系</li>
-  </ul>
-  <div class="quiz-feedback" id="quiz3-feedback"></div>
+  <div class="quiz-title" id="quiz3-title">Q3: 以下哪项改动不属于 viewer-2d 的高风险改动？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz3-title">
+    <button type="button" onclick="checkQuiz(3, this, false)">A. 修改 DfScene2d.tsx 中系统注册顺序</button>
+    <button type="button" onclick="checkQuiz(3, this, false)">B. 修改外部同步逻辑（房间信息、预览图）</button>
+    <button type="button" onclick="checkQuiz(3, this, true)">C. 修改纯展示层的 CSS 样式</button>
+    <button type="button" onclick="checkQuiz(3, this, false)">D. 修改实体类与 Drawable 的绑定关系</button>
+  </div>
+  <div class="quiz-feedback" role="status" id="quiz3-feedback"></div>
 </div>
 </div>
 
 <script>
 function checkQuiz(q, el, correct) {
   var quiz = document.getElementById('quiz' + q);
-  var options = quiz.querySelectorAll('.quiz-options li');
+  var options = quiz.querySelectorAll('.quiz-options button');
   var feedback = document.getElementById('quiz' + q + '-feedback');
   for (var i = 0; i < options.length; i++) {
     options[i].onclick = null;
+    options[i].setAttribute('aria-disabled', 'true');
     if (options[i] !== el) options[i].style.opacity = '0.5';
   }
   if (correct) {

@@ -153,7 +153,7 @@
     color: var(--accent);
   }
   .quiz-options { list-style: none; }
-  .quiz-options li {
+  .quiz-options button {
     padding: 0.5rem 0.75rem;
     margin: 0.35rem 0;
     border-radius: 6px;
@@ -161,9 +161,9 @@
     transition: background 0.15s;
     border: 1px solid transparent;
   }
-  .quiz-options li:hover { background: #fde68a33; border-color: #fbbf24; }
-  .quiz-options li.correct { background: #dcfce7; border-color: #16a34a; }
-  .quiz-options li.wrong { background: #fee2e2; border-color: #ef4444; }
+  .quiz-options button:hover { background: #fde68a33; border-color: #fbbf24; }
+  .quiz-options button.correct { background: #dcfce7; border-color: #16a34a; }
+  .quiz-options button.wrong { background: #fee2e2; border-color: #ef4444; }
   .quiz-feedback {
     margin-top: 0.75rem;
     padding: 0.75rem;
@@ -465,36 +465,36 @@ String val = AutoLayoutContext.get().getSomeParam();
 <h2>9. 自检 Quiz</h2>
 
 <div class="quiz" id="quiz1">
-  <div class="quiz-title">Q1: auto-layout-service 使用的 Java 版本是？</div>
-  <ul class="quiz-options" data-correct="0">
-    <li onclick="checkQuiz('quiz1', 0)">A. Java 8（全模块统一）</li>
-    <li onclick="checkQuiz('quiz1', 1)">B. Java 21（和 ai-native-service 一样）</li>
-    <li onclick="checkQuiz('quiz1', 2)">C. common/client 用 Java 8，web 用 Java 21</li>
-    <li onclick="checkQuiz('quiz1', 3)">D. Java 17</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz1-title">Q1: auto-layout-service 使用的 Java 版本是？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz1-title" data-correct="0">
+    <button type="button" onclick="checkQuiz('quiz1', 0)">A. Java 8（全模块统一）</button>
+    <button type="button" onclick="checkQuiz('quiz1', 1)">B. Java 21（和 ai-native-service 一样）</button>
+    <button type="button" onclick="checkQuiz('quiz1', 2)">C. common/client 用 Java 8，web 用 Java 21</button>
+    <button type="button" onclick="checkQuiz('quiz1', 3)">D. Java 17</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <div class="quiz" id="quiz2">
-  <div class="quiz-title">Q2: Processor 模式中，任务初始化之前先执行的方法是？</div>
-  <ul class="quiz-options" data-correct="1">
-    <li onclick="checkQuiz('quiz2', 0)">A. doAsyncProcess()</li>
-    <li onclick="checkQuiz('quiz2', 1)">B. getExistTask() + executeNewTask()</li>
-    <li onclick="checkQuiz('quiz2', 2)">C. onSuccess()</li>
-    <li onclick="checkQuiz('quiz2', 3)">D. initTask()</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz2-title">Q2: Processor 模式中，任务初始化之前先执行的方法是？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz2-title" data-correct="1">
+    <button type="button" onclick="checkQuiz('quiz2', 0)">A. doAsyncProcess()</button>
+    <button type="button" onclick="checkQuiz('quiz2', 1)">B. getExistTask() + executeNewTask()</button>
+    <button type="button" onclick="checkQuiz('quiz2', 2)">C. onSuccess()</button>
+    <button type="button" onclick="checkQuiz('quiz2', 3)">D. initTask()</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <div class="quiz" id="quiz3">
-  <div class="quiz-title">Q3: AutoLayoutWithImageProcessor 中，给户型图上色用的是哪个 AI 服务？</div>
-  <ul class="quiz-options" data-correct="1">
-    <li onclick="checkQuiz('quiz3', 0)">A. OpenAI GPT</li>
-    <li onclick="checkQuiz('quiz3', 1)">B. AI Native Service</li>
-    <li onclick="checkQuiz('quiz3', 2)">C. Milvus</li>
-    <li onclick="checkQuiz('quiz3', 3)">D. KAM 户型识别</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz3-title">Q3: AutoLayoutWithImageProcessor 中，给户型图上色用的是哪个 AI 服务？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz3-title" data-correct="1">
+    <button type="button" onclick="checkQuiz('quiz3', 0)">A. OpenAI GPT</button>
+    <button type="button" onclick="checkQuiz('quiz3', 1)">B. AI Native Service</button>
+    <button type="button" onclick="checkQuiz('quiz3', 2)">C. Milvus</button>
+    <button type="button" onclick="checkQuiz('quiz3', 3)">D. KAM 户型识别</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <!-- ==================== Next ==================== -->
@@ -514,11 +514,12 @@ function checkQuiz(quizId, selected) {
   const quiz = document.getElementById(quizId);
   const options = quiz.querySelector('.quiz-options');
   const correct = parseInt(options.dataset.correct);
-  const items = options.querySelectorAll('li');
+  const items = options.querySelectorAll('button');
   const feedback = quiz.querySelector('.quiz-feedback');
 
   items.forEach((item, i) => {
     item.onclick = null;
+    item.setAttribute('aria-disabled', 'true');
     if (i === correct) item.classList.add('correct');
     if (i === selected && i !== correct) item.classList.add('wrong');
   });

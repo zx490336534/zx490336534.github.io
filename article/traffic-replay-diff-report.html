@@ -122,7 +122,7 @@ print(json.dumps({
             <track kind="captions" srclang="zh" label="简体中文" src="/videos/article-captions/traffic-replay-diff-report-xiaoxiao.vtt">
             此浏览器无法内嵌播放，可以打开下方链接。
           </video>
-          <p class="article-video-download"><a href="https://github.com/zx490336534/zx490336534.github.io/releases/download/article-videos-20261125/traffic-replay-diff-report-xiaoxiao.mp4">打开或下载 MP4 ↗</a></p>
+          <p class="article-video-download"><a href="https://github.com/zx490336534/zx490336534.github.io/releases/download/article-videos-20261125/traffic-replay-diff-report-xiaoxiao.mp4">打开或下载 MP4 ↗</a></p><details class="video-transcript"><summary>阅读视频文字稿</summary><p>开发打开回放报告，看到库存查询失败。</p><p>奇怪的是，两边都返回二百。</p><p>问题不在请求有没有执行成功，而是同一个输入得到的库存状态不一样。</p><p>如果报告只写一个失败，人还要回日志里找请求和变化值。</p><p>所以第一版先把这条差异说完整，再选做报告的工具。</p><p>对同一次查询，先记录批次、请求方法和路径，再带一个能回查的请求标识。</p><p>接着指出差异字段在响应里的位置，明确哪边为真、哪边为假。</p><p>报告不直接宣称库存计算出了错。</p><p>先用接口约定判断这是不是行为变化，然后再追系统里的计算条件。</p><p>如果只用取值函数，字段缺失与字段明确返回空，往往被映射成同一个值。</p><p>判断时要问两个问题。</p><p>这个字段在不在，它的值又是什么。</p><p>时间戳也别整组排除。</p><p>只有验收不关心的具体字段才可忽略，并记录理由。</p><p>数组顺序和嵌套字段要另定比较规则。</p><p>如果已经用测试框架跑回放，第一步可以在失败用例里附两份响应和差异值。</p><p>需要同时看本批几十条差异，再做一个结构化日志列表。</p><p>按接口、字段查询历史确实成为常态，才值得把明细放进库、做筛选和详情。</p><p>看的人到底要做什么，决定报告该长成什么样。</p><p>同一个请求有三处字段变化，按请求数是一条，按字段数是三条。</p><p>两个指标都可以用，但报告必须写清口径。</p><p>想知道受影响的请求范围，看请求数；要决定先查看哪些响应内容，看字段明细。</p><p>让“失败数”只有一个没有解释的数字，容易把影响面读大或者读小。</p><p>最后找一个没有参与回放的人，让他只看报告，回答三个问题。</p><p>哪一次请求，哪个字段变了，能不能取得对应的原响应。</p><p>哪个答案还需要去翻日志，就先补哪个。</p><p>能把一条差异解释清楚的报告，才值得扩到全部回放。</p></details>
         </section>
 
         <div class="post-tags" aria-label="文章标签"><a href="/tags/%E6%B5%81%E9%87%8F%E5%9B%9E%E6%94%BE/">流量回放</a><a href="/tags/Allure/">Allure</a><a href="/tags/%E6%B5%8B%E8%AF%95%E6%8A%A5%E5%91%8A/">测试报告</a></div>

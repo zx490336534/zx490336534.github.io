@@ -153,7 +153,7 @@
     color: var(--accent);
   }
   .quiz-options { list-style: none; }
-  .quiz-options li {
+  .quiz-options button {
     padding: 0.5rem 0.75rem;
     margin: 0.35rem 0;
     border-radius: 6px;
@@ -161,9 +161,9 @@
     transition: background 0.15s;
     border: 1px solid transparent;
   }
-  .quiz-options li:hover { background: #fde68a33; border-color: #fbbf24; }
-  .quiz-options li.correct { background: #dcfce7; border-color: #16a34a; }
-  .quiz-options li.wrong { background: #fee2e2; border-color: #ef4444; }
+  .quiz-options button:hover { background: #fde68a33; border-color: #fbbf24; }
+  .quiz-options button.correct { background: #dcfce7; border-color: #16a34a; }
+  .quiz-options button.wrong { background: #fee2e2; border-color: #ef4444; }
   .quiz-feedback {
     margin-top: 0.75rem;
     padding: 0.75rem;
@@ -483,36 +483,36 @@ src/app/Entities/
 <h2>8. 自检 Quiz</h2>
 
 <div class="quiz" id="quiz1">
-  <div class="quiz-title">Q1: Entity 与 Drawable 的绑定是通过什么机制实现的？</div>
-  <ul class="quiz-options" data-correct="1">
-    <li onclick="checkQuiz('quiz1', 0)">A. Entity 构造函数中手动 new Drawable2D 并添加到场景</li>
-    <li onclick="checkQuiz('quiz1', 1)">B. @provideEntityAPIs 装饰器注册 DrawableAPI2D 工厂函数，由 KAF 框架自动调用</li>
-    <li onclick="checkQuiz('quiz1', 2)">C. 在 EntityDocument 中手动为每个 Entity 绑定 Drawable</li>
-    <li onclick="checkQuiz('quiz1', 3)">D. Drawable 通过全局事件总线监听 Entity 的数据变更</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz1-title">Q1: Entity 与 Drawable 的绑定是通过什么机制实现的？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz1-title" data-correct="1">
+    <button type="button" onclick="checkQuiz('quiz1', 0)">A. Entity 构造函数中手动 new Drawable2D 并添加到场景</button>
+    <button type="button" onclick="checkQuiz('quiz1', 1)">B. @provideEntityAPIs 装饰器注册 DrawableAPI2D 工厂函数，由 KAF 框架自动调用</button>
+    <button type="button" onclick="checkQuiz('quiz1', 2)">C. 在 EntityDocument 中手动为每个 Entity 绑定 Drawable</button>
+    <button type="button" onclick="checkQuiz('quiz1', 3)">D. Drawable 通过全局事件总线监听 Entity 的数据变更</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <div class="quiz" id="quiz2">
-  <div class="quiz-title">Q2: EntityDocument 中 container2DConfigs 的 order 字段决定了什么？</div>
-  <ul class="quiz-options" data-correct="2">
-    <li onclick="checkQuiz('quiz2', 0)">A. Entity 的创建顺序</li>
-    <li onclick="checkQuiz('quiz2', 1)">B. Entity 的销毁顺序</li>
-    <li onclick="checkQuiz('quiz2', 2)">C. PixiJS 容器的图层先后关系，数值越大越靠前</li>
-    <li onclick="checkQuiz('quiz2', 3)">D. Entity 的更新频率</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz2-title">Q2: EntityDocument 中 container2DConfigs 的 order 字段决定了什么？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz2-title" data-correct="2">
+    <button type="button" onclick="checkQuiz('quiz2', 0)">A. Entity 的创建顺序</button>
+    <button type="button" onclick="checkQuiz('quiz2', 1)">B. Entity 的销毁顺序</button>
+    <button type="button" onclick="checkQuiz('quiz2', 2)">C. PixiJS 容器的图层先后关系，数值越大越靠前</button>
+    <button type="button" onclick="checkQuiz('quiz2', 3)">D. Entity 的更新频率</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <div class="quiz" id="quiz3">
-  <div class="quiz-title">Q3: 如果要让一种新实体支持拖拽但不支持旋转，应该在哪里声明？</div>
-  <ul class="quiz-options" data-correct="0">
-    <li onclick="checkQuiz('quiz3', 0)">A. 在 Entity 的 @provideEntityAPIs 中注册 SystemPropertiesAPI，返回 isMovable: true, isRotatable: false</li>
-    <li onclick="checkQuiz('quiz3', 1)">B. 在 SelectedControls 模块中添加硬编码判断</li>
-    <li onclick="checkQuiz('quiz3', 2)">C. 在 EntityDocument 的 container2DConfigs 中配置</li>
-    <li onclick="checkQuiz('quiz3', 3)">D. 在 Drawable2D 的绘制方法中控制</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz3-title">Q3: 如果要让一种新实体支持拖拽但不支持旋转，应该在哪里声明？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz3-title" data-correct="0">
+    <button type="button" onclick="checkQuiz('quiz3', 0)">A. 在 Entity 的 @provideEntityAPIs 中注册 SystemPropertiesAPI，返回 isMovable: true, isRotatable: false</button>
+    <button type="button" onclick="checkQuiz('quiz3', 1)">B. 在 SelectedControls 模块中添加硬编码判断</button>
+    <button type="button" onclick="checkQuiz('quiz3', 2)">C. 在 EntityDocument 的 container2DConfigs 中配置</button>
+    <button type="button" onclick="checkQuiz('quiz3', 3)">D. 在 Drawable2D 的绘制方法中控制</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <!-- ==================== Next ==================== -->
@@ -534,11 +534,12 @@ function checkQuiz(quizId, selected) {
   const quiz = document.getElementById(quizId);
   const options = quiz.querySelector('.quiz-options');
   const correct = parseInt(options.dataset.correct);
-  const items = options.querySelectorAll('li');
+  const items = options.querySelectorAll('button');
   const feedback = quiz.querySelector('.quiz-feedback');
 
   items.forEach((item, i) => {
     item.onclick = null;
+    item.setAttribute('aria-disabled', 'true');
     if (i === correct) item.classList.add('correct');
     if (i === selected && i !== correct) item.classList.add('wrong');
   });

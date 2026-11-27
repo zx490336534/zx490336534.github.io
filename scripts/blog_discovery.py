@@ -1,6 +1,6 @@
 """Search discovery and editorial evidence for public blog routes."""
 from datetime import datetime
-from html import escape
+from html import escape, unescape
 import json
 from pathlib import Path
 import re
@@ -145,6 +145,31 @@ def tool_intro():
             '<p><a href="/article/wechat-f7a449cd36e9a5.html">查看用例脑图实践 →</a></p></details>')
 
 
+def caption_cues(path):
+    blocks = re.split(r"\n\s*\n", path.read_text(encoding="utf-8-sig").strip())
+    if not blocks[0].startswith("WEBVTT"):
+        raise ValueError(f"无效字幕：{path}")
+    cues = []
+    for block in blocks[1:]:
+        lines = block.splitlines()
+        if lines[0].split(maxsplit=1)[0] in {"NOTE", "STYLE", "REGION"}:
+            continue
+        timing = 0 if " --> " in lines[0] else 1  # A cue may begin with an identifier.
+        if timing >= len(lines) or " --> " not in lines[timing]:
+            raise ValueError(f"字幕缺少时间段：{path}")
+        stamp = lines[timing].split(" --> ", 1)[0]
+        seconds = 0
+        for part in stamp.split(":"):
+            seconds = seconds * 60 + float(part)
+        text = " ".join(lines[timing + 1:]).strip()
+        if text:
+            markup = r"</?(?:[biu]|c|v|lang|ruby|rt)(?:[.\s][^>]*)?>|<(?:\d+:)?\d{2}:\d{2}\.\d{3}>"
+            cues.append((seconds, unescape(re.sub(markup, "", text))))
+    if not cues:
+        raise ValueError(f"字幕缺少正文：{path}")
+    return cues
+
+
 def video_watch(post, root, site):
     slug = Path(post.path).stem
     published, description, chapters = WATCH[slug]
@@ -155,20 +180,10 @@ def video_watch(post, root, site):
     if media["src"] != prefix:
         raise ValueError(f"观看页的上传时间只适用于已核对的 Release 资产：{post.path}")
     path = watch_path(slug)
-    vtt = (root / media["captions"].lstrip("/")).read_text()
-    if not vtt.startswith("WEBVTT"):
-        raise ValueError(f"无效字幕：{post.path}")
     transcript = [[] for _ in chapters]
-    for block in re.split(r"\n\s*\n", vtt.strip())[1:]:
-        lines = block.splitlines()
-        timings = next((i for i, s in enumerate(lines) if " --> " in s), None)
-        if timings is None:
-            continue
-        stamp = lines[timings].split(" --> ", 1)[0]
-        hr, minute, second = map(float, stamp.split(":"))
-        offset = hr * 3600 + minute * 60 + second
+    for offset, text in caption_cues(root / media["captions"].lstrip("/")):
         part = max(i for i, (base, _) in enumerate(chapters) if offset >= base)
-        transcript[part].append(" ".join(lines[timings + 1:]))
+        transcript[part].append(text)
     if any(not part for part in transcript):
         raise ValueError(f"字幕与观看页章节不匹配：{post.path}")
     nav, sections, clips = [], [], []

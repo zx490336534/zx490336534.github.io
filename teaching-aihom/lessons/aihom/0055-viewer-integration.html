@@ -153,7 +153,7 @@
     color: var(--accent);
   }
   .quiz-options { list-style: none; }
-  .quiz-options li {
+  .quiz-options button {
     padding: 0.5rem 0.75rem;
     margin: 0.35rem 0;
     border-radius: 6px;
@@ -161,9 +161,9 @@
     transition: background 0.15s;
     border: 1px solid transparent;
   }
-  .quiz-options li:hover { background: #fde68a33; border-color: #fbbf24; }
-  .quiz-options li.correct { background: #dcfce7; border-color: #16a34a; }
-  .quiz-options li.wrong { background: #fee2e2; border-color: #ef4444; }
+  .quiz-options button:hover { background: #fde68a33; border-color: #fbbf24; }
+  .quiz-options button.correct { background: #dcfce7; border-color: #16a34a; }
+  .quiz-options button.wrong { background: #fee2e2; border-color: #ef4444; }
   .quiz-feedback {
     margin-top: 0.75rem;
     padding: 0.75rem;
@@ -476,36 +476,36 @@ interface IFrameMessage&lt;T&gt; {
 <h2>7. 自检 Quiz</h2>
 
 <div class="quiz" id="quiz1">
-  <div class="quiz-title">Q1: ai-home 与 Viewer iframe 之间的通信用的是什么机制？</div>
-  <ul class="quiz-options" data-correct="2">
-    <li onclick="checkQuiz('quiz1', 0)">A. WebSocket 双向通信</li>
-    <li onclick="checkQuiz('quiz1', 1)">B. HTTP 轮询</li>
-    <li onclick="checkQuiz('quiz1', 2)">C. window.postMessage</li>
-    <li onclick="checkQuiz('quiz1', 3)">D. localStorage 事件</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz1-title">Q1: ai-home 与 Viewer iframe 之间的通信用的是什么机制？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz1-title" data-correct="2">
+    <button type="button" onclick="checkQuiz('quiz1', 0)">A. WebSocket 双向通信</button>
+    <button type="button" onclick="checkQuiz('quiz1', 1)">B. HTTP 轮询</button>
+    <button type="button" onclick="checkQuiz('quiz1', 2)">C. window.postMessage</button>
+    <button type="button" onclick="checkQuiz('quiz1', 3)">D. localStorage 事件</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <div class="quiz" id="quiz2">
-  <div class="quiz-title">Q2: 当 MCP 工具 capture_3d_screenshot 需要截图时，正确的工作流程是？</div>
-  <ul class="quiz-options" data-correct="1">
-    <li onclick="checkQuiz('quiz2', 0)">A. 直接在父窗口调用 WebGL API 截取 canvas</li>
-    <li onclick="checkQuiz('quiz2', 1)">B. 通过 postMessage 发送 TRIGGER_BATCH_CAPTURE，监听 BATCH_CAPTURE_STATUS_CHANGE 接收 base64 图片</li>
-    <li onclick="checkQuiz('quiz2', 2)">C. 让后端直接调用 render-3d 服务的截图接口</li>
-    <li onclick="checkQuiz('quiz2', 3)">D. 使用 canvas.toDataURL() 跨域获取 iframe 内容</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz2-title">Q2: 当 MCP 工具 capture_3d_screenshot 需要截图时，正确的工作流程是？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz2-title" data-correct="1">
+    <button type="button" onclick="checkQuiz('quiz2', 0)">A. 直接在父窗口调用 WebGL API 截取 canvas</button>
+    <button type="button" onclick="checkQuiz('quiz2', 1)">B. 通过 postMessage 发送 TRIGGER_BATCH_CAPTURE，监听 BATCH_CAPTURE_STATUS_CHANGE 接收 base64 图片</button>
+    <button type="button" onclick="checkQuiz('quiz2', 2)">C. 让后端直接调用 render-3d 服务的截图接口</button>
+    <button type="button" onclick="checkQuiz('quiz2', 3)">D. 使用 canvas.toDataURL() 跨域获取 iframe 内容</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <div class="quiz" id="quiz3">
-  <div class="quiz-title">Q3: 3D Viewer 刷新时，如果 20 秒内没有收到加载成功的消息，会发生什么？</div>
-  <ul class="quiz-options" data-correct="2">
-    <li onclick="checkQuiz('quiz3', 0)">A. 自动重试刷新</li>
-    <li onclick="checkQuiz('quiz3', 1)">B. 页面自动刷新</li>
-    <li onclick="checkQuiz('quiz3', 2)">C. 清除 loading 状态并显示超时错误 toast</li>
-    <li onclick="checkQuiz('quiz3', 3)">D. 什么都不做，一直等待</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz3-title">Q3: 3D Viewer 刷新时，如果 20 秒内没有收到加载成功的消息，会发生什么？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz3-title" data-correct="2">
+    <button type="button" onclick="checkQuiz('quiz3', 0)">A. 自动重试刷新</button>
+    <button type="button" onclick="checkQuiz('quiz3', 1)">B. 页面自动刷新</button>
+    <button type="button" onclick="checkQuiz('quiz3', 2)">C. 清除 loading 状态并显示超时错误 toast</button>
+    <button type="button" onclick="checkQuiz('quiz3', 3)">D. 什么都不做，一直等待</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <!-- ==================== Next ==================== -->
@@ -518,11 +518,12 @@ function checkQuiz(quizId, selected) {
   const quiz = document.getElementById(quizId);
   const options = quiz.querySelector('.quiz-options');
   const correct = parseInt(options.dataset.correct);
-  const items = options.querySelectorAll('li');
+  const items = options.querySelectorAll('button');
   const feedback = quiz.querySelector('.quiz-feedback');
 
   items.forEach((item, i) => {
     item.onclick = null;
+    item.setAttribute('aria-disabled', 'true');
     if (i === correct) item.classList.add('correct');
     if (i === selected && i !== correct) item.classList.add('wrong');
   });

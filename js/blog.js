@@ -254,6 +254,50 @@ if (library) {
   });
 }
 
+const videoFilter = document.querySelector('.video-filter');
+if (videoFilter) {
+  const videoLibrary = videoFilter.closest('.video-library');
+  const input = videoFilter.querySelector('input');
+  const clear = videoFilter.querySelector('button');
+  const status = videoFilter.querySelector('[role="status"]');
+  const featured = videoLibrary.querySelector('.video-shelf:not([id])');
+  const navigation = videoLibrary.querySelector('.series-stage-links');
+  const shelves = [...videoLibrary.querySelectorAll('.video-shelf[id]')].map(section => {
+    const name = section.querySelector('h2').textContent;
+    const rows = [...section.querySelectorAll('li')].map(row => ({
+      row, text: normalize(name + ' ' + row.querySelector('a').textContent),
+    }));
+    return {section, rows};
+  });
+
+  function filterVideos() {
+    const query = normalize(input.value.trim());
+    const words = query.split(/\s+/);
+    let count = 0;
+    for (const {section, rows} of shelves) {
+      let matches = 0;
+      for (const {row, text} of rows) {
+        row.hidden = !words.every(word => text.includes(word));
+        if (!row.hidden) matches++;
+      }
+      section.hidden = !matches;
+      count += matches;
+    }
+    featured.hidden = navigation.hidden = Boolean(query);
+    clear.hidden = !input.value;
+    status.textContent = !query ? '' : count ? '找到 ' + count + ' 支视频' : '没有匹配的视频，请换个片名或系列名。';
+  }
+  clear.addEventListener('click', () => {
+    input.value = '';
+    filterVideos();
+    input.focus();
+  });
+  input.addEventListener('input', event => { if (!event.isComposing) filterVideos(); });
+  input.addEventListener('compositionend', filterVideos);
+  videoFilter.hidden = false;
+  filterVideos();
+}
+
 const codeLanguageNames = {
   bash: 'Bash', sh: 'Shell', shell: 'Shell', zsh: 'Zsh',
   py: 'Python', python: 'Python', js: 'JavaScript', javascript: 'JavaScript',

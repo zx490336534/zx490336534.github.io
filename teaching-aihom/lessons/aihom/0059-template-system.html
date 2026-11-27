@@ -153,7 +153,7 @@
     color: var(--accent);
   }
   .quiz-options { list-style: none; }
-  .quiz-options li {
+  .quiz-options button {
     padding: 0.5rem 0.75rem;
     margin: 0.35rem 0;
     border-radius: 6px;
@@ -161,9 +161,9 @@
     transition: background 0.15s;
     border: 1px solid transparent;
   }
-  .quiz-options li:hover { background: #fde68a33; border-color: #fbbf24; }
-  .quiz-options li.correct { background: #dcfce7; border-color: #16a34a; }
-  .quiz-options li.wrong { background: #fee2e2; border-color: #ef4444; }
+  .quiz-options button:hover { background: #fde68a33; border-color: #fbbf24; }
+  .quiz-options button.correct { background: #dcfce7; border-color: #16a34a; }
+  .quiz-options button.wrong { background: #fee2e2; border-color: #ef4444; }
   .quiz-feedback {
     margin-top: 0.75rem;
     padding: 0.75rem;
@@ -396,36 +396,36 @@
 <h2>8. 自检 Quiz</h2>
 
 <div class="quiz" id="quiz1">
-  <div class="quiz-title">Q1: obsConfigCache 的作用是什么？</div>
-  <ul class="quiz-options" data-correct="1">
-    <li onclick="checkQuiz('quiz1', 0)">A. 缓存渲染任务的提交状态</li>
-    <li onclick="checkQuiz('quiz1', 1)">B. 缓存模板的灯光样式映射和背景配置，避免重复请求</li>
-    <li onclick="checkQuiz('quiz1', 2)">C. 缓存父页面同步的 objectShowRuleMap</li>
-    <li onclick="checkQuiz('quiz1', 3)">D. 缓存 3D 场景的相机视角</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz1-title">Q1: obsConfigCache 的作用是什么？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz1-title" data-correct="1">
+    <button type="button" onclick="checkQuiz('quiz1', 0)">A. 缓存渲染任务的提交状态</button>
+    <button type="button" onclick="checkQuiz('quiz1', 1)">B. 缓存模板的灯光样式映射和背景配置，避免重复请求</button>
+    <button type="button" onclick="checkQuiz('quiz1', 2)">C. 缓存父页面同步的 objectShowRuleMap</button>
+    <button type="button" onclick="checkQuiz('quiz1', 3)">D. 缓存 3D 场景的相机视角</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <div class="quiz" id="quiz2">
-  <div class="quiz-title">Q2: 当 fetchAndCacheObsConfig 请求失败时，系统会怎么做？</div>
-  <ul class="quiz-options" data-correct="2">
-    <li onclick="checkQuiz('quiz2', 0)">A. 直接抛出错误，页面白屏</li>
-    <li onclick="checkQuiz('quiz2', 1)">B. 自动重试 3 次后放弃</li>
-    <li onclick="checkQuiz('quiz2', 2)">C. 回退到 DEFAULT_TEMPLATE_CONFIG.backgroundConfigData，渲染风格回到默认值</li>
-    <li onclick="checkQuiz('quiz2', 3)">D. 停止渲染功能，隐藏渲染按钮</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz2-title">Q2: 当 fetchAndCacheObsConfig 请求失败时，系统会怎么做？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz2-title" data-correct="2">
+    <button type="button" onclick="checkQuiz('quiz2', 0)">A. 直接抛出错误，页面白屏</button>
+    <button type="button" onclick="checkQuiz('quiz2', 1)">B. 自动重试 3 次后放弃</button>
+    <button type="button" onclick="checkQuiz('quiz2', 2)">C. 回退到 DEFAULT_TEMPLATE_CONFIG.backgroundConfigData，渲染风格回到默认值</button>
+    <button type="button" onclick="checkQuiz('quiz2', 3)">D. 停止渲染功能，隐藏渲染按钮</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <div class="quiz" id="quiz3">
-  <div class="quiz-title">Q3: 切换模板时，为什么必须同时更新 lightStyleId 和 backgroundConfig？</div>
-  <ul class="quiz-options" data-correct="0">
-    <li onclick="checkQuiz('quiz3', 0)">A. 因为灯光和背景绑定在同一个模板下，只更新一个会导致画面不一致</li>
-    <li onclick="checkQuiz('quiz3', 1)">B. 因为代码有 bug，必须两个一起改才行</li>
-    <li onclick="checkQuiz('quiz3', 2)">C. 因为 lightStyleId 是 backgroundConfig 的子字段</li>
-    <li onclick="checkQuiz('quiz3', 3)">D. 不需要同时更新，它们是独立的</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz3-title">Q3: 切换模板时，为什么必须同时更新 lightStyleId 和 backgroundConfig？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz3-title" data-correct="0">
+    <button type="button" onclick="checkQuiz('quiz3', 0)">A. 因为灯光和背景绑定在同一个模板下，只更新一个会导致画面不一致</button>
+    <button type="button" onclick="checkQuiz('quiz3', 1)">B. 因为代码有 bug，必须两个一起改才行</button>
+    <button type="button" onclick="checkQuiz('quiz3', 2)">C. 因为 lightStyleId 是 backgroundConfig 的子字段</button>
+    <button type="button" onclick="checkQuiz('quiz3', 3)">D. 不需要同时更新，它们是独立的</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <!-- ==================== Next ==================== -->
@@ -438,11 +438,12 @@ function checkQuiz(quizId, selected) {
   const quiz = document.getElementById(quizId);
   const options = quiz.querySelector('.quiz-options');
   const correct = parseInt(options.dataset.correct);
-  const items = options.querySelectorAll('li');
+  const items = options.querySelectorAll('button');
   const feedback = quiz.querySelector('.quiz-feedback');
 
   items.forEach((item, i) => {
     item.onclick = null;
+    item.setAttribute('aria-disabled', 'true');
     if (i === correct) item.classList.add('correct');
     if (i === selected && i !== correct) item.classList.add('wrong');
   });

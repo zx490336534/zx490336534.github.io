@@ -6,7 +6,7 @@
 <title>013 Git、Kaptain 与发布分支基础</title>
 <style>
   :root{--bg:#fafaf9;--surface:#fff;--text:#1c1917;--muted:#78716c;--accent:#b45309;--border:#e7e5e4;--code:#f5f5f4;--info:#2563eb;--warn:#d97706;--ok:#16a34a}
-  *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.78 -apple-system,BlinkMacSystemFont,"Noto Sans SC","Segoe UI",sans-serif}.container{max-width:860px;margin:0 auto;padding:3rem 2rem}h1{font-size:2rem;margin:.2rem 0 .5rem}.subtitle{color:var(--muted);padding-bottom:1.5rem;border-bottom:1px solid var(--border);margin-bottom:2rem}h2{font-size:1.35rem;margin:2.2rem 0 .9rem}p{margin:.35rem 0 1rem}code{background:var(--code);border-radius:4px;padding:.12em .35em;font-family:Menlo,Consolas,monospace;font-size:.9em}pre{background:#1c1917;color:#e7e5e4;border-radius:8px;padding:1rem 1.2rem;overflow:auto;font:14px/1.65 Menlo,Consolas,monospace}.card{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--info);border-radius:8px;padding:1rem 1.15rem;margin:1rem 0}.card.warn{border-left-color:var(--warn)}table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:1rem 0}th,td{padding:.65rem .75rem;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}th{font-size:.82rem;color:var(--muted);background:#f5f5f4}tr:last-child td{border-bottom:0}.flow{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:1rem 0}.step{border:1px solid var(--border);background:#fff;border-radius:6px;padding:.4rem .7rem}.arrow{color:var(--muted)}.ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;color:#1e40af;padding:1rem;margin:1.4rem 0}.ask-agent:before{content:"提示：";font-weight:700}.quiz{background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.15rem;margin:1.4rem 0}.quiz-options{list-style:none;margin:.5rem 0 0;padding:0}.quiz-options li{padding:.45rem .65rem;border-radius:6px;border:1px solid transparent;cursor:pointer}.quiz-options li:hover{border-color:#fbbf24}.correct{background:#dcfce7}.wrong{background:#fee2e2}.quiz-feedback{display:none;margin-top:.6rem;padding:.6rem;border-radius:6px}
+  *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.78 -apple-system,BlinkMacSystemFont,"Noto Sans SC","Segoe UI",sans-serif}.container{max-width:860px;margin:0 auto;padding:3rem 2rem}h1{font-size:2rem;margin:.2rem 0 .5rem}.subtitle{color:var(--muted);padding-bottom:1.5rem;border-bottom:1px solid var(--border);margin-bottom:2rem}h2{font-size:1.35rem;margin:2.2rem 0 .9rem}p{margin:.35rem 0 1rem}code{background:var(--code);border-radius:4px;padding:.12em .35em;font-family:Menlo,Consolas,monospace;font-size:.9em}pre{background:#1c1917;color:#e7e5e4;border-radius:8px;padding:1rem 1.2rem;overflow:auto;font:14px/1.65 Menlo,Consolas,monospace}.card{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--info);border-radius:8px;padding:1rem 1.15rem;margin:1rem 0}.card.warn{border-left-color:var(--warn)}table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin:1rem 0}th,td{padding:.65rem .75rem;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}th{font-size:.82rem;color:var(--muted);background:#f5f5f4}tr:last-child td{border-bottom:0}.flow{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:1rem 0}.step{border:1px solid var(--border);background:#fff;border-radius:6px;padding:.4rem .7rem}.arrow{color:var(--muted)}.ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;color:#1e40af;padding:1rem;margin:1.4rem 0}.ask-agent:before{content:"提示：";font-weight:700}.quiz{background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.15rem;margin:1.4rem 0}.quiz-options{list-style:none;margin:.5rem 0 0;padding:0}.quiz-options button{padding:.45rem .65rem;border-radius:6px;border:1px solid transparent;cursor:pointer}.quiz-options button:hover{border-color:#fbbf24}.correct{background:#dcfce7}.wrong{background:#fee2e2}.quiz-feedback{display:none;margin-top:.6rem;padding:.6rem;border-radius:6px}
 </style>
   <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
   <link rel="stylesheet" href="../../course-layout.css">
@@ -108,18 +108,18 @@ git worktree list</pre>
 
 <h2>7. 自检 Quiz</h2>
 <div class="quiz" id="quiz1">
-  <strong>Q1: 发布分支 <code>release/20260617</code> 最核心表达什么？</strong>
-  <ul class="quiz-options" data-correct="2">
-    <li onclick="checkQuiz('quiz1',0)">A. 本地临时实验</li>
-    <li onclick="checkQuiz('quiz1',1)">B. 用户个人目录</li>
-    <li onclick="checkQuiz('quiz1',2)">C. 上线日期窗口</li>
-    <li onclick="checkQuiz('quiz1',3)">D. 数据库用户名</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <strong id="quiz1-title">Q1: 发布分支 <code>release/20260617</code> 最核心表达什么？</strong>
+  <div class="quiz-options" role="group" aria-labelledby="quiz1-title" data-correct="2">
+    <button type="button" onclick="checkQuiz('quiz1',0)">A. 本地临时实验</button>
+    <button type="button" onclick="checkQuiz('quiz1',1)">B. 用户个人目录</button>
+    <button type="button" onclick="checkQuiz('quiz1',2)">C. 上线日期窗口</button>
+    <button type="button" onclick="checkQuiz('quiz1',3)">D. 数据库用户名</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 </div>
 <script>
-function checkQuiz(q,s){const box=document.getElementById(q),opts=box.querySelector('.quiz-options'),c=Number(opts.dataset.correct),lis=opts.querySelectorAll('li'),fb=box.querySelector('.quiz-feedback');lis.forEach((li,i)=>{li.onclick=null;if(i===c)li.classList.add('correct');if(i===s&&i!==c)li.classList.add('wrong')});fb.style.display='block';fb.textContent=s===c?'正确。release 日期分支用于承接某次上线窗口的代码。':'不对。release/日期通常用于发布窗口管理。';fb.style.background=s===c?'#dcfce7':'#fee2e2'}
+function checkQuiz(q,s){const box=document.getElementById(q),opts=box.querySelector('.quiz-options'),c=Number(opts.dataset.correct),lis=opts.querySelectorAll('button'),fb=box.querySelector('.quiz-feedback');lis.forEach((li,i)=>{li.onclick=null;li.setAttribute('aria-disabled', 'true');if(i===c)li.classList.add('correct');if(i===s&&i!==c)li.classList.add('wrong')});fb.style.display='block';fb.textContent=s===c?'正确。release 日期分支用于承接某次上线窗口的代码。':'不对。release/日期通常用于发布窗口管理。';fb.style.background=s===c?'#dcfce7':'#fee2e2'}
 </script>
 <nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 013</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0012-environment-debug-checklist.html">上一课：012 端到端环境排查清单</a><a class="primary" href="0014-debugging-logs-trace.html">下一课：014 日志、Trace、断点与 WebSocket 排查</a></div></nav>
 </body>

@@ -30,9 +30,9 @@
   .flow-arrow{color:var(--text-secondary)}
   .quiz{background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0}
   .quiz-title{font-weight:700;margin-bottom:.75rem;color:var(--accent)}
-  .quiz-options{list-style:none;margin:0}.quiz-options li{padding:.5rem .75rem;margin:.35rem 0;border-radius:6px;cursor:pointer;transition:background .15s;border:1px solid transparent}
-  .quiz-options li:hover{background:#fde68a33;border-color:#fbbf24}
-  .quiz-options li.correct{background:#dcfce7;border-color:#16a34a}.quiz-options li.wrong{background:#fee2e2;border-color:#ef4444}
+  .quiz-options{list-style:none;margin:0}.quiz-options button{padding:.5rem .75rem;margin:.35rem 0;border-radius:6px;cursor:pointer;transition:background .15s;border:1px solid transparent}
+  .quiz-options button:hover{background:#fde68a33;border-color:#fbbf24}
+  .quiz-options button.correct{background:#dcfce7;border-color:#16a34a}.quiz-options button.wrong{background:#fee2e2;border-color:#ef4444}
   .quiz-feedback{margin-top:.75rem;padding:.75rem;border-radius:6px;display:none;font-size:.9rem}
   .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
   ul,ol{margin:.5rem 0 1rem 1.5rem}li{margin-bottom:.3rem}
@@ -213,36 +213,36 @@ AutoLayoutFactory
 <h2>8. 自检 Quiz</h2>
 
 <div class="quiz" id="quiz1">
-  <div class="quiz-title">Q1: <code>@RestController</code> 最主要对应哪一层？</div>
-  <ul class="quiz-options" data-correct="0">
-    <li onclick="checkQuiz('quiz1',0)">A. Controller</li>
-    <li onclick="checkQuiz('quiz1',1)">B. MapperDao</li>
-    <li onclick="checkQuiz('quiz1',2)">C. ClientSdk</li>
-    <li onclick="checkQuiz('quiz1',3)">D. ConfigMap</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz1-title">Q1: <code>@RestController</code> 最主要对应哪一层？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz1-title" data-correct="0">
+    <button type="button" onclick="checkQuiz('quiz1',0)">A. Controller</button>
+    <button type="button" onclick="checkQuiz('quiz1',1)">B. MapperDao</button>
+    <button type="button" onclick="checkQuiz('quiz1',2)">C. ClientSdk</button>
+    <button type="button" onclick="checkQuiz('quiz1',3)">D. ConfigMap</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <div class="quiz" id="quiz2">
-  <div class="quiz-title">Q2: <code>AutoLayoutFactory</code> 用 <code>LayoutChannel</code> 选择什么？</div>
-  <ul class="quiz-options" data-correct="2">
-    <li onclick="checkQuiz('quiz2',0)">A. 页面路由</li>
-    <li onclick="checkQuiz('quiz2',1)">B. 数据表名</li>
-    <li onclick="checkQuiz('quiz2',2)">C. 布局实现</li>
-    <li onclick="checkQuiz('quiz2',3)">D. 用户语言</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz2-title">Q2: <code>AutoLayoutFactory</code> 用 <code>LayoutChannel</code> 选择什么？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz2-title" data-correct="2">
+    <button type="button" onclick="checkQuiz('quiz2',0)">A. 页面路由</button>
+    <button type="button" onclick="checkQuiz('quiz2',1)">B. 数据表名</button>
+    <button type="button" onclick="checkQuiz('quiz2',2)">C. 布局实现</button>
+    <button type="button" onclick="checkQuiz('quiz2',3)">D. 用户语言</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <div class="quiz" id="quiz3">
-  <div class="quiz-title">Q3: <code>ConversationDao</code> 往下通常会调用谁？</div>
-  <ul class="quiz-options" data-correct="1">
-    <li onclick="checkQuiz('quiz3',0)">A. Controller</li>
-    <li onclick="checkQuiz('quiz3',1)">B. Mapper</li>
-    <li onclick="checkQuiz('quiz3',2)">C. HTML</li>
-    <li onclick="checkQuiz('quiz3',3)">D. Browser</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz3-title">Q3: <code>ConversationDao</code> 往下通常会调用谁？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz3-title" data-correct="1">
+    <button type="button" onclick="checkQuiz('quiz3',0)">A. Controller</button>
+    <button type="button" onclick="checkQuiz('quiz3',1)">B. Mapper</button>
+    <button type="button" onclick="checkQuiz('quiz3',2)">C. HTML</button>
+    <button type="button" onclick="checkQuiz('quiz3',3)">D. Browser</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <div class="ask-agent">
@@ -256,7 +256,7 @@ AutoLayoutFactory
 
 </div>
 <script>
-function checkQuiz(q,s){const root=document.getElementById(q),o=root.querySelector('.quiz-options'),c=parseInt(o.dataset.correct),items=o.querySelectorAll('li'),f=root.querySelector('.quiz-feedback');items.forEach((x,n)=>{x.onclick=null;if(n===c)x.classList.add('correct');if(n===s&&n!==c)x.classList.add('wrong')});const fb={quiz1:{c:'答对了。Controller 负责接 HTTP 请求和返回 Result。',w:'答案是 Controller。@RestController 是 HTTP 接口入口的典型标记。'},quiz2:{c:'答对了。Factory 用 LayoutChannel 找到对应的 IAutoLayoutService 实现。',w:'答案是布局实现。Factory 的重点是按类型选择一个实现。'},quiz3:{c:'答对了。Dao 再往下通常就是 Mapper 或外部存储。',w:'答案是 Mapper。Dao 封装数据库动作，Mapper 执行具体读写。'}};f.style.display='block';f.textContent=s===c?fb[q].c:fb[q].w;f.style.background=s===c?'#dcfce7':'#fee2e2'}
+function checkQuiz(q,s){const root=document.getElementById(q),o=root.querySelector('.quiz-options'),c=parseInt(o.dataset.correct),items=o.querySelectorAll('button'),f=root.querySelector('.quiz-feedback');items.forEach((x,n)=>{x.onclick=null;x.setAttribute('aria-disabled', 'true');if(n===c)x.classList.add('correct');if(n===s&&n!==c)x.classList.add('wrong')});const fb={quiz1:{c:'答对了。Controller 负责接 HTTP 请求和返回 Result。',w:'答案是 Controller。@RestController 是 HTTP 接口入口的典型标记。'},quiz2:{c:'答对了。Factory 用 LayoutChannel 找到对应的 IAutoLayoutService 实现。',w:'答案是布局实现。Factory 的重点是按类型选择一个实现。'},quiz3:{c:'答对了。Dao 再往下通常就是 Mapper 或外部存储。',w:'答案是 Mapper。Dao 封装数据库动作，Mapper 执行具体读写。'}};f.style.display='block';f.textContent=s===c?fb[q].c:fb[q].w;f.style.background=s===c?'#dcfce7':'#fee2e2'}
 </script>
 <nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 007</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0006-maven-multimodule-java-project.html">上一课：006 Maven 多模块 + Java 工程读法</a><a class="primary" href="0008-local-config-nacos-pilot.html">下一课：008 本地启动与配置体系</a></div></nav>
 </body>

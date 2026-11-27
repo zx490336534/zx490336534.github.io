@@ -153,7 +153,7 @@
     color: var(--accent);
   }
   .quiz-options { list-style: none; }
-  .quiz-options li {
+  .quiz-options button {
     padding: 0.5rem 0.75rem;
     margin: 0.35rem 0;
     border-radius: 6px;
@@ -161,9 +161,9 @@
     transition: background 0.15s;
     border: 1px solid transparent;
   }
-  .quiz-options li:hover { background: #fde68a33; border-color: #fbbf24; }
-  .quiz-options li.correct { background: #dcfce7; border-color: #16a34a; }
-  .quiz-options li.wrong { background: #fee2e2; border-color: #ef4444; }
+  .quiz-options button:hover { background: #fde68a33; border-color: #fbbf24; }
+  .quiz-options button.correct { background: #dcfce7; border-color: #16a34a; }
+  .quiz-options button.wrong { background: #fee2e2; border-color: #ef4444; }
   .quiz-feedback {
     margin-top: 0.75rem;
     padding: 0.75rem;
@@ -448,36 +448,36 @@ window.addEventListener(<span class="string">'message'</span>, (event) =&gt; {
 <h2>4. 自检 Quiz</h2>
 
 <div class="quiz" id="quiz1">
-  <div class="quiz-title">Q1: ai-home 与 render-3d 之间的通信方式是？</div>
-  <ul class="quiz-options" data-correct="2">
-    <li onclick="checkQuiz('quiz1', 0)">A. WebSocket</li>
-    <li onclick="checkQuiz('quiz1', 1)">B. HTTP 轮询</li>
-    <li onclick="checkQuiz('quiz1', 2)">C. postMessage</li>
-    <li onclick="checkQuiz('quiz1', 3)">D. 共享内存 SharedArrayBuffer</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz1-title">Q1: ai-home 与 render-3d 之间的通信方式是？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz1-title" data-correct="2">
+    <button type="button" onclick="checkQuiz('quiz1', 0)">A. WebSocket</button>
+    <button type="button" onclick="checkQuiz('quiz1', 1)">B. HTTP 轮询</button>
+    <button type="button" onclick="checkQuiz('quiz1', 2)">C. postMessage</button>
+    <button type="button" onclick="checkQuiz('quiz1', 3)">D. 共享内存 SharedArrayBuffer</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <div class="quiz" id="quiz2">
-  <div class="quiz-title">Q2: render-3d 初始化完成后，向 ai-home 发送的消息类型是？</div>
-  <ul class="quiz-options" data-correct="0">
-    <li onclick="checkQuiz('quiz2', 0)">A. RENDER_READY</li>
-    <li onclick="checkQuiz('quiz2', 1)">B. RENDER_INIT</li>
-    <li onclick="checkQuiz('quiz2', 2)">C. RENDER_RESULT</li>
-    <li onclick="checkQuiz('quiz2', 3)">D. RENDER_COMPLETE</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz2-title">Q2: render-3d 初始化完成后，向 ai-home 发送的消息类型是？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz2-title" data-correct="0">
+    <button type="button" onclick="checkQuiz('quiz2', 0)">A. RENDER_READY</button>
+    <button type="button" onclick="checkQuiz('quiz2', 1)">B. RENDER_INIT</button>
+    <button type="button" onclick="checkQuiz('quiz2', 2)">C. RENDER_RESULT</button>
+    <button type="button" onclick="checkQuiz('quiz2', 3)">D. RENDER_COMPLETE</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <div class="quiz" id="quiz3">
-  <div class="quiz-title">Q3: 截图返回空白，最可能的原因是？</div>
-  <ul class="quiz-options" data-correct="1">
-    <li onclick="checkQuiz('quiz3', 0)">A. 截图分辨率太高</li>
-    <li onclick="checkQuiz('quiz3', 1)">B. WebGL 未设置 preserveDrawingBuffer: true</li>
-    <li onclick="checkQuiz('quiz3', 2)">C. iframe 跨域限制</li>
-    <li onclick="checkQuiz('quiz3', 3)">D. 模型文件格式错误</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz3-title">Q3: 截图返回空白，最可能的原因是？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz3-title" data-correct="1">
+    <button type="button" onclick="checkQuiz('quiz3', 0)">A. 截图分辨率太高</button>
+    <button type="button" onclick="checkQuiz('quiz3', 1)">B. WebGL 未设置 preserveDrawingBuffer: true</button>
+    <button type="button" onclick="checkQuiz('quiz3', 2)">C. iframe 跨域限制</button>
+    <button type="button" onclick="checkQuiz('quiz3', 3)">D. 模型文件格式错误</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <!-- ==================== Next ==================== -->
@@ -490,11 +490,12 @@ function checkQuiz(quizId, selected) {
   const quiz = document.getElementById(quizId);
   const options = quiz.querySelector('.quiz-options');
   const correct = parseInt(options.dataset.correct);
-  const items = options.querySelectorAll('li');
+  const items = options.querySelectorAll('button');
   const feedback = quiz.querySelector('.quiz-feedback');
 
   items.forEach((item, i) => {
     item.onclick = null;
+    item.setAttribute('aria-disabled', 'true');
     if (i === correct) item.classList.add('correct');
     if (i === selected && i !== correct) item.classList.add('wrong');
   });

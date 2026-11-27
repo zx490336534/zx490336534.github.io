@@ -150,7 +150,7 @@
     color: var(--accent);
   }
   .quiz-options { list-style: none; }
-  .quiz-options li {
+  .quiz-options button {
     padding: 0.5rem 0.75rem;
     margin: 0.35rem 0;
     border-radius: 6px;
@@ -158,9 +158,9 @@
     transition: background 0.15s;
     border: 1px solid transparent;
   }
-  .quiz-options li:hover { background: #fde68a33; border-color: #fbbf24; }
-  .quiz-options li.correct { background: #dcfce7; border-color: #16a34a; }
-  .quiz-options li.wrong { background: #fee2e2; border-color: #ef4444; }
+  .quiz-options button:hover { background: #fde68a33; border-color: #fbbf24; }
+  .quiz-options button.correct { background: #dcfce7; border-color: #16a34a; }
+  .quiz-options button.wrong { background: #fee2e2; border-color: #ef4444; }
   .quiz-feedback {
     margin-top: 0.75rem;
     padding: 0.75rem;
@@ -421,36 +421,36 @@
 <h2>8. 自检 Quiz</h2>
 
 <div class="quiz" id="quiz1">
-  <div class="quiz-title">Q1: 渲染任务提交后，前端轮询 SnapshotTaskStatus 的策略是？</div>
-  <ul class="quiz-options" data-correct="2">
-    <li onclick="checkQuiz('quiz1', 0)">A. 每 2 秒轮询一次，最长 5 分钟</li>
-    <li onclick="checkQuiz('quiz1', 1)">B. 每 3 秒轮询一次，最长 15 分钟</li>
-    <li onclick="checkQuiz('quiz1', 2)">C. 每 6 秒轮询一次，最长 10 分钟</li>
-    <li onclick="checkQuiz('quiz1', 3)">D. 每 10 秒轮询一次，最长 20 分钟</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz1-title">Q1: 渲染任务提交后，前端轮询 SnapshotTaskStatus 的策略是？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz1-title" data-correct="2">
+    <button type="button" onclick="checkQuiz('quiz1', 0)">A. 每 2 秒轮询一次，最长 5 分钟</button>
+    <button type="button" onclick="checkQuiz('quiz1', 1)">B. 每 3 秒轮询一次，最长 15 分钟</button>
+    <button type="button" onclick="checkQuiz('quiz1', 2)">C. 每 6 秒轮询一次，最长 10 分钟</button>
+    <button type="button" onclick="checkQuiz('quiz1', 3)">D. 每 10 秒轮询一次，最长 20 分钟</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <div class="quiz" id="quiz2">
-  <div class="quiz-title">Q2: 模板配置拉取失败时，系统会怎么处理？</div>
-  <ul class="quiz-options" data-correct="1">
-    <li onclick="checkQuiz('quiz2', 0)">A. 直接报错，阻断用户操作</li>
-    <li onclick="checkQuiz('quiz2', 1)">B. 静默回退到 DEFAULT_TEMPLATE_CONFIG 默认配置</li>
-    <li onclick="checkQuiz('quiz2', 2)">C. 自动重试 3 次后报错</li>
-    <li onclick="checkQuiz('quiz2', 3)">D. 刷新整个页面重新初始化</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz2-title">Q2: 模板配置拉取失败时，系统会怎么处理？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz2-title" data-correct="1">
+    <button type="button" onclick="checkQuiz('quiz2', 0)">A. 直接报错，阻断用户操作</button>
+    <button type="button" onclick="checkQuiz('quiz2', 1)">B. 静默回退到 DEFAULT_TEMPLATE_CONFIG 默认配置</button>
+    <button type="button" onclick="checkQuiz('quiz2', 2)">C. 自动重试 3 次后报错</button>
+    <button type="button" onclick="checkQuiz('quiz2', 3)">D. 刷新整个页面重新初始化</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <div class="quiz" id="quiz3">
-  <div class="quiz-title">Q3: hasNewRender 状态的作用是什么？</div>
-  <ul class="quiz-options" data-correct="2">
-    <li onclick="checkQuiz('quiz3', 0)">A. 控制渲染按钮是否可点击</li>
-    <li onclick="checkQuiz('quiz3', 1)">B. 标记当前是否有任务正在渲染</li>
-    <li onclick="checkQuiz('quiz3', 2)">C. 作为图册红点和新结果提示的共享业务信号</li>
-    <li onclick="checkQuiz('quiz3', 3)">D. 决定是否需要重新拉取 snapshotList</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz3-title">Q3: hasNewRender 状态的作用是什么？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz3-title" data-correct="2">
+    <button type="button" onclick="checkQuiz('quiz3', 0)">A. 控制渲染按钮是否可点击</button>
+    <button type="button" onclick="checkQuiz('quiz3', 1)">B. 标记当前是否有任务正在渲染</button>
+    <button type="button" onclick="checkQuiz('quiz3', 2)">C. 作为图册红点和新结果提示的共享业务信号</button>
+    <button type="button" onclick="checkQuiz('quiz3', 3)">D. 决定是否需要重新拉取 snapshotList</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <!-- ==================== Next ==================== -->
@@ -463,11 +463,12 @@ function checkQuiz(quizId, selected) {
   const quiz = document.getElementById(quizId);
   const options = quiz.querySelector('.quiz-options');
   const correct = parseInt(options.dataset.correct);
-  const items = options.querySelectorAll('li');
+  const items = options.querySelectorAll('button');
   const feedback = quiz.querySelector('.quiz-feedback');
 
   items.forEach((item, i) => {
     item.onclick = null;
+    item.setAttribute('aria-disabled', 'true');
     if (i === correct) item.classList.add('correct');
     if (i === selected && i !== correct) item.classList.add('wrong');
   });

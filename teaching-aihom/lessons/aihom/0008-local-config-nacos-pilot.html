@@ -27,9 +27,9 @@
   th{font-weight:500;color:var(--text-secondary);font-size:.82rem;text-transform:uppercase;letter-spacing:.04em}
   .quiz{background:var(--accent-light);border:1px solid #fbbf24;border-radius:8px;padding:1.25rem 1.5rem;margin:1.5rem 0}
   .quiz-title{font-weight:700;margin-bottom:.75rem;color:var(--accent)}
-  .quiz-options{list-style:none;margin-left:0}.quiz-options li{padding:.5rem .75rem;margin:.35rem 0;border-radius:6px;cursor:pointer;transition:background .15s;border:1px solid transparent}
-  .quiz-options li:hover{background:#fde68a33;border-color:#fbbf24}
-  .quiz-options li.correct{background:#dcfce7;border-color:#16a34a}.quiz-options li.wrong{background:#fee2e2;border-color:#ef4444}
+  .quiz-options{list-style:none;margin-left:0}.quiz-options button{padding:.5rem .75rem;margin:.35rem 0;border-radius:6px;cursor:pointer;transition:background .15s;border:1px solid transparent}
+  .quiz-options button:hover{background:#fde68a33;border-color:#fbbf24}
+  .quiz-options button.correct{background:#dcfce7;border-color:#16a34a}.quiz-options button.wrong{background:#fee2e2;border-color:#ef4444}
   .quiz-feedback{margin-top:.75rem;padding:.75rem;border-radius:6px;display:none;font-size:.9rem}
   .ask-agent{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.9rem;color:#1e40af}
   .ask-agent::before{content:'提示：'}
@@ -152,41 +152,41 @@ rg -n "<span class="important">layout.debug.enable</span>|<span class="important
 <h2>7. 自检 Quiz</h2>
 
 <div class="quiz" id="quiz1">
-  <div class="quiz-title">Q1: 本地想加载 application-dev.yml，最关键看哪个配置？</div>
-  <ul class="quiz-options" data-correct="0">
-    <li onclick="checkQuiz('quiz1',0)">A. spring.profiles.active</li>
-    <li onclick="checkQuiz('quiz1',1)">B. qunhe.toad.stage</li>
-    <li onclick="checkQuiz('quiz1',2)">C. qunhe.service.version</li>
-    <li onclick="checkQuiz('quiz1',3)">D. spring.application.name</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz1-title">Q1: 本地想加载 application-dev.yml，最关键看哪个配置？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz1-title" data-correct="0">
+    <button type="button" onclick="checkQuiz('quiz1',0)">A. spring.profiles.active</button>
+    <button type="button" onclick="checkQuiz('quiz1',1)">B. qunhe.toad.stage</button>
+    <button type="button" onclick="checkQuiz('quiz1',2)">C. qunhe.service.version</button>
+    <button type="button" onclick="checkQuiz('quiz1',3)">D. spring.application.name</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <div class="quiz" id="quiz2">
-  <div class="quiz-title">Q2: README 说 Pilot 推荐环境差异配置托管到哪里？</div>
-  <ul class="quiz-options" data-correct="2">
-    <li onclick="checkQuiz('quiz2',0)">A. Git 仓库文件</li>
-    <li onclick="checkQuiz('quiz2',1)">B. 浏览器缓存</li>
-    <li onclick="checkQuiz('quiz2',2)">C. toad 配置中心</li>
-    <li onclick="checkQuiz('quiz2',3)">D. 本地 hosts</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz2-title">Q2: README 说 Pilot 推荐环境差异配置托管到哪里？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz2-title" data-correct="2">
+    <button type="button" onclick="checkQuiz('quiz2',0)">A. Git 仓库文件</button>
+    <button type="button" onclick="checkQuiz('quiz2',1)">B. 浏览器缓存</button>
+    <button type="button" onclick="checkQuiz('quiz2',2)">C. toad 配置中心</button>
+    <button type="button" onclick="checkQuiz('quiz2',3)">D. 本地 hosts</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 <div class="quiz" id="quiz3">
-  <div class="quiz-title">Q3: Agent 的 prompt/model/tool 行为异常，除了 yml 还要查哪里？</div>
-  <ul class="quiz-options" data-correct="1">
-    <li onclick="checkQuiz('quiz3',0)">A. xxl-job 日志</li>
-    <li onclick="checkQuiz('quiz3',1)">B. Nacos Agent 配置</li>
-    <li onclick="checkQuiz('quiz3',2)">C. CSS 样式文件</li>
-    <li onclick="checkQuiz('quiz3',3)">D. 浏览器 localStorage</li>
-  </ul>
-  <div class="quiz-feedback"></div>
+  <div class="quiz-title" id="quiz3-title">Q3: Agent 的 prompt/model/tool 行为异常，除了 yml 还要查哪里？</div>
+  <div class="quiz-options" role="group" aria-labelledby="quiz3-title" data-correct="1">
+    <button type="button" onclick="checkQuiz('quiz3',0)">A. xxl-job 日志</button>
+    <button type="button" onclick="checkQuiz('quiz3',1)">B. Nacos Agent 配置</button>
+    <button type="button" onclick="checkQuiz('quiz3',2)">C. CSS 样式文件</button>
+    <button type="button" onclick="checkQuiz('quiz3',3)">D. 浏览器 localStorage</button>
+  </div>
+  <div class="quiz-feedback" role="status"></div>
 </div>
 
 </div>
 <script>
-function checkQuiz(q,s){const o=document.getElementById(q).querySelector('.quiz-options'),c=parseInt(o.dataset.correct),i=o.querySelectorAll('li'),f=document.getElementById(q).querySelector('.quiz-feedback');i.forEach((x,n)=>{x.onclick=null;if(n===c)x.classList.add('correct');if(n===s&&n!==c)x.classList.add('wrong')});const fb={quiz1:{c:'对。spring.profiles.active 决定 Spring 加载哪组 application-*.yml。',w:'再想想：toad stage 管远程配置环境，profile 才管 application-dev.yml。'},quiz2:{c:'对。README 明确说 Pilot 推荐把区分环境的配置托管到 toad。',w:'不是这个。README 里写的是 toad。'},quiz3:{c:'对。ai-native-service 的 Agent 行为还要看 Nacos 里的 Agent 配置。',w:'不是这个。Agent/prompt/model/tool 更可能来自 Nacos 配置。'}};f.style.display='block';f.textContent=s===c?fb[q].c:fb[q].w;f.style.background=s===c?'#dcfce7':'#fee2e2'}
+function checkQuiz(q,s){const o=document.getElementById(q).querySelector('.quiz-options'),c=parseInt(o.dataset.correct),i=o.querySelectorAll('button'),f=document.getElementById(q).querySelector('.quiz-feedback');i.forEach((x,n)=>{x.onclick=null;x.setAttribute('aria-disabled', 'true');if(n===c)x.classList.add('correct');if(n===s&&n!==c)x.classList.add('wrong')});const fb={quiz1:{c:'对。spring.profiles.active 决定 Spring 加载哪组 application-*.yml。',w:'再想想：toad stage 管远程配置环境，profile 才管 application-dev.yml。'},quiz2:{c:'对。README 明确说 Pilot 推荐把区分环境的配置托管到 toad。',w:'不是这个。README 里写的是 toad。'},quiz3:{c:'对。ai-native-service 的 Agent 行为还要看 Nacos 里的 Agent 配置。',w:'不是这个。Agent/prompt/model/tool 更可能来自 Nacos 配置。'}};f.style.display='block';f.textContent=s===c?fb[q].c:fb[q].w;f.style.background=s===c?'#dcfce7':'#fee2e2'}
 </script>
 <nav class="learning-map-quick-nav" aria-label="学习地图快速导航"><div class="nav-title">学习顺序快速导航 · 当前 008</div><div class="nav-links"><a class="map" href="../index.html">完整学习地图</a><a href="0007-springboot-web-layers.html">上一课：007 Spring Boot Web 三层最小闭环</a><a class="primary" href="0009-backend-local-run-and-deploy.html">下一课：009 后端本地运行与部署基础</a></div></nav>
 </body>

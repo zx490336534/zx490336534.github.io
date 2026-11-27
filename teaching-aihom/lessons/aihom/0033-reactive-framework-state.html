@@ -35,8 +35,8 @@
   .quiz{background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:1rem 1.15rem;margin:1.4rem 0}
   .quiz-title{font-weight:700;margin-bottom:.55rem;color:#92400e}
   .quiz-options{list-style:none;margin:0;padding:0}
-  .quiz-options li{padding:.45rem .65rem;margin:.35rem 0;border-radius:6px;border:1px solid transparent;cursor:pointer}
-  .quiz-options li:hover{border-color:#f59e0b}
+  .quiz-options button{padding:.45rem .65rem;margin:.35rem 0;border-radius:6px;border:1px solid transparent;cursor:pointer}
+  .quiz-options button:hover{border-color:#f59e0b}
   .correct{background:#dcfce7!important;border-color:#16a34a!important}
   .wrong{background:#fee2e2!important;border-color:#ef4444!important}
   .quiz-feedback{display:none;margin-top:.65rem;padding:.6rem;border-radius:6px}
@@ -241,36 +241,36 @@ class AIChatDrawer extends React.Component {
   </ul>
 
   <div class="quiz" id="quiz1">
-    <div class="quiz-title">Q1：<code>@observable</code> 最接近什么？</div>
-    <ul class="quiz-options" data-correct="0">
-      <li onclick="checkQuiz('quiz1',0)">A. 标记数据</li>
-      <li onclick="checkQuiz('quiz1',1)">B. 打包代码</li>
-      <li onclick="checkQuiz('quiz1',2)">C. 新建分支</li>
-      <li onclick="checkQuiz('quiz1',3)">D. 请求接口</li>
-    </ul>
-    <div class="quiz-feedback"></div>
+    <div class="quiz-title" id="quiz1-title">Q1：<code>@observable</code> 最接近什么？</div>
+    <div class="quiz-options" role="group" aria-labelledby="quiz1-title" data-correct="0">
+      <button type="button" onclick="checkQuiz('quiz1',0)">A. 标记数据</button>
+      <button type="button" onclick="checkQuiz('quiz1',1)">B. 打包代码</button>
+      <button type="button" onclick="checkQuiz('quiz1',2)">C. 新建分支</button>
+      <button type="button" onclick="checkQuiz('quiz1',3)">D. 请求接口</button>
+    </div>
+    <div class="quiz-feedback" role="status"></div>
   </div>
 
   <div class="quiz" id="quiz2">
-    <div class="quiz-title">Q2：<code>connect</code> 最接近什么？</div>
-    <ul class="quiz-options" data-correct="2">
-      <li onclick="checkQuiz('quiz2',0)">A. 连接后端</li>
-      <li onclick="checkQuiz('quiz2',1)">B. 合并样式</li>
-      <li onclick="checkQuiz('quiz2',2)">C. 注入状态</li>
-      <li onclick="checkQuiz('quiz2',3)">D. 发布上线</li>
-    </ul>
-    <div class="quiz-feedback"></div>
+    <div class="quiz-title" id="quiz2-title">Q2：<code>connect</code> 最接近什么？</div>
+    <div class="quiz-options" role="group" aria-labelledby="quiz2-title" data-correct="2">
+      <button type="button" onclick="checkQuiz('quiz2',0)">A. 连接后端</button>
+      <button type="button" onclick="checkQuiz('quiz2',1)">B. 合并样式</button>
+      <button type="button" onclick="checkQuiz('quiz2',2)">C. 注入状态</button>
+      <button type="button" onclick="checkQuiz('quiz2',3)">D. 发布上线</button>
+    </div>
+    <div class="quiz-feedback" role="status"></div>
   </div>
 
   <div class="quiz" id="quiz3">
-    <div class="quiz-title">Q3：排队提示不对，优先追哪个字段？</div>
-    <ul class="quiz-options" data-correct="1">
-      <li onclick="checkQuiz('quiz3',0)">A. userAvatar</li>
-      <li onclick="checkQuiz('quiz3',1)">B. taskQueueInfo</li>
-      <li onclick="checkQuiz('quiz3',2)">C. refreshLoading</li>
-      <li onclick="checkQuiz('quiz3',3)">D. syncStatusMap</li>
-    </ul>
-    <div class="quiz-feedback"></div>
+    <div class="quiz-title" id="quiz3-title">Q3：排队提示不对，优先追哪个字段？</div>
+    <div class="quiz-options" role="group" aria-labelledby="quiz3-title" data-correct="1">
+      <button type="button" onclick="checkQuiz('quiz3',0)">A. userAvatar</button>
+      <button type="button" onclick="checkQuiz('quiz3',1)">B. taskQueueInfo</button>
+      <button type="button" onclick="checkQuiz('quiz3',2)">C. refreshLoading</button>
+      <button type="button" onclick="checkQuiz('quiz3',3)">D. syncStatusMap</button>
+    </div>
+    <div class="quiz-feedback" role="status"></div>
   </div>
 
   <div class="ask-agent">复习时可以问 agent：带我从 AIChatDrawer 的“连接中”提示出发，一步步找到 connectionStatus 的读取位置和更新位置。</div>
@@ -292,10 +292,11 @@ function checkQuiz(q,s){
   const box=document.getElementById(q);
   const opts=box.querySelector('.quiz-options');
   const c=Number(opts.dataset.correct);
-  const items=opts.querySelectorAll('li');
+  const items=opts.querySelectorAll('button');
   const fb=box.querySelector('.quiz-feedback');
   items.forEach((item,i)=>{
     item.onclick=null;
+    item.setAttribute('aria-disabled', 'true');
     if(i===c)item.classList.add('correct');
     if(i===s&&i!==c)item.classList.add('wrong');
   });
