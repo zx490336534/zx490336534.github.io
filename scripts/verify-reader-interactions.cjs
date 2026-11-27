@@ -7,7 +7,7 @@ async function main() {
   const browser = await chromium.launch({ channel: 'chrome' });
   try {
     const page = await browser.newPage();
-    await page.route('**/*', route => new URL(route.request().url()).origin === base.origin
+    await page.context().route('**/*', route => new URL(route.request().url()).origin === base.origin
       ? route.continue() : route.abort());
     await page.addInitScript(() => {
       Object.defineProperty(navigator.clipboard, 'writeText', {
@@ -28,9 +28,15 @@ async function main() {
     assert.equal(await matches.count(), 1);
     assert.match(await matches.first().getAttribute('href'), /^\/videos\/series\/.+\/\?episode=44218b5c$/);
     await matches.first().click();
-    await page.locator('[data-player-transcript]').click();
-    await page.locator('.article-video .video-transcript summary').click();
-    assert.ok(await page.locator('.article-video .video-transcript p:visible').count());
+    const articleLink = page.locator('[data-player-article]');
+    await articleLink.waitFor({ state: 'visible' });
+    assert.equal(await articleLink.getAttribute('href'), '/article/44218b5c.html');
+    // Only stand-alone chapter transcripts receive their own link in the player.
+    assert.equal(await page.locator('[data-player-transcript]').isHidden(), true);
+    const [article] = await Promise.all([page.waitForEvent('popup'), articleLink.click()]);
+    await article.waitForURL(new URL('/article/44218b5c.html', base).href);
+    await article.locator('.article-video .video-transcript summary').click();
+    assert.ok(await article.locator('.article-video .video-transcript p:visible').count());
     console.log('Verified copied Python, video filtering, direct playback link and transcript.');
   } finally {
     await browser.close();
