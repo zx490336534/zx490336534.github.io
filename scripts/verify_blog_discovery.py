@@ -234,18 +234,50 @@ def main():
     assert "/videos/" in paths
     library = page("/videos/")
     manifest = json.loads((ROOT / "scripts/article_videos.json").read_text())
-    expected = {watch_path(Path(p).stem) if Path(p).stem in WATCH else p + "#article-video-title"
-                for p,v in manifest.items() if v.get("voice") == "zh-CN-XiaoxiaoNeural" and v.get("poster") and v.get("captions")}
-    all_links = {a["href"] for a in library.select(".video-shelf li a[href]")}
-    assert all_links == expected and library.select_one("h1").get_text(strip=True) == "视频讲解目录"
+    expected = {p: v for p,v in manifest.items() if v.get("voice") == "zh-CN-XiaoxiaoNeural" and v.get("poster") and v.get("captions")}
+    index = library.select(".vc-index .vc-index-play")
+    assert len(index) == len(expected)
+    assert library.select_one("h1").get_text(strip=True) == "视频系列"
+    by_stem = {Path(path).stem: (path, video) for path, video in expected.items()}
+    matched = set()
+    by_card = {}
+    for card in library.select(".vc-card"):
+        path = card.select_one("a")["href"]
+        listing = page(path)
+        assert listing.select_one("link[rel=canonical]")["href"] == SITE + path
+        episodes = listing.select("[data-player-episode]")
+        assert episodes and len({ep["data-player-episode"] for ep in episodes}) == len(episodes)
+        assert [ep["data-player-episode"] for ep in episodes if ep.has_attr("aria-current")] == [episodes[0]["data-player-episode"]]
+        for ep in episodes:
+            key = ep["data-player-episode"]
+            original, media = by_stem[key]
+            assert ep["data-article"] == original
+            assert ep["data-src"] == media["src"] and ep["data-poster"] == media["poster"] and ep["data-captions"] == media["captions"]
+            assert ep["href"] == (watch_path(key) if key in WATCH else original + "#article-video-title")
+        first = episodes[0]
+        assert listing.select_one("video source")["src"] == first["data-src"]
+        assert listing.select_one("video track")["src"] == first["data-captions"]
+        by_card[path] = [ep["data-player-episode"] for ep in episodes]
+    for link in index:
+        path, episode = link["data-player-url"].split("?episode=")
+        assert episode in by_card[path] and episode not in matched
+        matched.add(episode)
+    assert matched == set(by_stem)
+    assert set(path for path in (item for group in by_card.values() for item in group)) == matched
     for item in json.loads((ROOT / "scripts/series_catalog.json").read_text()):
         series_url = f"/series/{item['id']}/"
         series_pg = page(series_url)
         assert series_pg.select_one('.article-path a[href="/"]')
         assert series_pg.select_one(f'.article-path a[href="/series/#topic-{item["section"]}"]')
         video_link = series_pg.select_one('.series-start-links a[href^="/videos/#"]')
+        order = [Path(chapter).stem for group in item["groups"] for chapter in group["chapters"] if chapter in expected]
+        assert order == by_card.get(f"/videos/series/{item['id']}/", [])
         if video_link:
             assert library.find(id=video_link["href"].split("#",1)[1]), series_url
+    for original, entry in expected.items():
+        article_video = page(original).select_one(".article-video video")
+        assert article_video.select_one("source")["src"] == entry["src"]
+        assert article_video.select_one("track")["src"] == entry["captions"]
     for slug in WATCH:
         watch = page(watch_path(slug))
         v = json.loads(watch.select_one('script[type="application/ld+json"]').string)["@graph"][0]

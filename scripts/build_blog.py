@@ -21,6 +21,7 @@ import nh3
 import blog_discovery as discovery
 import blog_geo as geo
 import blog_portfolio as portfolio
+import blog_video_series as video_series
 from blog_code import repair_python_spaces
 from build_public_courses import build_courses
 
@@ -947,8 +948,12 @@ def main():
         if Path(post.path).stem in discovery.WATCH:
             path, content, description, head = discovery.video_watch(post, ROOT, SITE)
             write(path, shell(post.display_title + "｜视频讲解", path, content, description, head))
-    content, description, markup = portfolio.video_library(posts, series, positions, SITE)
-    write("/videos/", shell("视频讲解目录", "/videos/", content, description, markup))
+    playlists, memberships = video_series.make_playlists(posts, series, positions)
+    content, description, markup = video_series.library(posts, playlists, memberships, SITE)
+    write("/videos/", shell("视频系列", "/videos/", content, description, markup))
+    for playlist in playlists:
+        content, description, markup = video_series.player(playlist, SITE)
+        write(playlist.path, shell(playlist.title + "｜视频系列", playlist.path, content, description, markup))
     write("/sitemap.xml", discovery.sitemap(posts, series, SITE))
     lab = (
         '<section class="listing resource-library"><header class="page-heading">'

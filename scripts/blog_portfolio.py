@@ -1,11 +1,10 @@
 """Public discovery of article provenance, tested media, and related material."""
-from collections import defaultdict
 from functools import lru_cache
 from html import escape
 from pathlib import Path
 from urllib.parse import quote, urlsplit
 
-from blog_discovery import WATCH, json_ld, watch_path
+from blog_discovery import json_ld
 
 
 
@@ -172,60 +171,3 @@ def series_metadata(series, site):
         ]},
     )
     return summary, data
-
-
-def video_library(posts, series, positions, site):
-    published = [
-        post for post in posts
-        if post.video and post.video.get("voice") == "zh-CN-XiaoxiaoNeural"
-        and post.video.get("captions") and post.video.get("poster")
-    ]
-    by_series = defaultdict(list)
-    other = defaultdict(list)
-    for post in published:
-        if post.path in positions:
-            series_item, number = positions[post.path]
-            by_series[series_item.slug].append((number, post))
-        else:
-            trail = post.topic.trail() if post.topic else []
-            other[(trail[0].key, trail[0].name) if trail else ("other", "其他文章")].append(post)
-    groups = []
-    for item in series:
-        if entries := by_series.get(item.slug):
-            groups.append((f"videos-{item.slug}", item.title, item.url,
-                           [p for _, p in sorted(entries, key=lambda r: r[0])]))
-    for (key, topic), entries in other.items():
-        groups.append((f"topic-videos-{key}", topic, "", entries))
-
-    def row(post):
-        stem = Path(post.path).stem
-        href = watch_path(stem) if stem in WATCH else post.path + "#article-video-title"
-        sec = post.video["duration"]
-        return (f'<li><a href="{escape(href)}">{escape(post.display_title)}</a>'
-                f'<time datetime="PT{sec}S">{sec // 60}:{sec % 60:02}</time></li>')
-
-    nav = "".join(f'<a href="#{anchor}">{escape(title)} <small>{len(entries)}</small></a>' for anchor, title, _, entries in groups)
-    blocks = []
-    for anchor, title, link, entries in groups:
-        related = f'<a href="{escape(link)}">看系列目录 →</a>' if link else ""
-        blocks.append(
-            f'<section class="video-shelf" id="{anchor}" aria-labelledby="{anchor}-heading">'
-            f'<header class="section-title"><h2 id="{anchor}-heading">{escape(title)}</h2>{related}</header>'
-            f'<ul>{"".join(row(p) for p in entries)}</ul></section>'
-        )
-    description = "按主题和系列查找测试游记的实战讲解。每支使用 Edge 晓晓普通话配音并附简体中文字幕。"
-    data = json_ld({
-        "@type": "CollectionPage", "name": "视频讲解目录", "url": site + "/videos/",
-        "description": description, "inLanguage": "zh-CN",
-    })
-    featured = "".join(row(p) for p in published if Path(p.path).stem in WATCH)
-    return (
-        '<section class="listing video-library"><header class="page-heading"><div><h1>视频讲解目录</h1>'
-        f'<p>{escape(description)} · {len(published)} 支</p></div><a href="/series/">从系列开始 ↗</a></header>'
-        '<search class="video-filter" aria-label="筛选视频" hidden><label for="video-query">按片名或系列筛选视频</label>'
-        '<div><input type="search" id="video-query" autocomplete="off"><button type="button" hidden>清空筛选</button></div>'
-        '<p role="status"></p></search>'
-        f'<section class="video-shelf"><h2>独立观看页与文字稿</h2><ul>{featured}</ul></section>'
-        f'<nav class="series-stage-links" aria-label="跳到视频系列或主题">{nav}</nav>'
-        + "".join(blocks) + "</section>", description, data
-    )

@@ -24,10 +24,11 @@ async function main() {
 
     await page.goto(new URL('/videos/', base).href);
     await page.getByLabel('按片名或系列筛选视频', { exact: true }).fill('爬取淘宝');
-    const matches = page.locator('.video-shelf:visible li:visible a');
+    const matches = page.locator('.vc-index:visible li:visible .vc-index-play');
     assert.equal(await matches.count(), 1);
-    assert.equal(await matches.first().getAttribute('href'), '/article/44218b5c.html#article-video-title');
+    assert.match(await matches.first().getAttribute('href'), /^\/videos\/series\/.+\/\?episode=44218b5c$/);
     await matches.first().click();
+    await page.locator('[data-player-transcript]').click();
     await page.locator('.article-video .video-transcript summary').click();
     assert.ok(await page.locator('.article-video .video-transcript p:visible').count());
     console.log('Verified copied Python, video filtering, direct playback link and transcript.');

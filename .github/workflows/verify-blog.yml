@@ -38,6 +38,7 @@ jobs:
           trap 'kill "$server_pid"' EXIT
           curl --fail --silent --retry 5 --retry-connrefused "$base_url/" -o /dev/null
           node scripts/verify-reader-interactions.cjs "$base_url"
+          node scripts/verify-video-series.cjs "$base_url"
           node scripts/verify-mobile-reading.cjs "$base_url"
           node scripts/verify-mobile-navigation.cjs "$base_url"
           node scripts/verify-mobile-drafts.cjs "$base_url"

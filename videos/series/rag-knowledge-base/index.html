@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>RAG 与知识库搭建｜视频系列 · 测试游记</title>
+  <meta name="description" content="RAG 与知识库搭建，共 7 集。从网页入库、文本切分到文档检索，再看本地笔记问答和 FastGPT 的实现方式。">
+  <meta property="og:title" content="RAG 与知识库搭建｜视频系列 · 测试游记">
+  <meta property="og:description" content="RAG 与知识库搭建，共 7 集。从网页入库、文本切分到文档检索，再看本地笔记问答和 FastGPT 的实现方式。">
+  <meta property="og:url" content="https://www.zhongxin.website/videos/series/rag-knowledge-base/">
+  <link rel="canonical" href="https://www.zhongxin.website/videos/series/rag-knowledge-base/">
+  <link rel="alternate" href="/atom.xml" type="application/atom+xml" title="测试游记">
+  <link rel="icon" href="/images/avatar.jpeg">
+  <script src="/js/appearance.js"></script>
+  <link rel="stylesheet" href="/css/blog.css?v=code-fold-20261126">
+  <script src="/js/blog.js?v=code-fold-20261126" defer></script>
+  <script id="site-analytics" src="/js/site-analytics.js" data-website-id="1b24a540-f89e-43de-bf0f-d783133d4a28" defer></script>
+  <link rel="stylesheet" href="/css/video-series.css?v=1">
+<script src="/js/video-series.js?v=1" defer></script><script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"CollectionPage","name":"RAG 与知识库搭建","url":"https://www.zhongxin.website/videos/series/rag-knowledge-base/","description":"RAG 与知识库搭建，共 7 集。从网页入库、文本切分到文档检索，再看本地笔记问答和 FastGPT 的实现方式。","inLanguage":"zh-CN"}]}</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="masthead">
+    <div class="wrap masthead-inner">
+      <a class="wordmark" href="/">测试游记</a>
+      <nav aria-label="主导航"><a href="/">首页</a><a href="/archives/">归档</a><a href="/categories/">分类</a><a href="/series/">系列</a><a href="/videos/" aria-current="location">视频</a><a href="/lab/">工具与课程</a><a href="/about/">关于</a></nav>
+      <div class="masthead-actions">
+        <label class="visually-hidden" for="site-appearance">外观</label>
+        <select id="site-appearance" class="site-appearance" hidden>
+          <option value="system">外观 · 系统</option>
+          <option value="light">外观 · 浅色</option>
+          <option value="dark">外观 · 深色</option>
+        </select>
+        <button type="button" data-open-search class="search-trigger">搜索 <kbd>⌘/Ctrl K</kbd></button>
+      </div>
+    </div>
+  </header>
+  <main id="main" class="wrap"><section class="vp" data-playlist aria-labelledby="vp-title">
+      <nav class="vp-path" aria-label="位置"><a href="/videos/">← 视频系列</a><span>按集连续观看</span></nav>
+      <header class="vp-header"><p class="vc-eyebrow">AI 工程 · 7 集 · 18 分钟</p>
+        <h1 id="vp-title">RAG 与知识库搭建</h1><p>从网页入库、文本切分到文档检索，再看本地笔记问答和 FastGPT 的实现方式。</p><a href="/series/rag-knowledge-base/">系列图文目录 ↗</a></header>
+      <div class="vp-layout">
+        <section class="vp-view" aria-labelledby="vp-now"><div class="vp-screen">
+          <video controls playsinline preload="none" width="1280" height="720" poster="/videos/article-posters/wechat-e67df3dbefdb83.webp" aria-labelledby="vp-now">
+            <source src="https://github.com/zx490336534/zx490336534.github.io/releases/download/article-videos-20261125/wechat-e67df3dbefdb83-xiaoxiao.mp4" type="video/mp4">
+            <track kind="captions" srclang="zh-CN" label="简体中文" src="/videos/article-captions/wechat-e67df3dbefdb83-xiaoxiao.vtt">
+          </video></div>
+          <div class="vp-caption"><p class="vc-eyebrow" data-position>正在观看 · 第 1 / 7 集</p>
+            <h2 id="vp-now">本地部署 Firecrawl，为知识库采集网页</h2>
+            <div class="vp-source"><a href="/article/wechat-e67df3dbefdb83.html" data-player-article>读图文原文 ↗</a>
+            <a href="/article/wechat-e67df3dbefdb83.html#article-video-title" data-player-transcript>打开原文播放器 ↗</a></div></div>
+          <div class="vp-controls" data-controls hidden><label><input type="checkbox" checked data-autonext> 自动连播</label>
+            <div><button type="button" data-previous disabled>上一集</button><button type="button" data-next>下一集</button></div></div>
+          <p class="vp-status"><span data-player-status role="status"></span><button type="button" data-retry hidden>点击播放</button></p>
+        </section>
+        <nav class="vp-queue" aria-label="选集"><div class="vp-queue-title"><h2>选集</h2><span>7 集</span></div>
+          <div class="vp-queue-scroll"><h3>采集与文本处理</h3><ol><li><a href="/article/wechat-e67df3dbefdb83.html#article-video-title" data-player-episode="wechat-e67df3dbefdb83" data-title="本地部署 Firecrawl，为知识库采集网页"
+                  data-article="/article/wechat-e67df3dbefdb83.html" data-src="https://github.com/zx490336534/zx490336534.github.io/releases/download/article-videos-20261125/wechat-e67df3dbefdb83-xiaoxiao.mp4" data-poster="/videos/article-posters/wechat-e67df3dbefdb83.webp"
+                  data-captions="/videos/article-captions/wechat-e67df3dbefdb83-xiaoxiao.vtt" data-duration="2:43"
+                   aria-current="true">
+                  <span class="vp-number">01</span><span class="vp-episode-name">本地部署 Firecrawl，为知识库采集网页</span>
+                  <time datetime="PT163S">2:43</time></a></li><li><a href="/article/wechat-a5172f16229cf1.html#article-video-title" data-player-episode="wechat-a5172f16229cf1" data-title="用 Vite 和 React 编写知识库文档导入插件"
+                  data-article="/article/wechat-a5172f16229cf1.html" data-src="https://github.com/zx490336534/zx490336534.github.io/releases/download/article-videos-20261125/wechat-a5172f16229cf1-xiaoxiao.mp4" data-poster="/videos/article-posters/wechat-a5172f16229cf1.webp"
+                  data-captions="/videos/article-captions/wechat-a5172f16229cf1-xiaoxiao.vtt" data-duration="2:40"
+                  >
+                  <span class="vp-number">02</span><span class="vp-episode-name">用 Vite 和 React 编写知识库文档导入插件</span>
+                  <time datetime="PT160S">2:40</time></a></li><li><a href="/article/wechat-92759fc89d47d7.html#article-video-title" data-player-episode="wechat-92759fc89d47d7" data-title="用 spaCy 做分词、实体识别和相似度计算"
+                  data-article="/article/wechat-92759fc89d47d7.html" data-src="https://github.com/zx490336534/zx490336534.github.io/releases/download/article-videos-20261125/wechat-92759fc89d47d7-xiaoxiao.mp4" data-poster="/videos/article-posters/wechat-92759fc89d47d7.webp"
+                  data-captions="/videos/article-captions/wechat-92759fc89d47d7-xiaoxiao.vtt" data-duration="2:31"
+                  >
+                  <span class="vp-number">03</span><span class="vp-episode-name">用 spaCy 做分词、实体识别和相似度计算</span>
+                  <time datetime="PT151S">2:31</time></a></li><li><a href="/article/wechat-4810ecd375e281.html#article-video-title" data-player-episode="wechat-4810ecd375e281" data-title="用 LangChain 切分知识库文本"
+                  data-article="/article/wechat-4810ecd375e281.html" data-src="https://github.com/zx490336534/zx490336534.github.io/releases/download/article-videos-20261125/wechat-4810ecd375e281-xiaoxiao.mp4" data-poster="/videos/article-posters/wechat-4810ecd375e281.webp"
+                  data-captions="/videos/article-captions/wechat-4810ecd375e281-xiaoxiao.vtt" data-duration="2:42"
+                  >
+                  <span class="vp-number">04</span><span class="vp-episode-name">用 LangChain 切分知识库文本</span>
+                  <time datetime="PT162S">2:42</time></a></li></ol><h3>问答应用与检索架构</h3><ol><li><a href="/article/wechat-a74e66513669c2.html#article-video-title" data-player-episode="wechat-a74e66513669c2" data-title="用 Streamlit 和 LangChain 搭建文档问答"
+                  data-article="/article/wechat-a74e66513669c2.html" data-src="https://github.com/zx490336534/zx490336534.github.io/releases/download/article-videos-20261125/wechat-a74e66513669c2-xiaoxiao.mp4" data-poster="/videos/article-posters/wechat-a74e66513669c2.webp"
+                  data-captions="/videos/article-captions/wechat-a74e66513669c2-xiaoxiao.vtt" data-duration="2:37"
+                  >
+                  <span class="vp-number">05</span><span class="vp-episode-name">用 Streamlit 和 LangChain 搭建文档问答</span>
+                  <time datetime="PT157S">2:37</time></a></li><li><a href="/article/wechat-06bc9c9a4dd9bc.html#article-video-title" data-player-episode="wechat-06bc9c9a4dd9bc" data-title="用 Obsidian、Ollama 和本地向量模型做笔记问答"
+                  data-article="/article/wechat-06bc9c9a4dd9bc.html" data-src="https://github.com/zx490336534/zx490336534.github.io/releases/download/article-videos-20261125/wechat-06bc9c9a4dd9bc-xiaoxiao.mp4" data-poster="/videos/article-posters/wechat-06bc9c9a4dd9bc.webp"
+                  data-captions="/videos/article-captions/wechat-06bc9c9a4dd9bc-xiaoxiao.vtt" data-duration="2:36"
+                  >
+                  <span class="vp-number">06</span><span class="vp-episode-name">用 Obsidian、Ollama 和本地向量模型做笔记问答</span>
+                  <time datetime="PT156S">2:36</time></a></li><li><a href="/article/wechat-922250fd295742.html#article-video-title" data-player-episode="wechat-922250fd295742" data-title="用 FastGPT 管理知识库并接入 LangChain.js"
+                  data-article="/article/wechat-922250fd295742.html" data-src="https://github.com/zx490336534/zx490336534.github.io/releases/download/article-videos-20261125/wechat-922250fd295742-xiaoxiao.mp4" data-poster="/videos/article-posters/wechat-922250fd295742.webp"
+                  data-captions="/videos/article-captions/wechat-922250fd295742-xiaoxiao.vtt" data-duration="2:28"
+                  >
+                  <span class="vp-number">07</span><span class="vp-episode-name">用 FastGPT 管理知识库并接入 LangChain.js</span>
+                  <time datetime="PT148S">2:28</time></a></li></ol></div></nav>
+      </div>
+    </section></main>
+  <footer class="wrap footer">
+    <a class="footer-brand" href="/">测试游记<span>听白的技术博客</span></a>
+    <nav aria-label="页脚导航">
+      <a href="/archives/">文章归档</a><a href="/series/">系列阅读</a><a href="/tags/">标签</a><a href="/lab/">工具与课程</a><a href="/atom.xml">RSS</a>
+    </nav>
+    <nav class="footer-contact" aria-label="联系方式">
+      <a href="mailto:490336534@qq.com">490336534@qq.com</a><a href="https://github.com/zx490336534">GitHub</a>
+    </nav>
+  </footer>
+  <dialog id="search-dialog" aria-labelledby="search-title">
+    <div class="search-heading"><h2 id="search-title">搜索文章</h2><form method="dialog"><button>关闭</button></form></div>
+    <label class="visually-hidden" for="article-search">搜索标题、主题、标签或正文</label>
+    <input id="article-search" type="search" placeholder="搜索标题、分类、标签或正文…" autocomplete="off" maxlength="100" autofocus>
+    <p id="search-status" role="status"></p>
+    <ol id="search-results"></ol>
+  </dialog>
+</body>
+</html>
